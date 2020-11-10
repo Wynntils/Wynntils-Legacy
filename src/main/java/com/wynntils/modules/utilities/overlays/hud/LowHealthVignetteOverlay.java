@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
@@ -79,11 +79,10 @@ public class LowHealthVignetteOverlay extends Overlay {
             case Growing:
                 value = threshold - currentHealth * INTENSITY;
                 break;
-            default:
+            case Static:
                 value = INTENSITY;
                 break;
         }
-
-
     }
+
 }

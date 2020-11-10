@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.core.config;
@@ -25,15 +25,18 @@ public class CoreDBConfig extends SettingsClass {
     @Setting(upload = false)
     public ClassType lastClass = ClassType.NONE;
 
+    @Setting(upload = false)
+    public boolean lastClassIsReskinned = false;
+
     @Setting(displayName = "Update Stream", description = "Which update stream should the mod be on?\n\n" +
             "§2Stable: §rThe mod will only update when a new version is released. Stable versions are generally more stable than Cutting Edge builds.\n\n" +
-            "§4Cutting Edge: §rThe mod will update whenever a new build is release. Cutting Edge builds will include features that are not yet in Stable versions and are currently in development but may also be less stable than Stable versions.", upload = false)
+            "§4Cutting Edge: §rThe mod will update whenever a new build is released. Cutting Edge builds will include features that are not yet in Stable versions and are currently in development but may also be less stable than Stable versions.", upload = false)
     public UpdateStream updateStream = UpdateStream.STABLE;
 
     @Setting(displayName = "Scroll Direction", description = "Which direction should your mouse scroll for the page to scroll down?")
     public ScrollDirection scrollDirection = ScrollDirection.DOWN;
 
-    @Setting(displayName = "Show Changelog", description = "Should the changelog of the recent update be displayed upon logging in after updating?")
+    @Setting(displayName = "Show Changelog", description = "After updating Wynntils, should a changelog be displayed upon logging in?")
     public boolean enableChangelogOnUpdate = true;
 
     @Setting(upload = false)
@@ -44,9 +47,14 @@ public class CoreDBConfig extends SettingsClass {
 
     @Setting(displayName = "Main Menu Wynncraft Button", description = "Should a button be added to the main menu that allows you to connect to Wynncraft directly?")
     public boolean addMainMenuButton = true;
+    
+    @Setting(displayName = "Use Unicode Font", description = "Should Wynntils use the unicode font?")
+    public boolean useUnicode = false;
 
     @Override
     public void onSettingChanged(String name) {
-        if (name.equals("updateStream")) WebManager.checkForUpdates();
+        if (name.equals("updateStream")) {
+            WebManager.checkForUpdates();
+        }
     }
 }

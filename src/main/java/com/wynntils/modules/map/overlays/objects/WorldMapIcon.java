@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.map.overlays.objects;
@@ -27,18 +27,25 @@ public class WorldMapIcon {
         return info;
     }
 
+    protected void updateAlphaForZoom(int zoom) {
+        if (info.getZoomNeeded() != MapIcon.ANY_ZOOM) {
+            alpha = 1 - ((zoom - info.getZoomNeeded()) / 40.0f);
+            if (alpha > 1.0) {
+                alpha = 1.0f;
+            }
+        }
+    }
+
     public void updateAxis(MapProfile mp, int width, int height, float maxX, float minX, float maxZ, float minZ, int zoom) {
         if (!info.isEnabled(false)) {
             shouldRender = false;
             return;
         }
-        if(info.getZoomNeeded() != MapIcon.ANY_ZOOM) {
-            alpha = 1 - ((zoom - info.getZoomNeeded()) / 40.0f);
 
-            if(alpha <= 0) {
-                shouldRender = false;
-                return;
-            }
+        updateAlphaForZoom(zoom);
+        if (alpha <= 0) {
+            shouldRender = false;
+            return;
         }
 
         float axisX = ((mp.getTextureXPosition(info.getPosX()) - minX) / (maxX - minX));
@@ -50,13 +57,13 @@ public class WorldMapIcon {
             return;
         }
 
-        if(axisX > 0 && axisX < 1 && axisZ > 0 && axisZ < 1) {
+        if (axisX > 0 && axisX < 1 && axisZ > 0 && axisZ < 1) {
             shouldRender = true;
             axisX = width * axisX;
             axisZ = height * axisZ;
 
             this.axisX = axisX; this.axisZ = axisZ;
-        }else shouldRender = false;
+        } else shouldRender = false;
     }
 
     public boolean mouseOver(int mouseX, int mouseY) {
@@ -69,22 +76,18 @@ public class WorldMapIcon {
     }
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks, float blockScale, ScreenRenderer renderer) {
-        if(!shouldRender || renderer == null) return;
+        if (!shouldRender || renderer == null) return;
 
-        GlStateManager.pushMatrix();
-        GlStateManager.enableBlend();
         GlStateManager.color(1, 1, 1, alpha);
         float multi = mouseOver(mouseX, mouseY) ? 1.3f : 1f;
 
         info.renderAt(renderer, axisX, axisZ, multi, blockScale);
 
-        GlStateManager.color(1,1,1,1);
-
-        GlStateManager.popMatrix();
+        GlStateManager.color(1, 1, 1, 1);
     }
 
     public void drawHovering(int mouseX, int mouseY, float partialTicks, ScreenRenderer renderer) {
-        if(!shouldRender || !mouseOver(mouseX, mouseY)) return;
+        if (!shouldRender || !mouseOver(mouseX, mouseY)) return;
 
         GlStateManager.color(1, 1, 1, 1);
         String name = info.getName();

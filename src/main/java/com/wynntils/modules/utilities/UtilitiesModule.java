@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.utilities;
@@ -8,9 +8,12 @@ import com.wynntils.core.framework.enums.Priority;
 import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+import com.wynntils.modules.utilities.configs.SoundEffectsConfig;
+import com.wynntils.modules.utilities.configs.TranslationConfig;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.events.ClientEvents;
 import com.wynntils.modules.utilities.events.ServerEvents;
+import com.wynntils.modules.utilities.instances.InfoFormatter;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.modules.utilities.overlays.OverlayEvents;
 import com.wynntils.modules.utilities.overlays.hud.*;
@@ -21,6 +24,7 @@ public class UtilitiesModule extends Module {
 
     private static UtilitiesModule module;
     private GameUpdateOverlay gameUpdateOverlay;
+    private InfoFormatter infoFormatter;
 
     public void onEnable() {
         module = this;
@@ -31,16 +35,23 @@ public class UtilitiesModule extends Module {
         registerEvents(new OverlayEvents());
         registerEvents(new ClientEvents());
 
-        //Inventory Overlays
+        // Inventory Overlays
         registerEvents(new ItemIdentificationOverlay());
         registerEvents(new RarityColorOverlay());
         registerEvents(new SkillPointOverlay());
         registerEvents(new ItemLockOverlay());
+        registerEvents(new FavoriteTradesOverlay());
         registerEvents(new MenuButtonsOverlay());
         registerEvents(new IngredientFilterOverlay());
         registerEvents(new EmeraldCountOverlay());
+        registerEvents(new LoreChangerOverlay());
+        registerEvents(new WynnDataOverlay());
+        registerEvents(new ItemSpecificationOverlay());
+        registerEvents(new ServerUptimeOverlay());
+        registerEvents(new BankOverlay());
+        registerEvents(new ServerSelectorOverlay());
 
-        //Real overlays
+        // Real overlays
         registerOverlay(new WarTimerOverlay(), Priority.LOWEST);
         registerOverlay(new ActionBarOverlay(), Priority.LOWEST);
         registerOverlay(new HealthBarOverlay(), Priority.NORMAL);
@@ -54,22 +65,32 @@ public class UtilitiesModule extends Module {
         registerOverlay(new TerritoryFeedOverlay(), Priority.LOW);
         registerOverlay(new ToastOverlay(), Priority.LOW);
         registerOverlay(new LowHealthVignetteOverlay(), Priority.LOW);
+        registerOverlay(new ConsumableTimerOverlay(), Priority.NORMAL);
+        registerOverlay(new PlayerInfoOverlay(), Priority.HIGHEST);
+        registerOverlay(new ObjectivesOverlay(), Priority.NORMAL);
+
+        infoFormatter = new InfoFormatter();
         registerOverlay(new InfoOverlay._1(), Priority.NORMAL);
         registerOverlay(new InfoOverlay._2(), Priority.NORMAL);
         registerOverlay(new InfoOverlay._3(), Priority.NORMAL);
         registerOverlay(new InfoOverlay._4(), Priority.NORMAL);
-        registerOverlay(new PlayerInfoOverlay(), Priority.HIGHEST);
-
 
         registerOverlay(new GammaOverlay(), Priority.NORMAL);
         registerOverlay(new LobbyCleanerOverlay(), Priority.LOW);
         registerOverlay(new StopWatchOverlay(), Priority.LOW);
 
         registerSettings(UtilitiesConfig.class);
+        registerSettings(UtilitiesConfig.AfkProtection.class);
         registerSettings(UtilitiesConfig.Data.class);
         registerSettings(UtilitiesConfig.Items.class);
         registerSettings(UtilitiesConfig.Wars.class);
         registerSettings(UtilitiesConfig.Market.class);
+        registerSettings(UtilitiesConfig.Bank.class);
+        registerSettings(UtilitiesConfig.Identifications.class);
+
+        registerSettings(TranslationConfig.class);
+
+        registerSettings(SoundEffectsConfig.class);
 
         registerSettings(OverlayConfig.class);
         registerSettings(OverlayConfig.Health.class);
@@ -84,10 +105,12 @@ public class UtilitiesModule extends Module {
         registerSettings(OverlayConfig.TerritoryFeed.class);
         registerSettings(OverlayConfig.InfoOverlays.class);
         registerSettings(OverlayConfig.PlayerInfo.class);
+        registerSettings(OverlayConfig.ConsumableTimer.class);
         registerSettings(OverlayConfig.GameUpdate.GameUpdateEXPMessages.class);
         registerSettings(OverlayConfig.GameUpdate.GameUpdateInventoryMessages.class);
         registerSettings(OverlayConfig.GameUpdate.RedirectSystemMessages.class);
         registerSettings(OverlayConfig.GameUpdate.TerritoryChangeMessages.class);
+        registerSettings(OverlayConfig.Objectives.class);
     }
 
     public static UtilitiesModule getModule() {
@@ -98,4 +121,7 @@ public class UtilitiesModule extends Module {
         return gameUpdateOverlay;
     }
 
+    public InfoFormatter getInfoFormatter() {
+        return infoFormatter;
+    }
 }

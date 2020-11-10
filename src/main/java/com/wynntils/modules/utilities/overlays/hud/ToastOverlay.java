@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.modules.utilities.overlays.hud;
 
 import com.wynntils.Reference;
@@ -13,13 +17,21 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class ToastOverlay extends Overlay {
 
-    private static int DISPLAY_AMNT = 3;
-    private static ArrayList<Toast> toastList = new ArrayList<>();
-    private static Toast[] displayedToast = new Toast[DISPLAY_AMNT];
-    public int topT_X1 = 0, topT_X2 = 160, middleT_X1 = 0, middleT_X2 = 160, bottomT_X1 = 0, bottomT_X2 = 160;
+    private static final int DISPLAY_AMNT = 3;
+    private static final List<Toast> toastList = new ArrayList<>();
+    private static final Toast[] displayedToast = new Toast[DISPLAY_AMNT];
+    public transient int topT_X1 = 0, topT_X2 = 160, middleT_X1 = 0, middleT_X2 = 160, bottomT_X1 = 0, bottomT_X2 = 160;
+
+    private static final CustomColor questCompletedColor = new CustomColor(89, 149, 55); // green
+    private static final CustomColor discoveryColor = new CustomColor(140, 79, 193);  // purple
+    private static final CustomColor territoryColor = new CustomColor(112, 112, 239); // indigo
+    private static final CustomColor areaDiscoveredColor = new CustomColor(184, 89, 181); // magenta
+    private static final CustomColor levelUpColor = new CustomColor(85, 144, 182); // blue
+    private static final CustomColor defaultColor = new CustomColor(0, 0, 0); // black
 
     public ToastOverlay() {
         super("Toasts", 160, 192, true, 1, 0, 0, 0, OverlayGrowFrom.TOP_RIGHT);
@@ -34,23 +46,27 @@ public class ToastOverlay extends Overlay {
                 int iconX, iconY;
                 switch (displayedToast[j].getToastType()) {
                     case QUEST_COMPLETED:
-                        c = new CustomColor(.514f,.96f,.259f);
+                        c = questCompletedColor;
                         iconX = 178; iconY = 0;
                         break;
                     case DISCOVERY:
-                        c = new CustomColor(.718f,.384f,1);
+                        c = discoveryColor;
                         iconX = 161; iconY = 0;
                         break;
                     case TERRITORY:
-                        c = new CustomColor(.392f,.392f,1);
+                        c = territoryColor;
                         iconX = 160; iconY = 16;
                         break;
                     case AREA_DISCOVERED:
-                        c = new CustomColor(.949f, .588f, .937f);
+                        c = areaDiscoveredColor;
                         iconX = 176; iconY = 16;
                         break;
+                    case LEVEL_UP:
+                        c = levelUpColor;
+                        iconX = 160; iconY = 32;
+                        break;
                     default:
-                        c = new CustomColor(1,1,1);
+                        c = defaultColor;
                         iconX = 178; iconY = 0;
                         break;
                 }
@@ -59,18 +75,18 @@ public class ToastOverlay extends Overlay {
                 int y = displayedToast[j].getY();
                 int height = displayedToast[j].getHeight();
 
-                //Rolling Parchement:
-                drawRectF(Textures.Overlays.toast, getAnimated -160, y,getAnimated, y + 22,topT_X1, 0, topT_X2, 22); //top
-                drawRectF(Textures.Overlays.toast, getAnimated -160, y + 22, getAnimated, y + height + 41, middleT_X1, 23, middleT_X2, 42); //middle
-                drawRectF(Textures.Overlays.toast, getAnimated -160, y + height + 41, getAnimated, y + height + 64, bottomT_X1, 43, bottomT_X2, 66); //bottom
-                //Icon
-                drawRectF(Textures.Overlays.toast, getAnimated + (OverlayConfig.ToastsSettings.INSTANCE.flipToast ? -32 : -144), y + (height/2) + 24, getAnimated + (OverlayConfig.ToastsSettings.INSTANCE.flipToast ? -16 : -128), y + (height/2) + 40, iconX, iconY, iconX+16, iconY+16);
-                //Text
+                // Rolling Parchement:
+                drawRectF(Textures.Overlays.toast, getAnimated -160, y, getAnimated, y + 22, topT_X1, 0, topT_X2, 22);  // top
+                drawRectF(Textures.Overlays.toast, getAnimated -160, y + 22, getAnimated, y + height + 41, middleT_X1, 23, middleT_X2, 42);  // middle
+                drawRectF(Textures.Overlays.toast, getAnimated -160, y + height + 41, getAnimated, y + height + 64, bottomT_X1, 43, bottomT_X2, 66);  // bottom
+                // Icon
+                drawRectF(Textures.Overlays.toast, getAnimated + (OverlayConfig.ToastsSettings.INSTANCE.flipToast ? -32 : -144), y + (height / 2.0f) + 24, getAnimated + (OverlayConfig.ToastsSettings.INSTANCE.flipToast ? -16 : -128), y + (height / 2.0f) + 40, iconX, iconY, iconX+16, iconY+16);
+                // Text
                 drawString(displayedToast[j].getTitle(), getAnimated -160 + (OverlayConfig.ToastsSettings.INSTANCE.flipToast ? 8 : 35), 22 + y, c, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 for (int n = 0; n < displayedToast[j].getSubtitle().length; n++) {
                     drawString(displayedToast[j].getSubtitle()[n], getAnimated -160 + (OverlayConfig.ToastsSettings.INSTANCE.flipToast ? 8 : 35), 33 + 10*n + y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 }
-                //Animation
+                // Animation
                 if (OverlayConfig.ToastsSettings.INSTANCE.flipToast) {
                     if ((Minecraft.getSystemTime() - displayedToast[j].getCreationTime()) > 5000L) {
                         displayedToast[j].setAnimated(displayedToast[j].getAnimated() - .3f);
@@ -90,10 +106,10 @@ public class ToastOverlay extends Overlay {
 
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
-        if(Minecraft.getMinecraft().currentScreen != null) return; //HeyZeer0: This will avoid toasts being processed when the user can't view them
+        if (Minecraft.getMinecraft().currentScreen != null) return;  // HeyZeer0: This will avoid toasts being processed when the user can't view them
 
         if (OverlayConfig.ToastsSettings.INSTANCE.enableToast) {
-            //Flip coordinates:
+            // Flip coordinates:
             if (OverlayConfig.ToastsSettings.INSTANCE.flipToast) {
                 topT_X2 = 0; topT_X1 = 160;
                 middleT_X2 = 0; middleT_X1 = 160;
@@ -103,8 +119,8 @@ public class ToastOverlay extends Overlay {
                 middleT_X1 = 0; middleT_X2 = 160;
                 bottomT_X1 = 0; bottomT_X2 = 160;
             }
-            //Adds new toasts
-            ArrayList<Integer> toBeRemoved = new ArrayList<>();
+            // Adds new toasts
+            List<Integer> toBeRemoved = new ArrayList<>();
             int curHeight = 0;
             for (int j = 0; j < DISPLAY_AMNT; j++) {
                 if (displayedToast[j] != null) {
@@ -121,7 +137,7 @@ public class ToastOverlay extends Overlay {
                 if ((displayedToast[j].getAnimated() > 160 || displayedToast[j].getAnimated() < -160) && (Minecraft.getSystemTime() - displayedToast[j].getCreationTime()) > 5000L)
                     toBeRemoved.add(j);
             }
-            //Removes expired toasts
+            // Removes expired toasts
             for (Integer i : toBeRemoved) {
                 displayedToast[i] = null;
             }

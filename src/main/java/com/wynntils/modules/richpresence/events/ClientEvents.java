@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.richpresence.events;
@@ -17,11 +17,11 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onJoinParty(WynnSocialEvent.Party.Join e) {
-        RichPresenceModule.getModule().getRichPresence().setJoinSecret(new SecretContainer(e.getParty().getOwner(), Reference.getUserWorld().replaceAll("\\d+", ""), Integer.parseInt(Reference.getUserWorld().replace("WC", "").replace("HB", "").replace("EU", ""))));
+        RichPresenceModule.getModule().getRichPresence().setJoinSecret(new SecretContainer(e.getParty().getOwner(), Reference.getUserWorld().replaceAll("\\d+", ""), Integer.parseInt(Reference.getUserWorld().replace("WC", "").replace("HB", ""))));
     }
 
     @SubscribeEvent
-    public void onLeaveParty(WynnSocialEvent.Party.Join e) {
+    public void onLeaveParty(WynnSocialEvent.Party.Leave e) {
         RichPresenceModule.getModule().getRichPresence().setJoinSecret(null);
     }
 
@@ -32,7 +32,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onTick(TickEvent.RenderTickEvent e) {
-        if(e.phase != TickEvent.Phase.START) return;
+        if (e.phase != TickEvent.Phase.START) return;
 
         RichPresenceModule.getModule().getRichPresence().runCallbacks();
     }

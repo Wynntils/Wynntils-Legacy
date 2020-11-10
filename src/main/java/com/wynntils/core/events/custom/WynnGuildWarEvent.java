@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.core.events.custom;
 
 import net.minecraftforge.fml.common.eventhandler.Event;

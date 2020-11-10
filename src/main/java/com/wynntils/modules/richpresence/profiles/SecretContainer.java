@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.richpresence.profiles;
@@ -24,7 +24,7 @@ public class SecretContainer {
     }
 
     public SecretContainer(String hash) {
-        if(!hash.contains("::")) return;
+        if (!hash.contains("::")) return;
 
         String[] splitted = hash.split("::");
         owner = splitted[0];

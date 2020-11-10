@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.core.overlays;
@@ -15,13 +15,13 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 public class DownloadOverlay extends Overlay {
 
-    private static CustomColor background = CustomColor.fromString("333341",1);
-    private static CustomColor box = CustomColor.fromString("434355",1);
-    private static CustomColor progress = CustomColor.fromString("80fd80",1);
-    private static CustomColor back = CustomColor.fromString("ececec",1);
+    private static CustomColor background = CustomColor.fromInt(0x333341, 1);
+    private static CustomColor box = CustomColor.fromInt(0x434355, 1);
+    private static CustomColor progress = CustomColor.fromInt(0x80fd80, 1);
+    private static CustomColor back = CustomColor.fromInt(0xececec, 1);
 
-    private static CustomColor brackgroundRed = CustomColor.fromString("6e3737",1);
-    private static CustomColor boxRed = CustomColor.fromString("fd8080",1);
+    private static CustomColor backgroundRed = CustomColor.fromInt(0x6e3737, 1);
+    private static CustomColor boxRed = CustomColor.fromInt(0xfd8080, 1);
 
     static int lastPercent = 0;
     static DownloadPhase lastPhase;
@@ -32,7 +32,7 @@ public class DownloadOverlay extends Overlay {
     public static int size = 53;
 
     public DownloadOverlay() {
-        super("Downloading",20,20,true,1.0f,0.0f,0,0, null);
+        super("Downloading", 20, 20, true, 1.0f, 0.0f, 0, 0, null);
     }
 
     @Override
@@ -41,18 +41,18 @@ public class DownloadOverlay extends Overlay {
             return;
         }
 
-        if(DownloaderManager.currentPhase != DownloadPhase.WAITING || size < 53) {
-            if(DownloaderManager.restartOnQueueFinish && DownloaderManager.currentPhase == DownloadPhase.WAITING) {
-                if(timeToRestart == 0) {
+        if (DownloaderManager.currentPhase != DownloadPhase.WAITING || size < 53) {
+            if (DownloaderManager.restartOnQueueFinish && DownloaderManager.currentPhase == DownloadPhase.WAITING) {
+                if (timeToRestart == 0) {
                     timeToRestart = System.currentTimeMillis() + 10000;
                 }
-                if(timeToRestart - System.currentTimeMillis() <= 0) {
+                if (timeToRestart - System.currentTimeMillis() <= 0) {
                     mc.shutdown();
                     return;
                 }
 
-                drawRect(brackgroundRed, -172,0 - size, 0, 52 - size);
-                drawRect(boxRed, -170,0 - size, 0, 50 - size);
+                drawRect(backgroundRed, -172, 0 - size, 0, 52 - size);
+                drawRect(boxRed, -170, 0 - size, 0, 50 - size);
                 drawString("Your game will be closed in", -84, 15 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
                 drawString(((timeToRestart - System.currentTimeMillis()) / 1000) + " seconds", -84, 25 - size, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
                 return;
@@ -66,8 +66,8 @@ public class DownloadOverlay extends Overlay {
                 lastPhase = DownloaderManager.currentPhase;
             }
 
-            drawRect(background, -172,0 - size, 0, 52 - size);
-            drawRect(box, -170,0 - size, 0, 50 - size);
+            drawRect(background, -172, 0 - size, 0, 52 - size);
+            drawRect(box, -170, 0 - size, 0, 50 - size);
             drawString(lastTitle, -85, 5 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
 
             drawRect(back, -160, 20 - size, -10, 36 - size);

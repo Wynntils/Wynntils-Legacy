@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.core.events.custom;
@@ -13,20 +13,21 @@ import net.minecraftforge.fml.common.eventhandler.Event;
  */
 public class WynnClassChangeEvent extends Event {
 
-    ClassType oldClass;
-    ClassType currentClass;
+    private final ClassType newClass;
 
+    private final boolean newClassIsReskinned;
 
-    public WynnClassChangeEvent(ClassType oldClass, ClassType currentClass) {
-        this.oldClass = oldClass; this.currentClass = currentClass;
+    public WynnClassChangeEvent(ClassType newClass, boolean newClassIsReskinned) {
+        this.newClass = newClass;
+        this.newClassIsReskinned = newClassIsReskinned;
     }
 
-    public ClassType getOldClass() {
-        return oldClass;
+    public ClassType getNewClass() {
+        return newClass;
     }
 
-    public ClassType getCurrentClass() {
-        return currentClass;
+    public boolean isNewClassIsReskinned() {
+        return newClassIsReskinned;
     }
 
 }

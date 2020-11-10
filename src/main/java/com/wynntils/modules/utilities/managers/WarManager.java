@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.utilities.managers;
@@ -10,6 +10,7 @@ import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.entity.monster.EntitySlime;
 import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.network.play.server.SPacketSpawnObject;
 
@@ -23,7 +24,7 @@ public class WarManager {
      * @return if the mob should be filtered out
      */
     public static boolean filterMob(PacketEvent<SPacketSpawnObject> e) {
-        if(!UtilitiesConfig.Wars.INSTANCE.allowEntityFilter || !Reference.onWars) return false;
+        if (!UtilitiesConfig.Wars.INSTANCE.allowEntityFilter || !Reference.onWars) return false;
 
         return e.getPacket().getType() == 78;
     }
@@ -36,10 +37,10 @@ public class WarManager {
      * @return if the click should be allowed
      */
     public static boolean allowClick(PacketEvent<CPacketUseEntity> e) {
-        if(!UtilitiesConfig.Wars.INSTANCE.blockWorkstations || !Reference.onWars) return false;
+        if (!UtilitiesConfig.Wars.INSTANCE.blockWorkstations || !Reference.onWars) return false;
 
         Entity in = e.getPacket().getEntityFromWorld(Minecraft.getMinecraft().world);
-        return in instanceof EntityArmorStand;
+        return in instanceof EntityArmorStand || in instanceof EntitySlime;
     }
 
 }

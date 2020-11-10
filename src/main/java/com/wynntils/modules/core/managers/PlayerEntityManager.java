@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.modules.core.managers;
 
 import net.minecraft.block.state.IBlockState;
@@ -10,11 +14,12 @@ import net.minecraft.world.IWorldEventListener;
 import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class PlayerEntityManager {
-    private static LinkedHashMap<UUID, EntityPlayer> map = new LinkedHashMap<>();
+    private static Map<UUID, EntityPlayer> map = new HashMap<>();
 
     /**
      * @param uuid UUID of player

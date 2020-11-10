@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
@@ -31,7 +31,6 @@ public class PlayerInfoOverlay extends Overlay {
     @Override
     public void render(RenderGameOverlayEvent.Post event) {
         if (!Reference.onWorld || !OverlayConfig.PlayerInfo.INSTANCE.replaceVanilla) return;
-
         if (!mc.gameSettings.keyBindPlayerList.isKeyDown() && animationProgress <= 0.0) return;
 
         { // Animation Detection
@@ -55,25 +54,22 @@ public class PlayerInfoOverlay extends Overlay {
 
         { scale(yScale);
 
-            { //mask
-                createMask(Textures.Masks.full,
-                        -(int) (178 * animationProgress),
-                        0,
-                        (int) (178 * animationProgress),
-                        222, 0, 0, 1, 1);
+            {  // mask
+                int halfWidth = (int) (178 * animationProgress);
+                enableScissorTestX(-halfWidth, 2 * halfWidth);
 
-                color(1f, 1f, 1f, OverlayConfig.PlayerInfo.INSTANCE.backgroundAlpha); //apply transparency
+                color(1f, 1f, 1f, OverlayConfig.PlayerInfo.INSTANCE.backgroundAlpha);  // apply transparency
                 drawRect(Textures.UIs.tab_overlay, -178, 0, 178, 216, 28, 6, 385, 222);
                 color(1f, 1f, 1f, 1f);
 
-                { //titles
+                {  // titles
                     drawString("Friends", -124, 7, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                    drawString("Global " + Reference.getUserWorld(), -39, 7, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                    drawString(Reference.getUserWorld(), -39, 7, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
                     drawString("Party", 47, 7, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
                     drawString("Guild", 133, 7, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
                 }
 
-                { //entries
+                {  // entries
                     List<String> players = getAvailablePlayers();
 
                     for (int x = 0; x < 4; x++) {
@@ -95,10 +91,10 @@ public class PlayerInfoOverlay extends Overlay {
                     }
                 }
 
-            } clearMask();
+            } disableScissorTest();
 
-            color(1f, 1f, 1f, OverlayConfig.PlayerInfo.INSTANCE.backgroundAlpha); //apply transparency
-            { //paper rolls
+            color(1f, 1f, 1f, OverlayConfig.PlayerInfo.INSTANCE.backgroundAlpha);  // apply transparency
+            {  // paper rolls
                 drawRect(Textures.UIs.tab_overlay,
                         (int) (177 * animationProgress),
                         -5,
@@ -128,14 +124,17 @@ public class PlayerInfoOverlay extends Overlay {
         List<NetworkPlayerInfo> players = TabManager.getEntryOrdering()
                 .sortedCopy(Minecraft.getMinecraft().player.connection.getPlayerInfoMap());
 
+        if (players.isEmpty()) return lastPlayers;
+
         lastPlayers = players.stream()
+                .filter(c -> c.getDisplayName() != null)
                 .map(c -> wrapText(c.getDisplayName().getUnformattedText().replace("§7", "§0"), 73))
                 .collect(Collectors.toList());
 
         return lastPlayers;
     }
 
-    private String wrapText(String input, int maxLength) {
+    private static String wrapText(String input, int maxLength) {
         if (fontRenderer.getStringWidth(input) <= maxLength) return input;
 
         StringBuilder builder = new StringBuilder();

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.webapi.profiles;
@@ -43,19 +43,18 @@ public class TerritoryProfile {
 
         this.acquired = acquired;
 
-
-        if(endX < startX) {
+        if (endX < startX) {
             this.startX = endX;
             this.endX = startX;
-        }else{
+        } else {
             this.startX = startX;
             this.endX = endX;
         }
 
-        if(endZ < startZ) {
+        if (endZ < startZ) {
             this.startZ = endZ;
             this.endZ = startZ;
-        }else{
+        } else {
             this.startZ = startZ;
             this.endZ = endZ;
         }
@@ -109,7 +108,7 @@ public class TerritoryProfile {
         return acquired;
     }
 
-    public boolean insideArea(int playerX, int playerZ){
+    public boolean insideArea(int playerX, int playerZ) {
         return startX <= playerX && endX >= playerX && startZ <= playerZ && endZ >= playerZ;
     }
 
@@ -125,15 +124,15 @@ public class TerritoryProfile {
             if (territory.has("location")) {
                 JsonObject location = territory.getAsJsonObject("location");
                 startX = location.get("startX").getAsInt();
-                startZ = location.get("startY").getAsInt();
+                startZ = location.get("startZ").getAsInt();
                 endX = location.get("endX").getAsInt();
-                endZ = location.get("endY").getAsInt();
+                endZ = location.get("endZ").getAsInt();
             }
             String territoryName = territory.get("territory").getAsString();
             String friendlyName = territoryName.replace('’', '\'');
 
             String guild;
-            if(territory.get("guild").isJsonNull()) guild = "Unknown";
+            if (territory.get("guild").isJsonNull()) guild = "Unknown";
             else guild = territory.get("guild").getAsString();
 
             Date acquired = null;
@@ -148,13 +147,13 @@ public class TerritoryProfile {
             }
 
             String guildPrefix;
-            if(territory.get("guildPrefix").isJsonNull()) guildPrefix = "UNK";
+            if (territory.get("guildPrefix").isJsonNull()) guildPrefix = "UNK";
             else guildPrefix= territory.get("guildPrefix").getAsString();
 
             int level = territory.get("level").getAsInt();
 
             String guildColor;
-            if(territory.get("guildColor").isJsonNull()) guildColor = null;
+            if (territory.get("guildColor").getAsString().isEmpty()) guildColor = null;
             else guildColor = territory.get("guildColor").getAsString();
 
             return new TerritoryProfile(territoryName, friendlyName, guildPrefix, guildColor, level, startX, startZ, endX, endZ, guild, attacker, acquired);

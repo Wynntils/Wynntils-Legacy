@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.core.utils;
 
 import java.nio.BufferUnderflowException;
@@ -5,6 +9,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
@@ -165,7 +170,7 @@ public class EncodingUtils {
 
     public static byte[] deflate(byte[] b) {
         Deflater deflater = new Deflater(Deflater.BEST_COMPRESSION);
-        ArrayList<byte[]> chunks = new ArrayList<>(b.length / 1024);
+        List<byte[]> chunks = new ArrayList<>(b.length / 1024);
         deflater.setInput(b);
         deflater.finish();
         byte[] buffer = new byte[1024];
@@ -183,7 +188,7 @@ public class EncodingUtils {
 
     public static byte[] inflate(byte[] deflated) throws DataFormatException {
         Inflater inflater = new Inflater();
-        ArrayList<byte[]> chunks = new ArrayList<>(deflated.length / 512);
+        List<byte[]> chunks = new ArrayList<>(deflated.length / 512);
         inflater.setInput(deflated);
         byte[] buffer = new byte[1024];
         while (!inflater.finished()) {

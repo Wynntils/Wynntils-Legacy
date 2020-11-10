@@ -1,83 +1,144 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.questbook.instances;
 
+import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.utils.ItemUtils;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.questbook.enums.DiscoveryType;
+import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.TerritoryProfile;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static net.minecraft.util.text.TextFormatting.getTextWithoutFormattingCodes;
+
 public class DiscoveryInfo {
+
+    private ItemStack originalStack;
+
     private String name;
-    private String questbookFriendlyName;
-    private final int minLevel;
-    private final List<String> lore;
-    private final ArrayList<String> splittedDescription;
-    private final String description;
-    private final DiscoveryType type;
+    private DiscoveryType type;
+    private List<String> lore;
+    private String description;
+    private int minLevel;
+    private TerritoryProfile guildTerritory = null;
 
-    public DiscoveryInfo(String name, int minLevel, String description, List<String> lore, DiscoveryType type) {
-        this.name = name; this.minLevel = minLevel; this.description = description; this.lore = lore; this.type = type;
+    private String friendlyName;
 
-        ArrayList<String> splittedDescription = new ArrayList<>();
-        StringBuilder currentMessage = new StringBuilder();
-        int chars = 0;
-        for(String x : description.split(" ")) {
-            if(chars + x.length() > 37) {
-                splittedDescription.add(currentMessage.toString());
-                currentMessage = new StringBuilder(x);
-                currentMessage.append(' ');
-                chars = x.length();
-                continue;
-            }
-            chars+= x.length() ;
-            currentMessage.append(x).append(' ');
+    boolean valid = false;
+    boolean discovered = false;
+
+    public DiscoveryInfo(ItemStack originalStack, boolean discovered) {
+        this.originalStack = originalStack;
+
+        lore = ItemUtils.getLore(originalStack);
+
+        // simple parameters
+        name = originalStack.getDisplayName();
+        name = StringUtils.normalizeBadString(name.substring(0, name.length() - 1));
+        minLevel = Integer.parseInt(getTextWithoutFormattingCodes(lore.get(0)).replace("✔ Combat Lv. Min: ", ""));
+
+        // type
+        type = null;
+        if (name.charAt(1) == 'e') type = DiscoveryType.WORLD;
+        else if (name.charAt(1) == 'f') type = DiscoveryType.TERRITORY;
+        else if (name.charAt(1) == 'b') type = DiscoveryType.SECRET;
+        else return;
+
+        // flat description
+        StringBuilder descriptionBuilder = new StringBuilder();
+        for (int x = 2; x < lore.size(); x++) {
+            descriptionBuilder.append(getTextWithoutFormattingCodes(lore.get(x)));
         }
-        splittedDescription.add(currentMessage.toString());
+        description = descriptionBuilder.toString();
 
-        String questbookFriendlyName = this.name.substring(4);
-        if (questbookFriendlyName.length() > 22) {
-            questbookFriendlyName = questbookFriendlyName.substring(0, 19);
-            questbookFriendlyName += "...";
+        friendlyName = name.substring(4);
+        if (friendlyName.length() > 22) {
+            friendlyName = friendlyName.substring(0, 19);
+            friendlyName += "...";
         }
+
+        // Guild territory profile
+        if (type == DiscoveryType.TERRITORY || type == DiscoveryType.WORLD) {
+            String apiName = TextFormatting.getTextWithoutFormattingCodes(name);
+            guildTerritory = WebManager.getTerritories().getOrDefault(apiName, null);
+        }
+        
         lore.add(0, this.name);
-
-        this.splittedDescription = splittedDescription;
-        this.questbookFriendlyName = questbookFriendlyName;
+        this.discovered = discovered;
+        valid = true;
     }
 
-    public List<String> getLore() {
-        return lore;
-    }
+    public DiscoveryInfo(String name, DiscoveryType type, int minLevel, boolean discovered) {
+        this.name = name;
+        this.friendlyName = name;
+        if (friendlyName.length() > 22) {
+            friendlyName = friendlyName.substring(0, 19);
+            friendlyName += "...";
+        }
 
-    public int getMinLevel() {
-        return minLevel;
-    }
+        this.lore = new ArrayList<>();
+        lore.add(type.getColour() + "" + TextFormatting.BOLD + this.name);
+        lore.add((minLevel <= PlayerInfo.getPlayerInfo().getLevel() ? TextFormatting.GREEN + "✔" : TextFormatting.RED + "✖") + TextFormatting.GRAY + " Combat Lv. Min: " + minLevel);
+        lore.add("");
 
-    public String description() {
-        return description;
+        this.minLevel = minLevel;
+        this.type = type;
+        
+        // Guild territory profile
+        if (type == DiscoveryType.TERRITORY || type == DiscoveryType.WORLD) {
+            String apiName = TextFormatting.getTextWithoutFormattingCodes(name);
+            guildTerritory = WebManager.getTerritories().getOrDefault(apiName, null);
+        }
+
+        this.originalStack = ItemStack.EMPTY;
+        this.discovered = discovered;
     }
 
     public String getName() {
         return name;
     }
 
-    public String getQuestbookFriendlyName() {
-        return questbookFriendlyName;
-    }
-
-    public ArrayList<String> getSplittedDescription() {
-        return splittedDescription;
-    }
-
     public DiscoveryType getType() {
         return type;
     }
 
-    public String toString() {
-        return name + ":" + minLevel + ":" + description;
+    public List<String> getLore() {
+        return lore;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getMinLevel() {
+        return minLevel;
+    }
+
+    public String getFriendlyName() {
+        return friendlyName;
+    }
+
+    public ItemStack getOriginalStack() {
+        return originalStack;
+    }
+    
+    public TerritoryProfile getGuildTerritoryProfile() {
+        return guildTerritory;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public boolean wasDiscovered() {
+        return discovered;
     }
 
 }

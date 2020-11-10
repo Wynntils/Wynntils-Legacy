@@ -1,9 +1,10 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
 
+import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.overlays.Overlay;
@@ -33,11 +34,11 @@ public class GameUpdateOverlay extends Overlay {
     public int offsetY = 0;
 
     /* Message Management */
-    private static List<MessageContainer> messageQueue = new LinkedList<>();
+    private static final List<MessageContainer> messageQueue = new LinkedList<>();
 
     /* Rendering */
     private static final int LINE_HEIGHT = 12;
-    private static CustomColor alphaColor = new CustomColor(1, 1, 1, 1);
+    private static final CustomColor alphaColor = new CustomColor(1, 1, 1, 1);
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
@@ -47,24 +48,27 @@ public class GameUpdateOverlay extends Overlay {
         int lines = 0;
 
         Iterator<MessageContainer> messages = messageQueue.iterator();
-        while(messages.hasNext()) {
+        while (messages.hasNext()) {
             MessageContainer message = messages.next();
 
-            if(message.getRemainingTime() <= 0.0f) messages.remove(); //remove the message if the time has come
-            if(lines > OverlayConfig.GameUpdate.INSTANCE.messageLimit) break; //breaks the loop if the limit was reached
+            if (message.getRemainingTime() <= 0.0f) {
+                messages.remove();  // remove the message if the time has come
+                continue;
+            }
+            if (lines > OverlayConfig.GameUpdate.INSTANCE.messageLimit) break;  // breaks the loop if the limit was reached
 
-            if(OverlayConfig.GameUpdate.INSTANCE.invertGrowth)
+            if (OverlayConfig.GameUpdate.INSTANCE.invertGrowth)
                 drawString(message.getMessage(),
                         (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? 0 : -100),
-                        (0 - OverlayConfig.GameUpdate.INSTANCE.messageLimit * LINE_HEIGHT) + (LINE_HEIGHT * lines),
-                        alphaColor.setA(message.getRemainingTime()/1000f),
+                        (-OverlayConfig.GameUpdate.INSTANCE.messageLimit * LINE_HEIGHT) + (LINE_HEIGHT * lines),
+                        alphaColor.setA(message.getRemainingTime() / 1000f),
                         (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? SmartFontRenderer.TextAlignment.RIGHT_LEFT : SmartFontRenderer.TextAlignment.LEFT_RIGHT),
                         OverlayConfig.GameUpdate.INSTANCE.textShadow);
             else
                 drawString(message.getMessage(),
                         (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? 0 : -100),
-                        0 - (LINE_HEIGHT * lines),
-                        alphaColor.setA(message.getRemainingTime()/1000f),
+                        -(LINE_HEIGHT * lines),
+                        alphaColor.setA(message.getRemainingTime() / 1000f),
                         (OverlayConfig.GameUpdate.INSTANCE.rightToLeft ? SmartFontRenderer.TextAlignment.RIGHT_LEFT : SmartFontRenderer.TextAlignment.LEFT_RIGHT),
                         OverlayConfig.GameUpdate.INSTANCE.textShadow);
 
@@ -73,25 +77,30 @@ public class GameUpdateOverlay extends Overlay {
 
     }
 
-    public static boolean queueMessage(String message) {
-        if (!Reference.onWorld)
-            return false;
+    public static void queueMessage(String message) {
+        if (!Reference.onWorld) return;
 
         if (OverlayConfig.GameUpdate.INSTANCE.messageMaxLength != 0 && OverlayConfig.GameUpdate.INSTANCE.messageMaxLength < message.length()) {
             message = message.substring(0, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 4);
-            if (message.endsWith("§"))
+
+            if (message.endsWith("§")) {
                 message = message.substring(0, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 5);
+            }
             message = message + "...";
         }
-        LogManager.getFormatterLogger("GameTicker").info("Message Queued: " + message);
-        messageQueue.add(new MessageContainer(message));
-        if (OverlayConfig.GameUpdate.INSTANCE.overrideNewMessages && messageQueue.size() > OverlayConfig.GameUpdate.INSTANCE.messageLimit)
-            messageQueue.remove(0);
-        return true;
+
+        String processedMessage = message;
+        LogManager.getFormatterLogger("GameTicker").info("Message Queued: " + processedMessage);
+        ModCore.mc().addScheduledTask(() -> {
+            messageQueue.add(new MessageContainer(processedMessage));
+
+            if (OverlayConfig.GameUpdate.INSTANCE.overrideNewMessages && messageQueue.size() > OverlayConfig.GameUpdate.INSTANCE.messageLimit)
+                messageQueue.remove(0);
+        });
     }
 
     public static void resetMessages() {
-        messageQueue.clear();
+        ModCore.mc().addScheduledTask(() -> messageQueue.clear());
     }
 
 
@@ -114,4 +123,5 @@ public class GameUpdateOverlay extends Overlay {
         }
 
     }
+
 }

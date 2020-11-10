@@ -1,8 +1,12 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.modules.core.managers;
 
 import com.google.common.collect.Ordering;
 import com.wynntils.Reference;
-import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.client.network.NetworkPlayerInfo;
@@ -33,27 +37,31 @@ public class TabManager {
                 return previousOrdering.sortedCopy(elements);
             }
 
-            // Wynncraft tab names are '\0CRR', where \0 is ascii NUL, C is 1-4 (column), and R is 1-20 (row)
-            E[] result = (E[]) new NetworkPlayerInfo[80];
-            int found = 0;
-            for (E v : elements) {
-                String name = v.getGameProfile().getName();
-                if (name.length() != 4 || name.charAt(0) != 0) continue;
-                name = name.substring(1, 4);
-                if (!Utils.isValidInteger(name)) continue;
-                int x = Integer.parseInt(name);
-                int col = x / 100 - 1;
-                if (!(0 <= col && col < 4)) continue;
-                int row = x % 100 - 1;
-                if (!(0 <= row && row < 20)) continue;
-                int i = col * 20 + row;
-                if (result[i] != null) {
-                    break;
+            try {
+                // Wynncraft tab names are '\0CRR', where \0 is ascii NUL, C is 1-4 (column), and RR is 01-20 (row)
+                E[] result = (E[]) new NetworkPlayerInfo[80];
+                int found = 0;
+                for (E v : elements) {
+                    String name = v.getGameProfile().getName();
+                    if (name.length() != 4 || name.charAt(0) != 0) continue;
+                    name = name.substring(1, 4);
+                    if (!StringUtils.isValidInteger(name)) continue;
+                    int x = Integer.parseInt(name);
+                    int col = x / 100 - 1;
+                    if (!(0 <= col && col < 4)) continue;
+                    int row = x % 100 - 1;
+                    if (!(0 <= row && row < 20)) continue;
+                    int i = col * 20 + row;
+                    if (result[i] != null) {
+                        break;
+                    }
+                    result[i] = v;
+                    if (++found == 80) {
+                        return Arrays.asList(result);
+                    }
                 }
-                result[i] = v;
-                if (++found == 80) {
-                    return Arrays.asList(result);
-                }
+            } catch (NullPointerException e) {  // TODO: investigate this
+                e.printStackTrace();
             }
 
             errored = true;

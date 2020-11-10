@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.modules.map.overlays.ui;
 
 import com.wynntils.core.framework.enums.MouseButton;
@@ -14,6 +18,7 @@ import com.wynntils.modules.map.overlays.objects.WorldMapIcon;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 import org.lwjgl.input.Keyboard;
 
@@ -50,15 +55,13 @@ public class PathWaypointCreationUI extends WorldMapUI {
 
     public PathWaypointCreationUI(PathWaypointProfile profile) {
         super();
+        removeWorkingProfile();
 
         this.allowMovement = false;
 
         this.profile = new PathWaypointProfile(originalProfile = profile);
         icon = new MapPathWaypointIcon(this.profile);
         wmIcon = new WorldMapIcon(icon);
-        if (profile != null) {
-            icons.removeIf(c -> c.getInfo() instanceof MapPathWaypointIcon && ((MapPathWaypointIcon) c.getInfo()).getProfile().equals(originalProfile));
-        }
         hidden = !this.profile.isEnabled;
         this.profile.isEnabled = true;
 
@@ -107,6 +110,19 @@ public class PathWaypointCreationUI extends WorldMapUI {
     protected void forEachIcon(Consumer<WorldMapIcon> c) {
         super.forEachIcon(c);
         if (wmIcon != null) c.accept(wmIcon);
+    }
+
+    @Override
+    protected void createIcons() {
+        super.createIcons();
+        removeWorkingProfile();
+    }
+
+    private void removeWorkingProfile() {
+        // Remove the icon for the current path being created / edited, as it is handled separately
+        if (profile == null) return;
+
+        icons.removeIf(c -> c.getInfo() instanceof MapPathWaypointIcon && ((MapPathWaypointIcon) c.getInfo()).getProfile() == originalProfile);
     }
 
     private void setCircular() {
@@ -237,7 +253,10 @@ public class PathWaypointCreationUI extends WorldMapUI {
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if (keyCode == Keyboard.KEY_TAB) {
-            Utils.tab(nameField, colorWheel.textBox.textField);
+            Utils.tab(
+                Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT) ? -1 : +1,
+                nameField, colorWheel.textBox.textField
+            );
             return;
         }
         super.keyTyped(typedChar, keyCode);
@@ -247,7 +266,12 @@ public class PathWaypointCreationUI extends WorldMapUI {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        updatePosition(mouseX, mouseY, !nameField.isFocused() && isShiftKeyDown() && clicking);
+        boolean isShiftKeyDown = isShiftKeyDown();
+
+        updatePosition(mouseX, mouseY, !nameField.isFocused() && isShiftKeyDown && clicking[0] && !clicking[1]);
+        if (isShiftKeyDown && clicking[1]) {
+            updateCenterPositionWithPlayerPosition();
+        }
 
         hidden = hiddenBox.isChecked();
         setCircular();
@@ -260,6 +284,7 @@ public class PathWaypointCreationUI extends WorldMapUI {
             drawIcons(mouseX, mouseY, partialTicks);
         } else {
             createMask();
+            GlStateManager.enableBlend();
             wmIcon.drawScreen(mouseX, mouseY, partialTicks, getScaleFactor(), renderer);
             clearMask();
         }

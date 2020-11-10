@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.example;
@@ -32,8 +32,8 @@ public class ExampleSettings extends SettingsClass {
      */
     @Override
     public void onSettingChanged(String name) {
-        if(name.equals("myField")) {
-            //do something
+        if (name.equals("myField")) {
+            // do something
         }
     }
 

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.core.framework.settings.instances;
@@ -12,7 +12,7 @@ public abstract class SettingsClass implements SettingsHolder {
     public void saveSettings(Module m) {
         try {
             FrameworkManager.getSettings(m, this).saveSettings();
-        }catch (Exception ex) { ex.printStackTrace(); }
+        } catch (Exception ex) { ex.printStackTrace(); }
     }
 
     @Override

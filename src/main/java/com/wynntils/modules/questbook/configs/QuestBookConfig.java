@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.questbook.configs;
@@ -13,22 +13,48 @@ public class QuestBookConfig extends SettingsClass {
 
     public static QuestBookConfig INSTANCE;
 
-    @Setting(displayName = "Replace Wynncraft Quest Book", description = "Should Wynncraft's quest book be replaced by Wynntils' custom quest book?\n\n§8The quest book can still be accessed through the \"Open Quest Book\" hotkey")
+    @Setting(displayName = "Replace Wynncraft Quest Book", description = "Should Wynncraft's quest book be replaced with Wynntils' custom quest book?")
     public boolean allowCustomQuestbook = true;
 
     @Setting(displayName = "Set Quest Location to Compass", description = "Should the compass point towards given coordinates of quests?")
     public boolean compassFollowQuests = true;
 
-    @Setting(displayName = "Search Box Requires Click", description = "Should you be required to click on the search bar before typing or be able to type in the search bar immediately after opening the quest book?")
+    @Setting(displayName = "Require Search Box Click", description = "Should you be required to click on the search bar before typing after opening the quest book?")
     public boolean searchBoxClickRequired = true;
 
     @Setting(displayName = "Fuzzy Search", description = "Should a different search algorithm be used that allows searching for acronyms and abbreviations?")
     public boolean useFuzzySearch = true;
 
-    @Setting(displayName = "Scan Discoveries", description = "Should discoveries be analysed every time by the quest book?\n\n§8Enabling this will cause analysis to be slower but the discoveries page will always be up to date.")
-    public boolean scanDiscoveries = false;
+    @Setting(displayName = "Updating Quest Book", description = "Should the quest book only update when you open it?")
+    public boolean updateWhenOpen = false;
 
-    @Setting(displayName = "Hide Mini Quests", description = "Should mini quests be hidden from the quest book?")
-    public boolean hideMiniQuests = false;
+    @Setting(displayName = "Show Unavailable Discoveries", description = "When viewing undiscovered discoveries, should discoveries that cannot be currently found be displayed?")
+    public boolean showAllDiscoveries = false;
+    
+    @Setting(displayName = "Secret Discoveries Tracking", description = "When viewing secret discoveries, which should be tracked?\n\n§8Coordinates are obtained via the Wynncraft Wiki.")
+    public SecretSpoilMode spoilSecretDiscoveries = SecretSpoilMode.ONLY_DISCOVERED;
+    
+    public enum SecretSpoilMode {
+        ALL,
+        ONLY_DISCOVERED,
+        ONLY_UNDISCOVERED,
+        NONE;
+
+        // Returns true if the input follows the rule
+        public boolean followsRule(boolean discovered) {
+            switch (this) {
+                case ALL:
+                    return true;
+                case NONE:
+                    return false;
+                case ONLY_DISCOVERED:
+                    return discovered;
+                case ONLY_UNDISCOVERED:
+                    return !discovered;
+                default:
+                    return false;
+            }
+        }
+    }
 
 }

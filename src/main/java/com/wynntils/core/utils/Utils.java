@@ -1,68 +1,58 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.core.utils;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.wynntils.Reference;
-import com.wynntils.core.framework.enums.FilterType;
-import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynntils.core.framework.rendering.SmartFontRenderer;
-import com.wynntils.core.framework.rendering.colors.CustomColor;
-import com.wynntils.core.utils.helpers.MD5Verification;
-import com.wynntils.core.utils.objects.Pair;
-import com.wynntils.modules.core.instances.FakeInventory;
+import com.wynntils.ModCore;
+import com.wynntils.core.utils.reflections.ReflectionFields;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.Team;
+import net.minecraft.util.Util;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.common.MinecraftForge;
-import org.apache.commons.lang3.StringUtils;
+import org.lwjgl.LWJGLException;
+import org.lwjgl.input.Keyboard;
 
-import java.awt.*;
+import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.lang.reflect.Field;
+import java.io.*;
+import java.net.URLEncoder;
 import java.nio.channels.FileChannel;
-import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 import java.util.List;
-import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
+import java.util.Random;
+import java.util.concurrent.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.zip.CRC32;
 
 public class Utils {
 
-    public static HashMap<String, String> getItemFieldName = new HashMap<>();
-    public static HashMap<String, Integer> getItemFieldRank = new HashMap<>();
-    private static ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("Wynntils Utilities").build());
-    private static Pattern WYYNCRAFT_SERVERS_WINDOW_TITLE_PATTERN = Pattern.compile("Wynncraft Servers: Page \\d+");
+    @SuppressWarnings("unchecked")
+    private static final DataParameter<String> NAME_KEY = ReflectionFields.Entity_CUSTOM_NAME.getValue(Entity.class);
+    public static final Pattern CHAR_INFO_PAGE_TITLE = Pattern.compile("§c([0-9]+)§4 skill points? remaining");
+    public static final Pattern SERVER_SELECTOR_TITLE = Pattern.compile("Wynncraft Servers: Page \\d+");
+
+    private static ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("wynntils-utilities-%d").build());
     private static Random random = new Random();
 
     /**
@@ -72,8 +62,8 @@ public class Utils {
      * @param timeUnit the time unit
      * @param amount the amount of the specified time unit
      */
-    public static void runAfter(Runnable r, TimeUnit timeUnit, long amount) {
-        executorService.scheduleAtFixedRate(r, 0, amount, timeUnit);
+    public static ScheduledFuture<?> runAfter(Runnable r, TimeUnit timeUnit, long amount) {
+        return executorService.scheduleAtFixedRate(r, 0, amount, timeUnit);
     }
 
     /**
@@ -87,96 +77,13 @@ public class Utils {
         return executorService.scheduleAtFixedRate(r, 0, amount, timeUnit);
     }
 
-    public static void runAsync(Runnable r) {
-        executorService.submit(r);
+    public static Future<?> runAsync(Runnable r) {
+        return executorService.submit(r);
     }
 
-    /**
-     * Removes the characters 'À' ('\u00c0') and '\u058e' that is sometimes added in Wynn APIs and
-     * replaces '\u2019' (RIGHT SINGLE QUOTATION MARK) with '\'' (And trims)
-     *
-     * @param input string
-     * @return the string without these two chars
-     */
-    public static String normalizeBadString(String input) {
-        if (input == null) return "";
-        return input.trim().replace("À", "").replace("\u058e", "").replace('\u2019', '\'');
+    public static <T> Future<T> runAsync(Callable<T> r) {
+        return executorService.submit(r);
     }
-
-    /**
-     * Removes the invisible character À
-     *
-     * @param input string
-     * @return input string without the invisible character
-     */
-    public static String stripInvisibleChar(String input) {
-        return input.replace("À", "");
-    }
-
-    /**
-     * Removes the percentage box (e.g. [96%])
-     *
-     * @param input string
-     * @return input string without the percentage box
-     */
-    public static String stripPercentage(String input) {
-        return input.replaceAll(" \\[\\d{1,3}%\\]", "");
-    }
-
-    /**
-     * Removes the "Perfect"-rainbow from input string
-     *
-     * @param input string
-     * @return input string without the "Perfect"-rainbow
-     */
-    public static String stripPerfect(String input) {
-        return TextFormatting.getTextWithoutFormattingCodes(input).replace("Perfect ", "");
-    }
-
-    /**
-     * Removes characters from input string based on extended.
-     *
-     * @param input string
-     * @param extended
-     *      0 - Removes "Perfect"-rainbow, percentage box, invisible characters and colours.
-     *      1 - Removes "Perfect"-rainbow, invisible characters and colours.
-     *      2 - Removes invisible characters and colours.
-     *      3 - Removes colours.
-     * @return input string with removed characters
-     */
-    public static String stripExtended(String input, int extended) {
-        switch (extended) {
-            default:
-            case 0:
-                input = stripPercentage(input);
-            case 1:
-                input = stripPerfect(input);
-            case 2:
-                input = stripInvisibleChar(input);
-            case 3:
-                return TextFormatting.getTextWithoutFormattingCodes(input);
-        }
-    }
-
-    /**
-     * Returns a cut string after x characters
-     *
-     * @param x
-     *        Original String
-     * @param amount
-     *        The max string char amount
-     *
-     * @return Original string cut after x characters
-     */
-    public static String removeAfterChar(String x, int amount) {
-        String toReturn = x;
-        if(toReturn.length() > amount) {
-            toReturn = toReturn.substring(0, toReturn.length() - (toReturn.length() - amount));
-            toReturn = toReturn + "...";
-        }
-        return toReturn;
-    }
-
 
     private static final String[] directions = new String[]{ "N", "NE", "E", "SE", "S", "SW", "W", "NW" };
 
@@ -192,233 +99,16 @@ public class Utils {
         return 0 <= index && index < 8 ? directions[index] : directions[0];
     }
 
-    /**
-     * Get the lore NBT tag from an item
-     */
-    public static NBTTagList getLoreTag(ItemStack item) {
-        if (item.isEmpty()) return null;
-        NBTTagCompound display = item.getSubCompound("display");
-        if (display != null && display.hasKey("Lore")) {
-            NBTBase loreBase = display.getTag("Lore");
-            NBTTagList lore;
-            if (loreBase.getId() == 9 && (lore = (NBTTagList) loreBase).getTagType() == 8) {
-                return lore;
-            }
-        }
-        return null;
-    }
 
     /**
-     * Get the lore from an item
+     * Copy a file from a location to another
      *
-     * @return an {@link List} containing all item lore
-     */
-    public static List<String> getLore(ItemStack item) {
-        List<String> lore = new ArrayList<>();
-        if(item.isEmpty()) {
-            return lore;
-        }
-        NBTTagList loreTag = getLoreTag(item);
-        if (loreTag != null) {
-            for (int i = 0; i < loreTag.tagCount(); ++i) {
-                lore.add(loreTag.getStringTagAt(i));
-            }
-        }
-        return lore;
-    }
-
-    public static String getStringLore(ItemStack is){
-        StringBuilder toReturn = new StringBuilder();
-        for (String x : getLore(is)) {
-            toReturn.append(x);
-        }
-        return toReturn.toString();
-    }
-
-    public static String arrayWithCommas(ArrayList<String> values) {
-        StringBuilder total = new StringBuilder();
-
-        for (String value : values) {
-            if(total.toString().equals("")) {
-                total = new StringBuilder(value);
-                continue;
-            }
-            total.append(", ").append(value);
-        }
-
-        return total.toString().endsWith(", ") ? total.substring(0, total.length() - 2) + "." : total + ".";
-    }
-
-    public static String firstCharToUpper(String[] array) {
-        StringBuilder result = new StringBuilder();
-
-        result.append(array[0].toLowerCase());
-
-        for(int i = 1; i < array.length; i++) {
-            result.append(StringUtils.capitalize(array[i]));
-        }
-
-        return result.toString();
-    }
-
-    public static String getFieldName(String key) {
-        if(getItemFieldName.size() <= 0) {
-            getItemFieldName.put("Mana Regen", "manaRegen");
-            getItemFieldName.put("Health Regen", "healthRegen");
-            getItemFieldName.put("rawHealth Regen", "healthRegenRaw");
-
-            getItemFieldName.put("Life Steal", "lifeSteal");
-            getItemFieldName.put("Mana Steal", "manaSteal");
-            getItemFieldName.put("XP Bonus", "xpBonus");
-            getItemFieldName.put("Loot Bonus", "lootBonus");
-            getItemFieldName.put("Stealing", "emeraldStealing");
-            getItemFieldName.put("Strength", "strengthPoints");
-            getItemFieldName.put("Dexterity", "dexterityPoints");
-            getItemFieldName.put("Intelligence", "intelligencePoints");
-            getItemFieldName.put("Agility", "agilityPoints");
-            getItemFieldName.put("Defence", "defensePoints");
-            getItemFieldName.put("Thorns", "thorns");
-            getItemFieldName.put("Exploding", "exploding");
-            getItemFieldName.put("Walk Speed", "speed");
-            getItemFieldName.put("Attack Speed", "attackSpeedBonus");
-            getItemFieldName.put("tier Attack Speed", "attackSpeedBonus");
-            getItemFieldName.put("Poison", "poison");
-            getItemFieldName.put("Health", "healthBonus");
-            getItemFieldName.put("Soul Point Regen", "soulPoints");
-            getItemFieldName.put("Reflection", "reflection");
-            getItemFieldName.put("Spell Damage", "spellDamage");
-            getItemFieldName.put("rawSpell Damage", "spellDamageRaw");
-            getItemFieldName.put("Melee Damage", "damageBonus");
-            getItemFieldName.put("rawMelee Damage", "damageBonusRaw");
-            getItemFieldName.put("Main Attack Damage", "damageBonus");  // Name changed on Beta
-            getItemFieldName.put("rawMain Attack Damage", "damageBonusRaw");    // Name change on Beta
-            getItemFieldName.put("Neutral Spell Damage", "spellDamage");    // Name Change on Beta
-            getItemFieldName.put("rawNeutral Spell Damage", "spellDamageRaw");  // Name Change on Beta
-
-            getItemFieldName.put("Fire Damage", "bonusFireDamage");
-            getItemFieldName.put("Water Damage", "bonusWaterDamage");
-            getItemFieldName.put("Air Damage", "bonusAirDamage");
-            getItemFieldName.put("Thunder Damage", "bonusThunderDamage");
-            getItemFieldName.put("Earth Damage", "bonusEarthDamage");
-            getItemFieldName.put("Fire Defence", "bonusFireDefense");
-            getItemFieldName.put("Water Defence", "bonusWaterDefense");
-            getItemFieldName.put("Air Defence", "bonusAirDefense");
-            getItemFieldName.put("Thunder Defence", "bonusThunderDefense");
-            getItemFieldName.put("Earth Defence", "bonusEarthDefense");
-        }
-
-        return getItemFieldName.getOrDefault(key, null);
-    }
-
-    public static String getFieldName(String key, String suffix) {
-        String result = getFieldName(key);
-
-        if (suffix == null) {
-            String rawResult = getItemFieldName.getOrDefault("raw" + key, null);
-            return (rawResult == null ? result : rawResult);
-        }
-
-        return result;
-    }
-
-    public static Integer getFieldRank(String key) {
-        if (getItemFieldRank.size() <= 0) {
-            getItemFieldRank.put("attackSpeedBonus", 101);
-
-            getItemFieldRank.put("damageBonusRaw", 102);
-            getItemFieldRank.put("damageBonus", 103);
-
-            getItemFieldRank.put("spellDamageRaw", 104);
-            getItemFieldRank.put("spellDamage", 105);
-
-            getItemFieldRank.put("healthBonus", 306);
-            getItemFieldRank.put("healthRegenRaw", 307);
-            getItemFieldRank.put("healthRegen", 308);
-            getItemFieldRank.put("lifeSteal", 309);
-
-            getItemFieldRank.put("manaRegen", 410);
-            getItemFieldRank.put("manaSteal", 411);
-
-            getItemFieldRank.put("bonusEarthDamage", 512);
-            getItemFieldRank.put("bonusThunderDamage", 513);
-            getItemFieldRank.put("bonusWaterDamage", 514);
-            getItemFieldRank.put("bonusFireDamage", 515);
-            getItemFieldRank.put("bonusAirDamage", 516);
-
-            getItemFieldRank.put("bonusEarthDefense", 617);
-            getItemFieldRank.put("bonusThunderDefense", 618);
-            getItemFieldRank.put("bonusWaterDefense", 619);
-            getItemFieldRank.put("bonusFireDefense", 620);
-            getItemFieldRank.put("bonusAirDefense", 621);
-
-            getItemFieldRank.put("strengthPoints", 722);
-            getItemFieldRank.put("dexterityPoints", 723);
-            getItemFieldRank.put("intelligencePoints", 724);
-            getItemFieldRank.put("defensePoints", 725);
-            getItemFieldRank.put("agilityPoints", 726);
-
-            getItemFieldRank.put("exploding", 827);
-            getItemFieldRank.put("poison", 828);
-            getItemFieldRank.put("thorns", 829);
-            getItemFieldRank.put("reflection", 830);
-
-            getItemFieldRank.put("speed", 831);
-            getItemFieldRank.put("sprint", 832);       // Not properly implimented yet
-            getItemFieldRank.put("sprintRegen", 833);  // Not properly implimented yet
-            getItemFieldRank.put("jump", 834);         // Not properly implimented yet
-
-            getItemFieldRank.put("soulPoints", 1035);
-            getItemFieldRank.put("emeraldStealing", 1036);
-            getItemFieldRank.put("lootBonus", 1037);
-            getItemFieldRank.put("lootQuality", 1038);   // Not properly implimented yet
-
-            getItemFieldRank.put("xpBonus", 1039);
-            getItemFieldRank.put("gatherXp", 1040);      // Not properly implimented yet
-            getItemFieldRank.put("gatherSpeed", 1041);   // Not properly implimented yet
-
-            getItemFieldRank.put("firstSpellCost", 1242); // Not properly implimented yet
-            getItemFieldRank.put("secondSpellCost", 1243); // Not properly implimented yet
-            getItemFieldRank.put("thirdSpellCost", 1244); // Not properly implimented yet
-            getItemFieldRank.put("forthSpellCost", 1245); // Not properly implimented yet
-        }
-
-        return getItemFieldRank.getOrDefault(key, 10000);
-    }
-
-    //ported from a really really fucking old C# code because im lazy, dont judge -SHCM
-    public static String getCutString(String inputIN, String startIN, String endIN, boolean keepStartAndEndIN)
-    {
-        StringBuilder returning = new StringBuilder();
-        StringBuilder read = new StringBuilder();
-        boolean collecting = false;
-
-        for(char chr : inputIN.toCharArray())
-        if (collecting)
-        {
-            returning.append(chr);
-            if (returning.toString().endsWith(endIN))
-            {
-                return (keepStartAndEndIN ? (startIN + returning) : returning.toString().replace(endIN, ""));
-            }
-        }
-        else
-        {
-            read.append(chr);
-            if (read.toString().endsWith(startIN))
-                collecting = true;
-        }
-        return "";
-    }
-
-    /**
-     Copy a file from a location to another
-
-     @param sourceFile The source file
-     @param destFile Where it will be
+     * @param sourceFile The source file
+     * @param destFile Where it will be
      */
     public static void copyFile(File sourceFile, File destFile) throws IOException {
         if (destFile == null || !destFile.exists()) {
-            destFile = new File(sourceFile.getParent() + "/mods/Wynntils.jar");
+            destFile = new File(new File(sourceFile.getParentFile(), "mods"), "Wynntils.jar");
             sourceFile.renameTo(destFile);
             return;
         }
@@ -430,21 +120,6 @@ public class Utils {
         }
     }
 
-    public static void copyInstance(Object original, Object target) throws Exception {
-        if(original.getClass() != target.getClass()) {
-            return;
-        }
-        for(Field f : original.getClass().getDeclaredFields()) {
-            if(!f.isAccessible()) f.setAccessible(true);
-
-            f.set(target, f.get(original));
-        }
-    }
-
-    public static String toMD5(String msg) {
-        return new MD5Verification(msg.getBytes(StandardCharsets.UTF_8)).getMd5();
-    }
-
     public static float easeOut(float current, float goal, float jump, float speed) {
         if (Math.floor(Math.abs(goal - current) / jump) > 0) {
             return current + (goal - current) / speed;
@@ -453,49 +128,30 @@ public class Utils {
         }
     }
 
-    public static String[] wrapText(String s, int max) {
-        String[] stringArray = s.split(" ");
-        StringBuilder result = new StringBuilder();
-        int length = 0;
-
-        for (String string: stringArray) {
-            if (length + string.length() >= max) {
-                result.append('|');
-                length = 0;
-            }
-            result.append(string).append(' ');
-            length += string.length() + 1; //+1 for the space following
-        }
-
-        return result.toString().split("\\|");
-    }
-
-    public static String[] wrapTextBySize(String s, int maxPixels) {
-        SmartFontRenderer renderer = ScreenRenderer.fontRenderer;
-        int spaceSize = renderer.getStringWidth(" ");
-
-        String[] stringArray = s.split(" ");
-        StringBuilder result = new StringBuilder();
-        int length = 0;
-
-        for (String string : stringArray) {
-            if (length + renderer.getStringWidth(string) >= maxPixels) {
-                result.append('|');
-                length = 0;
-            }
-            result.append(string).append(' ');
-            length += renderer.getStringWidth(string) + spaceSize;
-        }
-
-        return result.toString().split("\\|");
-    }
-
     public static String getPlayerHPBar(EntityPlayer entityPlayer) {
-        int health = (int) (0.3f + (entityPlayer.getHealth() / entityPlayer.getMaxHealth()) * 15 ); //0.3f for better experience rounding off near full hp
+        int health = (int) (0.3f + (entityPlayer.getHealth() / entityPlayer.getMaxHealth()) * 15);  // 0.3f for better experience rounding off near full hp
         String healthBar = TextFormatting.DARK_RED + "[" + TextFormatting.RED + "|||||||||||||||" + TextFormatting.DARK_RED + "]";
         healthBar = healthBar.substring(0, 5 + Math.min(health, 15)) + TextFormatting.DARK_GRAY + healthBar.substring(5 + Math.min(health, 15));
         if (health < 8) { healthBar = healthBar.replace(TextFormatting.RED.toString(), TextFormatting.GOLD.toString()); }
         return healthBar;
+    }
+
+    /**
+     * Return true if the GuiScreen is the character information page (selected from the compass)
+     */
+    public static boolean isCharacterInfoPage(GuiScreen gui) {
+        if (!(gui instanceof GuiContainer)) return false;
+        Matcher m = CHAR_INFO_PAGE_TITLE.matcher(((GuiContainer)gui).inventorySlots.getSlot(0).inventory.getName());
+        return m.find();
+    }
+
+    /**
+     * @return true if the GuiScreen is the server selection, false otherwise
+     */
+    public static boolean isServerSelector(GuiScreen gui) {
+        if (!(gui instanceof GuiContainer)) return false;
+        Matcher m = SERVER_SELECTOR_TITLE.matcher(((GuiContainer) gui).inventorySlots.getSlot(0).inventory.getName());
+        return m.find();
     }
 
     /**
@@ -507,7 +163,7 @@ public class Utils {
      */
     public static ScorePlayerTeam createFakeScoreboard(String name, Team.CollisionRule rule) {
         Scoreboard mc = Minecraft.getMinecraft().world.getScoreboard();
-        if(mc.getTeam(name) != null) return mc.getTeam(name);
+        if (mc.getTeam(name) != null) return mc.getTeam(name);
 
         ScorePlayerTeam team = mc.createTeam(name);
         team.setCollisionRule(rule);
@@ -523,118 +179,9 @@ public class Utils {
      */
     public static void removeFakeScoreboard(String name) {
         Scoreboard mc = Minecraft.getMinecraft().world.getScoreboard();
-        if(mc.getTeam(name) == null) return;
+        if (mc.getTeam(name) == null) return;
 
         mc.removeTeam(mc.getTeam(name));
-    }
-
-    /**
-     * Search for a Wynncraft World.
-     * only works if the user is on lobby!
-     * 
-     * @param worldType   the world type to join
-     * @param worldNumber The world to join
-     *
-     */
-    public static void joinWorld(String worldType, int worldNumber) {
-        if(!Reference.onServer || Reference.onWorld) return;
-
-        FakeInventory serverSelector = new FakeInventory(WYYNCRAFT_SERVERS_WINDOW_TITLE_PATTERN, 0);
-        serverSelector.onReceiveItems(c -> {
-            String prefix = "";
-            if (worldType.equals("")) {
-                // US Servers
-                prefix = "";
-            } else if (worldType.equals("EU")) {
-                prefix = "EU ";
-            } else if (worldType.equals("HB")) {
-                prefix = "Beta ";
-            }
-
-            boolean onCorrectCategory = c.findItem(prefix + "World ", FilterType.STARTS_WITH) != null;
-            if (!onCorrectCategory) {
-                String worldCategory = "";
-                if (worldType.equals("")) {
-                    worldCategory = "US Servers";
-                } else if (worldType.equals("EU")) {
-                    worldCategory = "EU Servers";
-                } else if (worldType.equals("HB")) {
-                    worldCategory = "Hero Beta";
-                }
-
-                Pair<Integer, ItemStack> categoryItem = c.findItem(worldCategory, FilterType.EQUALS_IGNORE_CASE);
-                if (categoryItem != null) {
-                    c.clickItem(categoryItem.a, 1, ClickType.PICKUP);
-                } else {
-                    c.close();
-                }
-                return;
-            }
-
-            Pair<Integer, ItemStack> world = c.findItem(prefix + "World " + worldNumber, FilterType.EQUALS_IGNORE_CASE);
-            if (world != null) {
-                c.clickItem(world.a, 1, ClickType.PICKUP);
-                c.close();
-                return;
-            }
-
-            Pair<Integer, ItemStack> nextPage = c.findItem("Next Page", FilterType.CONTAINS);
-            if (nextPage != null) serverSelector.clickItem(nextPage.a, 1, ClickType.PICKUP);
-            else c.close();
-        }).onInterrupt((c) -> {
-            joinWorld(worldType, worldNumber);
-        });
-
-        serverSelector.open();
-    }
-
-    private static HashMap<String, CustomColor> registeredColors = new HashMap<>();
-
-    /**
-     * Generates a Color based in the input string
-     * The color will be always the same if the string is the same
-     *
-     * @param input the input stream
-     * @return the color
-     */
-    public static CustomColor colorFromString(String input) {
-        if(registeredColors.containsKey(input)) return registeredColors.get(input);
-
-        CRC32 crc32 = new CRC32();
-        crc32.update(input.getBytes());
-
-        String hex = "#" + Integer.toHexString((int)crc32.getValue()).substring(0, 6);
-
-        int r = Integer.parseInt(hex.substring(1, 3), 16);
-        int g = Integer.parseInt(hex.substring(3, 5), 16);
-        int b = Integer.parseInt(hex.substring(5, 7), 16);
-
-        CustomColor color = new CustomColor(r/255f, g/255f, b/255f);
-        registeredColors.put(input, color);
-
-        return color;
-    }
-
-    public static CustomColor colorFromHex(String hex) {
-        if(registeredColors.containsKey(hex)) return registeredColors.get(hex);
-
-        int r = Integer.parseInt(hex.substring(1, 3), 16);
-        int g = Integer.parseInt(hex.substring(3, 5), 16);
-        int b = Integer.parseInt(hex.substring(5, 7), 16);
-
-        CustomColor color = new CustomColor(r/255f, g/255f, b/255f);
-        registeredColors.put(hex, color);
-
-        return color;
-    }
-
-    public static String millisToString(long duration) {
-        long millis = duration % 1000,
-             second = (duration / 1000) % 60,
-             minute = (duration / (1000 * 60)) % 60,
-             hour = (duration / (1000 * 60 * 60)) % 24;
-
-        return String.format("%02d:%02d:%02d.%03d", hour, minute, second, millis);
     }
 
     /**
@@ -709,6 +256,83 @@ public class Utils {
         }
     }
 
+    public static String getRawItemName(ItemStack stack) {
+        final Pattern PERCENTAGE_PATTERN = Pattern.compile(" +\\[[0-9]+%\\]");
+        final Pattern INGREDIENT_PATTERN = Pattern.compile(" +\\[✫+\\]");
+
+        String name = stack.getDisplayName();
+        name = TextFormatting.getTextWithoutFormattingCodes(name);
+        name = PERCENTAGE_PATTERN.matcher(name).replaceAll("");
+        name = INGREDIENT_PATTERN.matcher(name).replaceAll("");
+        if (name.startsWith("Perfect ")) {
+            name = name.substring(8);
+        }
+        name = com.wynntils.core.utils.StringUtils.normalizeBadString(name);
+        return name;
+    }
+
+    /**
+     * Transform an item name and encode it so it can be used in an URL.
+     */
+    public static String encodeItemNameForUrl(ItemStack stack) {
+        String name = getRawItemName(stack);
+        name = Utils.encodeUrl(name);
+        return name;
+    }
+
+    /**
+     * Open the specified URL in the user's browser if possible, otherwise copy it to the clipboard
+     * and send it to chat.
+     * @param url The url to open
+     */
+    public static void openUrl(String url) {
+        try {
+            if (Util.getOSType() == Util.EnumOS.WINDOWS) {
+                Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
+            } else if (Util.getOSType() == Util.EnumOS.OSX) {
+                Runtime.getRuntime().exec("open " + url);
+                // Keys can get "stuck" in LWJGL on macOS when the Minecraft window loses focus.
+                // Reset keyboard to solve this.
+                Keyboard.destroy();
+                Keyboard.create();
+            } else {
+                Runtime.getRuntime().exec("xgd-open " + url);
+            }
+            return;
+        } catch (IOException | LWJGLException e) {
+            e.printStackTrace();
+        }
+
+        Utils.copyToClipboard(url);
+        TextComponentString text = new TextComponentString("Error opening link, it has been copied to your clipboard\n");
+        text.getStyle().setColor(TextFormatting.DARK_RED);
+
+        TextComponentString urlComponent = new TextComponentString(url);
+        urlComponent.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, url));
+        urlComponent.getStyle().setColor(TextFormatting.DARK_AQUA);
+        urlComponent.getStyle().setUnderlined(true);
+        text.appendSibling(urlComponent);
+
+        ModCore.mc().player.sendMessage(text);
+    }
+
+    public static String encodeUrl(String url) {
+        try {
+            return URLEncoder.encode(url, "UTF-8");
+        } catch (UnsupportedEncodingException ignored) {
+            // will not happen since UTF-8 is part of core charsets
+            return null;
+        }
+    }
+
+    public static String encodeForWikiTitle(String pageTitle) {
+        return encodeUrl(pageTitle.replace(" ", "_"));
+    }
+
+    public static String encodeForCargoQuery(String name) {
+        return encodeUrl("'" + name.replace("'", "\\'") + "'");
+    }
+
     public static void clearClipboard() {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new Transferable() {
             public DataFlavor[] getTransferDataFlavors() { return new DataFlavor[0]; }
@@ -728,57 +352,16 @@ public class Utils {
         }
     }
 
-    /**
-     * @return `s.getBytes("UTF-8").length`, but without encoding the string
-     */
-    public static int utf8Length(String s) {
-        if (s == null) return 0;
-        return s.codePoints().map(c -> c < 0x80 ? 1 : c < 0x800 ? 2 : c < 0x10000 ? 3 : 4).sum();
-    }
-
-    /**
-     * @return `true` if `c` is a valid Unicode code point (in [0, 0x10FFFF] and not a surrogate)
-     */
-    public static boolean isValidCodePoint(int c) {
-                                           /* low surrogates */             /* high surrogates */
-        return 0 <= c && c <= 0x10FFFF && !(0xD800 <= c && c <= 0xDBFF) && !(0xDC00 <= c && c <= 0xDFFF);
-    }
-
-    private static final Pattern numberRegex = Pattern.compile("0|-?[1-9][0-9]*");
-
-    /**
-     * @return `true` if `s` is an integer and can fit in an `int`
-     */
-    public static boolean isValidInteger(String s) {
-        if (s == null || s.length() > 11 || !numberRegex.matcher(s).matches()) return false;
-        if (s.length() < 10) return true;
-        long parsed = Long.parseLong(s);
-        return (int) parsed == parsed;
-    }
-
-    /**
-     * @return `true` if `s` is an integer and can fit in a `long`
-     */
-    public static boolean isValidLong(String s) {
-        if (s == null || s.length() > 20 || !numberRegex.matcher(s).matches()) return false;
-        if (s.length() < 19) return true;
-        try {
-            Long.parseLong(s);  // Could overflow
-        } catch (NumberFormatException ignored) {
-            return false;
-        }
-        return true;
-    }
-
-    public static void tab(GuiTextField... tabList) {
-        tab(Arrays.asList(tabList));
+    public static void tab(int amount, GuiTextField... tabList) {
+        tab(amount, Arrays.asList(tabList));
     }
 
     /**
      * Given a list of text fields, blur the currently focused field and focus the
-     * next one. Focuses the first one if there is no focused field or the last field is focused.
+     * next one (or previous one if amount is -1), wrapping around.
+     * Focuses the first one if there is no focused field.
      */
-    public static void tab(List<GuiTextField> tabList) {
+    public static void tab(int amount, List<GuiTextField> tabList) {
         int focusIndex = -1;
         for (int i = 0; i < tabList.size(); ++i) {
             GuiTextField field = tabList.get(i);
@@ -790,44 +373,26 @@ public class Utils {
                 break;
             }
         }
-        focusIndex = (focusIndex + 1) % tabList.size();
+        focusIndex = focusIndex == -1 ? 0 : Math.floorMod(focusIndex + amount, tabList.size());
         GuiTextField selected = tabList.get(focusIndex);
         selected.setFocused(true);
         selected.setCursorPosition(0);
         selected.setSelectionPos(selected.getText().length());
     }
 
-    private static final Item EMERALD_BLOCK = Item.getItemFromBlock(Blocks.EMERALD_BLOCK);
-
-    /**
-     * @return the total amount of emeralds in an inventory, including blocks and le
-     */
-    public static int countMoney(IInventory inv) {
-        if (inv == null) return 0;
-
-        int money = 0;
-
-        for (int i = 0, len = inv.getSizeInventory(); i < len; i++) {
-            ItemStack it = inv.getStackInSlot(i);
-            if (it.isEmpty()) continue;
-
-            if (it.getItem() == Items.EMERALD) {
-                money += it.getCount();
-            } else if (it.getItem() == EMERALD_BLOCK) {
-                money += it.getCount() * 64;
-            } else if (it.getItem() == Items.EXPERIENCE_BOTTLE) {
-                money += it.getCount() * (64 * 64);
+    public static String getNameFromMetadata(List <EntityDataManager.DataEntry<?>> dataManagerEntries) {
+        assert NAME_KEY != null;
+        if (dataManagerEntries != null) {
+            for (EntityDataManager.DataEntry<?> entry : dataManagerEntries) {
+                if (NAME_KEY.equals(entry.getKey())) {
+                    return (String) entry.getValue();
+                }
             }
         }
-
-        return money;
+        return null;
     }
 
-    public static UUID uuidFromString(String s) {
-        if (s.contains("-")) return UUID.fromString(s);
-        if (s.length() != 32) throw new IllegalArgumentException("Invalid UUID string: " + s);
-
-        return new UUID(Long.parseUnsignedLong(s.substring(0, 16), 16), Long.parseUnsignedLong(s.substring(16, 32), 16));
-    }
+    // Alias if using already imported org.apache.commons.lang3.StringUtils
+    public static class StringUtils extends com.wynntils.core.utils.StringUtils { }
 
 }

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.questbook.overlays.hud;
@@ -7,9 +7,6 @@ package com.wynntils.modules.questbook.overlays.hud;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
-import com.wynntils.core.utils.objects.Location;
-import com.wynntils.modules.core.managers.CompassManager;
-import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.instances.QuestInfo;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -17,7 +14,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 public class TrackedQuestOverlay extends Overlay {
 
     public TrackedQuestOverlay() {
-        super("Tracked Quest", 215, 70, true, 0.0f, 0.0f, 10, 10, OverlayGrowFrom.TOP_LEFT);
+        super("Tracked Quest", 215, 70, true, 0.0f, 0.0f, 120, 10, OverlayGrowFrom.TOP_LEFT);
     }
 
 
@@ -28,10 +25,11 @@ public class TrackedQuestOverlay extends Overlay {
 
         QuestInfo trackedQuest = QuestManager.getTrackedQuest();
 
-        if(trackedQuest == null || trackedQuest.getSplittedDescription() == null || trackedQuest.getSplittedDescription().size() == 0)
+        if (trackedQuest == null || trackedQuest.getSplittedDescription() == null || trackedQuest.getSplittedDescription().size() == 0)
             return;
 
-        drawString("Tracked Quest Info: ", 0, 0, CommonColors.GREEN, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
+        String name = trackedQuest.isMiniQuest() ? "Mini-Quest" : "Quest";
+        drawString("Tracked " + name + " Info: ", 0, 0, CommonColors.GREEN, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
 
         int currentY = 0;
         for (String message : trackedQuest.getSplittedDescription()) {
@@ -39,8 +37,9 @@ public class TrackedQuestOverlay extends Overlay {
             currentY += 10;
         }
 
-        if (QuestBookConfig.INSTANCE.compassFollowQuests && trackedQuest.getX() != Integer.MIN_VALUE)
-            CompassManager.setCompassLocation(new Location(trackedQuest.getX(), 0, trackedQuest.getZ()));
+        if (!QuestManager.hasInterrupted()) return;
+
+        drawString("(Open your book to update)", 0, 20 + currentY, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
     }
 
 }

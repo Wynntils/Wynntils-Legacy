@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.map.instances;
@@ -8,9 +8,11 @@ import com.wynntils.Reference;
 import com.wynntils.core.utils.helpers.MD5Verification;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.WebReader;
-import com.wynntils.webapi.WebRequestHandler;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import com.wynntils.webapi.downloader.enums.DownloadAction;
+import com.wynntils.webapi.request.Request;
+import com.wynntils.webapi.request.RequestHandler;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureUtil;
 
@@ -20,7 +22,7 @@ import java.io.File;
 
 public class MapProfile {
 
-    private static final File mapLocation = new File(Reference.MOD_STORAGE_ROOT, "map");
+    private static final File MAP_LOCATION = new File(Reference.MOD_STORAGE_ROOT, "map");
 
     String url;
     File mapFile;
@@ -34,9 +36,9 @@ public class MapProfile {
     int imageWidth = 0; int imageHeight = 0;
 
     public MapProfile(String url, String name) {
-        this.url = url; this.mapFile = new File(mapLocation, name + ".png");
+        this.url = url; this.mapFile = new File(MAP_LOCATION, name + ".png");
 
-        if(!mapFile.exists()) downloadDirect = true;
+        if (!mapFile.exists()) downloadDirect = true;
     }
 
     public void updateMap() {
@@ -47,24 +49,44 @@ public class MapProfile {
             }
         }
 
-        WebRequestHandler handler = new WebRequestHandler();
-        handler.addRequest(new WebRequestHandler.Request(url, "main_map.info")
-            .cacheTo(new File(mapLocation, "main-map.txt"))
+        RequestHandler handler = new RequestHandler();
+        handler.addRequest(new Request(url, "main_map.info")
+            .cacheTo(new File(MAP_LOCATION, "main-map.txt"))
             .handleWebReader(reader -> {
                 centerX = Double.parseDouble(reader.get("CenterX"));
                 centerZ = Double.parseDouble(reader.get("CenterZ"));
                 if (!downloadDirect) {
                     if (new MD5Verification(mapFile).equals(reader.get("MD5"))) {
-                        readyToUse = true;
+                        setReadyToUse();
                         return true;
                     }
                 }
 
-                DownloaderManager.queueDownload("Wynntils Map", reader.get("DownloadLocation"), mapLocation, DownloadAction.SAVE, c -> readyToUse = c);
+                DownloaderManager.queueDownload("Wynntils Map", reader.get("DownloadLocation"), MAP_LOCATION, DownloadAction.SAVE, success -> {
+                    if (success) setReadyToUse();
+                });
                 return true;
             })
         );
         handler.dispatchAsync();
+    }
+
+    private void setReadyToUse() {
+        // make sure this is being called from the main thread
+        if (!Minecraft.getMinecraft().isCallingFromMinecraftThread()) {
+            Minecraft.getMinecraft().addScheduledTask(this::setReadyToUse);
+            return;
+        }
+        readyToUse = true;
+
+        // this allocates the texture to the OpenGL container
+        // calling it here avoids the game stuttering while entering the world
+        try {
+            setTexture();
+            Reference.LOGGER.info("Successfully loaded map " + mapFile.getName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     private void setTexture() throws Exception {
@@ -75,8 +97,8 @@ public class MapProfile {
     }
 
     public void bindTexture() throws Exception {
-        if(!readyToUse) return;
-        if(textureId == -20) setTexture();
+        if (!readyToUse) return;
+        if (textureId == -20) setTexture();
 
         GlStateManager.bindTexture(textureId);
     }

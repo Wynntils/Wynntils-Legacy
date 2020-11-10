@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.map.overlays.objects;
@@ -22,73 +22,13 @@ import java.util.*;
 
 public class MapApiIcon extends MapTextureIcon {
 
-    public static final Set<String> IGNORED_MARKERS = Collections.unmodifiableSet(new HashSet<String>() {{
-        add("Content_CorruptedDungeon");
-    }});
-
-    public static final Map<String, String> MAPMARKERNAME_TRANSLATION = Collections.unmodifiableMap(new HashMap<String, String>() {{
-        put("Content_Dungeon", "Dungeons");
-        put("Content_CorruptedDungeon", "Corrupted Dungeons");
-        put("Merchant_Accessory", "Accessory Merchant");
-        put("Merchant_Armour", "Armour Merchant");
-        put("Merchant_Dungeon", "Dungeon Merchant");
-        put("Merchant_Horse", "Horse Merchant");
-        put("Merchant_KeyForge", "Key Forge Merchant");
-        put("Merchant_Liquid", "LE Merchant");
-        put("Merchant_Potion", "Potion Merchant");
-        put("Merchant_Powder", "Powder Merchant");
-        put("Merchant_Scroll", "Scroll Merchant");
-        put("Merchant_Seasail", "Seasail Merchant");
-        put("Merchant_Weapon", "Weapon Merchant");
-        put("NPC_Blacksmith", "Blacksmith");
-        put("NPC_GuildMaster", "Guild Master");
-        put("NPC_ItemIdentifier", "Item Identifier");
-        put("NPC_PowderMaster", "Powder Master");
-        put("Special_FastTravel", "Fast Travel");
-        put("tnt", "TNT Merchant");
-        put("painting", "Art Merchant");
-        put("Ore_Refinery", "Ore Refinery");
-        put("Fish_Refinery", "Fish Refinery");
-        put("Wood_Refinery", "Wood Refinery");
-        put("Crop_Refinery", "Crop Refinery");
-        put("NPC_TradeMarket", "Marketplace");
-        put("Content_Quest", "Quests");
-        put("Content_Miniquest", "Mini-Quests");
-        put("Special_Rune", "Runes");
-        put("Special_RootsOfCorruption", "Nether Portal");
-        put("Content_UltimateDiscovery", "Ultimate Discovery");
-        put("Content_Cave", "Caves");
-        put("Content_GrindSpot", "Grind Spots");
-        put("Merchant_Other", "Other Merchants");
-        put("Special_LightRealm", "Light's Secret");
-        put("Merchant_Emerald", "Emerald Merchant");
-        put("Profession_Weaponsmithing", "Weaponsmithing Station");
-        put("Profession_Armouring", "Armouring Station");
-        put("Profession_Alchemism", "Alchemism Station");
-        put("Profession_Jeweling", "Jeweling Station");
-        put("Profession_Tailoring", "Tailoring Station");
-        put("Profession_Scribing", "Scribing Station");
-        put("Profession_Cooking", "Cooking Station");
-        put("Profession_Woodworking", "Woodworking Station");
-        put("Merchant_Tool", "Tool Merchant");
-    }});
-
-    public static final Map<String, String> MAPMARKERNAME_REVERSE_TRANSLATION = Collections.unmodifiableMap(new HashMap<String, String>(MAPMARKERNAME_TRANSLATION.size()){{
-        for (HashMap.Entry<String, String> entry : MAPMARKERNAME_TRANSLATION.entrySet()) {
-            this.put(entry.getValue(), entry.getKey());
-        }
-    }});
-
     private MapMarkerProfile mmp;
     private int texPosX, texPosZ, texSizeX, texSizeZ;
     private float sizeX, sizeZ;
     private int zoomNeeded;
 
-    private String translatedName;
-
     MapApiIcon(MapMarkerProfile mmp, MapConfig.IconTexture iconTexture) {
-        JsonObject iconMapping = Mappings.Map.map_icons_mappings.get(iconTexture == MapConfig.IconTexture.Classic ? "CLASSIC" : "MEDIEVAL").getAsJsonObject().get(mmp.getIcon()).getAsJsonObject();
-
+        JsonObject iconMapping = Mappings.Map.map_icons_mappings.get(iconTexture.getKey()).getAsJsonObject().get(mmp.getIcon()).getAsJsonObject();
         this.mmp = mmp;
 
         texPosX = iconMapping.get("texPosX").getAsInt();
@@ -99,86 +39,102 @@ public class MapApiIcon extends MapTextureIcon {
         sizeX = (texSizeX - texPosX) / size;
         sizeZ = (texSizeZ - texPosZ) / size;
         zoomNeeded = iconMapping.get("zoomNeeded").getAsInt();
-
-        translatedName = MAPMARKERNAME_TRANSLATION.get(mmp.getIcon());
     }
 
-    @Override public AssetsTexture getTexture() {
+    @Override
+    public AssetsTexture getTexture() {
         return Textures.Map.map_icons;
     }
 
-    @Override public int getPosX() {
+    @Override
+    public int getPosX() {
         return mmp.getX();
     }
 
-    @Override public int getPosZ() {
+    @Override
+    public int getPosZ() {
         return mmp.getZ();
     }
 
-    @Override public String getName() {
+    @Override
+    public String getName() {
         return mmp.getName();
     }
 
-    @Override public int getTexPosX() {
+    @Override
+    public int getTexPosX() {
         return texPosX;
     }
 
-    @Override public int getTexPosZ() {
+    @Override
+    public int getTexPosZ() {
         return texPosZ;
     }
 
-    @Override public int getTexSizeX() {
+    @Override
+    public int getTexSizeX() {
         return texSizeX;
     }
 
-    @Override public int getTexSizeZ() {
+    @Override
+    public int getTexSizeZ() {
         return texSizeZ;
     }
 
-    @Override public float getSizeX() {
+    @Override
+    public float getSizeX() {
         return sizeX;
     }
 
-    @Override public float getSizeZ() {
+    @Override
+    public float getSizeZ() {
         return sizeZ;
     }
 
-    @Override public int getZoomNeeded() {
+    @Override
+    public int getZoomNeeded() {
         return zoomNeeded;
     }
 
-    @Override public boolean isEnabled(boolean forMinimap) {
+    @Override
+    public boolean isEnabled(boolean forMinimap) {
         if (MapConfig.INSTANCE.hideCompletedQuests && (mmp.getIcon().equals("Content_Quest") || mmp.getIcon().equals("Content_Miniquest"))) {
-            QuestInfo questData = QuestManager.getCurrentQuestsData().get(mmp.getName());
+            QuestInfo questData = QuestManager.getQuest(mmp.getName());
             if (questData != null && questData.getStatus() == QuestStatus.COMPLETED) {
                 return false;
             }
         }
 
-        Boolean enabled = (forMinimap ? MapConfig.INSTANCE.enabledMinimapIcons : MapConfig.INSTANCE.enabledMapIcons).get(translatedName);
+        Boolean enabled = (forMinimap ? MapConfig.INSTANCE.enabledMinimapIcons : MapConfig.INSTANCE.enabledMapIcons).get(mmp.getTranslatedName());
 
         if (enabled == null) {
             // Missing some keys; Add them all
-            HashMap<String, Boolean> defaulted = MapConfig.resetMapIcons(false);
+            Map<String, Boolean> defaulted = MapConfig.resetMapIcons(false);
             for (Map.Entry<String, Boolean> e : defaulted.entrySet()) {
                 String icon = e.getKey();
-                if (MapConfig.INSTANCE.enabledMapIcons.get(icon) == null) {
-                    MapConfig.INSTANCE.enabledMapIcons.put(icon, e.getValue());
-                }
+
+                MapConfig.INSTANCE.enabledMapIcons.computeIfAbsent(icon, k -> e.getValue());
             }
 
             defaulted = MapConfig.resetMapIcons(true);
             for (Map.Entry<String, Boolean> e : defaulted.entrySet()) {
                 String icon = e.getKey();
-                if (MapConfig.INSTANCE.enabledMinimapIcons.get(icon) == null) {
-                    MapConfig.INSTANCE.enabledMinimapIcons.put(icon, e.getValue());
-                }
+
+                MapConfig.INSTANCE.enabledMinimapIcons.computeIfAbsent(icon, k -> e.getValue());
             }
 
             MapConfig.INSTANCE.saveSettings(MapModule.getModule());
 
-            enabled = (forMinimap ? MapConfig.INSTANCE.enabledMinimapIcons : MapConfig.INSTANCE.enabledMapIcons).get(translatedName);
-            if (enabled == null) enabled = Boolean.FALSE;
+            enabled = (forMinimap ? MapConfig.INSTANCE.enabledMinimapIcons : MapConfig.INSTANCE.enabledMapIcons).get(mmp.getTranslatedName());
+
+            // In case the map icon is not present, set it to false and display a console warning!
+            if (enabled == null) {
+                MapConfig.INSTANCE.enabledMapIcons.put(mmp.getTranslatedName(), false);
+                MapConfig.INSTANCE.enabledMinimapIcons.put(mmp.getTranslatedName(), false);
+                enabled = false;
+
+                Reference.LOGGER.warn("Missing default map icon state (" + mmp.getTranslatedName() + ").");
+            }
         }
 
         return enabled;
@@ -203,6 +159,7 @@ public class MapApiIcon extends MapTextureIcon {
 
     private static List<MapIcon> classicApiMarkers = null;
     private static List<MapIcon> medievalApiMarkers = null;
+    private static List<MapIcon> modernApiMarkers = null;
 
     public static void resetApiMarkers() {
         if (Mappings.Map.map_icons_mappings == null) return;
@@ -216,10 +173,17 @@ public class MapApiIcon extends MapTextureIcon {
         } else {
             medievalApiMarkers.clear();
         }
-        for (MapMarkerProfile mmp : WebManager.getApiMarkers()) {
-            if (IGNORED_MARKERS.contains(mmp.getIcon())) continue;
+
+        if (modernApiMarkers == null) {
+            modernApiMarkers = new ArrayList<>();
+        } else {
+            modernApiMarkers.clear();
+        }
+
+        for (MapMarkerProfile mmp : WebManager.getNonIgnoredApiMarkers()) {
             if (isApiMarkerValid(mmp, MapConfig.IconTexture.Classic)) classicApiMarkers.add(new MapApiIcon(mmp, MapConfig.IconTexture.Classic));
             if (isApiMarkerValid(mmp, MapConfig.IconTexture.Medieval)) medievalApiMarkers.add(new MapApiIcon(mmp, MapConfig.IconTexture.Medieval));
+            if (isApiMarkerValid(mmp, MapConfig.IconTexture.Modern)) modernApiMarkers.add(new MapApiIcon(mmp, MapConfig.IconTexture.Modern));
         }
     }
 
@@ -243,11 +207,18 @@ public class MapApiIcon extends MapTextureIcon {
                     markers.clear();
                 }
                 break;
+            case Modern:
+                if (modernApiMarkers == null) {
+                    markers = modernApiMarkers = new ArrayList<>();
+                } else {
+                    markers = modernApiMarkers;
+                    markers.clear();
+                }
+                break;
             default:
                 return;
         }
-        for (MapMarkerProfile mmp : WebManager.getApiMarkers()) {
-            if (IGNORED_MARKERS.contains(mmp.getIcon())) continue;
+        for (MapMarkerProfile mmp : WebManager.getNonIgnoredApiMarkers()) {
             if (isApiMarkerValid(mmp, iconTexture)) markers.add(new MapApiIcon(mmp, iconTexture));
         }
     }
@@ -262,13 +233,16 @@ public class MapApiIcon extends MapTextureIcon {
             case Medieval:
                 if (medievalApiMarkers == null) resetApiMarkers(MapConfig.IconTexture.Medieval);
                 return medievalApiMarkers;
+            case Modern:
+                if (modernApiMarkers == null) resetApiMarkers(MapConfig.IconTexture.Modern);
+                return modernApiMarkers;
             default:
                 return null;
         }
     }
 
     private static boolean isApiMarkerValid(MapMarkerProfile mmp, MapConfig.IconTexture iconTexture) {
-        boolean valid = Mappings.Map.map_icons_mappings.get(iconTexture == MapConfig.IconTexture.Classic ? "CLASSIC" : "MEDIEVAL").getAsJsonObject().has(mmp.getIcon());
+        boolean valid = Mappings.Map.map_icons_mappings.get(iconTexture.getKey()).getAsJsonObject().has(mmp.getIcon());
         if (!valid && Reference.developmentEnvironment) {
             Reference.LOGGER.warn("No " + iconTexture + " texture for \"" + mmp.getIcon() + "\"");
         }
@@ -279,11 +253,8 @@ public class MapApiIcon extends MapTextureIcon {
      * Return a MapApiIcon that can render a map marker being free from position information
      */
     public static MapApiIcon getFree(String icon, MapConfig.IconTexture iconTexture) {
-        icon = MAPMARKERNAME_REVERSE_TRANSLATION.getOrDefault(icon, icon);
-        if (!MAPMARKERNAME_TRANSLATION.containsKey(icon)) {
-            throw new RuntimeException("MapWaypointIcon.getFree(\"" + icon + "\"): invalid name");
-        }
-        return new MapApiIcon(new MapMarkerProfile(null, NO_LOCATION, NO_LOCATION, NO_LOCATION, icon), iconTexture);
+        String reverseTranslation = MapMarkerProfile.getReverseTranslation(icon);
+        return new MapApiIcon(new MapMarkerProfile(null, NO_LOCATION, NO_LOCATION, NO_LOCATION, reverseTranslation), iconTexture);
     }
 
 }

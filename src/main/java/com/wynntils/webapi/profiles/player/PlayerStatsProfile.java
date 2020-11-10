@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.webapi.profiles.player;
 
 import com.google.common.reflect.TypeToken;
@@ -9,6 +13,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class PlayerStatsProfile {
@@ -157,7 +162,7 @@ public class PlayerStatsProfile {
         return veteran;
     }
 
-    public ArrayList<PlayerClassProfile> getClasses() {
+    public List<PlayerClassProfile> getClasses() {
         return classes;
     }
 
@@ -310,14 +315,34 @@ public class PlayerStatsProfile {
         Item,
         Builder,
         Hybrid,
-        CMD
+        CMD,
+        Media
     }
 
     public enum PlayerTag {
-        NONE,
-        VIP,
-        VIPPLUS,
-        HERO
+        NONE("Basic"),
+        VIP("VIP"),
+        VIPPLUS("VIP+"),
+        HERO("HERO");
+
+        @Override
+        public String toString() {
+            return name;
+        }
+
+        private String name;
+
+        PlayerTag(String name) {
+            this.name = name;
+        }
+
+        public boolean isVip() {
+            return this.ordinal() >= 1;
+        }
+
+        public boolean isVipPlus() {
+            return this.ordinal() >= 2;
+        }
     }
 
     public enum GuildRank {

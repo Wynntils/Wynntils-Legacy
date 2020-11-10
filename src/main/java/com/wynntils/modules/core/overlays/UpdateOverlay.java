@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.core.overlays;
@@ -28,10 +28,10 @@ import java.io.IOException;
 
 public class UpdateOverlay extends Overlay {
 
-    private static CustomColor background = CustomColor.fromString("333341",1);
-    private static CustomColor box = CustomColor.fromString("434355",1);
-    private static CustomColor yes = CustomColor.fromString("80fd80",1);
-    private static CustomColor no = CustomColor.fromString("fd8080",1);
+    private static CustomColor background = CustomColor.fromInt(0x333341, 1);
+    private static CustomColor box = CustomColor.fromInt(0x434355, 1);
+    private static CustomColor yes = CustomColor.fromInt(0x80fd80, 1);
+    private static CustomColor no = CustomColor.fromInt(0xfd8080, 1);
 
     public UpdateOverlay() {
         super("Update", 20, 20, true, 1f, 0f, 0, 0, null);
@@ -46,24 +46,24 @@ public class UpdateOverlay extends Overlay {
 
     @Override
     public void render(RenderGameOverlayEvent.Post e) {
-        if(e.getType() != RenderGameOverlayEvent.ElementType.ALL) {
+        if (e.getType() != RenderGameOverlayEvent.ElementType.ALL) {
             return;
         }
 
-        if(Reference.developmentEnvironment || WebManager.getUpdate() == null || !WebManager.getUpdate().hasUpdate()) {
+        if (Reference.developmentEnvironment || WebManager.getUpdate() == null || !WebManager.getUpdate().hasUpdate()) {
             return;
         }
 
-        if(disappear) {
+        if (disappear) {
             return;
         }
 
-        if(timeout == 0) {
+        if (timeout == 0) {
             timeout = System.currentTimeMillis();
         }
 
-        drawRect(background, -172,0 - size, 0, 62 - size);
-        drawRect(box, -170,0 - size, 0, 60 - size);
+        drawRect(background, -172, 0 - size, 0, 62 - size);
+        drawRect(box, -170, 0 - size, 0, 60 - size);
 
         drawString("Wynntils " + TextFormatting.GREEN + "v" + Reference.VERSION + " - " + TextFormatting.WHITE + (((timeout + 35000) - System.currentTimeMillis()) / 1000) + "s left", -165, 5 - size, CommonColors.ORANGE);
         if (WebManager.getUpdate().getLatestUpdate().startsWith("B")) {
@@ -74,20 +74,20 @@ public class UpdateOverlay extends Overlay {
 
         drawString("Download automagically? " + TextFormatting.GREEN + "(y/n)", -165, 25 - size, CommonColors.LIGHT_GRAY);
 
-        drawRect(yes, -155,40 - size, -95, 55 - size);
-        drawRect(no, -75 ,40 - size, -15, 55 - size);
+        drawRect(yes, -155, 40 - size, -95, 55 - size);
+        drawRect(no, -75, 40 - size, -15, 55 - size);
 
         drawString("Yes (y)", -125, 44 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
         drawString("No (n)", -43, 44 - size, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
 
         if (size > 0 && System.currentTimeMillis() - timeout < 35000) {
             size--;
-            if(size <= 0) {
+            if (size <= 0) {
                 acceptYesOrNo = true;
             }
-        }else if(size < 63 && System.currentTimeMillis() - timeout >= 35000) {
+        } else if (size < 63 && System.currentTimeMillis() - timeout >= 35000) {
             size++;
-            if(size >= 63) {
+            if (size >= 63) {
                 disappear = true;
                 acceptYesOrNo = false;
                 download = false;
@@ -115,12 +115,12 @@ public class UpdateOverlay extends Overlay {
     }
 
     @Override
-    public void tick(TickEvent.ClientTickEvent event, long ticks){
-        if(download && disappear) {
+    public void tick(TickEvent.ClientTickEvent event, long ticks) {
+        if (download && disappear) {
             download = false;
 
             try {
-                File f = new File(Reference.MOD_STORAGE_ROOT + "/updates");
+                File f = new File(Reference.MOD_STORAGE_ROOT, "updates");
 
                 String url;
                 if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.CUTTING_EDGE) {
@@ -134,7 +134,7 @@ public class UpdateOverlay extends Overlay {
                 DownloadOverlay.size = 0;
                 DownloaderManager.restartGameOnNextQueue();
                 DownloaderManager.queueDownload("Updating to " + WebManager.getUpdate().getLatestUpdate(), url, f, DownloadAction.SAVE, (x) -> {
-                    if(x) {
+                    if (x) {
                         try {
                             String message = TextFormatting.DARK_AQUA + "An update to Wynntils (";
                             message += CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE ? "Version " + jar_name.split("_")[0].split("-")[1] : "Build " + jar_name.split("_")[1].replace(".jar", "");
@@ -151,8 +151,8 @@ public class UpdateOverlay extends Overlay {
                 ex.printStackTrace();
             }
         }
-        if(acceptYesOrNo) {
-            if(Keyboard.isKeyDown(Keyboard.KEY_Y)) {
+        if (acceptYesOrNo) {
+            if (Keyboard.isKeyDown(Keyboard.KEY_Y)) {
                 disappear = true;
                 acceptYesOrNo = false;
                 download = true;
@@ -160,7 +160,7 @@ public class UpdateOverlay extends Overlay {
                 CoreDBConfig.INSTANCE.showChangelogs = true;
                 CoreDBConfig.INSTANCE.lastVersion = Reference.VERSION;
                 CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
-            }else if(Keyboard.isKeyDown(Keyboard.KEY_N)) {
+            } else if (Keyboard.isKeyDown(Keyboard.KEY_N)) {
                 timeout = 35000;
                 acceptYesOrNo = false;
                 download = false;
@@ -179,14 +179,14 @@ public class UpdateOverlay extends Overlay {
                     return;
                 }
 
-                File newJar = new File(Reference.MOD_STORAGE_ROOT + "/updates", jarName);
+                File newJar = new File(new File(Reference.MOD_STORAGE_ROOT, "updates"), jarName);
                 Utils.copyFile(newJar, oldJar);
                 newJar.delete();
                 Reference.LOGGER.info("Successfully applied Wynntils update.");
             } catch (IOException ex) {
                 Reference.LOGGER.error("Unable to apply Wynntils update.", ex);
             }
-        }));
+        }, "wynntils-autoupdate-applier"));
     }
 
     public static boolean isDownloading() {

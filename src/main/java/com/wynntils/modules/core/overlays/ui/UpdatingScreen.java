@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.modules.core.overlays.ui;
 
 import com.wynntils.Reference;
@@ -43,7 +47,7 @@ public class UpdatingScreen extends GuiScreen {
 
     private void doUpdate() {
         try {
-            File f = new File(Reference.MOD_STORAGE_ROOT + "/updates");
+            File f = new File(Reference.MOD_STORAGE_ROOT, "updates");
 
             String url;
             if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.CUTTING_EDGE) {
@@ -77,11 +81,11 @@ public class UpdatingScreen extends GuiScreen {
                     }
 
 
-                    String[] urlSplited = url.split("/");
+                    String[] urlParts = url.split("/");
 
                     float fileLength = st.getContentLength();
 
-                    File fileSaved = new File(f, URLDecoder.decode(urlSplited[urlSplited.length - 1], "UTF-8"));
+                    File fileSaved = new File(f, URLDecoder.decode(urlParts[urlParts.length - 1], "UTF-8"));
 
                     InputStream fis = st.getInputStream();
                     OutputStream fos = new FileOutputStream(fileSaved);

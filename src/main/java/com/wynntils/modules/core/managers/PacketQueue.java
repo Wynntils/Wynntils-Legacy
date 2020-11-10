@@ -1,18 +1,19 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.core.managers;
 
-import com.wynntils.modules.core.instances.PacketResponse;
+import com.wynntils.modules.core.instances.packet.PacketResponse;
 import net.minecraft.network.Packet;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 public class PacketQueue {
 
-    private static ArrayList<PacketResponse> complexQueue = new ArrayList<>();
+    private static List<PacketResponse> complexQueue = new ArrayList<>();
 
     public static PacketResponse queueSimplePacket(Packet packet) {
         PacketResponse response = new PacketResponse(packet);
@@ -35,10 +36,10 @@ public class PacketQueue {
     }
 
     public static void checkResponse(Packet<?> response) {
-        if(complexQueue.size() == 0) return;
+        if (complexQueue.size() == 0) return;
 
         PacketResponse r = complexQueue.get(0);
-        if(!r.isResponseValid(response)) return;
+        if (!r.isResponseValid(response)) return;
 
         complexQueue.remove(0);
     }
@@ -48,7 +49,7 @@ public class PacketQueue {
     }
 
     public static void proccessQueue() {
-        if(complexQueue.isEmpty()) return;
+        if (complexQueue.isEmpty()) return;
 
         complexQueue.get(0).sendPacket();
     }

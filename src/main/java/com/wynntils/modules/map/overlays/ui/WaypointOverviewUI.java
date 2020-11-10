@@ -1,9 +1,13 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.modules.map.overlays.ui;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.ui.elements.GuiButtonImageBetter;
-import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
@@ -26,11 +30,11 @@ public class WaypointOverviewUI extends GuiScreen {
     private GuiButton previousPageBtn;
     private GuiButton nextGroupBtn;
     private GuiButton previousGroupBtn;
-    private ArrayList<GuiButton> groupBtns = new ArrayList<>();
+    private List<GuiButton> groupBtns = new ArrayList<>();
     private GuiButton exitBtn;
     private GuiButton exportBtn;
     private GuiButton importBtn;
-    private ArrayList<GuiButton> editButtons = new ArrayList<>();
+    private List<GuiButton> editButtons = new ArrayList<>();
 
     private List<String> exportText;
     private List<String> importText;
@@ -38,9 +42,9 @@ public class WaypointOverviewUI extends GuiScreen {
     private static final int ungroupedIndex = WaypointProfile.WaypointType.values().length;
 
     private ScreenRenderer renderer = new ScreenRenderer();
-    private ArrayList<WaypointProfile> waypoints;
+    private List<WaypointProfile> waypoints;
     @SuppressWarnings("unchecked")
-    private ArrayList<WaypointProfile>[] groupedWaypoints = (ArrayList<WaypointProfile>[]) new ArrayList[ungroupedIndex + 1];
+    private List<WaypointProfile>[] groupedWaypoints = (ArrayList<WaypointProfile>[]) new ArrayList[ungroupedIndex + 1];
     private boolean[] enabledGroups;
     private int page;
     private int pageHeight;
@@ -85,13 +89,13 @@ public class WaypointOverviewUI extends GuiScreen {
         }
         fontRenderer.drawString(TextFormatting.BOLD + "Icon", this.width / 2 - 185 + groupShift, 43, 0xFFFFFF);
         fontRenderer.drawString(TextFormatting.BOLD + "Name", this.width / 2 - 150 + groupShift, 43, 0xFFFFFF);
-        drawCenteredString(fontRenderer,TextFormatting.BOLD + "X", this.width/2 - 35 + groupShift, 43, 0xFFFFFF);
-        drawCenteredString(fontRenderer,TextFormatting.BOLD + "Z", this.width/2 + 20 + groupShift, 43, 0xFFFFFF);
-        drawCenteredString(fontRenderer,TextFormatting.BOLD + "Y", this.width/2 + 60 + groupShift, 43, 0xFFFFFF);
-        drawRect(this.width/2 - 185 - groupShift, 52,this.width/2 + 170 + groupShift,53, 0xFFFFFFFF);
+        drawCenteredString(fontRenderer, TextFormatting.BOLD + "X", this.width/2 - 35 + groupShift, 43, 0xFFFFFF);
+        drawCenteredString(fontRenderer, TextFormatting.BOLD + "Z", this.width/2 + 20 + groupShift, 43, 0xFFFFFF);
+        drawCenteredString(fontRenderer, TextFormatting.BOLD + "Y", this.width/2 + 60 + groupShift, 43, 0xFFFFFF);
+        drawRect(this.width/2 - 185 - groupShift, 52, this.width/2 + 170 + groupShift, 53, 0xFFFFFFFF);
 
-        ScreenRenderer.beginGL(0,0);
-        ArrayList<WaypointProfile> waypoints = getWaypoints();
+        ScreenRenderer.beginGL(0, 0);
+        List<WaypointProfile> waypoints = getWaypoints();
         int hovered = getHoveredWaypoint(mouseX, mouseY);
         for (int i = 0, lim = Math.min(pageHeight, waypoints.size() - pageHeight * page); i < lim; i++) {
             WaypointProfile wp = waypoints.get(page * pageHeight + i);
@@ -226,7 +230,7 @@ public class WaypointOverviewUI extends GuiScreen {
                 );
                 return;
             }
-            ArrayList<WaypointProfile> imported;
+            List<WaypointProfile> imported;
             try {
                 imported = WaypointProfile.decode(data);
             } catch (IllegalArgumentException e) {
@@ -238,7 +242,7 @@ public class WaypointOverviewUI extends GuiScreen {
                 return;
             }
             int newWaypoints = 0;
-            HashSet<Location> existing = new HashSet<>(waypoints.size());
+            Set<Location> existing = new HashSet<>(waypoints.size());
             for (WaypointProfile wp : waypoints) {
                 existing.add(new Location(wp.getX(), wp.getY(), wp.getZ()));
             }
@@ -287,7 +291,7 @@ public class WaypointOverviewUI extends GuiScreen {
         }
     }
 
-    private ArrayList<WaypointProfile> getWaypoints() {
+    private List<WaypointProfile> getWaypoints() {
         if (group == ungroupedIndex) {
             return waypoints;
         }
@@ -391,7 +395,7 @@ public class WaypointOverviewUI extends GuiScreen {
         editButtons.clear();
         int groupShift = group == ungroupedIndex ? 20 : 0;
         for (int i = 0, lim = Math.min(pageHeight, getWaypoints().size() - pageHeight * page); i < lim; i++) {
-            editButtons.add(new GuiButton(3 + 10 * i, this.width/2 + 85 + groupShift,54 + 25 * i,40,20,"Edit..."));
+            editButtons.add(new GuiButton(3 + 10 * i, this.width/2 + 85 + groupShift, 54 + 25 * i, 40, 20,"Edit..."));
             editButtons.add(new GuiButton(5 + 10 * i, this.width/2 + 130 + groupShift, 54 + 25 * i, 40, 20, "Delete"));
             GuiButton up = new GuiButton(6 + 10 * i, this.width/2 + 172 + groupShift, 54 + 25 * i, 9, 9, "\u028C");
             GuiButton down = new GuiButton(7 + 10 * i, this.width/2 + 172 + groupShift, 65 + 25 * i, 9, 9, "v");
@@ -406,12 +410,12 @@ public class WaypointOverviewUI extends GuiScreen {
     @Override
     public void handleMouseInput() throws IOException {
         super.handleMouseInput();
-        int mDwehll = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
-        if (mDwehll < 0 && nextPageBtn.enabled) {
+        int mDWheel = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
+        if (mDWheel < 0 && nextPageBtn.enabled) {
             ++page;
             checkAvailablePages();
             setEditButtons();
-        } else if (mDwehll > 0 && previousPageBtn.enabled) {
+        } else if (mDWheel > 0 && previousPageBtn.enabled) {
             --page;
             checkAvailablePages();
             setEditButtons();

@@ -106,7 +106,7 @@ public class JavaSoundAudioDevice extends AudioDeviceBase {
         byte[] var4 = this.getByteArray(var3 * 2);
 
         short var6;
-        for(int var5 = 0; var3-- > 0; var4[var5++] = (byte)(var6 >>> 8)) {
+        for (int var5 = 0; var3-- > 0; var4[var5++] = (byte)(var6 >>> 8)) {
             var6 = var1[var2++];
             var4[var5++] = (byte)var6;
         }

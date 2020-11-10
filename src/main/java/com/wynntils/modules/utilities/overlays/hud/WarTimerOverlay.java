@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
@@ -10,10 +10,12 @@ import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.WarStageEvent;
 import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.framework.FrameworkManager;
+import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+import com.wynntils.modules.utilities.configs.SoundEffectsConfig;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -23,7 +25,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -85,7 +86,7 @@ public class WarTimerOverlay extends Overlay {
             }
         }
     }
-    
+
     private void renderTimer(int seconds) {
         if (seconds < 60) {
             drawString(seconds + " second" + (seconds != 1 ? "s" : ""), 0, 6, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.WarTimer.INSTANCE.textShadow);
@@ -107,6 +108,10 @@ public class WarTimerOverlay extends Overlay {
             if (Reference.onWars) {
                 afterWar = true;
             }
+
+            // sfx
+            if (SoundEffectsConfig.INSTANCE.warHorn) WynntilsSound.WAR_HORN.play();
+
             territory = message.substring(12, message.indexOf(" will start soon!"));
             changeWarStage(WarStage.WAITING_FOR_TIMER);
         } else if (message.equals("You were not in the territory.") && stage == WarStage.WAR_STARTING) {
@@ -158,7 +163,7 @@ public class WarTimerOverlay extends Overlay {
                 if (territory == null) {
                     EntityPlayerSP pl = ModCore.mc().player;
                     for (TerritoryProfile pf : WebManager.getTerritories().values()) {
-                        if(pf.insideArea((int)pl.posX, (int)pl.posZ)) {
+                        if (pf.insideArea((int)pl.posX, (int)pl.posZ)) {
                             territory = pf.getFriendlyName();
                             return;
                         }
@@ -186,9 +191,7 @@ public class WarTimerOverlay extends Overlay {
 
     @Override
     public void tick(ClientTickEvent event, long ticks) {
-        if (event.phase == Phase.END) {
-            updateTimer();
-        }
+        updateTimer();
     }
 
     private static void updateTimer() {
@@ -234,4 +237,5 @@ public class WarTimerOverlay extends Overlay {
     public enum WarStage {
         WAITING, WAITING_FOR_TIMER, WAR_STARTING, WAITING_FOR_MOB_TIMER, WAITING_FOR_MOBS, IN_WAR
     }
+
 }

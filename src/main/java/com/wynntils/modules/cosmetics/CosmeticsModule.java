@@ -1,13 +1,12 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.cosmetics;
 
 import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
-import com.wynntils.modules.cosmetics.events.EntityEvents;
-import com.wynntils.modules.cosmetics.events.ServerEvents;
+import com.wynntils.modules.cosmetics.configs.CosmeticsConfig;
 import com.wynntils.modules.cosmetics.layers.LayerCape;
 import com.wynntils.modules.cosmetics.layers.LayerElytra;
 import com.wynntils.modules.cosmetics.layers.LayerFoxEars;
@@ -19,8 +18,7 @@ import net.minecraft.entity.player.EnumPlayerModelParts;
 public class CosmeticsModule extends Module {
 
     public void onEnable() {
-        registerEvents(new EntityEvents());
-        registerEvents(new ServerEvents());
+        registerSettings(CosmeticsConfig.class);
     }
 
     public void postEnable() {

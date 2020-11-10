@@ -1,8 +1,13 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.modules.map.instances;
 
 import com.google.gson.*;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
+import com.wynntils.modules.map.configs.MapConfig;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -26,6 +31,7 @@ public class PathWaypointProfile {
 
     public PathWaypointProfile(String name) {
         this.name = name == null ? "Path" : name;
+        points = new ArrayList<>();
         recalculateBounds();
     }
 
@@ -53,7 +59,7 @@ public class PathWaypointProfile {
         isCircular = other.isCircular;
         isEnabled = other.isEnabled;
         color = other.color;
-        ((ArrayList<PathPoint>) points).ensureCapacity(other.points.size());
+        this.points = new ArrayList<>(other.points.size());
         other.points.forEach(c -> points.add(new PathPoint(c.x, c.z)));
         minX = other.minX;
         minZ = other.minZ;
@@ -63,6 +69,14 @@ public class PathWaypointProfile {
         posZ = other.posZ;
         sizeX = other.sizeX;
         sizeZ = other.sizeZ;
+    }
+    
+    public PathWaypointProfile(LootRunPath lootrun) {
+        name = "Lootrun path";
+        color = MapConfig.LootRun.INSTANCE.activePathColour;
+        this.points = new ArrayList<>(lootrun.getPoints().size());
+        lootrun.getPoints().forEach(c -> points.add(new PathPoint((int) c.x, (int) c.z)));
+        recalculateBounds();
     }
 
     public PathPoint getPoint(int index) {
@@ -203,7 +217,7 @@ public class PathWaypointProfile {
             return deserialized;
         }
 
-        private PathWaypointProfile deserializeOne(JsonObject o, JsonDeserializationContext context) {
+        private static PathWaypointProfile deserializeOne(JsonObject o, JsonDeserializationContext context) {
             JsonElement nameEl = o.get("name");
             JsonElement isCircularEl = o.get("isCircular");
             JsonElement isEnabledEl = o.get("isEnabled");
@@ -258,7 +272,7 @@ public class PathWaypointProfile {
             return serialized;
         }
 
-        private JsonObject serializeOne(PathWaypointProfile wp, JsonSerializationContext context) {
+        private static JsonObject serializeOne(PathWaypointProfile wp, JsonSerializationContext context) {
             JsonObject serialized = new JsonObject();
             serialized.addProperty("name", wp.name);
             serialized.addProperty("isCircular", wp.isCircular);

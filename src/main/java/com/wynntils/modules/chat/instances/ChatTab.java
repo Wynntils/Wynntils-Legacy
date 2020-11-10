@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.chat.instances;
@@ -11,25 +11,26 @@ import net.minecraft.util.text.ITextComponent;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class ChatTab implements Comparable<ChatTab> {
 
-    //stored variables
+    // stored variables
     String name, autoCommand;
     int orderNb;
     boolean lowPriority;
     Pattern regexFinder;
-    HashMap<String, Boolean> regexSettings;
+    Map<String, Boolean> regexSettings;
 
-    //not stored ones
+    // not stored ones
     transient List<ChatLine> currentMessages = new ArrayList<>();
     transient List<String> sentMessages = new ArrayList<>();
     transient Pair<Integer, Integer> currentXAxis = new Pair<>(0, 0);
     transient boolean hasMentions = false;
     transient boolean hasNewMessages = false;
 
-    //spam filter
+    // spam filter
     transient ITextComponent lastMessage = null;
     transient int lastAmount = 2;
     transient int groupId = 0;
@@ -37,7 +38,7 @@ public class ChatTab implements Comparable<ChatTab> {
     @SuppressWarnings("unused")
     private ChatTab() {}
 
-    public ChatTab(String name, String regexFinder, HashMap<String, Boolean> regexSettings, String autoCommand, boolean lowPriority, int orderNb) {
+    public ChatTab(String name, String regexFinder, Map<String, Boolean> regexSettings, String autoCommand, boolean lowPriority, int orderNb) {
         this.name = name; this.regexFinder = Pattern.compile(regexFinder.replace("&", "§"));
         this.regexSettings = regexSettings;
         this.autoCommand = autoCommand;
@@ -84,7 +85,7 @@ public class ChatTab implements Comparable<ChatTab> {
         this.regexFinder = Pattern.compile(regex);
     }
 
-    public HashMap<String, Boolean> getRegexSettings() {
+    public Map<String, Boolean> getRegexSettings() {
         return regexSettings;
     }
 
@@ -101,7 +102,9 @@ public class ChatTab implements Comparable<ChatTab> {
     }
 
     public void addMessage(ChatLine msg) {
-        hasNewMessages = true;
+        if (msg.getChatLineID() == 0) {
+            hasNewMessages = true;
+        }
         currentMessages.add(0, msg);
     }
 
@@ -119,7 +122,7 @@ public class ChatTab implements Comparable<ChatTab> {
     }
 
     public void clearMessages(boolean clearSent) {
-        if(clearSent) sentMessages.clear();
+        if (clearSent) sentMessages.clear();
         currentMessages.clear();
 
         hasMentions = false;
@@ -139,7 +142,7 @@ public class ChatTab implements Comparable<ChatTab> {
     }
 
     public void setCurrentXAxis(int x1, int x2) {
-        if(currentXAxis.a == x1 && currentXAxis.b == x2) return;
+        if (currentXAxis.a == x1 && currentXAxis.b == x2) return;
 
         currentXAxis = new Pair<>(x1, x2);
     }
@@ -148,7 +151,7 @@ public class ChatTab implements Comparable<ChatTab> {
         hasNewMessages = false; hasMentions = false;
     }
 
-    public void update(String name, String regex, HashMap<String, Boolean> regexSettings, String autoCommand, boolean lowPriority, int orderNb) {
+    public void update(String name, String regex, Map<String, Boolean> regexSettings, String autoCommand, boolean lowPriority, int orderNb) {
         this.name = name; this.regexFinder = Pattern.compile(regex); this.lowPriority = lowPriority; this.regexSettings = regexSettings; this.autoCommand = autoCommand; this.orderNb = orderNb;
     }
 

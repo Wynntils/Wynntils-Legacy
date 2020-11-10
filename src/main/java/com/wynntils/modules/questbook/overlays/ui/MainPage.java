@@ -1,5 +1,10 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.modules.questbook.overlays.ui;
 
+import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -9,9 +14,7 @@ import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.instances.QuestBookPage;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.inventory.GuiInventory;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
@@ -26,6 +29,13 @@ public class MainPage extends QuestBookPage {
     }
 
     @Override
+    public void initGui() {
+        super.initGui();
+        pages = (int) Math.ceil(Arrays.stream(QuestBookPages.values()).max(Comparator.comparingInt(QuestBookPages::getSlotNb)).get().getSlotNb() / 4d);
+        refreshAccepts();
+    }
+
+    @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawScreen(mouseX, mouseY, partialTicks);
         int x = width / 2; int y = height / 2;
@@ -35,11 +45,11 @@ public class MainPage extends QuestBookPage {
         ScreenRenderer.beginGL(0, 0);
         {
             int right = (posX + 80);
-            if(posX >= 0) right = 80;
+            if (posX >= 0) right = 80;
 
             int up = (posY) + 30;
-            if(posY >= 109) up = 109;
-            if(posY <= -109) up = -109;
+            if (posY >= 109) up = 109;
+            if (posY <= -109) up = -109;
 
             GuiInventory.drawEntityOnScreen(x + 80, y + 30, 30, right, up, Minecraft.getMinecraft().player);
         }
@@ -82,17 +92,10 @@ public class MainPage extends QuestBookPage {
                 }
             }
 
-            int pages = (int) Math.ceil(Arrays.stream(QuestBookPages.values()).max(Comparator.comparingInt(QuestBookPages::getSlotNb)).get().getSlotNb() / 4d);
-            if (pages < currentPage) {
-                currentPage = pages;
-            }
-
-            //but next and back button
+            // but next and back button
             if (currentPage == pages) {
                 render.drawRect(Textures.UIs.quest_book, x - 64, y + 24, x - 80, y + 15, 238, 243, 254, 234);
-                acceptNext = false;
             } else {
-                acceptNext = true;
                 if (posX >= 65 && posX <= 80 && posY >= -24 & posY <= -15) {
                     selected = -2;
                     render.drawRect(Textures.UIs.quest_book, x - 64, y + 24, x - 80, y + 15, 238, 243, 254, 234);
@@ -102,10 +105,8 @@ public class MainPage extends QuestBookPage {
             }
 
             if (currentPage == 1) {
-                acceptBack = false;
                 render.drawRect(Textures.UIs.quest_book, x - 101, y + 15, 238, 234, 16, 9);
             } else {
-                acceptBack = true;
                 if (posX >= 86 && posX <= 101 && posY >= -24 & posY <= -15) {
                     selected = -1;
                     render.drawRect(Textures.UIs.quest_book, x - 101, y + 15, 238, 234, 16, 9);
@@ -116,7 +117,7 @@ public class MainPage extends QuestBookPage {
 
             render.drawString("Select an option to continue", x - 81, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
-            render.drawSplitedString("Welcome to Wynntils. You can see your statistics on the right or select some of the options above for more features",
+            render.drawSplitString("Welcome to Wynntils. You can see your statistics on the right or select some of the options above for more features",
                     155, x - 150, y + 30, 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
             render.drawRect(Textures.UIs.quest_book, x + 20, y - 90, 224, 253, 17, 18);
@@ -126,7 +127,7 @@ public class MainPage extends QuestBookPage {
             render.drawRect(Textures.UIs.quest_book, x + 125, y - 90, 224, 253, 17, 18);
 
             ScreenRenderer.scale(2f);
-            render.drawString("User Profile", (x - 158f) / 2, (y - 74) / 2, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            render.drawString("User Profile", (x - 158f) / 2.0f, (y - 74) / 2.0f, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
         }
         ScreenRenderer.endGL();
         renderHoveredText(hoveredText, mouseX, mouseY);
@@ -135,14 +136,12 @@ public class MainPage extends QuestBookPage {
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         if (selected > 0) {
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            WynntilsSound.QUESTBOOK_PAGE.play();
             QuestBookPages.getPageBySlot(selected).open(false);
         } else if (selected == -1) {
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-            currentPage--;
+            goBack();
         } else if (selected == -2) {
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-            currentPage++;
+            goForward();
         }
     }
 }

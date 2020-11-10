@@ -1,10 +1,11 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.core.framework.rendering.colors;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class CommonColors extends CustomColor.SetBase {
 
@@ -48,7 +49,7 @@ public class CommonColors extends CustomColor.SetBase {
         "LIGHT_BLUE", "MAGENTA", "ORANGE", "WHITE"
     };
 
-    private static final HashMap<String, CommonColors> aliases = new HashMap<>();
+    private static final Map<String, CommonColors> aliases = new HashMap<>();
 
     static {
         aliases.put("GREY", GRAY);

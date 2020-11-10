@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.core.framework.rendering.colors;
 
 import javax.annotation.Nullable;
@@ -12,14 +16,14 @@ import java.util.*;
 public class ColorSet<T extends CustomColor> {
     private final T[] colors;
     private final String[] names;
-    private final HashMap<String, T> nameMap;
-    private final HashSet<String>[] aliases;
+    private final Map<String, T> nameMap;
+    private final Set<String>[] aliases;
 
     public ColorSet(T[] colors, String[] names) {
         this(colors, names, null);
     }
 
-    public ColorSet(T[] colors, String[] names, @Nullable HashMap<String, T> aliases) {
+    public ColorSet(T[] colors, String[] names, @Nullable Map<String, T> aliases) {
         this.colors = colors;
         this.names = new String[names.length];
 
@@ -38,7 +42,7 @@ public class ColorSet<T extends CustomColor> {
         }
 
         if (aliases != null) {
-            for (HashMap.Entry<String, T> item : aliases.entrySet()) {
+            for (Map.Entry<String, T> item : aliases.entrySet()) {
                 String alias = item.getKey().trim().replace(' ', '_').toUpperCase(Locale.ROOT);
                 T colour = item.getValue();
                 this.aliases[getCode(colour)].add(alias);
@@ -162,6 +166,17 @@ public class ColorSet<T extends CustomColor> {
         CustomColor[] colors = new CustomColor[this.colors.length];
         for (int i = 0; i < colors.length; ++i) {
             colors[i] = new CustomColor(this.colors[i]);
+        }
+        return colors;
+    }
+
+    /**
+     * @return the colours as integers
+     */
+    public int[] asInts() {
+        int[] colors = new int[this.colors.length];
+        for (int i = 0; i < colors.length; i++) {
+            colors[i] = this.colors[i].toInt();
         }
         return colors;
     }

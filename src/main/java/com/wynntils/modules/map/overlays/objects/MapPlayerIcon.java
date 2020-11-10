@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.modules.map.overlays.objects;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
@@ -79,20 +83,15 @@ public class MapPlayerIcon extends MapIcon {
 
     @Override
     public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier, float blockScale) {
-        color(1.0F, 1.0F, 1.0F, 1.0F);
         enableAlpha();
-        disableBlend();
         disableBlend();
 
         { pushMatrix();
             float sizeX = getSizeX() * sizeMultiplier;
             float sizeZ = getSizeZ() * sizeMultiplier;
 
-            //boolean worldMapOpen = Minecraft.getMinecraft().currentScreen instanceof WorldMapUI;
-
             ResourceLocation res = getResource();
 
-            //TODO somehow this doesn't works on the MiniMap
             CommonColors outlineColor = null;
             if (profile.isInParty())
                 outlineColor = CommonColors.YELLOW;
@@ -111,8 +110,8 @@ public class MapPlayerIcon extends MapIcon {
             Minecraft.getMinecraft().getTextureManager().bindTexture(res);
 
             drawScaledCustomSizeModalRect(
-                    ((centreX + renderer.getDrawingOrigin().x) -sizeX),
-                    ((centreZ + renderer.getDrawingOrigin().y) -sizeZ),
+                    ((centreX + ScreenRenderer.drawingOrigin().x) -sizeX),
+                    ((centreZ + ScreenRenderer.drawingOrigin().y) -sizeZ),
                     8f, 8, 8, 8,
                     sizeX * 2f,
                     sizeZ * 2f,
@@ -122,6 +121,8 @@ public class MapPlayerIcon extends MapIcon {
                 drawScaledCustomSizeModalRect(-sizeX, -sizeZ, 40.0F, 8, 8, 8, sizeX * 2f, sizeZ * 2f, 64.0F, 64.0F);
 
         } popMatrix();
+
+        enableBlend();
     }
 
     @Override

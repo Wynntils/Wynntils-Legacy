@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.core.framework.ui.elements;
@@ -28,18 +28,18 @@ public class UIEList extends UIElement {
             uie.position.offsetX += this.position.offsetX;
             uie.position.offsetY += this.position.offsetY;
             uie.position.refresh(screen);
-            if(!(uie instanceof UIEList)) {
+            if (!(uie instanceof UIEList)) {
                 uie.position.offsetX -= this.position.offsetX;
                 uie.position.offsetY -= this.position.offsetY;
             }
-            if(!uie.visible) continue;
+            if (!uie.visible) continue;
             uie.render(mouseX, mouseY);
         }
     }
 
     @Override
     public void tick(long ticks) {
-        for(UIElement uie : elements)
+        for (UIElement uie : elements)
             uie.tick(ticks);
     }
 

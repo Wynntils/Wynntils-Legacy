@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.core.utils.helpers;
@@ -15,7 +15,7 @@ public class MD5Verification {
     String md5;
 
     public MD5Verification(File f) {
-        try{
+        try {
             InputStream fis = new FileInputStream(f);
 
             byte[] buffer = new byte[1024];
@@ -23,7 +23,7 @@ public class MD5Verification {
             int numRead = fis.read(buffer);
 
             while (numRead != -1) {
-                if(numRead > 0) {
+                if (numRead > 0) {
                     md.update(buffer, 0, numRead);
                 }
                 numRead = fis.read(buffer);
@@ -32,7 +32,7 @@ public class MD5Verification {
             fis.close();
 
             md5 = hexDigest(md.digest());
-        }catch (Exception ex) { ex.printStackTrace(); }
+        } catch (Exception ex) { ex.printStackTrace(); }
     }
 
     public MD5Verification(byte[] data) {

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
@@ -14,7 +14,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 public class GammaOverlay extends Overlay {
 
     public GammaOverlay() {
-        super("Gamma",0,11,true,1.0f,0.0f,0,0, OverlayGrowFrom.MIDDLE_CENTRE);
+        super("Gamma", 0, 11, true, 1.0f, 0.0f, 0, 0, OverlayGrowFrom.MIDDLE_CENTRE);
     }
 
     @Override
@@ -27,4 +27,5 @@ public class GammaOverlay extends Overlay {
             drawString("GammaBright", 0, 0, CommonColors.ORANGE, SmartFontRenderer.TextAlignment.RIGHT_LEFT, OverlayConfig.INSTANCE.textShadow);
         }
     }
+
 }

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.core.framework.rendering.colors;
@@ -10,19 +10,18 @@ import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.Arrays;
 
-
 /** CustomColor
  * will represent color or complex colors
  * in a more efficient way than awt's Color or minecraft's color ints.
  */
 public class CustomColor {
     public float
-            r, // The RED   value of the color(0.0f -> 1.0f)
-            g, // The GREEN value of the color(0.0f -> 1.0f)
-            b, // The BLUE  value of the color(0.0f -> 1.0f)
-            a; // The ALPHA value of the color(0.0f -> 1.0f)
+            r,  // The RED   value of the color(0.0f -> 1.0f)
+            g,  // The GREEN value of the color(0.0f -> 1.0f)
+            b,  // The BLUE  value of the color(0.0f -> 1.0f)
+            a;  // The ALPHA value of the color(0.0f -> 1.0f)
 
-    public CustomColor(float r, float g, float b) { this(r,g,b,1.0f); }
+    public CustomColor(float r, float g, float b) { this(r, g, b, 1.0f); }
 
     public CustomColor(float r, float g, float b, float a) {
         this.r = r;
@@ -31,7 +30,14 @@ public class CustomColor {
         this.a = a;
     }
 
-    public CustomColor(){}
+    public CustomColor(int r, int g, int b) {
+        this.r = r / 255f;
+        this.g = g / 255f;
+        this.b = b / 255f;
+        this.a = 1.0f;
+    }
+
+    public CustomColor() {}
 
     public CustomColor(CustomColor c) { this(c.r, c.g, c.b, c.a); }
 
@@ -39,7 +45,7 @@ public class CustomColor {
      * Will set the color to OpenGL's active color
      */
     public void applyColor() {
-        GlStateManager.color(r,g,b,a);
+        GlStateManager.color(r, g, b, a);
     }
 
     public CustomColor setA(float a) {
@@ -48,55 +54,55 @@ public class CustomColor {
     }
 
     public static CustomColor fromString(String string, float a) {
-        if(string.length() == 6) {
+        if (string == null) return new CustomColor(0, 0, 0, a);
+        String withoutHash = string.trim();
+        if (withoutHash.startsWith("#")) withoutHash = withoutHash.substring(1).trim();
+        if (withoutHash.equals("")) return new CustomColor(0, 0, 0, a);
+        if (withoutHash.length() == 6) {
             try {
-                float r = ((float) Integer.parseInt(string.substring(0, 2), 16) / 255f);
-                float g = ((float) Integer.parseInt(string.substring(2, 4), 16) / 255f);
-                float b = ((float) Integer.parseInt(string.substring(4, 6), 16) / 255f);
-                return new CustomColor(r, g, b, a);
+                return fromInt(Integer.parseInt(withoutHash, 16), a);
             } catch (Exception ignored) { }
-        } else if (string.length() == 3) {
+        } else if (withoutHash.length() == 3) {
             // "rgb" -> "rrggbb"
             try {
-                float r = (Integer.parseInt(string.substring(0, 1), 16) * 0x11 / 255f);
-                float g = (Integer.parseInt(string.substring(1, 2), 16) * 0x11 / 255f);
-                float b = (Integer.parseInt(string.substring(2, 3), 16) * 0x11 / 255f);
-                return new CustomColor(r, g, b, a);
+                int rgb = Integer.parseInt(withoutHash, 16);
+                int r = ((rgb >> 8) & 0xF) * 0x11;
+                int g = ((rgb >> 4) & 0xF) * 0x11;
+                int b = (rgb & 0xF) * 0x11;
+                return fromBytes((byte) r, (byte) g, (byte) b, a);
             } catch (Exception ignored) { }
-        } else if (string.length() == 2) {
+        } else if (withoutHash.length() == 2) {
             // "vv" -> "vvvvvv"
             try {
-                float v = ((float) Integer.parseInt(string, 16) / 255f);
-                return new CustomColor(v, v, v, a);
+                byte v = (byte) Integer.parseInt(withoutHash, 16);
+                return fromBytes(v, v, v, a);
             } catch (Exception ignored) { }
         }
-        return fromString(DigestUtils.sha1Hex(string).substring(0,6),a);
+        byte[] hash = DigestUtils.sha1(string);
+        return fromBytes(hash[0], hash[1], hash[2], a);
     }
 
     public static CustomColor fromHSV(float h, float s, float v, float a) {
-        if(v == 0f) {
-            return new CustomColor(0.0f,0.0f,0.0f,a);
-        } else if(s == 0f) {
-            return new CustomColor(v,v,v,a);
-        } else {
-            h = h % 1f;
+        a = MathHelper.clamp(a, 0, 1);
+        if (v <= 0) return new CustomColor(0, 0, 0, a);
+        if (v > 1) v = 1;
+        if (s <= 0) return new CustomColor(v, v, v, a);
+        if (s > 1) s = 1;
 
-            float vh = h * 6;
-            if (vh == 6)
-                vh = 0;
-            int vi = MathHelper.fastFloor(vh);
-            float v1 = v * (1 - s);
-            float v2 = v * (1 - s * (vh - vi));
-            float v3 = v * (1 - s * (1 - (vh - vi)));
+        float vh = ((h % 1 + 1) * 6) % 6;
 
-            switch(vi) {
-                case 0: return new CustomColor(v,v3,v1,a);
-                case 1: return new CustomColor(v2,v,v1,a);
-                case 2: return new CustomColor(v1,v,v3,a);
-                case 3: return new CustomColor(v1,v2,v,a);
-                case 4: return new CustomColor(v3,v1,v,a);
-                default: return new CustomColor(v,v1,v2,a);
-            }
+        int vi = MathHelper.fastFloor(vh);
+        float v1 = v * (1 - s);
+        float v2 = v * (1 - s * (vh - vi));
+        float v3 = v * (1 - s * (1 - (vh - vi)));
+
+        switch (vi) {
+            case 0: return new CustomColor(v, v3, v1, a);
+            case 1: return new CustomColor(v2, v, v1, a);
+            case 2: return new CustomColor(v1, v, v3, a);
+            case 3: return new CustomColor(v1, v2, v, a);
+            case 4: return new CustomColor(v3, v1, v, a);
+            default: return new CustomColor(v, v1, v2, a);
         }
     }
 
@@ -138,11 +144,44 @@ public class CustomColor {
      * @return 0xAARRGGBB
      */
     public int toInt() {
-        int r = (int) (this.r * 255);
-        int g = (int) (this.g * 255);
-        int b = (int) (this.b * 255);
-        int a = (int) (this.a * 255);
+        int r = (int) (Math.min(this.r, 1f) * 255);
+        int g = (int) (Math.min(this.g, 1f) * 255);
+        int b = (int) (Math.min(this.b, 1f) * 255);
+        int a = (int) (Math.min(this.a, 1f) * 255);
         return (a << 24) | (r << 16) | (g << 8) | b;
+    }
+
+    /**
+     * Construct a CustomColor from an int 0xAARRGGBB
+     *
+     * @param argb 32 bits with the most significant 8 being the value of the alpha channel, followed by rgb values
+     * @return A custom colour such that fromInt(x).toInt() == x
+     */
+    public static CustomColor fromInt(int argb) {
+        return fromInt(argb & 0xFFFFFF, ((argb >>> 24) & 0xFF) / 255f);
+    }
+
+    /**
+     * Construct a CustomColor from an int 0xRRGGBB and an alpha value
+     *
+     * @param rgb 24 bits (Most significant 8 are ignored)
+     * @param a Alpha value of colour
+     * @return A custom colour such that fromInt(rgb, a).toInt() & 0xFFFFFF == rgb && fromInt(rgb, a).a == a
+     */
+    public static CustomColor fromInt(int rgb, float a) {
+        return fromBytes((byte) (rgb >>> 16), (byte) (rgb >>> 8), (byte) rgb, a);
+    }
+
+    public static CustomColor fromBytes(byte r, byte g, byte b) {
+        return fromBytes(r, g, b, 0);
+    }
+
+    public static CustomColor fromBytes(byte r, byte g, byte b, byte a) {
+        return fromBytes(r, g, b, Byte.toUnsignedInt(a) / 255f);
+    }
+
+    public static CustomColor fromBytes(byte r, byte g, byte b, float a) {
+        return new CustomColor(Byte.toUnsignedInt(r) / 255f, Byte.toUnsignedInt(g) / 255f, Byte.toUnsignedInt(b) / 255f, a);
     }
 
     /** HeyZeer0: this is = rgba(1,1,1,1) **/

@@ -1,21 +1,31 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.questbook.enums;
 
+import net.minecraft.util.text.TextFormatting;
+
 public enum DiscoveryType {
 
-    TERRITORY(0), WORLD(1), SECRET(2);
+    TERRITORY(0, TextFormatting.WHITE),
+    WORLD(1, TextFormatting.YELLOW),
+    SECRET(2, TextFormatting.AQUA);
 
     int order;
+    TextFormatting colour;
 
-    DiscoveryType(int order) {
+    DiscoveryType(int order, TextFormatting colour) {
         this.order = order;
+        this.colour = colour;
     }
 
     public int getOrder() {
         return order;
+    }
+
+    public TextFormatting getColour() {
+        return colour;
     }
 
 }

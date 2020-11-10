@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.core.framework.ui;
@@ -31,12 +31,12 @@ public abstract class UI extends GuiScreen {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        if(!initiated) { initiated = true; onInit(); }
+        if (!initiated) { initiated = true; onInit(); }
         super.drawScreen(mouseX, mouseY, partialTicks);
         this.mouseX = mouseX;
         this.mouseY = mouseY;
 
-        ScreenRenderer.beginGL(0,0);
+        ScreenRenderer.beginGL(0, 0);
 
         screenWidth = ScreenRenderer.screen.getScaledWidth();
         screenHeight = ScreenRenderer.screen.getScaledHeight();
@@ -44,7 +44,7 @@ public abstract class UI extends GuiScreen {
         onRenderPreUIE(screenRenderer);
         for (UIElement uie : UIElements) {
             uie.position.refresh(ScreenRenderer.screen);
-            if(!uie.visible) continue;
+            if (!uie.visible) continue;
             uie.render(mouseX, mouseY);
         }
 
@@ -58,7 +58,7 @@ public abstract class UI extends GuiScreen {
         for (UIElement uie : UIElements)
             uie.tick(ticks);
     }
-    @Override public void initGui() { if(!initiated) { initiated = true; onInit(); } onWindowUpdate(); }
+    @Override public void initGui() { if (!initiated) { initiated = true; onInit(); } onWindowUpdate(); }
     @Override public void onGuiClosed() {onClose();}
 
     @Override
@@ -114,7 +114,7 @@ public abstract class UI extends GuiScreen {
                 this.UIElements = UIElements_old;
             } else if (uie instanceof UIETextBox) {
                 ((UIETextBox) uie).keyTyped(typedChar, keyCode, this);
-            } else if(uie instanceof UIEColorWheel)
+            } else if (uie instanceof UIEColorWheel)
                 ((UIEColorWheel) uie).keyTyped(typedChar, keyCode, this);
         }
     }
@@ -128,7 +128,7 @@ public abstract class UI extends GuiScreen {
     public abstract void onWindowUpdate();
 
     @Override
-    protected void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor) { //fix for alpha problems after doing default background
+    protected void drawGradientRect(int left, int top, int right, int bottom, int startColor, int endColor) {  // fix for alpha problems after doing default background
         super.drawGradientRect(left, top, right, bottom, startColor, endColor);
         GlStateManager.enableBlend();
     }
@@ -152,11 +152,11 @@ public abstract class UI extends GuiScreen {
         static ScreenRenderer render = new ScreenRenderer();
         public static void drawBook() {
             int wh = ScreenRenderer.screen.getScaledWidth()/2, hh = ScreenRenderer.screen.getScaledHeight()/2;
-            render.drawRect(Textures.UIs.book,wh-200,hh-110,wh+200,hh+110, 0f,0f,1f,1f);
+            render.drawRect(Textures.UIs.book, wh - 200, hh - 110, wh + 200, hh + 110, 0, 0, 400, 220);
         }
         public static void drawScrollArea() {
             int wh = ScreenRenderer.screen.getScaledWidth()/2, hh = ScreenRenderer.screen.getScaledHeight()/2;
-            render.drawRect(Textures.UIs.book_scrollarea_settings,wh-190,hh-100,wh-12,hh+85,0f,0f,1f,1f);
+            render.drawRect(Textures.UIs.book_scrollarea_settings, wh - 190, hh - 100, wh - 12, hh + 85, 0, 0, 178, 185);
         }
     }
 }

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.map.overlays.objects;
@@ -76,6 +76,10 @@ public abstract class MapIcon {
 
     public static List<MapIcon> getApiMarkers(MapConfig.IconTexture iconTexture) {
         return MapApiIcon.getApiMarkers(iconTexture);
+    }
+
+    public static List<MapIcon> getLabels() {
+        return MapLabel.getLabels();
     }
 
     public static List<MapIcon> getWaypoints() {

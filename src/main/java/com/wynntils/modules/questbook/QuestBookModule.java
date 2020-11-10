@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.questbook;
@@ -7,6 +7,7 @@ package com.wynntils.modules.questbook;
 import com.wynntils.core.framework.enums.Priority;
 import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
+import com.wynntils.modules.questbook.commands.CommandExportDiscoveries;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.events.ClientEvents;
@@ -23,12 +24,13 @@ public class QuestBookModule extends Module {
         registerSettings(QuestBookConfig.class);
         registerOverlay(new TrackedQuestOverlay(), Priority.HIGHEST);
 
-        registerKeyBinding("Open Quest Book", Keyboard.KEY_K, "Wynntils", true, () -> {
-            QuestBookPages.QUESTS.getPage().open(true);
-        });
+        registerCommand(new CommandExportDiscoveries());
+
+        registerKeyBinding("Open Quest Book", Keyboard.KEY_K, "Wynntils", true, () -> QuestBookPages.QUESTS.getPage().open(true));
+        registerKeyBinding("Open Discoveries", Keyboard.KEY_U, "Wynntils", true, () -> QuestBookPages.DISCOVERIES.getPage().open(true));
         registerKeyBinding("Open Menu", Keyboard.KEY_I, "Wynntils", true, () -> {
             QuestBookPages.MAIN.getPage().open(true);
-            QuestManager.wasBookOpened();
+            QuestManager.readQuestBook();
         });
     }
 

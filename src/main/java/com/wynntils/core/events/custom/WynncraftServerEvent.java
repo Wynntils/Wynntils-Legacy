@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.core.events.custom;
@@ -23,6 +23,5 @@ public class WynncraftServerEvent extends Event {
      *
      */
     public static class Leave extends WynncraftServerEvent { }
-
 
 }

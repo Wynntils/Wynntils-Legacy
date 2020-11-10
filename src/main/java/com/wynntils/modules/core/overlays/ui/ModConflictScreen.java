@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.core.overlays.ui;
@@ -9,12 +9,13 @@ import net.minecraft.client.gui.GuiErrorScreen;
 import net.minecraftforge.fml.client.CustomModLoadingErrorDisplayException;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class ModConflictScreen extends CustomModLoadingErrorDisplayException {
 
-    public HashMap<String, String> conflictMods;
+    public Map<String, String> conflictMods;
 
-    public ModConflictScreen(HashMap<String, String> conflictMods) {
+    public ModConflictScreen(Map<String, String> conflictMods) {
         this.conflictMods = conflictMods;
     }
 
@@ -31,7 +32,7 @@ public class ModConflictScreen extends CustomModLoadingErrorDisplayException {
         int offset = (errorScreen.height/2) - (40 + 10*conflictMods.size());
         errorScreen.drawCenteredString(fontRenderer, "Wynntils has detected the following mods:", errorScreen.width/2, offset, 0xFFFFFF);
         offset+=10;
-        for(String x : conflictMods.keySet()) {
+        for (String x : conflictMods.keySet()) {
             offset+=10;
             errorScreen.drawCenteredString(fontRenderer, "§f§l" + x + "§f§o (" + conflictMods.get(x) + ")", errorScreen.width/2, offset, 0xFFFFFF);
         }

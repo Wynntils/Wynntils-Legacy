@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.core.overlays.ui;
@@ -22,7 +22,7 @@ public class PlayerInfoReplacer extends GuiPlayerTabOverlay {
 
     @Override
     public void renderPlayerlist(int width, Scoreboard scoreboardIn, @Nullable ScoreObjective scoreObjectiveIn) {
-        if(FrameworkManager.getEventBus().post(new GuiOverlapEvent.PlayerInfoOverlap.RenderList(this))) return;
+        if (FrameworkManager.getEventBus().post(new GuiOverlapEvent.PlayerInfoOverlap.RenderList(this))) return;
 
         super.renderPlayerlist(width, scoreboardIn, scoreObjectiveIn);
     }

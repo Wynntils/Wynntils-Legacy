@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.core.utils.helpers;
@@ -59,12 +59,12 @@ public class CommandResponse {
 
     @SubscribeEvent
     public void onMessageReceive(ClientChatReceivedEvent e) {
-        if(e.getType() != chatType) return;
+        if (e.getType() != chatType) return;
 
         String message = formattedText ? e.getMessage().getFormattedText() : e.getMessage().getUnformattedText();
         Matcher matcher = regex.matcher(message);
 
-        if(!matcher.find()) return;
+        if (!matcher.find()) return;
 
         whenReceive.accept(matcher, e.getMessage());
         FrameworkManager.getEventBus().unregister(this);

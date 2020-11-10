@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.example;
@@ -15,7 +15,7 @@ import org.lwjgl.input.Keyboard;
  * Modules are the parts that make up the whole Wynntils mod,
  * They should be able to be turned off and on dynamically,
  * register their event listeners, overlays and keybindings,
- * and (TODO) house the module's user prefrences
+ * and (TODO) house the module's user preferences
  */
 @ModuleInfo(name = "example_snake-cased_name", displayName = "Display Name For The Module")
 public class ExampleModule extends Module {
@@ -28,14 +28,14 @@ public class ExampleModule extends Module {
      * From here, call Module#registerKeyBinding to register a key
      */
     public void onEnable() {
-        getLogger().warn("MODULE STARTED");///You can use Module#getLogger to spit things to the console
+        getLogger().warn("MODULE STARTED");  // You can use Module#getLogger to spit things to the console
 
-        registerEvents(new ExampleListener());//Registering ExampleListener as an event handler
+        registerEvents(new ExampleListener());  // Registering ExampleListener as an event handler
 
-        registerOverlay(new ExampleOverlay(), Priority.LOW);//Registering ExampleOverlay on the LOW priority Overlays collection
+        registerOverlay(new ExampleOverlay(), Priority.LOW);  // Registering ExampleOverlay on the LOW priority Overlays collection
 
         registerKeyBinding("Test", Keyboard.KEY_G, "Wynntils", true, () -> {
-            getLogger().warn("KEY PRESSED");//Registering the 'G' key to a test example key and make it spit "KEY PRESSED" to console
+            getLogger().warn("KEY PRESSED");  // Registering the 'G' key to a test example key and make it spit "KEY PRESSED" to console
         });
     }
 

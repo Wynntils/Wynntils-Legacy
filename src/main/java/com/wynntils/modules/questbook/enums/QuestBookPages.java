@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.modules.questbook.enums;
 
 import com.wynntils.modules.questbook.instances.QuestBookPage;
@@ -8,11 +12,11 @@ import java.util.Arrays;
 public enum QuestBookPages {
 
     MAIN(new MainPage(), 0),
-    QUESTS(new QuestsPage(),1),
-    SETTINGS(new SettingsPage(),2),
-    ITEMGUIDE(new ItemPage(),3),
-    HUDCONFIG(new HUDConfigPage(),4),
-    DISCOVERIES(new DiscoveriesPage(),5);
+    QUESTS(new QuestsPage(), 1),
+    SETTINGS(new SettingsPage(), 2),
+    ITEMGUIDE(new ItemPage(), 3),
+    HUDCONFIG(new HUDConfigPage(), 4),
+    DISCOVERIES(new DiscoveriesPage(), 5);
 
     private QuestBookPage questBookPage;
     private int slotNb;

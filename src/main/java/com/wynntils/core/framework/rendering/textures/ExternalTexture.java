@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.core.framework.rendering.textures;
@@ -20,7 +20,7 @@ public class ExternalTexture extends Texture {
 
     public ExternalTexture(File file, boolean load) {
         this.file = file;
-        if(load) load();
+        if (load) load();
     }
 
     @Override
@@ -33,7 +33,7 @@ public class ExternalTexture extends Texture {
             this.glID = TextureUtil.glGenTextures();
             width = img.getWidth();
             height = img.getHeight();
-            TextureUtil.uploadTextureImageAllocate(glID,img,false,false);
+            TextureUtil.uploadTextureImageAllocate(glID, img, false, false);
             loaded = true;
             return ActionResult.SUCCESS;
         } catch (Exception e) {
@@ -47,7 +47,8 @@ public class ExternalTexture extends Texture {
 
     @Override
     public ActionResult unload() {
-        if(!loaded) return ActionResult.ISSUE;
+        if (!loaded) return ActionResult.ISSUE;
+
         TextureUtil.deleteTexture(glID);
         loaded = false;
         return ActionResult.SUCCESS;
@@ -55,7 +56,8 @@ public class ExternalTexture extends Texture {
 
     @Override
     public ActionResult bind() {
-        if(!loaded) return ActionResult.ERROR;
+        if (!loaded) return ActionResult.ERROR;
+
         GlStateManager.bindTexture(glID);
         return ActionResult.SUCCESS;
     }

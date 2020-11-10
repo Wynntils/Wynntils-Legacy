@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.modules.questbook.overlays.ui;
 
 import com.wynntils.ModCore;
@@ -16,7 +20,7 @@ public class HUDConfigPage extends QuestBookPage {
     }
 
     @Override
-    public void open(boolean requestOpening) {
+    public void open(boolean showAnimation) {
         OverlayPositionsUI ui = new OverlayPositionsUI(ModCore.mc().currentScreen);
         UI.setupUI(ui);
         ModCore.mc().displayGuiScreen(ui);
@@ -24,6 +28,6 @@ public class HUDConfigPage extends QuestBookPage {
 
     @Override
     public List<String> getHoveredDescription() {
-        return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Overlay Configuration", TextFormatting.GRAY + "Change position", TextFormatting.GRAY + "and enable/disable", TextFormatting.GRAY + "the various",  TextFormatting.GRAY + "Wynntils overlays.", "",  TextFormatting.GREEN + "Left click to select");
+        return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Overlay Configuration", TextFormatting.GRAY + "Change position", TextFormatting.GRAY + "and enable/disable", TextFormatting.GRAY + "the various", TextFormatting.GRAY + "Wynntils overlays.", "", TextFormatting.GREEN + "Left click to select");
     }
 }

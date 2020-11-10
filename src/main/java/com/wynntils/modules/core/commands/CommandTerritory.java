@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.core.commands;
@@ -43,7 +43,7 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if(args.length <= 0) {
+        if (args.length <= 0) {
             Minecraft.getMinecraft().player.playSound(SoundEvents.BLOCK_ANVIL_PLACE, 1.0f, 1.0f);
 
             throw new WrongUsageException("/territory [name] | Ex: /territory Detlas");
@@ -59,7 +59,7 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
         Collection<TerritoryProfile> territories = WebManager.getTerritories().values();
 
         Optional<TerritoryProfile> selectedTerritory = territories.stream().filter(c -> c.getFriendlyName().equalsIgnoreCase(finalTerritoryName)).findFirst();
-        if(!selectedTerritory.isPresent()) {
+        if (!selectedTerritory.isPresent()) {
             Minecraft.getMinecraft().player.playSound(SoundEvents.BLOCK_ANVIL_PLACE, 1.0f, 1.0f);
 
             throw new CommandException("Invalid territory! Use: /territory [name] | Ex: /territory Detlas");
@@ -72,7 +72,7 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
         int xMiddle = tp.getStartX() + ((tp.getEndX() - tp.getStartX())/2);
         int zMiddle = tp.getStartZ() + ((tp.getEndZ() - tp.getStartZ())/2);
 
-        CompassManager.setCompassLocation(new Location(xMiddle, 0, zMiddle)); //update compass location
+        CompassManager.setCompassLocation(new Location(xMiddle, 0, zMiddle));  // update compass location
 
         TextComponentString success = new TextComponentString("The compass is now pointing towards " + territoryName + " (" + xMiddle + ", " + zMiddle + ")");
         success.getStyle().setColor(TextFormatting.GREEN);

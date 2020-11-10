@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.webapi.profiles;
@@ -19,11 +19,9 @@ public class UpdateProfile {
     boolean updateCheckFailed = false;
     String latestUpdate = Reference.VERSION;
 
-    private WebReader versions;
-
     public UpdateProfile() {
         new Thread(() -> {
-            try{
+            try {
                 MD5Verification md5Installed = new MD5Verification(ModCore.jarFile);
                 if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.CUTTING_EDGE) {
                     String cuttingEdgeMd5 = WebManager.getCuttingEdgeJarFileMD5();
@@ -41,11 +39,11 @@ public class UpdateProfile {
                     }
                 }
 
-            }catch(Exception ex) {
+            } catch (Exception ex) {
                 ex.printStackTrace();
                 updateCheckFailed = true;
             }
-        }).start();
+        }, "wynntils-updateprofile").start();
     }
 
     public boolean hasUpdate() {

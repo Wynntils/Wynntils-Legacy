@@ -1,11 +1,12 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.utilities.managers;
 
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -19,9 +20,9 @@ import net.minecraftforge.client.event.GuiScreenEvent;
 public class DailyReminderManager {
 
     public static void checkDailyReminder(EntityPlayer p) {
-        if(!UtilitiesConfig.INSTANCE.dailyReminder || !Reference.onWorld) return;
+        if (!UtilitiesConfig.INSTANCE.dailyReminder || !Reference.onWorld) return;
 
-        if(System.currentTimeMillis() > UtilitiesConfig.Data.INSTANCE.dailyReminder) {
+        if (System.currentTimeMillis() > UtilitiesConfig.Data.INSTANCE.dailyReminder) {
             TextComponentString text = new TextComponentString("");
             text.getStyle().setColor(TextFormatting.GRAY);
 
@@ -50,17 +51,19 @@ public class DailyReminderManager {
     }
 
     public static void openedDaily() {
-        if(!UtilitiesConfig.INSTANCE.dailyReminder || !Reference.onWorld) return;
+        if (!UtilitiesConfig.INSTANCE.dailyReminder || !Reference.onWorld) return;
 
-        UtilitiesConfig.Data.INSTANCE.dailyReminder = System.currentTimeMillis() + 86400000;
+        long now = System.currentTimeMillis();
+        UtilitiesConfig.Data.INSTANCE.lastOpenedDailyReward = now;
+        UtilitiesConfig.Data.INSTANCE.dailyReminder = now + 86400000;
         UtilitiesConfig.Data.INSTANCE.saveSettings(UtilitiesModule.getModule());
     }
 
     public static void openedDailyInventory(GuiScreenEvent.InitGuiEvent.Post e) {
-        if(!UtilitiesConfig.INSTANCE.dailyReminder || !Reference.onWorld) return;
+        if (!UtilitiesConfig.INSTANCE.dailyReminder || !Reference.onWorld) return;
 
-        if(e.getGui() instanceof GuiContainer && ((GuiContainer)e.getGui()).inventorySlots.getSlot(0).inventory.getName().contains("skill points remaining")) {
-            if(!((GuiContainer) e.getGui()).inventorySlots.getSlot(22).getHasStack()) {
+        if (Utils.isCharacterInfoPage(e.getGui())) {
+            if (!((GuiContainer) e.getGui()).inventorySlots.getSlot(22).getHasStack()) {
                 UtilitiesConfig.Data.INSTANCE.dailyReminder = System.currentTimeMillis() + 86400000;
                 UtilitiesConfig.Data.INSTANCE.saveSettings(UtilitiesModule.getModule());
             }

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.webapi;
@@ -14,14 +14,16 @@ import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class WebReader {
 
     String url;
     File file;
 
-    private HashMap<String, String> values;
-    private HashMap<String, ArrayList<String>> lists;
+    private Map<String, String> values;
+    private Map<String, List<String>> lists;
 
     public WebReader(String url) throws Exception {
         this.url = url;
@@ -45,7 +47,7 @@ public class WebReader {
         return result;
     }
 
-    public HashMap<String, String> getValues() {
+    public Map<String, String> getValues() {
         return values;
     }
 
@@ -70,32 +72,32 @@ public class WebReader {
         values = new HashMap<>();
         lists = new HashMap<>();
         for (String str : data.split("\\r?\\n")) {
-            if(str.contains("[") && str.contains("]")) {
+            if (str.contains("[") && str.contains("]")) {
                 String[] split;
-                if(str.contains(" = ")) {
+                if (str.contains(" = ")) {
                     split = str.split(" = ");
-                }else if(str.contains("=")) {
+                } else if (str.contains("=")) {
                     split = str.split("=");
-                }else{
+                } else {
                     return false;
                 }
 
                 values.put(split[0].replace("[", "").replace("]", ""), split[1]);
 
-                if(split[1].contains(",")) {
+                if (split[1].contains(",")) {
                     String[] array = split[1].split(",");
 
-                    ArrayList<String> values = new ArrayList<>();
-                    for(String x : array) {
-                        if(x.startsWith(" ")) {
+                    List<String> values = new ArrayList<>();
+                    for (String x : array) {
+                        if (x.startsWith(" ")) {
                             x = x.substring(1);
                         }
                         values.add(x);
                     }
 
                     lists.put(split[0].replace("[", "").replace("]", ""), values);
-                }else{
-                    ArrayList<String> values = new ArrayList<>();
+                } else {
+                    List<String> values = new ArrayList<>();
                     values.add(split[1]);
                     lists.put(split[0].replace("[", "").replace("]", ""), values);
                 }
@@ -108,7 +110,7 @@ public class WebReader {
         return values.getOrDefault(key, null);
     }
 
-    public ArrayList<String> getList(String key) {
+    public List<String> getList(String key) {
         return lists.getOrDefault(key, new ArrayList<>());
     }
 

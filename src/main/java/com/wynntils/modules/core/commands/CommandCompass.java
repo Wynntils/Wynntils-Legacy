@@ -1,10 +1,10 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 package com.wynntils.modules.core.commands;
 
+import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.utils.objects.Location;
-import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.managers.CompassManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.CommandBase;
@@ -17,12 +17,13 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.IClientCommand;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class CommandCompass extends CommandBase implements IClientCommand {
+
+    private static final String USAGE = "compass [<x> [<y>] <z> | <direction> | clear | share [location] [guild|party|user]";
 
     private String[] directions = {
         "north",
@@ -55,12 +56,27 @@ public class CommandCompass extends CommandBase implements IClientCommand {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "compass [<x> <z> | <direction> | clear]";
+        return USAGE;
+    }
+
+    /**
+     * Parse a single minecraft coordinate number. A ~ prefix means a relative position
+     */
+    private int getSingleCoordinate(String str, int relativePosition) throws NumberFormatException {
+        if (str.startsWith("~")) {
+            str = str.substring(1);
+            if (str.isEmpty()) {
+                return relativePosition;
+            }
+        } else {
+            relativePosition = 0;
+        }
+        return relativePosition + Integer.parseInt(str);
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException{
-        if (args.length == 0) throw new WrongUsageException("/compass [<x> <z> | <direction> | clear]");
+        if (args.length == 0) throw new WrongUsageException("/" + USAGE);
 
         if (args.length == 1 && args[0].equalsIgnoreCase("clear")) {
             if (CompassManager.getCompassLocation() != null) {
@@ -77,8 +93,8 @@ public class CommandCompass extends CommandBase implements IClientCommand {
 
         if (args.length == 1 && Arrays.stream(directions).anyMatch(args[0]::equalsIgnoreCase)) {
             int[] newPos = {0, 0};
-            //check for north/south
-            switch (args[0].toLowerCase()) {
+            // check for north/south
+            switch (args[0].toLowerCase(Locale.ROOT)) {
                 case "north":
                 case "northeast":
                 case "northwest":
@@ -99,8 +115,8 @@ public class CommandCompass extends CommandBase implements IClientCommand {
                     break;
             }
 
-            //check for east/west
-            switch (args[0].toLowerCase()) {
+            // check for east/west
+            switch (args[0].toLowerCase(Locale.ROOT)) {
                 case "east":
                 case "northeast":
                 case "southeast":
@@ -175,71 +191,102 @@ public class CommandCompass extends CommandBase implements IClientCommand {
             return;
         }
 
-        if (args.length == 2 && args[0].matches("~|~?(?:-?[1-9][0-9]*|0)") && args[1].matches("~|~?(?:-?[1-9][0-9]*|0)")) {
-            int x = 0; int z = 0;
+        if (args.length >= 1 && args[0].equalsIgnoreCase("share")) {
+            String recipientUser = null;
+            String type;
+            int recipientIndex = 1;
+            double x;
+            double z;
 
-            boolean invalid = false;
-            if (args[0].charAt(0) == '~') {
-                x = (int) Minecraft.getMinecraft().player.posX;
-
-                if (args[0].length() != 1) {
-                    String offset = args[0].substring(1);
-                    if (!Utils.isValidInteger(offset)) {
-                        invalid = true;
-                    } else {
-                        x += Integer.parseInt(offset);
-                    }
-                }
-            } else if (!Utils.isValidInteger(args[0])) {
-                invalid = true;
+            if (args.length >= 2 && args[1].equalsIgnoreCase("location")) {
+                // Use current location instead of compass
+                x = Minecraft.getMinecraft().player.posX;
+                z = Minecraft.getMinecraft().player.posZ;
+                type = "location";
+                recipientIndex = 2;
             } else {
-                x = Integer.parseInt(args[0]);
-            }
-
-            if (!invalid) {
-                if (args[1].charAt(0) == '~') {
-                    z = ((int) Minecraft.getMinecraft().player.posZ);
-                    if (args[1].length() != 1) {
-                        String offset = args[1].substring(1);
-
-                        if (!Utils.isValidInteger(offset)) {
-                            invalid = true;
-                        } else {
-                            z += Integer.parseInt(offset);
-                        }
-                    }
-                } else if (!Utils.isValidInteger(args[1])) {
-                    invalid = true;
-                } else {
-                    z = Integer.parseInt(args[1]);
+                Location location = CompassManager.getCompassLocation();
+                if (location == null) {
+                    throw new CommandException("No compass location set (did you mean /compass share location?)");
                 }
+                x = location.getX();
+                z = location.getZ();
+                type = "compass";
+            }
+            if (args.length >= recipientIndex+1 && !args[recipientIndex].equalsIgnoreCase("party")) {
+                recipientUser = args[recipientIndex];
             }
 
-            if (invalid) throw new CommandException("The coordinate passed was too big");
-
-            CompassManager.setCompassLocation(new Location(x, 0, z));
-
-            TextComponentString text = new TextComponentString("");
-            text.getStyle().setColor(TextFormatting.GREEN);
-            text.appendText("Compass is now pointing towards (");
-
-            TextComponentString xCoordinateText = new TextComponentString(Integer.toString(x));
-            xCoordinateText.getStyle().setColor(TextFormatting.DARK_GREEN);
-            text.appendSibling(xCoordinateText);
-
-            text.appendText(", ");
-
-            TextComponentString zCoordinateText = new TextComponentString(Integer.toString(z));
-            zCoordinateText.getStyle().setColor(TextFormatting.DARK_GREEN);
-            text.appendSibling(zCoordinateText);
-
-            text.appendText(").");
-            sender.sendMessage(text);
+            shareCoordinates(recipientUser, type, (int) x, (int) z);
 
             return;
         }
 
-        throw new CommandException("Invalid arguments: /compass [<x> <z> | <direction> | clear]");
+        if (args.length >= 2) {
+            String argument = String.join(" ", args);
+
+            // Accept fuzzy coordinates like "[x] [<punctuation>] <coord> [<punctuation>] [z] <coord>"
+            // where <punctuation> is any of ":.,", <coord> is ~, ~<int> or <int> and whitespace is liberally accepted
+            Pattern patternXY = Pattern.compile("^[:., ]*[xX]?[:., ]*(~|~?-?[0-9]+)[:., ]+[zZ]?[:., ]*(~|~?-?[0-9]+)[:., ]*$");
+            Matcher matcherXY = patternXY.matcher(argument);
+            // And an alternative with a [y] <y> in between x and z, which is ignored but allowed
+            Pattern patternXYZ = Pattern.compile("^[:., ]*[xX]?[:., ]*(~|~?-?[0-9]+)[:., ]+[yY]?[:., ]*(?:~|~?-?[0-9]+)[:., ]+[zZ]?[:., ]*(~|~?-?[0-9]+)[:., ]*$");
+            Matcher matcherXYZ = patternXYZ.matcher(argument);
+
+            String xStr;
+            String zStr;
+
+            if (matcherXY.find()) {
+                xStr = matcherXY.group(1);
+                zStr = matcherXY.group(2);
+            }  else if (matcherXYZ.find()) {
+                xStr = matcherXYZ.group(1);
+                zStr = matcherXYZ.group(2);
+            }  else {
+                throw new CommandException("Invalid arguments: /" + USAGE);
+            }
+
+            try {
+                int x = getSingleCoordinate(xStr, (int) Minecraft.getMinecraft().player.posX);
+                int z = getSingleCoordinate(zStr, (int) Minecraft.getMinecraft().player.posZ);
+
+                CompassManager.setCompassLocation(new Location(x, 0, z));
+
+                TextComponentString text = new TextComponentString("");
+                text.getStyle().setColor(TextFormatting.GREEN);
+                text.appendText("Compass is now pointing towards (");
+
+                TextComponentString xCoordinateText = new TextComponentString(Integer.toString(x));
+                xCoordinateText.getStyle().setColor(TextFormatting.DARK_GREEN);
+                text.appendSibling(xCoordinateText);
+
+                text.appendText(", ");
+
+                TextComponentString zCoordinateText = new TextComponentString(Integer.toString(z));
+                zCoordinateText.getStyle().setColor(TextFormatting.DARK_GREEN);
+                text.appendSibling(zCoordinateText);
+
+                text.appendText(").");
+                sender.sendMessage(text);
+
+                return;
+            } catch (NumberFormatException e) {
+                throw new CommandException("Invalid coordinates passed to /compass");
+            }
+        }
+
+        throw new CommandException("Invalid arguments: /" + USAGE);
+    }
+
+    public static void shareCoordinates(String recipientUser, String type, int x, int z) {
+        String location = "[" + x + ", " + z + "]";
+        if (recipientUser == null) {
+            Minecraft.getMinecraft().player.sendChatMessage("/p " + " My " + type + " is at " + location);
+        }else if (recipientUser.equalsIgnoreCase("guild")) {
+            Minecraft.getMinecraft().player.sendChatMessage("/g " + " My " + type + " is at " + location);
+        } else {
+            Minecraft.getMinecraft().player.sendChatMessage("/msg " + recipientUser + " My " + type + " is at " + location);
+        }
     }
 
     @Override
@@ -254,8 +301,24 @@ public class CommandCompass extends CommandBase implements IClientCommand {
                     "southwest",
                     "east",
                     "west",
-                    "clear");
+                    "clear",
+                    "share");
         }
+
+        if (args.length >= 2 && args[0].equalsIgnoreCase("share")) {
+            // Allow easy completion of friends' names
+            Set<String> completions = new HashSet<>(PlayerInfo.getPlayerInfo().getFriendList());
+            completions.add("party");
+            completions.add("guild");
+            if (args.length == 3 && args[1].equalsIgnoreCase("location")) {
+                return getListOfStringsMatchingLastWord(args, completions);
+            }
+            completions.add("location");
+            if (args.length == 2) {
+                return getListOfStringsMatchingLastWord(args, completions);
+            }
+        }
+
         return Collections.emptyList();
     }
 
@@ -263,4 +326,5 @@ public class CommandCompass extends CommandBase implements IClientCommand {
     public int getRequiredPermissionLevel() {
         return 0;
     }
+
 }

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.utilities.managers;
@@ -45,7 +45,7 @@ public class QuickCastManager {
     }
 
     public static void castFirstSpell() {
-        if(PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER) {
+        if (PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER) {
             queueSpell(1, SPELL_LEFT, SPELL_RIGHT, SPELL_LEFT);
             return;
         }
@@ -54,7 +54,7 @@ public class QuickCastManager {
     }
 
     public static void castSecondSpell() {
-        if(PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER) {
+        if (PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER) {
             queueSpell(2, SPELL_LEFT, SPELL_LEFT, SPELL_LEFT);
             return;
         }
@@ -63,7 +63,7 @@ public class QuickCastManager {
     }
 
     public static void castThirdSpell() {
-        if(PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER) {
+        if (PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER) {
             queueSpell(3, SPELL_LEFT, SPELL_RIGHT, SPELL_RIGHT);
             return;
         }
@@ -72,7 +72,7 @@ public class QuickCastManager {
     }
 
     public static void castFourthSpell() {
-        if(PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER) {
+        if (PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.ARCHER) {
             queueSpell(4, SPELL_LEFT, SPELL_LEFT, SPELL_RIGHT);
             return;
         }
@@ -84,10 +84,14 @@ public class QuickCastManager {
         if (!Reference.onWorld || PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.NONE) {
             return false;
         }
+
         if (PlayerInfo.getPlayerInfo().getLevel() < spellUnlock[spell - 1]) {
-            Minecraft.getMinecraft().player.sendMessage(new TextComponentString(TextFormatting.GRAY + "You have not yet unlocked this spell! You need to be level " + spellUnlock[spell - 1]));
+            Minecraft.getMinecraft().player.sendMessage(new TextComponentString(
+                    TextFormatting.GRAY + "You have not yet unlocked this spell! You need to be level " + spellUnlock[spell - 1]
+            ));
             return false;
         }
+
         return true;
     }
 

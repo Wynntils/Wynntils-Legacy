@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2019.
+ *  * Copyright © Wynntils - 2018 - 2020.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
@@ -22,21 +22,11 @@ public class ManaBarOverlay extends Overlay {
         super("Mana Bar", 81, 21, true, 0.5f, 1.0f, 10, -38, OverlayGrowFrom.MIDDLE_LEFT, RenderGameOverlayEvent.ElementType.FOOD, RenderGameOverlayEvent.ElementType.HEALTHMOUNT);
     }
 
-//    @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
-//    @Setting(displayName = "Animation Speed",description = "How fast should the bar changes happen(0 for instant)")
-//    public float animated = 2f;
-
-
-    /* Temp in UtilitiesConfig so users can change textures on the fly
-    @Setting(displayName = "Texture", description = "What texture to use")
-    public ManaTextures texture = ManaTextures.a;
-    */
-
     @Setting(displayName = "Flip", description = "Should the filling of the bar be flipped")
     public boolean flip = true;
 
     @Setting(displayName = "Text Position", description = "The position offset of the text")
-    public Pair<Integer,Integer> textPositionOffset = new Pair<>(40,-10);
+    public Pair<Integer, Integer> textPositionOffset = new Pair<>(40, -10);
 
     @Setting(displayName = "Text Name", description = "The color of the text")
     public CustomColor textColor = CommonColors.LIGHT_BLUE;
@@ -55,30 +45,33 @@ public class ManaBarOverlay extends Overlay {
     public void render(RenderGameOverlayEvent.Pre event) {
         switch (OverlayConfig.Mana.INSTANCE.manaTexture) {
             case Wynn:
-                drawDefaultBar(-1, 8, 0, 17,textColor);
+                drawDefaultBar(-1, 8, 0, 17, textColor);
                 break;
-            case a: drawDefaultBar(-1,7,18,33,textColor);
+            case a: drawDefaultBar(-1, 7, 18, 33, textColor);
                 break;
-            case b: drawDefaultBar(-1,8,34,51,textColor);
+            case b: drawDefaultBar(-1, 8, 34, 51, textColor);
                 break;
-            case c: drawDefaultBar(-1,7,52,67,textColor);
+            case c: drawDefaultBar(-1, 7, 52, 67, textColor);
                 break;
-            case d: drawDefaultBar(-1,7,68,83,textColor);
+            case d: drawDefaultBar(-1, 7, 68, 83, textColor);
                 break;
             case Brune:
-                drawDefaultBar(-1, 8, 83, 100,textColor);
+                drawDefaultBar(-1, 8, 83, 100, textColor);
                 break;
             case Inverse:
-                drawDefaultBar(-1, 7, 100, 115,CommonColors.MAGENTA);
+                drawDefaultBar(-1, 7, 100, 115, CommonColors.MAGENTA);
                 break;
             case Aether:
-                drawDefaultBar(-1, 7, 116, 131,textColor);
+                drawDefaultBar(-1, 7, 116, 131, textColor);
                 break;
             case Skull:
                 drawDefaultBar(-1, 8, 132, 147, textColor);
                 break;
             case Skyrim:
                 drawDefaultBar(-1, 8, 148, 163, textColor);
+                break;
+            case Rune:
+                drawDefaultBar(-1, 8, 164, 179, textColor);
                 break;
         }
     }
@@ -88,6 +81,7 @@ public class ManaBarOverlay extends Overlay {
             drawString(getPlayerInfo().getCurrentMana() + " ✺ " + getPlayerInfo().getMaxMana(), textPositionOffset.a - (81-OverlayConfig.Mana.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Mana.INSTANCE.textShadow);
         }
         rotate(OverlayConfig.Mana.INSTANCE.overlayRotation.getDegrees());
-        drawProgressBar(Textures.Overlays.bars_mana, OverlayConfig.Mana.INSTANCE.width, y1, 0, y2, ty1, ty2, (flip ? -mana : mana) / (float) getPlayerInfo().getMaxMana());
+        drawProgressBar(Textures.Overlays.bars_mana, OverlayConfig.Mana.INSTANCE.width, y1, 0, y2, 0, ty1, 81, ty2, (flip ? -mana : mana) / (float) getPlayerInfo().getMaxMana());
     }
+
 }

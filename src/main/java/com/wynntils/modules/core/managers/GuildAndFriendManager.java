@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2020.
+ */
+
 package com.wynntils.modules.core.managers;
 
 import com.wynntils.modules.core.instances.OtherPlayerProfile;
@@ -7,6 +11,7 @@ import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class GuildAndFriendManager {
@@ -16,7 +21,7 @@ public class GuildAndFriendManager {
         Boolean isFriend;
     }
 
-    private static HashMap<String, UnresolvedInfo> unresolvedNames = new HashMap<>();
+    private static Map<String, UnresolvedInfo> unresolvedNames = new HashMap<>();
 
     public static void tryResolveNames() {
         // Try to resolve names from the connection map
