@@ -26,24 +26,31 @@ public class PlayerInfoOverlay extends Overlay {
     }
 
     transient double animationProgress = 0;
+    transient long lastTime = -1;
 
     @Override
     public void render(RenderGameOverlayEvent.Post event) {
         if (!Reference.onWorld || !OverlayConfig.PlayerInfo.INSTANCE.replaceVanilla) return;
+        if (!mc.gameSettings.keyBindPlayerList.isKeyDown() && animationProgress <= 0.0) return;
 
-        // TODO make the animation be TIME, instead of FRAME, reliant. This is currently causing some slowdowns
-        {  // Animation Detection
+        { // Animation Detection
+            if (lastTime == -1) lastTime += Minecraft.getSystemTime();
+
             if (mc.gameSettings.keyBindPlayerList.isKeyDown()) {
-                if (animationProgress < 1.0) animationProgress += 0.02;
+                animationProgress = OverlayConfig.PlayerInfo.INSTANCE.openingDuration == 0 ? 1 :
+                        Math.min(1, animationProgress + (Minecraft.getSystemTime() - lastTime) / OverlayConfig.PlayerInfo.INSTANCE.openingDuration);
             } else if (animationProgress > 0.0) {
-                animationProgress -= 0.02;
+                animationProgress = OverlayConfig.PlayerInfo.INSTANCE.openingDuration == 0 ? 0 :
+                        Math.max(0, animationProgress - (Minecraft.getSystemTime() - lastTime) / OverlayConfig.PlayerInfo.INSTANCE.openingDuration);
             }
 
-            if (animationProgress <= 0.0) return;
+            lastTime = animationProgress <= 0.0 ? -1 : Minecraft.getSystemTime();
+
+            if (OverlayConfig.PlayerInfo.INSTANCE.openingDuration == 0 && animationProgress <= 0.0) return;
         }
 
-        // scales if the screen don't fit the texture height
-        float yScale = screen.getScaledHeight() < 280f ? (float)screen.getScaledHeight_double() / 280f : 1;
+        //scales if the screen don't fit the texture height
+        float yScale = screen.getScaledHeight() < 280f ? (float) screen.getScaledHeight_double() / 280f : 1;
 
         { scale(yScale);
 
@@ -67,12 +74,12 @@ public class PlayerInfoOverlay extends Overlay {
 
                     for (int x = 0; x < 4; x++) {
                         for (int y = 0; y < 20; y++) {
-                            int position = (x * 20) + (y+1);
+                            int position = (x * 20) + (y + 1);
 
-                            if (players.size() < position) break;  // not enough players
+                            if (players.size() < position) break; //not enough players
 
-                            String entry = players.get(position-1);
-                            if (entry.contains("§l")) continue;  // avoid the titles
+                            String entry = players.get(position - 1);
+                            if (entry.contains("§l")) continue; //avoid the titles
 
                             int xPos = -166 + (87 * x);
                             int yPos = 11 + (10 * y);
@@ -111,6 +118,7 @@ public class PlayerInfoOverlay extends Overlay {
 
     private List<String> getAvailablePlayers() {
         if (Minecraft.getSystemTime() < nextExecution && !lastPlayers.isEmpty()) return lastPlayers;
+
         nextExecution = Minecraft.getSystemTime() + 250;
 
         List<NetworkPlayerInfo> players = TabManager.getEntryOrdering()
