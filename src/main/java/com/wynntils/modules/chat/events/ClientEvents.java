@@ -8,8 +8,10 @@ import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.enums.PowderManualChapter;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.chat.configs.ChatConfig;
+import com.wynntils.modules.chat.managers.ChatManager;
 import com.wynntils.modules.chat.managers.HeldItemChatManager;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
@@ -92,6 +94,13 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void onSendMessage(ClientChatEvent e) {
         if (e.getMessage().startsWith("/")) return;
+
+        Pair<String, Boolean> message = ChatManager.applyUpdatesToServer(e.getMessage());
+        e.setMessage(message.a);
+        if (message.b || message.a.isEmpty() || message.a.trim().isEmpty()) {
+            e.setCanceled(true);
+            return;
+        }
 
         if (!ChatOverlay.getChat().getCurrentTab().getAutoCommand().isEmpty())
             e.setMessage(ChatOverlay.getChat().getCurrentTab().getAutoCommand() + " " + e.getMessage());

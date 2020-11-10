@@ -77,6 +77,9 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Wynnic Translations", description = "Should Wynnic be directly replaced with English translations in chat?\n\n§8If this option is disabled, translation tooltips will appear when hovering over Wynnic messages.")
     public boolean translateIntoChat = false;
 
+    @Setting(displayName = "Use brackets for translation", description = "Should text be translated to Wynnic using a button or curly brackets?")
+    public boolean useBrackets = false;
+
     public enum Presets {
         a,
         b,

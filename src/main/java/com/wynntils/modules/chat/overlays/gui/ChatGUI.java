@@ -9,6 +9,7 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.utils.objects.Pair;
+import com.wynntils.modules.chat.configs.ChatConfig;
 import com.wynntils.modules.chat.instances.ChatTab;
 import com.wynntils.modules.chat.language.WynncraftLanguage;
 import com.wynntils.modules.chat.managers.TabManager;
@@ -17,9 +18,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiChat;
+import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -104,8 +108,13 @@ public class ChatGUI extends GuiChat {
             this.tabButtons.put(tab, addButton(new ChatButton(buttonId++, 20 + tabX++ * 40, this.height - 45, 37, 13, getDisplayName(tab), ChatOverlay.getChat().getCurrentTab() == tab, tab)));
         }
         addTab = addButton(new ChatButton(buttonId++, 2, this.height - 45, 15, 13, TextFormatting.GOLD + "+", false));
-        languageButtons.put(WynncraftLanguage.NORMAL, addButton(new ChatButton(buttonId, 20, this.height - 28, 37, 13, "Normal", false, WynncraftLanguage.NORMAL)));
-        languageButtons.put(WynncraftLanguage.WYNNIC, addButton(new ChatButton(buttonId, 60, this.height - 28, 37, 13, "Wynnic", false, WynncraftLanguage.WYNNIC)));
+        languageButtons.put(WynncraftLanguage.NORMAL, addButton(new ChatButton(buttonId, this.width - 24, this.height - 14, 10, 12, "N", false, WynncraftLanguage.NORMAL)));
+        languageButtons.put(WynncraftLanguage.WYNNIC, addButton(new ChatButton(buttonId, this.width - 12, this.height - 14, 10, 12, "W", false, WynncraftLanguage.WYNNIC)));
+        if (ChatConfig.INSTANCE.useBrackets) {
+            languageButtons.values().forEach((button) -> button.visible = false);
+        } else {
+            this.inputField.width = this.width - 28;
+        }
         languageButtons.get(ChatOverlay.getChat().getCurrentLanguage()).setSelected(true);
     }
 
@@ -114,6 +123,29 @@ public class ChatGUI extends GuiChat {
         super.updateScreen();
         for (Map.Entry<ChatTab, ChatButton> tabButton : tabButtons.entrySet()) {
             tabButton.getValue().displayString = getDisplayName(tabButton.getKey());
+        }
+    }
+
+    @Override
+    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+        if (!ChatConfig.INSTANCE.useBrackets) {
+            drawRect(2, this.height - 14, this.width - 26, this.height - 2, Integer.MIN_VALUE);
+            this.inputField.drawTextBox();
+            ITextComponent itextcomponent = this.mc.ingameGUI.getChatGUI().getChatComponent(Mouse.getX(), Mouse.getY());
+
+            if (itextcomponent != null && itextcomponent.getStyle().getHoverEvent() != null) {
+                this.handleComponentHover(itextcomponent, mouseX, mouseY);
+            }
+
+            for (int i = 0; i < this.buttonList.size(); ++i) {
+                ((GuiButton) this.buttonList.get(i)).drawButton(this.mc, mouseX, mouseY, partialTicks);
+            }
+
+            for (int j = 0; j < this.labelList.size(); ++j) {
+                ((GuiLabel) this.labelList.get(j)).drawLabel(this.mc, mouseX, mouseY);
+            }
+        } else {
+            super.drawScreen(mouseX, mouseY, partialTicks);
         }
     }
 
@@ -161,16 +193,18 @@ public class ChatGUI extends GuiChat {
 
         @Override
         public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
-            this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-            ScreenRenderer.beginGL(this.x, this.y);
-            if (this.hovered) {
-                renderer.drawRect(ChatGUI.selected, 0, 0, this.width, this.height);
-            } else {
-                renderer.drawRect(ChatGUI.unselected, 0, 0, this.width, this.height);
-            }
+            if (this.visible) {
+                this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
+                ScreenRenderer.beginGL(this.x, this.y);
+                if (this.hovered) {
+                    renderer.drawRect(ChatGUI.selected, 0, 0, this.width, this.height);
+                } else {
+                    renderer.drawRect(ChatGUI.unselected, 0, 0, this.width, this.height);
+                }
 
-            renderer.drawString(this.displayString, this.width / 2.0f + 1, 3, this.selected ? CommonColors.GREEN : CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-            ScreenRenderer.endGL();
+                renderer.drawString(this.displayString, this.width / 2.0f + 1, 3, this.selected ? CommonColors.GREEN : CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                ScreenRenderer.endGL();
+            }
         }
     }
 
