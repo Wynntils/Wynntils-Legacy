@@ -51,5 +51,4 @@ public class ContainerGearViewer extends Container {
         this.inventory.closeInventory(playerIn);
     }
 
-
 }

@@ -85,6 +85,7 @@ public class KeyManager {
 
         itemScreenshotKey = CoreModule.getModule().registerKeyBinding("Screenshot Current Item", Keyboard.KEY_F4, "Wynntils", true, () -> {});
       
+        // -98 for middle click
         CoreModule.getModule().registerKeyBinding("View Player's Gear", -98, "Wynntils", true, GearViewerUI::openGearViewer);
     }
 
