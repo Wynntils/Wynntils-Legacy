@@ -58,6 +58,7 @@ public class WebManager {
     private static HashMap<String, ItemProfile> items = new HashMap<>();
     private static Collection<ItemProfile> directItems = new ArrayList<>();
     private static HashMap<String, String> translatedReferences = new HashMap<>();
+    private static HashMap<String, String> internalIdentifications = new HashMap<>();
     private static HashMap<ItemType, String[]> materialTypes = new HashMap<>();
     private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
 
@@ -216,6 +217,10 @@ public class WebManager {
 
     public static String getTranslatedItemName(String name) {
         return translatedReferences.getOrDefault(name, name);
+    }
+    
+    public static String getIDFromInternal(String id) {
+        return internalIdentifications.get(id);
     }
 
     public static void updateTerritoryThreadStatus(boolean start) {
@@ -442,6 +447,7 @@ public class WebManager {
                 items = citems;
 
                 translatedReferences = gson.fromJson(j.getAsJsonObject("translatedReferences"), HashMap.class);
+                internalIdentifications = gson.fromJson(j.getAsJsonObject("internalIdentifications"), HashMap.class);
                 Type materialTypesType = new TypeToken<HashMap<ItemType, String[]>>(){}.getType();
                 materialTypes = gson.fromJson(j.getAsJsonObject("materialTypes"), materialTypesType);
                 IdentificationOrderer.INSTANCE = gson.fromJson(j.getAsJsonObject("identificationOrder"), IdentificationOrderer.class);

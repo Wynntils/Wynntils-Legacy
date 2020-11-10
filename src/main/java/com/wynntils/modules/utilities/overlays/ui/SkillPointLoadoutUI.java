@@ -3,14 +3,11 @@ package com.wynntils.modules.utilities.overlays.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.wynntils.core.framework.instances.PlayerInfo;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.init.SoundEvents;
 import org.lwjgl.input.Keyboard;
 
 import com.wynntils.ModCore;
 import com.wynntils.core.framework.enums.SkillPoint;
+import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
@@ -18,10 +15,12 @@ import com.wynntils.modules.utilities.instances.ContainerBuilds;
 import com.wynntils.modules.utilities.instances.SkillPointAllocation;
 import com.wynntils.modules.utilities.overlays.inventories.SkillPointOverlay;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
@@ -31,7 +30,7 @@ import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 
-public class SkillPointLoadoutUI extends GuiContainer {
+public class SkillPointLoadoutUI extends FakeGuiContainer {
 
     private static final ResourceLocation CHEST_GUI_TEXTURE = new ResourceLocation("textures/gui/container/generic_54.png");
 
