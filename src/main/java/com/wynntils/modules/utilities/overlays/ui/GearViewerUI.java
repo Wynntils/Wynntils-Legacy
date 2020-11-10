@@ -18,7 +18,6 @@ import com.wynntils.core.framework.enums.SpellType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
-import com.wynntils.modules.utilities.enums.InternalIdentification;
 import com.wynntils.modules.utilities.instances.ContainerGearViewer;
 import com.wynntils.modules.utilities.overlays.inventories.ItemIdentificationOverlay;
 import com.wynntils.webapi.WebManager;
@@ -218,12 +217,13 @@ public class GearViewerUI extends FakeGuiContainer {
                 float pct = idInfo.get("percent").getAsInt() / 100F;
                 
                 // get wynntils name from internal wynncraft name
-                String translatedId = InternalIdentification.getNameFromInternal(id);
+                String translatedId = WebManager.getIDFromInternal(id);
                 if (translatedId == null || !item.getStatuses().containsKey(translatedId)) continue;
                 
                 // calculate value
                 IdentificationContainer idContainer = item.getStatuses().get(translatedId);
                 int value = (int) ((idContainer.isFixed()) ? idContainer.getBaseValue() : Math.round(idContainer.getBaseValue() * pct));
+                if (value == 0) value = 1; // account for mistaken rounding
                 boolean isInverted = IdentificationOrderer.INSTANCE.isInverted(translatedId);
                 
                 // determine lore name
