@@ -51,7 +51,12 @@ public class ActionBarOverlay extends Overlay {
 
         BlockPos blockPos = new BlockPos(ScreenRenderer.mc.player);
         String lCoord = TextFormatting.GRAY.toString() + blockPos.getX();
-        String middleCoord = TextFormatting.GREEN + Utils.getPlayerDirection(ScreenRenderer.mc.player.rotationYaw);
+        String middleCoord;
+        if (!OverlayConfig.INSTANCE.replaceDirection) {
+            middleCoord = TextFormatting.GREEN + Utils.getPlayerDirection(ScreenRenderer.mc.player.rotationYaw);
+        } else {
+            middleCoord = TextFormatting.GRAY.toString() + blockPos.getY();
+        }
         String rCoord = TextFormatting.GRAY.toString() + blockPos.getZ();
         // Order:
         // Powder % | RLR | Sprint | and if there is nothing more coordinates
