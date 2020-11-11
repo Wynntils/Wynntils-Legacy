@@ -157,10 +157,10 @@ public class OverlayEvents implements Listener {
         String messageText = e.getMessage().getUnformattedText();
         if (messageText.matches(".*? for [0-9]* seconds\\]")) { //consumable message
             //10 tick delay, since chat event occurs before default consumable event
-            new Delay(() -> ConsumableTimerOverlay.addExternalScroll(messageText), 10); 
+            new Delay(() -> ConsumableTimerOverlay.addExternalScroll(messageText), 10);
         }
     }
-    
+
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onChatToRedirect(ChatEvent.Pre e) {
         if (!UtilitiesModule.getModule().getGameUpdateOverlay().active) {
@@ -566,14 +566,30 @@ public class OverlayEvents implements Listener {
                 GameUpdateOverlay.queueMessage("Wait 60 seconds to gather");
                 e.setCanceled(true);
             }
-                
+
             if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
                 long timeNow = Minecraft.getSystemTime();
                 int timeLeft = 60 - (int)(timeNow - loginTime)/1000;
                 if (timeLeft > 0) {
                     ConsumableTimerOverlay.addBasicTimer("Gather cooldown", timeLeft, false);
                 }
-            }      
+            }
+            return;
+        }
+
+        if (messageText.matches("^You need to wait 30 seconds after logging in to gather from this resource!")) {
+            if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectCooldown) {
+                GameUpdateOverlay.queueMessage("Wait 30 seconds to gather");
+                e.setCanceled(true);
+            }
+
+            if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
+                long timeNow = Minecraft.getSystemTime();
+                int timeLeft = 30 - (int)(timeNow - loginTime)/1000;
+                if (timeLeft > 0) {
+                    ConsumableTimerOverlay.addBasicTimer("Gather cooldown", timeLeft, false);
+                }
+            }
             return;
         }
 
