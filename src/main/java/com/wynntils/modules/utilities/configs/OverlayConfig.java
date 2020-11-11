@@ -645,6 +645,10 @@ public class OverlayConfig extends SettingsClass {
         @Setting.Limitations.FloatLimit(min = .0f, max = 1f)
         public float backgroundAlpha = 0.3f;
 
+        @Setting(displayName = "Player List Opening Duration", description = "How long should the opening animation of the custom player list last?", order = 3)
+        @Setting.Limitations.DoubleLimit(min = 0D, max = 500D, precision = 5D)
+        public double openingDuration = 125D;
+
     }
 
     @SettingsInfo(name = "consumable_timer_settings", displayPath = "Utilities/Overlays/Consumable Timer")
