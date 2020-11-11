@@ -34,7 +34,7 @@ public class OverlayConfig extends SettingsClass {
     @Setting(displayName = "Split Coordinates", description = "Should the coordinates be shown separately to the action bar?")
     public boolean splitCoordinates = false;
 
-    @Setting(displayName = "Use Height on Action Bar", description = "Should the action bar display how high the player is instead of their orientation?")
+    @Setting(displayName = "Use Y position on Action Bar", description = "Should the action bar display the player Y position is instead of their orientation?")
     public boolean replaceDirection = false;
 
     @SettingsInfo(name = "health_settings", displayPath = "Utilities/Overlays/Health")
