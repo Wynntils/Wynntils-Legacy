@@ -18,6 +18,7 @@ import com.wynntils.core.framework.enums.SpellType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.instances.ContainerGearViewer;
 import com.wynntils.modules.utilities.overlays.inventories.ItemIdentificationOverlay;
 import com.wynntils.webapi.WebManager;
@@ -31,6 +32,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -41,7 +43,9 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.HoverEvent;
 
 public class GearViewerUI extends FakeGuiContainer {
     
@@ -49,6 +53,8 @@ public class GearViewerUI extends FakeGuiContainer {
     
     private InventoryBasic inventory;
     private EntityPlayer player;
+    private ItemStack[] armor = new ItemStack[4];
+    private ItemStack hand;
     
     public GearViewerUI(InventoryBasic inventory, EntityPlayer player) {
         super(new ContainerGearViewer(inventory, ModCore.mc().player));
@@ -60,28 +66,23 @@ public class GearViewerUI extends FakeGuiContainer {
         
         this.xSize = 103;
         this.ySize = 90;
+        
+        getGear();
     }
     
     @Override
     public void initGui() {
         super.initGui();
         
-        // create item lore for armor pieces
+        // set armor slots
         for (int i = 0; i < 4; i++) {
-            ItemStack is = player.inventory.armorItemInSlot(i);
-            if (!is.hasDisplayName()) continue;
-            createLore(is);
-            is.setTagInfo("HideFlags", new NBTTagInt(6));
-            inventory.setInventorySlotContents(3 - i, is);
+            if (armor[i] != null)
+                inventory.setInventorySlotContents(i, armor[i]);
         }
         
-        // create item lore for held item
-        ItemStack hand = player.inventory.getCurrentItem();
-        if (hand.hasDisplayName()) {
-            createLore(hand);
-            hand.setTagInfo("HideFlags", new NBTTagInt(6));
+        // set hand slot
+        if (hand != null)
             inventory.setInventorySlotContents(4, hand);
-        }
         
     }
     
@@ -93,10 +94,6 @@ public class GearViewerUI extends FakeGuiContainer {
         this.drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
-        
-        // replace lore with advanced ids if enabled
-        if (this.getSlotUnderMouse() != null && this.getSlotUnderMouse().getHasStack())
-            ItemIdentificationOverlay.replaceLore(this.getSlotUnderMouse().getStack());
     }
 
     @Override
@@ -110,6 +107,61 @@ public class GearViewerUI extends FakeGuiContainer {
         this.drawTexturedModalRect(i + 96, j + 15, 169, 91, 7, 75);
         this.drawTexturedModalRect(i, j + 83, 0, 159, 96, 7);
         GuiInventory.drawEntityOnScreen(this.guiLeft + 51, this.guiTop + 75, 30, 0, 0, player);
+    }
+    
+    private void sendGearMessage() {
+        TextComponentString text = new TextComponentString(player.getDisplayNameString() + "'s Gear");
+        text.getStyle().setColor(TextFormatting.DARK_AQUA);
+        
+        // armor
+        for (int i = 0; i < 4; i++) {
+            addItemTooltip(text, armor[i]);
+        }
+        
+        // hand
+        addItemTooltip(text, hand);
+        
+        ModCore.mc().player.sendMessage(text);
+    }
+    
+    private void addItemTooltip(TextComponentString text, ItemStack stack) {
+        if (stack == null) return;
+        text.appendText("\n");
+        
+        TextComponentString prefix = new TextComponentString("- ");
+        prefix.getStyle().setColor(TextFormatting.DARK_GRAY);
+        text.appendSibling(prefix);
+        
+        TextComponentString item = new TextComponentString(stack.getDisplayName());
+        item.getStyle().setColor(TextFormatting.WHITE);
+        TextComponentString tooltip = new TextComponentString("");
+        List<String> tooltipList = stack.getTooltip(ModCore.mc().player, ModCore.mc().gameSettings.advancedItemTooltips ? ITooltipFlag.TooltipFlags.ADVANCED : ITooltipFlag.TooltipFlags.NORMAL);
+        StringBuilder tooltipText = new StringBuilder();
+        tooltipList.forEach(c -> tooltipText.append(c + "\n"));
+        tooltip.appendText(tooltipText.toString().trim());
+        item.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip));
+        text.appendSibling(item);
+    }
+    
+    private void getGear() {
+     // create item lore for armor pieces
+        for (int i = 0; i < 4; i++) {
+            ItemStack is = player.inventory.armorItemInSlot(i);
+            if (!is.hasDisplayName()) continue;
+            createLore(is);
+            ItemIdentificationOverlay.replaceLore(is); // add advanced ids if enabled
+            is.setTagInfo("HideFlags", new NBTTagInt(6));
+            this.armor[3 - i] = is;
+        }
+        
+        // create item lore for held item
+        ItemStack hand = player.inventory.getCurrentItem();
+        if (hand.hasDisplayName()) {
+            createLore(hand);
+            ItemIdentificationOverlay.replaceLore(hand);
+            hand.setTagInfo("HideFlags", new NBTTagInt(6));
+            this.hand = hand;
+        }
     }
     
     private void createLore(ItemStack stack) {
@@ -329,7 +381,7 @@ public class GearViewerUI extends FakeGuiContainer {
         }
     }
     
-    public static void openGearViewer() {
+    public static void inspectGear() {
         if (!Reference.onWorld) return;
         
         Entity e = ModCore.mc().objectMouseOver.entityHit;
@@ -337,7 +389,12 @@ public class GearViewerUI extends FakeGuiContainer {
         EntityPlayer ep = (EntityPlayer) e;
         if (ep.getTeam() == null) return; // player model npc
         
-        ModCore.mc().displayGuiScreen(new GearViewerUI(new InventoryBasic("", false, 5), ep));
+        GearViewerUI gearViewer = new GearViewerUI(new InventoryBasic("", false, 5), ep);
+        
+        if (UtilitiesConfig.INSTANCE.gearViewerGui)
+            ModCore.mc().displayGuiScreen(gearViewer);
+        if (UtilitiesConfig.INSTANCE.gearViewerMsg)
+            gearViewer.sendGearMessage();
     }
 
 }

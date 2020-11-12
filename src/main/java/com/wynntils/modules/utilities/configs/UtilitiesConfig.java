@@ -4,22 +4,19 @@
 
 package com.wynntils.modules.utilities.configs;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
-import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.utilities.events.ServerEvents;
 import com.wynntils.modules.utilities.instances.SkillPointAllocation;
 import com.wynntils.modules.utilities.managers.WindowIconManager;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.ItemProfile;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @SettingsInfo(name = "main", displayPath = "Utilities")
 public class UtilitiesConfig extends SettingsClass {
@@ -45,6 +42,12 @@ public class UtilitiesConfig extends SettingsClass {
 
     @Setting(displayName = "Show Players' Armour", description = "Should the worn armour of players be listed underneath their nametag?")
     public boolean showArmors = false;
+    
+    @Setting(displayName = "Show Gear Viewer GUI", description = "Should the gear viewer open a gui when displaying a player's gear?")
+    public boolean gearViewerGui = true;
+    
+    @Setting(displayName = "Show Gear Viewer Chat Message", description = "Should the gear viewer display a message in chat when displaying a player's gear?")
+    public boolean gearViewerMsg = false;
 
     @Setting(displayName = "Prevent Mythic Chest Closing", description = "Should the closing of loot chests be prevented when they contain mythics?")
     public boolean preventMythicChestClose = true;
