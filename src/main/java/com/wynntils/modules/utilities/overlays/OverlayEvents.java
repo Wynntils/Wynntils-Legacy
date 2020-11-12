@@ -562,40 +562,6 @@ public class OverlayEvents implements Listener {
             }
         }
 
-        /*
-        if (messageText.matches("^You need to wait 60 seconds after logging in to gather from this resource!")) {
-            if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectCooldown) {
-                GameUpdateOverlay.queueMessage("Wait 60 seconds to gather");
-                e.setCanceled(true);
-            }
-
-            if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
-                long timeNow = Minecraft.getSystemTime();
-                int timeLeft = 60 - (int)(timeNow - loginTime)/1000;
-                if (timeLeft > 0) {
-                    ConsumableTimerOverlay.addBasicTimer("Gather cooldown", timeLeft, false);
-                }
-            }
-            return;
-        }
-
-        if (messageText.matches("^You need to wait 30 seconds after logging in to gather from this resource!")) {
-            if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectCooldown) {
-                GameUpdateOverlay.queueMessage("Wait 30 seconds to gather");
-                e.setCanceled(true);
-            }
-
-            if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
-                long timeNow = Minecraft.getSystemTime();
-                int timeLeft = 30 - (int)(timeNow - loginTime)/1000;
-                if (timeLeft > 0) {
-                    ConsumableTimerOverlay.addBasicTimer("Gather cooldown", timeLeft, false);
-                }
-            }
-            return;
-        }
-        */
-
         Matcher matcher_gathering = GATHERING_COOLDOWN_PATTERN.matcher(messageText);
         if (matcher_gathering.find()) {
             int seconds = Integer.parseInt(matcher_gathering.group(1));
@@ -618,12 +584,16 @@ public class OverlayEvents implements Listener {
         if (matcher_chests.find()) {
             int minutes = Integer.parseInt(matcher_chests.group(1));
             if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectCooldown) {
-                GameUpdateOverlay.queueMessage("Wait " + minutes + " minutes for loot chest");
+                GameUpdateOverlay.queueMessage("Wait " + minutes + " minutes to open chests");
                 e.setCanceled(true);
             }
 
             if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
-                ConsumableTimerOverlay.addBasicTimer("Loot cooldown", minutes*60, true);
+                long timeNow = Minecraft.getSystemTime();
+                int timeLeft = minutes*60 - (int)(timeNow - loginTime)/1000;
+                if (timeLeft > 0) {
+                    ConsumableTimerOverlay.addBasicTimer("Chest cooldown", timeLeft, false);
+                }
             }
             return;
         }
