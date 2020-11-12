@@ -580,20 +580,16 @@ public class OverlayEvents implements Listener {
             return;
         }
 
-        Matcher matcher_chests = CHEST_COOLDOWN_PATTERN.matcher(messageText);
-        if (matcher_chests.find()) {
-            int minutes = Integer.parseInt(matcher_chests.group(1));
+        Matcher matcher_chest = CHEST_COOLDOWN_PATTERN.matcher(messageText);
+        if (matcher_chest.find()) {
+            int minutes = Integer.parseInt(matcher_chest.group(1));
             if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectCooldown) {
-                GameUpdateOverlay.queueMessage("Wait " + minutes + " minutes to open chests");
+                GameUpdateOverlay.queueMessage("Wait " + minutes + " minutes for loot chest");
                 e.setCanceled(true);
             }
 
             if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
-                long timeNow = Minecraft.getSystemTime();
-                int timeLeft = minutes*60 - (int)(timeNow - loginTime)/1000;
-                if (timeLeft > 0) {
-                    ConsumableTimerOverlay.addBasicTimer("Chest cooldown", timeLeft, false);
-                }
+                ConsumableTimerOverlay.addBasicTimer("Loot cooldown", minutes*60, true);
             }
             return;
         }
