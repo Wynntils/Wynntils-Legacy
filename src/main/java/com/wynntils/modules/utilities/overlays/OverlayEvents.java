@@ -36,6 +36,7 @@ import java.util.regex.Pattern;
 public class OverlayEvents implements Listener {
 
     private static final Pattern CHEST_COOLDOWN_PATTERN = Pattern.compile("Please wait an additional ([0-9]+) minutes? before opening this chest.");
+    private static final Pattern GATHERING_COOLDOWN_PATTERN = Pattern.compile("^You need to wait ([0-9]+) seconds after logging in to gather from this resource!");
 
     private static boolean wynnExpTimestampNotified = false;
     private long loginTime;
@@ -157,10 +158,10 @@ public class OverlayEvents implements Listener {
         String messageText = e.getMessage().getUnformattedText();
         if (messageText.matches(".*? for [0-9]* seconds\\]")) { //consumable message
             //10 tick delay, since chat event occurs before default consumable event
-            new Delay(() -> ConsumableTimerOverlay.addExternalScroll(messageText), 10); 
+            new Delay(() -> ConsumableTimerOverlay.addExternalScroll(messageText), 10);
         }
     }
-    
+
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onChatToRedirect(ChatEvent.Pre e) {
         if (!UtilitiesModule.getModule().getGameUpdateOverlay().active) {
@@ -561,25 +562,27 @@ public class OverlayEvents implements Listener {
             }
         }
 
-        if (messageText.matches("^You need to wait 60 seconds after logging in to gather from this resource!")) {
+        Matcher matcher_gathering = GATHERING_COOLDOWN_PATTERN.matcher(messageText);
+        if (matcher_gathering.find()) {
+            int seconds = Integer.parseInt(matcher_gathering.group(1));
             if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectCooldown) {
-                GameUpdateOverlay.queueMessage("Wait 60 seconds to gather");
+                GameUpdateOverlay.queueMessage("Wait " + seconds + " seconds to gather");
                 e.setCanceled(true);
             }
-                
+
             if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
                 long timeNow = Minecraft.getSystemTime();
-                int timeLeft = 60 - (int)(timeNow - loginTime)/1000;
+                int timeLeft = seconds - (int)(timeNow - loginTime)/1000;
                 if (timeLeft > 0) {
                     ConsumableTimerOverlay.addBasicTimer("Gather cooldown", timeLeft, false);
                 }
-            }      
+            }
             return;
         }
 
-        Matcher matcher = CHEST_COOLDOWN_PATTERN.matcher(messageText);
-        if (matcher.find()) {
-            int minutes = Integer.parseInt(matcher.group(1));
+        Matcher matcher_chest = CHEST_COOLDOWN_PATTERN.matcher(messageText);
+        if (matcher_chest.find()) {
+            int minutes = Integer.parseInt(matcher_chest.group(1));
             if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectCooldown) {
                 GameUpdateOverlay.queueMessage("Wait " + minutes + " minutes for loot chest");
                 e.setCanceled(true);
