@@ -16,6 +16,7 @@ import com.wynntils.modules.map.instances.PathWaypointProfile;
 import com.wynntils.modules.map.overlays.objects.MapIcon;
 import com.wynntils.modules.map.overlays.objects.MapPathWaypointIcon;
 import com.wynntils.modules.map.rendering.PointRenderer;
+import com.wynntils.modules.utilities.managers.LootChestManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 
@@ -90,7 +91,8 @@ public class LootRunManager {
             ex.printStackTrace();
             return false;
         }
-
+        LootChestManager.setChestCount(getActivePath().getChests().size());
+        LootChestManager.resetChestOpened();
         return true;
     }
 
@@ -139,6 +141,8 @@ public class LootRunManager {
     public static void clear() {
         activePath = null;
         recordingPath = null;
+        LootChestManager.resetChestCount();
+        LootChestManager.resetChestOpened();
         updateMapPath();
     }
 
@@ -149,11 +153,11 @@ public class LootRunManager {
     public static LootRunPath getRecordingPath() {
         return recordingPath;
     }
-    
+
     public static PathWaypointProfile getMapPath() {
         return mapPath;
     }
-    
+
     public static List<MapIcon> getMapPathWaypoints() {
         if (mapPath != null && MapConfig.LootRun.INSTANCE.displayLootrunOnMap)
             return Arrays.asList(new MapPathWaypointIcon(mapPath));
@@ -212,7 +216,7 @@ public class LootRunManager {
             recordingPath.getChests().forEach(c -> PointRenderer.drawCube(c, MapConfig.LootRun.INSTANCE.recordingPathColour));
         }
     }
-    
+
     private static void updateMapPath() {
         mapPath = null;
         if (activePath != null) {
