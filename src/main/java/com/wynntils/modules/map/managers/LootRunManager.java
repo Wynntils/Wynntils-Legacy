@@ -16,7 +16,10 @@ import com.wynntils.modules.map.instances.PathWaypointProfile;
 import com.wynntils.modules.map.overlays.objects.MapIcon;
 import com.wynntils.modules.map.overlays.objects.MapPathWaypointIcon;
 import com.wynntils.modules.map.rendering.PointRenderer;
-import com.wynntils.modules.utilities.managers.LootChestManager;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.inventory.GuiChest;
+import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 
@@ -40,6 +43,8 @@ public class LootRunManager {
     private static LootRunPath activePath = null;
     private static LootRunPath recordingPath = null;
     private static PathWaypointProfile mapPath = null;
+
+    private static int ChestOpened = 0;
 
     public static void setup() {
         // Make sure lootrun folder exists at startup to simplify for users wanting to import lootruns
@@ -91,8 +96,7 @@ public class LootRunManager {
             ex.printStackTrace();
             return false;
         }
-        LootChestManager.setChestCount(getActivePath().getChests().size());
-        LootChestManager.resetChestOpened();
+        resetChestOpened();
         return true;
     }
 
@@ -141,8 +145,7 @@ public class LootRunManager {
     public static void clear() {
         activePath = null;
         recordingPath = null;
-        LootChestManager.resetChestCount();
-        LootChestManager.resetChestOpened();
+        resetChestOpened();
         updateMapPath();
     }
 
@@ -221,6 +224,25 @@ public class LootRunManager {
         mapPath = null;
         if (activePath != null) {
             mapPath = new PathWaypointProfile(activePath);
+        }
+    }
+
+    public static int getChestOpened() { return ChestOpened; }
+    public static void resetChestOpened() { ChestOpened =0; }
+    public static void addChestOpened() { ChestOpened++; }
+    public static int getChestCount() {
+        if (getActivePath() != null) return getActivePath().getChests().size();
+        else return 0;
+    }
+
+    public static void LootChestGUI(GuiScreen gui) {
+        if (gui instanceof GuiChest) {
+            GuiChest guiChest = (GuiChest) gui;
+            Container inventorySlots = guiChest.inventorySlots;
+            IInventory inventory = inventorySlots.getSlot(0).inventory;
+            if (inventory.getDisplayName().getUnformattedText().contains("Loot Chest")) {
+                addChestOpened();
+            }
         }
     }
 

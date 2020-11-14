@@ -18,6 +18,7 @@ import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
+import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.configs.SoundEffectsConfig;
@@ -258,14 +259,7 @@ public class ClientEvents implements Listener {
 
         firstNullOccurred = scheduledGuiScreen != null && e.getGui() == null && !firstNullOccurred;
 
-        if (e.getGui() instanceof GuiChest) {
-            GuiChest guiChest = (GuiChest) e.getGui();
-            Container inventorySlots = guiChest.inventorySlots;
-            IInventory inventory = inventorySlots.getSlot(0).inventory;
-            if (inventory.getDisplayName().getUnformattedText().contains("Loot Chest")) {
-                LootChestManager.addChest();
-            }
-        }
+        LootRunManager.LootChestGUI(e.getGui());
     }
 
     @SubscribeEvent
