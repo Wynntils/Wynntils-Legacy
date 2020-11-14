@@ -48,6 +48,9 @@ public class CoreDBConfig extends SettingsClass {
     @Setting(displayName = "Main Menu Wynncraft Button", description = "Should a button be added to the main menu that allows you to connect to Wynncraft directly?")
     public boolean addMainMenuButton = true;
     
+    @Setting(displayName = "Prompt Update on Quit", description = "Should Wynntils ask to update before quitting the game?")
+    public boolean updateOnQuit = true;
+    
     @Setting(displayName = "Use Unicode Font", description = "Should Wynntils use the unicode font?")
     public boolean useUnicode = false;
 

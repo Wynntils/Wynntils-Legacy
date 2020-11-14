@@ -63,16 +63,30 @@ public class MainMenuButtons {
     public static void actionPerformed(GuiMainMenu on, GuiButton button, List<GuiButton> buttonList) {
         if (button.id == WYNNCRAFT_BUTTON_ID) {
             clickedWynncraftButton(on.mc, ((WynncraftButton) button).serverIcon.getServer(), on);
+            return;
+        }
+        
+        if (button.id == 4) { // quit button
+            clickedQuitButton(on.mc);
         }
     }
 
     private static void clickedWynncraftButton(Minecraft mc, ServerData server, GuiScreen backGui) {
         if (hasUpdate()) {
-            mc.displayGuiScreen(new UpdateAvailableScreen(server));
+            mc.displayGuiScreen(new UpdateAvailableScreen(server, false));
         } else {
             WebManager.skipJoinUpdate();
             ServerUtils.connect(backGui, server);
         }
+    }
+    
+    private static void clickedQuitButton(Minecraft mc) {
+        if (!CoreDBConfig.INSTANCE.updateOnQuit || !hasUpdate()) {
+            mc.shutdown();
+            return;
+        }
+        
+        mc.displayGuiScreen(new UpdateAvailableScreen(null, true));
     }
 
     private static boolean hasUpdate() {

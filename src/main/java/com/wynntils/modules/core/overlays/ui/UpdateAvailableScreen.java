@@ -18,10 +18,12 @@ import net.minecraft.util.text.TextFormatting;
 public class UpdateAvailableScreen extends GuiScreen {
 
     private ServerData server;
+    private boolean quitting;
     private String text;
 
-    public UpdateAvailableScreen(ServerData server) {
+    public UpdateAvailableScreen(ServerData server, boolean quitting) {
         this.server = server;
+        this.quitting = quitting;
         if (WebManager.getUpdate().getLatestUpdate().startsWith("B")) {
             text = TextFormatting.YELLOW + "Build " + WebManager.getUpdate().getLatestUpdate().replace("B", "") + TextFormatting.WHITE + " is available.";
         } else {
@@ -32,7 +34,7 @@ public class UpdateAvailableScreen extends GuiScreen {
     @Override
     public void initGui() {
         this.buttonList.add(new GuiButton(0, this.width / 2 - 100, this.height / 4 + 108, 98, 20, "Update"));
-        this.buttonList.add(new GuiButton(1, this.width / 2 + 2, this.height / 4 + 108, 98, 20, "Ignore"));
+        this.buttonList.add(new GuiButton(1, this.width / 2 + 2, this.height / 4 + 108, 98, 20, ((quitting) ? "Quit" : "Ignore")));
         this.buttonList.add(new GuiButton(2, this.width / 2 - 100, this.height / 4 + 132, 200, 20, "Cancel"));
         this.buttonList.add(new GuiButton(3, this.width / 2 - 100, this.height / 4 + 84, 200, 20, "View changelog"));
     }
@@ -43,7 +45,7 @@ public class UpdateAvailableScreen extends GuiScreen {
 
         int yOffset = Math.min(this.height / 2, this.height / 4 + 82 - mc.fontRenderer.FONT_HEIGHT);
         drawCenteredString(mc.fontRenderer, text, this.width/2, yOffset - mc.fontRenderer.FONT_HEIGHT - 2, 0xFFFFFFFF);
-        drawCenteredString(mc.fontRenderer, "Update before joining?", this.width/2, yOffset, 0xFFFFFFFF);
+        drawCenteredString(mc.fontRenderer, "Update before " + ((quitting) ? "quitting?" : "joining?"), this.width/2, yOffset, 0xFFFFFFFF);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
@@ -59,7 +61,10 @@ public class UpdateAvailableScreen extends GuiScreen {
         } else if (button.id == 1) {
             // Ignore
             WebManager.skipJoinUpdate();
-            ServerUtils.connect(null, server);
+            if (quitting)
+                mc.shutdown();
+            else
+                ServerUtils.connect(null, server);
         } else if (button.id == 2) {
             // Cancel
             mc.displayGuiScreen(null);

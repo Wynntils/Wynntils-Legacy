@@ -18,6 +18,7 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.reflections.ReflectionFields;
+import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.instances.GatheringBake;
 import com.wynntils.modules.core.instances.MainMenuButtons;
 import com.wynntils.modules.core.instances.TotemTracker;
@@ -265,9 +266,11 @@ public class ClientEvents implements Listener {
      *  Handles the main menu new buttons actions
      */
     @SubscribeEvent
-    public void mainMenuActionPerformed(GuiScreenEvent.ActionPerformedEvent.Post e) {
+    public void mainMenuActionPerformed(GuiScreenEvent.ActionPerformedEvent.Pre e) {
         GuiScreen gui = e.getGui();
         if (gui != gui.mc.currentScreen || !(gui instanceof GuiMainMenu)) return;
+        
+        if (e.getButton().id == 4) e.setCanceled(true); // overwrite quit button functionality
 
         MainMenuButtons.actionPerformed((GuiMainMenu) gui, e.getButton(), e.getButtonList());
     }
