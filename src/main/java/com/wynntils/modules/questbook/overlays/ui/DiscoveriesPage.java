@@ -320,7 +320,6 @@ public class DiscoveriesPage extends QuestBookPage {
                 for (String line : textToDisplay.split("\n")) {
                     currentY += render.drawSplitString(line, 120, x + 26, y - 95 + currentY, 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE) * 10 + 2;
                 }
-                updateSearch();
             }
         }
         ScreenRenderer.endGL();
