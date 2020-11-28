@@ -4,7 +4,6 @@
 
 package com.wynntils.core.framework.settings;
 
-import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
 import com.wynntils.Reference;
@@ -22,7 +21,6 @@ import net.minecraft.client.Minecraft;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Locale;
 
 public class SettingsManager {
@@ -34,7 +32,7 @@ public class SettingsManager {
         gson = new GsonBuilder()
             .setPrettyPrinting()
             .registerTypeHierarchyAdapter(CustomColor.class, new CustomColorSerializer())
-            .registerTypeAdapter(new TypeToken<ArrayList<PathWaypointProfile>>(){}.getType(), new PathWaypointProfile.Serializer())
+            .registerTypeAdapter(PathWaypointProfile.class, new PathWaypointProfile.Serializer())
             .create();
 
         configFolder.mkdirs();  // if the config folder doesn't exists create the directory

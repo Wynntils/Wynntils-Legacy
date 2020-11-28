@@ -198,26 +198,10 @@ public class PathWaypointProfile {
         }
     }
 
-    public static class Serializer implements JsonDeserializer<ArrayList<PathWaypointProfile>>, JsonSerializer<ArrayList<PathWaypointProfile>> {
+    public static class Serializer implements JsonDeserializer<PathWaypointProfile>, JsonSerializer<PathWaypointProfile> {
 
-        @Override
-        public ArrayList<PathWaypointProfile> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            if (!json.isJsonArray()) {
-                throw new JsonParseException("Path waypoints not an array");
-            }
-            JsonArray arr = (JsonArray) json;
-            ArrayList<PathWaypointProfile> deserialized = new ArrayList<>(arr.size());
-            for (JsonElement obj : arr) {
-                if (!obj.isJsonObject()) {
-                    throw new JsonParseException("Path waypoint item is not an object");
-                }
-                deserialized.add(deserializeOne((JsonObject) obj, context));
-            }
-
-            return deserialized;
-        }
-
-        private static PathWaypointProfile deserializeOne(JsonObject o, JsonDeserializationContext context) {
+        public PathWaypointProfile deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
+            JsonObject o = json.getAsJsonObject();
             JsonElement nameEl = o.get("name");
             JsonElement isCircularEl = o.get("isCircular");
             JsonElement isEnabledEl = o.get("isEnabled");
@@ -263,16 +247,7 @@ public class PathWaypointProfile {
             return new PathWaypointProfile(name, isCircular, isEnabled, colour, points);
         }
 
-        @Override
-        public JsonElement serialize(ArrayList<PathWaypointProfile> src, Type typeOfSrc, JsonSerializationContext context) {
-            JsonArray serialized = new JsonArray();
-            for (PathWaypointProfile wp : src) {
-                serialized.add(serializeOne(wp, context));
-            }
-            return serialized;
-        }
-
-        private static JsonObject serializeOne(PathWaypointProfile wp, JsonSerializationContext context) {
+        public JsonObject serialize(PathWaypointProfile wp, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject serialized = new JsonObject();
             serialized.addProperty("name", wp.name);
             serialized.addProperty("isCircular", wp.isCircular);
