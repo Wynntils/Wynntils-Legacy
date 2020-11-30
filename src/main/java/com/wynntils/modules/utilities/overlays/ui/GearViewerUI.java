@@ -260,7 +260,7 @@ public class GearViewerUI extends FakeGuiContainer {
                             + value + idContainer.getType().getInGame();
                 
                 // set stars
-                if (value > 0 || (isInverted && value < 0)) {
+                if ((!isInverted && value > 0) || (isInverted && value < 0)) {
                     if (pct >= 1.01) lore += DARK_GREEN + "*";
                     if (pct >= 1.25) lore += "*";
                     if (pct >= 1.30) lore += "*";
