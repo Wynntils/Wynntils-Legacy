@@ -22,6 +22,7 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.client.util.ITooltipFlag;
@@ -87,7 +88,7 @@ public class ItemScreenshotManager {
         Framebuffer fb = new Framebuffer((int) (gui.width*(1/scalew)*2), (int) (gui.height*(1/scaleh)*2), true);
         fb.bindFramebuffer(false);
         GlStateManager.scale(scalew, scaleh, 1);
-        GuiUtils.drawHoveringText(tooltip, -8, 8, gui.width, gui.height, gui.width/2, fr);
+        drawTooltip(tooltip, gui.width/2, fr);
         BufferedImage bi = createScreenshot(width*2, height*2);
         fb.unbindFramebuffer();
         GlStateManager.popMatrix();
@@ -111,6 +112,90 @@ public class ItemScreenshotManager {
             if (lore && s.contains("" + TextFormatting.DARK_GRAY)) temp.add(s);
         }
         tooltip.removeAll(temp);
+    }
+    
+    private static void drawTooltip(List<String> textLines, int maxTextWidth, FontRenderer font) {
+        GlStateManager.disableRescaleNormal();
+        RenderHelper.disableStandardItemLighting();
+        GlStateManager.disableLighting();
+        GlStateManager.disableDepth();
+        int tooltipTextWidth = 0;
+
+        for (String textLine : textLines) {
+            int textLineWidth = font.getStringWidth(textLine);
+
+            if (textLineWidth > tooltipTextWidth) {
+                tooltipTextWidth = textLineWidth;
+            }
+        }
+
+        boolean needsWrap = false;
+
+        int titleLinesCount = 1;
+
+        if (maxTextWidth > 0 && tooltipTextWidth > maxTextWidth) {
+            tooltipTextWidth = maxTextWidth;
+            needsWrap = true;
+        }
+
+        if (needsWrap) {
+            int wrappedTooltipWidth = 0;
+            List<String> wrappedTextLines = new ArrayList<String>();
+            for (int i = 0; i < textLines.size(); i++) {
+                String textLine = textLines.get(i);
+                List<String> wrappedLine = font.listFormattedStringToWidth(textLine, tooltipTextWidth);
+                if (i == 0) 
+                    titleLinesCount = wrappedLine.size();
+
+                for (String line : wrappedLine) {
+                    int lineWidth = font.getStringWidth(line);
+                    if (lineWidth > wrappedTooltipWidth)
+                        wrappedTooltipWidth = lineWidth;
+                    
+                    wrappedTextLines.add(line);
+                }
+            }
+            tooltipTextWidth = wrappedTooltipWidth;
+            textLines = wrappedTextLines;
+        }
+
+        int tooltipHeight = 8;
+        if (textLines.size() > 1) {
+            tooltipHeight += (textLines.size() - 1) * 10;
+            if (textLines.size() > titleLinesCount) 
+                tooltipHeight += 2; // gap between title lines and next lines
+        }
+
+        final int zLevel = 300;
+        int tooltipX = 4;
+        int tooltipY = 4;
+        int backgroundColor = 0xF0100010;
+        int borderColorStart = 0x505000FF;
+        int borderColorEnd = (borderColorStart & 0xFEFEFE) >> 1 | borderColorStart & 0xFF000000;
+        GuiUtils.drawGradientRect(zLevel, tooltipX - 3, tooltipY - 4, tooltipX + tooltipTextWidth + 3, tooltipY - 3, backgroundColor, backgroundColor);
+        GuiUtils.drawGradientRect(zLevel, tooltipX - 3, tooltipY + tooltipHeight + 3, tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 4, backgroundColor, backgroundColor);
+        GuiUtils.drawGradientRect(zLevel, tooltipX - 3, tooltipY - 3, tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 3, backgroundColor, backgroundColor);
+        GuiUtils.drawGradientRect(zLevel, tooltipX - 4, tooltipY - 3, tooltipX - 3, tooltipY + tooltipHeight + 3, backgroundColor, backgroundColor);
+        GuiUtils.drawGradientRect(zLevel, tooltipX + tooltipTextWidth + 3, tooltipY - 3, tooltipX + tooltipTextWidth + 4, tooltipY + tooltipHeight + 3, backgroundColor, backgroundColor);
+        GuiUtils.drawGradientRect(zLevel, tooltipX - 3, tooltipY - 3 + 1, tooltipX - 3 + 1, tooltipY + tooltipHeight + 3 - 1, borderColorStart, borderColorEnd);
+        GuiUtils.drawGradientRect(zLevel, tooltipX + tooltipTextWidth + 2, tooltipY - 3 + 1, tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 3 - 1, borderColorStart, borderColorEnd);
+        GuiUtils.drawGradientRect(zLevel, tooltipX - 3, tooltipY - 3, tooltipX + tooltipTextWidth + 3, tooltipY - 3 + 1, borderColorStart, borderColorStart);
+        GuiUtils.drawGradientRect(zLevel, tooltipX - 3, tooltipY + tooltipHeight + 2, tooltipX + tooltipTextWidth + 3, tooltipY + tooltipHeight + 3, borderColorEnd, borderColorEnd);
+
+        for (int lineNumber = 0; lineNumber < textLines.size(); lineNumber++) {
+            String line = textLines.get(lineNumber);
+            font.drawStringWithShadow(line, (float) tooltipX, (float) tooltipY, -1);
+
+            if (lineNumber + 1 == titleLinesCount)
+                tooltipY += 2;
+
+            tooltipY += 10;
+        }
+
+        GlStateManager.enableLighting();
+        GlStateManager.enableDepth();
+        RenderHelper.enableStandardItemLighting();
+        GlStateManager.enableRescaleNormal();
     }
     
     private static BufferedImage createScreenshot(int width, int height) {
