@@ -26,6 +26,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.ITextureObject;
+import net.minecraft.client.renderer.texture.SimpleTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ClickType;
@@ -410,7 +411,10 @@ public class BankOverlay implements Listener {
 
     private boolean isTextureLoaded(ResourceLocation resourceLocation) {
         ITextureObject texture = ModCore.mc().getTextureManager().getTexture(resourceLocation);
-        return (texture != null && !texture.equals(TextureUtil.MISSING_TEXTURE));
+        if (texture == null) {
+            return ModCore.mc().getTextureManager().loadTexture(resourceLocation, new SimpleTexture(resourceLocation));
+        }
+        return (!texture.equals(TextureUtil.MISSING_TEXTURE));
     }
 
     private void updateMaxPages() {
