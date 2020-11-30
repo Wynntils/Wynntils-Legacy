@@ -1,6 +1,5 @@
 package com.wynntils.modules.utilities.overlays.inventories;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -24,9 +23,10 @@ import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.texture.ITextureObject;
+import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.init.Blocks;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
@@ -104,7 +104,18 @@ public class BankOverlay implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onBankDrawBackground(GuiOverlapEvent.ChestOverlap.DrawGuiContainerBackgroundLayer e) {
-        if (!inBank || !textureLoaded) return;
+        if (!inBank) return;
+        
+        // searched item highlight
+        for (Slot s : e.getGui().inventorySlots.inventorySlots) {
+            if (s.getStack().isEmpty() || !s.getStack().hasDisplayName()) continue;
+            if (!searchedItems.contains(s.getStack())) continue;
+
+            SpecialRendering.renderGodRays(e.getGui().getGuiLeft() + s.xPos + 5,
+                    e.getGui().getGuiTop() + s.yPos + 6, 0, 5f, 35, UtilitiesConfig.Bank.INSTANCE.searchHighlightColor);
+        }
+        
+        if (!textureLoaded) return;
         if (!UtilitiesConfig.Bank.INSTANCE.showQuickAccessIcons) return;
 
         // quick access icons
@@ -126,15 +137,6 @@ public class BankOverlay implements Listener {
             }
             GlStateManager.popMatrix();
         }
-
-        // searched item highlight
-        for (Slot s : e.getGui().inventorySlots.inventorySlots) {
-            if (s.getStack().isEmpty() || !s.getStack().hasDisplayName()) continue;
-            if (!searchedItems.contains(s.getStack())) continue;
-
-            SpecialRendering.renderGodRays(e.getGui().getGuiLeft() + s.xPos + 5,
-                    e.getGui().getGuiTop() + s.yPos + 6, 0, 5f, 35, UtilitiesConfig.Bank.INSTANCE.searchHighlightColor);
-        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -146,7 +148,6 @@ public class BankOverlay implements Listener {
 
         int x = e.getGui().getXSize() - 19; int y = 2;
 
-        FontRenderer fr = Minecraft.getMinecraft().fontRenderer;
         ScreenRenderer.beginGL(0, 0);
         {
             { // quick access numbers
@@ -407,13 +408,9 @@ public class BankOverlay implements Listener {
         return (searchField != null && !searchField.getText().equals("Search...") && !searchField.getText().isEmpty());
     }
 
-    private boolean isTextureLoaded(ResourceLocation resource) {
-        try {
-            ModCore.mc().getResourceManager().getResource(resource);
-            return true;
-        } catch (IOException e) {
-            return false;
-        }
+    private boolean isTextureLoaded(ResourceLocation resourceLocation) {
+        ITextureObject texture = ModCore.mc().getTextureManager().getTexture(resourceLocation);
+        return (texture != null && !texture.equals(TextureUtil.MISSING_TEXTURE));
     }
 
     private void updateMaxPages() {
