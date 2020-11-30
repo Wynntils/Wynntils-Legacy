@@ -158,8 +158,10 @@ public class BankOverlay implements Listener {
                     int destination = destinations[i];
 
                     if (UtilitiesConfig.Bank.INSTANCE.showQuickAccessNumbers) {
+                        GlStateManager.translate(0, 0, 300F);
                         renderer.drawString(String.valueOf(destination), s.xPos + 8, s.yPos + 4, MinecraftChatColors.WHITE,
                                 SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
+                        GlStateManager.translate(0, 0, -300F);
                     }
 
                     ItemStack is = s.getStack();
@@ -171,8 +173,10 @@ public class BankOverlay implements Listener {
             }
 
             { // textboxes
+                GlStateManager.translate(0, 0, 300F);
                 if (nameField != null) nameField.drawTextBox();
                 if (searchField != null) searchField.drawTextBox();
+                GlStateManager.translate(0, 0, -300F);
             }
 
             { // draw page name edit button
