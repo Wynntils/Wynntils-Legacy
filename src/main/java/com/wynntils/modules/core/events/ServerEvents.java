@@ -312,7 +312,9 @@ public class ServerEvents implements Listener {
                     location = location.replace('\'', '’');
                 }
 
-                if (WebManager.getTerritories().get(location).insideArea((int) pl.posX, (int) pl.posZ)) {
+                TerritoryProfile currentLocation = WebManager.getTerritories().get(location);
+
+                if (currentLocation != null && currentLocation.insideArea((int) pl.posX, (int) pl.posZ)) {
                     return;
                 }
             }
