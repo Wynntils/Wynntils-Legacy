@@ -2,6 +2,7 @@ package com.wynntils.modules.utilities.overlays.ui;
 
 import static net.minecraft.util.text.TextFormatting.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,8 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.utilities.instances.ContainerGearViewer;
+import com.wynntils.modules.utilities.managers.ItemScreenshotManager;
+import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.modules.utilities.overlays.inventories.ItemIdentificationOverlay;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.IdentificationOrderer;
@@ -87,6 +90,15 @@ public class GearViewerUI extends FakeGuiContainer {
     
     @Override
     protected void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) { } // ignore all mouse clicks
+    
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        super.keyTyped(typedChar, keyCode);
+        
+        // allow item screenshotting in gear viewer
+        if (keyCode == KeyManager.getItemScreenshotKey().getKeyBinding().getKeyCode())
+            ItemScreenshotManager.takeScreenshot();
+    }
     
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
@@ -248,7 +260,7 @@ public class GearViewerUI extends FakeGuiContainer {
                             + value + idContainer.getType().getInGame();
                 
                 // set stars
-                if (value > 0 || isInverted) {
+                if ((!isInverted && value > 0) || (isInverted && value < 0)) {
                     if (pct >= 1.01) lore += DARK_GREEN + "*";
                     if (pct >= 1.25) lore += "*";
                     if (pct >= 1.30) lore += "*";
