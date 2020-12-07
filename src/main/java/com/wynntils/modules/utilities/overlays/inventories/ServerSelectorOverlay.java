@@ -1,5 +1,6 @@
 package com.wynntils.modules.utilities.overlays.inventories;
 
+import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
@@ -34,7 +35,7 @@ public class ServerSelectorOverlay implements Listener {
         if (nbt.hasKey("wynntilsServerIgnore")) return;
         String itemName = StringUtils.normalizeBadString(TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName()));
 
-        if (itemName.startsWith("Hero Beta")) {
+        if (itemName.startsWith("World") && Reference.onBeta) {
             nbt.setBoolean("wynntilsServerIgnore", true);
             if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE && WebManager.blockHeroBetaStable()) {
                 nbt.setBoolean("wynntilsBlock", true);

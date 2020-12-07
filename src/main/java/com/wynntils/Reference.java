@@ -37,7 +37,7 @@ public class Reference {
         onWorld = onServer && userWorld != null;
         onNether = onWorld && userWorld.contains("N");
         onWars = onWorld && userWorld.contains("WAR");
-        onBeta = onWorld && userWorld.contains("HB");
+        onBeta = onWorld && userWorld.contains("HB") || lowerIP.startsWith("beta.");
         onLobby = onServer && !onWorld;
     }
 
