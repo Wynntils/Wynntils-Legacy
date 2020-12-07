@@ -7,6 +7,9 @@ package com.wynntils;
 import com.sun.jna.Platform;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.modules.core.config.CoreDBConfig;
+import com.wynntils.modules.core.enums.UpdateStream;
+import com.wynntils.webapi.WebManager;
 import net.minecraft.client.multiplayer.ServerData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,6 +35,7 @@ public class Reference {
         ServerData currentServer = ModCore.mc().getCurrentServerData();
         String lowerIP = currentServer == null || currentServer.serverIP == null ? null : currentServer.serverIP.toLowerCase(Locale.ROOT);
         onServer = !ModCore.mc().isSingleplayer() && lowerIP != null && !currentServer.isOnLAN() && lowerIP.contains("wynncraft");
+        onServer &= !lowerIP.startsWith("beta.") || (WebManager.blockHeroBetaCuttingEdge() || CoreDBConfig.INSTANCE.updateStream != UpdateStream.CUTTING_EDGE) && (WebManager.blockHeroBetaStable() || CoreDBConfig.INSTANCE.updateStream != UpdateStream.STABLE);
         userWorld = uw;
 
         onWorld = onServer && userWorld != null;
