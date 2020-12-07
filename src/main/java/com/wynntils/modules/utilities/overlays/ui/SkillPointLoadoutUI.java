@@ -2,6 +2,7 @@ package com.wynntils.modules.utilities.overlays.ui;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.lwjgl.input.Keyboard;
 
@@ -97,7 +98,8 @@ public class SkillPointLoadoutUI extends FakeGuiContainer {
 
         String name = TextFormatting.getTextWithoutFormattingCodes(slotIn.getStack().getDisplayName());
         if (mouseButton == 0) { // left click <-> load
-            SkillPointAllocation aloc = UtilitiesConfig.INSTANCE.skillPointLoadouts.get(name);
+            SkillPointAllocation aloc = getLoadout(name);
+            if (aloc == null) return;
 
             int levelRequirement = (aloc.getTotalSkillPoints() / 2) + 1;
             if (PlayerInfo.getPlayerInfo().getLevel() < levelRequirement) return;
@@ -113,8 +115,7 @@ public class SkillPointLoadoutUI extends FakeGuiContainer {
             if (lore.get(lore.size() - 1).contains("confirm")) { // confirm deletion
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
 
-                UtilitiesConfig.INSTANCE.skillPointLoadouts.remove(name);
-                UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
+                removeLoadout(name);
                 this.initGui();
                 return;
             }
@@ -152,6 +153,24 @@ public class SkillPointLoadoutUI extends FakeGuiContainer {
         int j = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.inventoryRows * 18 + 17);
         this.drawTexturedModalRect(i, j + this.inventoryRows * 18 + 17, 0, 213, this.xSize, 9);
+    }
+    
+    private static SkillPointAllocation getLoadout(String name) {
+        for (Entry<String, SkillPointAllocation> e : UtilitiesConfig.INSTANCE.skillPointLoadouts.entrySet()) {
+            if (TextFormatting.getTextWithoutFormattingCodes(e.getKey()).equals(name))
+                return e.getValue();
+        }
+        return null;
+    }
+    
+    private static void removeLoadout(String name) {
+        for (Entry<String, SkillPointAllocation> e : UtilitiesConfig.INSTANCE.skillPointLoadouts.entrySet()) {
+            if (TextFormatting.getTextWithoutFormattingCodes(e.getKey()).equals(name)) {
+                UtilitiesConfig.INSTANCE.skillPointLoadouts.remove(e.getKey());
+                UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
+                return;
+            }
+        }
     }
 
 }
