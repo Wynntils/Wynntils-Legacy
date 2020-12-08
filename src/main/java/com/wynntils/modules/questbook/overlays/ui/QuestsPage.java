@@ -403,7 +403,13 @@ public class QuestsPage extends QuestBookPage {
     private enum SortMethod {
         LEVEL(
             Comparator.comparing(QuestInfo::getStatus)
-                .thenComparing(q -> q.getLevelType() != QuestLevelType.COMBAT).thenComparingInt(QuestInfo::getMinLevel),
+                        .thenComparing(q -> !q.getMinLevel().containsKey(QuestLevelType.COMBAT)).thenComparingInt((q) -> {
+                            if (q.getMinLevel().containsKey(QuestLevelType.COMBAT)) {
+                                return q.getMinLevel().get(QuestLevelType.COMBAT);
+                            } else {
+                                return q.getMinLevel().values().iterator().next();
+                            }
+                        }),
             130, 281, 152, 303, Arrays.asList(
                 "Sort by Level", // Replace with translation keys during l10n
                 "Lowest level quests first")),
@@ -414,7 +420,13 @@ public class QuestsPage extends QuestBookPage {
             }
 
             return (long) new Location(player).distance(q.getTargetLocation());
-        }).thenComparing(q -> q.getLevelType() != QuestLevelType.COMBAT).thenComparingInt(QuestInfo::getMinLevel),
+        }).thenComparing(q -> !q.getMinLevel().containsKey(QuestLevelType.COMBAT)).thenComparingInt((q) -> {
+            if (q.getMinLevel().containsKey(QuestLevelType.COMBAT)) {
+                return q.getMinLevel().get(QuestLevelType.COMBAT);
+            } else {
+                return q.getMinLevel().values().iterator().next();
+            }
+        }),
             174, 281, 196, 303, Arrays.asList(
                 "Sort by Distance",
                 "Closest quests first"));
