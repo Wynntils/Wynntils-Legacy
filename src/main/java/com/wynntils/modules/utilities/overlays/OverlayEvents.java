@@ -7,7 +7,6 @@ package com.wynntils.modules.utilities.overlays;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
-import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.helpers.Delay;
@@ -692,6 +691,7 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onDisplayObjective(PacketEvent<SPacketDisplayObjective> e) {
         ObjectivesOverlay.checkForSidebar(e.getPacket());
+        e.setCanceled(OverlayConfig.Objectives.INSTANCE.enableObjectives);
     }
 
     @SubscribeEvent
@@ -701,7 +701,7 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void onUpdateScore(PacketEvent<SPacketUpdateScore> e) {
-        ObjectivesOverlay.checkObjectiveUpdate(e.getPacket());
+        e.setCanceled(ObjectivesOverlay.checkObjectiveUpdate(e.getPacket()) && OverlayConfig.Objectives.INSTANCE.enableObjectives);
     }
 
     @SubscribeEvent
@@ -730,9 +730,6 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
         ModCore.mc().addScheduledTask(GameUpdateOverlay::resetMessages);
-        if (e.getNewClass() != ClassType.NONE) {
-            ObjectivesOverlay.removeAllObjectives();
-        }
         // WynnCraft seem to be off with its timer with around 10 seconds
         loginTime = Minecraft.getSystemTime() + 10000;
         msgcounter = 0;
