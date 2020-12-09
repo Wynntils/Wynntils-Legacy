@@ -35,13 +35,13 @@ public class Reference {
         ServerData currentServer = ModCore.mc().getCurrentServerData();
         String lowerIP = currentServer == null || currentServer.serverIP == null ? null : currentServer.serverIP.toLowerCase(Locale.ROOT);
         onServer = !ModCore.mc().isSingleplayer() && lowerIP != null && !currentServer.isOnLAN() && lowerIP.contains("wynncraft");
-        onServer &= !lowerIP.startsWith("beta.") || (!WebManager.blockHeroBetaCuttingEdge() && CoreDBConfig.INSTANCE.updateStream == UpdateStream.CUTTING_EDGE) || (!WebManager.blockHeroBetaStable() && CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE);
+        onServer &= lowerIP != null && !lowerIP.startsWith("beta.") || (!WebManager.blockHeroBetaCuttingEdge() && CoreDBConfig.INSTANCE.updateStream == UpdateStream.CUTTING_EDGE) || (!WebManager.blockHeroBetaStable() && CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE);
         userWorld = uw;
 
         onWorld = onServer && userWorld != null;
         onNether = onWorld && userWorld.contains("N");
         onWars = onWorld && userWorld.contains("WAR");
-        onBeta = onWorld && userWorld.contains("HB") || lowerIP.startsWith("beta.");
+        onBeta = onWorld && userWorld.contains("HB") || onServer && lowerIP.startsWith("beta.");
         onLobby = onServer && !onWorld;
     }
 
