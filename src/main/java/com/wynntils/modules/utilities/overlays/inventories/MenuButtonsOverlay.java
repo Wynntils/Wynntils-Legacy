@@ -37,23 +37,19 @@ public class MenuButtonsOverlay implements Listener {
         IngameMenuReplacer gui = e.getGui();
         removeDefaultButtons(buttonList);
 
-        int yOffset;
-        if (numButtonRows == 2) {
-            yOffset = 48;
-        } else {
-            yOffset = 72;
-            moveTopButtonDown(buttonList, gui);
+        int yOffset = 72;
+        if (numButtonRows != 2 || Reference.onBeta) {
+            moveButtons(buttonList, gui);
         }
 
         if (Reference.onWorld && UtilitiesConfig.INSTANCE.addClassHubButtons) {
             addButtonPair(buttonList, gui, yOffset, 753, "Class selection",
                     754, "Back to Hub");
-            yOffset = 72;
+            yOffset = 48;
         }
 
         if (UtilitiesConfig.INSTANCE.addOptionsProfileButtons) {
-            addButtonPair(buttonList, gui, yOffset, 755, "Wynntils Options",
-                    756, "User Profile");
+            buttonList.add(new GuiButton(756, Reference.onBeta ? gui.width / 2 + 2 : gui.width / 2 - 100, gui.height / 4 + yOffset + -16, Reference.onBeta ? 98 : 200, 20, "Wynntils Menu"));
         }
     }
 
@@ -63,23 +59,43 @@ public class MenuButtonsOverlay implements Listener {
     }
 
     /**
-     * Move the top "Back to Game" button down to avoid a gap
+     * Moves the www.wynncraft.com button to the right of the territory map button and when not showing the class selection and hub buttons moves the territory map and return to game buttons down and when not on beta moves the return to game button down
      */
-    private static void moveTopButtonDown(List<GuiButton> buttonList, IngameMenuReplacer gui) {
-        for (GuiButton button : buttonList) {
-            if (button.id == 4) {
-                button.y = gui.height / 4 + 48 - 16;
+    private static void moveButtons(List<GuiButton> buttonList, IngameMenuReplacer gui) {
+        if (!Reference.onBeta) {
+            for (GuiButton button : buttonList) {
+                if (button.id == 4) {
+                    button.y = gui.height / 4 + 48 - 16;
+                }
+            }
+        } else {
+            for (GuiButton button : buttonList) {
+                if (button.id == 7) {
+                    button.y = gui.height / 4 + 48 - 16;
+                    button.width = 98;
+                    button.x = gui.width / 2 + 2;
+                }
+                if (!Reference.onWorld || !UtilitiesConfig.INSTANCE.addClassHubButtons) {
+                    if (button.id == 4 || button.id == 5) {
+                        button.y += 24;
+                    }
+                }
             }
         }
     }
 
     /**
-     * Removes the "Advancements", "Statistics" and "Open to LAN" buttons.
+     * On Beta removes the Statistics button and the www.wynncraft.com button if the menu button is enabled and when not on beta removes the "Advancements", "Statistics" and "Open to LAN" buttons.
      * Also makes "Options..." and "Mod Options..." grey and "Disconnect" red.
      */
     private static void removeDefaultButtons(List<GuiButton> buttonList) {
         buttonList.removeIf(b -> {
-            if (b.id >= 5 && b.id <= 7) return true;
+            if (!Reference.onBeta) {
+                if (b.id >= 5 && b.id <= 7) return true;
+            } else {
+                if (UtilitiesConfig.INSTANCE.addOptionsProfileButtons && b.id == 7) return true;
+                if (b.id == 6) return true;
+            }
             if (b.id == 1) {
                 b.displayString = TextFormatting.RED + b.displayString;
             } else if (b.id == 12 || b.id == 0) {
