@@ -56,7 +56,7 @@ public class ChatManager {
     private static final String nonTranslatable = "[^a-zA-Z.!?]";
     private static final String optionalTranslatable = "[.!?]";
 
-    private static final Pattern inviteReg = Pattern.compile("((" + TextFormatting.GOLD + "|" + TextFormatting.AQUA + ")/(party|guild) join [a-zA-Z0-9._- ]+)");
+    private static final Pattern inviteReg = Pattern.compile("((" + TextFormatting.GOLD + "|" + TextFormatting.AQUA + ")/(party|guild) join [a-zA-Z0-9._\\- ]+)");
     private static final Pattern tradeReg = Pattern.compile("[\\w ]+ would like to trade! Type /trade [\\w ]+ to accept\\.");
     private static final Pattern duelReg = Pattern.compile("[\\w ]+ \\[Lv\\. \\d+] would like to duel! Type /duel [\\w ]+ to accept\\.");
     private static final Pattern coordinateReg = Pattern.compile("(-?\\d{1,5}[ ,]{1,2})(\\d{1,3}[ ,]{1,2})?(-?\\d{1,5})");
