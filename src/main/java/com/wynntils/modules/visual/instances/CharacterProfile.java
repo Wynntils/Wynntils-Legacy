@@ -35,6 +35,9 @@ public class CharacterProfile {
         this.stack = stack;
         this.slot = slot;
 
+        String name = stack.getDisplayName();
+        className = TextFormatting.getTextWithoutFormattingCodes(name).replace("[>] Select ", "");
+
         for (String line : ItemUtils.getLore(stack)) {
             line = TextFormatting.getTextWithoutFormattingCodes(line);
 
@@ -64,7 +67,9 @@ public class CharacterProfile {
                         }
                     }
 
-                    className = StringUtils.capitalizeFirsts(m.group(2));
+                    if (className.equals("This Character")) {
+                        className = StringUtils.capitalizeFirsts(m.group(2));
+                    }
                 }
 
             } else if (split[0].contains("level")) {

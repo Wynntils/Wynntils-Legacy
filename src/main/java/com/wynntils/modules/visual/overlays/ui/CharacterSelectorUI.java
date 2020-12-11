@@ -297,7 +297,7 @@ public class CharacterSelectorUI extends GuiScreen {
                 continue;
             }
 
-            if (!displayName.contains("Select This Character") && !displayName.contains("Deleting")) continue;
+            if (!TextFormatting.getTextWithoutFormattingCodes(displayName).matches("\\[>\\] Select [a-zA-Z0-9 ]{1,19}") && !displayName.contains("Deleting")) continue;
 
             receivedItems = true;
             availableCharacters.add(new CharacterProfile(stack, s.slotNumber));

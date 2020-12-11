@@ -35,7 +35,7 @@ import static net.minecraft.util.text.TextFormatting.*;
 
 public class QuestManager {
 
-    private static final Pattern QUEST_BOOK_WINDOW_TITLE_PATTERN = Pattern.compile("\\[Pg\\. \\d+] [a-zA-Z0-9_]{1,16}'s? (?:Discoveries|(?:Mini-)?Quests)");
+    private static final Pattern QUEST_BOOK_WINDOW_TITLE_PATTERN = Pattern.compile("\\[Pg\\. \\d+] [a-zA-Z0-9_ ]{1,19}'s? (?:Discoveries|(?:Mini-)?Quests)");
     private static final int MESSAGE_ID = 423375494;
 
     private static FakeInventory lastInventory = null;
