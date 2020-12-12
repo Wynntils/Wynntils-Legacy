@@ -146,7 +146,7 @@ public class ObjectivesOverlay extends Overlay {
 
             if (updateScore.getScoreValue() < objectivesPosition && (objectivesEnd == 0 || updateScore.getScoreValue() > objectivesEnd)) {
                 int pos = objectivesPosition - 1 - updateScore.getScoreValue();
-                if (pos > MAX_OBJECTIVES) {
+                if (pos + 1 > MAX_OBJECTIVES) {
                     Reference.LOGGER.warn("Too many objectives to handle, can only store " + MAX_OBJECTIVES);
                     return true;
                 }
