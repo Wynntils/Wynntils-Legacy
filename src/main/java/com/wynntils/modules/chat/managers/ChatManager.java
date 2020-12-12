@@ -68,10 +68,11 @@ public class ChatManager {
         // Reorganizing
         if (!in.getUnformattedComponentText().isEmpty()) {
             ITextComponent newMessage = new TextComponentString("");
-            newMessage.setStyle(in.getStyle().createDeepCopy());
-            newMessage.appendSibling(in);
-            newMessage.getSiblings().addAll(in.getSiblings());
-            in.getSiblings().clear();
+            for (ITextComponent component : in) {
+                component = component.createCopy();
+                component.getSiblings().clear();
+                newMessage.appendSibling(component);
+            }
             in = newMessage;
         }
 
@@ -129,7 +130,9 @@ public class ChatManager {
             if (foundEndTimestamp && !in.getSiblings().get(ChatConfig.INSTANCE.addTimestampsToChat ? 3 : 0).getUnformattedText().contains("/") && !isGuildOrParty) {
                 foundStart = true;
             }
-            for (ITextComponent component : in.getSiblings()) {
+            for (ITextComponent component : in) {
+                component = component.createCopy();
+                component.getSiblings().clear();
                 String toAdd = "";
                 String currentNonTranslated = "";
                 StringBuilder oldText = new StringBuilder();
@@ -285,8 +288,11 @@ public class ChatManager {
                 }
             }
 
-            in.getSiblings().clear();
-            in.getSiblings().addAll(newTextComponents);
+            in = new TextComponentString("");
+            for (ITextComponent component : newTextComponents) {
+                component.getSiblings().clear();
+                in.appendSibling(component);
+            }
         }
 
         // clickable party invites
@@ -401,6 +407,7 @@ public class ChatManager {
             in.getSiblings().addAll(chapterSelect);
 
         }
+        System.out.println(in.getFormattedText().replace('§', '&'));
 
         return in;
     }
