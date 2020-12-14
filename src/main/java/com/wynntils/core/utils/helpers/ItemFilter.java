@@ -97,6 +97,8 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
             if (filterStr.isEmpty()) return Collections.emptyList();
             List<Pair<Comparison, T>> rels = new ArrayList<>();
             for (String relStr : filterStr.split(",")) {
+                relStr = relStr.trim();
+                if (relStr.isEmpty()) continue;
                 if (relStr.startsWith("<=")) {
                     rels.add(new Pair<>(Comparison.LESS_THAN_OR_EQUAL, keyExtractor.extractKey(relStr.substring(2))));
                 } else if (relStr.startsWith(">=")) {
@@ -232,6 +234,7 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
                 Set<ItemType> allowedTypes = EnumSet.noneOf(ItemType.class);
                 for (String token : filterStr.split(",")) {
                     token = token.trim().toLowerCase(Locale.ROOT);
+                    if (token.isEmpty()) continue;
                     ItemType type = ItemType.matchText(token);
                     if (type != null) {
                         allowedTypes.add(type);
@@ -548,7 +551,8 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
 
     class ByString implements ItemFilter {
 
-        public static final StringType TYPE_SET = new StringType("Set", i -> i.getItemInfo().getSet());
+        // info about sets is missing in the current wynntils item dataset
+        //public static final StringType TYPE_SET = new StringType("Set", i -> i.getItemInfo().getSet());
         public static final StringType TYPE_RESTRICTION = new StringType("Restriction", ItemProfile::getRestriction);
 
         public static class StringType extends Type<ByString> {
@@ -594,7 +598,8 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
 
         @Override
         public boolean test(ItemProfile item) {
-            return type.extractString(item).contains(matchStr);
+            String s = type.extractString(item);
+            return s != null && s.toLowerCase(Locale.ROOT).contains(matchStr);
         }
 
         @Override
@@ -616,7 +621,7 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
         private final Set<String> majorIds;
 
         public ByMajorId(String... majorIds) {
-            this.majorIds = Arrays.stream(majorIds).map(s -> s.toLowerCase(Locale.ROOT)).collect(Collectors.toSet());
+            this.majorIds = Arrays.stream(majorIds).map(s -> s.toLowerCase(Locale.ROOT)).filter(s -> !s.isEmpty()).collect(Collectors.toSet());
         }
 
         @Override
@@ -631,13 +636,13 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
 
         @Override
         public boolean test(ItemProfile item) {
-            // quadratic time subset check is bad, but items generally don't have many major IDs so it should be fine in practice
+            List<MajorIdentification> itemIds = item.getMajorIds();
+            if (itemIds == null) return false;
+            // quadratic-time subset check is bad, but items generally don't have many major IDs so it should be fine in practice
             iter_ids:
             for (String expectedId : majorIds) {
-                for (MajorIdentification itemId : item.getMajorIds()) {
-                    if (itemId.getName().contains(expectedId)) {
-                        continue iter_ids;
-                    }
+                for (MajorIdentification itemId : itemIds) {
+                    if (itemId.getName().toLowerCase(Locale.ROOT).contains(expectedId)) continue iter_ids;
                 }
                 return false;
             }
