@@ -93,7 +93,7 @@ public class ClientEvents implements Listener {
 
     public static boolean isAwaitingHorseMount = false;
     private static int lastHorseId = -1;
-    
+
     private static boolean priceInput = false;
 
     @SubscribeEvent
@@ -231,9 +231,17 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onFovUpdate(FOVUpdateEvent e) {
-        if (!UtilitiesConfig.INSTANCE.disableFovChanges) return;
-
-        e.setNewfov(1f + (e.getEntity().isSprinting() ? 0.15f : 0));
+        switch (UtilitiesConfig.INSTANCE.fovScalingFunction) {
+            case Arctangent:
+                e.setNewfov(1f + (float) (Math.atan(Math.PI * (e.getNewfov() - 1d)) / Math.PI));
+                break;
+            case Sprint_Only:
+                e.setNewfov(1f + (e.getEntity().isSprinting() ? 0.15f : 0));
+                break;
+            case None:
+                e.setNewfov(1f);
+                break;
+        }
     }
 
     @SubscribeEvent
@@ -267,25 +275,25 @@ public class ClientEvents implements Listener {
             if (UtilitiesConfig.Market.INSTANCE.openChatMarket)
                 scheduledGuiScreen = new ChatGUI();
         }
-        
+
         if (UtilitiesConfig.Market.INSTANCE.openChatMarket) {
             if (e.getMessage().getUnformattedText().matches("Type the (item name|amount you wish to (buy|sell)) or type 'cancel' to cancel:")) {
                 scheduledGuiScreen = new ChatGUI();
             }
         }
-        
+
         if (UtilitiesConfig.Bank.INSTANCE.openChatBankSearch) {
             if (e.getMessage().getUnformattedText().matches("Please type an item name in chat!")) {
                 scheduledGuiScreen = new ChatGUI();
             }
         }
     }
-    
+
     @SubscribeEvent
     public void onSendMessage(ClientChatEvent e) {
         if (!priceInput) return;
-        
-        priceInput = false;        
+
+        priceInput = false;
         int price = StringUtils.convertEmeraldPrice(e.getMessage());
         if (price != 0) // price of 0 means either garbage input or actual 0, can be ignored either way
             e.setMessage("" + price);
@@ -497,7 +505,7 @@ public class ClientEvents implements Listener {
 
             return;
         }
-        
+
         if (e.getKeyCode() == KeyManager.getItemScreenshotKey().getKeyBinding().getKeyCode()) {
             ItemScreenshotManager.takeScreenshot();
             return;
@@ -544,7 +552,7 @@ public class ClientEvents implements Listener {
 
             return;
         }
-        
+
         if (e.getKeyCode() == KeyManager.getItemScreenshotKey().getKeyBinding().getKeyCode()) {
             ItemScreenshotManager.takeScreenshot();
             return;
@@ -568,7 +576,7 @@ public class ClientEvents implements Listener {
 
             return;
         }
-        
+
         if (e.getKeyCode() == KeyManager.getItemScreenshotKey().getKeyBinding().getKeyCode()) {
             ItemScreenshotManager.takeScreenshot();
             return;
@@ -582,25 +590,25 @@ public class ClientEvents implements Listener {
     }
 
     private static int accessoryDestinationSlot = -1;
-    
+
     @SubscribeEvent
     public void clickOnInventory(GuiOverlapEvent.InventoryOverlap.HandleMouseClick e) {
         if(!Reference.onWorld) return;
-        
+
         if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().inventory == Minecraft.getMinecraft().player.inventory) {
             if (checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex(), Minecraft.getMinecraft().gameSettings.keyBindDrop.getKeyCode())) {
                 e.setCanceled(true);
                 return;
             }
         }
-        
+
         if (UtilitiesConfig.INSTANCE.shiftClickAccessories && e.getGui().isShiftKeyDown() && e.getGui().getSlotUnderMouse() != null && ModCore.mc().player.inventory.getItemStack().isEmpty() && e.getGui().getSlotUnderMouse().inventory == ModCore.mc().player.inventory) {
             if (e.getSlotId() >= 9 && e.getSlotId() <= 12) { // taking off accessory
                 // check if hotbar has open slot; if so, no action required
                 for (int i = 36; i < 45; i++) {
                     if (!e.getGui().inventorySlots.getSlot(i).getHasStack()) return;
                 }
-                
+
                 // move accessory into inventory
                 // find first open slot
                 int openSlot = 0;
@@ -612,14 +620,14 @@ public class ClientEvents implements Listener {
                 }
                 if (openSlot == 0) return; // no open slots, cannot move accessory anywhere
                 accessoryDestinationSlot = openSlot;
-                
+
                 e.setCanceled(true);
-                
+
             } else { // putting on accessory
                 // verify it's an accessory
                 ItemType item = ItemUtils.getItemType(e.getSlotIn().getStack());
                 if (item != ItemType.RING && item != ItemType.BRACELET && item != ItemType.NECKLACE) return;
-                
+
                 // check if the appropriate slot is open (snow layer = empty)
                 int openSlot = 0;
                 switch (item) {
@@ -642,16 +650,16 @@ public class ClientEvents implements Listener {
                 }
                 if (openSlot == 0) return;
                 accessoryDestinationSlot = openSlot;
-                
+
                 e.setCanceled(true); // only cancel after finding open slot
             }
-                
+
             // pick up accessory
             CPacketClickWindow packet = new CPacketClickWindow(e.getGui().inventorySlots.windowId, e.getSlotId(), 0, ClickType.PICKUP, e.getSlotIn().getStack(), e.getGui().inventorySlots.getNextTransactionID(ModCore.mc().player.inventory));
             ModCore.mc().getConnection().sendPacket(packet);
         }
     }
-    
+
     @SubscribeEvent
     public void handleAccessoryMovement(TickEvent.ClientTickEvent e) {
         if (e.phase != Phase.END) return;
@@ -663,17 +671,17 @@ public class ClientEvents implements Listener {
             return;
         }
         InventoryReplacer gui = (InventoryReplacer) ModCore.mc().currentScreen;
-        
+
         // no item picked up
         if (ModCore.mc().player.inventory.getItemStack().isEmpty()) return;
-        
+
         // destination slot was filled in the meantime
         if (gui.inventorySlots.getSlot(accessoryDestinationSlot).getHasStack() &&
                 !gui.inventorySlots.getSlot(accessoryDestinationSlot).getStack().getItem().equals(Item.getItemFromBlock(Blocks.SNOW_LAYER))) {
             accessoryDestinationSlot = -1;
             return;
         }
-        
+
         // move accessory
         gui.handleMouseClick(gui.inventorySlots.getSlot(accessoryDestinationSlot), accessoryDestinationSlot, 0, ClickType.PICKUP);
         accessoryDestinationSlot = -1;
