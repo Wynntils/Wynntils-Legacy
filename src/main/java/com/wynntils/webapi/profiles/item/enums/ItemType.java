@@ -39,4 +39,59 @@ public enum ItemType {
         return meta;
     }
 
+    public static ItemType matchText(String typeStr) {
+        switch (typeStr) {
+            case "wand":
+            case "stick":
+            case "mage":
+            case "wizard":
+            case "darkwizard":
+                return WAND;
+            case "spear":
+            case "hammer":
+            case "scythe":
+            case "warrior":
+            case "knight":
+                return SPEAR;
+            case "dagger":
+            case "shears":
+            case "assassin":
+            case "ninja":
+                return DAGGER;
+            case "bow":
+            case "archer":
+            case "hunter":
+                return BOW;
+            case "relik":
+            case "relic":
+            case "shaman":
+            case "skyseer":
+                return RELIK;
+            case "helmet":
+            case "helm":
+                return HELMET;
+            case "chestplate":
+            case "chest":
+                return CHESTPLATE;
+            case "leggings":
+            case "legs":
+                return LEGGINGS;
+            case "boots":
+            case "feet":
+                return BOOTS;
+            case "ring":
+                return RING;
+            case "necklace":
+            case "amulet":
+            case "neck":
+                return NECKLACE;
+            case "bracelet":
+            case "bracer":
+            case "arm":
+                return BRACELET;
+            default:
+                return null;
+        }
+    }
+
 }

@@ -416,4 +416,20 @@ public class StringUtils {
         return String.format("%s%c", value, "kMBTPE".charAt(exp - 1));
     }
 
+    public static boolean fuzzyMatch(String toCheck, String searchText) {
+        int i = 0, j = 0;
+        char[] toCheckArray = toCheck.toCharArray();
+        for (char c : searchText.toCharArray()) {
+            while (i < toCheck.length()) {
+                if (c == toCheckArray[i]) {
+                    i++;
+                    j++;
+                    break;
+                }
+                i++;
+            }
+        }
+        return j == searchText.length();
+    }
+
 }

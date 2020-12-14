@@ -30,10 +30,13 @@ public class QuestBookConfig extends SettingsClass {
 
     @Setting(displayName = "Show Unavailable Discoveries", description = "When viewing undiscovered discoveries, should discoveries that cannot be currently found be displayed?")
     public boolean showAllDiscoveries = false;
-    
+
     @Setting(displayName = "Secret Discoveries Tracking", description = "When viewing secret discoveries, which should be tracked?\n\n§8Coordinates are obtained via the Wynncraft Wiki.")
     public SecretSpoilMode spoilSecretDiscoveries = SecretSpoilMode.ONLY_DISCOVERED;
-    
+
+    @Setting(upload = false)
+    public boolean advancedItemSearch = false;
+
     public enum SecretSpoilMode {
         ALL,
         ONLY_DISCOVERED,
