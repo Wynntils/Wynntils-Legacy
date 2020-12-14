@@ -43,4 +43,34 @@ public enum ItemTier {
         return color + StringUtils.capitalizeFirst(toString().toLowerCase()) + " Item";
     }
 
+    public static ItemTier matchText(String tierStr) {
+        switch (tierStr) {
+            case "normal":
+            case "n":
+            case "common":
+            case "c":
+                return NORMAL;
+            case "set":
+            case "s":
+                return SET;
+            case "unique":
+            case "u":
+                return UNIQUE;
+            case "rare":
+            case "r":
+                return RARE;
+            case "legendary":
+            case "l":
+                return LEGENDARY;
+            case "fabled":
+            case "f":
+                return FABLED;
+            case "mythic":
+            case "m":
+                return MYTHIC;
+            default:
+                return null;
+        }
+    }
+
 }

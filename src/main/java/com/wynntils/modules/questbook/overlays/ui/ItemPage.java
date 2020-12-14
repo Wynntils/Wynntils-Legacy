@@ -244,6 +244,8 @@ public class ItemPage extends QuestBookPage {
                 String searchText = BasicSearchHandler.INSTANCE.inheritSearchState(searchState);
                 if (searchText != null) {
                     textField.setText(searchText);
+                } else {
+                    textField.setText("");
                 }
                 QuestBookConfig.INSTANCE.advancedItemSearch = false;
             } else {
@@ -471,7 +473,14 @@ public class ItemPage extends QuestBookPage {
             if (allowedTypes.size() < itemTypeArray.size()) {
                 searchState.addFilter(new ItemFilter.ByType(allowedTypes, ItemFilter.SortDirection.NONE));
             }
-            // TODO other sort functions
+            switch (sortFunction) { // alphabetical is handled above
+                case BY_LEVEL:
+                    searchState.addFilter(new ItemFilter.ByStat(ItemFilter.ByStat.TYPE_COMBAT_LEVEL, Collections.emptyList(), ItemFilter.SortDirection.DESCENDING));
+                    break;
+                case BY_RARITY:
+                    searchState.addFilter(new ItemFilter.ByRarity(Collections.emptyList(), ItemFilter.SortDirection.DESCENDING));
+                    break;
+            }
             return searchState;
         }
 
@@ -495,7 +504,14 @@ public class ItemPage extends QuestBookPage {
                     sortFunction = SortFunction.ALPHABETICAL;
                 }
             }
-            // TODO other sort fns
+            ItemFilter.ByRarity byRarity = searchState.getFilter(ItemFilter.ByRarity.TYPE);
+            if (byRarity != null && byRarity.getSortDirection() != ItemFilter.SortDirection.NONE) {
+                sortFunction = SortFunction.BY_RARITY;
+            }
+            ItemFilter.ByStat byLevel = searchState.getFilter(ItemFilter.ByStat.TYPE_COMBAT_LEVEL);
+            if (byLevel != null && byLevel.getSortDirection() != ItemFilter.SortDirection.NONE) {
+                sortFunction = SortFunction.BY_LEVEL;
+            }
             if (sortFunction == null) {
                 sortFunction = SortFunction.ALPHABETICAL;
             }
