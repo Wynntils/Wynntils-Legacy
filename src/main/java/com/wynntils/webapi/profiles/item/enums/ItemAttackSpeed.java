@@ -8,22 +8,28 @@ import net.minecraft.util.text.TextFormatting;
 
 public enum ItemAttackSpeed {
 
-    SUPER_FAST("Super Fast Attack Speed"),
-    VERY_FAST("Very Fast Attack Speed"),
-    FAST("Fast Attack Speed"),
-    NORMAL("Normal Attack Speed"),
-    SLOW("Slow Attack Speed"),
-    VERY_SLOW("Very Slow Attack Speed"),
-    SUPER_SLOW("Super Slow Attack Speed");
+    SUPER_FAST("Super Fast Attack Speed", 3),
+    VERY_FAST("Very Fast Attack Speed", 2),
+    FAST("Fast Attack Speed", 1),
+    NORMAL("Normal Attack Speed", 0),
+    SLOW("Slow Attack Speed", -1),
+    VERY_SLOW("Very Slow Attack Speed", -2),
+    SUPER_SLOW("Super Slow Attack Speed", -3);
 
     String name;
+    int offset;
 
-    ItemAttackSpeed(String name) {
+    ItemAttackSpeed(String name, int offset) {
         this.name = name;
+        this.offset = offset;
     }
 
     public String getName() {
         return name;
+    }
+
+    public int getOffset() {
+        return offset;
     }
 
     public String asLore() {

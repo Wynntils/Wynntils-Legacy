@@ -6,13 +6,20 @@ package com.wynntils.core.utils.helpers;
 
 import com.google.common.collect.ImmutableList;
 import com.wynntils.core.framework.enums.Comparison;
+import com.wynntils.core.framework.enums.DamageType;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.webapi.profiles.item.ItemProfile;
+import com.wynntils.webapi.profiles.item.enums.ItemAttackSpeed;
 import com.wynntils.webapi.profiles.item.enums.ItemTier;
 import com.wynntils.webapi.profiles.item.enums.ItemType;
+import com.wynntils.webapi.profiles.item.enums.MajorIdentification;
+import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
@@ -34,10 +41,18 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
 
         private static void initTypeRegistry() {
             typeRegistry = new HashMap<>();
-            putType(ByName.TYPE);
-            putType(ByType.TYPE);
-            putType(ByRarity.TYPE);
-            putType(ByStat.TYPE_COMBAT_LEVEL);
+            // there's a lot of em
+            for (Class<?> filterClass : ItemFilter.class.getClasses()) {
+                for (Field field : filterClass.getFields()) {
+                    if ((field.getModifiers() & Modifier.STATIC) != 0 && Type.class.isAssignableFrom(field.getType())) {
+                        try {
+                            putType((Type<?>)field.get(null));
+                        } catch (IllegalAccessException e) {
+                            // probably not an issue
+                        }
+                    }
+                }
+            }
             typeRegistry = Collections.unmodifiableMap(typeRegistry);
         }
 
@@ -190,9 +205,7 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
         @Override
         public String toFilterString() {
             StringBuilder buf = new StringBuilder(TYPE.getName()).append(':').append(sortDir.prefix);
-            if (!searchStr.isEmpty()) {
-                buf.append('"').append(searchStr).append('"');
-            }
+            if (!searchStr.isEmpty()) buf.append(StringUtils.quoteIfContainsSpace(searchStr));
             return buf.toString();
         }
 
@@ -271,7 +284,7 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
             categoryToFilterString(ARMOURS, "armor", keys);
             categoryToFilterString(WEAPONS, "weapon", keys);
             categoryToFilterString(ACCESSORIES, "accessory", keys);
-            return TYPE.getName() + ':' + sortDir.prefix + String.join(",", keys);
+            return TYPE.getName() + ':' + sortDir.prefix + StringUtils.quoteIfContainsSpace(String.join(",", keys));
         }
 
         private void categoryToFilterString(List<ItemType> types, String categoryName, List<String> dest) {
@@ -354,9 +367,117 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
 
     class ByStat implements ItemFilter {
 
+        // requirements
         public static final StatType TYPE_COMBAT_LEVEL = new StatType("Level", i -> i.getRequirements().getLevel());
+        public static final StatType TYPE_STR_REQ = new StatType("StrReq", i -> i.getRequirements().getStrength());
+        public static final StatType TYPE_DEX_REQ = new StatType("DexReq", i -> i.getRequirements().getDexterity());
+        public static final StatType TYPE_INT_REQ = new StatType("IntReq", i -> i.getRequirements().getIntelligence());
+        public static final StatType TYPE_DEF_REQ = new StatType("DefReq", i -> i.getRequirements().getDefense());
+        public static final StatType TYPE_AGI_REQ = new StatType("AgiReq", i -> i.getRequirements().getAgility());
+        public static final StatType TYPE_SUM_REQ = StatType.sum("SumReq", TYPE_STR_REQ, TYPE_DEX_REQ, TYPE_INT_REQ, TYPE_DEF_REQ, TYPE_AGI_REQ);
+
+        // damages
+        public static final StatType TYPE_NEUTRAL_DMG = new StatType("NeutralDmg", i -> i.getAverageDamages().getOrDefault(DamageType.NEUTRAL, 0));
+        public static final StatType TYPE_EARTH_DMG = new StatType("EarthDmg", i -> i.getAverageDamages().getOrDefault(DamageType.EARTH, 0));
+        public static final StatType TYPE_THUNDER_DMG = new StatType("ThunderDmg", i -> i.getAverageDamages().getOrDefault(DamageType.THUNDER, 0));
+        public static final StatType TYPE_WATER_DMG = new StatType("WaterDmg", i -> i.getAverageDamages().getOrDefault(DamageType.WATER, 0));
+        public static final StatType TYPE_FIRE_DMG = new StatType("FireDmg", i -> i.getAverageDamages().getOrDefault(DamageType.FIRE, 0));
+        public static final StatType TYPE_AIR_DMG = new StatType("AirDmg", i -> i.getAverageDamages().getOrDefault(DamageType.AIR, 0));
+        public static final StatType TYPE_SUM_DMG = StatType.sum("SumDmg", TYPE_NEUTRAL_DMG, TYPE_EARTH_DMG, TYPE_THUNDER_DMG, TYPE_WATER_DMG, TYPE_FIRE_DMG, TYPE_AIR_DMG);
+
+        // defenses
+        public static final StatType TYPE_HEALTH = new StatType("Health", ItemProfile::getHealth);
+        public static final StatType TYPE_EARTH_DEF = new StatType("EarthDef", i -> i.getElementalDefenses().getOrDefault(DamageType.EARTH, 0));
+        public static final StatType TYPE_THUNDER_DEF = new StatType("ThunderDef", i -> i.getElementalDefenses().getOrDefault(DamageType.THUNDER, 0));
+        public static final StatType TYPE_WATER_DEF = new StatType("WaterDef", i -> i.getElementalDefenses().getOrDefault(DamageType.WATER, 0));
+        public static final StatType TYPE_FIRE_DEF = new StatType("FireDef", i -> i.getElementalDefenses().getOrDefault(DamageType.FIRE, 0));
+        public static final StatType TYPE_AIR_DEF = new StatType("AirDef", i -> i.getElementalDefenses().getOrDefault(DamageType.AIR, 0));
+        public static final StatType TYPE_SUM_DEF = StatType.sum("SumDef", TYPE_EARTH_DEF, TYPE_THUNDER_DEF, TYPE_WATER_DEF, TYPE_FIRE_DEF, TYPE_AIR_DEF);
+
+        // attribute ids
+        public static final StatType TYPE_STR = StatType.getIdStat("Str", "rawStrength");
+        public static final StatType TYPE_DEX = StatType.getIdStat("Dex", "rawDexterity");
+        public static final StatType TYPE_INT = StatType.getIdStat("Int", "rawIntelligence");
+        public static final StatType TYPE_DEF = StatType.getIdStat("Def", "rawDefence");
+        public static final StatType TYPE_AGI = StatType.getIdStat("Agi", "rawAgility");
+        public static final StatType TYPE_SKILL_POINTS = StatType.sum("SkillPoints", TYPE_STR, TYPE_DEX, TYPE_INT, TYPE_DEF, TYPE_AGI);
+
+        // damage ids
+        public static final StatType TYPE_MAIN_ATK_NEUTRAL_DMG = StatType.getIdStat("MainAtkNeutralDmg", "rawMainAttackNeutralDamage");
+        public static final StatType TYPE_MAIN_ATK_DMG = StatType.getIdStat("MainAtkDmg", "mainAttackDamage");
+        public static final StatType TYPE_SPELL_NEUTRAL_DMG = StatType.getIdStat("SpellNeutralDmg", "rawNeutralSpellDamage");
+        public static final StatType TYPE_SPELL_DMG = StatType.getIdStat("SpellDmg", "spellDamage");
+        public static final StatType TYPE_BONUS_EARTH_DMG = StatType.getIdStat("BonusEarthDmg", "earthDamage");
+        public static final StatType TYPE_BONUS_THUNDER_DMG = StatType.getIdStat("BonusThunderDmg", "thunderDamage");
+        public static final StatType TYPE_BONUS_WATER_DMG = StatType.getIdStat("BonusWaterDmg", "waterDamage");
+        public static final StatType TYPE_BONUS_FIRE_DMG = StatType.getIdStat("BonusFireDmg", "fireDamage");
+        public static final StatType TYPE_BONUS_AIR_DMG = StatType.getIdStat("BonusAirDmg", "airDamage");
+        public static final StatType TYPE_BONUS_SUM_DMG = StatType.sum("BonusSumDmg", TYPE_BONUS_EARTH_DMG, TYPE_BONUS_THUNDER_DMG, TYPE_BONUS_WATER_DMG, TYPE_BONUS_FIRE_DMG, TYPE_BONUS_AIR_DMG);
+
+        // defense ids
+        public static final StatType TYPE_BONUS_HEALTH = StatType.getIdStat("BonusHealth", "rawHealth");
+        public static final StatType TYPE_BONUS_EARTH_DEF = StatType.getIdStat("BonusEarthDef", "earthDefence");
+        public static final StatType TYPE_BONUS_THUNDER_DEF = StatType.getIdStat("BonusThunderDef", "thunderDefence");
+        public static final StatType TYPE_BONUS_WATER_DEF = StatType.getIdStat("BonusWaterDef", "waterDefence");
+        public static final StatType TYPE_BONUS_FIRE_DEF = StatType.getIdStat("BonusFireDef", "fireDefence");
+        public static final StatType TYPE_BONUS_AIR_DEF = StatType.getIdStat("BonusAirDef", "airDefence");
+        public static final StatType TYPE_BONUS_SUM_DEF = StatType.sum("BonusSumDef", TYPE_BONUS_EARTH_DEF, TYPE_BONUS_THUNDER_DEF, TYPE_BONUS_WATER_DEF, TYPE_BONUS_FIRE_DEF, TYPE_BONUS_AIR_DEF);
+
+        // resource regen ids
+        public static final StatType TYPE_RAW_HEALTH_REGEN = StatType.getIdStat("RawHealthRegen", "rawHealthRegen");
+        public static final StatType TYPE_HEALTH_REGEN = StatType.getIdStat("HealthRegen", "healthRegen");
+        public static final StatType TYPE_LIFE_STEAL = StatType.getIdStat("LifeSteal", "lifeSteal");
+        public static final StatType TYPE_MANA_REGEN = StatType.getIdStat("ManaRegen", "manaRegen");
+        public static final StatType TYPE_MANA_STEAL = StatType.getIdStat("ManaSteal", "manaSteal");
+
+        // movement ids
+        public static final StatType TYPE_WALK_SPEED = StatType.getIdStat("WalkSpeed", "walkSpeed");
+        public static final StatType TYPE_SPRINT = StatType.getIdStat("Sprint", "sprint");
+        public static final StatType TYPE_SPRINT_REGEN = StatType.getIdStat("SprintRegen", "sprintRegen");
+        public static final StatType TYPE_JUMP_HEIGHT = StatType.getIdStat("JumpHeight", "jumpHeight");
+
+        // spell cost ids
+        public static final StatType TYPE_RAW_SPELL_COST_1 = StatType.getIdStat("RawSpellCost1", "raw1stSpellCost");
+        public static final StatType TYPE_SPELL_COST_1 = StatType.getIdStat("SpellCost1", "1stSpellCost");
+        public static final StatType TYPE_RAW_SPELL_COST_2 = StatType.getIdStat("RawSpellCost2", "raw2ndSpellCost");
+        public static final StatType TYPE_SPELL_COST_2 = StatType.getIdStat("SpellCost2", "2ndSpellCost");
+        public static final StatType TYPE_RAW_SPELL_COST_3 = StatType.getIdStat("RawSpellCost3", "raw3rdSpellCost");
+        public static final StatType TYPE_SPELL_COST_3 = StatType.getIdStat("SpellCost3", "3rdSpellCost");
+        public static final StatType TYPE_RAW_SPELL_COST_4 = StatType.getIdStat("RawSpellCost4", "raw4thSpellCost");
+        public static final StatType TYPE_SPELL_COST_4 = StatType.getIdStat("SpellCost4", "4thSpellCost");
+        public static final StatType TYPE_RAW_SPELL_COST_SUM = StatType.sum("RawSpellCostSum", TYPE_RAW_SPELL_COST_1, TYPE_RAW_SPELL_COST_2, TYPE_RAW_SPELL_COST_3, TYPE_RAW_SPELL_COST_4);
+        public static final StatType TYPE_SPELL_COST_SUM = StatType.sum("SpellCostSum", TYPE_SPELL_COST_1, TYPE_SPELL_COST_2, TYPE_SPELL_COST_3, TYPE_SPELL_COST_4);
+
+        // other ids
+        public static final StatType TYPE_BONUS_ATK_SPD = StatType.getIdStat("BonusAtkSpd", "attackSpeed");
+        public static final StatType TYPE_EXPLODING = StatType.getIdStat("Exploding", "exploding");
+        public static final StatType TYPE_POISON = StatType.getIdStat("Poison", "poison");
+        public static final StatType TYPE_THORNS = StatType.getIdStat("Thorns", "thorns");
+        public static final StatType TYPE_REFLECTION = StatType.getIdStat("Reflection", "reflection");
+        public static final StatType TYPE_SOUL_POINT_REGEN = StatType.getIdStat("SoulPointRegen", "soulPointRegen");
+        public static final StatType TYPE_LOOT_BONUS = StatType.getIdStat("LootBonus", "lootBonus");
+        public static final StatType TYPE_STEALING = StatType.getIdStat("Stealing", "emeraldStealing");
+        public static final StatType TYPE_XP_BONUS = StatType.getIdStat("XpBonus", "xpBonus");
+
+        // other stuff
+        public static final StatType TYPE_ATTACK_SPEED = new StatType("AtkSpd", i -> {
+            ItemAttackSpeed atkSpd = i.getAttackSpeed();
+            return atkSpd != null ? atkSpd.getOffset() : 0;
+        });
+        public static final StatType TYPE_POWDER_SLOTS = new StatType("PowderSlots", ItemProfile::getPowderAmount);
 
         public static class StatType extends Type<ByStat> {
+
+            static StatType getIdStat(String name, String key) {
+                return new StatType(name, i -> {
+                    IdentificationContainer id = i.getStatuses().get(key);
+                    return id != null ? id.getMax() : 0;
+                });
+            }
+
+            static StatType sum(String name, StatType... summands) {
+                return new StatType(name, i -> Arrays.stream(summands).mapToInt(s -> s.extractStat(i)).sum());
+            }
 
             private final ToIntFunction<ItemProfile> statExtractor;
 
@@ -421,6 +542,111 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
         @Override
         public int compare(ItemProfile a, ItemProfile b) {
             return sortDir.modifyComparison(Integer.compare(type.extractStat(a), type.extractStat(b)));
+        }
+
+    }
+
+    class ByString implements ItemFilter {
+
+        public static final StringType TYPE_SET = new StringType("Set", i -> i.getItemInfo().getSet());
+        public static final StringType TYPE_RESTRICTION = new StringType("Restriction", ItemProfile::getRestriction);
+
+        public static class StringType extends Type<ByString> {
+
+            private final Function<ItemProfile, String> stringExtractor;
+
+            StringType(String name, Function<ItemProfile, String> stringExtractor) {
+                super(name);
+                this.stringExtractor = stringExtractor;
+            }
+
+            public String extractString(ItemProfile item) {
+                return stringExtractor.apply(item);
+            }
+
+            @Override
+            public ByString parse(String filterStr) throws FilteringException {
+                Pair<String, SortDirection> sortDir = parseSortDirection(filterStr);
+                return new ByString(this, sortDir.a, sortDir.b);
+            }
+
+        }
+
+        private final StringType type;
+        private final String matchStr;
+        private final SortDirection sortDir;
+
+        public ByString(StringType type, String matchStr, SortDirection sortDir) {
+            this.type = type;
+            this.matchStr = matchStr.toLowerCase(Locale.ROOT);
+            this.sortDir = sortDir;
+        }
+
+        @Override
+        public Type<ByString> getFilterType() {
+            return type;
+        }
+
+        @Override
+        public String toFilterString() {
+            return type.getName() + ':' + sortDir.prefix + StringUtils.quoteIfContainsSpace(matchStr);
+        }
+
+        @Override
+        public boolean test(ItemProfile item) {
+            return type.extractString(item).contains(matchStr);
+        }
+
+        @Override
+        public int compare(ItemProfile a, ItemProfile b) {
+            return sortDir.modifyComparison(type.extractString(a).compareToIgnoreCase(type.extractString(b)));
+        }
+
+    }
+
+    class ByMajorId implements ItemFilter {
+
+        public static final Type<ByMajorId> TYPE = new Type<ByMajorId>("MajorId") {
+            @Override
+            public ByMajorId parse(String filterStr) {
+                return new ByMajorId(filterStr.split(","));
+            }
+        };
+
+        private final Set<String> majorIds;
+
+        public ByMajorId(String... majorIds) {
+            this.majorIds = Arrays.stream(majorIds).map(s -> s.toLowerCase(Locale.ROOT)).collect(Collectors.toSet());
+        }
+
+        @Override
+        public Type<ByMajorId> getFilterType() {
+            return TYPE;
+        }
+
+        @Override
+        public String toFilterString() {
+            return TYPE.getName() + ':' + StringUtils.quoteIfContainsSpace(String.join(",", majorIds));
+        }
+
+        @Override
+        public boolean test(ItemProfile item) {
+            // quadratic time subset check is bad, but items generally don't have many major IDs so it should be fine in practice
+            iter_ids:
+            for (String expectedId : majorIds) {
+                for (MajorIdentification itemId : item.getMajorIds()) {
+                    if (itemId.getName().contains(expectedId)) {
+                        continue iter_ids;
+                    }
+                }
+                return false;
+            }
+            return true;
+        }
+
+        @Override
+        public int compare(ItemProfile a, ItemProfile b) {
+            return 0;
         }
 
     }

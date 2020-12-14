@@ -273,7 +273,6 @@ public class ItemPage extends QuestBookPage {
         try {
             newSearchState = getSearchHandler().generateSearchState(currentText);
         } catch (ItemFilter.FilteringException e) {
-            e.printStackTrace();
             searchError = e.getMessage();
             if (itemSearch == null) itemSearch = new ArrayList<>(WebManager.getDirectItems());
             return;

@@ -432,4 +432,8 @@ public class StringUtils {
         return j == searchText.length();
     }
 
+    public static String quoteIfContainsSpace(String str) {
+        return str.indexOf(' ') == -1 ? str : ('"' + str + '"');
+    }
+
 }
