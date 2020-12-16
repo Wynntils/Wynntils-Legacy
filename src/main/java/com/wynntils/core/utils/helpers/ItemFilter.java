@@ -437,7 +437,7 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
         public static final StatType TYPE_WALK_SPEED = StatType.getIdStat("WalkSpeed", "walkSpeed");
         public static final StatType TYPE_SPRINT = StatType.getIdStat("Sprint", "sprint");
         public static final StatType TYPE_SPRINT_REGEN = StatType.getIdStat("SprintRegen", "sprintRegen");
-        public static final StatType TYPE_JUMP_HEIGHT = StatType.getIdStat("JumpHeight", "jumpHeight");
+        public static final StatType TYPE_JUMP_HEIGHT = StatType.getIdStat("JumpHeight", "rawJumpHeight");
 
         // spell cost ids
         public static final StatType TYPE_RAW_SPELL_COST_1 = StatType.getIdStat("RawSpellCost1", "raw1stSpellCost");
