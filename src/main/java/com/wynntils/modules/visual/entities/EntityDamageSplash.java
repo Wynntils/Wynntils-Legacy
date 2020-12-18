@@ -86,7 +86,6 @@ public class EntityDamageSplash extends FakeEntity {
 
                 scale(scale, scale, scale);
 
-                alphaFunc(516, 0.1F);
                 color(1.0f, 1.0f, 1.0f, 1.0f);
             }
 
