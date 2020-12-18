@@ -9,6 +9,7 @@ import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.modules.utilities.managers.ServerListManager;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -26,7 +27,7 @@ public class ServerUptimeOverlay implements Listener {
         if (e.getGui().getSlotUnderMouse() == null || e.getGui().getSlotUnderMouse().getStack().isEmpty()) return;
 
         ItemStack stack = e.getGui().getSlotUnderMouse().getStack();
-        if (!ItemUtils.getStringLore(stack).contains("Players")) return;
+        if (!ItemUtils.getStringLore(stack).contains("Players") || stack.getItem() == Items.CLOCK) return;
         NBTTagCompound nbt = stack.getTagCompound();
         if (nbt.hasKey("wynntils")) return;
 
