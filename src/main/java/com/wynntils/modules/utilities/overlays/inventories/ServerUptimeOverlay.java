@@ -26,11 +26,11 @@ public class ServerUptimeOverlay implements Listener {
         if (e.getGui().getSlotUnderMouse() == null || e.getGui().getSlotUnderMouse().getStack().isEmpty()) return;
 
         ItemStack stack = e.getGui().getSlotUnderMouse().getStack();
-        if (!ItemUtils.getStringLore(stack).contains("Players:")) return;
+        if (!ItemUtils.getStringLore(stack).contains("Players")) return;
         NBTTagCompound nbt = stack.getTagCompound();
         if (nbt.hasKey("wynntils")) return;
 
-        String world = "WC" + (TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName()).replace("World ", ""));
+        String world = "WC" + stack.getCount();
 
         List<String> newLore = ItemUtils.getLore(stack);
         newLore.add(TextFormatting.DARK_GREEN + "Uptime: " + TextFormatting.GREEN + ServerListManager.getUptime(world));
