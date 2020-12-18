@@ -35,8 +35,6 @@ public class WynnRenderItem extends RenderItem {
 
     private static final int GUI_OVERLAY_WIDTH_THRESH = 16;
 
-    private final ScreenRenderer renderer = new ScreenRenderer();
-
     private WynnRenderItem(RenderItem parent, TextureManager texMan, ItemColors itemCols) {
         super(texMan, parent.getItemModelMesher().getModelManager(), itemCols);
         ReflectionFields.RenderItem_itemModelMesher.setValue(this, ReflectionFields.RenderItem_itemModelMesher.getValue(parent));
@@ -46,28 +44,32 @@ public class WynnRenderItem extends RenderItem {
     public void renderItemOverlayIntoGUI(FontRenderer fr, ItemStack stack, int xPosition, int yPosition, String text) {
         RenderEvent.DrawItemOverlay event = new RenderEvent.DrawItemOverlay(stack, xPosition, yPosition, text);
         FrameworkManager.getEventBus().post(event);
-        if (event.isOverlayTextChanged()) {
-            super.renderItemOverlayIntoGUI(fr, stack, xPosition, yPosition, "");
-            GlStateManager.disableLighting();
-            GlStateManager.disableDepth();
-            GlStateManager.disableBlend();
-            GlStateManager.pushMatrix();
-            int width = ScreenRenderer.fontRenderer.getStringWidth(event.getOverlayText());
-            GlStateManager.translate(xPosition + 17f, yPosition + 9f, 0f);
-            if (width > GUI_OVERLAY_WIDTH_THRESH) {
-                float scaleRatio = GUI_OVERLAY_WIDTH_THRESH / (float)width;
-                GlStateManager.translate(0f, ScreenRenderer.fontRenderer.FONT_HEIGHT * (1f - scaleRatio) / 2f, 0f);
-                GlStateManager.scale(scaleRatio, scaleRatio, 1f);
-            }
-            ScreenRenderer.fontRenderer.drawString(event.getOverlayText(), 0, 0, event.getOverlayTextColor(),
-                    SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NORMAL);
-            GlStateManager.popMatrix();
-            GlStateManager.enableLighting();
-            GlStateManager.enableDepth();
-            GlStateManager.enableBlend();
-        } else {
+        if (!event.isOverlayTextChanged()) {
             super.renderItemOverlayIntoGUI(fr, stack, xPosition, yPosition, text);
+            return;
         }
+
+        super.renderItemOverlayIntoGUI(fr, stack, xPosition, yPosition, "");
+        GlStateManager.disableLighting();
+        GlStateManager.disableDepth();
+        GlStateManager.disableBlend();
+        GlStateManager.pushMatrix();
+
+        int width = ScreenRenderer.fontRenderer.getStringWidth(event.getOverlayText());
+        GlStateManager.translate(xPosition + 17f, yPosition + 9f, 0f);
+        if (width > GUI_OVERLAY_WIDTH_THRESH) {
+            float scaleRatio = GUI_OVERLAY_WIDTH_THRESH / (float)width;
+            GlStateManager.translate(0f, ScreenRenderer.fontRenderer.FONT_HEIGHT * (1f - scaleRatio) / 2f, 0f);
+            GlStateManager.scale(scaleRatio, scaleRatio, 1f);
+        }
+
+        ScreenRenderer.fontRenderer.drawString(event.getOverlayText(), 0, 0, event.getOverlayTextColor(),
+                SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NORMAL);
+
+        GlStateManager.popMatrix();
+        GlStateManager.enableLighting();
+        GlStateManager.enableDepth();
+        GlStateManager.enableBlend();
     }
 
 }

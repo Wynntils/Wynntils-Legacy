@@ -8,6 +8,7 @@ import com.wynntils.core.events.custom.RenderEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
+import com.wynntils.core.utils.objects.CombatLevel;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -37,30 +38,30 @@ public class ItemLevelOverlay implements Listener {
             if (powderMatcher.find()) {
                 if (UtilitiesConfig.Items.INSTANCE.romanNumeralPowderTier) {
                     event.setOverlayText(powderMatcher.group(1));
-                } else {
-                    int tier = 0;
-                    switch (powderMatcher.group(1)) {
-                        case "I":
-                            tier = 1;
-                            break;
-                        case "II":
-                            tier = 2;
-                            break;
-                        case "III":
-                            tier = 3;
-                            break;
-                        case "IV":
-                            tier = 4;
-                            break;
-                        case "V":
-                            tier = 5;
-                            break;
-                        case "VI":
-                            tier = 6;
-                            break;
-                    }
-                    event.setOverlayText(Integer.toString(tier));
+                    return;
                 }
+                int tier = 0;
+                switch (powderMatcher.group(1)) {
+                    case "I":
+                        tier = 1;
+                        break;
+                    case "II":
+                        tier = 2;
+                        break;
+                    case "III":
+                        tier = 3;
+                        break;
+                    case "IV":
+                        tier = 4;
+                        break;
+                    case "V":
+                        tier = 5;
+                        break;
+                    case "VI":
+                        tier = 6;
+                        break;
+                }
+                event.setOverlayText(Integer.toString(tier));
                 return;
             }
         }
@@ -68,7 +69,7 @@ public class ItemLevelOverlay implements Listener {
         String lore = ItemUtils.getStringLore(stack);
 
         // identifiable item combat level
-        ItemUtils.CombatLevel level = ItemUtils.getLevel(lore);
+        CombatLevel level = ItemUtils.getLevel(lore);
         if (level != null) {
             event.setOverlayText(UtilitiesConfig.Items.INSTANCE.averageUnidentifiedLevel ? level.toString() : Integer.toString(level.getAverage()));
             return;

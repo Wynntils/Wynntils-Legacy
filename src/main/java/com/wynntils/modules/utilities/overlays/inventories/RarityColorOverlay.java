@@ -12,6 +12,7 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
+import com.wynntils.core.utils.objects.CombatLevel;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -205,7 +206,7 @@ public class RarityColorOverlay implements Listener {
         Tessellator.getInstance().draw();
     }
 
-    private static void drawLevelArc(GuiContainer guiContainer, Slot s, ItemUtils.CombatLevel level) {
+    private static void drawLevelArc(GuiContainer guiContainer, Slot s, CombatLevel level) {
         if (!UtilitiesConfig.Items.INSTANCE.itemLevelArc) return;
         if (level == null) return;
 

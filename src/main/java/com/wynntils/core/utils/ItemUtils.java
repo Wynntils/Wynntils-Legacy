@@ -4,6 +4,7 @@
 
 package com.wynntils.core.utils;
 
+import com.wynntils.core.utils.objects.CombatLevel;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.enums.ItemType;
@@ -195,38 +196,6 @@ public class ItemUtils {
         m = COMBAT_LEVEL_RANGE_PATTERN.matcher(lore);
         if (m.find()) return new CombatLevel(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)));
         return null;
-    }
-
-    public static class CombatLevel {
-
-        private final int min, max;
-
-        public CombatLevel(int min, int max) {
-            this.min = min;
-            this.max = max;
-        }
-
-        public CombatLevel(int level) {
-            this(level, level);
-        }
-
-        public int getAverage() {
-            return (min + max) / 2;
-        }
-
-        public int getMin() {
-            return min;
-        }
-
-        public int getMax() {
-            return max;
-        }
-
-        @Override
-        public String toString() {
-            return min == max ? Integer.toString(max) : String.format("%d-%d", min, max);
-        }
-
     }
 
 }
