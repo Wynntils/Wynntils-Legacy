@@ -233,7 +233,7 @@ public class ClientEvents implements Listener {
     public void onFovUpdate(FOVUpdateEvent e) {
         switch (UtilitiesConfig.INSTANCE.fovScalingFunction) {
             case Arctangent:
-                e.setNewfov(1f + (float) (Math.atan(Math.PI * (e.getNewfov() - 1d)) / Math.PI));
+                e.setNewfov(1f + (float) (Math.atan(2d * Math.PI * (e.getNewfov() - 1d)) / (2d * Math.PI)));
                 break;
             case Sprint_Only:
                 e.setNewfov(1f + (e.getEntity().isSprinting() ? 0.15f : 0));
