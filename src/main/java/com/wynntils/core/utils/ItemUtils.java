@@ -4,10 +4,10 @@
 
 package com.wynntils.core.utils;
 
+import com.wynntils.core.utils.objects.CombatLevel;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.enums.ItemType;
-
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
@@ -22,8 +22,13 @@ import net.minecraft.util.text.TextFormatting;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ItemUtils {
+
+    private static final Pattern COMBAT_LEVEL_PATTERN = Pattern.compile("Combat Lv\\. Min: ([0-9]+)");
+    private static final Pattern COMBAT_LEVEL_RANGE_PATTERN = Pattern.compile("Lv\\. Range: " + TextFormatting.WHITE.toString() + "([0-9]+)-([0-9]+)");
 
     /**
      * Get the lore NBT tag from an item
@@ -103,10 +108,10 @@ public class ItemUtils {
         }
         return toReturn.toString();
     }
-    
+
     /**
      * Determines the equipment type of the given item.
-     * 
+     *
      * @param item
      * @return The ItemType of the item, or null if invalid or not an equipment piece
      */
@@ -184,4 +189,13 @@ public class ItemUtils {
         }
         return desc.toString();
     }
+
+    public static CombatLevel getLevel(String lore) {
+        Matcher m = COMBAT_LEVEL_PATTERN.matcher(lore);
+        if (m.find()) return new CombatLevel(Integer.parseInt(m.group(1)));
+        m = COMBAT_LEVEL_RANGE_PATTERN.matcher(lore);
+        if (m.find()) return new CombatLevel(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)));
+        return null;
+    }
+
 }

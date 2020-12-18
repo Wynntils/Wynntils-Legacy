@@ -12,6 +12,7 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
+import com.wynntils.core.utils.objects.CombatLevel;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -26,7 +27,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import java.util.HashMap;
@@ -47,33 +47,6 @@ public class RarityColorOverlay implements Listener {
     public static final float MAX_CIRCLE_STEPS = 16.0f;
     private static final Pattern DURABILITY_PATTERN = Pattern.compile("\\[([0-9]+)/([0-9]+) Durability\\]");
     private static String professionFilter = "-";
-
-    @SubscribeEvent
-    public void onChestClosed(GuiOverlapEvent.ChestOverlap.GuiClosed e) {
-        resetCount(e.getGui());
-    }
-
-    @SubscribeEvent
-    public void onHorseClosed(GuiOverlapEvent.HorseOverlap.GuiClosed e) {
-        resetCount(e.getGui());
-    }
-
-    @SubscribeEvent
-    public void onInventoryClosed(GuiOverlapEvent.InventoryOverlap.GuiClosed e) {
-        resetCount(e.getGui());
-    }
-
-    private void resetCount(GuiContainer guiContainer) {
-        for (Slot s : guiContainer.inventorySlots.inventorySlots) {
-            ItemStack is = s.getStack();
-            String lore = ItemUtils.getStringLore(is);
-            int level = getLevel(lore);
-
-            if (level != -1) {
-                is.setCount(1);
-            }
-        }
-    }
 
     @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawGuiContainerBackgroundLayer e) {
@@ -129,23 +102,10 @@ public class RarityColorOverlay implements Listener {
         String lore = ItemUtils.getStringLore(is);
         String name = StringUtils.normalizeBadString(is.getDisplayName());
 
-        CustomColor colour = getHighlightColor(s, is, lore, name, isChest, guiContainer.getSlotUnderMouse());
-        int level = getLevel(lore);
-        float durability = getDurability(lore);
-
-        if (level != -1) {
-            if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)) {
-                is.setCount(level);
-            } else {
-                is.setCount(1);
-            }
-        }
-
         // start rendering
-        drawLevelArc(guiContainer, s, level);
-        drawHighlightColor(guiContainer, s, colour);
-        drawDurabilityArc(guiContainer, s, durability);
-
+        drawLevelArc(guiContainer, s, ItemUtils.getLevel(lore));
+        drawHighlightColor(guiContainer, s, getHighlightColor(s, is, lore, name, isChest, guiContainer.getSlotUnderMouse()));
+        drawDurabilityArc(guiContainer, s, getDurability(lore));
     }
 
     private static CustomColor getHighlightColor(Slot s, ItemStack is, String lore, String name, boolean isChest, Slot slotUnderMouse) {
@@ -200,23 +160,6 @@ public class RarityColorOverlay implements Listener {
         }
     }
 
-    private static int getLevel(String lore) {
-        Pattern p = Pattern.compile("Combat Lv. Min: ([0-9]+)");
-        Matcher m = p.matcher(lore);
-        if (m.find()) {
-            return Integer.parseInt(m.group(1));
-        } else {
-            Pattern p2 = Pattern.compile("Lv. Range: " + TextFormatting.WHITE.toString() + "([0-9]+)-([0-9]+)");
-            Matcher m2 = p2.matcher(lore);
-            if (m2.find()) {
-                int lowLevel =  Integer.parseInt(m2.group(1));
-                int highLevel =  Integer.parseInt(m2.group(2));
-                return (lowLevel + highLevel) / 2;
-            }
-        }
-        return -1;
-    }
-
     private static float getDurability(String lore) {
     	Matcher m = DURABILITY_PATTERN.matcher(lore);
     	if(m.find()) {
@@ -263,9 +206,9 @@ public class RarityColorOverlay implements Listener {
         Tessellator.getInstance().draw();
     }
 
-    private static void drawLevelArc(GuiContainer guiContainer, Slot s, int level) {
+    private static void drawLevelArc(GuiContainer guiContainer, Slot s, CombatLevel level) {
         if (!UtilitiesConfig.Items.INSTANCE.itemLevelArc) return;
-        if (level == -1) return;
+        if (level == null) return;
 
         int x = guiContainer.getGuiLeft() + s.xPos;
         int y = guiContainer.getGuiTop() + s.yPos;
@@ -279,7 +222,7 @@ public class RarityColorOverlay implements Listener {
 
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
-        float arcFill = (level / MAX_LEVEL);
+        float arcFill = (level.getAverage() / MAX_LEVEL);
         drawArc(bufferbuilder, x, y, arcFill, 8, 0, 0, 0, 120);
 
         GlStateManager.disableBlend();
