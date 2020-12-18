@@ -187,6 +187,9 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Show Average Unidentified Level", description = "Should the average level of an unidentified item be shown instead of the entire range?", order = 3)
         public boolean averageUnidentifiedLevel = true;
 
+        @Setting(displayName = "Roman Numeral Powder Tier", description = "Should the tier of powders be displayed using roman numerals?", order = 4)
+        public boolean romanNumeralPowderTier = true;
+
         @Setting(displayName = "Dungeon Key Specification", description = "Should a letter indicating the destination of dungeon keys be displayed?", order = 8)
         public boolean keySpecification = true;
 

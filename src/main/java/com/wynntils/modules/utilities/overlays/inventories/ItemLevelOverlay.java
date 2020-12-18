@@ -35,7 +35,32 @@ public class ItemLevelOverlay implements Listener {
         if (item == Items.DYE || item == Items.GUNPOWDER || item == Items.CLAY_BALL || item == Items.SUGAR) {
             Matcher powderMatcher = POWDER_NAME_PATTERN.matcher(StringUtils.normalizeBadString(name));
             if (powderMatcher.find()) {
-                event.setOverlayText(powderMatcher.group(1));
+                if (UtilitiesConfig.Items.INSTANCE.romanNumeralPowderTier) {
+                    event.setOverlayText(powderMatcher.group(1));
+                } else {
+                    int tier = 0;
+                    switch (powderMatcher.group(1)) {
+                        case "I":
+                            tier = 1;
+                            break;
+                        case "II":
+                            tier = 2;
+                            break;
+                        case "III":
+                            tier = 3;
+                            break;
+                        case "IV":
+                            tier = 4;
+                            break;
+                        case "V":
+                            tier = 5;
+                            break;
+                        case "VI":
+                            tier = 6;
+                            break;
+                    }
+                    event.setOverlayText(Integer.toString(tier));
+                }
                 return;
             }
         }
