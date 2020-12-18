@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.music.instances;
 
+import com.wynntils.Reference;
 import com.wynntils.core.events.custom.MusicPlayerEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.modules.music.configs.MusicConfig;
@@ -49,6 +50,11 @@ public class MusicPlayer {
         if (STATUS.getCurrentSong() != null && !isActive()) {
             initialize();
             return;
+        }
+
+        // stopping the player if the player is not not inside a world
+        if (!Reference.onWorld && !STATUS.isStopping()) {
+            stop();
         }
 
         // stopping/pause transition
