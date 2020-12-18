@@ -38,6 +38,7 @@ public class UtilitiesModule extends Module {
         // Inventory Overlays
         registerEvents(new ItemIdentificationOverlay());
         registerEvents(new RarityColorOverlay());
+        registerEvents(new ItemLevelOverlay());
         registerEvents(new SkillPointOverlay());
         registerEvents(new ItemLockOverlay());
         registerEvents(new FavoriteTradesOverlay());

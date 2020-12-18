@@ -81,7 +81,7 @@ public class UtilitiesConfig extends SettingsClass {
 
     @Setting(displayName = "Show Leaderboard Badges", description = "Should leaderboard players have a badge above their heads?")
     public boolean renderLeaderboardBadges = true;
-    
+
     @Setting(displayName = "Shift-click Accessories", description = "Allow accessories to be shift-clicked on and off?")
     public boolean shiftClickAccessories = true;
 
@@ -183,6 +183,9 @@ public class UtilitiesConfig extends SettingsClass {
 
         @Setting(displayName = "Crafted Item Durability Arc", description = "Should crafted items' durability be shown with an arc?", order = 2)
         public boolean craftedDurabilityBars = true;
+
+        @Setting(displayName = "Show Average Unidentified Level", description = "Should the average level of an unidentified item be shown instead of the entire range?", order = 3)
+        public boolean averageUnidentifiedLevel = true;
 
         @Setting(displayName = "Dungeon Key Specification", description = "Should a letter indicating the destination of dungeon keys be displayed?", order = 8)
         public boolean keySpecification = true;
