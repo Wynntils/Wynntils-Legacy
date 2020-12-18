@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2020.
  */
 
 package com.wynntils.modules.questbook.instances;
@@ -30,6 +30,7 @@ public class QuestBookPage extends GuiScreen {
 
     protected final ScreenRenderer render = new ScreenRenderer();
     private long time;
+    private boolean open = false;
 
     // Page specific information
     private String title;
@@ -76,12 +77,22 @@ public class QuestBookPage extends GuiScreen {
      */
     @Override
     public void initGui() {
+        if (open) {
+            if (!showSearchBar) return;
+
+            textField.x = width / 2 + 32;
+            textField.y = height / 2 - 97;
+            return;
+        }
+
+        open = true;
         currentPage = 1;
         selected = 0;
         searchUpdate("");
         refreshAccepts();
         time = Minecraft.getSystemTime();
         lastTick = Minecraft.getSystemTime();
+
         if (showSearchBar) {
             textField = new GuiTextField(0, Minecraft.getMinecraft().fontRenderer, width / 2 + 32, height / 2 - 97, 133, 23);
             textField.setFocused(!QuestBookConfig.INSTANCE.searchBoxClickRequired);
@@ -155,32 +166,6 @@ public class QuestBookPage extends GuiScreen {
             if (showSearchBar) {
                 render.drawRect(Textures.UIs.quest_book, x + 13, y - 109, 52, 255, 133, 23);
                 textField.drawTextBox();
-//                if (searchBarText.length() <= 0 && !QuestBookConfig.INSTANCE.searchBoxClickRequired) {
-//                render.drawString("Type to search", x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-//                } else if (searchBarText.length() <= 0 && !searchBarFocused) {
-//                render.drawString("Click to search", x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-//                } else {
-
-//                    String text = searchBarText;
-//
-//                    if (render.getStringWidth(text) >= 110) {
-//                        int remove = searchBarText.length();
-//                        while (render.getStringWidth((text = searchBarText.substring(searchBarText.length() - remove))) >= 110) {
-//                            remove -= 1;
-//                        }
-//                    }
-//
-//                    if (Minecraft.getSystemTime() - text_flicker >= 500) {
-//                        keepForTime = !keepForTime;
-//                        text_flicker = Minecraft.getSystemTime();
-//                    }
-//
-//                    if (keepForTime && (searchBarFocused || !QuestBookConfig.INSTANCE.searchBoxClickRequired)) {
-//                        render.drawString(text + "_", x + 32, y - 97, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-//                    } else {
-//                        render.drawString(text, x + 32, y - 97, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-//                    }
-//                }
             }
         }
 
@@ -306,4 +291,5 @@ public class QuestBookPage extends GuiScreen {
      * @return a list of strings - each index representing a new line.
      */
     public List<String> getHoveredDescription() { return null; }
+
 }
