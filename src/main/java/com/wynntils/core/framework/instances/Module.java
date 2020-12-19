@@ -13,6 +13,7 @@ import com.wynntils.core.framework.settings.instances.SettingsHolder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.command.ICommand;
 import net.minecraftforge.client.ClientCommandHandler;
+import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.Logger;
@@ -103,14 +104,29 @@ public abstract class Module {
      * Registers a new Keybind linked to the module
      *
      * @param name The key name, will be displayed at configurations
-     * @param key The LWGL key value {@see Keyboard}
+     * @param key The LWJGL key value {@see Keyboard}
      * @param tab The configuration tab that will be used (usually Wynntils)
-     * @param press If true pressing the key will only trigger onAction once, while fale will continously call it
+     * @param conflictCtx The conflict context that the key belongs to
+     * @param press If true pressing the key will only trigger onAction once, while false will continuously call it
+     *              for the time the key is still down
+     * @param onPress Will be executed when the key press is detected
+     */
+    public KeyHolder registerKeyBinding(String name, int key, String tab, IKeyConflictContext conflictCtx, boolean press, Runnable onPress) {
+        return FrameworkManager.registerKeyBinding(this, new KeyHolder(name, key, tab, conflictCtx, press, onPress));
+    }
+
+    /**
+     * Registers a new Keybind linked to the module, with the default universal conflict context
+     *
+     * @param name The key name, will be displayed at configurations
+     * @param key The LWJGL key value {@see Keyboard}
+     * @param tab The configuration tab that will be used (usually Wynntils)
+     * @param press If true pressing the key will only trigger onAction once, while false will continuously call it
      *              for the time the key is still down
      * @param onPress Will be executed when the key press is detected
      */
     public KeyHolder registerKeyBinding(String name, int key, String tab, boolean press, Runnable onPress) {
-        return FrameworkManager.registerKeyBinding(this, new KeyHolder(name, key, tab, press, onPress));
+        return registerKeyBinding(name, key, tab, null, press, onPress);
     }
 
     /**

@@ -5,7 +5,9 @@
 package com.wynntils.core.framework.instances;
 
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
+import org.lwjgl.input.Keyboard;
 
 public class KeyHolder {
 
@@ -15,17 +17,18 @@ public class KeyHolder {
 
     /**
      * @param name The key name, will be displayed at configurations
-     * @param key The LWGL key value {@see Keyboard}
+     * @param key The LWJGL key value {@see Keyboard}
      * @param tab The configuration tab that will be used (usually Wynntils)
-     * @param press If true pressing the key will only trigger onAction once, while fale will continously call it
+     * @param conflictCtx The conflict context that the key belongs to
+     * @param press If true pressing the key will only trigger onAction once, while false will continuously call it
      *              for the time the key is still down
      * @param onPress Will be executed when the key press is detected
      */
-    public KeyHolder(String name, int key, String tab, boolean press, Runnable onPress) {
+    public KeyHolder(String name, int key, String tab, IKeyConflictContext conflictCtx, boolean press, Runnable onPress) {
         this.onPress = onPress;
         this.press = press;
 
-        keyBinding = new KeyBinding(name, key, tab);
+        keyBinding = conflictCtx != null ? new KeyBinding(name, conflictCtx, key, tab) : new KeyBinding(name, key, tab);
         ClientRegistry.registerKeyBinding(keyBinding);
     }
 
@@ -51,6 +54,10 @@ public class KeyHolder {
 
     public int getKey() {
         return keyBinding.getKeyCode();
+    }
+
+    public boolean isKeyDown() {
+        return Keyboard.isKeyDown(getKey());
     }
 
 }

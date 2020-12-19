@@ -21,6 +21,18 @@ public enum WynntilsConflictContext implements IKeyConflictContext {
         public boolean conflicts(IKeyConflictContext other) {
             return this == other || other == KeyConflictContext.IN_GAME;
         }
+    },
+
+    AMBIENT {
+        @Override
+        public boolean isActive() {
+            return true;
+        }
+
+        @Override
+        public boolean conflicts(IKeyConflictContext other) {
+            return this == other;
+        }
     }
 
 }
