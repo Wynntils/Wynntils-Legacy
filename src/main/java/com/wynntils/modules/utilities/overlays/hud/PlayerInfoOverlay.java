@@ -73,16 +73,15 @@ public class PlayerInfoOverlay extends Overlay {
                     List<String> players = getAvailablePlayers();
 
                     for (int x = 0; x < 4; x++) {
-                        for (int y = 0; y < 20; y++) {
+                        for (int y = Reference.onBeta ? 2 : 1; y < 20; y++) {
                             int position = (x * 20) + (y + 1);
 
                             if (players.size() < position) break; //not enough players
 
                             String entry = players.get(position - 1);
-                            if (entry.contains("§l")) continue; //avoid the titles
 
                             int xPos = -166 + (87 * x);
-                            int yPos = 11 + (10 * y);
+                            int yPos = 11 + (10 * (y - (Reference.onBeta ? 1 : 0)));
 
                             drawString(entry, xPos, yPos,
                                     CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT,
