@@ -176,7 +176,12 @@ public class ClientEvents {
                     ITextComponent nameComponent = (ITextComponent) ReflectionMethods.SPacketPlayerListItem$AddPlayerData_getDisplayName.invoke(player);
                     if (nameComponent == null) continue;
                     String name = nameComponent.getUnformattedText();
-                    String world = name.substring(name.indexOf("[") + 1, name.indexOf("]"));
+                    String world;
+                    if (name.contains("[")) { // normal
+                        world = name.substring(name.indexOf("[") + 1, name.indexOf("]"));
+                    } else { // beta
+                        world = name.substring(name.indexOf("(") + 1, name.indexOf(")"));
+                    }
 
                     if (world.equalsIgnoreCase(lastWorld)) continue;
 
