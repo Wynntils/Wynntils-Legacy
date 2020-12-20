@@ -13,6 +13,7 @@ import com.wynntils.modules.core.managers.TabManager;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import java.util.ArrayList;
@@ -33,16 +34,18 @@ public class PlayerInfoOverlay extends Overlay {
         if (!Reference.onWorld || !OverlayConfig.PlayerInfo.INSTANCE.replaceVanilla) return;
         if (!mc.gameSettings.keyBindPlayerList.isKeyDown() && animationProgress <= 0.0) return;
 
+        double animation;
         { // Animation Detection
             if (lastTime == -1) lastTime += Minecraft.getSystemTime();
 
             if (mc.gameSettings.keyBindPlayerList.isKeyDown()) {
-                animationProgress = OverlayConfig.PlayerInfo.INSTANCE.openingDuration == 0 ? 1 :
-                        Math.min(1, animationProgress + (Minecraft.getSystemTime() - lastTime) / OverlayConfig.PlayerInfo.INSTANCE.openingDuration);
+                animationProgress += (Minecraft.getSystemTime() - lastTime) / OverlayConfig.PlayerInfo.INSTANCE.openingDuration;
+                animationProgress = Math.min(1, animationProgress);
             } else if (animationProgress > 0.0) {
-                animationProgress = OverlayConfig.PlayerInfo.INSTANCE.openingDuration == 0 ? 0 :
-                        Math.max(0, animationProgress - (Minecraft.getSystemTime() - lastTime) / OverlayConfig.PlayerInfo.INSTANCE.openingDuration);
+                animationProgress -= (Minecraft.getSystemTime() - lastTime) / OverlayConfig.PlayerInfo.INSTANCE.openingDuration;
+                animationProgress = Math.max(0, animationProgress);
             }
+            animation = MathHelper.sin((float) (animationProgress * 1f / 2f * Math.PI));
 
             lastTime = animationProgress <= 0.0 ? -1 : Minecraft.getSystemTime();
 
@@ -55,7 +58,7 @@ public class PlayerInfoOverlay extends Overlay {
         { scale(yScale);
 
             {  // mask
-                int halfWidth = (int) (178 * animationProgress);
+                int halfWidth = (int) (178 * animation);
                 enableScissorTestX(-halfWidth, 2 * halfWidth);
 
                 color(1f, 1f, 1f, OverlayConfig.PlayerInfo.INSTANCE.backgroundAlpha);  // apply transparency
@@ -96,15 +99,15 @@ public class PlayerInfoOverlay extends Overlay {
             color(1f, 1f, 1f, OverlayConfig.PlayerInfo.INSTANCE.backgroundAlpha);  // apply transparency
             {  // paper rolls
                 drawRect(Textures.UIs.tab_overlay,
-                        (int) (177 * animationProgress),
+                        (int) (177 * animation),
                         -5,
-                        (int) (27 + (177 * animationProgress)),
+                        (int) (27 + (177 * animation)),
                         229, 0, 0, 27, 229);
 
                 drawRect(Textures.UIs.tab_overlay,
-                        -(int) (27 + (177 * animationProgress)),
+                        -(int) (27 + (177 * animation)),
                         -5,
-                        -(int) (177 * animationProgress),
+                        -(int) (177 * animation),
                         229, 0, 0, 27, 229);
             }
             color(1f, 1f, 1f, 1f);
