@@ -127,8 +127,6 @@ public class SmartFontRenderer extends FontRenderer {
         boolean obfuscated = false;
         boolean italic = false;
         boolean bold = false;
-        boolean underline = false;
-        ScreenRenderer renderer = new ScreenRenderer();
 
         for (int index = 0; index < text.length(); index++) {
 
@@ -151,15 +149,10 @@ public class SmartFontRenderer extends FontRenderer {
                             bold = true;
                             index++;
                             break;
-                        case 'n':
-                            underline = true;
-                            index++;
-                            break;
                         case 'r': // stands for reset
                             obfuscated = false;
                             italic = false;
                             bold = false;
-                            underline = false;
                             detectedColor = 0xFFFFFF;
                             index++; // skips the the next char
                             break;
@@ -168,7 +161,6 @@ public class SmartFontRenderer extends FontRenderer {
                     obfuscated = false;
                     italic = false;
                     bold = false;
-                    underline = false;
                     index++;
                 }
 
@@ -244,9 +236,6 @@ public class SmartFontRenderer extends FontRenderer {
                 posX -= offset;
 
                 charLength += offset;
-            }
-            if (underline) {
-                renderer.drawRectF(new CustomColor(red, green, blue, alpha), posX - ScreenRenderer.drawingOrigin().x, posY + FONT_HEIGHT - ScreenRenderer.drawingOrigin().y, posX + charLength - ScreenRenderer.drawingOrigin().x, posY + FONT_HEIGHT - 1 - ScreenRenderer.drawingOrigin().y);
             }
 
             posX += charLength + CHAR_SPACING;
