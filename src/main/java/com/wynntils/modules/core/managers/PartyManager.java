@@ -44,7 +44,7 @@ public class PartyManager {
             handlePartyList();
             return;
         }
-        if (component.getUnformattedText().startsWith("You have been removed from the party.")) {
+        if (component.getUnformattedText().startsWith("You have been removed from the party.") || component.getUnformattedText().startsWith("Your party has been disbanded since you were the only member remaining.")) {
             PartyContainer partyContainer = PlayerInfo.getPlayerInfo().getPlayerParty();
             partyContainer.removeMember(Minecraft.getMinecraft().player.getName());
             return;
