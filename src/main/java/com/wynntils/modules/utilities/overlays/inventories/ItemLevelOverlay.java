@@ -10,6 +10,7 @@ import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.CombatLevel;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import com.wynntils.modules.utilities.managers.KeyManager;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -26,7 +27,7 @@ public class ItemLevelOverlay implements Listener {
 
     @SubscribeEvent
     public void onItemOverlay(RenderEvent.DrawItemOverlay event) {
-        if (!(Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL))) return;
+        if (!KeyManager.getShowLevelOverlayKey().isKeyDown()) return;
 
         ItemStack stack = event.getStack();
         Item item = stack.getItem();

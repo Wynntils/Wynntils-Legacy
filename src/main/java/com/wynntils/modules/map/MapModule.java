@@ -22,6 +22,7 @@ import com.wynntils.modules.map.overlays.ui.WaypointCreationMenu;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.WebReader;
 import net.minecraft.client.Minecraft;
+import net.minecraftforge.client.settings.KeyConflictContext;
 import org.lwjgl.input.Keyboard;
 
 @ModuleInfo(name = "map", displayName = "Map")
@@ -55,12 +56,12 @@ public class MapModule extends Module {
         registerCommand(new CommandLootRun());
         registerCommand(new CommandLocate());
 
-        registerKeyBinding("New Waypoint", Keyboard.KEY_B, "Wynntils", true, () -> {
+        registerKeyBinding("New Waypoint", Keyboard.KEY_B, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
             if (Reference.onWorld)
                 Minecraft.getMinecraft().displayGuiScreen(new WaypointCreationMenu(null));
         });
 
-        mapKey = registerKeyBinding("Open Map", Keyboard.KEY_M, "Wynntils", true, () -> {
+        mapKey = registerKeyBinding("Open Map", Keyboard.KEY_M, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
             if (Reference.onWorld) {
                 if (WebManager.getApiUrls() == null) {
                     WebManager.tryReloadApiUrls(true);
