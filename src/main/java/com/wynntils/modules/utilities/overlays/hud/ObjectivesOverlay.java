@@ -204,6 +204,9 @@ public class ObjectivesOverlay extends Overlay {
     }
 
     public static void restoreVanillaScoreboard() {
+        objectivesPosition = 0;
+        objectivesEnd = 0;
+        daily = false;
         GuiIngameForge.renderObjective = true;
     }
 
