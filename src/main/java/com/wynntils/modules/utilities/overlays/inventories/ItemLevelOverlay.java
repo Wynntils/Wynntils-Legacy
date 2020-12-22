@@ -11,11 +11,11 @@ import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.CombatLevel;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.KeyManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.lwjgl.input.Keyboard;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,6 +27,7 @@ public class ItemLevelOverlay implements Listener {
 
     @SubscribeEvent
     public void onItemOverlay(RenderEvent.DrawItemOverlay event) {
+        if (!UtilitiesConfig.Items.INSTANCE.itemLevelOverlayOutsideGui && Minecraft.getMinecraft().currentScreen == null) return;
         if (!KeyManager.getShowLevelOverlayKey().isKeyDown()) return;
 
         ItemStack stack = event.getStack();

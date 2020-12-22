@@ -8,16 +8,13 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
-import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.utilities.events.ServerEvents;
 import com.wynntils.modules.utilities.instances.SkillPointAllocation;
 import com.wynntils.modules.utilities.managers.WindowIconManager;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -196,6 +193,9 @@ public class UtilitiesConfig extends SettingsClass {
 
         @Setting(displayName = "Roman Numeral Powder Tier", description = "Should the tier of powders be displayed using roman numerals?", order = 4)
         public boolean romanNumeralPowderTier = true;
+
+        @Setting(displayName = "Item Levels Outside GUIs", description = "Should the item level overlay key be enabled even when no GUI is open?", order = 5)
+        public boolean itemLevelOverlayOutsideGui = false;
 
         @Setting(displayName = "Dungeon Key Specification", description = "Should a letter indicating the destination of dungeon keys be displayed?", order = 8)
         public boolean keySpecification = true;
