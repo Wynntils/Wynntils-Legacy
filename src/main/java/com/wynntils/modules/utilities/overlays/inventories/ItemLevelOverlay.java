@@ -8,7 +8,7 @@ import com.wynntils.core.events.custom.RenderEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
-import com.wynntils.core.utils.objects.CombatLevel;
+import com.wynntils.core.utils.objects.IntRange;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import net.minecraft.client.Minecraft;
@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
 public class ItemLevelOverlay implements Listener {
 
     private static final Pattern POWDER_NAME_PATTERN = Pattern.compile("(?:Earth|Thunder|Water|Fire|Air|Blank) Powder (IV|V|VI|I{1,3})");
-    private static final Pattern CRAFTING_LEVEL_PATTERN = Pattern.compile("Crafting Lv\\. Min: ([0-9]+)");
 
     @SubscribeEvent
     public void onItemOverlay(RenderEvent.DrawItemOverlay event) {
@@ -70,17 +69,10 @@ public class ItemLevelOverlay implements Listener {
 
         String lore = ItemUtils.getStringLore(stack);
 
-        // identifiable item combat level
-        CombatLevel level = ItemUtils.getLevel(lore);
+        // item level
+        IntRange level = ItemUtils.getLevel(lore);
         if (level != null) {
             event.setOverlayText(UtilitiesConfig.Items.INSTANCE.averageUnidentifiedLevel ? level.toString() : Integer.toString(level.getAverage()));
-            return;
-        }
-
-        // ingredient crafting level
-        Matcher craftLevelMatcher = CRAFTING_LEVEL_PATTERN.matcher(lore);
-        if (craftLevelMatcher.find()) {
-            event.setOverlayText(craftLevelMatcher.group(1));
             return;
         }
     }

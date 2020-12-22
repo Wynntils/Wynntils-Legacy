@@ -4,7 +4,7 @@
 
 package com.wynntils.core.utils;
 
-import com.wynntils.core.utils.objects.CombatLevel;
+import com.wynntils.core.utils.objects.IntRange;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.enums.ItemType;
@@ -27,8 +27,8 @@ import java.util.regex.Pattern;
 
 public class ItemUtils {
 
-    private static final Pattern COMBAT_LEVEL_PATTERN = Pattern.compile("Combat Lv\\. Min: ([0-9]+)");
-    private static final Pattern COMBAT_LEVEL_RANGE_PATTERN = Pattern.compile("Lv\\. Range: " + TextFormatting.WHITE.toString() + "([0-9]+)-([0-9]+)");
+    private static final Pattern LEVEL_PATTERN = Pattern.compile("(?:Combat|Crafting|Mining|Woodcutting|Farming|Fishing) Lv\\. Min: ([0-9]+)");
+    private static final Pattern LEVEL_RANGE_PATTERN = Pattern.compile("Lv\\. Range: " + TextFormatting.WHITE.toString() + "([0-9]+)-([0-9]+)");
 
     /**
      * Get the lore NBT tag from an item
@@ -190,11 +190,11 @@ public class ItemUtils {
         return desc.toString();
     }
 
-    public static CombatLevel getLevel(String lore) {
-        Matcher m = COMBAT_LEVEL_PATTERN.matcher(lore);
-        if (m.find()) return new CombatLevel(Integer.parseInt(m.group(1)));
-        m = COMBAT_LEVEL_RANGE_PATTERN.matcher(lore);
-        if (m.find()) return new CombatLevel(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)));
+    public static IntRange getLevel(String lore) {
+        Matcher m = LEVEL_PATTERN.matcher(lore);
+        if (m.find()) return new IntRange(Integer.parseInt(m.group(1)));
+        m = LEVEL_RANGE_PATTERN.matcher(lore);
+        if (m.find()) return new IntRange(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)));
         return null;
     }
 

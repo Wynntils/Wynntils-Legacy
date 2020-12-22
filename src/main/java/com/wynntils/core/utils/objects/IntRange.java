@@ -4,16 +4,16 @@
 
 package com.wynntils.core.utils.objects;
 
-public class CombatLevel {
+public class IntRange {
 
     private final int min, max;
 
-    public CombatLevel(int min, int max) {
+    public IntRange(int min, int max) {
         this.min = min;
         this.max = max;
     }
 
-    public CombatLevel(int level) {
+    public IntRange(int level) {
         this(level, level);
     }
 
