@@ -94,7 +94,7 @@ public class ItemSearchState implements Predicate<ItemProfile>, Comparator<ItemP
             int result = filter.compare(a, b);
             if (result != 0) return result;
         }
-        return b.getRequirements().getLevel() - a.getRequirements().getLevel(); // default to combat level
+        return Integer.compare(b.getRequirements().getLevel(), a.getRequirements().getLevel()); // default to combat level, descending
     }
 
 }
