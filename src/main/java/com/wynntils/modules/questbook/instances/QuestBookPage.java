@@ -165,12 +165,16 @@ public class QuestBookPage extends GuiScreen {
 
             /*Render search bar when needed*/
             if (showSearchBar) {
-                render.drawRect(Textures.UIs.quest_book, x + 13, y - 109, 52, 255, 133, 23);
-                textField.drawTextBox();
+                drawSearchBar(x, y);
             }
         }
 
         ScreenRenderer.endGL();
+    }
+
+    protected void drawSearchBar(int centerX, int centerY) {
+        render.drawRect(Textures.UIs.quest_book, centerX + 13, centerY - 109, 52, 255, 133, 23);
+        textField.drawTextBox();
     }
 
     @Override

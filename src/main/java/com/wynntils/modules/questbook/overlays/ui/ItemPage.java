@@ -57,19 +57,45 @@ public class ItemPage extends QuestBookPage {
         ItemSearchState oldSearchState = searchState;
         super.initGui();
         if (QuestBookConfig.INSTANCE.advancedItemSearch) {
-            textField.setMaxStringLength(ADV_SEARCH_MAX_LEN);
+            initAdvancedSearch();
             if (oldSearchState != null) {
                 textField.setText(oldSearchState.toSearchString());
                 updateSearch();
             }
+        } else {
+            initBasicSearch();
+        }
+    }
+
+    private void initBasicSearch() {
+        textField.setMaxStringLength(50);
+        initDefaultSearchBar();
+    }
+
+    private void initDefaultSearchBar() {
+        textField.x = width / 2 + 32;
+        textField.y = height / 2 - 97;
+        textField.width = 113;
+    }
+
+    private void initAdvancedSearch() {
+        textField.setMaxStringLength(ADV_SEARCH_MAX_LEN);
+        if (QuestBookConfig.INSTANCE.advItemSearchLongBar) {
+            textField.x = width / 2 - 146;
+            textField.y = height / 2 - 124;
+            textField.width = 316;
+        } else {
+            initDefaultSearchBar();
         }
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         super.drawScreen(mouseX, mouseY, partialTicks);
-        int x = width / 2; int y = height / 2;
-        int posX = (x - mouseX); int posY = (y - mouseY);
+        int x = width / 2;
+        int y = height / 2;
+        int posX = (x - mouseX);
+        int posY = (y - mouseY);
         List<String> hoveredText = new ArrayList<>();
 
         ScreenRenderer.beginGL(0, 0);
@@ -223,9 +249,20 @@ public class ItemPage extends QuestBookPage {
     }
 
     @Override
+    protected void drawSearchBar(int centerX, int centerY) {
+        if (!QuestBookConfig.INSTANCE.advancedItemSearch || !QuestBookConfig.INSTANCE.advItemSearchLongBar) {
+            super.drawSearchBar(centerX, centerY);
+            return;
+        }
+        render.drawRect(Textures.UIs.quest_book, centerX - 169, centerY - 130, 0, 342, 339, 19);
+        textField.drawTextBox();
+    }
+
+    @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         ScaledResolution res = new ScaledResolution(mc);
-        int posX = ((res.getScaledWidth()/2) - mouseX); int posY = ((res.getScaledHeight()/2) - mouseY);
+        int posX = ((res.getScaledWidth() / 2) - mouseX);
+        int posY = ((res.getScaledHeight() / 2) - mouseY);
 
         if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
             goForward();
@@ -240,22 +277,23 @@ public class ItemPage extends QuestBookPage {
         } else if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             if (QuestBookConfig.INSTANCE.advancedItemSearch) {
-                textField.setMaxStringLength(50);
+                QuestBookConfig.INSTANCE.advancedItemSearch = false;
+                initBasicSearch();
                 String searchText = BasicSearchHandler.INSTANCE.inheritSearchState(searchState);
                 if (searchText != null) {
                     textField.setText(searchText);
                 } else {
                     textField.setText("");
                 }
-                QuestBookConfig.INSTANCE.advancedItemSearch = false;
             } else {
                 textField.setMaxStringLength(ADV_SEARCH_MAX_LEN);
+                QuestBookConfig.INSTANCE.advancedItemSearch = true;
+                initAdvancedSearch();
                 if (searchState != null) {
                     textField.setText(searchState.toSearchString());
                 } else {
                     textField.setText("");
                 }
-                QuestBookConfig.INSTANCE.advancedItemSearch = true;
             }
             QuestBookConfig.INSTANCE.saveSettings(QuestBookModule.getModule());
             updateSearch();
@@ -334,7 +372,8 @@ public class ItemPage extends QuestBookPage {
         private final Set<ItemType> allowedTypes = EnumSet.allOf(ItemType.class);
         private SortFunction sortFunction = SortFunction.ALPHABETICAL;
 
-        private BasicSearchHandler() {}
+        private BasicSearchHandler() {
+        }
 
         @Override
         public int drawScreenElements(ScreenRenderer render, int mouseX, int mouseY, int x, int y, int posX, int posY, int selected) {
@@ -344,13 +383,13 @@ public class ItemPage extends QuestBookPage {
 
             if (posX >= 144 && posX <= 150 && posY >= 8 && posY <= 15) {
                 selected = 1;
-                render.drawRect(Textures.UIs.quest_book, x - 150, y -15, 246, 259, 7, 7);
+                render.drawRect(Textures.UIs.quest_book, x - 150, y - 15, 246, 259, 7, 7);
             } else {
                 if (selected == 1) selected = 0;
                 if (sortFunction == SortFunction.ALPHABETICAL) {
-                    render.drawRect(Textures.UIs.quest_book, x - 150, y -15, 246, 259, 7, 7);
+                    render.drawRect(Textures.UIs.quest_book, x - 150, y - 15, 246, 259, 7, 7);
                 } else {
-                    render.drawRect(Textures.UIs.quest_book, x - 150, y -15, 254, 259, 7, 7);
+                    render.drawRect(Textures.UIs.quest_book, x - 150, y - 15, 254, 259, 7, 7);
                 }
             }
 
@@ -358,13 +397,13 @@ public class ItemPage extends QuestBookPage {
 
             if (posX >= 144 && posX <= 150 && posY >= -2 && posY <= 5) {
                 selected = 2;
-                render.drawRect(Textures.UIs.quest_book, x - 150, y -5, 246, 259, 7, 7);
+                render.drawRect(Textures.UIs.quest_book, x - 150, y - 5, 246, 259, 7, 7);
             } else {
                 if (selected == 2) selected = 0;
                 if (sortFunction == SortFunction.BY_LEVEL) {
-                    render.drawRect(Textures.UIs.quest_book, x - 150, y -5, 246, 259, 7, 7);
+                    render.drawRect(Textures.UIs.quest_book, x - 150, y - 5, 246, 259, 7, 7);
                 } else {
-                    render.drawRect(Textures.UIs.quest_book, x - 150, y -5, 254, 259, 7, 7);
+                    render.drawRect(Textures.UIs.quest_book, x - 150, y - 5, 254, 259, 7, 7);
                 }
             }
 
@@ -376,9 +415,9 @@ public class ItemPage extends QuestBookPage {
             } else {
                 if (selected == 3) selected = 0;
                 if (sortFunction == SortFunction.BY_RARITY) {
-                    render.drawRect(Textures.UIs.quest_book, x - 150, y +5, 246, 259, 7, 7);
+                    render.drawRect(Textures.UIs.quest_book, x - 150, y + 5, 246, 259, 7, 7);
                 } else {
-                    render.drawRect(Textures.UIs.quest_book, x - 150, y +5, 254, 259, 7, 7);
+                    render.drawRect(Textures.UIs.quest_book, x - 150, y + 5, 254, 259, 7, 7);
                 }
             }
 
@@ -390,7 +429,7 @@ public class ItemPage extends QuestBookPage {
             for (int i = 0; i < 12; i++) {
                 if (placed + 1 >= 7) {
                     placed = 0;
-                    plusY ++;
+                    plusY++;
                 }
 
                 int maxX = x - 139 + (placed * 20);
@@ -529,7 +568,8 @@ public class ItemPage extends QuestBookPage {
 
         static AdvancedSearchHandler INSTANCE = new AdvancedSearchHandler();
 
-        private AdvancedSearchHandler() {}
+        private AdvancedSearchHandler() {
+        }
 
         @Override
         public int drawScreenElements(ScreenRenderer render, int mouseX, int mouseY, int x, int y, int posX, int posY, int selected) {
