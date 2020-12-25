@@ -12,6 +12,7 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.helpers.ItemFilter;
+import com.wynntils.core.utils.helpers.ItemFilter.ByStat;
 import com.wynntils.core.utils.helpers.ItemSearchState;
 import com.wynntils.modules.questbook.QuestBookModule;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
@@ -25,10 +26,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextFormatting;
+import org.apache.commons.lang3.mutable.Mutable;
+import org.apache.commons.lang3.mutable.MutableObject;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
@@ -96,12 +101,12 @@ public class ItemPage extends QuestBookPage {
         int y = height / 2;
         int posX = (x - mouseX);
         int posY = (y - mouseY);
-        List<String> hoveredText = new ArrayList<>();
+        List<String> hoveredText;
 
         ScreenRenderer.beginGL(0, 0);
         {
             // render search UI
-            selected = getSearchHandler().drawScreenElements(render, mouseX, mouseY, x, y, posX, posY, selected);
+            hoveredText = getSearchHandler().drawScreenElements(this, render, mouseX, mouseY, x, y, posX, posY, selected);
 
             // search mode toggle button
             if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) {
@@ -332,7 +337,7 @@ public class ItemPage extends QuestBookPage {
     private interface SearchHandler {
 
         // mouse x and y, screen center x and y, mouse pos relative to center x and y
-        int drawScreenElements(ScreenRenderer render, int mouseX, int mouseY, int x, int y, int posX, int posY, int selected);
+        List<String> drawScreenElements(ItemPage page, ScreenRenderer render, int mouseX, int mouseY, int x, int y, int posX, int posY, int selected);
 
         boolean handleClick(int mouseX, int mouseY, int mouseButton, int selected);
 
@@ -372,11 +377,10 @@ public class ItemPage extends QuestBookPage {
         private final Set<ItemType> allowedTypes = EnumSet.allOf(ItemType.class);
         private SortFunction sortFunction = SortFunction.ALPHABETICAL;
 
-        private BasicSearchHandler() {
-        }
+        private BasicSearchHandler() {}
 
         @Override
-        public int drawScreenElements(ScreenRenderer render, int mouseX, int mouseY, int x, int y, int posX, int posY, int selected) {
+        public List<String> drawScreenElements(ItemPage page, ScreenRenderer render, int mouseX, int mouseY, int x, int y, int posX, int posY, int selected) {
             // order buttons
             render.drawString("Order the list by", x - 84, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
             render.drawString("Alphabetical Order (A-Z)", x - 140, y - 15, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
@@ -462,7 +466,8 @@ public class ItemPage extends QuestBookPage {
                 placed++;
             }
 
-            return selected;
+            page.selected = selected;
+            return null;
         }
 
         @Override
@@ -513,7 +518,7 @@ public class ItemPage extends QuestBookPage {
             }
             switch (sortFunction) { // alphabetical is handled above
                 case BY_LEVEL:
-                    searchState.addFilter(new ItemFilter.ByStat(ItemFilter.ByStat.TYPE_COMBAT_LEVEL, Collections.emptyList(), ItemFilter.SortDirection.DESCENDING));
+                    searchState.addFilter(new ByStat(ByStat.TYPE_COMBAT_LEVEL, Collections.emptyList(), ItemFilter.SortDirection.DESCENDING));
                     break;
                 case BY_RARITY:
                     searchState.addFilter(new ItemFilter.ByRarity(Collections.emptyList(), ItemFilter.SortDirection.DESCENDING));
@@ -546,7 +551,7 @@ public class ItemPage extends QuestBookPage {
             if (byRarity != null && byRarity.getSortDirection() != ItemFilter.SortDirection.NONE) {
                 sortFunction = SortFunction.BY_RARITY;
             }
-            ItemFilter.ByStat byLevel = searchState.getFilter(ItemFilter.ByStat.TYPE_COMBAT_LEVEL);
+            ByStat byLevel = searchState.getFilter(ByStat.TYPE_COMBAT_LEVEL);
             if (byLevel != null && byLevel.getSortDirection() != ItemFilter.SortDirection.NONE) {
                 sortFunction = SortFunction.BY_LEVEL;
             }
@@ -566,15 +571,298 @@ public class ItemPage extends QuestBookPage {
 
     private static class AdvancedSearchHandler implements SearchHandler {
 
-        static AdvancedSearchHandler INSTANCE = new AdvancedSearchHandler();
+        static final AdvancedSearchHandler INSTANCE = new AdvancedSearchHandler();
 
-        private AdvancedSearchHandler() {
+        private static final ItemStack SCROLL_STACK = new ItemStack(Items.DIAMOND_AXE);
+        private static final ItemStack RED_POTION_STACK = new ItemStack(Items.POTIONITEM);
+        private static final ItemStack BLUE_POTION_STACK = new ItemStack(Items.POTIONITEM);
+
+        private static final HelpCategory[] ADV_SEARCH_HELP = {
+                new HelpCategory.Builder(new ItemStack(Items.WRITABLE_BOOK), "Writing Filter Strings",
+                        "Filters should be specified as",
+                        "a sequence of filter strings,",
+                        "separated by spaces. A filter",
+                        "string consists of a filter type",
+                        "and a filter value, separated",
+                        "by a colon.",
+                        "",
+                        "If no filter type is provided for",
+                        "a string, then it will be used to",
+                        "perform a simple name search.",
+                        "",
+                        "For example, the filter string:",
+                        "", l("gold " + p("Type", "ring") + ' ' + p("Level", "95")), "",
+                        "filters for level 95 rings that",
+                        "contain the substring " + q("gold") + " in",
+                        "their name.").build(),
+                new HelpCategory.Builder(new ItemStack(Items.COMPARATOR), "Specifying Numeric Ranges",
+                        "Some filters allow you to use",
+                        "relational operators on numbers",
+                        "to specify a range of matching",
+                        "values. This is done by",
+                        "specifying a comma-separated",
+                        "list of relations as the value.",
+                        "",
+                        "Valid relational operators are",
+                        "inequalities, such as " + q("<") + ", " + q(">="),
+                        "and so on, as well as " + q("=") + " (which",
+                        "is equivalent to not specifying",
+                        "an operator at all) and " + q("!=") + ".",
+                        "",
+                        "For example, the filter string:",
+                        "", l(p("Level", j(r(">=", "40"), r("<", "50")))), "",
+                        "filters for items with combat",
+                        "level greater than or equal to",
+                        "40, but less than 50.").build(),
+                new HelpCategory.Builder(SCROLL_STACK, "Sorting Search Results",
+                        "Many filter types allow for",
+                        "sorting search results. This",
+                        "is done by prepending the filter",
+                        "value with either " + q("^") + " or " + q("$") + ",",
+                        "to either sort in ascending or",
+                        "descending order, respectively.",
+                        "",
+                        "If multiple filter types are",
+                        "marked for sorting, then the",
+                        "results are lexicographically",
+                        "sorted with respect to the",
+                        "order in which the filters are",
+                        "specified in the search string.",
+                        "",
+                        "For example, the filter string:",
+                        "", l(p("Level", s("^", r(">=", "50"))) + ' ' + p("Str", s("$", r(">", "0")))), "",
+                        "filters for items that are at",
+                        "least level 50 and that provide",
+                        "some strength, sorting the results",
+                        "first by level in ascending order,",
+                        "then by strength, descending.").build(),
+                new HelpCategory.Builder(new ItemStack(Blocks.DIRT, 1, 1), "Switching Search Modes",
+                        "The button at the top-right of",
+                        "the item guide can be used to",
+                        "toggle between basic and",
+                        "advanced item search mode. When",
+                        "the button is pressed, Wynntils",
+                        "will try to convert the current",
+                        "search query to the closest",
+                        "corresponding query in the other",
+                        "search mode.",
+                        "",
+                        "Generally, this is a destructive",
+                        "process, since the basic mode has",
+                        "less features than the advanced",
+                        "one, so some information is lost.").build()
+        };
+
+        private static final HelpCategory[] STATS_HELP_1 = {
+                new HelpCategory.Builder(new ItemStack(Items.NAME_TAG), "Item Name",
+                        "Filters by the item's name, in",
+                        "alphanumeric order. Implicitly",
+                        "used by simple name search, if",
+                        "no filter name is specified.")
+                        .with(ItemFilter.ByName.TYPE)
+                        .build(),
+                new HelpCategory.Builder(new ItemStack(Blocks.CRAFTING_TABLE), "Item Type",
+                        "Filters by the item's type.",
+                        "The filter string should be a",
+                        "comma-separated list of types.",
+                        "",
+                        "Try item types, such as " + q("wand"),
+                        "or " + q("chestplate") + ", or more",
+                        "general categories, such as",
+                        q("weapon") + " or " + q("accessory") + ".")
+                        .with(ItemFilter.ByType.TYPE)
+                        .build(),
+                new HelpCategory.Builder(new ItemStack(Items.DIAMOND), "Item Rarity",
+                        "Filters by the item's rarity.",
+                        "The filter string should be the",
+                        "name of a rarity tier, such as",
+                        q("rare") + " or " + q("legendary") + ", or the",
+                        "first letter of the name, as a",
+                        "shorthand notation.",
+                        "",
+                        "Relational operators are also",
+                        "supported, for specifying ranges",
+                        "of matching rarities.")
+                        .with(ItemFilter.ByRarity.TYPE)
+                        .build(),
+                new HelpCategory.Builder(new ItemStack(Items.ENDER_EYE), "Major Identifications",
+                        "Filters by major identifications.",
+                        "The filter string should be the",
+                        "name of a major identification,",
+                        "such as " + q("greed") + " or " + q("sorcery") + ".",
+                        "",
+                        "This filter type doesn't support",
+                        "sorting.")
+                        .with(ItemFilter.ByMajorId.TYPE)
+                        .build(),
+                new HelpCategory.Builder(new ItemStack(Blocks.TRIPWIRE_HOOK), "Item Restrictions",
+                        "Filters by item restrictions.",
+                        "The filter string should be a",
+                        "name match for a restriction,",
+                        "such as " + q("Quest Item") + " or",
+                        q("Untradable") + ".")
+                        .with(ItemFilter.ByString.TYPE_RESTRICTION)
+                        .build(),
+                new HelpCategory.Builder(new ItemStack(Items.ENCHANTED_BOOK ), "Skill Points",
+                        "Filters by stats related to",
+                        "skills points and levelling.",
+                        "",
+                        "All of these filters support",
+                        "both relational operators and",
+                        "sorting.")
+                        .with(ByStat.TYPE_COMBAT_LEVEL)
+                        .with(ByStat.TYPE_STR).with(ByStat.TYPE_DEX).with(ByStat.TYPE_INT)
+                        .with(ByStat.TYPE_DEF).with(ByStat.TYPE_AGI).with(ByStat.TYPE_SKILL_POINTS)
+                        .with(ByStat.TYPE_STR_REQ).with(ByStat.TYPE_DEX_REQ).with(ByStat.TYPE_INT_REQ)
+                        .with(ByStat.TYPE_DEF_REQ).with(ByStat.TYPE_AGI_REQ).with(ByStat.TYPE_SUM_REQ)
+                        .build()
+        };
+
+        private static final HelpCategory[] STATS_HELP_2 = {
+                new HelpCategory.Builder(new ItemStack(Items.DIAMOND_SWORD), "Offensive Stats",
+                        "Filters by stats related to",
+                        "offence and damage output.",
+                        "",
+                        "All of these filters support",
+                        "both relational operators and",
+                        "sorting.")
+                        .with(ByStat.TYPE_NEUTRAL_DMG).with(ByStat.TYPE_EARTH_DMG).with(ByStat.TYPE_THUNDER_DMG).with(ByStat.TYPE_WATER_DMG)
+                        .with(ByStat.TYPE_FIRE_DMG).with(ByStat.TYPE_AIR_DMG).with(ByStat.TYPE_SUM_DMG)
+                        .with(ByStat.TYPE_BONUS_EARTH_DMG).with(ByStat.TYPE_BONUS_THUNDER_DMG).with(ByStat.TYPE_BONUS_WATER_DMG)
+                        .with(ByStat.TYPE_BONUS_FIRE_DMG).with(ByStat.TYPE_BONUS_AIR_DMG).with(ByStat.TYPE_BONUS_SUM_DMG)
+                        .with(ByStat.TYPE_MAIN_ATK_DMG).with(ByStat.TYPE_MAIN_ATK_NEUTRAL_DMG)
+                        .with(ByStat.TYPE_SPELL_DMG).with(ByStat.TYPE_SPELL_NEUTRAL_DMG)
+                        .with(ByStat.TYPE_ATTACK_SPEED).with(ByStat.TYPE_BONUS_ATK_SPD)
+                        .with(ByStat.TYPE_POISON).with(ByStat.TYPE_EXPLODING)
+                        .build(),
+                new HelpCategory.Builder(new ItemStack(Items.RABBIT_HIDE), "Defensive Stats",
+                        "Filters by stats related to",
+                        "health and defence.",
+                        "",
+                        "All of these filters support",
+                        "both relational operators and",
+                        "sorting.")
+                        .with(ByStat.TYPE_EARTH_DEF).with(ByStat.TYPE_THUNDER_DEF).with(ByStat.TYPE_WATER_DEF)
+                        .with(ByStat.TYPE_FIRE_DEF).with(ByStat.TYPE_AIR_DEF).with(ByStat.TYPE_SUM_DEF)
+                        .with(ByStat.TYPE_BONUS_EARTH_DEF).with(ByStat.TYPE_BONUS_THUNDER_DEF).with(ByStat.TYPE_BONUS_WATER_DEF)
+                        .with(ByStat.TYPE_BONUS_FIRE_DEF).with(ByStat.TYPE_BONUS_AIR_DEF).with(ByStat.TYPE_BONUS_SUM_DEF)
+                        .with(ByStat.TYPE_HEALTH).with(ByStat.TYPE_BONUS_HEALTH)
+                        .with(ByStat.TYPE_THORNS).with(ByStat.TYPE_REFLECTION)
+                        .build(),
+                new HelpCategory.Builder(RED_POTION_STACK, "Resource Regeneration",
+                        "Filters by stats that modify",
+                        "resource regeneration rates.",
+                        "",
+                        "All of these filters support",
+                        "both relational operators and",
+                        "sorting.")
+                        .with(ByStat.TYPE_HEALTH_REGEN).with(ByStat.TYPE_RAW_HEALTH_REGEN).with(ByStat.TYPE_LIFE_STEAL)
+                        .with(ByStat.TYPE_MANA_REGEN).with(ByStat.TYPE_MANA_STEAL)
+                        .with(ByStat.TYPE_SOUL_POINT_REGEN)
+                        .build(),
+                new HelpCategory.Builder(BLUE_POTION_STACK, "Spell Costs",
+                        "Filters by stats that modify",
+                        "the mana costs of spells.",
+                        "",
+                        "All of these filters support",
+                        "both relational operators and",
+                        "sorting.")
+                        .with(ByStat.TYPE_SPELL_COST_1).with(ByStat.TYPE_SPELL_COST_2).with(ByStat.TYPE_SPELL_COST_3)
+                        .with(ByStat.TYPE_SPELL_COST_4).with(ByStat.TYPE_SPELL_COST_SUM)
+                        .with(ByStat.TYPE_RAW_SPELL_COST_1).with(ByStat.TYPE_RAW_SPELL_COST_2).with(ByStat.TYPE_RAW_SPELL_COST_3)
+                        .with(ByStat.TYPE_RAW_SPELL_COST_4).with(ByStat.TYPE_RAW_SPELL_COST_SUM)
+                        .build(),
+                new HelpCategory.Builder(new ItemStack(Items.EMERALD), "Mob Drops",
+                        "Filters by stats that modify",
+                        "loot and experience gain from",
+                        "slaying mobs.",
+                        "",
+                        "All of these filters support",
+                        "both relational operators and",
+                        "sorting.")
+                        .with(ByStat.TYPE_LOOT_BONUS).with(ByStat.TYPE_XP_BONUS)
+                        .with(ByStat.TYPE_STEALING)
+                        .build(),
+                new HelpCategory.Builder(new ItemStack(Items.IRON_BOOTS), "Movement Stats",
+                        "Filters by stats related to",
+                        "mobility and motion.",
+                        "",
+                        "All of these filters support",
+                        "both relational operators and",
+                        "sorting.")
+                        .with(ByStat.TYPE_WALK_SPEED)
+                        .with(ByStat.TYPE_SPRINT).with(ByStat.TYPE_SPRINT_REGEN)
+                        .with(ByStat.TYPE_JUMP_HEIGHT)
+                        .build(),
+                new HelpCategory.Builder(new ItemStack(Items.SIGN), "Miscellaneous Stats",
+                        "Filters by stats that don't",
+                        "fit into the other categories.",
+                        "",
+                        "All of these filters support",
+                        "both relational operators and",
+                        "sorting.")
+                        .with(ByStat.TYPE_POWDER_SLOTS)
+                        .build()
+        };
+
+        static {
+            SCROLL_STACK.setItemDamage(42);
+            NBTTagCompound tag = new NBTTagCompound();
+            tag.setBoolean("Unbreakable", true);
+            tag.setInteger("HideFlags", 6);
+            SCROLL_STACK.setTagCompound(tag);
+
+            tag = new NBTTagCompound();
+            tag.setInteger("CustomPotionColor", 0xff0000);
+            RED_POTION_STACK.setTagCompound(tag);
+
+            tag = new NBTTagCompound();
+            tag.setInteger("CustomPotionColor", 0x0000ff);
+            BLUE_POTION_STACK.setTagCompound(tag);
         }
 
+        private AdvancedSearchHandler() {}
+
         @Override
-        public int drawScreenElements(ScreenRenderer render, int mouseX, int mouseY, int x, int y, int posX, int posY, int selected) {
-            // TODO draw instructions
-            return selected;
+        public List<String> drawScreenElements(ItemPage page, ScreenRenderer render, int mouseX, int mouseY, int x, int y, int posX, int posY, int selected) {
+            Mutable<List<String>> hoveredText = new MutableObject<>();
+
+            render.drawString("Advanced Item Search Mode", x - 81, y - 32,
+                    CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+            ScreenRenderer.scale(0.7f);
+            drawHelpLine(render, x, y, 0, "In this mode, items in the item guide can");
+            drawHelpLine(render, x, y, 1, "be queried and sorted using a series");
+            drawHelpLine(render, x, y, 2, "of highly-flexible filters. Hover over");
+            drawHelpLine(render, x, y, 3, "the icons below to learn more!");
+            ScreenRenderer.resetScale();
+
+            drawHelpIconRow(render, 11, ADV_SEARCH_HELP, mouseX, mouseY, x, y, hoveredText);
+
+            render.drawString("Available Filters", x - 81, y + 33,
+                    CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+
+            drawHelpIconRow(render, 44, STATS_HELP_1, mouseX, mouseY, x, y, hoveredText);
+            drawHelpIconRow(render, 63, STATS_HELP_2, mouseX, mouseY, x, y, hoveredText);
+
+            return hoveredText.getValue();
+        }
+
+        private static void drawHelpLine(ScreenRenderer render, int x, int y, int lineNum, String line) {
+            render.drawString(line, (x - 151) / 0.7f, (y - 21 + lineNum * 7) / 0.7f,
+                    CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+        }
+
+        private static void drawHelpIconRow(ScreenRenderer render, int rowY, HelpCategory[] icons,
+                                            int mouseX, int mouseY, int x, int y, Mutable<List<String>> hoveredText) {
+            int baseX = x - 78 - (icons.length * 19) / 2;
+            int baseY = y + rowY;
+            for (int i = 0; i < icons.length; i++) {
+                HelpCategory icon = icons[i];
+                int iconX = baseX + 19 * i;
+                icon.drawIcon(render, baseX + 19 * i, baseY);
+                if (hoveredText.getValue() == null && mouseX >= iconX && mouseX < iconX + 16 && mouseY >= baseY && mouseY < baseY + 16)
+                    hoveredText.setValue(icon.tooltip);
+            }
         }
 
         @Override
@@ -585,6 +873,82 @@ public class ItemPage extends QuestBookPage {
         @Override
         public ItemSearchState generateSearchState(String currentText) throws ItemFilter.FilteringException {
             return ItemSearchState.parseSearchString(currentText);
+        }
+
+        private static String q(String str) { // quotes and highlights a substring in a help category description
+            return TextFormatting.WHITE + ('"' + str + '"') + TextFormatting.GRAY;
+        }
+
+        private static String l(String str) { // quotes and highlights a search string line
+            return TextFormatting.DARK_GRAY + "» " + TextFormatting.WHITE + str;
+        }
+
+        private static String p(String key, String value) { // highlights a key-value pair within a quote
+            return TextFormatting.GOLD + key + TextFormatting.GRAY + ':' + TextFormatting.WHITE + value;
+        }
+
+        private static String r(String relation, String value) { // highlights a relation within a filter value
+            return TextFormatting.YELLOW + relation + TextFormatting.WHITE + value;
+        }
+
+        private static String s(String dir, String value) { // highlights a sorting direction within a filter value
+            return TextFormatting.LIGHT_PURPLE + dir + TextFormatting.WHITE + value;
+        }
+
+        private static String j(String... entries) { // joins strings into a comma-separated list
+            return String.join(TextFormatting.GRAY + "," + TextFormatting.WHITE, entries);
+        }
+
+        private static class HelpCategory {
+
+            private final ItemStack icon;
+            final List<String> tooltip;
+
+            HelpCategory(Builder builder) {
+                this.icon = builder.icon;
+                ImmutableList.Builder<String> tooltipBuilder = new ImmutableList.Builder<>();
+                tooltipBuilder.add(TextFormatting.AQUA + builder.name);
+                for (String line : builder.desc) {
+                    tooltipBuilder.add(TextFormatting.GRAY + line);
+                }
+                if (!builder.filterTypes.isEmpty()) {
+                    tooltipBuilder.add("");
+                    tooltipBuilder.add(TextFormatting.DARK_AQUA + "Related Filters:");
+                    for (ItemFilter.Type<?> type : builder.filterTypes) {
+                        tooltipBuilder.add(TextFormatting.DARK_GRAY + "- " + TextFormatting.GOLD + type.getName() + TextFormatting.GRAY + " (" + type.getDesc() + ')');
+                    }
+                }
+                this.tooltip = tooltipBuilder.build();
+            }
+
+            void drawIcon(ScreenRenderer render, int x, int y) {
+                render.drawItemStack(icon, x, y, false, false);
+            }
+
+            static class Builder {
+
+                final ItemStack icon;
+                final String name;
+                final String[] desc;
+                final List<ItemFilter.Type<?>> filterTypes = new ArrayList<>();
+
+                Builder(ItemStack icon, String name, String... desc) {
+                    this.icon = icon;
+                    this.name = name;
+                    this.desc = desc;
+                }
+
+                Builder with(ItemFilter.Type<?> filterType) {
+                    filterTypes.add(filterType);
+                    return this;
+                }
+
+                HelpCategory build() {
+                    return new HelpCategory(this);
+                }
+
+            }
+
         }
 
     }
