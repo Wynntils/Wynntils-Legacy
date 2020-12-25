@@ -46,26 +46,31 @@ public enum ItemType {
             case "mage":
             case "wizard":
             case "darkwizard":
+            case "ma":
                 return WAND;
             case "spear":
             case "hammer":
             case "scythe":
             case "warrior":
             case "knight":
+            case "wa":
                 return SPEAR;
             case "dagger":
             case "shears":
             case "assassin":
             case "ninja":
+            case "as":
                 return DAGGER;
             case "bow":
             case "archer":
             case "hunter":
+            case "ar":
                 return BOW;
             case "relik":
             case "relic":
             case "shaman":
             case "skyseer":
+            case "sh":
                 return RELIK;
             case "helmet":
             case "helm":
