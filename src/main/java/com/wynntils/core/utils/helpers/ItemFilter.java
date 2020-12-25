@@ -114,17 +114,21 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
                     switch (relStr.charAt(0)) {
                         case '<':
                             rels.add(new Pair<>(Comparison.LESS_THAN, keyExtractor.extractKey(relStr.substring(1))));
-                            break;
+                            continue;
                         case '>':
                             rels.add(new Pair<>(Comparison.GREATER_THAN, keyExtractor.extractKey(relStr.substring(1))));
-                            break;
+                            continue;
                         case '=':
                             rels.add(new Pair<>(Comparison.EQUAL, keyExtractor.extractKey(relStr.substring(1))));
-                            break;
-                        default:
-                            rels.add(new Pair<>(Comparison.EQUAL, keyExtractor.extractKey(relStr)));
-                            break;
+                            continue;
                     }
+                    int rangeDelimNdx = relStr.indexOf("..");
+                    if (rangeDelimNdx == -1) {
+                        rels.add(new Pair<>(Comparison.EQUAL, keyExtractor.extractKey(relStr)));
+                        continue;
+                    }
+                    rels.add(new Pair<>(Comparison.GREATER_THAN_OR_EQUAL, keyExtractor.extractKey(relStr.substring(0, rangeDelimNdx))));
+                    rels.add(new Pair<>(Comparison.LESS_THAN_OR_EQUAL, keyExtractor.extractKey(relStr.substring(rangeDelimNdx + 2))));
                 }
             }
             return rels;
