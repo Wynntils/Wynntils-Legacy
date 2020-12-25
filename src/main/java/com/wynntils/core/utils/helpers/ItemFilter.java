@@ -5,6 +5,7 @@
 package com.wynntils.core.utils.helpers;
 
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.wynntils.core.framework.enums.Comparison;
 import com.wynntils.core.framework.enums.DamageType;
 import com.wynntils.core.utils.StringUtils;
@@ -16,6 +17,7 @@ import com.wynntils.webapi.profiles.item.enums.ItemType;
 import com.wynntils.webapi.profiles.item.enums.MajorIdentification;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 
+import java.lang.annotation.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
@@ -40,24 +42,26 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
         private static Map<String, Type<?>> typeRegistry = null;
 
         private static void initTypeRegistry() {
-            typeRegistry = new HashMap<>();
+            ImmutableMap.Builder<String, Type<?>> builder = new ImmutableMap.Builder<>();
             // there's a lot of em
             for (Class<?> filterClass : ItemFilter.class.getClasses()) {
                 for (Field field : filterClass.getFields()) {
                     if ((field.getModifiers() & Modifier.STATIC) != 0 && Type.class.isAssignableFrom(field.getType())) {
                         try {
-                            putType((Type<?>)field.get(null));
+                            Type<?> type = (Type<?>)field.get(null);
+                            builder.put(type.getName().toLowerCase(Locale.ROOT), type);
+                            for (Alias annot : field.getAnnotationsByType(Alias.class)) {
+                                for (String alias : annot.value()) {
+                                    builder.put(alias.toLowerCase(Locale.ROOT), type);
+                                }
+                            }
                         } catch (IllegalAccessException e) {
                             // probably not an issue
                         }
                     }
                 }
             }
-            typeRegistry = Collections.unmodifiableMap(typeRegistry);
-        }
-
-        private static void putType(Type<?> type) {
-            typeRegistry.put(type.getName().toLowerCase(Locale.ROOT), type);
+            typeRegistry = builder.build();
         }
 
         public static Type<?> getType(String name) throws FilteringException {
@@ -138,6 +142,14 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
         interface KeyExtractor<T> {
 
             T extractKey(String str) throws FilteringException;
+
+        }
+
+        @Retention(RetentionPolicy.RUNTIME)
+        @Target(ElementType.FIELD)
+        @interface Alias {
+
+            String[] value();
 
         }
 
@@ -325,6 +337,7 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
 
     class ByRarity implements ItemFilter {
 
+        @Type.Alias("Tier")
         public static final Type<ByRarity> TYPE = new Type<ByRarity>("Rarity", "Item Rarity") {
             @Override
             public ByRarity parse(String filterStr) throws FilteringException {
@@ -380,12 +393,19 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
     class ByStat implements ItemFilter {
 
         // requirements
+        @Type.Alias({"Lvl", "CombatLevel", "CombatLvl"})
         public static final StatType TYPE_COMBAT_LEVEL = new StatType("Level", "Combat Level", i -> i.getRequirements().getLevel());
+        @Type.Alias("StrMin")
         public static final StatType TYPE_STR_REQ = new StatType("StrReq", "Strength Min", i -> i.getRequirements().getStrength());
+        @Type.Alias("DexMin")
         public static final StatType TYPE_DEX_REQ = new StatType("DexReq", "Dexterity Min", i -> i.getRequirements().getDexterity());
+        @Type.Alias("IntMin")
         public static final StatType TYPE_INT_REQ = new StatType("IntReq", "Intelligence Min", i -> i.getRequirements().getIntelligence());
+        @Type.Alias("DefMin")
         public static final StatType TYPE_DEF_REQ = new StatType("DefReq", "Defence Min", i -> i.getRequirements().getDefense());
+        @Type.Alias("AgiMin")
         public static final StatType TYPE_AGI_REQ = new StatType("AgiReq", "Agility Min", i -> i.getRequirements().getAgility());
+        @Type.Alias({"SumMin", "TotalReq", "TotalMin"})
         public static final StatType TYPE_SUM_REQ = StatType.sum("SumReq", "Total Skill Points Min", TYPE_STR_REQ, TYPE_DEX_REQ, TYPE_INT_REQ, TYPE_DEF_REQ, TYPE_AGI_REQ);
 
         // damages
@@ -395,15 +415,18 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
         public static final StatType TYPE_WATER_DMG = new StatType("WaterDmg", "Water Damage", i -> i.getAverageDamages().getOrDefault(DamageType.WATER, 0));
         public static final StatType TYPE_FIRE_DMG = new StatType("FireDmg", "Fire Damage", i -> i.getAverageDamages().getOrDefault(DamageType.FIRE, 0));
         public static final StatType TYPE_AIR_DMG = new StatType("AirDmg", "Air Damage", i -> i.getAverageDamages().getOrDefault(DamageType.AIR, 0));
+        @Type.Alias("TotalDmg")
         public static final StatType TYPE_SUM_DMG = StatType.sum("SumDmg", "Total Damage", TYPE_NEUTRAL_DMG, TYPE_EARTH_DMG, TYPE_THUNDER_DMG, TYPE_WATER_DMG, TYPE_FIRE_DMG, TYPE_AIR_DMG);
 
         // defenses
+        @Type.Alias("hp")
         public static final StatType TYPE_HEALTH = new StatType("Health", "Health", ItemProfile::getHealth);
         public static final StatType TYPE_EARTH_DEF = new StatType("EarthDef", "Earth Defence", i -> i.getElementalDefenses().getOrDefault(DamageType.EARTH, 0));
         public static final StatType TYPE_THUNDER_DEF = new StatType("ThunderDef", "Thunder Defence", i -> i.getElementalDefenses().getOrDefault(DamageType.THUNDER, 0));
         public static final StatType TYPE_WATER_DEF = new StatType("WaterDef", "Water Defence", i -> i.getElementalDefenses().getOrDefault(DamageType.WATER, 0));
         public static final StatType TYPE_FIRE_DEF = new StatType("FireDef", "Fire Defence", i -> i.getElementalDefenses().getOrDefault(DamageType.FIRE, 0));
         public static final StatType TYPE_AIR_DEF = new StatType("AirDef", "Air Defence", i -> i.getElementalDefenses().getOrDefault(DamageType.AIR, 0));
+        @Type.Alias("TotalDef")
         public static final StatType TYPE_SUM_DEF = StatType.sum("SumDef", "Total Defence", TYPE_EARTH_DEF, TYPE_THUNDER_DEF, TYPE_WATER_DEF, TYPE_FIRE_DEF, TYPE_AIR_DEF);
 
         // attribute ids
@@ -412,40 +435,65 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
         public static final StatType TYPE_INT = StatType.getIdStat("Int", "Intelligence", "rawIntelligence");
         public static final StatType TYPE_DEF = StatType.getIdStat("Def", "Defence", "rawDefence");
         public static final StatType TYPE_AGI = StatType.getIdStat("Agi", "Agility", "rawAgility");
+        @Type.Alias({"SkillPts", "Attributes", "Attrs"})
         public static final StatType TYPE_SKILL_POINTS = StatType.sum("SkillPoints", "Total Skill Points", TYPE_STR, TYPE_DEX, TYPE_INT, TYPE_DEF, TYPE_AGI);
 
         // damage ids
+        @Type.Alias("MainAtkRawDmg")
         public static final StatType TYPE_MAIN_ATK_NEUTRAL_DMG = StatType.getIdStat("MainAtkNeutralDmg", "Main Attack Neutral Damage", "rawMainAttackNeutralDamage");
+        @Type.Alias({"MainAtkDmg%", "%MainAtkDmg", "Melee%", "%Melee"})
         public static final StatType TYPE_MAIN_ATK_DMG = StatType.getIdStat("MainAtkDmg", "Main Attack Damage %", "mainAttackDamage");
+        @Type.Alias("SpellRawDmg")
         public static final StatType TYPE_SPELL_NEUTRAL_DMG = StatType.getIdStat("SpellNeutralDmg", "Neutral Spell Damage", "rawNeutralSpellDamage");
+        @Type.Alias({"SpellDmg%", "%SpellDmg", "Spell%", "%Spell", "sd"})
         public static final StatType TYPE_SPELL_DMG = StatType.getIdStat("SpellDmg", "Spell Damage %", "spellDamage");
+        @Type.Alias({"EarthDmg%", "%EarthDmg"})
         public static final StatType TYPE_BONUS_EARTH_DMG = StatType.getIdStat("BonusEarthDmg", "Earth Damage %", "earthDamage");
+        @Type.Alias({"ThunderDmg%", "%ThunderDmg"})
         public static final StatType TYPE_BONUS_THUNDER_DMG = StatType.getIdStat("BonusThunderDmg", "Thunder Damage %", "thunderDamage");
+        @Type.Alias({"WaterDmg%", "%WaterDmg"})
         public static final StatType TYPE_BONUS_WATER_DMG = StatType.getIdStat("BonusWaterDmg", "Water Damage %", "waterDamage");
+        @Type.Alias({"FireDmg%", "%FireDmg"})
         public static final StatType TYPE_BONUS_FIRE_DMG = StatType.getIdStat("BonusFireDmg", "Fire Damage %", "fireDamage");
+        @Type.Alias({"AirDmg%", "%AirDmg"})
         public static final StatType TYPE_BONUS_AIR_DMG = StatType.getIdStat("BonusAirDmg", "Air Damage %", "airDamage");
+        @Type.Alias({"SumDmg%", "%SumDmg", "BonusTotalDmg", "TotalDmg%", "%TotalDmg"})
         public static final StatType TYPE_BONUS_SUM_DMG = StatType.sum("BonusSumDmg", "Total Damage %", TYPE_BONUS_EARTH_DMG, TYPE_BONUS_THUNDER_DMG, TYPE_BONUS_WATER_DMG, TYPE_BONUS_FIRE_DMG, TYPE_BONUS_AIR_DMG);
 
         // defense ids
+        @Type.Alias({"Health+", "hp+"})
         public static final StatType TYPE_BONUS_HEALTH = StatType.getIdStat("BonusHealth", "Bonus Health", "rawHealth");
+        @Type.Alias({"EarthDef%", "%EarthDef"})
         public static final StatType TYPE_BONUS_EARTH_DEF = StatType.getIdStat("BonusEarthDef", "Earth Defence %", "earthDefence");
+        @Type.Alias({"ThunderDef%", "%ThunderDef"})
         public static final StatType TYPE_BONUS_THUNDER_DEF = StatType.getIdStat("BonusThunderDef", "Thunder Defence %", "thunderDefence");
+        @Type.Alias({"WaterDef%", "%WaterDef"})
         public static final StatType TYPE_BONUS_WATER_DEF = StatType.getIdStat("BonusWaterDef", "Water Defence %", "waterDefence");
+        @Type.Alias({"FireDef%", "%FireDef"})
         public static final StatType TYPE_BONUS_FIRE_DEF = StatType.getIdStat("BonusFireDef", "Fire Defence %", "fireDefence");
+        @Type.Alias({"AirDef%", "%AirDef"})
         public static final StatType TYPE_BONUS_AIR_DEF = StatType.getIdStat("BonusAirDef", "Air Defence %", "airDefence");
+        @Type.Alias({"SumDef%", "%SumDef", "BonusTotalDef", "TotalDef%", "%TotalDef"})
         public static final StatType TYPE_BONUS_SUM_DEF = StatType.sum("BonusSumDef", "Total Defence %", TYPE_BONUS_EARTH_DEF, TYPE_BONUS_THUNDER_DEF, TYPE_BONUS_WATER_DEF, TYPE_BONUS_FIRE_DEF, TYPE_BONUS_AIR_DEF);
 
         // resource regen ids
+        @Type.Alias("hr")
         public static final StatType TYPE_RAW_HEALTH_REGEN = StatType.getIdStat("RawHealthRegen", "Health Regen", "rawHealthRegen");
+        @Type.Alias({"hr%", "%hr"})
         public static final StatType TYPE_HEALTH_REGEN = StatType.getIdStat("HealthRegen", "Health Regen %", "healthRegen");
+        @Type.Alias("ls")
         public static final StatType TYPE_LIFE_STEAL = StatType.getIdStat("LifeSteal", "Life Steal", "lifeSteal");
+        @Type.Alias("mr")
         public static final StatType TYPE_MANA_REGEN = StatType.getIdStat("ManaRegen", "Mana Regen", "manaRegen");
+        @Type.Alias("ms")
         public static final StatType TYPE_MANA_STEAL = StatType.getIdStat("ManaSteal", "Mana Steal", "manaSteal");
 
         // movement ids
+        @Type.Alias({"MoveSpeed", "ws"})
         public static final StatType TYPE_WALK_SPEED = StatType.getIdStat("WalkSpeed", "Walk Speed", "walkSpeed");
         public static final StatType TYPE_SPRINT = StatType.getIdStat("Sprint", "Sprint", "sprint");
         public static final StatType TYPE_SPRINT_REGEN = StatType.getIdStat("SprintRegen", "Sprint Regen", "sprintRegen");
+        @Type.Alias("jh")
         public static final StatType TYPE_JUMP_HEIGHT = StatType.getIdStat("JumpHeight", "Jump Height", "rawJumpHeight");
 
         // spell cost ids
@@ -461,14 +509,17 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
         public static final StatType TYPE_SPELL_COST_SUM = StatType.sum("SpellCostSum", "Total Spell Cost %", TYPE_SPELL_COST_1, TYPE_SPELL_COST_2, TYPE_SPELL_COST_3, TYPE_SPELL_COST_4);
 
         // other ids
+        @Type.Alias("AtkSpd+")
         public static final StatType TYPE_BONUS_ATK_SPD = StatType.getIdStat("BonusAtkSpd", "Bonus Attack Speed", "attackSpeed");
         public static final StatType TYPE_EXPLODING = StatType.getIdStat("Exploding", "Exploding", "exploding");
         public static final StatType TYPE_POISON = StatType.getIdStat("Poison", "Poison", "poison");
         public static final StatType TYPE_THORNS = StatType.getIdStat("Thorns", "Thorns", "thorns");
         public static final StatType TYPE_REFLECTION = StatType.getIdStat("Reflection", "Reflection", "reflection");
         public static final StatType TYPE_SOUL_POINT_REGEN = StatType.getIdStat("SoulPointRegen", "Soul Point Regen", "soulPointRegen");
+        @Type.Alias("lb")
         public static final StatType TYPE_LOOT_BONUS = StatType.getIdStat("LootBonus", "Loot Bonus", "lootBonus");
-        public static final StatType TYPE_STEALING = StatType.getIdStat("Stealing", "Stealing", "emeraldStealing");
+        public static final StatType TYPE_STEALING = StatType.getIdStat("Stealing", "Stealing", "stealing");
+        @Type.Alias({"xp", "xb"})
         public static final StatType TYPE_XP_BONUS = StatType.getIdStat("XpBonus", "Xp Bonus", "xpBonus");
 
         // other stuff
@@ -476,6 +527,7 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
             ItemAttackSpeed atkSpd = i.getAttackSpeed();
             return atkSpd != null ? atkSpd.getOffset() : 0;
         });
+        @Type.Alias("Powders")
         public static final StatType TYPE_POWDER_SLOTS = new StatType("PowderSlots", "Powder Slot Count", ItemProfile::getPowderAmount);
 
         public static class StatType extends Type<ByStat> {
