@@ -479,7 +479,7 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
         public static final StatType TYPE_BONUS_SUM_DEF = StatType.sum("BonusSumDef", "Total Defence %", TYPE_BONUS_EARTH_DEF, TYPE_BONUS_THUNDER_DEF, TYPE_BONUS_WATER_DEF, TYPE_BONUS_FIRE_DEF, TYPE_BONUS_AIR_DEF);
 
         // resource regen ids
-        @Type.Alias("hr")
+        @Type.Alias({"hpr", "hr"})
         public static final StatType TYPE_RAW_HEALTH_REGEN = StatType.getIdStat("RawHealthRegen", "Health Regen", "rawHealthRegen");
         @Type.Alias({"hr%", "%hr"})
         public static final StatType TYPE_HEALTH_REGEN = StatType.getIdStat("HealthRegen", "Health Regen %", "healthRegen");
