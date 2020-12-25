@@ -11,6 +11,7 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.helpers.ItemFilter;
 import com.wynntils.core.utils.helpers.ItemFilter.ByStat;
 import com.wynntils.core.utils.helpers.ItemSearchState;
@@ -102,6 +103,7 @@ public class ItemPage extends QuestBookPage {
         int posX = (x - mouseX);
         int posY = (y - mouseY);
         List<String> hoveredText;
+        selected = 0;
 
         ScreenRenderer.beginGL(0, 0);
         {
@@ -231,10 +233,12 @@ public class ItemPage extends QuestBookPage {
                     List<String> lore = new ArrayList<>();
                     lore.add(pf.getGuideStack().getDisplayName());
                     lore.addAll(ItemUtils.getLore(pf.getGuideStack()));
+                    lore.add("");
+                    lore.add(TextFormatting.GOLD + "Shift+RClick to open WynnData");
 
                     hoveredText = lore;
+                    selected = -1 - i;
                 } else {
-
                     GlStateManager.color(r, g, b, 1.0f);
                     GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
                     render.drawRect(Textures.UIs.rarity, maxX - 1, maxY - 1, 0, 0, 18, 18);
@@ -305,6 +309,14 @@ public class ItemPage extends QuestBookPage {
             return;
         } else if (getSearchHandler().handleClick(mouseX, mouseY, mouseButton, selected)) {
             updateSearch();
+            return;
+        }
+
+        if (selected < 0) { // an item in the guide is hovered
+            if (mouseButton != 1 || !(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) return;
+            int selectedIndex = -(selected + 1);
+            if (selectedIndex >= itemSearch.size()) return;
+            Utils.openUrl("https://www.wynndata.tk/i/" + Utils.encodeUrl(itemSearch.get(selectedIndex).getDisplayName()));
             return;
         }
         super.mouseClicked(mouseX, mouseY, mouseButton);
@@ -658,8 +670,8 @@ public class ItemPage extends QuestBookPage {
                 new HelpCategory.Builder(new ItemStack(Items.NAME_TAG), "Item Name",
                         "Filters by the item's name, in",
                         "alphanumeric order. Implicitly",
-                        "used by simple name search, if",
-                        "no filter name is specified.")
+                        "used by simple name search,",
+                        "if no filter name is specified.")
                         .with(ItemFilter.ByName.TYPE)
                         .build(),
                 new HelpCategory.Builder(new ItemStack(Blocks.CRAFTING_TABLE), "Item Type",
@@ -682,8 +694,8 @@ public class ItemPage extends QuestBookPage {
                         "shorthand notation.",
                         "",
                         "Relational operators are also",
-                        "supported, for specifying ranges",
-                        "of matching rarities.")
+                        "supported, for specifying",
+                        "ranges of matching rarities.")
                         .with(ItemFilter.ByRarity.TYPE)
                         .build(),
                 new HelpCategory.Builder(new ItemStack(Items.ENDER_EYE), "Major Identifications",
