@@ -48,7 +48,7 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
                 for (Field field : filterClass.getFields()) {
                     if ((field.getModifiers() & Modifier.STATIC) != 0 && Type.class.isAssignableFrom(field.getType())) {
                         try {
-                            Type<?> type = (Type<?>)field.get(null);
+                            Type<?> type = (Type<?>) field.get(null);
                             builder.put(type.getName().toLowerCase(Locale.ROOT), type);
                             for (Alias annot : field.getAnnotationsByType(Alias.class)) {
                                 for (String alias : annot.value()) {
@@ -463,6 +463,8 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
         // defense ids
         @Type.Alias({"Health+", "hp+"})
         public static final StatType TYPE_BONUS_HEALTH = StatType.getIdStat("BonusHealth", "Bonus Health", "rawHealth");
+        @Type.Alias({"SumHp", "TotalHealth", "TotalHp"})
+        public static final StatType TYPE_SUM_HEALTH = StatType.sum("SumHealth", "Total Health", TYPE_HEALTH, TYPE_BONUS_HEALTH);
         @Type.Alias({"EarthDef%", "%EarthDef"})
         public static final StatType TYPE_BONUS_EARTH_DEF = StatType.getIdStat("BonusEarthDef", "Earth Defence %", "earthDefence");
         @Type.Alias({"ThunderDef%", "%ThunderDef"})
@@ -527,6 +529,8 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
             ItemAttackSpeed atkSpd = i.getAttackSpeed();
             return atkSpd != null ? atkSpd.getOffset() : 0;
         });
+        @Type.Alias("TotalAtkSpd")
+        public static final StatType TYPE_ATK_SPD_SUM = StatType.sum("SumAtkSpd", "Total Attack Speed", TYPE_BONUS_ATK_SPD, TYPE_ATTACK_SPEED);
         @Type.Alias("Powders")
         public static final StatType TYPE_POWDER_SLOTS = new StatType("PowderSlots", "Powder Slot Count", ItemProfile::getPowderAmount);
 
