@@ -8,6 +8,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.wynntils.core.framework.enums.Comparison;
 import com.wynntils.core.framework.enums.DamageType;
+import com.wynntils.core.framework.enums.SortDirection;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.webapi.profiles.item.ItemProfile;
@@ -152,39 +153,6 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
             String[] value();
 
         }
-
-    }
-
-    enum SortDirection {
-
-        ASCENDING("^") {
-            @Override
-            public int modifyComparison(int cmp) {
-                return cmp;
-            }
-        },
-
-        DESCENDING("$") {
-            @Override
-            public int modifyComparison(int cmp) {
-                return -cmp;
-            }
-        },
-
-        NONE("") {
-            @Override
-            public int modifyComparison(int cmp) {
-                return 0;
-            }
-        };
-
-        public final String prefix;
-
-        SortDirection(String prefix) {
-            this.prefix = prefix;
-        }
-
-        public abstract int modifyComparison(int cmp);
 
     }
 

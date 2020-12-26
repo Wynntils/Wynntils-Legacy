@@ -5,6 +5,7 @@
 package com.wynntils.modules.questbook.overlays.ui;
 
 import com.google.common.collect.ImmutableList;
+import com.wynntils.core.framework.enums.SortDirection;
 import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -523,17 +524,17 @@ public class ItemPage extends QuestBookPage {
             ItemSearchState searchState = new ItemSearchState();
             if (!currentText.isEmpty() || sortFunction == SortFunction.ALPHABETICAL) {
                 searchState.addFilter(new ItemFilter.ByName(currentText, QuestBookConfig.INSTANCE.useFuzzySearch,
-                        sortFunction == SortFunction.ALPHABETICAL ? ItemFilter.SortDirection.ASCENDING : ItemFilter.SortDirection.NONE));
+                        sortFunction == SortFunction.ALPHABETICAL ? SortDirection.ASCENDING : SortDirection.NONE));
             }
             if (allowedTypes.size() < itemTypeArray.size()) {
-                searchState.addFilter(new ItemFilter.ByType(allowedTypes, ItemFilter.SortDirection.NONE));
+                searchState.addFilter(new ItemFilter.ByType(allowedTypes, SortDirection.NONE));
             }
             switch (sortFunction) { // alphabetical is handled above
                 case BY_LEVEL:
-                    searchState.addFilter(new ByStat(ByStat.TYPE_COMBAT_LEVEL, Collections.emptyList(), ItemFilter.SortDirection.DESCENDING));
+                    searchState.addFilter(new ByStat(ByStat.TYPE_COMBAT_LEVEL, Collections.emptyList(), SortDirection.DESCENDING));
                     break;
                 case BY_RARITY:
-                    searchState.addFilter(new ItemFilter.ByRarity(Collections.emptyList(), ItemFilter.SortDirection.DESCENDING));
+                    searchState.addFilter(new ItemFilter.ByRarity(Collections.emptyList(), SortDirection.DESCENDING));
                     break;
             }
             return searchState;
@@ -555,16 +556,16 @@ public class ItemPage extends QuestBookPage {
             String searchText = null;
             if (byName != null) {
                 searchText = byName.getSearchString();
-                if (byName.getSortDirection() != ItemFilter.SortDirection.NONE) {
+                if (byName.getSortDirection() != SortDirection.NONE) {
                     sortFunction = SortFunction.ALPHABETICAL;
                 }
             }
             ItemFilter.ByRarity byRarity = searchState.getFilter(ItemFilter.ByRarity.TYPE);
-            if (byRarity != null && byRarity.getSortDirection() != ItemFilter.SortDirection.NONE) {
+            if (byRarity != null && byRarity.getSortDirection() != SortDirection.NONE) {
                 sortFunction = SortFunction.BY_RARITY;
             }
             ByStat byLevel = searchState.getFilter(ByStat.TYPE_COMBAT_LEVEL);
-            if (byLevel != null && byLevel.getSortDirection() != ItemFilter.SortDirection.NONE) {
+            if (byLevel != null && byLevel.getSortDirection() != SortDirection.NONE) {
                 sortFunction = SortFunction.BY_LEVEL;
             }
             if (sortFunction == null) {
