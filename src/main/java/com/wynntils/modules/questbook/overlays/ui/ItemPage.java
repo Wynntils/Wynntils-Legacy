@@ -745,7 +745,7 @@ public class ItemPage extends QuestBookPage {
                         .with(ByStat.TYPE_BONUS_FIRE_DMG).with(ByStat.TYPE_BONUS_AIR_DMG).with(ByStat.TYPE_BONUS_SUM_DMG)
                         .with(ByStat.TYPE_MAIN_ATK_DMG).with(ByStat.TYPE_MAIN_ATK_NEUTRAL_DMG)
                         .with(ByStat.TYPE_SPELL_DMG).with(ByStat.TYPE_SPELL_NEUTRAL_DMG)
-                        .with(ByStat.TYPE_ATTACK_SPEED).with(ByStat.TYPE_BONUS_ATK_SPD)
+                        .with(ByStat.TYPE_ATTACK_SPEED).with(ByStat.TYPE_BONUS_ATK_SPD).with(ByStat.TYPE_ATK_SPD_SUM)
                         .with(ByStat.TYPE_POISON).with(ByStat.TYPE_EXPLODING)
                         .build(),
                 new HelpCategory.Builder(new ItemStack(Items.RABBIT_HIDE), "Defensive Stats",
@@ -759,7 +759,7 @@ public class ItemPage extends QuestBookPage {
                         .with(ByStat.TYPE_FIRE_DEF).with(ByStat.TYPE_AIR_DEF).with(ByStat.TYPE_SUM_DEF)
                         .with(ByStat.TYPE_BONUS_EARTH_DEF).with(ByStat.TYPE_BONUS_THUNDER_DEF).with(ByStat.TYPE_BONUS_WATER_DEF)
                         .with(ByStat.TYPE_BONUS_FIRE_DEF).with(ByStat.TYPE_BONUS_AIR_DEF).with(ByStat.TYPE_BONUS_SUM_DEF)
-                        .with(ByStat.TYPE_HEALTH).with(ByStat.TYPE_BONUS_HEALTH)
+                        .with(ByStat.TYPE_HEALTH).with(ByStat.TYPE_BONUS_HEALTH).with(ByStat.TYPE_SUM_HEALTH)
                         .with(ByStat.TYPE_THORNS).with(ByStat.TYPE_REFLECTION)
                         .build(),
                 new HelpCategory.Builder(RED_POTION_STACK, "Resource Regeneration",
