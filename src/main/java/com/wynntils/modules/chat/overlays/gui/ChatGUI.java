@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.chat.overlays.gui;
 
+import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -108,12 +109,16 @@ public class ChatGUI extends GuiChat {
             this.tabButtons.put(tab, addButton(new ChatButton(buttonId++, 20 + tabX++ * 40, this.height - 45, 37, 13, getDisplayName(tab), ChatOverlay.getChat().getCurrentTab() == tab, tab)));
         }
         addTab = addButton(new ChatButton(buttonId++, 2, this.height - 45, 15, 13, TextFormatting.GOLD + "+", false));
-        languageButtons.put(WynncraftLanguage.NORMAL, addButton(new ChatButton(buttonId, this.width - 24, this.height - 14, 10, 12, "N", false, WynncraftLanguage.NORMAL)));
-        languageButtons.put(WynncraftLanguage.WYNNIC, addButton(new ChatButton(buttonId, this.width - 12, this.height - 14, 10, 12, "W", false, WynncraftLanguage.WYNNIC)));
+        int x = 0;
+        if (Reference.onBeta) {
+            languageButtons.put(WynncraftLanguage.GAVELLIAN, addButton(new ChatButton(buttonId++, this.width - ++x * 12, this.height - 14, 10, 12, "G", false, WynncraftLanguage.GAVELLIAN)));
+        }
+        languageButtons.put(WynncraftLanguage.WYNNIC, addButton(new ChatButton(buttonId++, this.width - ++x * 12, this.height - 14, 10, 12, "W", false, WynncraftLanguage.WYNNIC)));
+        languageButtons.put(WynncraftLanguage.NORMAL, addButton(new ChatButton(buttonId++, this.width - ++x * 12, this.height - 14, 10, 12, "N", false, WynncraftLanguage.NORMAL)));
         if (ChatConfig.INSTANCE.useBrackets) {
             languageButtons.values().forEach((button) -> button.visible = false);
         } else {
-            this.inputField.width = this.width - 28;
+            this.inputField.width = this.width - x * 12 - 4;
         }
         languageButtons.get(ChatOverlay.getChat().getCurrentLanguage()).setSelected(true);
     }
@@ -129,7 +134,7 @@ public class ChatGUI extends GuiChat {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         if (!ChatConfig.INSTANCE.useBrackets) {
-            drawRect(2, this.height - 14, this.width - 26, this.height - 2, Integer.MIN_VALUE);
+            drawRect(2, this.height - 14, this.inputField.width + 2, this.height - 2, Integer.MIN_VALUE);
             this.inputField.drawTextBox();
             ITextComponent itextcomponent = this.mc.ingameGUI.getChatGUI().getChatComponent(Mouse.getX(), Mouse.getY());
 

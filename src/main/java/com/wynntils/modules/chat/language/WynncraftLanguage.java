@@ -183,6 +183,14 @@ public interface WynncraftLanguage {
 
         return new Pair<>(string, character);
     };
+    public static final WynncraftLanguage GAVELLIAN = (string, character) -> {
+        if ('a' <= character && character <= 'z') {
+            return new Pair<>(string, (char) (character + 9327));
+        } else if ('A' <= character && character <= 'Z') {
+            return new Pair<>(string, (char) (character + 9359));
+        }
+        return new Pair<>(string, character);
+    };
 
     public Pair<String, Character> replace(String string, char character);
 }

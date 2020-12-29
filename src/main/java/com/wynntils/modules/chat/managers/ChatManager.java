@@ -5,6 +5,7 @@
 package com.wynntils.modules.chat.managers;
 
 import com.wynntils.ModCore;
+import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.PowderManualChapter;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.helpers.TextAction;
@@ -116,14 +117,14 @@ public class ChatManager {
         if (in.getUnformattedText().contains(" requires your ") && in.getUnformattedText().contains(" skill to be at least "))
             ModCore.mc().player.playSound(popOffSound, 1f, 1f);
 
-        // wynnic translator
-        if (StringUtils.hasWynnic(in.getUnformattedText())) {
+        // wynnic and gavellian translator
+        if (StringUtils.hasWynnic(in.getUnformattedText()) || StringUtils.hasGavellian(in.getUnformattedText())) {
             List<ITextComponent> newTextComponents = new ArrayList<>();
             boolean capital = false;
             boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find();
             boolean foundStart = false;
             boolean foundEndTimestamp = !ChatConfig.INSTANCE.addTimestampsToChat;
-            boolean previousWynnic = false;
+            boolean previousTranslated = false;
             boolean translateIntoHover = !ChatConfig.INSTANCE.translateIntoChat;
             ITextComponent currentTranslatedComponents = new TextComponentString("");
             List<ITextComponent> currentOldComponents = new ArrayList<>();
@@ -139,7 +140,7 @@ public class ChatManager {
                 StringBuilder number = new StringBuilder();
                 for (char character : component.getUnformattedText().toCharArray()) {
                     if (StringUtils.isWynnicNumber(character)) {
-                        if (previousWynnic) {
+                        if (previousTranslated) {
                             toAdd += currentNonTranslated;
                             oldText.append(currentNonTranslated);
                         } else {
@@ -150,7 +151,7 @@ public class ChatManager {
                                 oldText = new StringBuilder();
                                 toAdd = "";
                             }
-                            previousWynnic = true;
+                            previousTranslated = true;
                         }
                         currentNonTranslated = "";
                         number.append(character);
@@ -167,7 +168,7 @@ public class ChatManager {
                         }
 
                         if (StringUtils.isWynnic(character)) {
-                            if (previousWynnic) {
+                            if (previousTranslated) {
                                 toAdd += currentNonTranslated;
                                 oldText.append(currentNonTranslated);
                                 currentNonTranslated = "";
@@ -179,7 +180,7 @@ public class ChatManager {
                                     oldText = new StringBuilder();
                                     toAdd = "";
                                 }
-                                previousWynnic = true;
+                                previousTranslated = true;
                             }
                             String englishVersion = StringUtils.translateCharacterFromWynnic(character);
                             if (capital && englishVersion.matches("[a-z]")) {
@@ -197,8 +198,34 @@ public class ChatManager {
                             } else {
                                 oldText.append(englishVersion);
                             }
+                        } else if (StringUtils.isGavellian(character)) {
+                            if (previousTranslated) {
+                                toAdd += currentNonTranslated;
+                                oldText.append(currentNonTranslated);
+                                currentNonTranslated = "";
+                            } else {
+                                if (translateIntoHover) {
+                                    ITextComponent newComponent = new TextComponentString(oldText.toString());
+                                    newComponent.setStyle(component.getStyle().createDeepCopy());
+                                    newTextComponents.add(newComponent);
+                                    oldText = new StringBuilder();
+                                    toAdd = "";
+                                }
+                                previousTranslated = true;
+                            }
+                            String englishVersion = StringUtils.translateCharacterFromGavellian(character);
+                            if (capital && englishVersion.matches("[a-z]")) {
+                                englishVersion = Character.toString(Character.toUpperCase(englishVersion.charAt(0)));
+                                capital = false;
+                            }
+                            toAdd += englishVersion;
+                            if (translateIntoHover) {
+                                oldText.append(character);
+                            } else {
+                                oldText.append(englishVersion);
+                            }
                         } else if (Character.toString(character).matches(nonTranslatable) || Character.toString(character).matches(optionalTranslatable)) {
-                            if (previousWynnic) {
+                            if (previousTranslated) {
                                 currentNonTranslated += character;
                             } else {
                                 oldText.append(character);
@@ -210,8 +237,8 @@ public class ChatManager {
                                 capital = false;
                             }
                         } else {
-                            if (previousWynnic) {
-                                previousWynnic = false;
+                            if (previousTranslated) {
+                                previousTranslated = false;
                                 if (translateIntoHover) {
                                     ITextComponent oldComponent = new TextComponentString(oldText.toString());
                                     oldComponent.setStyle(component.getStyle().createDeepCopy());
@@ -242,12 +269,12 @@ public class ChatManager {
                         }
                     }
                 }
-                if (!number.toString().isEmpty() && previousWynnic) {
+                if (!number.toString().isEmpty() && previousTranslated) {
                     toAdd += StringUtils.translateNumberFromWynnic(number.toString());
                 }
                 if (!currentNonTranslated.isEmpty()) {
                     oldText.append(currentNonTranslated);
-                    if (previousWynnic) {
+                    if (previousTranslated) {
                         toAdd += currentNonTranslated;
                     }
                 }
@@ -255,7 +282,7 @@ public class ChatManager {
                 ITextComponent oldComponent = new TextComponentString(oldText.toString());
                 oldComponent.setStyle(component.getStyle().createDeepCopy());
                 newTextComponents.add(oldComponent);
-                if (previousWynnic && translateIntoHover) {
+                if (previousTranslated && translateIntoHover) {
                     ITextComponent newComponent = new TextComponentString(toAdd);
                     newComponent.setStyle(component.getStyle().createDeepCopy());
 
@@ -536,21 +563,31 @@ public class ChatManager {
         boolean cancel = false;
 
         if (ChatConfig.INSTANCE.useBrackets) {
-            if (message.contains("{")) {
+            if (message.contains("{") || message.contains("<")) {
                 StringBuilder newString = new StringBuilder();
                 boolean isWynnic = false;
                 boolean isNumber = false;
                 boolean invalidNumber = false;
+                boolean isGavellian = false;
                 int number = 0;
                 StringBuilder oldNumber = new StringBuilder();
                 for (char character : message.toCharArray()) {
                     if (character == '{') {
+                        isGavellian = false;
                         isWynnic = true;
+                        isNumber = false;
+                        number = 0;
+                        oldNumber = new StringBuilder();
+                    } else if (character == '<' && Reference.onBeta) {
+                        isGavellian = true;
+                        isWynnic = false;
                         isNumber = false;
                         number = 0;
                         oldNumber = new StringBuilder();
                     } else if (isWynnic && character == '}') {
                         isWynnic = false;
+                    } else if (isGavellian && character == '>') {
+                        isGavellian = false;
                     } else if (isWynnic) {
                         if (Character.isDigit(character) && !invalidNumber) {
                             if (oldNumber.toString().endsWith(".")) {
@@ -653,6 +690,12 @@ public class ChatManager {
                                 newString.append(character);
                             }
                         }
+                    } else if (isGavellian) {
+                        if ('a' <= character && character <= 'z') {
+                            newString.append((char) (character + 9327));
+                        } else if ('A' <= character && character <= 'Z') {
+                            newString.append((char) (character + 9359));
+                        }
                     } else {
                         newString.append(character);
                     }
@@ -714,7 +757,6 @@ public class ChatManager {
                 after = newString.toString();
 
             }
-            // TODO: use <> for Gavel's language
         }
 
         return new Pair<>(after, cancel);

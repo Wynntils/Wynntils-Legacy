@@ -66,14 +66,15 @@ public class LoreChangerOverlay implements Listener {
 
         // Wynnic Translator
         if (stack.hasTagCompound() && !stack.getTagCompound().getBoolean("showWynnic") && Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-            if (StringUtils.hasWynnic(ItemUtils.getStringLore(stack))) {
+            String fullLore = ItemUtils.getStringLore(stack);
+            if (StringUtils.hasWynnic(fullLore) || StringUtils.hasGavellian(fullLore)) {
                 NBTTagList loreList = ItemUtils.getLoreTag(stack);
                 if (loreList != null) {
                     stack.getTagCompound().setTag("originalLore", loreList.copy());
                     boolean capital = true;
                     for (int index = 0; index < loreList.tagCount(); index++) {
                         String lore = loreList.getStringTagAt(index);
-                        if (StringUtils.hasWynnic(lore)) {
+                        if (StringUtils.hasWynnic(lore) || StringUtils.hasGavellian(lore)) {
                             StringBuilder translated = new StringBuilder();
                             boolean colorCode = false;
                             StringBuilder number = new StringBuilder();
@@ -90,6 +91,11 @@ public class LoreChangerOverlay implements Listener {
                                     if (StringUtils.isWynnic(character)) {
                                         translatedCharacter = StringUtils.translateCharacterFromWynnic(character);
                                         if (capital && translatedCharacter.matches("[a-z]")) {
+                                            translatedCharacter = String.valueOf(Character.toUpperCase(translatedCharacter.charAt(0)));
+                                        }
+                                    } else if (StringUtils.isGavellian(character)) {
+                                        translatedCharacter = StringUtils.translateCharacterFromGavellian(character);
+                                        if (capital) {
                                             translatedCharacter = String.valueOf(Character.toUpperCase(translatedCharacter.charAt(0)));
                                         }
                                     } else {
