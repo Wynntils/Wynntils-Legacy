@@ -403,11 +403,13 @@ public class QuestsPage extends QuestBookPage {
     private enum SortMethod {
         LEVEL(
             Comparator.comparing(QuestInfo::getStatus)
-                        .thenComparing(q -> !q.getMinLevel().containsKey(QuestLevelType.COMBAT)).thenComparingInt((q) -> {
+                        .thenComparing(q -> !q.getMinLevel().containsKey(QuestLevelType.COMBAT) && !q.getMinLevel().isEmpty()).thenComparingInt((q) -> {
                             if (q.getMinLevel().containsKey(QuestLevelType.COMBAT)) {
                                 return q.getMinLevel().get(QuestLevelType.COMBAT);
-                            } else {
+                            } else if (!q.getMinLevel().isEmpty()) {
                                 return q.getMinLevel().values().iterator().next();
+                            } else {
+                                return 1;
                             }
                         }),
             130, 281, 152, 303, Arrays.asList(
@@ -420,11 +422,13 @@ public class QuestsPage extends QuestBookPage {
             }
 
             return (long) new Location(player).distance(q.getTargetLocation());
-        }).thenComparing(q -> !q.getMinLevel().containsKey(QuestLevelType.COMBAT)).thenComparingInt((q) -> {
+        }).thenComparing(q -> !q.getMinLevel().containsKey(QuestLevelType.COMBAT) && !q.getMinLevel().isEmpty()).thenComparingInt((q) -> {
             if (q.getMinLevel().containsKey(QuestLevelType.COMBAT)) {
                 return q.getMinLevel().get(QuestLevelType.COMBAT);
-            } else {
+            } else if (!q.getMinLevel().isEmpty()) {
                 return q.getMinLevel().values().iterator().next();
+            } else {
+                return 1;
             }
         }),
             174, 281, 196, 303, Arrays.asList(
