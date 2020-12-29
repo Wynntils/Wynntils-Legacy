@@ -368,6 +368,22 @@ public class StringUtils {
                 || (0x247D <= character && character <= 0x247F);
     }
 
+    public static boolean isGavellian(int c) {
+        return 0x24D0 <= c && c <= 0x24E9;
+    }
+
+    public static boolean hasGavellian(String text) {
+        return text.chars().anyMatch(StringUtils::isGavellian);
+    }
+
+    public static String translateCharacterFromGavellian(char gavellian) {
+        return translateCharacterFromGavellian((int) gavellian); // convert to code point
+    }
+
+    public static String translateCharacterFromGavellian(int gavellian) {
+        return Character.toString((char) ((gavellian) - 9327));
+    }
+
     public static int convertEmeraldPrice(String input) {
         input = input.toLowerCase();
         int emeralds = 0;
