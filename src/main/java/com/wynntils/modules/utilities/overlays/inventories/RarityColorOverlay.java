@@ -111,11 +111,11 @@ public class RarityColorOverlay implements Listener {
     private static CustomColor getHighlightColor(Slot s, ItemStack is, String lore, String name, boolean isChest, Slot slotUnderMouse) {
         if (is.isEmpty()) {
             return null;
-        } else if (!isChest && (lore.contains("Reward") || containsIgnoreCase(lore, "rewards"))) {
+        } else if (!isChest && (lore.contains("Reward") || containsIgnoreCase(lore, "rewards")) && !lore.contains("Raid Reward")) {
             return null;
         } else if (isChest && UtilitiesConfig.Items.INSTANCE.filterEnabled && !professionFilter.equals("-") && lore.contains(professionFilter)) {
             return new CustomColor(0.078f, 0.35f, 0.8f);
-        } else if (isChest && UtilitiesConfig.Items.INSTANCE.highlightCosmeticDuplicates && slotUnderMouse != null && lore.contains("Reward") && slotUnderMouse.slotNumber != s.slotNumber && slotUnderMouse.getStack().getDisplayName().equals(name)) {
+        } else if (isChest && UtilitiesConfig.Items.INSTANCE.highlightCosmeticDuplicates && slotUnderMouse != null && lore.contains("Reward") && !lore.contains("Raid Reward") && slotUnderMouse.slotNumber != s.slotNumber && slotUnderMouse.getStack().getDisplayName().equals(name)) {
             return new CustomColor(0f, 1f, 0f);
         } else if (isChest && lore.contains(TextFormatting.GOLD + "Epic") && lore.contains("Reward") && UtilitiesConfig.Items.INSTANCE.epicEffectsHighlight) {
             return new CustomColor(1f, 0.666f, 0f);
