@@ -138,16 +138,16 @@ public class ChatGUI extends GuiChat {
             this.inputField.drawTextBox();
             ITextComponent itextcomponent = this.mc.ingameGUI.getChatGUI().getChatComponent(Mouse.getX(), Mouse.getY());
 
-            if (itextcomponent != null && itextcomponent.getStyle().getHoverEvent() != null) {
-                this.handleComponentHover(itextcomponent, mouseX, mouseY);
-            }
-
             for (int i = 0; i < this.buttonList.size(); ++i) {
                 ((GuiButton) this.buttonList.get(i)).drawButton(this.mc, mouseX, mouseY, partialTicks);
             }
 
             for (int j = 0; j < this.labelList.size(); ++j) {
                 ((GuiLabel) this.labelList.get(j)).drawLabel(this.mc, mouseX, mouseY);
+            }
+            
+            if (itextcomponent != null && itextcomponent.getStyle().getHoverEvent() != null) {
+                this.handleComponentHover(itextcomponent, mouseX, mouseY);
             }
         } else {
             super.drawScreen(mouseX, mouseY, partialTicks);
