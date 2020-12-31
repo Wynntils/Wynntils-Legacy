@@ -662,7 +662,6 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void onServerLeave(WynncraftServerEvent.Leave e) {
-        ModCore.mc().gameSettings.heldItemTooltips = true;
         ObjectivesOverlay.restoreVanillaScoreboard();
     }
 

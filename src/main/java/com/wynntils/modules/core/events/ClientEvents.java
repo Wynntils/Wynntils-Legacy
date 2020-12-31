@@ -27,6 +27,8 @@ import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
+import com.wynntils.modules.utilities.UtilitiesModule;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -215,7 +217,7 @@ public class ClientEvents implements Listener {
         if (!Reference.onServer || e.getPacket().getType() != ChatType.GAME_INFO) return;
 
         PlayerInfo.getPlayerInfo().updateActionBar(e.getPacket().getChatComponent().getUnformattedText());
-        e.setCanceled(true);
+        if (UtilitiesModule.getModule().getActionBarOverlay().active) e.setCanceled(true); // only disable when the wynntils action bar is enabled
     }
 
     @SubscribeEvent

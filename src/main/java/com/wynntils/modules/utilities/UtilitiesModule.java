@@ -24,6 +24,7 @@ public class UtilitiesModule extends Module {
 
     private static UtilitiesModule module;
     private GameUpdateOverlay gameUpdateOverlay;
+    private ActionBarOverlay actionBarOverlay;
     private InfoFormatter infoFormatter;
 
     public void onEnable() {
@@ -54,7 +55,7 @@ public class UtilitiesModule extends Module {
 
         // Real overlays
         registerOverlay(new WarTimerOverlay(), Priority.LOWEST);
-        registerOverlay(new ActionBarOverlay(), Priority.LOWEST);
+        registerOverlay(actionBarOverlay = new ActionBarOverlay(), Priority.LOWEST);
         registerOverlay(new HealthBarOverlay(), Priority.NORMAL);
         registerOverlay(new HotbarOverlay(), Priority.NORMAL);
         registerOverlay(new ManaBarOverlay(), Priority.NORMAL);
@@ -120,6 +121,10 @@ public class UtilitiesModule extends Module {
 
     public GameUpdateOverlay getGameUpdateOverlay() {
         return gameUpdateOverlay;
+    }
+    
+    public ActionBarOverlay getActionBarOverlay() {
+        return actionBarOverlay;
     }
 
     public InfoFormatter getInfoFormatter() {
