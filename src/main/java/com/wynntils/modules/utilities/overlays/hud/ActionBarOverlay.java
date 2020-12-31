@@ -29,6 +29,9 @@ public class ActionBarOverlay extends Overlay {
         super("ActionBar Helper", 75, 10, true, 0.5f, 1f, 0, -70, OverlayGrowFrom.TOP_CENTRE,
                 RenderGameOverlayEvent.ElementType.EXPERIENCE, RenderGameOverlayEvent.ElementType.JUMPBAR);
     }
+    
+    transient ItemStack highlightItem = ItemStack.EMPTY;
+    transient int highlightTicks;
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
@@ -98,15 +101,23 @@ public class ActionBarOverlay extends Overlay {
     }
 
     private boolean renderItemName() {
-        ScreenRenderer.mc.gameSettings.heldItemTooltips = false;
+        int newHighlightTicks = ReflectionFields.GuiIngame_remainingHighlightTicks.getValue(Minecraft.getMinecraft().ingameGUI);
+        ItemStack newHighlightItem = ReflectionFields.GuiIngame_highlightingItemStack.getValue(Minecraft.getMinecraft().ingameGUI);
+        
+        if (newHighlightTicks > 0) { // update item
+            highlightTicks = newHighlightTicks*5; // this method ticks 5 times as fast as the default
+            highlightItem = newHighlightItem;
+            
+            ReflectionFields.GuiIngame_remainingHighlightTicks.setValue(Minecraft.getMinecraft().ingameGUI, 0);
+        } else if (newHighlightItem.isEmpty()) { // clear highlight when player switches to an empty hand
+            highlightTicks = 0;
+        }
 
-        int remainingHighlightTicks = ReflectionFields.GuiIngame_remainingHighlightTicks.getValue(Minecraft.getMinecraft().ingameGUI);
-        ItemStack highlightingItemStack = ReflectionFields.GuiIngame_highlightingItemStack.getValue(Minecraft.getMinecraft().ingameGUI);
+        if (highlightTicks > 0 && !highlightItem.isEmpty()) {
+            
+            String s = highlightItem.getDisplayName();
 
-        if (remainingHighlightTicks > 0 && !highlightingItemStack.isEmpty()) {
-            String s = highlightingItemStack.getDisplayName();
-
-            if (highlightingItemStack.hasDisplayName()) {
+            if (highlightItem.hasDisplayName()) {
                 s = TextFormatting.ITALIC + s;
             }
 
@@ -117,7 +128,8 @@ public class ActionBarOverlay extends Overlay {
                 j += 14;
             }
 
-            int k = (int) ((float) remainingHighlightTicks * 256.0F / 10.0F);
+            int k = (int) ((float) highlightTicks * 256.0F / 50.0F);
+            highlightTicks--;
 
             if (k > 255) {
                 k = 255;
