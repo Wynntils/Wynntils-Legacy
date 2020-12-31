@@ -344,6 +344,7 @@ public class GearViewerUI extends FakeGuiContainer {
     public static void openGearViewer() {
         if (!Reference.onWorld) return;
         
+        if (ModCore.mc().objectMouseOver == null) return;
         Entity e = ModCore.mc().objectMouseOver.entityHit;
         if (e == null || !(e instanceof EntityPlayer)) return;
         EntityPlayer ep = (EntityPlayer) e;
