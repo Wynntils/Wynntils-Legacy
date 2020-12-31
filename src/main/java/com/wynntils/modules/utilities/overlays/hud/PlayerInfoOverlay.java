@@ -34,8 +34,8 @@ public class PlayerInfoOverlay extends Overlay {
         if (!Reference.onWorld || !OverlayConfig.PlayerInfo.INSTANCE.replaceVanilla) return;
         if (!mc.gameSettings.keyBindPlayerList.isKeyDown() && animationProgress <= 0.0) return;
 
-        double animation;
-        { // Animation Detection
+        double animation = 1;
+        if (OverlayConfig.PlayerInfo.INSTANCE.openingDuration > 0) { // Animation Detection
             if (lastTime == -1) lastTime += Minecraft.getSystemTime();
 
             if (mc.gameSettings.keyBindPlayerList.isKeyDown()) {
