@@ -85,7 +85,11 @@ public class MountHorseManager {
             return MountHorseStatus.HORSE_TOO_FAR;
         }
 
+        int prev = mc.player.inventory.currentItem;
+        
+        mc.player.inventory.currentItem = 8; // swap to soul points to avoid any right-click conflicts
         mc.playerController.interactWithEntity(player, playersHorse, EnumHand.MAIN_HAND);
+        mc.player.inventory.currentItem = prev;
         return MountHorseStatus.SUCCESS;
     }
 
