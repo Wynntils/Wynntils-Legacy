@@ -370,10 +370,10 @@ public class OverlayEvents implements Listener {
                 GameUpdateOverlay.queueMessage(TextFormatting.GRAY + "Not enough inventory space.");
                 e.setCanceled(true);
                 return;
-            } else if (messageText.equals("Select a class! Each class is saved individually across all servers, you can come back at any time with /class and select another class!")) 
+            } else if (messageText.equals("Select a class! Each class is saved individually across all servers, you can come back at any time with /class and select another class!")) {
                 e.setCanceled(true);
                 return;
-            } else if (messageText.equals("Thank you for using the WynnPack. Enjoy the game!")) 
+            } else if (messageText.equals("Thank you for using the WynnPack. Enjoy the game!")) {
                 e.setCanceled(true);
                 return;
             } else if (messageText.equals("Loading Resource Pack...")) {
