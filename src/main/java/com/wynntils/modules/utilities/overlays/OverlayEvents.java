@@ -596,19 +596,20 @@ public class OverlayEvents implements Listener {
             return;
         }
 
+        // Server restart message handling
         Matcher matcher_restart = SERVER_RESTART_PATTERN.matcher(messageText);
         if (matcher_restart.find()) {
-            if (OverlayConfig.ConsumableTimer.INSTANCE.showServerRestart) {
+            if (OverlayConfig.ConsumableTimer.INSTANCE.showServerRestart) { // if you want the timer
                 int seconds = Integer.parseInt(matcher_restart.group(1));
 
-                if (matcher_restart.group(2).equals("minute") || matcher_restart.group(2).equals("minutes")) {
+                if (matcher_restart.group(2).equals("minute") || matcher_restart.group(2).equals("minutes")) { // if it is in minutes
                     seconds *= 60;
                 }
                 ConsumableTimerOverlay.addBasicTimer("Server restart", seconds);
             }
-            if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectServer) {
+            if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectServer) { // if you want to redirect it
                 GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "The server is restarting in " + matcher_restart.group(1) + " " + matcher_restart.group(2));
-                e.setCanceled(true);
+                e.setCanceled(true); // do not show the message in chat
             }
         }
     }
