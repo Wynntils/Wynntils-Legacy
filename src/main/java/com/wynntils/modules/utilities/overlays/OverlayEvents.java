@@ -370,12 +370,20 @@ public class OverlayEvents implements Listener {
                 GameUpdateOverlay.queueMessage(TextFormatting.GRAY + "Not enough inventory space.");
                 e.setCanceled(true);
                 return;
-            } else if (messageText.equals("Select a class! Each class is saved individually across all servers, you can come back at any time with /class and select another class!")) {
-                GameUpdateOverlay.queueMessage(TextFormatting.RED + "Select a class!");
+            } else if (messageText.equals("Select a class! Each class is saved individually across all servers, you can come back at any time with /class and select another class!")) 
+                e.setCanceled(true);
+                return;
+            } else if (messageText.equals("Thank you for using the WynnPack. Enjoy the game!")) 
                 e.setCanceled(true);
                 return;
             } else if (messageText.equals("Loading Resource Pack...")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.GRAY + messageText);
+                e.setCanceled(true);
+                return;
+            } else if (messageText.equals("Your class has been automatically been selected. Use /class to change your class, or /toggle autojoin to turn this feature off.")) {
+                GameUpdateOverlay.queueMessage(TextFormatting.GOLD + "Automatically selected class!");
+                GameUpdateOverlay.queueMessage(TextFormatting.Gray + "Use /class to change your class,");
+                GameUpdateOverlay.queueMessage(TextFormatting.Gray + "or /toggle autojoin to turn this off.");
                 e.setCanceled(true);
                 return;
             } else if (messageText.equals("You have never been to that area!")) {
