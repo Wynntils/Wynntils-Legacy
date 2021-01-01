@@ -382,8 +382,8 @@ public class OverlayEvents implements Listener {
                 return;
             } else if (messageText.equals("Your class has been automatically been selected. Use /class to change your class, or /toggle autojoin to turn this feature off.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.GOLD + "Automatically selected class!");
-                GameUpdateOverlay.queueMessage(TextFormatting.Gray + "Use /class to change your class,");
-                GameUpdateOverlay.queueMessage(TextFormatting.Gray + "or /toggle autojoin to turn this off.");
+                GameUpdateOverlay.queueMessage(TextFormatting.GRAY + "Use /class to change your class,");
+                GameUpdateOverlay.queueMessage(TextFormatting.GRAY + "or /toggle autojoin to turn this off.");
                 e.setCanceled(true);
                 return;
             } else if (messageText.equals("You have never been to that area!")) {
