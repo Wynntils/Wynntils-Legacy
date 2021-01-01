@@ -580,7 +580,7 @@ public class OverlayEvents implements Listener {
             if (OverlayConfig.ConsumableTimer.INSTANCE.showServerRestart) { // if you want the timer
                 int seconds = Integer.parseInt(matcher_restart.group(1));
 
-                if (matcher_restart.group(2).equals("minute") || matcher_restart.group(2).equals("minutes")) { // if it is in minutes
+                if (matcher_restart.group(2).equals("minutes") || matcher_restart.group(2).equals("minute")) { // if it is in minutes
                     seconds *= 60;
                 }
                 ConsumableTimerOverlay.addBasicTimer("Server restart", seconds);
