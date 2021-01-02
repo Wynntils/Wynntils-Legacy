@@ -408,7 +408,7 @@ public class OverlayEvents implements Listener {
             } 
             
             if (messageText.equals("Your class has been automatically been selected. Use /class to change your class, or /toggle autojoin to turn this feature off.")) {
-                GameUpdateOverlay.queueMessage(TextFormatting.GOLD + "Automatically selected your last character!");9i8u]=
+                GameUpdateOverlay.queueMessage(TextFormatting.GOLD + "Automatically selected your last character!");
                 GameUpdateOverlay.queueMessage(TextFormatting.GRAY + "Use /class to change your class,");
                 GameUpdateOverlay.queueMessage(TextFormatting.GRAY + "or /toggle autojoin to turn this off.");
                 e.setCanceled(true);
