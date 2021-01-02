@@ -32,6 +32,7 @@ import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.IntStream;
 
 public class OverlayEvents implements Listener {
 
@@ -412,55 +413,53 @@ public class OverlayEvents implements Listener {
             } else if (messageText.startsWith("Blacksmith: You ")) {
                 boolean sold = formattedText.split(" ")[2].equals("sold");
                 String[] res = formattedText.split("§");
-                int[] countTest = {0, 0, 0, 0, 0, 0, 0, 0}; // normal, unique, rare, set, legendary, fabled, mythic, crafted
+                int[] itemCount = {0, 0, 0, 0, 0, 0, 0, 0}; // normal, unique, rare, set, legendary, fabled, mythic, crafted
 
                 for (String s : res) {
-                    if (s.startsWith("f")) { countTest[0]++; } // normal
+                    if (s.startsWith("f")) { itemCount[0]++; } // normal
                     else if (s.startsWith("d") && !s.equals("dYou sold me: ") && !s.equals("dYou scrapped: ") && !s.equals("d, ") && !s.equals("d and ") && !s.equals("d for a total of ")) {
-                        countTest[2]++; // rare
+                        itemCount[2]++; // rare
                     }
-                    else if (s.startsWith("a")) { countTest[3]++; } // set
-                    else if (s.startsWith("b")) { countTest[4]++; } // legendary
-                    else if (s.startsWith("c")) { countTest[5]++; } // fabled
-                    else if (s.startsWith("5") && !s.equals("5Blacksmith: ")) { countTest[6]++; } // mythic
-                    else if (s.startsWith("3")) { countTest[7]++; } // crafted
+                    else if (s.startsWith("a")) { itemCount[3]++; } // set
+                    else if (s.startsWith("b")) { itemCount[4]++; } // legendary
+                    else if (s.startsWith("c")) { itemCount[5]++; } // fabled
+                    else if (s.startsWith("5") && !s.equals("5Blacksmith: ")) { itemCount[6]++; } // mythic
+                    else if (s.startsWith("3")) { itemCount[7]++; } // crafted
                     else if (s.startsWith("e")) {
                         if (s.matches("e\\d+")) {
                             String message2;
-                            int total = 0;
-                            for (int i : countTest) {
-                                total += i;
-                            }
+                            int total = IntStream.of(itemCount).sum(); // sum of the items
+
                             if (sold) { // normal selling
 
                                 message2 = LIGHT_PURPLE + "Sold " + total
-                                        + " (" + WHITE + countTest[0] + LIGHT_PURPLE
-                                        + "/" + YELLOW + countTest[1] + LIGHT_PURPLE
-                                        + "/" + countTest[2]
-                                        + "/" + GREEN + countTest[3] + LIGHT_PURPLE
-                                        + "/" + AQUA + countTest[4] + LIGHT_PURPLE
-                                        + "/" + RED + countTest[5] + LIGHT_PURPLE
-                                        + "/" + DARK_PURPLE + countTest[6] + LIGHT_PURPLE
-                                        + "/" + DARK_AQUA + countTest[7] + LIGHT_PURPLE
+                                        + " (" + WHITE + itemCount[0] + LIGHT_PURPLE
+                                        + "/" + YELLOW + itemCount[1] + LIGHT_PURPLE
+                                        + "/" + itemCount[2]
+                                        + "/" + GREEN + itemCount[3] + LIGHT_PURPLE
+                                        + "/" + AQUA + itemCount[4] + LIGHT_PURPLE
+                                        + "/" + RED + itemCount[5] + LIGHT_PURPLE
+                                        + "/" + DARK_PURPLE + itemCount[6] + LIGHT_PURPLE
+                                        + "/" + DARK_AQUA + itemCount[7] + LIGHT_PURPLE
                                         + ") item(s) for " + GREEN + s.replace("e", "")
                                         + (char) 0xB2 + LIGHT_PURPLE + ".";
                             } else { // scrapping
                                 message2 = LIGHT_PURPLE + "Scrapped " + total
-                                        + " (" + WHITE + countTest[0] + LIGHT_PURPLE
-                                        + "/" + YELLOW + countTest[1] + LIGHT_PURPLE
-                                        + "/" + countTest[2]
-                                        + "/" + GREEN + countTest[3] + LIGHT_PURPLE
-                                        + "/" + AQUA + countTest[4] + LIGHT_PURPLE
-                                        + "/" + RED + countTest[5] + LIGHT_PURPLE
-                                        + "/" + DARK_PURPLE + countTest[6] + LIGHT_PURPLE
-                                        + "/" + DARK_AQUA + countTest[7] + LIGHT_PURPLE
+                                        + " (" + WHITE + itemCount[0] + LIGHT_PURPLE
+                                        + "/" + YELLOW + itemCount[1] + LIGHT_PURPLE
+                                        + "/" + itemCount[2]
+                                        + "/" + GREEN + itemCount[3] + LIGHT_PURPLE
+                                        + "/" + AQUA + itemCount[4] + LIGHT_PURPLE
+                                        + "/" + RED + itemCount[5] + LIGHT_PURPLE
+                                        + "/" + DARK_PURPLE + itemCount[6] + LIGHT_PURPLE
+                                        + "/" + DARK_AQUA + itemCount[7] + LIGHT_PURPLE
                                         + ") item(s) for " + YELLOW + s.replace("e", "")
                                         + " scrap" + LIGHT_PURPLE + ".";
                             }
                             GameUpdateOverlay.queueMessage(message2);
                             e.setCanceled(true);
                         } else {
-                            countTest[1]++; // normal
+                            itemCount[1]++; // normal
                         }
                     }
                 }
