@@ -412,49 +412,68 @@ public class OverlayEvents implements Listener {
                 // TODO jesus christ rewrite this thing
                 boolean sold = formattedText.split(" ")[2].equals("sold");
                 String[] res = formattedText.split("§");
-                int countCommon = 0;
-                int countUnique = 0;
-                int countRare = 0;
-                int countSet = 0;
-                int countLegendary = 0;
-                int countFabled = 0;
-                int countMythic = 0;
-                int countCrafted = 0;
+                int[] countTest = {0, 0, 0, 0, 0, 0, 0, 0};
                 int total = 0;
                 for (String s : res) {
                     if (s.startsWith("f")) {
-                        countCommon++;
+                        countTest[0]++;
                         total++;
                     } else if (s.startsWith("c")) {
-                        countFabled++;
+                        countTest[5]++;
                         total++;
                     } else if (s.startsWith("b")) {
-                        countLegendary++;
+                        countTest[4]++;
                         total++;
                     } else if (s.startsWith("5") && !s.equals("5Blacksmith: ")) {
-                        countMythic++;
+                        countTest[6]++;
                         total++;
                     } else if (s.startsWith("d") && !s.equals("dYou sold me: ") && !s.equals("dYou scrapped: ") && !s.equals("d, ") && !s.equals("d and ") && !s.equals("d for a total of ")) {
-                        countRare++;
+                        countTest[2]++;
                         total++;
                     } else if (s.startsWith("a")) {
-                        countSet++;
+                        countTest[3]++;
                         total++;
                     } else if (s.startsWith("3")) {
-                        countCrafted++;
+                        countTest[7]++;
+
                         total++;
                     } else if (s.startsWith("e")) {
                         if (s.matches("e\\d+")) {
-                            String message;
+                            String message2 = "";
                             if (sold) {
-                                message = TextFormatting.LIGHT_PURPLE + "Sold " + total + " (" + TextFormatting.WHITE + countCommon + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.YELLOW + countUnique + TextFormatting.LIGHT_PURPLE + "/" + countRare + "/" + TextFormatting.GREEN + countSet + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.AQUA + countLegendary + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.RED + countFabled + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.DARK_PURPLE + countMythic + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.DARK_AQUA + countCrafted + TextFormatting.LIGHT_PURPLE + ") item(s) for " + TextFormatting.GREEN + s.replace("e", "") + (char) 0xB2 + TextFormatting.LIGHT_PURPLE + ".";
+                                int sum = 0;
+                                for (int i : countTest) {
+                                    sum += i;
+                                }
+
+                                message2 = TextFormatting.LIGHT_PURPLE + "Sold " + sum
+                                        + " (" + TextFormatting.WHITE + countTest[0] + TextFormatting.LIGHT_PURPLE
+                                        + "/" + TextFormatting.YELLOW + countTest[1] + TextFormatting.LIGHT_PURPLE
+                                        + "/" + countTest[2]
+                                        + "/" + TextFormatting.GREEN + countTest[3] + TextFormatting.LIGHT_PURPLE
+                                        + "/" + TextFormatting.AQUA + countTest[4] + TextFormatting.LIGHT_PURPLE
+                                        + "/" + TextFormatting.RED + countTest[5] + TextFormatting.LIGHT_PURPLE
+                                        + "/" + TextFormatting.DARK_PURPLE + countTest[6] + TextFormatting.LIGHT_PURPLE
+                                        + "/" + TextFormatting.DARK_AQUA + countTest[7] + TextFormatting.LIGHT_PURPLE
+                                        + ") item(s) for " + TextFormatting.GREEN + s.replace("e", "")
+                                        + (char) 0xB2 + TextFormatting.LIGHT_PURPLE + ".";
                             } else {
-                                message = TextFormatting.LIGHT_PURPLE + "Scrapped " + total + " (" + TextFormatting.WHITE + countCommon + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.YELLOW + countUnique + TextFormatting.LIGHT_PURPLE + "/" + countRare + "/" + TextFormatting.GREEN + countSet + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.AQUA + countLegendary + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.RED + countFabled + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.DARK_PURPLE + countMythic + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.DARK_AQUA + countCrafted + TextFormatting.LIGHT_PURPLE + ") item(s) for " + TextFormatting.YELLOW + s.replace("e", "") + " scrap" + TextFormatting.LIGHT_PURPLE + ".";
+                                message2 = TextFormatting.LIGHT_PURPLE + "Scrapped " + total
+                                        + " (" + TextFormatting.WHITE + countTest[0] + TextFormatting.LIGHT_PURPLE
+                                        + "/" + TextFormatting.YELLOW + countTest[1] + TextFormatting.LIGHT_PURPLE
+                                        + "/" + countTest[2]
+                                        + "/" + TextFormatting.GREEN + countTest[3] + TextFormatting.LIGHT_PURPLE
+                                        + "/" + TextFormatting.AQUA + countTest[4] + TextFormatting.LIGHT_PURPLE
+                                        + "/" + TextFormatting.RED + countTest[5] + TextFormatting.LIGHT_PURPLE
+                                        + "/" + TextFormatting.DARK_PURPLE + countTest[6] + TextFormatting.LIGHT_PURPLE
+                                        + "/" + TextFormatting.DARK_AQUA + countTest[7] + TextFormatting.LIGHT_PURPLE
+                                        + ") item(s) for " + TextFormatting.YELLOW + s.replace("e", "")
+                                        + " scrap" + TextFormatting.LIGHT_PURPLE + ".";
                             }
-                            GameUpdateOverlay.queueMessage(message);
+                            GameUpdateOverlay.queueMessage(message2);
                             e.setCanceled(true);
                         } else {
-                            countUnique++;
+                            countTest[1]++;
                             total++;
                         }
                     }
