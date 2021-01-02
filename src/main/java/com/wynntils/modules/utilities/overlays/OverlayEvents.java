@@ -416,44 +416,43 @@ public class OverlayEvents implements Listener {
                 int[] itemCount = {0, 0, 0, 0, 0, 0, 0, 0}; // normal, unique, rare, set, legendary, fabled, mythic, crafted
 
                 for (String s : res) {
-                    if (s.startsWith("f")) { itemCount[0]++; } // normal
-                    else if (s.startsWith("d") && !s.equals("dYou sold me: ") && !s.equals("dYou scrapped: ") && !s.equals("d, ") && !s.equals("d and ") && !s.equals("d for a total of ")) {
-                        itemCount[2]++; // rare
+                    if (s.equals("dYou sold me: ")
+                            || s.equals("dYou scrapped: ")
+                            || s.equals("d, ")
+                            || s.equals("d and ")
+                            || s.equals("d for a total of ")
+                            || s.equals("5Blacksmith: ")) {
+                        continue;
                     }
+                    else if (s.startsWith("f")) { itemCount[0]++; } // normal
+                    else if (s.startsWith("d")) { itemCount[2]++; } // rare
                     else if (s.startsWith("a")) { itemCount[3]++; } // set
                     else if (s.startsWith("b")) { itemCount[4]++; } // legendary
                     else if (s.startsWith("c")) { itemCount[5]++; } // fabled
-                    else if (s.startsWith("5") && !s.equals("5Blacksmith: ")) { itemCount[6]++; } // mythic
+                    else if (s.startsWith("5")) { itemCount[6]++; } // mythic
                     else if (s.startsWith("3")) { itemCount[7]++; } // crafted
                     else if (s.startsWith("e")) {
                         if (s.matches("e\\d+")) {
-                            String message2;
                             int total = IntStream.of(itemCount).sum(); // sum of the items
+                            String message2 = total
+                                    + " (" + WHITE + itemCount[0] + LIGHT_PURPLE
+                                    + "/" + YELLOW + itemCount[1] + LIGHT_PURPLE
+                                    + "/" + itemCount[2]
+                                    + "/" + GREEN + itemCount[3] + LIGHT_PURPLE
+                                    + "/" + AQUA + itemCount[4] + LIGHT_PURPLE
+                                    + "/" + RED + itemCount[5] + LIGHT_PURPLE
+                                    + "/" + DARK_PURPLE + itemCount[6] + LIGHT_PURPLE
+                                    + "/" + DARK_AQUA + itemCount[7] + LIGHT_PURPLE
+                                    + ") item(s) for ";
 
                             if (sold) { // normal selling
 
-                                message2 = LIGHT_PURPLE + "Sold " + total
-                                        + " (" + WHITE + itemCount[0] + LIGHT_PURPLE
-                                        + "/" + YELLOW + itemCount[1] + LIGHT_PURPLE
-                                        + "/" + itemCount[2]
-                                        + "/" + GREEN + itemCount[3] + LIGHT_PURPLE
-                                        + "/" + AQUA + itemCount[4] + LIGHT_PURPLE
-                                        + "/" + RED + itemCount[5] + LIGHT_PURPLE
-                                        + "/" + DARK_PURPLE + itemCount[6] + LIGHT_PURPLE
-                                        + "/" + DARK_AQUA + itemCount[7] + LIGHT_PURPLE
-                                        + ") item(s) for " + GREEN + s.replace("e", "")
+                                message2 = LIGHT_PURPLE + "Sold " + message2
+                                        + GREEN + s.replace("e", "")
                                         + (char) 0xB2 + LIGHT_PURPLE + ".";
                             } else { // scrapping
-                                message2 = LIGHT_PURPLE + "Scrapped " + total
-                                        + " (" + WHITE + itemCount[0] + LIGHT_PURPLE
-                                        + "/" + YELLOW + itemCount[1] + LIGHT_PURPLE
-                                        + "/" + itemCount[2]
-                                        + "/" + GREEN + itemCount[3] + LIGHT_PURPLE
-                                        + "/" + AQUA + itemCount[4] + LIGHT_PURPLE
-                                        + "/" + RED + itemCount[5] + LIGHT_PURPLE
-                                        + "/" + DARK_PURPLE + itemCount[6] + LIGHT_PURPLE
-                                        + "/" + DARK_AQUA + itemCount[7] + LIGHT_PURPLE
-                                        + ") item(s) for " + YELLOW + s.replace("e", "")
+                                message2 = LIGHT_PURPLE + "Scrapped " + message2
+                                        + YELLOW + s.replace("e", "")
                                         + " scrap" + LIGHT_PURPLE + ".";
                             }
                             GameUpdateOverlay.queueMessage(message2);
