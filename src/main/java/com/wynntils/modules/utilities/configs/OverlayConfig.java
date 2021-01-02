@@ -336,7 +336,7 @@ public class OverlayConfig extends SettingsClass {
             @Setting(displayName = "Redirect Other Messages", description = "Should skill points, price of identifying items, and other users' level up messages be redirected to the game update ticker?")
             public boolean redirectOther = true;
 
-            @Setting(displayName = "Redirect Server Status", description = "Should server shutdown messages be redirected to the game update ticker?")
+            @Setting(displayName = "Redirect Server Restart Messages", description = "Should server restart messages be redirected to the game update ticker?")
             public boolean redirectServer = true;
 
             @Setting(displayName = "Redirect Quest Messages", description = "Should messages relating to the progress of a quest be redirected to the game update ticker?")
