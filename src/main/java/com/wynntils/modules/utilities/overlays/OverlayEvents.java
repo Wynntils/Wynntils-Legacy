@@ -36,6 +36,7 @@ public class OverlayEvents implements Listener {
 
     private static final Pattern CHEST_COOLDOWN_PATTERN = Pattern.compile("Please wait an additional ([0-9]+) minutes? before opening this chest.");
     private static final Pattern GATHERING_COOLDOWN_PATTERN = Pattern.compile("^You need to wait ([0-9]+) seconds after logging in to gather from this resource!");
+    private static final Pattern SERVER_RESTART_PATTERN = Pattern.compile("The server is restarting in ([0-9]+) (minutes?|seconds?)");
 
     private static boolean wynnExpTimestampNotified = false;
     private long loginTime;
@@ -386,27 +387,7 @@ public class OverlayEvents implements Listener {
                 return;
             }
         }
-        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectServer) {
-            if (messageText.matches("The server is restarting in \\d+ (seconds?|minutes?)\\.")) {
-                String[] res = messageText.split(" ");
-                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + res[5] + " " + res[6].replace(".", "") + " until server restart");
-                e.setCanceled(true);
 
-                if (OverlayConfig.ConsumableTimer.INSTANCE.showServerRestart) {
-                    try {
-                        int seconds = Integer.parseInt(res[5]);
-                        if (res[6].startsWith("minute")) {
-                            seconds = seconds * 60;
-                        }
-                        ConsumableTimerOverlay.addBasicTimer("Server restart", seconds);
-                    } catch (NumberFormatException ignored) {
-                        // ignore
-                    }
-                }
-
-                return;
-            }
-        }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectQuest) {
             if (messageText.startsWith("[Quest Book Updated]")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.GRAY + "Quest book updated.");
@@ -561,9 +542,9 @@ public class OverlayEvents implements Listener {
             }
         }
 
-        Matcher matcher_gathering = GATHERING_COOLDOWN_PATTERN.matcher(messageText);
-        if (matcher_gathering.find()) {
-            int seconds = Integer.parseInt(matcher_gathering.group(1));
+        Matcher gatheringMatcher = GATHERING_COOLDOWN_PATTERN.matcher(messageText);
+        if (gatheringMatcher.find()) {
+            int seconds = Integer.parseInt(gatheringMatcher.group(1));
             if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectCooldown) {
                 GameUpdateOverlay.queueMessage("Wait " + seconds + " seconds to gather");
                 e.setCanceled(true);
@@ -579,9 +560,9 @@ public class OverlayEvents implements Listener {
             return;
         }
 
-        Matcher matcher_chest = CHEST_COOLDOWN_PATTERN.matcher(messageText);
-        if (matcher_chest.find()) {
-            int minutes = Integer.parseInt(matcher_chest.group(1));
+        Matcher chestMatcher = CHEST_COOLDOWN_PATTERN.matcher(messageText);
+        if (chestMatcher.find()) {
+            int minutes = Integer.parseInt(chestMatcher.group(1));
             if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectCooldown) {
                 GameUpdateOverlay.queueMessage("Wait " + minutes + " minutes for loot chest");
                 e.setCanceled(true);
@@ -591,6 +572,23 @@ public class OverlayEvents implements Listener {
                 ConsumableTimerOverlay.addBasicTimer("Loot cooldown", minutes*60, true);
             }
             return;
+        }
+
+        // Server restart message handling
+        Matcher restartMatcher = SERVER_RESTART_PATTERN.matcher(messageText);
+        if (restartMatcher.find()) {
+            if (OverlayConfig.ConsumableTimer.INSTANCE.showServerRestart) { // if you want the timer
+                int seconds = Integer.parseInt(restartMatcher.group(1));
+
+                if (restartMatcher.group(2).equals("minutes") || restartMatcher.group(2).equals("minute")) { // if it is in minutes
+                    seconds *= 60;
+                }
+                ConsumableTimerOverlay.addBasicTimer("Server restart", seconds);
+            }
+            if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectServer) { // if you want to redirect it
+                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "The server is restarting in " + restartMatcher.group(1) + " " + restartMatcher.group(2));
+                e.setCanceled(true); // do not show the message in chat
+            }
         }
     }
 
