@@ -412,23 +412,7 @@ public class OverlayEvents implements Listener {
                 return;
             }
         }
-        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectServer) {
-            if (messageText.matches("The server is restarting in \\d+ (seconds?|minutes?)\\.")) {
-                String[] res = messageText.split(" ");
-                GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + res[5] + " " + res[6].replace(".", "") + " until server restart");
-                e.setCanceled(true);
 
-                if (OverlayConfig.ConsumableTimer.INSTANCE.showServerRestart) {
-                    try {
-                        int seconds = Integer.parseInt(res[5]);
-                        if (res[6].startsWith("minute")) {
-                            seconds = seconds * 60;
-                        }
-                        ConsumableTimerOverlay.addBasicTimer("Server restart", seconds);
-                    } catch (NumberFormatException ignored) {
-                        // ignore
-                    }
-                }
 
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectQuest) {
             if (messageText.startsWith("[Quest Book Updated]")) {
