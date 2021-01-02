@@ -21,6 +21,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.network.play.server.*;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.text.TextComponentString;
+import static net.minecraft.util.text.TextFormatting.*;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -432,29 +433,29 @@ public class OverlayEvents implements Listener {
                             }
                             if (sold) { // normal selling
 
-                                message2 = TextFormatting.LIGHT_PURPLE + "Sold " + total
-                                        + " (" + TextFormatting.WHITE + countTest[0] + TextFormatting.LIGHT_PURPLE
-                                        + "/" + TextFormatting.YELLOW + countTest[1] + TextFormatting.LIGHT_PURPLE
+                                message2 = LIGHT_PURPLE + "Sold " + total
+                                        + " (" + WHITE + countTest[0] + LIGHT_PURPLE
+                                        + "/" + YELLOW + countTest[1] + LIGHT_PURPLE
                                         + "/" + countTest[2]
-                                        + "/" + TextFormatting.GREEN + countTest[3] + TextFormatting.LIGHT_PURPLE
-                                        + "/" + TextFormatting.AQUA + countTest[4] + TextFormatting.LIGHT_PURPLE
-                                        + "/" + TextFormatting.RED + countTest[5] + TextFormatting.LIGHT_PURPLE
-                                        + "/" + TextFormatting.DARK_PURPLE + countTest[6] + TextFormatting.LIGHT_PURPLE
-                                        + "/" + TextFormatting.DARK_AQUA + countTest[7] + TextFormatting.LIGHT_PURPLE
-                                        + ") item(s) for " + TextFormatting.GREEN + s.replace("e", "")
-                                        + (char) 0xB2 + TextFormatting.LIGHT_PURPLE + ".";
+                                        + "/" + GREEN + countTest[3] + LIGHT_PURPLE
+                                        + "/" + AQUA + countTest[4] + LIGHT_PURPLE
+                                        + "/" + RED + countTest[5] + LIGHT_PURPLE
+                                        + "/" + DARK_PURPLE + countTest[6] + LIGHT_PURPLE
+                                        + "/" + DARK_AQUA + countTest[7] + LIGHT_PURPLE
+                                        + ") item(s) for " + GREEN + s.replace("e", "")
+                                        + (char) 0xB2 + LIGHT_PURPLE + ".";
                             } else { // scrapping
-                                message2 = TextFormatting.LIGHT_PURPLE + "Scrapped " + total
-                                        + " (" + TextFormatting.WHITE + countTest[0] + TextFormatting.LIGHT_PURPLE
-                                        + "/" + TextFormatting.YELLOW + countTest[1] + TextFormatting.LIGHT_PURPLE
+                                message2 = LIGHT_PURPLE + "Scrapped " + total
+                                        + " (" + WHITE + countTest[0] + LIGHT_PURPLE
+                                        + "/" + YELLOW + countTest[1] + LIGHT_PURPLE
                                         + "/" + countTest[2]
-                                        + "/" + TextFormatting.GREEN + countTest[3] + TextFormatting.LIGHT_PURPLE
-                                        + "/" + TextFormatting.AQUA + countTest[4] + TextFormatting.LIGHT_PURPLE
-                                        + "/" + TextFormatting.RED + countTest[5] + TextFormatting.LIGHT_PURPLE
-                                        + "/" + TextFormatting.DARK_PURPLE + countTest[6] + TextFormatting.LIGHT_PURPLE
-                                        + "/" + TextFormatting.DARK_AQUA + countTest[7] + TextFormatting.LIGHT_PURPLE
-                                        + ") item(s) for " + TextFormatting.YELLOW + s.replace("e", "")
-                                        + " scrap" + TextFormatting.LIGHT_PURPLE + ".";
+                                        + "/" + GREEN + countTest[3] + LIGHT_PURPLE
+                                        + "/" + AQUA + countTest[4] + LIGHT_PURPLE
+                                        + "/" + RED + countTest[5] + LIGHT_PURPLE
+                                        + "/" + DARK_PURPLE + countTest[6] + LIGHT_PURPLE
+                                        + "/" + DARK_AQUA + countTest[7] + LIGHT_PURPLE
+                                        + ") item(s) for " + YELLOW + s.replace("e", "")
+                                        + " scrap" + LIGHT_PURPLE + ".";
                             }
                             GameUpdateOverlay.queueMessage(message2);
                             e.setCanceled(true);
