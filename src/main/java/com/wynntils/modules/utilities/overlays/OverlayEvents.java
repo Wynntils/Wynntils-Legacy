@@ -388,7 +388,7 @@ public class OverlayEvents implements Listener {
             }
         }
 
-        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectRss) {
+        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectResourcePack) {
             if (messageText.equals("Thank you for using the WynnPack. Enjoy the game!")) {
                 e.setCanceled(true);
                 return;
@@ -400,12 +400,12 @@ public class OverlayEvents implements Listener {
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectClass) {
             if (messageText.equals("Select a class! Each class is saved individually across all servers, you can come back at any time with /class and select another class!")) {
-                GameUpdateOverlay.queueMessage(TextFormatting.GOLD + "Select a class!");
+                GameUpdateOverlay.queueMessage(TextFormatting.GOLD + "Select a charachter!");
                 e.setCanceled(true);
                 return;
             
             } if (messageText.equals("Your class has been automatically been selected. Use /class to change your class, or /toggle autojoin to turn this feature off.")) {
-                GameUpdateOverlay.queueMessage(TextFormatting.GOLD + "Automatically selected class!");
+                GameUpdateOverlay.queueMessage(TextFormatting.GOLD + "Automatically selected your last charachter!");
                 GameUpdateOverlay.queueMessage(TextFormatting.GRAY + "Use /class to change your class,");
                 GameUpdateOverlay.queueMessage(TextFormatting.GRAY + "or /toggle autojoin to turn this off.");
                 e.setCanceled(true);
