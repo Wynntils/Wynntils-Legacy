@@ -411,31 +411,26 @@ public class OverlayEvents implements Listener {
             } else if (messageText.startsWith("Blacksmith: You ")) { // TODO jesus christ rewrite this thing
                 boolean sold = formattedText.split(" ")[2].equals("sold");
                 String[] res = formattedText.split("§");
-                int[] countTest = {0, 0, 0, 0, 0, 0, 0, 0};
-                for (String s : res) {
-                    if (s.startsWith("f")) {
-                        countTest[0]++;
-                    } else if (s.startsWith("d") && !s.equals("dYou sold me: ") && !s.equals("dYou scrapped: ") && !s.equals("d, ") && !s.equals("d and ") && !s.equals("d for a total of ")) {
-                        countTest[2]++;
-                    } else if (s.startsWith("a")) {
-                        countTest[3]++;
-                    } else if (s.startsWith("b")) {
-                        countTest[4]++;
-                    } else if (s.startsWith("c")) {
-                        countTest[5]++;
-                    } else if (s.startsWith("5") && !s.equals("5Blacksmith: ")) {
-                        countTest[6]++;
-                    } else if (s.startsWith("3")) {
-                        countTest[7]++;
+                int[] countTest = {0, 0, 0, 0, 0, 0, 0, 0}; // normal, unique, rare, set, legendary, fabled, mythic, crafted
 
-                    } else if (s.startsWith("e")) {
+                for (String s : res) {
+                    if (s.startsWith("f")) { countTest[0]++; } // normal
+                    else if (s.startsWith("d") && !s.equals("dYou sold me: ") && !s.equals("dYou scrapped: ") && !s.equals("d, ") && !s.equals("d and ") && !s.equals("d for a total of ")) {
+                        countTest[2]++; // rare
+                    }
+                    else if (s.startsWith("a")) { countTest[3]++; } // set
+                    else if (s.startsWith("b")) { countTest[4]++; } // legendary
+                    else if (s.startsWith("c")) { countTest[5]++; } // fabled
+                    else if (s.startsWith("5") && !s.equals("5Blacksmith: ")) { countTest[6]++; } // mythic
+                    else if (s.startsWith("3")) { countTest[7]++; } // crafted
+                    else if (s.startsWith("e")) {
                         if (s.matches("e\\d+")) {
-                            String message2 = "";
+                            String message2;
                             int total = 0;
                             for (int i : countTest) {
                                 total += i;
                             }
-                            if (sold) {
+                            if (sold) { // normal selling
 
                                 message2 = TextFormatting.LIGHT_PURPLE + "Sold " + total
                                         + " (" + TextFormatting.WHITE + countTest[0] + TextFormatting.LIGHT_PURPLE
@@ -448,7 +443,7 @@ public class OverlayEvents implements Listener {
                                         + "/" + TextFormatting.DARK_AQUA + countTest[7] + TextFormatting.LIGHT_PURPLE
                                         + ") item(s) for " + TextFormatting.GREEN + s.replace("e", "")
                                         + (char) 0xB2 + TextFormatting.LIGHT_PURPLE + ".";
-                            } else {
+                            } else { // scrapping
                                 message2 = TextFormatting.LIGHT_PURPLE + "Scrapped " + total
                                         + " (" + TextFormatting.WHITE + countTest[0] + TextFormatting.LIGHT_PURPLE
                                         + "/" + TextFormatting.YELLOW + countTest[1] + TextFormatting.LIGHT_PURPLE
@@ -464,7 +459,7 @@ public class OverlayEvents implements Listener {
                             GameUpdateOverlay.queueMessage(message2);
                             e.setCanceled(true);
                         } else {
-                            countTest[1]++;
+                            countTest[1]++; // normal
                         }
                     }
                 }
