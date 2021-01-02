@@ -408,45 +408,36 @@ public class OverlayEvents implements Listener {
                 GameUpdateOverlay.queueMessage(TextFormatting.LIGHT_PURPLE + "Item(s) Identified!");
                 e.setCanceled(true);
                 return;
-            } else if (messageText.startsWith("Blacksmith: You ")) {
-                // TODO jesus christ rewrite this thing
+            } else if (messageText.startsWith("Blacksmith: You ")) { // TODO jesus christ rewrite this thing
                 boolean sold = formattedText.split(" ")[2].equals("sold");
                 String[] res = formattedText.split("§");
                 int[] countTest = {0, 0, 0, 0, 0, 0, 0, 0};
-                int total = 0;
                 for (String s : res) {
                     if (s.startsWith("f")) {
                         countTest[0]++;
-                        total++;
-                    } else if (s.startsWith("c")) {
-                        countTest[5]++;
-                        total++;
-                    } else if (s.startsWith("b")) {
-                        countTest[4]++;
-                        total++;
-                    } else if (s.startsWith("5") && !s.equals("5Blacksmith: ")) {
-                        countTest[6]++;
-                        total++;
                     } else if (s.startsWith("d") && !s.equals("dYou sold me: ") && !s.equals("dYou scrapped: ") && !s.equals("d, ") && !s.equals("d and ") && !s.equals("d for a total of ")) {
                         countTest[2]++;
-                        total++;
                     } else if (s.startsWith("a")) {
                         countTest[3]++;
-                        total++;
+                    } else if (s.startsWith("b")) {
+                        countTest[4]++;
+                    } else if (s.startsWith("c")) {
+                        countTest[5]++;
+                    } else if (s.startsWith("5") && !s.equals("5Blacksmith: ")) {
+                        countTest[6]++;
                     } else if (s.startsWith("3")) {
                         countTest[7]++;
 
-                        total++;
                     } else if (s.startsWith("e")) {
                         if (s.matches("e\\d+")) {
                             String message2 = "";
+                            int total = 0;
+                            for (int i : countTest) {
+                                total += i;
+                            }
                             if (sold) {
-                                int sum = 0;
-                                for (int i : countTest) {
-                                    sum += i;
-                                }
 
-                                message2 = TextFormatting.LIGHT_PURPLE + "Sold " + sum
+                                message2 = TextFormatting.LIGHT_PURPLE + "Sold " + total
                                         + " (" + TextFormatting.WHITE + countTest[0] + TextFormatting.LIGHT_PURPLE
                                         + "/" + TextFormatting.YELLOW + countTest[1] + TextFormatting.LIGHT_PURPLE
                                         + "/" + countTest[2]
@@ -474,7 +465,6 @@ public class OverlayEvents implements Listener {
                             e.setCanceled(true);
                         } else {
                             countTest[1]++;
-                            total++;
                         }
                     }
                 }
