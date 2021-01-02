@@ -408,7 +408,7 @@ public class OverlayEvents implements Listener {
                 GameUpdateOverlay.queueMessage(TextFormatting.LIGHT_PURPLE + "Item(s) Identified!");
                 e.setCanceled(true);
                 return;
-            } else if (messageText.startsWith("Blacksmith: You ")) { // TODO jesus christ rewrite this thing
+            } else if (messageText.startsWith("Blacksmith: You ")) {
                 boolean sold = formattedText.split(" ")[2].equals("sold");
                 String[] res = formattedText.split("§");
                 int[] countTest = {0, 0, 0, 0, 0, 0, 0, 0}; // normal, unique, rare, set, legendary, fabled, mythic, crafted
