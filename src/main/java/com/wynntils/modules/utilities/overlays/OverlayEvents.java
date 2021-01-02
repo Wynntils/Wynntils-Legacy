@@ -370,22 +370,6 @@ public class OverlayEvents implements Listener {
                 GameUpdateOverlay.queueMessage(TextFormatting.GRAY + "Not enough inventory space.");
                 e.setCanceled(true);
                 return;
-            } else if (messageText.equals("Select a class! Each class is saved individually across all servers, you can come back at any time with /class and select another class!")) {
-                e.setCanceled(true);
-                return;
-            } else if (messageText.equals("Thank you for using the WynnPack. Enjoy the game!")) {
-                e.setCanceled(true);
-                return;
-            } else if (messageText.equals("Loading Resource Pack...")) {
-                GameUpdateOverlay.queueMessage(TextFormatting.GRAY + messageText);
-                e.setCanceled(true);
-                return;
-            } else if (messageText.equals("Your class has been automatically been selected. Use /class to change your class, or /toggle autojoin to turn this feature off.")) {
-                GameUpdateOverlay.queueMessage(TextFormatting.GOLD + "Automatically selected class!");
-                GameUpdateOverlay.queueMessage(TextFormatting.GRAY + "Use /class to change your class,");
-                GameUpdateOverlay.queueMessage(TextFormatting.GRAY + "or /toggle autojoin to turn this off.");
-                e.setCanceled(true);
-                return;
             } else if (messageText.equals("You have never been to that area!")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + messageText);
                 e.setCanceled(true);
@@ -399,6 +383,30 @@ public class OverlayEvents implements Listener {
             } else if (messageText.matches("\\[\\+\\d+ Soul Points?\\]")) {
                 e.setCanceled(true);
                 GameUpdateOverlay.queueMessage(TextFormatting.LIGHT_PURPLE + messageText.substring(1, 14));
+                return;
+            }
+        }
+        if(OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectRss) {
+            if (messageText.equals("Thank you for using the WynnPack. Enjoy the game!")) {
+                e.setCanceled(true);
+                return;
+            } else if (messageText.equals("Loading Resource Pack...")) {
+                GameUpdateOverlay.queueMessage(TextFormatting.GRAY + messageText);
+                e.setCanceled(true);
+                return;
+            }
+        }
+        if(OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectClass) {
+            if (messageText.equals("Select a class! Each class is saved individually across all servers, you can come back at any time with /class and select another class!")) {
+                GameUpdateOverlay.queueMessage(TextFormatting.GOLD + "Select a class!");
+                e.setCanceled(true);
+                return;
+            
+            } else if (messageText.equals("Your class has been automatically been selected. Use /class to change your class, or /toggle autojoin to turn this feature off.")) {
+                GameUpdateOverlay.queueMessage(TextFormatting.GOLD + "Automatically selected class!");
+                GameUpdateOverlay.queueMessage(TextFormatting.GRAY + "Use /class to change your class,");
+                GameUpdateOverlay.queueMessage(TextFormatting.GRAY + "or /toggle autojoin to turn this off.");
+                e.setCanceled(true);
                 return;
             }
         }
