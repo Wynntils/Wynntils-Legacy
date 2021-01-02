@@ -387,7 +387,6 @@ public class OverlayEvents implements Listener {
                 return;
             }
         }
-
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectResourcePack) {
             if (messageText.equals("Thank you for using the WynnPack. Enjoy the game!")) {
                 e.setCanceled(true);
@@ -415,8 +414,6 @@ public class OverlayEvents implements Listener {
                 return;
             }
         }
-
-
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectQuest) {
             if (messageText.startsWith("[Quest Book Updated]")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.GRAY + "Quest book updated.");
