@@ -392,7 +392,6 @@ public class OverlayEvents implements Listener {
                 e.setCanceled(true);
                 return;
             } 
-            
             if (messageText.equals("Loading Resource Pack...")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.GRAY + messageText);
                 e.setCanceled(true);
@@ -405,7 +404,6 @@ public class OverlayEvents implements Listener {
                 e.setCanceled(true);
                 return;
             } 
-            
             if (messageText.equals("Your class has been automatically been selected. Use /class to change your class, or /toggle autojoin to turn this feature off.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.GOLD + "Automatically selected your last character!");
                 GameUpdateOverlay.queueMessage(TextFormatting.GRAY + "Use /class to change your class,");
