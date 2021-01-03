@@ -15,6 +15,7 @@ import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.instances.Toast;
 import com.wynntils.modules.utilities.overlays.hud.*;
 import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.item.enums.ItemTier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.IInventory;
@@ -30,6 +31,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -411,6 +413,24 @@ public class OverlayEvents implements Listener {
                 e.setCanceled(true);
                 return;
             } else if (messageText.startsWith("Blacksmith: You ")) {
+                /*
+                // The regex idea, doesn't work, left here in case enummap idea wont work
+
+                final Pattern BLACKSMITH_REDIRECT_PATTERN = Pattern.compile("§(f|e|d|a|b|c|5|3 )(?! for a total of |Blacksmith: | emeralds.)(.*?)§r");
+                Matcher blacksmithMatcher = BLACKSMITH_REDIRECT_PATTERN.matcher(messageText);
+
+                if (blacksmithMatcher.find()) {
+                    int groupCount = blacksmithMatcher.groupCount();
+                    for (int i = 0; i < groupCount; i++) {
+                        System.out.println(blacksmithMatcher.group(i));
+                    }
+                } else {
+                    System.out.println("Not found");
+                }
+                */
+
+                EnumMap<ItemTier, Integer> item = new EnumMap(ItemTier.class);
+
                 boolean sold = formattedText.split(" ")[2].equals("sold");
                 String[] res = formattedText.split("§");
                 int[] itemCount = {0, 0, 0, 0, 0, 0, 0, 0}; // normal, unique, rare, set, legendary, fabled, mythic, crafted
@@ -424,43 +444,56 @@ public class OverlayEvents implements Listener {
                             || s.equals("5Blacksmith: ")) {
                         continue;
                     }
-                    else if (s.startsWith("f")) { itemCount[0]++; } // normal
-                    else if (s.startsWith("d")) { itemCount[2]++; } // rare
-                    else if (s.startsWith("a")) { itemCount[3]++; } // set
-                    else if (s.startsWith("b")) { itemCount[4]++; } // legendary
-                    else if (s.startsWith("c")) { itemCount[5]++; } // fabled
-                    else if (s.startsWith("5")) { itemCount[6]++; } // mythic
-                    else if (s.startsWith("3")) { itemCount[7]++; } // crafted
-                    else if (s.startsWith("e")) {
-                        if (s.matches("e\\d+")) {
-                            int total = IntStream.of(itemCount).sum(); // sum of the items
-                            String message2 = total
-                                    + " (" + WHITE + itemCount[0] + LIGHT_PURPLE
-                                    + "/" + YELLOW + itemCount[1] + LIGHT_PURPLE
-                                    + "/" + itemCount[2]
-                                    + "/" + GREEN + itemCount[3] + LIGHT_PURPLE
-                                    + "/" + AQUA + itemCount[4] + LIGHT_PURPLE
-                                    + "/" + RED + itemCount[5] + LIGHT_PURPLE
-                                    + "/" + DARK_PURPLE + itemCount[6] + LIGHT_PURPLE
-                                    + "/" + DARK_AQUA + itemCount[7] + LIGHT_PURPLE
-                                    + ") item(s) for ";
+                    else if (s.matches("e\\d+")) {
+                        int total = IntStream.of(itemCount).sum(); // sum of the items
+                        String message = total
+                                + " (" + WHITE + itemCount[0] + LIGHT_PURPLE
+                                + "/" + YELLOW + itemCount[1] + LIGHT_PURPLE
+                                + "/" + itemCount[2]
+                                + "/" + GREEN + itemCount[3] + LIGHT_PURPLE
+                                + "/" + AQUA + itemCount[4] + LIGHT_PURPLE
+                                + "/" + RED + itemCount[5] + LIGHT_PURPLE
+                                + "/" + DARK_PURPLE + itemCount[6] + LIGHT_PURPLE
+                                + "/" + DARK_AQUA + itemCount[7] + LIGHT_PURPLE
+                                + ") item(s) for ";
 
-                            if (sold) { // normal selling
+                        String message2 = total
+                                + " (" + WHITE + item.getOrDefault(ItemTier.NORMAL, 0) + LIGHT_PURPLE
+                                + "/" + YELLOW + item.getOrDefault(ItemTier.UNIQUE, 0) + LIGHT_PURPLE
+                                + "/" + item.getOrDefault(ItemTier.RARE, 0)
+                                + "/" + GREEN + item.getOrDefault(ItemTier.SET, 0) + LIGHT_PURPLE
+                                + "/" + AQUA + item.getOrDefault(ItemTier.LEGENDARY, 0) + LIGHT_PURPLE
+                                + "/" + RED + item.getOrDefault(ItemTier.FABLED, 0) + LIGHT_PURPLE
+                                + "/" + DARK_PURPLE + item.getOrDefault(ItemTier.MYTHIC, 0) + LIGHT_PURPLE
+                                + "/" + DARK_AQUA + item.getOrDefault(ItemTier.CRAFTED, 0) + LIGHT_PURPLE
+                                + ") item(s) for ";
 
-                                message2 = LIGHT_PURPLE + "Sold " + message2
-                                        + GREEN + s.replace("e", "")
-                                        + (char) 0xB2 + LIGHT_PURPLE + ".";
-                            } else { // scrapping
-                                message2 = LIGHT_PURPLE + "Scrapped " + message2
-                                        + YELLOW + s.replace("e", "")
-                                        + " scrap" + LIGHT_PURPLE + ".";
-                            }
-                            GameUpdateOverlay.queueMessage(message2);
-                            e.setCanceled(true);
-                        } else {
-                            itemCount[1]++; // normal
+                        if (sold) { // normal selling
+                            message = LIGHT_PURPLE + "Sold " + message + GREEN + s.replace("e", "") + (char) 0xB2 + LIGHT_PURPLE + ".";
+                            message2 = LIGHT_PURPLE + "Sold " + message2 + GREEN + s.replace("e", "") + (char) 0xB2 + LIGHT_PURPLE + ".";
+                        } else { // scrapping
+                            message = LIGHT_PURPLE + "Scrapped " + message + YELLOW + s.replace("e", "") + " scrap" + LIGHT_PURPLE + ".";
                         }
+                        GameUpdateOverlay.queueMessage(message);
+                        GameUpdateOverlay.queueMessage(message2);
+                        e.setCanceled(true);
                     }
+                    else if (s.startsWith("f")) { itemCount[0]++;
+                        item.put(ItemTier.NORMAL, item.get(ItemTier.NORMAL) != null ? item.get(ItemTier.NORMAL) + 1 : 1); } // normal
+                    else if (s.startsWith("e")) { itemCount[1]++;
+                        item.put(ItemTier.UNIQUE, item.get(ItemTier.UNIQUE) != null ? item.get(ItemTier.UNIQUE) + 1 : 1);} // unique
+                    else if (s.startsWith("d")) { itemCount[2]++;
+                        item.put(ItemTier.RARE, item.get(ItemTier.RARE) != null ? item.get(ItemTier.RARE) + 1 : 1);} // rare
+                    else if (s.startsWith("a")) { itemCount[3]++;
+                        item.put(ItemTier.SET, item.get(ItemTier.SET) != null ? item.get(ItemTier.SET) + 1 : 1);} // set
+                    else if (s.startsWith("b")) { itemCount[4]++;
+                        item.put(ItemTier.LEGENDARY, item.get(ItemTier.LEGENDARY) != null ? item.get(ItemTier.LEGENDARY) + 1 : 1);} // legendary
+                    else if (s.startsWith("c")) { itemCount[5]++;
+                        item.put(ItemTier.FABLED, item.get(ItemTier.FABLED) != null ? item.get(ItemTier.FABLED) + 1 : 1);} // fabled
+                    else if (s.startsWith("5")) { itemCount[6]++;
+                        item.put(ItemTier.MYTHIC, item.get(ItemTier.MYTHIC) != null ? item.get(ItemTier.MYTHIC) + 1 : 1);} // mythic
+                    else if (s.startsWith("3")) { itemCount[7]++;
+                        item.put(ItemTier.CRAFTED, item.get(ItemTier.CRAFTED) != null ? item.get(ItemTier.CRAFTED) + 1 : 1);} // crafted
                 }
                 return;
             } else if (messageText.equals("Blacksmith: I can't buy that item! I only accept weapons, accessories, potions, armour, ingredients, resources, and crafted items.")) {

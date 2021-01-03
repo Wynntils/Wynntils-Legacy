@@ -17,7 +17,8 @@ public enum ItemTier {
     RARE      (3, TextFormatting.LIGHT_PURPLE, (lvl) -> (int)Math.ceil(15d + lvl * 1.2)),
     LEGENDARY (4, TextFormatting.AQUA,         (lvl) -> (int)Math.ceil(35d + (4.8d * lvl))),
     FABLED    (5, TextFormatting.RED,          (lvl) -> (lvl + 5) * 60),
-    MYTHIC    (6, TextFormatting.DARK_PURPLE,  (lvl) -> (lvl + 5) * 18);
+    MYTHIC    (6, TextFormatting.DARK_PURPLE,  (lvl) -> (lvl + 5) * 18),
+    CRAFTED   (7, TextFormatting.DARK_AQUA, (lvl) -> lvl);
 
     int priority; String color; IntUnaryOperator rerollFormula;
 
