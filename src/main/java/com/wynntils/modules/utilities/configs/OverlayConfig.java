@@ -315,7 +315,7 @@ public class OverlayConfig extends SettingsClass {
             @Setting(displayName = "Redirect Horse Messages", description = "Should messages related to your horse be redirected to the game update ticker?")
             public boolean redirectHorse = true;
             
-            @Setting(displayName = "Redirect/Remove Resource Pack Messages", description = "Should wynnpack and loading reasource pack messages be disabled or redirected (depending on whether you can see them in classs screen)?")
+            @Setting(displayName = "Redirect Resource Pack Messages", description = "Should wynnpack and loading reasource pack messages be disabled or redirected (depending on whether you can see them in classs screen)?")
             public boolean redirectResourcePack = false;
             
             @Setting(displayName = "Redirect Class Messages", description = "Should class messages be redirected to the game update ticker?")
