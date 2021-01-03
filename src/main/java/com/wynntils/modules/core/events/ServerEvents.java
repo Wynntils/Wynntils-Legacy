@@ -4,16 +4,34 @@
 
 package com.wynntils.modules.core.events;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
-import com.wynntils.core.events.custom.*;
+import com.wynntils.core.events.custom.PacketEvent;
+import com.wynntils.core.events.custom.SchedulerEvent;
+import com.wynntils.core.events.custom.WynnClassChangeEvent;
+import com.wynntils.core.events.custom.WynnSocialEvent;
+import com.wynntils.core.events.custom.WynnWorldEvent;
+import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.entities.EntityManager;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
@@ -30,25 +48,20 @@ import com.wynntils.modules.core.overlays.ui.PlayerInfoReplacer;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.network.play.server.SPacketSpawnPosition;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-
-import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ServerEvents implements Listener {
 
@@ -221,6 +234,19 @@ public class ServerEvents implements Listener {
     @SubscribeEvent
     public void onReceivePacket(PacketEvent e) {
         PacketQueue.checkResponse(e.getPacket());
+    }
+    
+    /**
+     * Warns user if Athena is currently down
+     */
+    @SubscribeEvent
+    public void onJoinServer(WynncraftServerEvent.Login e) {
+        if (WebManager.isAthenaOnline()) return;
+        
+        TextComponentString msg = new TextComponentString("Failed to connect to the Wynntils servers! You can still use Wynntils, but some features may not work.");
+        msg.getStyle().setColor(TextFormatting.RED);
+        msg.getStyle().setBold(true);
+        new Delay(() -> Minecraft.getMinecraft().player.sendMessage(msg), 10); // delay so the player actually loads in
     }
 
     private static boolean triedToShowChangelog = false;
