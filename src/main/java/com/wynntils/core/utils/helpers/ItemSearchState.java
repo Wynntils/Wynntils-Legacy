@@ -28,9 +28,7 @@ public class ItemSearchState implements Predicate<ItemProfile>, Comparator<ItemP
                         buf.append(' ');
                     } else {
                         String token = buf.toString().trim();
-                        if (!token.isEmpty()) {
-                            tokens.add(token);
-                        }
+                        if (!token.isEmpty()) tokens.add(token);
                         buf = new StringBuilder();
                     }
                     break;
@@ -39,19 +37,19 @@ public class ItemSearchState implements Predicate<ItemProfile>, Comparator<ItemP
                     break;
             }
         }
+
         if (inQuotes) throw new ItemFilter.FilteringException("Mismatched quotes!");
+
+        // pick up a last token, if any
         {
             String token = buf.toString().trim();
-            if (!token.isEmpty()) {
-                tokens.add(token);
-            }
+            if (!token.isEmpty()) tokens.add(token);
         }
 
         // parse filters
         ItemSearchState searchState = new ItemSearchState();
-        for (String token : tokens) {
-            searchState.addFilter(ItemFilter.parseFilterString(token));
-        }
+        for (String token : tokens) searchState.addFilter(ItemFilter.parseFilterString(token));
+
         return searchState;
     }
 
@@ -60,7 +58,7 @@ public class ItemSearchState implements Predicate<ItemProfile>, Comparator<ItemP
     public void addFilter(ItemFilter filter) throws ItemFilter.FilteringException {
         ItemFilter.Type<?> type = filter.getFilterType();
         if (filterTable.containsKey(type)) {
-            if (type == ItemFilter.ByName.TYPE) {
+            if (type == ItemFilter.ByName.TYPE) { // special-case: adjoin multiple by-name filters
                 getFilter(ItemFilter.ByName.TYPE).adjoin((ItemFilter.ByName)filter);
                 return;
             }
@@ -94,7 +92,9 @@ public class ItemSearchState implements Predicate<ItemProfile>, Comparator<ItemP
             int result = filter.compare(a, b);
             if (result != 0) return result;
         }
-        return Integer.compare(b.getRequirements().getLevel(), a.getRequirements().getLevel()); // default to combat level, descending
+
+        // default to combat level, descending
+        return Integer.compare(b.getRequirements().getLevel(), a.getRequirements().getLevel());
     }
 
 }

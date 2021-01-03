@@ -179,16 +179,16 @@ public class QuestBookPage extends GuiScreen {
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        if (showSearchBar) {
-            textField.mouseClicked(mouseX, mouseY, mouseButton);
+        if (!showSearchBar) return;
 
-            if (mouseButton != 1) return;
-            if (mouseX < textField.x || mouseX >= textField.x + textField.width) return;
-            if (mouseY < textField.y || mouseY >= textField.y + textField.height) return;
+        textField.mouseClicked(mouseX, mouseY, mouseButton);
 
-            textField.setText("");
-            searchUpdate("");
-        }
+        if (mouseButton != 1) return;
+        if (mouseX < textField.x || mouseX >= textField.x + textField.width) return;
+        if (mouseY < textField.y || mouseY >= textField.y + textField.height) return;
+
+        textField.setText("");
+        searchUpdate("");
     }
 
     @Override

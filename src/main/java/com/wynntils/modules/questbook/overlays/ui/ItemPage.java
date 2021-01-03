@@ -69,9 +69,9 @@ public class ItemPage extends QuestBookPage {
                 textField.setText(oldSearchState.toSearchString());
                 updateSearch();
             }
-        } else {
-            initBasicSearch();
+            return;
         }
+        initBasicSearch();
     }
 
     private void initBasicSearch() {
@@ -91,9 +91,9 @@ public class ItemPage extends QuestBookPage {
             textField.x = width / 2 - 146;
             textField.y = height / 2 - 124;
             textField.width = 316;
-        } else {
-            initDefaultSearchBar();
+            return;
         }
+        initDefaultSearchBar();
     }
 
     @Override
@@ -235,7 +235,7 @@ public class ItemPage extends QuestBookPage {
                     lore.add(pf.getGuideStack().getDisplayName());
                     lore.addAll(ItemUtils.getLore(pf.getGuideStack()));
                     lore.add("");
-                    lore.add(TextFormatting.GOLD + "Shift+RClick to open WynnData");
+                    lore.add(TextFormatting.GOLD + "Shift + Right Click to open WynnData");
 
                     hoveredText = lore;
                     selected = -1 - i;
@@ -264,6 +264,7 @@ public class ItemPage extends QuestBookPage {
             super.drawSearchBar(centerX, centerY);
             return;
         }
+
         render.drawRect(Textures.UIs.quest_book, centerX - 169, centerY - 130, 0, 342, 339, 19);
         textField.drawTextBox();
     }
@@ -274,52 +275,50 @@ public class ItemPage extends QuestBookPage {
         int posX = ((res.getScaledWidth() / 2) - mouseX);
         int posY = ((res.getScaledHeight() / 2) - mouseY);
 
-        if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
+        if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) { // page forwards button
             goForward();
             return;
-        } else if (posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) {
+        }
+        if (posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) { // page backwards button
             goBack();
             return;
-        } else if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
+        }
+        if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) { // quest book back button
             WynntilsSound.QUESTBOOK_PAGE.play();
             QuestBookPages.MAIN.getPage().open(false);
             return;
-        } else if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) {
+        }
+        if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) { // search mode toggle button
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             if (QuestBookConfig.INSTANCE.advancedItemSearch) {
                 QuestBookConfig.INSTANCE.advancedItemSearch = false;
                 initBasicSearch();
                 String searchText = BasicSearchHandler.INSTANCE.inheritSearchState(searchState);
-                if (searchText != null) {
-                    textField.setText(searchText);
-                } else {
-                    textField.setText("");
-                }
+                textField.setText(searchText != null ? searchText : "");
             } else {
                 textField.setMaxStringLength(ADV_SEARCH_MAX_LEN);
                 QuestBookConfig.INSTANCE.advancedItemSearch = true;
                 initAdvancedSearch();
-                if (searchState != null) {
-                    textField.setText(searchState.toSearchString());
-                } else {
-                    textField.setText("");
-                }
+                textField.setText(searchState != null ? searchState.toSearchString() : "");
             }
             QuestBookConfig.INSTANCE.saveSettings(QuestBookModule.getModule());
             updateSearch();
             return;
-        } else if (getSearchHandler().handleClick(mouseX, mouseY, mouseButton, selected)) {
+        }
+        if (getSearchHandler().handleClick(mouseX, mouseY, mouseButton, selected)) { // delegate rest of click behaviour to search handler
             updateSearch();
             return;
         }
 
         if (selected < 0) { // an item in the guide is hovered
             if (mouseButton != 1 || !(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) return;
+
             int selectedIndex = -(selected + 1);
             if (selectedIndex >= itemSearch.size()) return;
             Utils.openUrl("https://www.wynndata.tk/i/" + Utils.encodeUrl(itemSearch.get(selectedIndex).getDisplayName()));
             return;
         }
+
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
@@ -485,50 +484,58 @@ public class ItemPage extends QuestBookPage {
 
         @Override
         public boolean handleClick(int mouseX, int mouseY, int mouseButton, int selected) {
-            if (selected == 1) {
-                if (sortFunction != SortFunction.ALPHABETICAL) {
-                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-                    sortFunction = SortFunction.ALPHABETICAL;
-                }
-            } else if (selected == 2) {
-                if (sortFunction != SortFunction.BY_LEVEL) {
-                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-                    sortFunction = SortFunction.BY_LEVEL;
-                }
-            } else if (selected == 3) {
-                if (sortFunction != SortFunction.BY_RARITY) {
-                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-                    sortFunction = SortFunction.BY_RARITY;
-                }
-            } else if (selected >= 10) {
-                ItemType selectedType = itemTypeArray.get(selected / 10 - 1);
-                if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
-                    if (allowedTypes.size() == 1 && allowedTypes.contains(selectedType)) {
-                        allowedTypes.addAll(itemTypeArray);
-                    } else {
-                        allowedTypes.clear();
-                        allowedTypes.add(selectedType);
+            switch (selected) { // is one of the sorting buttons hovered?
+                case 1:
+                    if (sortFunction != SortFunction.ALPHABETICAL) {
+                        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                        sortFunction = SortFunction.ALPHABETICAL;
                     }
-                } else if (allowedTypes.contains(selectedType)) {
-                    allowedTypes.remove(selectedType);
+                    return true;
+                case 2:
+                    if (sortFunction != SortFunction.BY_LEVEL) {
+                        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                        sortFunction = SortFunction.BY_LEVEL;
+                    }
+                    return true;
+                case 3:
+                    if (sortFunction != SortFunction.BY_RARITY) {
+                        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                        sortFunction = SortFunction.BY_RARITY;
+                    }
+                    return true;
+            }
+
+            if (selected < 10) return true; // selected >= 10 means one of the item filter buttons is hovered
+
+            ItemType selectedType = itemTypeArray.get(selected / 10 - 1);
+            if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+                if (allowedTypes.size() == 1 && allowedTypes.contains(selectedType)) {
+                    allowedTypes.addAll(itemTypeArray);
                 } else {
+                    allowedTypes.clear();
                     allowedTypes.add(selectedType);
                 }
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            } else if (allowedTypes.contains(selectedType)) {
+                allowedTypes.remove(selectedType);
+            } else {
+                allowedTypes.add(selectedType);
             }
+            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+
             return true;
         }
 
         @Override
         public ItemSearchState generateSearchState(String currentText) throws ItemFilter.FilteringException {
             ItemSearchState searchState = new ItemSearchState();
+
             if (!currentText.isEmpty() || sortFunction == SortFunction.ALPHABETICAL) {
                 searchState.addFilter(new ItemFilter.ByName(currentText, QuestBookConfig.INSTANCE.useFuzzySearch,
                         sortFunction == SortFunction.ALPHABETICAL ? SortDirection.ASCENDING : SortDirection.NONE));
             }
-            if (allowedTypes.size() < itemTypeArray.size()) {
-                searchState.addFilter(new ItemFilter.ByType(allowedTypes, SortDirection.NONE));
-            }
+
+            if (allowedTypes.size() < itemTypeArray.size()) searchState.addFilter(new ItemFilter.ByType(allowedTypes, SortDirection.NONE));
+
             switch (sortFunction) { // alphabetical is handled above
                 case BY_LEVEL:
                     searchState.addFilter(new ByStat(ByStat.TYPE_COMBAT_LEVEL, Collections.emptyList(), SortDirection.DESCENDING));
@@ -537,21 +544,27 @@ public class ItemPage extends QuestBookPage {
                     searchState.addFilter(new ItemFilter.ByRarity(Collections.emptyList(), SortDirection.DESCENDING));
                     break;
             }
+
             return searchState;
         }
 
         public String inheritSearchState(ItemSearchState searchState) {
-            if (searchState == null) {
-                allowedTypes.addAll(itemTypeArray);
-                sortFunction = SortFunction.ALPHABETICAL;
+            if (searchState == null) { // if no previous search state is available, default to...
+                allowedTypes.addAll(itemTypeArray); // all items shown
+                sortFunction = SortFunction.ALPHABETICAL; // sort alphabetically
                 return null;
             }
+
             sortFunction = null;
+
+            // inherit item type filter from the "Type" filter
             ItemFilter.ByType byType = searchState.getFilter(ItemFilter.ByType.TYPE);
             if (byType != null) {
                 allowedTypes.clear();
                 allowedTypes.addAll(byType.getAllowedTypes());
             }
+
+            // inherit search query and alphabetical sorting from the "Name" filter
             ItemFilter.ByName byName = searchState.getFilter(ItemFilter.ByName.TYPE);
             String searchText = null;
             if (byName != null) {
@@ -560,17 +573,22 @@ public class ItemPage extends QuestBookPage {
                     sortFunction = SortFunction.ALPHABETICAL;
                 }
             }
+
+            // inherit rarity sorting from the "Rarity" filter
             ItemFilter.ByRarity byRarity = searchState.getFilter(ItemFilter.ByRarity.TYPE);
             if (byRarity != null && byRarity.getSortDirection() != SortDirection.NONE) {
                 sortFunction = SortFunction.BY_RARITY;
             }
+
+            // inherit combat level sorting from the "Level" filter
             ByStat byLevel = searchState.getFilter(ByStat.TYPE_COMBAT_LEVEL);
             if (byLevel != null && byLevel.getSortDirection() != SortDirection.NONE) {
                 sortFunction = SortFunction.BY_LEVEL;
             }
-            if (sortFunction == null) {
-                sortFunction = SortFunction.ALPHABETICAL;
-            }
+
+            // fall back to alphabetical if no sort function could be inherited
+            if (sortFunction == null) sortFunction = SortFunction.ALPHABETICAL;
+
             return searchText;
         }
 
@@ -920,18 +938,19 @@ public class ItemPage extends QuestBookPage {
 
             HelpCategory(Builder builder) {
                 this.icon = builder.icon;
+
                 ImmutableList.Builder<String> tooltipBuilder = new ImmutableList.Builder<>();
                 tooltipBuilder.add(TextFormatting.AQUA + builder.name);
-                for (String line : builder.desc) {
-                    tooltipBuilder.add(TextFormatting.GRAY + line);
-                }
+
+                for (String line : builder.desc) tooltipBuilder.add(TextFormatting.GRAY + line);
+
                 if (!builder.filterTypes.isEmpty()) {
                     tooltipBuilder.add("");
                     tooltipBuilder.add(TextFormatting.DARK_AQUA + "Related Filters:");
-                    for (ItemFilter.Type<?> type : builder.filterTypes) {
+                    for (ItemFilter.Type<?> type : builder.filterTypes)
                         tooltipBuilder.add(TextFormatting.DARK_GRAY + "- " + TextFormatting.GOLD + type.getName() + TextFormatting.GRAY + " (" + type.getDesc() + ')');
-                    }
                 }
+
                 this.tooltip = tooltipBuilder.build();
             }
 

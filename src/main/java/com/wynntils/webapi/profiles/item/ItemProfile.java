@@ -101,6 +101,7 @@ public class ItemProfile {
                         Math.round((Integer.parseInt(dmgStr.substring(0, n)) + Integer.parseInt(dmgStr.substring(n + 1))) / 2f));
             }
         }
+
         return parsedAvgDamages;
     }
 
@@ -109,18 +110,19 @@ public class ItemProfile {
     }
 
     private void parseDefenses() {
-        if (parsedDefenses != null) {
-            return;
-        }
+        if (parsedDefenses != null) return;
+
         parsedDefenses = new EnumMap<>(DamageType.class);
         for (Map.Entry<String, Integer> entry : defenseTypes.entrySet()) {
-            if (entry.getKey().equals("health")) {
+            if (entry.getKey().equals("health")) { // parse hp separately from defenses
                 parsedHealth = entry.getValue();
-            } else {
-                parsedDefenses.put(DamageType.valueOf(entry.getKey().toUpperCase(Locale.ROOT)), entry.getValue());
+                continue;
             }
+            parsedDefenses.put(DamageType.valueOf(entry.getKey().toUpperCase(Locale.ROOT)), entry.getValue());
         }
-        if (parsedHealth == Integer.MIN_VALUE) parsedHealth = 0;
+
+        if (parsedHealth != Integer.MIN_VALUE) return;
+        parsedHealth = 0; // no hp entry => item provides zero hp
     }
 
     public int getHealth() {

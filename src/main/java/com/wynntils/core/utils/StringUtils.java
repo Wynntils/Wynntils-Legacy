@@ -429,6 +429,7 @@ public class StringUtils {
                 i++;
             }
         }
+
         return j == searchText.length();
     }
 
