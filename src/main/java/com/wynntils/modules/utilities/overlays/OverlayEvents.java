@@ -429,7 +429,7 @@ public class OverlayEvents implements Listener {
                 }
                 */
 
-                EnumMap<ItemTier, Integer> item = new EnumMap(ItemTier.class);
+                EnumMap<ItemTier, Integer> itemCounts = new EnumMap(ItemTier.class);
 
                 boolean sold = formattedText.split(" ")[2].equals("sold");
                 String[] res = formattedText.split("§");
@@ -458,14 +458,14 @@ public class OverlayEvents implements Listener {
                                 + ") item(s) for ";
 
                         String message2 = total
-                                + " (" + WHITE + item.getOrDefault(ItemTier.NORMAL, 0) + LIGHT_PURPLE
-                                + "/" + YELLOW + item.getOrDefault(ItemTier.UNIQUE, 0) + LIGHT_PURPLE
-                                + "/" + item.getOrDefault(ItemTier.RARE, 0)
-                                + "/" + GREEN + item.getOrDefault(ItemTier.SET, 0) + LIGHT_PURPLE
-                                + "/" + AQUA + item.getOrDefault(ItemTier.LEGENDARY, 0) + LIGHT_PURPLE
-                                + "/" + RED + item.getOrDefault(ItemTier.FABLED, 0) + LIGHT_PURPLE
-                                + "/" + DARK_PURPLE + item.getOrDefault(ItemTier.MYTHIC, 0) + LIGHT_PURPLE
-                                + "/" + DARK_AQUA + item.getOrDefault(ItemTier.CRAFTED, 0) + LIGHT_PURPLE
+                                + " (" + WHITE + itemCounts.getOrDefault(ItemTier.NORMAL, 0) + LIGHT_PURPLE
+                                + "/" + YELLOW + itemCounts.getOrDefault(ItemTier.UNIQUE, 0) + LIGHT_PURPLE
+                                + "/" + itemCounts.getOrDefault(ItemTier.RARE, 0)
+                                + "/" + GREEN + itemCounts.getOrDefault(ItemTier.SET, 0) + LIGHT_PURPLE
+                                + "/" + AQUA + itemCounts.getOrDefault(ItemTier.LEGENDARY, 0) + LIGHT_PURPLE
+                                + "/" + RED + itemCounts.getOrDefault(ItemTier.FABLED, 0) + LIGHT_PURPLE
+                                + "/" + DARK_PURPLE + itemCounts.getOrDefault(ItemTier.MYTHIC, 0) + LIGHT_PURPLE
+                                + "/" + DARK_AQUA + itemCounts.getOrDefault(ItemTier.CRAFTED, 0) + LIGHT_PURPLE
                                 + ") item(s) for ";
 
                         if (sold) { // normal selling
@@ -479,21 +479,21 @@ public class OverlayEvents implements Listener {
                         e.setCanceled(true);
                     }
                     else if (s.startsWith("f")) { itemCount[0]++;
-                        item.put(ItemTier.NORMAL, item.get(ItemTier.NORMAL) != null ? item.get(ItemTier.NORMAL) + 1 : 1); } // normal
+                        itemCounts.put(ItemTier.NORMAL, itemCounts.getOrDefault(ItemTier.NORMAL, 0) + 1); } // normal
                     else if (s.startsWith("e")) { itemCount[1]++;
-                        item.put(ItemTier.UNIQUE, item.get(ItemTier.UNIQUE) != null ? item.get(ItemTier.UNIQUE) + 1 : 1);} // unique
+                        itemCounts.put(ItemTier.UNIQUE, itemCounts.getOrDefault(ItemTier.UNIQUE, 0) + 1); } // unique
                     else if (s.startsWith("d")) { itemCount[2]++;
-                        item.put(ItemTier.RARE, item.get(ItemTier.RARE) != null ? item.get(ItemTier.RARE) + 1 : 1);} // rare
+                        itemCounts.put(ItemTier.RARE, itemCounts.getOrDefault(ItemTier.RARE, 0) + 1); } // rare
                     else if (s.startsWith("a")) { itemCount[3]++;
-                        item.put(ItemTier.SET, item.get(ItemTier.SET) != null ? item.get(ItemTier.SET) + 1 : 1);} // set
+                        itemCounts.put(ItemTier.SET, itemCounts.getOrDefault(ItemTier.SET, 0) + 1); } // set
                     else if (s.startsWith("b")) { itemCount[4]++;
-                        item.put(ItemTier.LEGENDARY, item.get(ItemTier.LEGENDARY) != null ? item.get(ItemTier.LEGENDARY) + 1 : 1);} // legendary
+                        itemCounts.put(ItemTier.LEGENDARY, itemCounts.getOrDefault(ItemTier.LEGENDARY, 0) + 1); } // legendary
                     else if (s.startsWith("c")) { itemCount[5]++;
-                        item.put(ItemTier.FABLED, item.get(ItemTier.FABLED) != null ? item.get(ItemTier.FABLED) + 1 : 1);} // fabled
+                        itemCounts.put(ItemTier.FABLED, itemCounts.getOrDefault(ItemTier.FABLED, 0) + 1); } // fabled
                     else if (s.startsWith("5")) { itemCount[6]++;
-                        item.put(ItemTier.MYTHIC, item.get(ItemTier.MYTHIC) != null ? item.get(ItemTier.MYTHIC) + 1 : 1);} // mythic
+                        itemCounts.put(ItemTier.MYTHIC, itemCounts.getOrDefault(ItemTier.MYTHIC, 0) + 1); } // mythic
                     else if (s.startsWith("3")) { itemCount[7]++;
-                        item.put(ItemTier.CRAFTED, item.get(ItemTier.CRAFTED) != null ? item.get(ItemTier.CRAFTED) + 1 : 1);} // crafted
+                        itemCounts.put(ItemTier.CRAFTED, itemCounts.getOrDefault(ItemTier.CRAFTED, 0) + 1); } // crafted
                 }
                 return;
             } else if (messageText.equals("Blacksmith: I can't buy that item! I only accept weapons, accessories, potions, armour, ingredients, resources, and crafted items.")) {
