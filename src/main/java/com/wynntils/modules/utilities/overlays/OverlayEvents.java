@@ -446,48 +446,27 @@ public class OverlayEvents implements Listener {
                     else if (s.matches("e\\d+")) {
                         int total = IntStream.of(itemCount).sum(); // sum of the items
 
-                        String message = total
-                                + " (" + WHITE + itemCount[0] + LIGHT_PURPLE
-                                + "/" + YELLOW + itemCount[1] + LIGHT_PURPLE
-                                + "/" + itemCount[2]
-                                + "/" + GREEN + itemCount[3] + LIGHT_PURPLE
-                                + "/" + AQUA + itemCount[4] + LIGHT_PURPLE
-                                + "/" + RED + itemCount[5] + LIGHT_PURPLE
-                                + "/" + DARK_PURPLE + itemCount[6] + LIGHT_PURPLE
-                                + "/" + DARK_AQUA + itemCount[7] + LIGHT_PURPLE
-                                + ") item(s) for ";
-
-                        String message2 = total
-                                + " (" + WHITE + itemCounts.getOrDefault(ItemTier.NORMAL, 0) + LIGHT_PURPLE
-                                + "/" + YELLOW + itemCounts.getOrDefault(ItemTier.UNIQUE, 0) + LIGHT_PURPLE
-                                + "/" + itemCounts.getOrDefault(ItemTier.RARE, 0)
-                                + "/" + GREEN + itemCounts.getOrDefault(ItemTier.SET, 0) + LIGHT_PURPLE
-                                + "/" + AQUA + itemCounts.getOrDefault(ItemTier.LEGENDARY, 0) + LIGHT_PURPLE
-                                + "/" + RED + itemCounts.getOrDefault(ItemTier.FABLED, 0) + LIGHT_PURPLE
-                                + "/" + DARK_PURPLE + itemCounts.getOrDefault(ItemTier.MYTHIC, 0) + LIGHT_PURPLE
-                                + "/" + DARK_AQUA + itemCounts.getOrDefault(ItemTier.CRAFTED, 0) + LIGHT_PURPLE
-                                + ") item(s) for ";
-
-                        StringBuilder message3 = new StringBuilder();
+                        StringBuilder message = new StringBuilder();
                         for (ItemTier tier : ItemTier.values()) {
-                            message3.append('/');
-                            message3.append(tier.getColor());
-                            message3.append(itemCounts.getOrDefault(tier, 0));
-                            message3.append(TextFormatting.LIGHT_PURPLE);
+                            message.append('/');
+                            message.append(tier.getColor());
+                            message.append(itemCounts.getOrDefault(tier, 0));
+                            message.append(TextFormatting.LIGHT_PURPLE);
                         }
-                        message3.setCharAt(0, '(');
-                        message3.insert(0, LIGHT_PURPLE + "Sold " + total + " ");
-                        message3.append(") item(s) for " + GREEN + s.replace("e", "") + (char) 0xB2 + LIGHT_PURPLE + ".");
+                        message.append(") item(s) for ");
+                        message.setCharAt(0, '(');
+                        //message3.insert(0, LIGHT_PURPLE + "Sold " + total + " ");
+                        //message3.append(") item(s) for " + GREEN + s.replace("e", "") + (char) 0xB2 + LIGHT_PURPLE + ".");
 
                         if (formattedText.split(" ")[2].equals("sold")) { // normal selling
-                            message = LIGHT_PURPLE + "Sold " + message + GREEN + s.replace("e", "") + (char) 0xB2 + LIGHT_PURPLE + ".";
-                            message2 = LIGHT_PURPLE + "Sold " + message2 + GREEN + s.replace("e", "") + (char) 0xB2 + LIGHT_PURPLE + ".";
+                            message.insert(0, LIGHT_PURPLE + "Sold " + total + " ");
+                            message.append(GREEN + s.replace("e", "") + (char) 0xB2 + LIGHT_PURPLE + ".");
+
                         } else { // scrapping
-                            message = LIGHT_PURPLE + "Scrapped " + message + YELLOW + s.replace("e", "") + " scrap" + LIGHT_PURPLE + ".";
+                            message.insert(0, LIGHT_PURPLE + "Scrapped " + total + " ");
+                            message.append(YELLOW + s.replace("e", "") + " scrap" + LIGHT_PURPLE + ".");
                         }
-                        GameUpdateOverlay.queueMessage(message);
-                        GameUpdateOverlay.queueMessage(message2);
-                        GameUpdateOverlay.queueMessage(message3.toString());
+                        GameUpdateOverlay.queueMessage(message.toString());
                         e.setCanceled(true);
                     }
                     else if (s.startsWith("f")) { itemCount[0]++;
