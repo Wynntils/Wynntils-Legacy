@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.core.overlays.ui;
@@ -7,9 +7,7 @@ package com.wynntils.modules.core.overlays.ui;
 import com.wynntils.Reference;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
-import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
-import com.wynntils.webapi.WebManager;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.math.MathHelper;
@@ -31,8 +29,8 @@ public class UpdatingScreen extends GuiScreen {
     private GuiButton backButton;
     private float progress = 0f;
 
-    public UpdatingScreen() {
-        doUpdate();
+    public UpdatingScreen(boolean restartNow) {
+        doUpdate(restartNow);
     }
 
     @Override
@@ -45,91 +43,90 @@ public class UpdatingScreen extends GuiScreen {
         backButton.displayString = failed ? "Back" : "Cancel";
     }
 
-    private void doUpdate() {
+    private void doUpdate(boolean restartNow) {
         try {
-            File f = new File(Reference.MOD_STORAGE_ROOT, "updates");
-
-            String url;
-            if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.CUTTING_EDGE) {
-                url = WebManager.getCuttingEdgeJarFileUrl();
-            } else {
-                url = WebManager.getStableJarFileUrl();
-            }
-            String[] sUrl = url.split("/");
-            String jar_name = sUrl[sUrl.length - 1];
+            File directory = new File(Reference.MOD_STORAGE_ROOT, "updates");
+            String url = UpdateOverlay.getUpdateDownloadUrl();
+            String jarName = UpdateOverlay.getJarNameFromUrl(url);
 
             new Thread(() -> {
-                try {
-                    HttpURLConnection st = (HttpURLConnection) new URL(url).openConnection();
-                    st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
-                    st.connect();
-
-                    if (st.getResponseCode() != HttpURLConnection.HTTP_OK) {
-                        failed = true;
-                        setChangelogs();
-                        updateText();
-                        Reference.LOGGER.error(url + " returned status code " + st.getResponseCode());
-                        return;
+                downloadUpdate(url, directory, jarName);
+                if (!failed) {
+                    UpdateOverlay.scheduleCopyUpdateAtShutdown(jarName);
+                    if (restartNow) {
+                        mc.shutdown();
                     }
-
-                    if (!f.exists() && !f.mkdirs()) {
-                        failed = true;
-                        setChangelogs();
-                        updateText();
-                        Reference.LOGGER.error("Couldn't create update file directory");
-                        return;
-                    }
-
-
-                    String[] urlParts = url.split("/");
-
-                    float fileLength = st.getContentLength();
-
-                    File fileSaved = new File(f, URLDecoder.decode(urlParts[urlParts.length - 1], "UTF-8"));
-
-                    InputStream fis = st.getInputStream();
-                    OutputStream fos = new FileOutputStream(fileSaved);
-
-                    byte[] data = new byte[1024];
-                    long total = 0;
-                    int count;
-
-                    while ((count = fis.read(data)) != -1) {
-                        if (mc.currentScreen != UpdatingScreen.this) {
-                            // Cancelled
-                            fos.close();
-                            fis.close();
-                            failed = true;
-                            setChangelogs();
-                            return;
-                        }
-
-                        total += count;
-                        progress = total / fileLength;
-                        fos.write(data, 0, count);
-                    }
-
-                    fos.flush();
-                    fos.close();
-                    fis.close();
-
-                    if (mc.currentScreen != UpdatingScreen.this) {
-                        failed = true;
-                        setChangelogs();
-                        return;
-                    }
-
-                    UpdateOverlay.copyUpdate(jar_name);
-                    mc.shutdown();
-                } catch (Exception ex) {
-                    ex.printStackTrace();
-                    failed = true;
-                    setChangelogs();
-                    updateText();
                 }
             }, "Wynntils-update-downloader-thread").start();
         } catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+
+    private void downloadUpdate(String url, File directory, String jarName) {
+        try {
+            HttpURLConnection st = (HttpURLConnection) new URL(url).openConnection();
+            st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+            st.connect();
+
+            if (st.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                failed = true;
+                setChangelogs();
+                updateText();
+                Reference.LOGGER.error(url + " returned status code " + st.getResponseCode());
+                return;
+            }
+
+            if (!directory.exists() && !directory.mkdirs()) {
+                failed = true;
+                setChangelogs();
+                updateText();
+                Reference.LOGGER.error("Couldn't create update file directory");
+                return;
+            }
+
+            String[] urlParts = url.split("/");
+
+            float fileLength = st.getContentLength();
+
+            File fileSaved = new File(directory, URLDecoder.decode(urlParts[urlParts.length - 1], "UTF-8"));
+
+            InputStream fis = st.getInputStream();
+            OutputStream fos = new FileOutputStream(fileSaved);
+
+            byte[] data = new byte[1024];
+            long total = 0;
+            int count;
+
+            while ((count = fis.read(data)) != -1) {
+                if (mc.currentScreen != UpdatingScreen.this) {
+                    // Cancelled
+                    fos.close();
+                    fis.close();
+                    failed = true;
+                    setChangelogs();
+                    return;
+                }
+
+                total += count;
+                progress = total / fileLength;
+                fos.write(data, 0, count);
+            }
+
+            fos.flush();
+            fos.close();
+            fis.close();
+
+            if (mc.currentScreen != UpdatingScreen.this) {
+                failed = true;
+                setChangelogs();
+                return;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            failed = true;
+            setChangelogs();
+            updateText();
         }
     }
 
