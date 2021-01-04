@@ -436,9 +436,7 @@ public class OverlayEvents implements Listener {
 
                         StringBuilder message = new StringBuilder(); // creates the message
                         for (ItemTier tier : ItemTier.values()) {
-                            message.append('/');
-                            message.append(tier.getColor());
-                            message.append(itemCounts.getOrDefault(tier, 0));
+                            message.append('/' + tier.getColor() + itemCounts.getOrDefault(tier, 0));
                             message.append(LIGHT_PURPLE);
                         }
                         message.append(") item(s) for ");
