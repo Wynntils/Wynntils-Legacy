@@ -431,7 +431,6 @@ public class OverlayEvents implements Listener {
 
                 EnumMap<ItemTier, Integer> itemCounts = new EnumMap(ItemTier.class);
 
-                boolean sold = formattedText.split(" ")[2].equals("sold");
                 String[] res = formattedText.split("§");
                 int[] itemCount = {0, 0, 0, 0, 0, 0, 0, 0}; // normal, unique, rare, set, legendary, fabled, mythic, crafted
 
@@ -446,6 +445,7 @@ public class OverlayEvents implements Listener {
                     }
                     else if (s.matches("e\\d+")) {
                         int total = IntStream.of(itemCount).sum(); // sum of the items
+
                         String message = total
                                 + " (" + WHITE + itemCount[0] + LIGHT_PURPLE
                                 + "/" + YELLOW + itemCount[1] + LIGHT_PURPLE
@@ -468,7 +468,18 @@ public class OverlayEvents implements Listener {
                                 + "/" + DARK_AQUA + itemCounts.getOrDefault(ItemTier.CRAFTED, 0) + LIGHT_PURPLE
                                 + ") item(s) for ";
 
-                        if (sold) { // normal selling
+                        StringBuilder message3 = new StringBuilder();
+                        for (ItemTier tier : ItemTier.values()) {
+                            message3.append('/');
+                            message3.append(tier.getColor());
+                            message3.append(itemCounts.getOrDefault(tier, 0));
+                            message3.append(TextFormatting.LIGHT_PURPLE);
+                        }
+                        message3.setCharAt(0, '(');
+                        message3.insert(0, LIGHT_PURPLE + "Sold " + total + " ");
+                        message3.append(") item(s) for " + GREEN + s.replace("e", "") + (char) 0xB2 + LIGHT_PURPLE + ".");
+
+                        if (formattedText.split(" ")[2].equals("sold")) { // normal selling
                             message = LIGHT_PURPLE + "Sold " + message + GREEN + s.replace("e", "") + (char) 0xB2 + LIGHT_PURPLE + ".";
                             message2 = LIGHT_PURPLE + "Sold " + message2 + GREEN + s.replace("e", "") + (char) 0xB2 + LIGHT_PURPLE + ".";
                         } else { // scrapping
@@ -476,6 +487,7 @@ public class OverlayEvents implements Listener {
                         }
                         GameUpdateOverlay.queueMessage(message);
                         GameUpdateOverlay.queueMessage(message2);
+                        GameUpdateOverlay.queueMessage(message3.toString());
                         e.setCanceled(true);
                     }
                     else if (s.startsWith("f")) { itemCount[0]++;
