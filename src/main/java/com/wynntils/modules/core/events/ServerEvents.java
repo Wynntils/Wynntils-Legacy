@@ -246,7 +246,7 @@ public class ServerEvents implements Listener {
         TextComponentString msg = new TextComponentString("Failed to connect to the Wynntils servers! You can still use Wynntils, but some features may not work.");
         msg.getStyle().setColor(TextFormatting.RED);
         msg.getStyle().setBold(true);
-        new Delay(() -> Minecraft.getMinecraft().player.sendMessage(msg), 10); // delay so the player actually loads in
+        new Delay(() -> Minecraft.getMinecraft().player.sendMessage(msg), 30); // delay so the player actually loads in
     }
 
     private static boolean triedToShowChangelog = false;

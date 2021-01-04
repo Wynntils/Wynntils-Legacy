@@ -126,7 +126,8 @@ public class WebManager {
             ProgressManager.pop(progressBar);
         }
 
-        updateTerritoryThreadStatus(true);
+        if (isAthenaOnline())
+            updateTerritoryThreadStatus(true);
     }
 
     public static void checkForUpdatesOnJoin() {
@@ -263,7 +264,7 @@ public class WebManager {
      * Request a update to territories {@link ArrayList}
      */
     public static void updateTerritories(RequestHandler handler) {
-        if (apiUrls == null || !isAthenaOnline()) return;
+        if (apiUrls == null) return;
         String url = apiUrls.get("Athena") + "/cache/get/territoryList";
         handler.addRequest(new Request(url, "territory")
             .cacheTo(new File(API_CACHE_ROOT, "territories.json"))
