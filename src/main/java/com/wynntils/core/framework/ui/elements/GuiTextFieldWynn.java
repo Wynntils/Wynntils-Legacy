@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2021.
+ */
+
 package com.wynntils.core.framework.ui.elements;
 
 import java.awt.Color;

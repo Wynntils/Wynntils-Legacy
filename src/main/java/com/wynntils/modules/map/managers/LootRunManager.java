@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.map.managers;

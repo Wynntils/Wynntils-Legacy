@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2021.
+ */
+
 package com.wynntils.webapi.request.multipart;
 
 import java.io.File;

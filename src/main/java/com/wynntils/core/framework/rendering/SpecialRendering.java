@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.core.framework.rendering;

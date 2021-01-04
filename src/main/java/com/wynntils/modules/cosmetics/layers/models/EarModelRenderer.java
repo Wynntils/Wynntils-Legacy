@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2021.
+ */
+
 package com.wynntils.modules.cosmetics.layers.models;
 
 import com.google.common.collect.Lists;

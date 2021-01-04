@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2021.
+ */
+
 package com.wynntils.modules.utilities.overlays.ui;
 
 import static net.minecraft.util.text.TextFormatting.*;

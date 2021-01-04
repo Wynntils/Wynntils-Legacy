@@ -1,6 +1,7 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
+
 package com.wynntils.modules.core.commands;
 
 import com.wynntils.core.framework.instances.PlayerInfo;
