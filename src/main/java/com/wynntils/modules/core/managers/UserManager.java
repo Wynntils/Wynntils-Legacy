@@ -25,6 +25,7 @@ public class UserManager {
     private static final Map<UUID, WynntilsUser> users = new HashMap<>();
 
     public static void loadUser(UUID uuid) {
+        if (!WebManager.isAthenaOnline()) return;
         if (users.containsKey(uuid)) return;
         users.put(uuid, null); // temporary null, avoid extra loads
 

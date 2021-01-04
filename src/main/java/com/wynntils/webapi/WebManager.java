@@ -126,7 +126,8 @@ public class WebManager {
             ProgressManager.pop(progressBar);
         }
 
-        updateTerritoryThreadStatus(true);
+        if (isAthenaOnline())
+            updateTerritoryThreadStatus(true);
     }
 
     public static void checkForUpdatesOnJoin() {
@@ -155,6 +156,10 @@ public class WebManager {
         tryReloadApiUrls(false, true);
         account = new WynntilsAccount();
         account.login();
+    }
+    
+    public static boolean isAthenaOnline() {
+        return (account != null && account.isConnected());
     }
 
     public static WynntilsAccount getAccount() {
@@ -350,7 +355,7 @@ public class WebManager {
      * @see LeaderboardProfile
      */
     public static void getLeaderboard(Consumer<HashMap<UUID, LeaderboardProfile>> onReceive) {
-        if (apiUrls == null) return;
+        if (apiUrls == null || !isAthenaOnline()) return;
         String url = apiUrls.get("Athena") + "/cache/get/leaderboard";
 
         handler.addAndDispatch(
@@ -375,7 +380,7 @@ public class WebManager {
      * @see ServerProfile
      */
     public static void getServerList(Consumer<HashMap<String, ServerProfile>> onReceive) {
-        if (apiUrls == null) return;
+        if (apiUrls == null || !isAthenaOnline()) return;
         String url = apiUrls.get("Athena") + "/cache/get/serverList";
 
         handler.addAndDispatch(
