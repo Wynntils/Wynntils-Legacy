@@ -413,29 +413,14 @@ public class OverlayEvents implements Listener {
                 e.setCanceled(true);
                 return;
             } else if (messageText.startsWith("Blacksmith: You ")) {
-                /*
-                // The regex idea, doesn't work, left here in case enummap idea wont work
 
-                final Pattern BLACKSMITH_REDIRECT_PATTERN = Pattern.compile("§(f|e|d|a|b|c|5|3 )(?! for a total of |Blacksmith: | emeralds.)(.*?)§r");
-                Matcher blacksmithMatcher = BLACKSMITH_REDIRECT_PATTERN.matcher(messageText);
-
-                if (blacksmithMatcher.find()) {
-                    int groupCount = blacksmithMatcher.groupCount();
-                    for (int i = 0; i < groupCount; i++) {
-                        System.out.println(blacksmithMatcher.group(i));
-                    }
-                } else {
-                    System.out.println("Not found");
-                }
-                */
-
-                EnumMap<ItemTier, Integer> itemCounts = new EnumMap(ItemTier.class);
+                EnumMap<ItemTier, Integer> itemCounts = new EnumMap(ItemTier.class); // counter for sold/scrapped items
 
                 String[] res = formattedText.split("§");
                 int[] itemCount = {0, 0, 0, 0, 0, 0, 0, 0}; // normal, unique, rare, set, legendary, fabled, mythic, crafted
 
                 for (String s : res) {
-                    if (s.equals("dYou sold me: ")
+                    if (s.equals("dYou sold me: ") //non-item founds
                             || s.equals("dYou scrapped: ")
                             || s.equals("d, ")
                             || s.equals("d and ")
@@ -446,17 +431,15 @@ public class OverlayEvents implements Listener {
                     else if (s.matches("e\\d+")) {
                         int total = IntStream.of(itemCount).sum(); // sum of the items
 
-                        StringBuilder message = new StringBuilder();
+                        StringBuilder message = new StringBuilder(); // creates the message
                         for (ItemTier tier : ItemTier.values()) {
                             message.append('/');
                             message.append(tier.getColor());
                             message.append(itemCounts.getOrDefault(tier, 0));
-                            message.append(TextFormatting.LIGHT_PURPLE);
+                            message.append(LIGHT_PURPLE);
                         }
                         message.append(") item(s) for ");
                         message.setCharAt(0, '(');
-                        //message3.insert(0, LIGHT_PURPLE + "Sold " + total + " ");
-                        //message3.append(") item(s) for " + GREEN + s.replace("e", "") + (char) 0xB2 + LIGHT_PURPLE + ".");
 
                         if (formattedText.split(" ")[2].equals("sold")) { // normal selling
                             message.insert(0, LIGHT_PURPLE + "Sold " + total + " ");
@@ -466,15 +449,16 @@ public class OverlayEvents implements Listener {
                             message.insert(0, LIGHT_PURPLE + "Scrapped " + total + " ");
                             message.append(YELLOW + s.replace("e", "") + " scrap" + LIGHT_PURPLE + ".");
                         }
-                        GameUpdateOverlay.queueMessage(message.toString());
-                        e.setCanceled(true);
+                        GameUpdateOverlay.queueMessage(message.toString()); // send the redirect messsage
+                        e.setCanceled(true); // remove the chat message
                     }
+                    // item counter
                     else if (s.startsWith("f")) { itemCount[0]++;
                         itemCounts.put(ItemTier.NORMAL, itemCounts.getOrDefault(ItemTier.NORMAL, 0) + 1); } // normal
                     else if (s.startsWith("e")) { itemCount[1]++;
                         itemCounts.put(ItemTier.UNIQUE, itemCounts.getOrDefault(ItemTier.UNIQUE, 0) + 1); } // unique
                     else if (s.startsWith("d")) { itemCount[2]++;
-                        itemCounts.put(ItemTier.RARE, itemCounts.getOrDefault(ItemTier.RARE, 0) + 1); } // rare
+                        itemCounts.put(ItemTier.RARE, itemCounts.getOrDefault(ItemTier.RARE, 0) + 1); } // rare and ingredients
                     else if (s.startsWith("a")) { itemCount[3]++;
                         itemCounts.put(ItemTier.SET, itemCounts.getOrDefault(ItemTier.SET, 0) + 1); } // set
                     else if (s.startsWith("b")) { itemCount[4]++;
