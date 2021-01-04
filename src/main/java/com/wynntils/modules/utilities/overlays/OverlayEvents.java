@@ -417,7 +417,6 @@ public class OverlayEvents implements Listener {
                 EnumMap<ItemTier, Integer> itemCounts = new EnumMap(ItemTier.class); // counter for sold/scrapped items
 
                 String[] res = formattedText.split("§");
-                int[] itemCount = {0, 0, 0, 0, 0, 0, 0, 0}; // normal, unique, rare, set, legendary, fabled, mythic, crafted
 
                 for (String s : res) {
                     if (s.equals("dYou sold me: ") //non-item founds
@@ -429,7 +428,11 @@ public class OverlayEvents implements Listener {
                         continue;
                     }
                     else if (s.matches("e\\d+")) {
-                        int total = IntStream.of(itemCount).sum(); // sum of the items
+                        //int total = IntStream.of(itemCount).sum(); // sum of the items
+                        int total = 0;
+                        for (ItemTier tier : ItemTier.values()) {
+                            total += itemCounts.getOrDefault(tier, 0);
+                        }
 
                         StringBuilder message = new StringBuilder(); // creates the message
                         for (ItemTier tier : ItemTier.values()) {
@@ -453,22 +456,14 @@ public class OverlayEvents implements Listener {
                         e.setCanceled(true); // remove the chat message
                     }
                     // item counter
-                    else if (s.startsWith("f")) { itemCount[0]++;
-                        itemCounts.put(ItemTier.NORMAL, itemCounts.getOrDefault(ItemTier.NORMAL, 0) + 1); } // normal
-                    else if (s.startsWith("e")) { itemCount[1]++;
-                        itemCounts.put(ItemTier.UNIQUE, itemCounts.getOrDefault(ItemTier.UNIQUE, 0) + 1); } // unique
-                    else if (s.startsWith("d")) { itemCount[2]++;
-                        itemCounts.put(ItemTier.RARE, itemCounts.getOrDefault(ItemTier.RARE, 0) + 1); } // rare and ingredients
-                    else if (s.startsWith("a")) { itemCount[3]++;
-                        itemCounts.put(ItemTier.SET, itemCounts.getOrDefault(ItemTier.SET, 0) + 1); } // set
-                    else if (s.startsWith("b")) { itemCount[4]++;
-                        itemCounts.put(ItemTier.LEGENDARY, itemCounts.getOrDefault(ItemTier.LEGENDARY, 0) + 1); } // legendary
-                    else if (s.startsWith("c")) { itemCount[5]++;
-                        itemCounts.put(ItemTier.FABLED, itemCounts.getOrDefault(ItemTier.FABLED, 0) + 1); } // fabled
-                    else if (s.startsWith("5")) { itemCount[6]++;
-                        itemCounts.put(ItemTier.MYTHIC, itemCounts.getOrDefault(ItemTier.MYTHIC, 0) + 1); } // mythic
-                    else if (s.startsWith("3")) { itemCount[7]++;
-                        itemCounts.put(ItemTier.CRAFTED, itemCounts.getOrDefault(ItemTier.CRAFTED, 0) + 1); } // crafted
+                    else if (s.startsWith("f")) { itemCounts.put(ItemTier.NORMAL, itemCounts.getOrDefault(ItemTier.NORMAL, 0) + 1); } // normal
+                    else if (s.startsWith("e")) { itemCounts.put(ItemTier.UNIQUE, itemCounts.getOrDefault(ItemTier.UNIQUE, 0) + 1); } // unique
+                    else if (s.startsWith("d")) { itemCounts.put(ItemTier.RARE, itemCounts.getOrDefault(ItemTier.RARE, 0) + 1); } // rare and ingredients
+                    else if (s.startsWith("a")) { itemCounts.put(ItemTier.SET, itemCounts.getOrDefault(ItemTier.SET, 0) + 1); } // set
+                    else if (s.startsWith("b")) { itemCounts.put(ItemTier.LEGENDARY, itemCounts.getOrDefault(ItemTier.LEGENDARY, 0) + 1); } // legendary
+                    else if (s.startsWith("c")) { itemCounts.put(ItemTier.FABLED, itemCounts.getOrDefault(ItemTier.FABLED, 0) + 1); } // fabled
+                    else if (s.startsWith("5")) { itemCounts.put(ItemTier.MYTHIC, itemCounts.getOrDefault(ItemTier.MYTHIC, 0) + 1); } // mythic
+                    else if (s.startsWith("3")) { itemCounts.put(ItemTier.CRAFTED, itemCounts.getOrDefault(ItemTier.CRAFTED, 0) + 1); } // crafted
                 }
                 return;
             } else if (messageText.equals("Blacksmith: I can't buy that item! I only accept weapons, accessories, potions, armour, ingredients, resources, and crafted items.")) {
