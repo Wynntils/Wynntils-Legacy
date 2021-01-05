@@ -123,12 +123,16 @@ public class ClientEvents {
             isNextQuestCompleted = true;
         else if (message.contains("You are now combat level") && !message.contains(":"))
             toDispatch = new GameEvent.LevelUp(Integer.parseInt(message.substring(message.indexOf("level")+6)));
-        else if (message.contains("[Area Discovered]") && !message.contains(":"))
-            toDispatch = new GameEvent.DiscoveryFound();
-        else if (message.contains(TextFormatting.AQUA.toString()) && message.contains("[Discovery Found]") && !message.contains(":"))
+        else if (message.contains("Area Discovered")) {
+            for (ITextComponent part : e.getMessage()) {
+                if (part.getStyle().getColor() == TextFormatting.GRAY) {
+                    toDispatch = new GameEvent.DiscoveryFound();
+                } else if (part.getStyle().getColor() == TextFormatting.GOLD) {
+                    toDispatch = new GameEvent.DiscoveryFound.World();
+                }
+            }
+        } else if (message.contains("[Discovery Found]") && !message.contains(":") || message.contains("Secret Discovery"))
             toDispatch = new GameEvent.DiscoveryFound.Secret();
-        else if (message.contains(TextFormatting.GOLD.toString()) && message.contains("[Area Discovered]") && !message.contains(":"))
-            toDispatch = new GameEvent.DiscoveryFound.World();
 
         //using regex
         Matcher m = PROF_LEVEL_UP.matcher(message);

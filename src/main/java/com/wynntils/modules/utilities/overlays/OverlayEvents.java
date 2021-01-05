@@ -200,10 +200,10 @@ public class OverlayEvents implements Listener {
         if (OverlayConfig.ToastsSettings.INSTANCE.enableToast) {
             if (OverlayConfig.ToastsSettings.INSTANCE.enableQuestCompleted && formattedText.matches("^(" + TextFormatting.GREEN + "|" + TextFormatting.YELLOW + ") {5,}" + TextFormatting.RESET + "(" + TextFormatting.GREEN + "|" + TextFormatting.YELLOW + ")" + TextFormatting.BOLD + "\\w.*" + TextFormatting.RESET + "$") && !messageText.contains("Powder Manual")) {
                 ToastOverlay.addToast(new Toast(Toast.ToastType.QUEST_COMPLETED, "Quest Completed!", messageText.trim().replace("Mini-Quest - ", "")));
-            } else if (OverlayConfig.ToastsSettings.INSTANCE.enableAreaDiscovered && formattedText.matches("^(" + TextFormatting.YELLOW + ")? {5,}(" + TextFormatting.RESET + TextFormatting.YELLOW + ")?(?!§)((?![0-9§]).)*" + TextFormatting.RESET + "$") && !messageText.contains("Battle Summary") && !messageText.contains("Powder Manual") && !messageText.contains("hunted mode")) {
-                ToastOverlay.addToast(new Toast(Toast.ToastType.AREA_DISCOVERED, "Area Discovered!", messageText.trim()));
-            } else if (OverlayConfig.ToastsSettings.INSTANCE.enableDiscovery && formattedText.matches("^ {5,}" + TextFormatting.RESET + TextFormatting.AQUA + "\\w.*" + TextFormatting.RESET + "$")) {
-                ToastOverlay.addToast(new Toast(Toast.ToastType.DISCOVERY, "Discovery Found!", messageText.trim()));
+            } else if (OverlayConfig.ToastsSettings.INSTANCE.enableAreaDiscovered && (formattedText.matches("^(" + TextFormatting.YELLOW + ")? {5,}(" + TextFormatting.RESET + TextFormatting.YELLOW + ")?(?!§)((?![0-9§]).)*" + TextFormatting.RESET + "$") || formattedText.matches("^ {5,}" + TextFormatting.RESET + TextFormatting.GOLD + "Area Discovered: " + TextFormatting.RESET + TextFormatting.YELLOW + "\\w.*" + TextFormatting.RESET + TextFormatting.LIGHT_PURPLE + " \\(\\+\\d+ XP\\)" + TextFormatting.RESET + "$")) && !messageText.contains("Battle Summary") && !messageText.contains("Powder Manual") && !messageText.contains("hunted mode")) {
+                ToastOverlay.addToast(new Toast(Toast.ToastType.AREA_DISCOVERED, "Area Discovered!", messageText.replace("Area Discovered: ", "").trim()));
+            } else if (OverlayConfig.ToastsSettings.INSTANCE.enableDiscovery && (formattedText.matches("^ {5,}" + TextFormatting.RESET + TextFormatting.AQUA + "\\w.*" + TextFormatting.RESET + "$") || formattedText.matches("^ {5,}" + TextFormatting.RESET + TextFormatting.DARK_AQUA + "Secret Discovery: " + TextFormatting.RESET + TextFormatting.AQUA + "\\w.*" + TextFormatting.RESET + TextFormatting.LIGHT_PURPLE + " \\(\\+\\d+ XP\\)" + TextFormatting.RESET + "$"))) {
+                ToastOverlay.addToast(new Toast(Toast.ToastType.DISCOVERY, "Discovery Found!", messageText.replace("Secret Discovery: ", "").trim()));
             }
         }
 

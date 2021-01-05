@@ -140,7 +140,8 @@ public class QuestManager {
                     if (!stack.hasDisplayName()) continue; // also checks for nbt
 
                     List<String> lore = ItemUtils.getUnformattedLore(stack);
-                    if (lore.isEmpty() || !lore.contains("Right click to track")) continue; //not a valid quest
+                    // uppercase on beta
+                    if (lore.isEmpty() || (!lore.contains("Right click to track") && !lore.contains("RIGHT-CLICK TO TRACK"))) continue; // not a valid quest
 
                     if (fullRead) {
                         gatheredQuests.add(stack);
@@ -165,7 +166,7 @@ public class QuestManager {
                     if (!stack.hasDisplayName()) continue; // also checks for nbt
 
                     List<String> lore = ItemUtils.getUnformattedLore(stack);
-                    if (lore.isEmpty() || !lore.contains("Right click to track")) continue; //not a valid mini-quest
+                    if (lore.isEmpty() || (!lore.contains("Right click to track") && !lore.contains("RIGHT-CLICK TO TRACK"))) continue; // not a valid mini-quest
 
                     if (fullRead) {
                         gatheredMiniQuests.add(stack);
