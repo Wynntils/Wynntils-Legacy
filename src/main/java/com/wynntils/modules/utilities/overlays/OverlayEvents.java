@@ -427,21 +427,23 @@ public class OverlayEvents implements Listener {
                             || s.equals("5Blacksmith: ")) {
                         continue;
                     }
-                    if (s.matches("e\\d+")) {
+                    if (s.matches("e\\d+")) { // the final part of the message
                         int total = 0;
                         for (ItemTier tier : ItemTier.values()) {
                             total += itemCounts.getOrDefault(tier, 0);
                         }
 
-                        // creates the message
+                        // creates the counting part of the message
                         StringBuilder messageCounts = new StringBuilder();
                         for (ItemTier tier : ItemTier.values()) {
                             messageCounts.append('/' + tier.getColor() + itemCounts.getOrDefault(tier, 0));
                             messageCounts.append(LIGHT_PURPLE);
                         }
+                        
                         messageCounts.append(") item(s) for ");
                         messageCounts.setCharAt(0, '(');
 
+                        // creats the full message
                         StringBuilder message = new StringBuilder();
                         if (formattedText.split(" ")[2].equals("sold")) { // normal selling
                             message.append(LIGHT_PURPLE + "Sold " + total + " ");
@@ -453,6 +455,7 @@ public class OverlayEvents implements Listener {
                             message.append(messageCounts);
                             message.append(YELLOW + s.replace("e", "") + " scrap" + LIGHT_PURPLE + ".");
                         }
+
                         GameUpdateOverlay.queueMessage(message.toString()); // send the redirect messsage
                         e.setCanceled(true); // remove the chat message
                         continue;
