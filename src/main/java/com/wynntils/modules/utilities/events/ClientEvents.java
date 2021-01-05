@@ -13,6 +13,7 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
@@ -704,24 +705,21 @@ public class ClientEvents implements Listener {
             if (inventory.getDisplayName().getUnformattedText().contains("Bank") && e.getSlotIn().getHasStack()) {
                 ItemStack item = e.getSlotIn().getStack();
                 if (item.getDisplayName().contains(">" + TextFormatting.DARK_RED + ">" + TextFormatting.RED + ">" + TextFormatting.DARK_RED + ">" + TextFormatting.RED + ">")) {
-                    String E = "\u00B2";
-                    String B = "\u00BD";
-                    String L = "\u00BC";
                     List<String> lore = ItemUtils.getLore(item);
                     String price = lore.get(4);
-                    int actualPrice = Integer.parseInt(price.substring(20, price.indexOf(TextFormatting.GRAY + E)));
+                    int actualPrice = Integer.parseInt(price.substring(20, price.indexOf(TextFormatting.GRAY + EmeraldSymbols.EMERALDS)));
                     int le = (int) Math.floor(actualPrice) / 4096;
                     int eb = (int) Math.floor(((double) (actualPrice % 4096)) / 64);
                     int emeralds = actualPrice % 64;
                     String priceDisplay = "";
                     if (le != 0) {
-                        priceDisplay += le + L + E + " ";
+                        priceDisplay += le + EmeraldSymbols.LE + " ";
                     }
                     if (eb != 0) {
-                        priceDisplay += eb + E + B + " ";
+                        priceDisplay += eb + EmeraldSymbols.BLOCKS + " ";
                     }
                     if (emeralds != 0) {
-                        priceDisplay += emeralds + E + " ";
+                        priceDisplay += emeralds + EmeraldSymbols.EMERALDS + " ";
                     }
                     priceDisplay = priceDisplay.substring(0, priceDisplay.length() - 1);
                     String itemName = item.getDisplayName();
