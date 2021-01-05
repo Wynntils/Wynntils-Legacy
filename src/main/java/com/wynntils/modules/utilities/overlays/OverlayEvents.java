@@ -35,7 +35,6 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.IntStream;
 
 public class OverlayEvents implements Listener {
 
@@ -434,20 +433,24 @@ public class OverlayEvents implements Listener {
                             total += itemCounts.getOrDefault(tier, 0);
                         }
 
-                        StringBuilder message = new StringBuilder(); // creates the message
+                        // creates the message
+                        StringBuilder messageCounts = new StringBuilder();
                         for (ItemTier tier : ItemTier.values()) {
-                            message.append('/' + tier.getColor() + itemCounts.getOrDefault(tier, 0));
-                            message.append(LIGHT_PURPLE);
+                            messageCounts.append('/' + tier.getColor() + itemCounts.getOrDefault(tier, 0));
+                            messageCounts.append(LIGHT_PURPLE);
                         }
-                        message.append(") item(s) for ");
-                        message.setCharAt(0, '(');
+                        messageCounts.append(") item(s) for ");
+                        messageCounts.setCharAt(0, '(');
 
+                        StringBuilder message = new StringBuilder();
                         if (formattedText.split(" ")[2].equals("sold")) { // normal selling
-                            message.insert(0, LIGHT_PURPLE + "Sold " + total + " ");
+                            message.append(LIGHT_PURPLE + "Sold " + total + " ");
+                            message.append(messageCounts);
                             message.append(GREEN + s.replace("e", "") + EmeraldSymbols.EMERALDS + LIGHT_PURPLE + ".");
 
                         } else { // scrapping
-                            message.insert(0, LIGHT_PURPLE + "Scrapped " + total + " ");
+                            message.append(LIGHT_PURPLE + "Scrapped " + total + " ");
+                            message.append(messageCounts);
                             message.append(YELLOW + s.replace("e", "") + " scrap" + LIGHT_PURPLE + ".");
                         }
                         GameUpdateOverlay.queueMessage(message.toString()); // send the redirect messsage
