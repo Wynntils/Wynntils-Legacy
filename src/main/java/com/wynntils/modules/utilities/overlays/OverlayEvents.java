@@ -9,6 +9,7 @@ import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.framework.enums.professions.ProfessionType;
 import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
@@ -72,20 +73,6 @@ public class OverlayEvents implements Listener {
     /* XP Gain Messages */
     private static int oldxp = 0;
     private static String oldxppercent = "0.0";
-
-    /* Update overlay consts */
-    private static final char PROF_COOKING = 'Ⓐ';
-    private static final char PROF_MINING = 'Ⓑ';
-    private static final char PROF_WOODCUTTING = 'Ⓒ';
-    private static final char PROF_JEWELING = 'Ⓓ';
-    private static final char PROF_SCRIBING = 'Ⓔ';
-    private static final char PROF_TAILORING = 'Ⓕ';
-    private static final char PROF_WEAPONSMITHING = 'Ⓖ';
-    private static final char PROF_ARMOURING = 'Ⓗ';
-    private static final char PROF_WOODWORKING = 'Ⓘ';
-    private static final char PROF_FARMING = 'Ⓙ';
-    private static final char PROF_FISHING = 'Ⓚ';
-    private static final char PROF_ALCHEMISM = 'Ⓛ';
 
     /* Toasts */
     private static final String filterList = "Upper|Lower|Mid|East|West|North|South|Entrance|Exit|Edge|Close|Far |-";
@@ -341,7 +328,7 @@ public class OverlayEvents implements Listener {
                 GameUpdateOverlay.queueMessage(TextFormatting.YELLOW + res[0] + TextFormatting.GOLD + " is now level " + TextFormatting.YELLOW + res[4]);
                 e.setCanceled(true);
                 return;
-            } else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} is now level \\d+ in [" + PROF_COOKING + "-" + PROF_ALCHEMISM + "] (Fishing|Woodcutting|Mining|Farming|Scribing|Jeweling|Alchemism|Cooking|Weaponsmithing|Tailoring|Woodworking|Armouring)")) {
+            } else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} is now level \\d+ in [" + ProfessionType.ALCHEMISM.getIcon() + "-" + ProfessionType.ALCHEMISM.getIcon() + "] (Fishing|Woodcutting|Mining|Farming|Scribing|Jeweling|Alchemism|Cooking|Weaponsmithing|Tailoring|Woodworking|Armouring)")) {
                 String[] res = messageText.split(" ");
                 GameUpdateOverlay.queueMessage(TextFormatting.YELLOW + res[0] + TextFormatting.GOLD + " is now " + TextFormatting.YELLOW + res[6] + " " + res[7] + TextFormatting.GOLD + " level " + TextFormatting.YELLOW + res[4]);
                 e.setCanceled(true);
@@ -391,7 +378,7 @@ public class OverlayEvents implements Listener {
             if (messageText.equals("Thank you for using the WynnPack. Enjoy the game!")) {
                 e.setCanceled(true);
                 return;
-            } 
+            }
             if (messageText.equals("Loading Resource Pack...")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.GRAY + messageText);
                 e.setCanceled(true);
@@ -403,7 +390,7 @@ public class OverlayEvents implements Listener {
                 GameUpdateOverlay.queueMessage(TextFormatting.GOLD + "Select a character!");
                 e.setCanceled(true);
                 return;
-            } 
+            }
             if (messageText.equals("Your class has been automatically been selected. Use /class to change your class, or /toggle autojoin to turn this feature off.")) {
                 GameUpdateOverlay.queueMessage(TextFormatting.GOLD + "Automatically selected your last character!");
                 GameUpdateOverlay.queueMessage(TextFormatting.GRAY + "Use /class to change your class,");
