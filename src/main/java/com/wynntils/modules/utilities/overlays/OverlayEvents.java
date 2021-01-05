@@ -439,7 +439,7 @@ public class OverlayEvents implements Listener {
                             messageCounts.append('/' + tier.getColor() + itemCounts.getOrDefault(tier, 0));
                             messageCounts.append(LIGHT_PURPLE);
                         }
-                        
+
                         messageCounts.append(") item(s) for ");
                         messageCounts.setCharAt(0, '(');
 
@@ -460,6 +460,12 @@ public class OverlayEvents implements Listener {
                         e.setCanceled(true); // remove the chat message
                         continue;
                     }
+                    for (ItemTier tier : ItemTier.values()) {
+                        if (s.startsWith(Character.toString(tier.getColorCode()))) {
+                            itemCounts.put(tier, itemCounts.getOrDefault(tier, 0) + 1);
+                        }
+                    }
+                    /*
                     // item counter
                     if (s.startsWith("f")) { // normal
                         itemCounts.put(ItemTier.NORMAL, itemCounts.getOrDefault(ItemTier.NORMAL, 0) + 1);
@@ -492,6 +498,7 @@ public class OverlayEvents implements Listener {
                     if (s.startsWith("3")) { // crafted
                         itemCounts.put(ItemTier.CRAFTED, itemCounts.getOrDefault(ItemTier.CRAFTED, 0) + 1);
                     }
+                    */
                 }
                 return;
             } else if (messageText.equals("Blacksmith: I can't buy that item! I only accept weapons, accessories, potions, armour, ingredients, resources, and crafted items.")) {
