@@ -443,7 +443,7 @@ public class OverlayEvents implements Listener {
                         messageCounts.append(") item(s) for ");
                         messageCounts.setCharAt(0, '(');
 
-                        // creats the full message
+                        // creates the full message
                         StringBuilder message = new StringBuilder();
                         if (formattedText.split(" ")[2].equals("sold")) { // normal selling
                             message.append(LIGHT_PURPLE + "Sold " + total + " ");
@@ -460,45 +460,12 @@ public class OverlayEvents implements Listener {
                         e.setCanceled(true); // remove the chat message
                         continue;
                     }
+                    // item counter
                     for (ItemTier tier : ItemTier.values()) {
                         if (s.startsWith(Character.toString(tier.getColorCode()))) {
                             itemCounts.put(tier, itemCounts.getOrDefault(tier, 0) + 1);
                         }
                     }
-                    /*
-                    // item counter
-                    if (s.startsWith("f")) { // normal
-                        itemCounts.put(ItemTier.NORMAL, itemCounts.getOrDefault(ItemTier.NORMAL, 0) + 1);
-                        continue;
-                    }
-                    if (s.startsWith("e")) { // unique
-                        itemCounts.put(ItemTier.UNIQUE, itemCounts.getOrDefault(ItemTier.UNIQUE, 0) + 1);
-                        continue;
-                    }
-                    if (s.startsWith("d")) { // rare and ingredients
-                        itemCounts.put(ItemTier.RARE, itemCounts.getOrDefault(ItemTier.RARE, 0) + 1);
-                        continue;
-                    }
-                    if (s.startsWith("a")) { // set
-                        itemCounts.put(ItemTier.SET, itemCounts.getOrDefault(ItemTier.SET, 0) + 1);
-                        continue;
-                    }
-                    if (s.startsWith("b")) { // legendary
-                        itemCounts.put(ItemTier.LEGENDARY, itemCounts.getOrDefault(ItemTier.LEGENDARY, 0) + 1);
-                        continue;
-                    }
-                    if (s.startsWith("c")) { // fabled
-                        itemCounts.put(ItemTier.FABLED, itemCounts.getOrDefault(ItemTier.FABLED, 0) + 1);
-                        continue;
-                    }
-                    if (s.startsWith("5")) { // mythic
-                        itemCounts.put(ItemTier.MYTHIC, itemCounts.getOrDefault(ItemTier.MYTHIC, 0) + 1);
-                        continue;
-                    }
-                    if (s.startsWith("3")) { // crafted
-                        itemCounts.put(ItemTier.CRAFTED, itemCounts.getOrDefault(ItemTier.CRAFTED, 0) + 1);
-                    }
-                    */
                 }
                 return;
             } else if (messageText.equals("Blacksmith: I can't buy that item! I only accept weapons, accessories, potions, armour, ingredients, resources, and crafted items.")) {
