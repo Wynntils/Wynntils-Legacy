@@ -14,6 +14,7 @@ import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.IntRange;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import com.wynntils.webapi.profiles.item.enums.ItemTier;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -127,20 +128,20 @@ public class RarityColorOverlay implements Listener {
             return new CustomColor(1f, 1f, 1f);
         } else if (isChest && lore.contains(TextFormatting.DARK_RED + " Black Market") && lore.contains("Reward") && UtilitiesConfig.Items.INSTANCE.blackMarketEffectsHighlight) {
             return new CustomColor(0f, 0f, 0f);
-        } else if (lore.contains(TextFormatting.RED + "Fabled") && UtilitiesConfig.Items.INSTANCE.fabledHighlight) {
-            return UtilitiesConfig.Items.INSTANCE.fabledHighlightColor;
-        } else if (lore.contains(TextFormatting.AQUA + "Legendary") && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
-            return UtilitiesConfig.Items.INSTANCE.lengendaryHighlightColor;
-        } else if (lore.contains(TextFormatting.DARK_PURPLE + "Mythic") && UtilitiesConfig.Items.INSTANCE.mythicHighlight) {
-            return UtilitiesConfig.Items.INSTANCE.mythicHighlightColor;
-        } else if (lore.contains(TextFormatting.LIGHT_PURPLE + "Rare") && UtilitiesConfig.Items.INSTANCE.rareHighlight) {
-            return UtilitiesConfig.Items.INSTANCE.rareHighlightColor;
-        } else if (lore.contains(TextFormatting.YELLOW + "Unique") && UtilitiesConfig.Items.INSTANCE.uniqueHighlight) {
-            return UtilitiesConfig.Items.INSTANCE.uniqueHighlightColor;
-        } else if (lore.contains(TextFormatting.GREEN + "Set") && UtilitiesConfig.Items.INSTANCE.setHighlight) {
-            return UtilitiesConfig.Items.INSTANCE.setHighlightColor;
-        } else if (lore.contains(TextFormatting.WHITE + "Normal") && UtilitiesConfig.Items.INSTANCE.normalHighlight) {
+        } else if (lore.contains(ItemTier.NORMAL.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.normalHighlight) {
             return UtilitiesConfig.Items.INSTANCE.normalHighlightColor;
+        } else if (lore.contains(ItemTier.UNIQUE.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.uniqueHighlight) {
+            return UtilitiesConfig.Items.INSTANCE.uniqueHighlightColor;
+        } else if (lore.contains(ItemTier.RARE.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.rareHighlight) {
+            return UtilitiesConfig.Items.INSTANCE.rareHighlightColor;
+        } else if (lore.contains(ItemTier.SET.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.setHighlight) {
+            return UtilitiesConfig.Items.INSTANCE.setHighlightColor;
+        } else if (lore.contains(ItemTier.LEGENDARY.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
+            return UtilitiesConfig.Items.INSTANCE.legendaryHighlightColor;
+        } else if (lore.contains(ItemTier.FABLED.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.fabledHighlight) {
+            return UtilitiesConfig.Items.INSTANCE.fabledHighlightColor;
+        } else if (lore.contains(ItemTier.MYTHIC.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.mythicHighlight) {
+            return UtilitiesConfig.Items.INSTANCE.mythicHighlightColor;
         } else if (name.matches("^(" + TextFormatting.DARK_AQUA + ".*%.*)$")) {
             return UtilitiesConfig.Items.INSTANCE.craftedHighlightColor;
         } else if (name.endsWith(TextFormatting.GOLD + " [" + TextFormatting.YELLOW + "✫" + TextFormatting.DARK_GRAY + "✫✫" + TextFormatting.GOLD + "]") && UtilitiesConfig.Items.INSTANCE.ingredientHighlight && !(is.getCount() == 0)) {
