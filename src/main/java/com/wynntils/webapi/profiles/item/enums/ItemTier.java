@@ -37,7 +37,7 @@ public enum ItemTier {
     public int getRerollPrice(int level, int rolledAmount) {
         int basePrice = rerollFormula.applyAsInt(level);
 
-        return basePrice * (int)Math.pow(55, rolledAmount);
+        return basePrice * (int)Math.pow(5, rolledAmount);
     }
 
     public char getColorCode() { return color.charAt(1); }
