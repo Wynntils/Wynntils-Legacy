@@ -11,17 +11,20 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
 import com.wynntils.core.utils.helpers.Delay;
+import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.instances.Toast;
 import com.wynntils.modules.utilities.overlays.hud.*;
 import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.item.enums.ItemTier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.network.play.server.*;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.text.TextComponentString;
+import static net.minecraft.util.text.TextFormatting.*;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -30,6 +33,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -420,53 +424,57 @@ public class OverlayEvents implements Listener {
                 e.setCanceled(true);
                 return;
             } else if (messageText.startsWith("Blacksmith: You ")) {
-                // TODO jesus christ rewrite this thing
-                boolean sold = formattedText.split(" ")[2].equals("sold");
+
+                EnumMap<ItemTier, Integer> itemCounts = new EnumMap(ItemTier.class); // counter for sold/scrapped items
+
                 String[] res = formattedText.split("§");
-                int countCommon = 0;
-                int countUnique = 0;
-                int countRare = 0;
-                int countSet = 0;
-                int countLegendary = 0;
-                int countFabled = 0;
-                int countMythic = 0;
-                int countCrafted = 0;
-                int total = 0;
+
                 for (String s : res) {
-                    if (s.startsWith("f")) {
-                        countCommon++;
-                        total++;
-                    } else if (s.startsWith("c")) {
-                        countFabled++;
-                        total++;
-                    } else if (s.startsWith("b")) {
-                        countLegendary++;
-                        total++;
-                    } else if (s.startsWith("5") && !s.equals("5Blacksmith: ")) {
-                        countMythic++;
-                        total++;
-                    } else if (s.startsWith("d") && !s.equals("dYou sold me: ") && !s.equals("dYou scrapped: ") && !s.equals("d, ") && !s.equals("d and ") && !s.equals("d for a total of ")) {
-                        countRare++;
-                        total++;
-                    } else if (s.startsWith("a")) {
-                        countSet++;
-                        total++;
-                    } else if (s.startsWith("3")) {
-                        countCrafted++;
-                        total++;
-                    } else if (s.startsWith("e")) {
-                        if (s.matches("e\\d+")) {
-                            String message;
-                            if (sold) {
-                                message = TextFormatting.LIGHT_PURPLE + "Sold " + total + " (" + TextFormatting.WHITE + countCommon + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.YELLOW + countUnique + TextFormatting.LIGHT_PURPLE + "/" + countRare + "/" + TextFormatting.GREEN + countSet + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.AQUA + countLegendary + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.RED + countFabled + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.DARK_PURPLE + countMythic + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.DARK_AQUA + countCrafted + TextFormatting.LIGHT_PURPLE + ") item(s) for " + TextFormatting.GREEN + s.replace("e", "") + (char) 0xB2 + TextFormatting.LIGHT_PURPLE + ".";
-                            } else {
-                                message = TextFormatting.LIGHT_PURPLE + "Scrapped " + total + " (" + TextFormatting.WHITE + countCommon + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.YELLOW + countUnique + TextFormatting.LIGHT_PURPLE + "/" + countRare + "/" + TextFormatting.GREEN + countSet + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.AQUA + countLegendary + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.RED + countFabled + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.DARK_PURPLE + countMythic + TextFormatting.LIGHT_PURPLE + "/" + TextFormatting.DARK_AQUA + countCrafted + TextFormatting.LIGHT_PURPLE + ") item(s) for " + TextFormatting.YELLOW + s.replace("e", "") + " scrap" + TextFormatting.LIGHT_PURPLE + ".";
-                            }
-                            GameUpdateOverlay.queueMessage(message);
-                            e.setCanceled(true);
-                        } else {
-                            countUnique++;
-                            total++;
+                    if (s.equals("dYou sold me: ") //non-item founds
+                            || s.equals("dYou scrapped: ")
+                            || s.equals("d, ")
+                            || s.equals("d and ")
+                            || s.equals("d for a total of ")
+                            || s.equals("5Blacksmith: ")) {
+                        continue;
+                    }
+                    if (s.matches("e\\d+")) { // the final part of the message
+                        int total = 0;
+                        for (ItemTier tier : ItemTier.values()) {
+                            total += itemCounts.getOrDefault(tier, 0);
+                        }
+
+                        // creates the counting part of the message
+                        StringBuilder messageCounts = new StringBuilder();
+                        for (ItemTier tier : ItemTier.values()) {
+                            messageCounts.append('/' + tier.getColor() + itemCounts.getOrDefault(tier, 0));
+                            messageCounts.append(LIGHT_PURPLE);
+                        }
+
+                        messageCounts.append(") item(s) for ");
+                        messageCounts.setCharAt(0, '(');
+
+                        // creates the full message
+                        StringBuilder message = new StringBuilder();
+                        if (formattedText.split(" ")[2].equals("sold")) { // normal selling
+                            message.append(LIGHT_PURPLE + "Sold " + total + " ");
+                            message.append(messageCounts);
+                            message.append(GREEN + s.replace("e", "") + EmeraldSymbols.EMERALDS + LIGHT_PURPLE + ".");
+
+                        } else { // scrapping
+                            message.append(LIGHT_PURPLE + "Scrapped " + total + " ");
+                            message.append(messageCounts);
+                            message.append(YELLOW + s.replace("e", "") + " scrap" + LIGHT_PURPLE + ".");
+                        }
+
+                        GameUpdateOverlay.queueMessage(message.toString()); // send the redirect messsage
+                        e.setCanceled(true); // remove the chat message
+                        continue;
+                    }
+                    // item counter
+                    for (ItemTier tier : ItemTier.values()) {
+                        if (s.startsWith(Character.toString(tier.getColorCode()))) {
+                            itemCounts.put(tier, itemCounts.getOrDefault(tier, 0) + 1);
                         }
                     }
                 }
