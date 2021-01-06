@@ -447,7 +447,7 @@ public class OverlayEvents implements Listener {
                         // creates the counting part of the message
                         StringBuilder messageCounts = new StringBuilder();
                         for (ItemTier tier : ItemTier.values()) {
-                            messageCounts.append('/' + tier.getColor() + itemCounts.getOrDefault(tier, 0));
+                            messageCounts.append('/' + tier.getTextColor() + itemCounts.getOrDefault(tier, 0));
                             messageCounts.append(LIGHT_PURPLE);
                         }
 
@@ -472,10 +472,8 @@ public class OverlayEvents implements Listener {
                         continue;
                     }
                     // item counter
-                    for (ItemTier tier : ItemTier.values()) {
-                        if (s.startsWith(Character.toString(tier.getColorCode()))) {
-                            itemCounts.put(tier, itemCounts.getOrDefault(tier, 0) + 1);
-                        }
+                    ItemTier tierToIncrease = ItemTier.fromColorCodeString(s);
+                        itemCounts.put(tierToIncrease, itemCounts.getOrDefault(tierToIncrease, 0) + 1);
                     }
                 }
                 return;

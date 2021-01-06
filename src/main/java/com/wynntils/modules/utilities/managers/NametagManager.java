@@ -23,6 +23,7 @@ import com.wynntils.modules.utilities.instances.NametagLabel;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.LeaderboardProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
+import com.wynntils.webapi.profiles.item.enums.ItemTier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
@@ -319,30 +320,21 @@ public class NametagManager {
         for (ItemStack is : player.getEquipmentAndArmor()) {
             if (!is.hasDisplayName()) continue;
             String itemName = WebManager.getTranslatedItemName(TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName())).replace("֎", "");
-            
+
             CustomColor color;
             String displayName;
             if (WebManager.getItems().containsKey(itemName)) {
 
                 ItemProfile itemProfile = WebManager.getItems().get(itemName);
-                switch (itemProfile.getTier()) {
-                    case MYTHIC: color = MinecraftChatColors.DARK_PURPLE; break;
-                    case FABLED: color = MinecraftChatColors.RED; break;
-                    case LEGENDARY: color = MinecraftChatColors.AQUA; break;
-                    case RARE: color = MinecraftChatColors.LIGHT_PURPLE; break;
-                    case UNIQUE: color = MinecraftChatColors.YELLOW; break;
-                    case SET: color = MinecraftChatColors.GREEN; break;
-                    case NORMAL: color = MinecraftChatColors.WHITE; break;
-                    default: color = CommonColors.RAINBOW;
-                }
-    
+                color = itemProfile.getTier().getChatColor();
+
                 // this solves an unidentified item showcase exploit
                 // boxes items are STONE_SHOVEL, 1 represents UNIQUE boxes and 6 MYTHIC boxes
                 if (is.getItem() == Items.STONE_SHOVEL && is.getItemDamage() >= 1 && is.getItemDamage() <= 6) {
                     displayName = "Unidentified Item";
                 } else displayName = itemProfile.getDisplayName();
             } else if (itemName.contains("Crafted")) {
-                color = MinecraftChatColors.DARK_AQUA;
+                color = ItemTier.CRAFTED.getChatColor();
                 displayName = itemName;
             } else continue;
 

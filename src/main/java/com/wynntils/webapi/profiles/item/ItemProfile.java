@@ -235,7 +235,7 @@ public class ItemProfile {
             itemLore.forEach(c -> loreList.appendTag(new NBTTagString(c)));
 
             display.setTag("Lore", loreList);
-            display.setString("Name", tier.getColor() + displayName);  // item display name
+            display.setString("Name", tier.getTextColor() + displayName);  // item display name
 
             // armor color
             if (itemInfo.isArmorColorValid()) display.setInteger("color", itemInfo.getArmorColorAsInt());
