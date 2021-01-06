@@ -48,31 +48,30 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
 
 public class GearViewerUI extends FakeGuiContainer {
-    
+
     private static final ResourceLocation INVENTORY_GUI_TEXTURE = new ResourceLocation("textures/gui/container/inventory.png");
-    
+
     private InventoryBasic inventory;
     private EntityPlayer player;
-    
+
     public GearViewerUI(InventoryBasic inventory, EntityPlayer player) {
         super(new ContainerGearViewer(inventory, ModCore.mc().player));
         this.inventory = inventory;
-        
+
         // create copy of given player and inventory to keep items and models separate
         this.player = new EntityOtherPlayerMP(player.getEntityWorld(), player.getGameProfile());
         this.copyInventory(this.player.inventory, player.inventory);
-        
+
         this.xSize = 103;
         this.ySize = 90;
     }
-    
+
     @Override
     public void initGui() {
         super.initGui();
-        
+
         // create item lore for armor pieces
         for (int i = 0; i < 4; i++) {
             ItemStack is = player.inventory.armorItemInSlot(i);
@@ -81,7 +80,7 @@ public class GearViewerUI extends FakeGuiContainer {
             is.setTagInfo("HideFlags", new NBTTagInt(6));
             inventory.setInventorySlotContents(3 - i, is);
         }
-        
+
         // create item lore for held item
         ItemStack hand = player.inventory.getCurrentItem();
         if (hand.hasDisplayName()) {
@@ -89,27 +88,27 @@ public class GearViewerUI extends FakeGuiContainer {
             hand.setTagInfo("HideFlags", new NBTTagInt(6));
             inventory.setInventorySlotContents(4, hand);
         }
-        
+
     }
-    
+
     @Override
     protected void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) { } // ignore all mouse clicks
-    
+
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         super.keyTyped(typedChar, keyCode);
-        
+
         // allow item screenshotting in gear viewer
         if (keyCode == KeyManager.getItemScreenshotKey().getKeyBinding().getKeyCode())
             ItemScreenshotManager.takeScreenshot();
     }
-    
+
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         this.drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
-        
+
         // replace lore with advanced ids if enabled
         if (this.getSlotUnderMouse() != null && this.getSlotUnderMouse().getHasStack())
             ItemIdentificationOverlay.replaceLore(this.getSlotUnderMouse().getStack());
@@ -127,26 +126,26 @@ public class GearViewerUI extends FakeGuiContainer {
         this.drawTexturedModalRect(i, j + 83, 0, 159, 96, 7);
         GuiInventory.drawEntityOnScreen(this.guiLeft + 51, this.guiTop + 75, 30, 0, 0, player);
     }
-    
+
     private void createLore(ItemStack stack) {
-        String itemName = WebManager.getTranslatedItemName(TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName())).replace("֎", "");
+        String itemName = WebManager.getTranslatedItemName(getTextWithoutFormattingCodes(stack.getDisplayName())).replace("֎", "");
 
         // can't create lore on crafted items
         if (itemName.startsWith("Crafted")) {
-            stack.setStackDisplayName(TextFormatting.DARK_AQUA + itemName);
+            stack.setStackDisplayName(DARK_AQUA + itemName);
             return;
         }
-        
+
         // get item from name
         if (WebManager.getItems().get(itemName) == null) return;
         ItemProfile item = WebManager.getItems().get(itemName);
-        
+
         // disable viewing unidentified items
         if (stack.getItem() == Items.STONE_SHOVEL && stack.getItemDamage() >= 1 && stack.getItemDamage() <= 6) {
             stack.setStackDisplayName(item.getTier().getColor() + "Unidentified Item");
             return;
         }
-        
+
         // attempt to parse item data
         JsonObject data;
         String rawLore = org.apache.commons.lang3.StringUtils.substringBeforeLast(ItemUtils.getStringLore(stack), "}") + "}"; // remove extra unnecessary info
@@ -156,7 +155,7 @@ public class GearViewerUI extends FakeGuiContainer {
             data = new JsonObject(); // invalid or empty data on item
         }
         List<String> itemLore = new ArrayList<>();
-        
+
         // attack speed
         if (item.getAttackSpeed() != null) {
             itemLore.add(item.getAttackSpeed().asLore());
@@ -223,7 +222,7 @@ public class GearViewerUI extends FakeGuiContainer {
 
             itemLore.add(" ");
         }
-        
+
         // ids
         if (data.has("identifications")) {
             JsonArray ids = data.getAsJsonArray("identifications");
@@ -231,17 +230,17 @@ public class GearViewerUI extends FakeGuiContainer {
                 JsonObject idInfo = ids.get(i).getAsJsonObject();
                 String id = idInfo.get("type").getAsString();
                 float pct = idInfo.get("percent").getAsInt() / 100F;
-                
+
                 // get wynntils name from internal wynncraft name
                 String translatedId = WebManager.getIDFromInternal(id);
                 if (translatedId == null || !item.getStatuses().containsKey(translatedId)) continue;
-                
+
                 // calculate value
                 IdentificationContainer idContainer = item.getStatuses().get(translatedId);
                 int value = (int) ((idContainer.isFixed()) ? idContainer.getBaseValue() : Math.round(idContainer.getBaseValue() * pct));
                 if (value == 0) value = 1; // account for mistaken rounding
                 boolean isInverted = IdentificationOrderer.INSTANCE.isInverted(translatedId);
-                
+
                 // determine lore name
                 String longName = IdentificationContainer.getAsLongName(translatedId);
                 SpellType spell = SpellType.fromName(longName);
@@ -253,7 +252,7 @@ public class GearViewerUI extends FakeGuiContainer {
                         longName = spell.forOtherClass(PlayerInfo.getPlayerInfo().getCurrentClass()).getGenericAndSpecificName() + " Cost";
                     }
                 }
-                
+
                 // determine lore value
                 String lore;
                 if (isInverted)
@@ -262,20 +261,20 @@ public class GearViewerUI extends FakeGuiContainer {
                 else
                     lore = (value < 0 ? RED.toString() : value > 0 ? GREEN + "+" : GRAY.toString())
                             + value + idContainer.getType().getInGame();
-                
+
                 // set stars
                 if ((!isInverted && value > 0) || (isInverted && value < 0)) {
                     if (pct >= 1.01) lore += DARK_GREEN + "*";
                     if (pct >= 1.25) lore += "*";
                     if (pct >= 1.30) lore += "*";
                 }
-                
+
                 lore += " " + GRAY + longName;
                 itemLore.add(lore);
             }
             itemLore.add(" ");
         }
-        
+
         // major ids
         if (item.getMajorIds() != null && item.getMajorIds().size() > 0) {
             for (MajorIdentification majorId : item.getMajorIds()) {
@@ -283,12 +282,12 @@ public class GearViewerUI extends FakeGuiContainer {
             }
             itemLore.add(" ");
         }
-        
+
         //powders
         if (item.getPowderAmount() > 0) {
             int powderCount = 0;
             String powderList = "";
-            
+
             if (data.has("powders")) {
                 JsonArray powders = data.getAsJsonArray("powders");
                 for (int i = 0; i < powders.size(); i++) {
@@ -296,64 +295,64 @@ public class GearViewerUI extends FakeGuiContainer {
                     String type = powders.get(i).getAsJsonObject().get("type").getAsString();
                     switch (type) {
                         case "EARTH":
-                            powderList += TextFormatting.DARK_GREEN + "✤ ";
+                            powderList += DARK_GREEN + "✤ ";
                             break;
                         case "THUNDER":
-                            powderList += TextFormatting.YELLOW + "✦ ";
+                            powderList += YELLOW + "✦ ";
                             break;
                         case "WATER":
-                            powderList += TextFormatting.AQUA + "❉ ";
+                            powderList += AQUA + "❉ ";
                             break;
                         case "FIRE":
-                            powderList += TextFormatting.RED + "✹ ";
+                            powderList += RED + "✹ ";
                             break;
                         case "AIR":
-                            powderList += TextFormatting.WHITE + "❋ ";
+                            powderList += WHITE + "❋ ";
                             break;
                     }
                 }
             }
-            
-            String powderString = TextFormatting.GRAY + "[" + powderCount + "/" + item.getPowderAmount() + "] Powder Slots ";
-            if (powderCount > 0) powderString += "[" + powderList.trim() + TextFormatting.GRAY + "]";
-            
+
+            String powderString = GRAY + "[" + powderCount + "/" + item.getPowderAmount() + "] Powder Slots ";
+            if (powderCount > 0) powderString += "[" + powderList.trim() + GRAY + "]";
+
             itemLore.add(powderString);
         }
-        
+
         // tier & rerolls
         String tierString = item.getTier().asLore();
         if (data.has("identification_rolls") && data.get("identification_rolls").getAsInt() > 1)
             tierString += " [" + data.get("identification_rolls").getAsInt() + "]";
         itemLore.add(tierString);
-        
+
         // untradable
         if (item.getRestriction() != null) itemLore.add(RED + StringUtils.capitalizeFirst(item.getRestriction()) + " Item");
-        
+
         // item lore
         if (item.getLore() != null && !item.getLore().isEmpty()) {
             itemLore.addAll(Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(DARK_GRAY + item.getLore(), 150));
         }
-        
+
         ItemUtils.replaceLore(stack, itemLore);
         stack.setStackDisplayName(item.getTier().getColor() + item.getDisplayName());
     }
-    
+
     private void copyInventory(InventoryPlayer destination, InventoryPlayer source) {
         // create deep copy of inventory
         for (int i = 0; i < source.getSizeInventory(); i++) {
             destination.setInventorySlotContents(i, source.getStackInSlot(i).copy());
         }
     }
-    
+
     public static void openGearViewer() {
         if (!Reference.onWorld) return;
-        
+
         if (ModCore.mc().objectMouseOver == null) return;
         Entity e = ModCore.mc().objectMouseOver.entityHit;
         if (e == null || !(e instanceof EntityPlayer)) return;
         EntityPlayer ep = (EntityPlayer) e;
         if (ep.getTeam() == null) return; // player model npc
-        
+
         ModCore.mc().displayGuiScreen(new GearViewerUI(new InventoryBasic("", false, 5), ep));
     }
 
