@@ -48,6 +48,8 @@ public class OverlayEvents implements Listener {
 
     private static String totemName;
 
+    boolean isVanished = false; // used in onEffectApplied
+
     @SubscribeEvent
     public void onChatMessageReceived(ClientChatReceivedEvent e) {
         WarTimerOverlay.warMessage(e);
@@ -755,8 +757,6 @@ public class OverlayEvents implements Listener {
     public void onPlayerDeath(GameEvent.PlayerDeath e) {
         ConsumableTimerOverlay.clearConsumables(false);
     }
-
-    boolean isVanished = false;
 
     @SubscribeEvent
     public void onEffectApplied(PacketEvent<SPacketEntityEffect> e) {
