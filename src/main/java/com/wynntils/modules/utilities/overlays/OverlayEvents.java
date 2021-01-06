@@ -48,7 +48,7 @@ public class OverlayEvents implements Listener {
 
     private static String totemName;
 
-    boolean isVanished = false; // used in onEffectApplied
+    private boolean isVanished = false; // used in onEffectApplied
 
     @SubscribeEvent
     public void onChatMessageReceived(ClientChatReceivedEvent e) {
