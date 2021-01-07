@@ -5,6 +5,7 @@
 package com.wynntils.webapi.profiles.item;
 
 import com.wynntils.core.framework.enums.ClassType;
+import com.wynntils.core.framework.enums.DamageType;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.profiles.item.enums.ItemAttackSpeed;
@@ -19,10 +20,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static net.minecraft.util.text.TextFormatting.*;
@@ -47,6 +45,10 @@ public class ItemProfile {
 
     String restriction;
     String lore;
+
+    transient Map<DamageType, Integer> parsedAvgDamages = null;
+    transient int parsedHealth = Integer.MIN_VALUE;
+    transient Map<DamageType, Integer> parsedDefenses = null;
 
     transient ItemStack guideStack = null;
     transient boolean replacedLore = false;
@@ -89,8 +91,48 @@ public class ItemProfile {
         return damageTypes;
     }
 
+    public Map<DamageType, Integer> getAverageDamages() {
+        if (parsedAvgDamages == null) {
+            parsedAvgDamages = new EnumMap<>(DamageType.class);
+            for (Map.Entry<String, String> entry : damageTypes.entrySet()) {
+                String dmgStr = entry.getValue();
+                int n = dmgStr.indexOf('-');
+                parsedAvgDamages.put(DamageType.valueOf(entry.getKey().toUpperCase(Locale.ROOT)),
+                        Math.round((Integer.parseInt(dmgStr.substring(0, n)) + Integer.parseInt(dmgStr.substring(n + 1))) / 2f));
+            }
+        }
+
+        return parsedAvgDamages;
+    }
+
     public Map<String, Integer> getDefenseTypes() {
         return defenseTypes;
+    }
+
+    private void parseDefenses() {
+        if (parsedDefenses != null) return;
+
+        parsedDefenses = new EnumMap<>(DamageType.class);
+        for (Map.Entry<String, Integer> entry : defenseTypes.entrySet()) {
+            if (entry.getKey().equals("health")) { // parse hp separately from defenses
+                parsedHealth = entry.getValue();
+                continue;
+            }
+            parsedDefenses.put(DamageType.valueOf(entry.getKey().toUpperCase(Locale.ROOT)), entry.getValue());
+        }
+
+        if (parsedHealth != Integer.MIN_VALUE) return;
+        parsedHealth = 0; // no hp entry => item provides zero hp
+    }
+
+    public int getHealth() {
+        parseDefenses();
+        return parsedHealth;
+    }
+
+    public Map<DamageType, Integer> getElementalDefenses() {
+        parseDefenses();
+        return parsedDefenses;
     }
 
     public Map<String, IdentificationContainer> getStatuses() {

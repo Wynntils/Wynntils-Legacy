@@ -30,10 +30,16 @@ public class QuestBookConfig extends SettingsClass {
 
     @Setting(displayName = "Show Unavailable Discoveries", description = "When viewing undiscovered discoveries, should discoveries that cannot be currently found be displayed?")
     public boolean showAllDiscoveries = false;
-    
+
     @Setting(displayName = "Secret Discoveries Tracking", description = "When viewing secret discoveries, which should be tracked?\n\n§8Coordinates are obtained via the Wynncraft Wiki.")
     public SecretSpoilMode spoilSecretDiscoveries = SecretSpoilMode.ONLY_DISCOVERED;
-    
+
+    @Setting(displayName = "Long Advanced Search Bar", description = "Should the large search bar be used when advanced item search mode is enabled?", order = 150)
+    public boolean advItemSearchLongBar = true;
+
+    @Setting(upload = false)
+    public boolean advancedItemSearch = false;
+
     public enum SecretSpoilMode {
         ALL,
         ONLY_DISCOVERED,
