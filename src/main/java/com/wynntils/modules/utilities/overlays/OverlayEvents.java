@@ -723,7 +723,7 @@ public class OverlayEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void onWynnTerritoyChange(WynnTerritoryChangeEvent e) {
+    public void onWynnTerritoryChange(WynnTerritoryChangeEvent e) {
         if (OverlayConfig.ToastsSettings.INSTANCE.enableTerritoryEnter && OverlayConfig.ToastsSettings.INSTANCE.enableToast && !e.getNewTerritory().equals("Waiting")) {
             if (Arrays.stream(blackList).parallel().anyMatch(e.getNewTerritory()::contains)) return;
 
