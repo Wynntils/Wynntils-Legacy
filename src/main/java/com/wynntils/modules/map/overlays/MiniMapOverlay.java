@@ -77,7 +77,7 @@ public class MiniMapOverlay extends Overlay {
         float centerX = minX + ((maxX - minX)/2);
         float centerZ = minZ + ((maxZ - minZ)/2);
 
-        if (centerX > 1 || centerX < 0 || centerZ > 1 || centerZ < 0) return;
+        if (MapConfig.INSTANCE.hideMinimapOutOfBounds && (centerX > 1 || centerX < 0 || centerZ > 1 || centerZ < 0)) return;
 
         try {
             GlStateManager.enableAlpha();

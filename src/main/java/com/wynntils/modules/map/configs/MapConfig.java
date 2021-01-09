@@ -72,6 +72,9 @@ public class MapConfig extends SettingsClass {
     @Setting.Limitations.IntLimit(min = MiniMapOverlay.MIN_ZOOM, max = MiniMapOverlay.MAX_ZOOM, precision = 1)
     public int mapZoom = 30;
 
+    @Setting(displayName = "Hide in Non-Mapped Areas", description = "Should the minimap be hidden if the player is outside the map?", order = 14)
+    public boolean hideMinimapOutOfBounds = true;
+
     @Setting
     public Map<String, Boolean> enabledMapIcons = resetMapIcons(false);
 
@@ -199,7 +202,7 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Rainbow Path Transitioning", description = "How many blocks should loot run paths be shown in a colour before transitioning to a different colour?", order = 5)
         @Setting.Limitations.IntLimit(min = 1, max = 500)
         public int cycleDistance = 20;
-        
+
         @Setting(displayName = "Show Loot Run Path on Map", description = "Should the active lootrun path be shown on the map?", order = 6)
         public boolean displayLootrunOnMap = true;
 
