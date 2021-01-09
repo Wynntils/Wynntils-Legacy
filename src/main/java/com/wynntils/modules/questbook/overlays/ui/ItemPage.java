@@ -241,7 +241,7 @@ public class ItemPage extends QuestBookPage {
 
                 ItemProfile pf = itemSearch.get(i);
 
-                CustomColor color = pf.getTier().getHighlightColor();
+                CustomColor color = pf.getTier().getCustomizedHighlightColor();
 
                 if (mouseX >= maxX && mouseX <= minX && mouseY >= maxY && mouseY <= minY) {
                     GlStateManager.color(color.r, color.g, color.b, 0.5f);

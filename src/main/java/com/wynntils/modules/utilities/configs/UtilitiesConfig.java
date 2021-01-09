@@ -279,28 +279,28 @@ public class UtilitiesConfig extends SettingsClass {
         public int minPowderTier = 4;
 
         @Setting(displayName = "Normal Item Highlight Colour", description = "What colour should the highlight for normal items be?\n\n§aClick the coloured box to open the colour wheel.", order = 50)
-        public CustomColor normalHighlightColor = ItemTier.NORMAL.getHighlightColor();
+        public CustomColor normalHighlightColor = ItemTier.NORMAL.getDefaultHighlightColor();
 
         @Setting(displayName = "Unique Item Highlight Colour", description = "What colour should the highlight for unique items be?\n\n§aClick the coloured box to open the colour wheel.", order = 51)
-        public CustomColor uniqueHighlightColor = ItemTier.UNIQUE.getHighlightColor();
+        public CustomColor uniqueHighlightColor = ItemTier.UNIQUE.getDefaultHighlightColor();
 
         @Setting(displayName = "Rare Item Highlight Colour", description = "What colour should the highlight for rare items be?\n\n§aClick the coloured box to open the colour wheel.", order = 52)
-        public CustomColor rareHighlightColor = ItemTier.RARE.getHighlightColor();
+        public CustomColor rareHighlightColor = ItemTier.RARE.getDefaultHighlightColor();
 
         @Setting(displayName = "Set Item Highlight Colour", description = "What colour should the highlight for set items be?\n\n§aClick the coloured box to open the colour wheel.", order = 53)
-        public CustomColor setHighlightColor = ItemTier.SET.getHighlightColor();
+        public CustomColor setHighlightColor = ItemTier.SET.getDefaultHighlightColor();
 
         @Setting(displayName = "Legendary Item Highlight Colour", description = "What colour should the highlight for legendary items be?\n\n§aClick the coloured box to open the colour wheel.", order = 54)
-        public CustomColor legendaryHighlightColor = ItemTier.LEGENDARY.getHighlightColor();
+        public CustomColor legendaryHighlightColor = ItemTier.LEGENDARY.getDefaultHighlightColor();
 
         @Setting(displayName = "Fabled Item Highlight Colour", description = "What colour should the highlight for fabled items be?\n\n§aClick the coloured box to open the colour wheel.", order = 55)
-        public CustomColor fabledHighlightColor = ItemTier.FABLED.getHighlightColor();
+        public CustomColor fabledHighlightColor = ItemTier.FABLED.getDefaultHighlightColor();
 
         @Setting(displayName = "Mythic Item Highlight Colour", description = "What colour should the highlight for mythic items be?\n\n§aClick the coloured box to open the colour wheel.", order = 56)
-        public CustomColor mythicHighlightColor = ItemTier.MYTHIC.getHighlightColor();
+        public CustomColor mythicHighlightColor = ItemTier.MYTHIC.getDefaultHighlightColor();
 
         @Setting(displayName = "Crafted Armour & Weapon Highlight Colour", description = "What colour should the highlight for crafted armour and weapons be?\n\n§aClick the coloured box to open the colour wheel.", order = 57)
-        public CustomColor craftedHighlightColor = ItemTier.CRAFTED.getHighlightColor();
+        public CustomColor craftedHighlightColor = ItemTier.CRAFTED.getDefaultHighlightColor();
 
         @Setting(displayName = "Ingredient Highlight Colour (1 star)", description = "What colour should the highlight for ingredients with one star be?\n\n§aClick the coloured box to open the colour wheel.", order = 58)
         public CustomColor ingredientOneHighlightColor = new CustomColor(1, 0.97f, 0.6f);

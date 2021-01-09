@@ -349,7 +349,7 @@ public class ItemIdentificationOverlay implements Listener {
             String itemDescription;
             if (UtilitiesConfig.Identifications.INSTANCE.showGuessesPrice && itemProfile != null) {
                 int level = itemProfile.getRequirements().getLevel();
-                int itemCost = tier.getItemCost(level);
+                int itemCost = tier.getItemIdentificationCost(level);
                 itemDescription = tier.getTextColor() + possibleItem + GRAY + " [" + GREEN + itemCost + " "
                         + EmeraldSymbols.E_STRING + GRAY + "]";
             } else {
