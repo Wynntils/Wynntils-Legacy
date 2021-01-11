@@ -505,7 +505,7 @@ public class ItemPage extends QuestBookPage {
                     return true;
             }
 
-            if (selected < 10) return true; // selected >= 10 means one of the item filter buttons is hovered
+            if (selected < 10) return false; // selected >= 10 means one of the item filter buttons is hovered
 
             ItemType selectedType = itemTypeArray.get(selected / 10 - 1);
             if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
