@@ -50,6 +50,10 @@ public class UpdateProfile {
         return hasUpdate;
     }
 
+    public void updateDownloaded() {
+        hasUpdate = false;
+    }
+
     public void forceUpdate() {
         UpdateOverlay.reset();
         hasUpdate = true;

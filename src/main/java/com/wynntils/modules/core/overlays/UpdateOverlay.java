@@ -193,6 +193,7 @@ public class UpdateOverlay extends Overlay {
                 Reference.LOGGER.error("Unable to apply Wynntils update.", ex);
             }
         }, "wynntils-autoupdate-applier"));
+        WebManager.getUpdate().updateDownloaded();
     }
 
     public static boolean isDownloading() {
