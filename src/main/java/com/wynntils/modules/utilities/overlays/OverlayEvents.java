@@ -473,6 +473,7 @@ public class OverlayEvents implements Listener {
                     }
                     // item counter
                     ItemTier tierToIncrease = ItemTier.fromColorCodeString(s);
+                    if (tierToIncrease != null) {
                         itemCounts.put(tierToIncrease, itemCounts.getOrDefault(tierToIncrease, 0) + 1);
                     }
                 }
