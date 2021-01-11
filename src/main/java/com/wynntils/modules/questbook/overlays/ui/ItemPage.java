@@ -10,6 +10,7 @@ import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
+import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.Utils;
@@ -174,54 +175,10 @@ public class ItemPage extends QuestBookPage {
 
                 ItemProfile pf = itemSearch.get(i);
 
-                float r, g, b;
-
-                switch (pf.getTier()) {
-                    case MYTHIC:
-                        r = 0.3f;
-                        g = 0;
-                        b = 0.3f;
-                        break;
-                    case FABLED:
-                        r = 1f;
-                        g = 0.58f;
-                        b = 0.49f;
-                        break;
-                    case LEGENDARY:
-                        r = 0;
-                        g = 1;
-                        b = 1;
-                        break;
-                    case RARE:
-                        r = 1;
-                        g = 0;
-                        b = 1;
-                        break;
-                    case UNIQUE:
-                        r = .8f;
-                        g = .8f;
-                        b = 0;
-                        break;
-                    case SET:
-                        r = 0;
-                        g = 1;
-                        b = 0;
-                        break;
-                    case NORMAL:
-                        r = 0.1f;
-                        g = 0.1f;
-                        b = 0.1f;
-                        break;
-                    default:
-                        r = 0;
-                        g = 0;
-                        b = 0;
-                        break;
-                }
-
+                CustomColor color = pf.getTier().getCustomizedHighlightColor();
 
                 if (mouseX >= maxX && mouseX <= minX && mouseY >= maxY && mouseY <= minY) {
-                    GlStateManager.color(r, g, b, 0.5f);
+                    GlStateManager.color(color.r, color.g, color.b, 0.5f);
                     GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
                     render.drawRect(Textures.UIs.rarity, maxX - 1, maxY - 1, 0, 0, 18, 18);
                     GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
@@ -240,7 +197,7 @@ public class ItemPage extends QuestBookPage {
                     hoveredText = lore;
                     selected = -1 - i;
                 } else {
-                    GlStateManager.color(r, g, b, 1.0f);
+                    GlStateManager.color(color.r, color.g, color.b, 1.0f);
                     GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
                     render.drawRect(Textures.UIs.rarity, maxX - 1, maxY - 1, 0, 0, 18, 18);
                     GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
