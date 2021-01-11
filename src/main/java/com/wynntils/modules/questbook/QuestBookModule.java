@@ -19,7 +19,11 @@ import org.lwjgl.input.Keyboard;
 @ModuleInfo(name = "quest_book", displayName = "Quest Book")
 public class QuestBookModule extends Module {
 
+    private static QuestBookModule module;
+
     public void onEnable() {
+        module = this;
+
         registerEvents(new ClientEvents());
 
         registerSettings(QuestBookConfig.class);
@@ -35,6 +39,10 @@ public class QuestBookModule extends Module {
             QuestBookPages.MAIN.getPage().open(true);
             QuestManager.readQuestBook();
         });
+    }
+
+    public static QuestBookModule getModule() {
+        return module;
     }
 
 }
