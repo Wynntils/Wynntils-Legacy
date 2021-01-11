@@ -48,6 +48,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 
 public class GearViewerUI extends FakeGuiContainer {
 
@@ -313,8 +314,8 @@ public class GearViewerUI extends FakeGuiContainer {
                 }
             }
 
-            String powderString = GRAY + "[" + powderCount + "/" + item.getPowderAmount() + "] Powder Slots ";
-            if (powderCount > 0) powderString += "[" + powderList.trim() + GRAY + "]";
+            String powderString = TextFormatting.GRAY + "[" + powderCount + "/" + item.getPowderAmount() + "] Powder Slots ";
+            if (powderCount > 0) powderString += "[" + powderList.trim() + TextFormatting.GRAY + "]";
 
             itemLore.add(powderString);
         }
