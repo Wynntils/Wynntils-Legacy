@@ -67,7 +67,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-
 import org.lwjgl.opengl.Display;
 
 import java.time.*;
@@ -76,6 +75,8 @@ import java.time.format.FormatStyle;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ClientEvents implements Listener {
     private static GuiScreen scheduledGuiScreen = null;
@@ -96,6 +97,8 @@ public class ClientEvents implements Listener {
     private static int lastHorseId = -1;
 
     private static boolean priceInput = false;
+
+    private static Pattern CRAFTED_USES = Pattern.compile(".* \\[(\\d)/\\d\\]");
 
     @SubscribeEvent
     public void onMoveEvent(InputEvent.MouseInputEvent e) {
@@ -785,8 +788,26 @@ public class ClientEvents implements Listener {
 
         if (oldStack.isEmpty() || !newStack.isEmpty() && !oldStack.isItemEqual(newStack)) return; // invalid move
         if (!oldStack.hasDisplayName()) return; // old item is not a valid item
-        if (!newStack.isEmpty() && oldStack.getDisplayName().equalsIgnoreCase(newStack.getDisplayName())) return; // not consumed
 
+        String oldName = TextFormatting.getTextWithoutFormattingCodes(oldStack.getDisplayName());
+        Matcher oldMatcher = CRAFTED_USES.matcher(oldName);
+        if (!oldMatcher.matches()) return;
+        int oldUses = Integer.parseInt(oldMatcher.group(1));
+
+        int newUses = 0;
+        if (!newStack.isEmpty()) {
+            String newName = TextFormatting.getTextWithoutFormattingCodes(StringUtils.normalizeBadString(newStack.getDisplayName()));
+            Matcher newMatcher = CRAFTED_USES.matcher(newName);
+            if (newMatcher.matches()) {
+                newUses = Integer.parseInt(newMatcher.group(1));
+            } else {
+                return;
+            }
+        }
+
+        if (oldUses - 1 != newUses) {
+            return;
+        }
         Minecraft.getMinecraft().addScheduledTask(() -> ConsumableTimerOverlay.addConsumable(oldStack));
     }
 
