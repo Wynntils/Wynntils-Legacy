@@ -11,7 +11,6 @@ import com.wynntils.core.utils.objects.Location;
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**

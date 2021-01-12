@@ -8,7 +8,6 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiErrorScreen;
 import net.minecraftforge.fml.client.CustomModLoadingErrorDisplayException;
 
-import java.util.HashMap;
 import java.util.Map;
 
 public class ModConflictScreen extends CustomModLoadingErrorDisplayException {

@@ -4,7 +4,6 @@
 
 package com.wynntils.webapi.profiles.guild;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 

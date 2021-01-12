@@ -11,7 +11,6 @@ import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.webapi.WebManager;
-import com.wynntils.webapi.WebReader;
 
 public class UpdateProfile {
 

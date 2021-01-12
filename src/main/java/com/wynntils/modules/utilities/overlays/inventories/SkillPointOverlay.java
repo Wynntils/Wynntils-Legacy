@@ -14,8 +14,6 @@ import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.framework.enums.MouseButton;
 import com.wynntils.modules.utilities.overlays.ui.SkillPointLoadoutUI;
 import net.minecraft.network.play.server.SPacketCustomSound;
-import net.minecraft.network.play.server.SPacketSoundEffect;
-import net.minecraft.util.SoundEvent;
 import org.lwjgl.input.Keyboard;
 
 import com.wynntils.ModCore;
@@ -31,7 +29,6 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.ui.elements.GuiTextFieldWynn;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.Utils;
-import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;

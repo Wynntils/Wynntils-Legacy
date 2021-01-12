@@ -10,7 +10,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 
 /**
