@@ -8,7 +8,6 @@ import com.wynntils.Reference;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
-import com.wynntils.webapi.WebManager;
 
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -157,9 +156,9 @@ public class UpdatingScreen extends GuiScreen {
 
         if (failed) {
             setChangelogs();
-            drawCenteredString(mc.fontRenderer, TextFormatting.RED + "Update download failed", this.width/2, this.width/2, 0xFFFFFFFF);
+            drawCenteredString(mc.fontRenderer, TextFormatting.RED + "Update download failed", this.width/2, this.height/2, 0xFFFFFFFF);
         } else if (complete) {
-            drawCenteredString(mc.fontRenderer, TextFormatting.GREEN + "Update download complete", this.width/2, this.width/2, 0xFFFFFF);
+            drawCenteredString(mc.fontRenderer, TextFormatting.GREEN + "Update download complete", this.width/2, this.height/2, 0xFFFFFF);
         } else {
             int left = Math.max(this.width/2 - 100, 10);
             int right = Math.min(this.width/2 + 100, this.width - 10);
