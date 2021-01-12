@@ -14,6 +14,7 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.framework.rendering.textures.AssetsTexture;
 import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.enums.AccountType;
 import com.wynntils.modules.core.managers.UserManager;
@@ -318,7 +319,7 @@ public class NametagManager {
         for (ItemStack is : player.getEquipmentAndArmor()) {
             if (!is.hasDisplayName()) continue;
             String itemName = WebManager.getTranslatedItemName(TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName())).replace("֎", "");
-
+            
             CustomColor color;
             String displayName;
             if (WebManager.getItems().containsKey(itemName)) {
@@ -334,7 +335,7 @@ public class NametagManager {
                     case NORMAL: color = MinecraftChatColors.WHITE; break;
                     default: color = CommonColors.RAINBOW;
                 }
-
+    
                 // this solves an unidentified item showcase exploit
                 // boxes items are STONE_SHOVEL, 1 represents UNIQUE boxes and 6 MYTHIC boxes
                 if (is.getItem() == Items.STONE_SHOVEL && is.getItemDamage() >= 1 && is.getItemDamage() <= 6) {
