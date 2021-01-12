@@ -129,11 +129,11 @@ public class GearViewerUI extends FakeGuiContainer {
     }
 
     private void createLore(ItemStack stack) {
-        String itemName = WebManager.getTranslatedItemName(TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName())).replace("֎", "");
+        String itemName = WebManager.getTranslatedItemName(getTextWithoutFormattingCodes(stack.getDisplayName())).replace("֎", "");
 
         // can't create lore on crafted items
         if (itemName.startsWith("Crafted")) {
-            stack.setStackDisplayName(TextFormatting.DARK_AQUA + itemName);
+            stack.setStackDisplayName(DARK_AQUA + itemName);
             return;
         }
 
@@ -296,19 +296,19 @@ public class GearViewerUI extends FakeGuiContainer {
                     String type = powders.get(i).getAsJsonObject().get("type").getAsString();
                     switch (type) {
                         case "EARTH":
-                            powderList += TextFormatting.DARK_GREEN + "✤ ";
+                            powderList += DARK_GREEN + "✤ ";
                             break;
                         case "THUNDER":
-                            powderList += TextFormatting.YELLOW + "✦ ";
+                            powderList += YELLOW + "✦ ";
                             break;
                         case "WATER":
-                            powderList += TextFormatting.AQUA + "❉ ";
+                            powderList += AQUA + "❉ ";
                             break;
                         case "FIRE":
-                            powderList += TextFormatting.RED + "✹ ";
+                            powderList += RED + "✹ ";
                             break;
                         case "AIR":
-                            powderList += TextFormatting.WHITE + "❋ ";
+                            powderList += WHITE + "❋ ";
                             break;
                     }
                 }
