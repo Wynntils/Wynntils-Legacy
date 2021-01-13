@@ -4,6 +4,7 @@
 
 package com.wynntils.core.framework.interfaces;
 
+/** Marker interface */
 public interface Listener {
 
 }

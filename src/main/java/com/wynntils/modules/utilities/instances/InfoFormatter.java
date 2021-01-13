@@ -15,13 +15,11 @@ import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.managers.PingManager;
-import com.wynntils.modules.richpresence.RichPresenceModule;
 import com.wynntils.modules.utilities.interfaces.InfoModule;
 import com.wynntils.modules.utilities.managers.AreaDPSManager;
 import com.wynntils.modules.utilities.managers.SpeedometerManager;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.math.MathHelper;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -107,7 +105,7 @@ public class InfoFormatter {
             DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
             return date.format(formatter);
         }, "clock");
-        
+
         // The wall clock time, formatted to 24h format
         registerFormatter((input) -> {
             LocalDateTime date = LocalDateTime.now();

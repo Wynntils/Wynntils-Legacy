@@ -6,7 +6,6 @@ package com.wynntils.webapi.profiles;
 
 import com.wynntils.core.utils.StringUtils;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public class ServerProfile {

@@ -6,7 +6,6 @@ package com.wynntils.webapi.profiles;
 
 import com.wynntils.core.framework.enums.professions.ProfessionType;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
