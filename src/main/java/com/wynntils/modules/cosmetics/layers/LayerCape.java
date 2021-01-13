@@ -69,7 +69,11 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer> {
 
         // rendering
         { pushMatrix();
+            this.playerRenderer.getMainModel().bipedBody.postRender(scale);
             translate(0.0F, 0.0F, 0.125F);
+            if (player.isSneaking()) {
+                translate(0.0F, 0.0F, -0.1F);
+            }
 
             double d0 = player.prevChasingPosX + (player.chasingPosX - player.prevChasingPosX) * (double) partialTicks - (player.prevPosX + (player.posX - player.prevPosX) * (double) partialTicks);
             double d1 = player.prevChasingPosY + (player.chasingPosY - player.prevChasingPosY) * (double) partialTicks - (player.prevPosY + (player.posY - player.prevPosY) * (double) partialTicks);
@@ -92,8 +96,6 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer> {
 
             float f4 = player.prevCameraYaw + (player.cameraYaw - player.prevCameraYaw) * partialTicks;
             f1 = f1 + MathHelper.sin((player.prevDistanceWalkedModified + (player.distanceWalkedModified - player.prevDistanceWalkedModified) * partialTicks) * 6.0F) * 32.0F * f4;
-
-            if (player.isSneaking()) f1 += 19.0F;
 
             rotate((6.0F + f2 / 2.0F + f1), 1.0F, 0.0F, 0.0F);
             rotate((f3 / 2.0F), 0.0F, 0.0F, 1.0F);
