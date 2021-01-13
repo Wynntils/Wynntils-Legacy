@@ -1,11 +1,10 @@
 /*
  *  * Copyright © Wynntils - 2018 - 2021.
- *
- * Marker interface
  */
 
 package com.wynntils.core.framework.interfaces;
 
+/** Marker interface */
 public interface Listener {
 
 }
