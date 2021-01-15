@@ -157,7 +157,7 @@ public class WebManager {
         account = new WynntilsAccount();
         account.login();
     }
-    
+
     public static boolean isAthenaOnline() {
         return (account != null && account.isConnected());
     }
@@ -223,7 +223,7 @@ public class WebManager {
     public static String getTranslatedItemName(String name) {
         return translatedReferences.getOrDefault(name, name);
     }
-    
+
     public static String getIDFromInternal(String id) {
         return internalIdentifications.get(id);
     }
@@ -691,8 +691,7 @@ public class WebManager {
             Reference.LOGGER.error("API cache file " + fileName + " doesn't exist");
             return null;
         }
-        try {
-            FileInputStream inputStream = new FileInputStream(apiCacheFile);
+        try (FileInputStream inputStream = new FileInputStream(apiCacheFile)) {
             JsonElement element = new JsonParser().parse(IOUtils.toString(inputStream, StandardCharsets.UTF_8));
             Reference.LOGGER.info("Successfully loaded cache file " + fileName);
             return element;

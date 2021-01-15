@@ -57,14 +57,10 @@ public class ScreenRenderer {
     public static void refresh() {
         mc = Minecraft.getMinecraft();
         screen = new ScaledResolution(mc);
-        if (fontRenderer == null)
-            try {
-                fontRenderer = new SmartFontRenderer();
-            } catch (Exception ignored) {
-
-            } finally {
-                fontRenderer.onResourceManagerReload(mc.getResourceManager());
-            }
+        if (fontRenderer == null) {
+            fontRenderer = new SmartFontRenderer();
+            fontRenderer.onResourceManagerReload(mc.getResourceManager());
+        }
         fontRenderer.setUnicodeFlag(CoreDBConfig.INSTANCE.useUnicode);
         if (itemRenderer == null)
             itemRenderer = Minecraft.getMinecraft().getRenderItem();

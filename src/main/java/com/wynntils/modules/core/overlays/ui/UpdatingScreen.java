@@ -96,35 +96,33 @@ public class UpdatingScreen extends GuiScreen {
             File fileSaved = new File(directory, URLDecoder.decode(urlParts[urlParts.length - 1], "UTF-8"));
 
             InputStream fis = st.getInputStream();
-            OutputStream fos = new FileOutputStream(fileSaved);
+            try (OutputStream fos = new FileOutputStream(fileSaved)) {
 
-            byte[] data = new byte[1024];
-            long total = 0;
-            int count;
+                byte[] data = new byte[1024];
+                long total = 0;
+                int count;
 
-            while ((count = fis.read(data)) != -1) {
-                if (mc.currentScreen != UpdatingScreen.this) {
-                    // Cancelled
-                    fos.close();
-                    fis.close();
-                    failed = true;
-                    setChangelogs();
-                    return;
+                while ((count = fis.read(data)) != -1) {
+                    if (mc.currentScreen != UpdatingScreen.this) {
+                        // Cancelled
+                        fos.close();
+                        fis.close();
+                        failed = true;
+                        setChangelogs();
+                        return;
+                    }
+
+                    total += count;
+                    progress = total / fileLength;
+                    fos.write(data, 0, count);
                 }
 
-                total += count;
-                progress = total / fileLength;
-                fos.write(data, 0, count);
             }
-
-            fos.flush();
-            fos.close();
             fis.close();
 
             if (mc.currentScreen != UpdatingScreen.this) {
                 failed = true;
                 setChangelogs();
-                return;
             }
         } catch (Exception ex) {
             ex.printStackTrace();

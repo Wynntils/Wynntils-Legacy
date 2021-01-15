@@ -56,10 +56,14 @@ public class RichProfile {
     private long applicationID = 0;
 
     public RichProfile(long id) {
-        RequestHandler handler = new RequestHandler();
-        String apiRoot = (WebManager.getApiUrls() == null ? null : WebManager.getApiUrls().get("RichPresenceRoot")) + GAME_SDK_VERSION;
-        String url = apiRoot == null ? null : apiRoot + "/versioning.php";
         setupTypeMapper();
+        if (WebManager.getApiUrls() == null) {
+            return;
+        }
+        String apiRoot = WebManager.getApiUrls().get("RichPresenceRoot") + GAME_SDK_VERSION;
+        String url = apiRoot + "/versioning.php";
+        RequestHandler handler = new RequestHandler();
+
         handler.addRequest(new Request(url, "richpresence_versioning_" + GAME_SDK_VERSION)
                 .cacheTo(new File(Reference.NATIVES_ROOT, "richpresence_versioning_" + GAME_SDK_VERSION + ".txt"))
                 .handleWebReader(reader -> {
@@ -69,7 +73,7 @@ public class RichProfile {
                         return true;
                     }
 
-                    if (md5 == null || apiRoot == null) {
+                    if (md5 == null) {
                         // No sdk on this platform or webapi is down
                         setDisabled();
                         return true;

@@ -45,7 +45,7 @@ public class Reference {
         onLobby = onServer && !onWorld;
     }
 
-    public static String getUserWorld() {
+    public static synchronized String getUserWorld() {
         return userWorld;
     }
 

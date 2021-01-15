@@ -85,9 +85,10 @@ public class SoundTrackManager {
 
         // check if it was already downloaded or in download
         if (downloadedMusics.containsKey(song.getAsHash())) {
-            if (!downloadedMusics.get(song.getAsHash()).getFile().isPresent()) return; // available to play (downloaded)
+            Optional<File> songFile = downloadedMusics.get(song.getAsHash()).getFile();
+            if (!songFile.isPresent()) return; // available to play (downloaded)
 
-            player.play(downloadedMusics.get(song.getAsHash()).getFile().get(), fadeIn, fadeOut, fastSwitch, repeat, lockQueue, quiet);
+            player.play(songFile.get(), fadeIn, fadeOut, fastSwitch, repeat, lockQueue, quiet);
             return;
         }
 

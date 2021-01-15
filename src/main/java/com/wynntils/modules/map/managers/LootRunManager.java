@@ -99,10 +99,9 @@ public class LootRunManager {
             File file = new File(STORAGE_FOLDER, lootRunName + ".json");
             if (!file.exists()) file.createNewFile();
 
-            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
-            GSON.toJson(new LootRunPathIntermediary(activePath), writer);
-
-            writer.close();
+            try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
+                GSON.toJson(new LootRunPathIntermediary(activePath), writer);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             return false;
@@ -149,11 +148,11 @@ public class LootRunManager {
     public static LootRunPath getRecordingPath() {
         return recordingPath;
     }
-    
+
     public static PathWaypointProfile getMapPath() {
         return mapPath;
     }
-    
+
     public static List<MapIcon> getMapPathWaypoints() {
         if (mapPath != null && MapConfig.LootRun.INSTANCE.displayLootrunOnMap)
             return Arrays.asList(new MapPathWaypointIcon(mapPath));
@@ -212,7 +211,7 @@ public class LootRunManager {
             recordingPath.getChests().forEach(c -> PointRenderer.drawCube(c, MapConfig.LootRun.INSTANCE.recordingPathColour));
         }
     }
-    
+
     private static void updateMapPath() {
         mapPath = null;
         if (activePath != null) {

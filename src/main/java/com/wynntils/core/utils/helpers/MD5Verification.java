@@ -15,9 +15,7 @@ public class MD5Verification {
     String md5;
 
     public MD5Verification(File f) {
-        try {
-            InputStream fis = new FileInputStream(f);
-
+        try (InputStream fis = new FileInputStream(f)) {
             byte[] buffer = new byte[1024];
             MessageDigest md = MessageDigest.getInstance("MD5");
             int numRead = fis.read(buffer);
