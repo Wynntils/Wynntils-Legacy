@@ -17,7 +17,7 @@ import org.lwjgl.opengl.GL11;
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
-import java.awt.*;
+import java.awt.Color;
 import java.util.Random;
 
 public class SpecialRendering {
