@@ -89,6 +89,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 this.slotIn = slotIn; this.slotId = slotId; this.mouseButton = mouseButton; this.type = type;
             }
 
+            @Override
             public boolean isCancelable() {
                 return true;
             }
@@ -167,6 +168,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 return keyCode;
             }
 
+            @Override
             public boolean isCancelable() {
                 return true;
             }
@@ -283,6 +285,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 this.slotIn = slotIn; this.slotId = slotId; this.mouseButton = mouseButton; this.type = type;
             }
 
+            @Override
             public boolean isCancelable() {
                 return true;
             }
@@ -321,6 +324,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 this.timeSinceLastClick = timeSinceLastClick;
             }
 
+            @Override
             public boolean isCancelable() {
                 return true;
             }
@@ -349,6 +353,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 super(guiChest);
             }
 
+            @Override
             public boolean isCancelable() {
                 return true;
             }
@@ -412,6 +417,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 return keyCode;
             }
 
+            @Override
             public boolean isCancelable() {
                 return true;
             }
@@ -553,6 +559,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 this.slotIn = slotIn; this.slotId = slotId; this.mouseButton = mouseButton; this.type = type;
             }
 
+            @Override
             public boolean isCancelable() {
                 return true;
             }
@@ -631,6 +638,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 return keyCode;
             }
 
+            @Override
             public boolean isCancelable() {
                 return true;
             }
@@ -771,6 +779,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 this.button = button;
             }
 
+            @Override
             public boolean isCancelable() {
                 return true;
             }
@@ -795,6 +804,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 super(replacer);
             }
 
+            @Override
             public boolean isCancelable() {
                 return true;
             }

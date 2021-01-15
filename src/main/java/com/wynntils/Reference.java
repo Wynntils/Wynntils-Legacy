@@ -24,7 +24,7 @@ public class Reference {
     public static final String MINECRAFT_VERSIONS = "1.12,1.12.2";
     public static String VERSION = "";
     public static int BUILD_NUMBER = -1;
-    public static final File MOD_STORAGE_ROOT = ModCore.mc() == null ? new File("wynntils") : new File(ModCore.mc().gameDir, "wynntils");
+    public static final File MOD_STORAGE_ROOT = new File(ModCore.mc().gameDir, MOD_ID);
     public static final File NATIVES_ROOT = new File(Reference.MOD_STORAGE_ROOT, "natives");
     public static final File PLATFORM_NATIVES_ROOT = new File(NATIVES_ROOT, Platform.RESOURCE_PREFIX);
     public static final Logger LOGGER = LogManager.getFormatterLogger(MOD_ID);
@@ -64,9 +64,9 @@ public class Reference {
     public static boolean developmentEnvironment = false;
 
     public static class ServerIPS {
+        private ServerIPS() {}
 
         public static final String GAME = "play.wynncraft.com";
-
     }
 
 }

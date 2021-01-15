@@ -38,9 +38,9 @@ import static net.minecraft.client.gui.Gui.ICONS;
 
 public class FrameworkManager {
 
-    public static Map<String, ModuleContainer> availableModules = new HashMap<>();
-    public static Map<Priority, List<Overlay>> registeredOverlays = new LinkedHashMap<>();
-    public static Set<EntitySpawnCodition> registeredSpawnConditions = new HashSet<>();
+    protected final static Map<String, ModuleContainer> availableModules = new HashMap<>();
+    protected final static Map<Priority, List<Overlay>> registeredOverlays = new LinkedHashMap<>();
+    protected final static Set<EntitySpawnCodition> registeredSpawnConditions = new HashSet<>();
 
     private static final EventBus eventBus = new EventBus();
 
@@ -51,6 +51,8 @@ public class FrameworkManager {
         registeredOverlays.put(Priority.HIGH, new ArrayList<>());
         registeredOverlays.put(Priority.HIGHEST, new ArrayList<>());
     }
+
+    private FrameworkManager() {}
 
     public static void registerModule(Module module) {
         ModuleInfo info = module.getClass().getAnnotation(ModuleInfo.class);
@@ -220,7 +222,7 @@ public class FrameworkManager {
         }
     }
 
-    public static void triggerNaturalSpawn(TickEvent.ClientTickEvent e) {
+    public static void triggerNaturalSpawn() {
         if (registeredSpawnConditions.isEmpty()) return;
 
         Random r = Utils.getRandom();
@@ -262,6 +264,10 @@ public class FrameworkManager {
         }
 
         return availableModules.get(info.name()).getRegisteredSettings().get(info2.name());
+    }
+
+    public static Map<String, ModuleContainer> getAvailableModules() {
+        return availableModules;
     }
 
     public static EventBus getEventBus() {

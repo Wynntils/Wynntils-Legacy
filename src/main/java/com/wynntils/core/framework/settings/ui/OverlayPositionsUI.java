@@ -91,7 +91,7 @@ public class OverlayPositionsUI extends UI {
     public void onInit() {
         registeredOverlaySettings.clear();
 
-        for (ModuleContainer moduleContainer : FrameworkManager.availableModules.values()) {
+        for (ModuleContainer moduleContainer : FrameworkManager.getAvailableModules().values()) {
             for (SettingsContainer settingsContainer : moduleContainer.getRegisteredSettings().values()) {
                 if (settingsContainer.getHolder() instanceof Overlay) {
                     if (((Overlay) settingsContainer.getHolder()).growth != null) {
