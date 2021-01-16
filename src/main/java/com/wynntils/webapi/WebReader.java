@@ -52,7 +52,7 @@ public class WebReader {
     }
 
     private void parseFile() throws Exception {
-        FileReader fr = new FileReader(file);
+        try (FileReader fr = new FileReader(file)) {}
 
         if (!parseData(FileUtils.readFileToString(file, StandardCharsets.UTF_8))) {
             throw new Exception("Invalid WebReader result");

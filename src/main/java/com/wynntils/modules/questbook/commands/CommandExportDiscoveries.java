@@ -35,7 +35,7 @@ import java.util.*;
 
 public class CommandExportDiscoveries extends CommandBase implements IClientCommand {
 
-    private static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
+    private final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH.mm.ss");
 
     @Override
     public String getName() {

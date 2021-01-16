@@ -78,7 +78,7 @@ public class SettingsUI extends UI {
         this.holders.visible = false;
         this.settings.visible = false;
 
-        for (ModuleContainer mcn : FrameworkManager.availableModules.values()) {
+        for (ModuleContainer mcn : FrameworkManager.getAvailableModules().values()) {
             for (SettingsContainer scn : mcn.getRegisteredSettings().values()) {
                 if (!(scn.getHolder() instanceof Overlay)) {
                     if (!scn.getDisplayPath().equals("")) {

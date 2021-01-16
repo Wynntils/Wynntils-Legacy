@@ -10,7 +10,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraftforge.common.MinecraftForge;
 
 public class CoreManager {
-
     public static void setupCore() {
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
 

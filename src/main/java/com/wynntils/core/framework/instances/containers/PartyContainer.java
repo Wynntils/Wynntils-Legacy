@@ -21,15 +21,13 @@ public class PartyContainer {
     Set<String> partyMembers = new HashSet<>();
     String owner = "";
 
-    public PartyContainer() {}
-
     /**
      * Check if the player is at a party
      *
      * @return if the player is at a party
      */
     public boolean isPartying() {
-        return partyMembers.size() != 0;
+        return !partyMembers.isEmpty();
     }
 
     /**

@@ -225,7 +225,7 @@ public class ClientEvents {
 
         FrameworkManager.triggerHudTick(e);
         FrameworkManager.triggerKeyPress();
-        FrameworkManager.triggerNaturalSpawn(e);
+        FrameworkManager.triggerNaturalSpawn();
     }
 
     @SubscribeEvent

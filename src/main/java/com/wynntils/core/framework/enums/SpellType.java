@@ -4,9 +4,6 @@
 
 package com.wynntils.core.framework.enums;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public enum SpellType {
     ARROW_STORM(ClassType.ARCHER, 1, "Arrow Storm", "Bolt Blizzard", 6, 0),
     ESCAPE(ClassType.ARCHER, 2, "Escape", "Spider Jump", 3, 0),

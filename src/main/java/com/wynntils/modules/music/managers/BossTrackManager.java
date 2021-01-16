@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
 
 public class BossTrackManager {
 
-    private static final Pattern MOB_NAMETAG = Pattern.compile("(?<Name>.*?)? ?(?<Phases>▪*?) \\[Lv\\.(?<Level>.*?)\\]");
+    private static final Pattern MOB_NAMETAG = Pattern.compile("(?<Name>.+?) ?(?<Phases>▪*?) \\[Lv\\.(?<Level>.*?)\\]");
 
     private static int bossEntityId = -1;
 

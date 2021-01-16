@@ -4,6 +4,8 @@
 
 package com.wynntils.core.framework.ui;
 
+import java.util.Objects;
+
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.utils.objects.Position;
 
@@ -31,5 +33,10 @@ public abstract class UIElement extends ScreenRenderer {
     @Override
     public boolean equals(Object obj) {
         return obj instanceof UIElement && ((UIElement) obj).getId() == this.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, position, visible);
     }
 }

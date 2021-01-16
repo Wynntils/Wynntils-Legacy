@@ -24,7 +24,7 @@ public class BeaconManager {
 
     public static void drawBeam(Location loc, CustomColor color) {
         RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
-        if (renderManager == null || renderManager.renderViewEntity == null) return;
+        if (renderManager.renderViewEntity == null) return;
 
         float alpha = 1f;
 
@@ -39,7 +39,7 @@ public class BeaconManager {
 
         alpha *= color.a;
 
-        double maxDistance = Minecraft.getMinecraft().gameSettings.renderDistanceChunks * 16;
+        double maxDistance = Minecraft.getMinecraft().gameSettings.renderDistanceChunks * 16d;
         if (distance > maxDistance) {  // this will drag the beam to the visible area if outside of it
             Vec3d delta = positionVec.subtract(playerVec).normalize();
             positionVec = playerVec.add(delta.x * maxDistance, delta.y * maxDistance, delta.z * maxDistance);

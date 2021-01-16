@@ -40,4 +40,8 @@ public class Pair<T, J> {
         return Objects.deepEquals(a, other.a) && Objects.deepEquals(b, other.b);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(a, b);
+    }
 }
