@@ -64,8 +64,6 @@ public class Reference {
     public static boolean developmentEnvironment = false;
 
     public static class ServerIPS {
-        private ServerIPS() {}
-
         public static final String GAME = "play.wynncraft.com";
     }
 
