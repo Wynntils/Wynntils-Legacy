@@ -447,6 +447,7 @@ public class WebManager {
                     prof.getStatuses().values().forEach(IdentificationContainer::calculateMinMax);
                     citems.put(prof.getDisplayName(), prof);
                 }
+                citems.values().forEach(ItemProfile::registerIdTypes);
 
                 directItems = citems.values();
                 items = citems;

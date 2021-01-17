@@ -20,6 +20,7 @@ import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.IdentificationOrderer;
 import com.wynntils.webapi.profiles.item.ItemGuessProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
+import com.wynntils.webapi.profiles.item.enums.IdentificationModifier;
 import com.wynntils.webapi.profiles.item.enums.ItemTier;
 import com.wynntils.webapi.profiles.item.enums.MajorIdentification;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
@@ -118,13 +119,17 @@ public class ItemIdentificationOverlay implements Listener {
 
         double cumRelative = 0;
         int idAmount = 0;
+        boolean hasNewId = false;
 
         if (wynntils.hasKey("ids")) {
             NBTTagCompound ids = wynntils.getCompoundTag("ids");
             for (String idName : ids.getKeySet()) {
-                if (!item.getStatuses().containsKey(idName)) continue;
+                if (idName.contains("*")) continue; // star data, ignore
 
                 IdentificationContainer id = item.getStatuses().get(idName);
+                IdentificationModifier type = id != null ? id.getType() : IdentificationContainer.getTypeFromName(idName);
+                if (type == null) continue; // not a valid id
+
                 int currentValue = ids.getInteger(idName);
                 boolean isInverted = IdentificationOrderer.INSTANCE.isInverted(idName);
 
@@ -143,23 +148,39 @@ public class ItemIdentificationOverlay implements Listener {
                 String lore;
                 if (isInverted)
                     lore = (currentValue < 0 ? GREEN.toString() : currentValue > 0 ? RED + "+" : GRAY.toString())
-                            + currentValue + id.getType().getInGame();
+                            + currentValue + type.getInGame();
                 else
                     lore = (currentValue < 0 ? RED.toString() : currentValue > 0 ? GREEN + "+" : GRAY.toString())
-                            + currentValue + id.getType().getInGame();
+                            + currentValue + type.getInGame();
 
                 if (UtilitiesConfig.Identifications.INSTANCE.addStars && ids.hasKey(idName + "*")) {
                     lore += DARK_GREEN + "***".substring(0, ids.getInteger(idName + "*"));
                 }
                 lore += " " + GRAY + longName;
 
+                if (id == null) { // id not in api
+                    idLore.put(idName, lore + GOLD + " NEW");
+                    hasNewId = true;
+                    continue;
+                }
+
                 if (id.hasConstantValue()) {
-                    idLore.put(idName, lore);
+                    if (id.getBaseValue() != currentValue) {
+                        idLore.put(idName, lore + GOLD + " NEW");
+                        hasNewId = true;
+                    } else {
+                        idLore.put(idName, lore);
+                    }
                     continue;
                 }
 
                 IdentificationResult result = idType.identify(id, currentValue, isInverted);
                 idLore.put(idName, lore + " " + result.getLore());
+
+                if (result.getAmount() > 1d || result.getAmount() < 0d) {
+                    hasNewId = true;
+                    continue;
+                }
 
                 cumRelative += result.getAmount();
                 idAmount++;
@@ -293,12 +314,14 @@ public class ItemIdentificationOverlay implements Listener {
 
         // Special displayname
         String specialDisplay = "";
-        if (idAmount > 0 && cumRelative > 0) {
+        if (hasNewId) {
+            specialDisplay = GOLD + " NEW";
+        } else if (idAmount > 0 && cumRelative > 0) {
             specialDisplay = " " + idType.getTitle(cumRelative/(double)idAmount);
         }
 
         // check for item perfection
-        if (cumRelative/idAmount >= 1d && idType == IdentificationType.PERCENTAGES) {
+        if (cumRelative/idAmount >= 1d && idType == IdentificationType.PERCENTAGES && !hasNewId) {
             wynntils.setBoolean("isPerfect", true);
         }
 
