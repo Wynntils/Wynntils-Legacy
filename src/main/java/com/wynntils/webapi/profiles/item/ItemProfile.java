@@ -59,6 +59,10 @@ public class ItemProfile {
                        Map<String, Integer> defenseTypes, Map<String, IdentificationContainer> statuses,
                        ArrayList<MajorIdentification> majorIds, String restriction, String lore) {}
 
+    public void registerIdTypes() {
+        statuses.entrySet().forEach(e -> e.getValue().registerIdType(e.getKey()));
+    }
+
     public String getDisplayName() {
         return displayName;
     }

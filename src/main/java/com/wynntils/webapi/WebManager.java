@@ -448,6 +448,8 @@ public class WebManager {
                     citems.put(prof.getDisplayName(), prof);
                 }
 
+                citems.values().forEach(ItemProfile::registerIdTypes);
+
                 directItems = citems.values();
                 items = citems;
 
