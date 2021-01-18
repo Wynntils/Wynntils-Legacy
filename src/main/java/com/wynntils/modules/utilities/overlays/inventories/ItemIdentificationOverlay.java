@@ -117,7 +117,7 @@ public class ItemIdentificationOverlay implements Listener {
         // Generating id lores
         Map<String, String> idLore = new HashMap<>();
 
-        double cumRelative = 0;
+        double relativeTotal = 0;
         int idAmount = 0;
         boolean hasNewId = false;
 
@@ -168,9 +168,9 @@ public class ItemIdentificationOverlay implements Listener {
                     if (id.getBaseValue() != currentValue) {
                         idLore.put(idName, lore + GOLD + " NEW");
                         hasNewId = true;
-                    } else {
-                        idLore.put(idName, lore);
+                        continue;
                     }
+                    idLore.put(idName, lore);
                     continue;
                 }
 
@@ -182,7 +182,7 @@ public class ItemIdentificationOverlay implements Listener {
                     continue;
                 }
 
-                cumRelative += result.getAmount();
+                relativeTotal += result.getAmount();
                 idAmount++;
             }
         }
@@ -316,12 +316,12 @@ public class ItemIdentificationOverlay implements Listener {
         String specialDisplay = "";
         if (hasNewId) {
             specialDisplay = GOLD + " NEW";
-        } else if (idAmount > 0 && cumRelative > 0) {
-            specialDisplay = " " + idType.getTitle(cumRelative/(double)idAmount);
+        } else if (idAmount > 0 && relativeTotal > 0) {
+            specialDisplay = " " + idType.getTitle(relativeTotal/(double)idAmount);
         }
 
         // check for item perfection
-        if (cumRelative/idAmount >= 1d && idType == IdentificationType.PERCENTAGES && !hasNewId) {
+        if (relativeTotal/idAmount >= 1d && idType == IdentificationType.PERCENTAGES && !hasNewId) {
             wynntils.setBoolean("isPerfect", true);
         }
 
