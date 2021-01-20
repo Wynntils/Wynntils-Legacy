@@ -4,7 +4,6 @@
 
 package com.wynntils.modules.chat.overlays.gui;
 
-import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -110,9 +109,7 @@ public class ChatGUI extends GuiChat {
         }
         addTab = addButton(new ChatButton(buttonId++, 2, this.height - 45, 15, 13, TextFormatting.GOLD + "+", false));
         int x = 0;
-        if (Reference.onBeta) {
-            languageButtons.put(WynncraftLanguage.GAVELLIAN, addButton(new ChatButton(buttonId++, this.width - ++x * 12, this.height - 14, 10, 12, "G", false, WynncraftLanguage.GAVELLIAN)));
-        }
+        languageButtons.put(WynncraftLanguage.GAVELLIAN, addButton(new ChatButton(buttonId++, this.width - ++x * 12, this.height - 14, 10, 12, "G", false, WynncraftLanguage.GAVELLIAN)));
         languageButtons.put(WynncraftLanguage.WYNNIC, addButton(new ChatButton(buttonId++, this.width - ++x * 12, this.height - 14, 10, 12, "W", false, WynncraftLanguage.WYNNIC)));
         languageButtons.put(WynncraftLanguage.NORMAL, addButton(new ChatButton(buttonId++, this.width - ++x * 12, this.height - 14, 10, 12, "N", false, WynncraftLanguage.NORMAL)));
         if (ChatConfig.INSTANCE.useBrackets) {

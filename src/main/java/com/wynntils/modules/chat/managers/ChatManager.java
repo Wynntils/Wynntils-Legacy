@@ -5,7 +5,6 @@
 package com.wynntils.modules.chat.managers;
 
 import com.wynntils.ModCore;
-import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.PowderManualChapter;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.helpers.TextAction;
@@ -578,7 +577,7 @@ public class ChatManager {
                         isNumber = false;
                         number = 0;
                         oldNumber = new StringBuilder();
-                    } else if (character == '<' && Reference.onBeta) {
+                    } else if (character == '<') {
                         isGavellian = true;
                         isWynnic = false;
                         isNumber = false;

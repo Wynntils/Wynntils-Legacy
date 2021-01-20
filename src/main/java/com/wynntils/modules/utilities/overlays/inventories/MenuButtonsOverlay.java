@@ -38,9 +38,7 @@ public class MenuButtonsOverlay implements Listener {
         removeDefaultButtons(buttonList);
 
         int yOffset = 72;
-        if (numButtonRows != 2 || Reference.onBeta) {
-            moveButtons(buttonList, gui);
-        }
+        moveButtons(buttonList, gui);
 
         if (Reference.onWorld && UtilitiesConfig.INSTANCE.addClassHubButtons) {
             addButtonPair(buttonList, gui, yOffset, 753, "Class selection",
@@ -49,7 +47,7 @@ public class MenuButtonsOverlay implements Listener {
         }
 
         if (UtilitiesConfig.INSTANCE.addOptionsProfileButtons) {
-            buttonList.add(new GuiButton(756, Reference.onBeta ? gui.width / 2 + 2 : gui.width / 2 - 100, gui.height / 4 + yOffset + -16, Reference.onBeta ? 98 : 200, 20, "Wynntils Menu"));
+            buttonList.add(new GuiButton(756, gui.width / 2 + 2, gui.height / 4 + yOffset + -16, 98, 20, "Wynntils Menu"));
         }
     }
 
@@ -62,23 +60,15 @@ public class MenuButtonsOverlay implements Listener {
      * Moves the www.wynncraft.com button to the right of the territory map button and when not showing the class selection and hub buttons moves the territory map and return to game buttons down and when not on beta moves the return to game button down
      */
     private static void moveButtons(List<GuiButton> buttonList, IngameMenuReplacer gui) {
-        if (!Reference.onBeta) {
-            for (GuiButton button : buttonList) {
-                if (button.id == 4) {
-                    button.y = gui.height / 4 + 48 - 16;
-                }
+        for (GuiButton button : buttonList) {
+            if (button.id == 7) {
+                button.y = gui.height / 4 + 48 - 16;
+                button.width = 98;
+                button.x = gui.width / 2 + 2;
             }
-        } else {
-            for (GuiButton button : buttonList) {
-                if (button.id == 7) {
-                    button.y = gui.height / 4 + 48 - 16;
-                    button.width = 98;
-                    button.x = gui.width / 2 + 2;
-                }
-                if (!Reference.onWorld || !UtilitiesConfig.INSTANCE.addClassHubButtons) {
-                    if (button.id == 4 || button.id == 5) {
-                        button.y += 24;
-                    }
+            if (!Reference.onWorld || !UtilitiesConfig.INSTANCE.addClassHubButtons) {
+                if (button.id == 4 || button.id == 5) {
+                    button.y += 24;
                 }
             }
         }
@@ -90,12 +80,8 @@ public class MenuButtonsOverlay implements Listener {
      */
     private static void removeDefaultButtons(List<GuiButton> buttonList) {
         buttonList.removeIf(b -> {
-            if (!Reference.onBeta) {
-                if (b.id >= 5 && b.id <= 7) return true;
-            } else {
-                if (UtilitiesConfig.INSTANCE.addOptionsProfileButtons && b.id == 7) return true;
-                if (b.id == 6) return true;
-            }
+            if (UtilitiesConfig.INSTANCE.addOptionsProfileButtons && b.id == 7) return true;
+            if (b.id == 6) return true;
             if (b.id == 1) {
                 b.displayString = TextFormatting.RED + b.displayString;
             } else if (b.id == 12 || b.id == 0) {
