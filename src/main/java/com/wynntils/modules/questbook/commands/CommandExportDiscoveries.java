@@ -113,7 +113,7 @@ public class CommandExportDiscoveries extends CommandBase implements IClientComm
                 DiscoveryInfo discovery = discoveriesIterator.next();
                 output.write(discovery.getMinLevel() + ",");
                 output.write(StringUtils.firstCharToUpper(new String[] { discovery.getType().toString().toLowerCase() }) + ",");
-                output.write(TextFormatting.getTextWithoutFormattingCodes(discovery.getName()));
+                output.write("\"" + TextFormatting.getTextWithoutFormattingCodes(discovery.getName()) + "\"");
                 if (discoveriesIterator.hasNext()) {
                     output.write("\n");
                 }
