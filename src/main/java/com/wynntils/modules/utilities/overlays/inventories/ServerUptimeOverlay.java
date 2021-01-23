@@ -27,7 +27,7 @@ public class ServerUptimeOverlay implements Listener {
         if (e.getGui().getSlotUnderMouse() == null || e.getGui().getSlotUnderMouse().getStack().isEmpty()) return;
 
         ItemStack stack = e.getGui().getSlotUnderMouse().getStack();
-        if (!ItemUtils.getStringLore(stack).contains("Players") || stack.getItem() == Items.CLOCK) return;
+        if (!ItemUtils.getStringLore(stack).contains("Click to join") || stack.getItem() == Items.CLOCK) return;
         NBTTagCompound nbt = stack.getTagCompound();
         if (nbt.hasKey("wynntils")) return;
 

@@ -46,7 +46,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class BankOverlay implements Listener {
 
-    private static final Pattern PAGE_PATTERN = Pattern.compile("\\[Pg\\. ([0-9]*)\\] [a-z_A-Z0-9]*'s? Bank");
+    private static final Pattern PAGE_PATTERN = Pattern.compile("\\[Pg\\. ([0-9]*)\\] [a-z_A-Z0-9 ]+'s? Bank");
 
     private static final ResourceLocation COLUMN_ARROW = new ResourceLocation("minecraft:textures/wynn/gui/column_arrow_right.png");
 
@@ -110,7 +110,7 @@ public class BankOverlay implements Listener {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onBankDrawBackground(GuiOverlapEvent.ChestOverlap.DrawGuiContainerBackgroundLayer e) {
         if (!inBank) return;
-        
+
         // searched item highlight
         for (Slot s : e.getGui().inventorySlots.inventorySlots) {
             if (s.getStack().isEmpty() || !s.getStack().hasDisplayName()) continue;
@@ -119,7 +119,7 @@ public class BankOverlay implements Listener {
             SpecialRendering.renderGodRays(e.getGui().getGuiLeft() + s.xPos + 5,
                     e.getGui().getGuiTop() + s.yPos + 6, 0, 5f, 35, UtilitiesConfig.Bank.INSTANCE.searchHighlightColor);
         }
-        
+
         if (!textureLoaded) return;
         if (!UtilitiesConfig.Bank.INSTANCE.showQuickAccessIcons) return;
 
