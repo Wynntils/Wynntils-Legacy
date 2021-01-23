@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class TabManager {
 
-    public static final String DEFAULT_GUILD_REGEX = "(^&3\\[(&r&b★{0,4})?&r&3[\\w ]*?\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)";
+    public static final String DEFAULT_GUILD_REGEX = "(^&3\\[(&r&b★{0,5})?&r&3(&x)?[\\w ]*?(&r&3)?\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)";
     public static final String DEFAULT_PARTY_REGEX = "(^&7\\[&r&e(.*?)\\])|(^&eYou are not in a party!)";
 
     private static List<ChatTab> availableTabs;
@@ -36,6 +36,9 @@ public class TabManager {
             }
             if (chatTab.getRegex().contains("(^&3\\[(&r&b★{0,4})?&r&3[\\w ]*?\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)")) {
                 chatTab.setRegex(chatTab.getRegex().replace("(^&3\\[(&r&b★{0,4})?&r&3\\w*?\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)", "(^&3\\[(&r&b★{0,4})?&r&3(&o)?[\\w ]*?(&r&3)?\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)"));
+            }
+            if (chatTab.getRegex().contains("(^&3\\[(&r&b★{0,4})?&r&3(&o)?[\\w ]*?(&r&3)?\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)")) {
+                chatTab.setRegex(chatTab.getRegex().replace("(^&3\\[(&r&b★{0,4})?&r&3(&o)?[\\w ]*?(&r&3)?\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)", "(^&3\\[(&r&b★{0,5})?&r&3(&o)?[\\w ]*?(&r&3)?\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)"));
             }
         });
     }

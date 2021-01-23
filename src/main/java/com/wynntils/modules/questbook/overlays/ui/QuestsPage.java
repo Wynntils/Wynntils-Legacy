@@ -196,6 +196,8 @@ public class QuestsPage extends QuestBookPage {
                         lore.remove(lore.size() - 1);
                         lore.remove(lore.size() - 1);
                     } else if (selected.getStatus() == QuestStatus.CAN_START) {
+                        lore.remove(lore.size() - 2);
+                        if(!lore.remove(lore.size() - 2).isEmpty()) lore.remove(lore.size() - 2); // quest is tracked, has extra line
                         if (selected.isMiniQuest()) {
                             render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 272, 245, 11, 7);
                         } else {
@@ -207,6 +209,8 @@ public class QuestsPage extends QuestBookPage {
                             lore.add(TextFormatting.GREEN + (TextFormatting.BOLD + "Left click to pin it!"));
                         }
                     } else if (selected.getStatus() == QuestStatus.STARTED) {
+                        lore.remove(lore.size() - 2);
+                        if(!lore.remove(lore.size() - 2).isEmpty()) lore.remove(lore.size() - 2); // quest is tracked, has extra line
                         render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 245, 245, 8, 7);
                         if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(selected.getName())) {
                             lore.add(TextFormatting.RED + (TextFormatting.BOLD + "Left click to unpin it!"));
