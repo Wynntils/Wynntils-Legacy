@@ -1,12 +1,10 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.music.configs;
 
 import com.wynntils.Reference;
-import com.wynntils.core.framework.enums.ClassType;
-import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
@@ -40,7 +38,7 @@ public class MusicConfig extends SettingsClass {
     @Override
     public void onSettingChanged(String name) {
         if (!enabled && Reference.onWorld) SoundTrackManager.getPlayer().stop();
-        if (!replaceJukebox && PlayerInfo.getPlayerInfo().getCurrentClass() != ClassType.NONE) SoundTrackManager.getPlayer().stop();
+        if (!replaceJukebox) SoundTrackManager.getPlayer().stop();
     }
 
 }

@@ -1,11 +1,12 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.utilities.overlays.inventories;
 
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.InventoryData;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
@@ -55,7 +56,7 @@ public class LoreChangerOverlay implements Listener {
                     lore.remove(lore.size() - 1);
                 }
                 lore.add("");
-                int secondsUntilSoulPoint = PlayerInfo.getPlayerInfo().getTicksToNextSoulPoint() / 20;
+                int secondsUntilSoulPoint = PlayerInfo.get(InventoryData.class).getTicksToNextSoulPoint() / 20;
                 int minutesUntilSoulPoint = secondsUntilSoulPoint / 60;
                 secondsUntilSoulPoint %= 60;
                 lore.add(TextFormatting.AQUA + "Time until next soul point: " + TextFormatting.WHITE + minutesUntilSoulPoint + ":" + String.format("%02d", secondsUntilSoulPoint));

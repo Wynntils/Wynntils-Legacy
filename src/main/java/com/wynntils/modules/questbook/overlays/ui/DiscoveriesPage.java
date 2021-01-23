@@ -1,11 +1,12 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.questbook.overlays.ui;
 
 import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -467,7 +468,7 @@ public class DiscoveriesPage extends QuestBookPage {
                 .filter(c -> {
                     // Shows/Hides discoveries if requirements met/not met
                     if (!QuestBookConfig.INSTANCE.showAllDiscoveries) {
-                        if (c.getLevel() > PlayerInfo.getPlayerInfo().getLevel()) {
+                        if (c.getLevel() > PlayerInfo.get(CharacterData.class).getLevel()) {
                             return false;
                         }
 

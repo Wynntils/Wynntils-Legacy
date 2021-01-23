@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.utilities.overlays.inventories;
@@ -8,6 +8,7 @@ import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.enums.SpellType;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
@@ -141,7 +142,7 @@ public class ItemIdentificationOverlay implements Listener {
                     if (requiredClass != null) {
                         longName = spell.forOtherClass(requiredClass).getName() + " Spell Cost";
                     } else {
-                        longName = spell.forOtherClass(PlayerInfo.getPlayerInfo().getCurrentClass()).getGenericAndSpecificName() + " Cost";
+                        longName = spell.forOtherClass(PlayerInfo.get(CharacterData.class).getCurrentClass()).getGenericAndSpecificName() + " Cost";
                     }
                 }
 

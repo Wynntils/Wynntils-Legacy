@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.utilities.overlays.inventories;
@@ -7,6 +7,7 @@ package com.wynntils.modules.utilities.overlays.inventories;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.InventoryData;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -42,10 +43,10 @@ public class EmeraldCountOverlay implements Listener {
         if (!Reference.onWorld || !UtilitiesConfig.Items.INSTANCE.emeraldCountInventory) return;
 
         if (UtilitiesConfig.Items.INSTANCE.emeraldCountText) {
-            drawTextMoneyAmount(170, 7, PlayerInfo.getPlayerInfo().getMoney(), new ScreenRenderer(), textColor);
+            drawTextMoneyAmount(170, 7, PlayerInfo.get(InventoryData.class).getMoney(), new ScreenRenderer(), textColor);
             return;
         }
-        drawIconsMoneyAmount(178, 0, PlayerInfo.getPlayerInfo().getMoney(), new ScreenRenderer());
+        drawIconsMoneyAmount(178, 0, PlayerInfo.get(InventoryData.class).getMoney(), new ScreenRenderer());
     }
 
     @SubscribeEvent

@@ -1,25 +1,19 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.utilities.overlays.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
-
-import org.lwjgl.input.Keyboard;
-
 import com.wynntils.ModCore;
 import com.wynntils.core.framework.enums.SkillPoint;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.instances.ContainerBuilds;
 import com.wynntils.modules.utilities.instances.SkillPointAllocation;
 import com.wynntils.modules.utilities.overlays.inventories.SkillPointOverlay;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
@@ -34,6 +28,11 @@ import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagInt;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.input.Keyboard;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
 
 public class SkillPointLoadoutUI extends FakeGuiContainer {
 
@@ -64,7 +63,7 @@ public class SkillPointLoadoutUI extends FakeGuiContainer {
             SkillPointAllocation sp = UtilitiesConfig.INSTANCE.skillPointLoadouts.get(name);
 
             int levelRequirement = (sp.getTotalSkillPoints() / 2) + 1;
-            boolean hasRequirement = PlayerInfo.getPlayerInfo().getLevel() >= levelRequirement;
+            boolean hasRequirement = PlayerInfo.get(CharacterData.class).getLevel() >= levelRequirement;
 
             ItemStack buildStack = new ItemStack(Items.DIAMOND_AXE);
             buildStack.setItemDamage(hasRequirement ? 42 : 44);
@@ -106,7 +105,7 @@ public class SkillPointLoadoutUI extends FakeGuiContainer {
             if (aloc == null) return;
 
             int levelRequirement = (aloc.getTotalSkillPoints() / 2) + 1;
-            if (PlayerInfo.getPlayerInfo().getLevel() < levelRequirement) return;
+            if (PlayerInfo.get(CharacterData.class).getLevel() < levelRequirement) return;
 
             parent.loadBuild(aloc); // sends the allocated loadout into
 
@@ -158,7 +157,7 @@ public class SkillPointLoadoutUI extends FakeGuiContainer {
         this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.inventoryRows * 18 + 17);
         this.drawTexturedModalRect(i, j + this.inventoryRows * 18 + 17, 0, 213, this.xSize, 9);
     }
-    
+
     private static SkillPointAllocation getLoadout(String name) {
         for (Entry<String, SkillPointAllocation> e : UtilitiesConfig.INSTANCE.skillPointLoadouts.entrySet()) {
             if (TextFormatting.getTextWithoutFormattingCodes(e.getKey()).equals(name))
@@ -166,7 +165,7 @@ public class SkillPointLoadoutUI extends FakeGuiContainer {
         }
         return null;
     }
-    
+
     private static void removeLoadout(String name) {
         for (Entry<String, SkillPointAllocation> e : UtilitiesConfig.INSTANCE.skillPointLoadouts.entrySet()) {
             if (TextFormatting.getTextWithoutFormattingCodes(e.getKey()).equals(name)) {

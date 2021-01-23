@@ -1,10 +1,11 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.core.instances;
 
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.modules.core.managers.GuildAndFriendManager;
 import com.wynntils.modules.core.managers.PlayerEntityManager;
 import com.wynntils.modules.map.overlays.objects.MapPlayerIcon;
@@ -225,7 +226,7 @@ public class OtherPlayerProfile {
         String username = getUsername();
         if (username == null) return false;
 
-        return PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().contains(username);
+        return PlayerInfo.get(SocialData.class).getPlayerParty().getPartyMembers().contains(username);
     }
 
     public boolean isGuildmate() {

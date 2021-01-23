@@ -1,12 +1,13 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
 
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
-import com.wynntils.core.framework.enums.ClassType;
+import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
@@ -42,7 +43,7 @@ public class GameUpdateOverlay extends Overlay {
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
-        if (!Reference.onWorld || getPlayerInfo().getCurrentClass() == ClassType.NONE || event.getType() != RenderGameOverlayEvent.ElementType.ALL) return;
+        if (!Reference.onWorld || !PlayerInfo.get(CharacterData.class).isLoaded() || event.getType() != RenderGameOverlayEvent.ElementType.ALL) return;
         staticSize.y = LINE_HEIGHT * OverlayConfig.GameUpdate.INSTANCE.messageLimit;
 
         int lines = 0;

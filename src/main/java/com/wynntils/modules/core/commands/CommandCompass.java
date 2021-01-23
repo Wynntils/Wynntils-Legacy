@@ -1,10 +1,11 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.core.commands;
 
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.core.managers.CompassManager;
 import net.minecraft.client.Minecraft;
@@ -308,7 +309,7 @@ public class CommandCompass extends CommandBase implements IClientCommand {
 
         if (args.length >= 2 && args[0].equalsIgnoreCase("share")) {
             // Allow easy completion of friends' names
-            Set<String> completions = new HashSet<>(PlayerInfo.getPlayerInfo().getFriendList());
+            Set<String> completions = new HashSet<>(PlayerInfo.get(SocialData.class).getFriendList());
             completions.add("party");
             completions.add("guild");
             if (args.length == 3 && args[1].equalsIgnoreCase("location")) {

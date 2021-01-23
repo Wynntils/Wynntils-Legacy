@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.utilities.overlays;
@@ -7,9 +7,10 @@ package com.wynntils.modules.utilities.overlays;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
-import com.wynntils.core.framework.instances.PlayerInfo;
-import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
+import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.CharacterData;
+import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.utilities.UtilitiesModule;
@@ -24,7 +25,6 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.network.play.server.*;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.text.TextComponentString;
-import static net.minecraft.util.text.TextFormatting.*;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -36,6 +36,8 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static net.minecraft.util.text.TextFormatting.*;
 
 public class OverlayEvents implements Listener {
 
@@ -88,23 +90,25 @@ public class OverlayEvents implements Listener {
     public void onClientTick(TickEvent.ClientTickEvent e) {
         if (Reference.onWorld && e.phase == TickEvent.Phase.END) {
             /* XP Gain Messages */
+            CharacterData data = PlayerInfo.get(CharacterData.class);
+
             if (OverlayConfig.GameUpdate.GameUpdateEXPMessages.INSTANCE.enabled) {
                 if (tickcounter % (int) (OverlayConfig.GameUpdate.GameUpdateEXPMessages.INSTANCE.expUpdateRate * 20f) == 0) {
-                    if (oldxp != PlayerInfo.getPlayerInfo().getCurrentXP()) {
-                        if (!PlayerInfo.getPlayerInfo().getCurrentXPAsPercentage().equals("")) {
-                            if (oldxp < PlayerInfo.getPlayerInfo().getCurrentXP()) {
+                    if (oldxp != data.getCurrentXP()) {
+                        if (!data.getCurrentXPAsPercentage().equals("")) {
+                            if (oldxp < data.getCurrentXP()) {
                                 DecimalFormat df = new DecimalFormat("0.0");
-                                float xpchange = Float.parseFloat(PlayerInfo.getPlayerInfo().getCurrentXPAsPercentage()) - Float.parseFloat(oldxppercent);
+                                float xpchange = Float.parseFloat(data.getCurrentXPAsPercentage()) - Float.parseFloat(oldxppercent);
                                 GameUpdateOverlay.queueMessage(OverlayConfig.GameUpdate.GameUpdateEXPMessages.INSTANCE.expMessageFormat
                                         .replace("%xo%", Integer.toString(oldxp))
-                                        .replace("%xn%", Integer.toString(PlayerInfo.getPlayerInfo().getCurrentXP()))
-                                        .replace("%xc%", Integer.toString(PlayerInfo.getPlayerInfo().getCurrentXP() - oldxp))
+                                        .replace("%xn%", Integer.toString(data.getCurrentXP()))
+                                        .replace("%xc%", Integer.toString(data.getCurrentXP() - oldxp))
                                         .replace("%po%", oldxppercent)
-                                        .replace("%pn%", PlayerInfo.getPlayerInfo().getCurrentXPAsPercentage())
+                                        .replace("%pn%", data.getCurrentXPAsPercentage())
                                         .replace("%pc%", df.format(xpchange)));
                             }
-                            oldxp = PlayerInfo.getPlayerInfo().getCurrentXP();
-                            oldxppercent = PlayerInfo.getPlayerInfo().getCurrentXPAsPercentage();
+                            oldxp = data.getCurrentXP();
+                            oldxppercent = data.getCurrentXPAsPercentage();
                         }
                     }
                 }

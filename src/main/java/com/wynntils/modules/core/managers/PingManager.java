@@ -1,12 +1,12 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.core.managers;
 
 import com.wynntils.Reference;
-import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.utils.helpers.CommandResponse;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
@@ -22,7 +22,7 @@ public class PingManager {
 
     public static void calculatePing() {
         if (!Reference.onWorld
-            || PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.NONE
+            || !PlayerInfo.get(CharacterData.class).isLoaded()
             || Minecraft.getMinecraft().currentScreen instanceof GuiChat
             || System.currentTimeMillis() - lastCall < 15000) return;
 

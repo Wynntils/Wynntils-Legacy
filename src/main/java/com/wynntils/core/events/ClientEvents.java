@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.core.events;
@@ -11,6 +11,7 @@ import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.core.utils.reflections.ReflectionMethods;
@@ -161,7 +162,7 @@ public class ClientEvents {
         if (!loadingClassSelection) return;
 
         // updates the user class to NONE since it's not using a class anymore
-        PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.NONE, false);
+        PlayerInfo.get(CharacterData.class).updatePlayerClass(ClassType.NONE, false);
         loadingClassSelection = false;
     }
 
@@ -193,7 +194,7 @@ public class ClientEvents {
                     lastWorld = "";
                     Reference.setUserWorld(null);
                     FrameworkManager.getEventBus().post(new WynnWorldEvent.Leave());
-                    PlayerInfo.getPlayerInfo().updatePlayerClass(ClassType.NONE, false);
+                    PlayerInfo.get(CharacterData.class).updatePlayerClass(ClassType.NONE, false);
                 }
             }
             // Add uuid of newly joined player

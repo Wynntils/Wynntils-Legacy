@@ -1,27 +1,18 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.utilities.overlays.inventories;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.wynntils.core.events.custom.PacketEvent;
-import com.wynntils.core.framework.enums.MouseButton;
-import com.wynntils.modules.utilities.overlays.ui.SkillPointLoadoutUI;
-import net.minecraft.network.play.server.SPacketCustomSound;
-import org.lwjgl.input.Keyboard;
-
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
+import com.wynntils.core.events.custom.PacketEvent;
+import com.wynntils.core.framework.enums.MouseButton;
 import com.wynntils.core.framework.enums.SkillPoint;
 import com.wynntils.core.framework.enums.SpellType;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -33,7 +24,7 @@ import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.instances.SkillPointAllocation;
-
+import com.wynntils.modules.utilities.overlays.ui.SkillPointLoadoutUI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.GlStateManager;
@@ -45,10 +36,18 @@ import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketClickWindow;
+import net.minecraft.network.play.server.SPacketCustomSound;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.lwjgl.input.Keyboard;
+
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class SkillPointOverlay implements Listener {
 
@@ -283,12 +282,12 @@ public class SkillPointOverlay implements Listener {
         if (stack.getTagCompound().hasKey("wynntilsAnalyzed")) return;
 
         int closestUpgradeLevel = Integer.MAX_VALUE;
-        int level = PlayerInfo.getPlayerInfo().getLevel();
+        int level = PlayerInfo.get(CharacterData.class).getLevel();
 
         List<String> newLore = new LinkedList<>();
 
         for (int j = 0; j < 4; j++) {
-            SpellType spell = SpellType.forClass(PlayerInfo.getPlayerInfo().getCurrentClass(), j + 1);
+            SpellType spell = SpellType.forClass(PlayerInfo.get(CharacterData.class).getCurrentClass(), j + 1);
 
             if (spell.getUnlockLevel(1) <= level) {
                 int nextUpgrade = spell.getNextManaReduction(level, intelligencePoints);
@@ -296,7 +295,7 @@ public class SkillPointOverlay implements Listener {
                     closestUpgradeLevel = nextUpgrade;
                 }
                 int manaCost = spell.getManaCost(level, intelligencePoints);
-                String spellName = PlayerInfo.getPlayerInfo().isCurrentClassReskinned() ? spell.getReskinned() : spell.getName();
+                String spellName = PlayerInfo.get(CharacterData.class).isReskinned() ? spell.getReskinned() : spell.getName();
                 String spellInfo = TextFormatting.LIGHT_PURPLE + spellName + " Spell: " + TextFormatting.AQUA
                         + "-" + manaCost + " ✺";
                 if (nextUpgrade < Integer.MAX_VALUE) {

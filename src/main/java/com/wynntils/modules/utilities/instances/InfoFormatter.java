@@ -1,13 +1,14 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.utilities.instances;
 
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
-import com.wynntils.core.framework.instances.PlayerInfo.HorseData;
-import com.wynntils.core.framework.instances.PlayerInfo.UnprocessedAmount;
+import com.wynntils.core.framework.instances.containers.UnprocessedAmount;
+import com.wynntils.core.framework.instances.data.CharacterData;
+import com.wynntils.core.framework.instances.data.*;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.Utils;
@@ -50,17 +51,17 @@ public class InfoFormatter {
 
         // Blocks per second
         registerFormatter((input) ->
-                PlayerInfo.PER_FORMAT.format(SpeedometerManager.getCurrentSpeed()),
+                CharacterData.PER_FORMAT.format(SpeedometerManager.getCurrentSpeed()),
                 "bps");
 
         // Blocks per minute
         registerFormatter((input) ->
-                PlayerInfo.PER_FORMAT.format(SpeedometerManager.getCurrentSpeed() * 60),
+                CharacterData.PER_FORMAT.format(SpeedometerManager.getCurrentSpeed() * 60),
                 "bpm");
 
         // Kilometers per hour (1000 blocks per hour)
         registerFormatter((input) ->
-                PlayerInfo.PER_FORMAT.format(SpeedometerManager.getCurrentSpeed() * 3.6),
+                CharacterData.PER_FORMAT.format(SpeedometerManager.getCurrentSpeed() * 3.6),
                 "kmph");
 
         // X coordinate
@@ -115,47 +116,47 @@ public class InfoFormatter {
 
         // Current mana
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.getPlayerInfo().getCurrentMana()),
+                Integer.toString(PlayerInfo.get(CharacterData.class).getCurrentMana()),
                 "mana");
 
         // Max mana
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.getPlayerInfo().getMaxMana()),
+                Integer.toString(PlayerInfo.get(CharacterData.class).getMaxMana()),
                 "mana_max");
 
         // Current health
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.getPlayerInfo().getCurrentHealth()),
+                Integer.toString(PlayerInfo.get(CharacterData.class).getCurrentHealth()),
                 "health");
 
         // Max health
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.getPlayerInfo().getMaxHealth()),
+                Integer.toString(PlayerInfo.get(CharacterData.class).getMaxHealth()),
                 "health_max");
 
         // Current XP (formatted)
         registerFormatter((input) ->
-                StringUtils.integerToShortString(PlayerInfo.getPlayerInfo().getCurrentXP()),
+                StringUtils.integerToShortString(PlayerInfo.get(CharacterData.class).getCurrentXP()),
                 "xp");
 
         // Current XP (raw)
         registerFormatter((input) ->
-                Long.toString(PlayerInfo.getPlayerInfo().getCurrentXP()),
+                Long.toString(PlayerInfo.get(CharacterData.class).getCurrentXP()),
                 "xp_raw");
 
         // XP required to level up (formatted)
         registerFormatter((input) ->
-                StringUtils.integerToShortString(PlayerInfo.getPlayerInfo().getXpNeededToLevelUp()),
+                StringUtils.integerToShortString(PlayerInfo.get(CharacterData.class).getXpNeededToLevelUp()),
                 "xp_req");
 
         // XP required to level up (raw)
         registerFormatter((input) ->
-                Long.toString(PlayerInfo.getPlayerInfo().getXpNeededToLevelUp()),
+                Long.toString(PlayerInfo.get(CharacterData.class).getXpNeededToLevelUp()),
                 "xp_req_raw");
 
         // Percentage XP to next level
         registerFormatter((input) ->
-                PlayerInfo.getPlayerInfo().getCurrentXPAsPercentage(),
+                PlayerInfo.get(CharacterData.class).getCurrentXPAsPercentage(),
                 "xp_pct");
 
         // Horse XP
@@ -196,38 +197,38 @@ public class InfoFormatter {
 
         // Number of items in ingredient pouch
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.getPlayerInfo().getIngredientPouchCount(false)),
+                Integer.toString(PlayerInfo.get(InventoryData.class).getIngredientPouchCount(false)),
                 "pouch");
 
         // Number of free slots in ingredient pouch
         registerFormatter((input) ->
-                Integer.toString(27 - PlayerInfo.getPlayerInfo().getIngredientPouchCount(true)),
+                Integer.toString(27 - PlayerInfo.get(InventoryData.class).getIngredientPouchCount(true)),
                 "pouch_free");
 
         // Number of used slots in ingredient pouch
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.getPlayerInfo().getIngredientPouchCount(true)),
+                Integer.toString(PlayerInfo.get(InventoryData.class).getIngredientPouchCount(true)),
                 "pouch_slots");
 
         // Number of free slots in the inventory
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.getPlayerInfo().getFreeInventorySlots()),
+                Integer.toString(PlayerInfo.get(InventoryData.class).getFreeInventorySlots()),
                 "inv_free");
 
         // Number of used slots in the inventory
         registerFormatter((input) ->
-                Integer.toString(28 - PlayerInfo.getPlayerInfo().getFreeInventorySlots()),
+                Integer.toString(28 - PlayerInfo.get(InventoryData.class).getFreeInventorySlots()),
                 "inv_slots");
 
         // Current territory
         registerFormatter((input) ->
-                PlayerInfo.getPlayerInfo().getLocation(),
+                PlayerInfo.get(LocationData.class).getLocation(),
                 "location", "loc");
 
 
         // Current guild that owns current territory
         registerFormatter((input) -> {
-                    String territory = PlayerInfo.getPlayerInfo().getLocation();
+                    String territory = PlayerInfo.get(LocationData.class).getLocation();
                     return territory.isEmpty() ? "" : WebManager.getTerritories().get(territory).getGuild();
                 },
                 "territory_owner", "terguild");
@@ -235,7 +236,7 @@ public class InfoFormatter {
 
         // Current guild that owns current territory (prefix)
         registerFormatter((input) -> {
-                    String territory = PlayerInfo.getPlayerInfo().getLocation();
+                    String territory = PlayerInfo.get(LocationData.class).getLocation();
                     return territory.isEmpty() ? "" : WebManager.getTerritories().get(territory).getGuildPrefix();
                 },
                 "territory_owner_prefix", "terguild_pref");
@@ -252,7 +253,7 @@ public class InfoFormatter {
 
         // Current level
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.getPlayerInfo().getLevel()),
+                Integer.toString(PlayerInfo.get(CharacterData.class).getLevel()),
                 "level", "lvl");
 
         // Time until soul point (formatted)
@@ -284,12 +285,12 @@ public class InfoFormatter {
 
         // Current soul points
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.getPlayerInfo().getSoulPoints()),
+                Integer.toString(PlayerInfo.get(InventoryData.class).getSoulPoints()),
                 "soulpoints", "sp");
 
         // Max soul points
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.getPlayerInfo().getMaxSoulPoints()),
+                Integer.toString(PlayerInfo.get(InventoryData.class).getMaxSoulPoints()),
                 "soulpoints_max", "sp_max");
 
         // Total money in inventory
@@ -339,17 +340,17 @@ public class InfoFormatter {
 
         // Count of health potions
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.getPlayerInfo().getHealthPotions()),
+                Integer.toString(PlayerInfo.get(InventoryData.class).getHealthPotions()),
                 "potions_health", "hp_pot");
 
         // Count of mana potions
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.getPlayerInfo().getManaPotions()),
+                Integer.toString(PlayerInfo.get(InventoryData.class).getManaPotions()),
                 "potions_mana", "mp_pot");
 
         // Current class
         registerFormatter((input) -> {
-            String className = PlayerInfo.getPlayerInfo().getCurrentClass().name().toLowerCase();
+            String className = PlayerInfo.get(CharacterData.class).getCurrentClass().name().toLowerCase();
 
             if (input.equals("Class")) {  // %Class% is title case
                 className = StringUtils.capitalizeFirst(className);
@@ -406,12 +407,12 @@ public class InfoFormatter {
 
         // Number of players in the party
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().size()),
+                Integer.toString(PlayerInfo.get(SocialData.class).getPlayerParty().getPartyMembers().size()),
                 "party_count");
 
         // Owner of players party
         registerFormatter((input) ->
-                PlayerInfo.getPlayerInfo().getPlayerParty().getOwner(),
+                PlayerInfo.get(SocialData.class).getPlayerParty().getOwner(),
                 "party_owner");
 
         registerFormatter((input ->
@@ -481,7 +482,7 @@ public class InfoFormatter {
     }
 
     private void cacheMoney() {
-        int total = PlayerInfo.getPlayerInfo().getMoney();
+        int total = PlayerInfo.get(InventoryData.class).getMoney();
 
         String eb = Integer.toString(total / 64);
         String em = Integer.toString(total % 64);
@@ -507,7 +508,7 @@ public class InfoFormatter {
     }
 
     private void cacheSoulPointTimer() {
-        int totalseconds = PlayerInfo.getPlayerInfo().getTicksToNextSoulPoint() / 20;
+        int totalseconds = PlayerInfo.get(InventoryData.class).getTicksToNextSoulPoint() / 20;
 
         int seconds = totalseconds % 60;
         int minutes = totalseconds / 60;
@@ -519,9 +520,9 @@ public class InfoFormatter {
     }
 
     private void cacheHorseData() {
-        HorseData horse = PlayerInfo.getPlayerInfo().getHorseData();
+        HorseData horse = PlayerInfo.get(HorseData.class);
 
-        if (horse == null) {
+        if (!horse.hasHorse()) {
             cache.put("horselevel", "??");
             cache.put("horsexp", "??");
             cache.put("horsetier", "?");
@@ -530,22 +531,23 @@ public class InfoFormatter {
             return;
         }
 
-        cache.put("horselevel", Integer.toString(horse.level));
-        cache.put("horsexp", Integer.toString(horse.xp));
-        cache.put("horsetier", Integer.toString(horse.tier));
-        cache.put("horselevelmax", Integer.toString(horse.maxLevel));
+        cache.put("horselevel", Integer.toString(horse.getLevel()));
+        cache.put("horsexp", Integer.toString(horse.getXp()));
+        cache.put("horsetier", Integer.toString(horse.getTier()));
+        cache.put("horselevelmax", Integer.toString(horse.getMaxLevel()));
     }
 
     private void cacheUnprocessed() {
-        UnprocessedAmount unproc = PlayerInfo.getPlayerInfo().getUnprocessedAmount();
+        UnprocessedAmount unproc = PlayerInfo.get(InventoryData.class).getUnprocessedAmount();
 
-        if (unproc.maximum == -1) {
+        if (unproc.getMaximum() == -1) {
             cache.put("unprocessedmax", "??");
         } else {
-            cache.put("unprocessedmax", Integer.toString(unproc.maximum));
+            cache.put("unprocessedmax", Integer.toString(unproc.getMaximum()));
         }
 
-        cache.put("unprocessedcurrent", Integer.toString(unproc.current));
+        cache.put("unprocessedcurrent", Integer.toString(unproc.getCurrent()));
     }
+
 }
 
