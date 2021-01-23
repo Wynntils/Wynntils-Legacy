@@ -43,6 +43,7 @@ public class MountHorseManager {
     public static MountHorseStatus mountHorse(boolean allowRetry) {
         Minecraft mc = ModCore.mc();
         EntityPlayerSP player = mc.player;
+
         if (player.isRiding()) {
             return MountHorseStatus.ALREADY_RIDING;
         }
@@ -65,7 +66,7 @@ public class MountHorseManager {
         if (playersHorse == null) {
             HorseData horse = PlayerInfo.get(HorseData.class);
 
-            if (horse.hasHorse() || horse.getInventorySlot() > 8 || !allowRetry) {
+            if (!horse.hasHorse() || horse.getInventorySlot() > 8 || !allowRetry) {
                 return MountHorseStatus.NO_HORSE;
             }
 
