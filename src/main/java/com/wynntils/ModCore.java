@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils;
@@ -10,7 +10,7 @@ import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.rendering.WynnRenderItem;
 import com.wynntils.core.framework.rendering.textures.Mappings;
 import com.wynntils.core.framework.rendering.textures.Textures;
-import com.wynntils.modules.ModuleManager;
+import com.wynntils.modules.ModuleRegistry;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.overlays.ui.ModConflictScreen;
@@ -60,10 +60,12 @@ public class ModCore {
         WebManager.setupUserAccount();
         WebManager.setupWebApi(true);
 
-        CoreManager.setupCore();
-        ModuleManager.initModules();
+        CoreManager.preModules();
 
+        ModuleRegistry.registerModules();
         FrameworkManager.startModules();
+
+        CoreManager.afterModules();
     }
 
     @Mod.EventHandler

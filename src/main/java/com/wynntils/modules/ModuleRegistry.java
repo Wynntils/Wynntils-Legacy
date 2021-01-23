@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules;
@@ -16,12 +16,12 @@ import com.wynntils.modules.richpresence.RichPresenceModule;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.visual.VisualModule;
 
-public class ModuleManager {
+public class ModuleRegistry {
 
     /**
      * This registers all modules that should be loaded
      */
-    public static void initModules() {
+    public static void registerModules() {
         FrameworkManager.registerModule(new QuestBookModule());
         FrameworkManager.registerModule(new CoreModule());
         FrameworkManager.registerModule(new UtilitiesModule());

@@ -1,12 +1,12 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils;
 
 import com.sun.jna.Platform;
-import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.webapi.WebManager;
@@ -50,7 +50,7 @@ public class Reference {
     }
 
     public static boolean inClassSelection() {
-        return onWorld && PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.NONE;
+        return onWorld && !PlayerInfo.get(CharacterData.class).isLoaded();
     }
 
     public static boolean onServer = false;

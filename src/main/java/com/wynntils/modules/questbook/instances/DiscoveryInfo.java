@@ -1,10 +1,11 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.questbook.instances;
 
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.questbook.enums.DiscoveryType;
@@ -72,7 +73,7 @@ public class DiscoveryInfo {
                 guildTerritory = WebManager.getTerritories().get(apiName.replace('\'', '’'));
             }
         }
-        
+
         lore.add(0, this.name);
         this.discovered = discovered;
         valid = true;
@@ -88,12 +89,12 @@ public class DiscoveryInfo {
 
         this.lore = new ArrayList<>();
         lore.add(type.getColour() + "" + TextFormatting.BOLD + this.name);
-        lore.add((minLevel <= PlayerInfo.getPlayerInfo().getLevel() ? TextFormatting.GREEN + "✔" : TextFormatting.RED + "✖") + TextFormatting.GRAY + " Combat Lv. Min: " + minLevel);
+        lore.add((minLevel <= PlayerInfo.get(CharacterData.class).getLevel() ? TextFormatting.GREEN + "✔" : TextFormatting.RED + "✖") + TextFormatting.GRAY + " Combat Lv. Min: " + minLevel);
         lore.add("");
 
         this.minLevel = minLevel;
         this.type = type;
-        
+
         // Guild territory profile
         if (type == DiscoveryType.TERRITORY || type == DiscoveryType.WORLD) {
             String apiName = TextFormatting.getTextWithoutFormattingCodes(name);
@@ -134,7 +135,7 @@ public class DiscoveryInfo {
     public ItemStack getOriginalStack() {
         return originalStack;
     }
-    
+
     public TerritoryProfile getGuildTerritoryProfile() {
         return guildTerritory;
     }

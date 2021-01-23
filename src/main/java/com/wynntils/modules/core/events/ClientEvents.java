@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.core.events;
@@ -14,6 +14,8 @@ import com.wynntils.core.framework.enums.DamageType;
 import com.wynntils.core.framework.enums.professions.GatheringMaterial;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.ActionBarData;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.objects.Location;
@@ -28,7 +30,6 @@ import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
-
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -65,7 +66,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.wynntils.core.framework.instances.PlayerInfo.getPlayerInfo;
+import static com.wynntils.core.framework.instances.PlayerInfo.get;
 
 public class ClientEvents implements Listener {
     TotemTracker totemTracker = new TotemTracker();
@@ -216,7 +217,7 @@ public class ClientEvents implements Listener {
     public void updateActionBar(PacketEvent<SPacketChat> e) {
         if (!Reference.onServer || e.getPacket().getType() != ChatType.GAME_INFO) return;
 
-        PlayerInfo.getPlayerInfo().updateActionBar(e.getPacket().getChatComponent().getUnformattedText());
+        PlayerInfo.get(ActionBarData.class).updateActionBar(e.getPacket().getChatComponent().getUnformattedText());
         if (UtilitiesModule.getModule().getActionBarOverlay().active) e.setCanceled(true); // only disable when the wynntils action bar is enabled
     }
 
@@ -301,7 +302,7 @@ public class ClientEvents implements Listener {
             || !e.getSlotIn().getStack().getDisplayName().contains("[>] Select")) return;
 
 
-        getPlayerInfo().setClassId(e.getSlotId());
+        get(CharacterData.class).setClassId(e.getSlotId());
 
         String classLore = ItemUtils.getLore(e.getSlotIn().getStack()).get(1);
         String className = classLore.substring(classLore.indexOf(TextFormatting.WHITE.toString()) + 2);
@@ -309,7 +310,7 @@ public class ClientEvents implements Listener {
         ClassType selectedClass = ClassType.fromName(className);
         boolean selectedClassIsReskinned = ClassType.isReskinned(className);
 
-        getPlayerInfo().updatePlayerClass(selectedClass, selectedClassIsReskinned);
+        get(CharacterData.class).updatePlayerClass(selectedClass, selectedClassIsReskinned);
     }
 
     @SubscribeEvent

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.core.framework.instances;
@@ -141,10 +141,6 @@ public abstract class Module {
 
     public Minecraft getMinecraft() {
         return Minecraft.getMinecraft();
-    }
-
-    public PlayerInfo getPlayerInfo() {
-        return PlayerInfo.getPlayerInfo();
     }
 
     public Logger getLogger() {

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.utilities.overlays.inventories;
@@ -7,6 +7,7 @@ package com.wynntils.modules.utilities.overlays.inventories;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.textures.Textures;
@@ -53,8 +54,8 @@ public class ItemLockOverlay implements Listener {
     }
 
     private static void renderItemLock(Slot s, int guiLeft, int guiTop) {
-        if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return;
-        if (!UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).contains(s.getSlotIndex())) return;
+        if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId())) return;
+        if (!UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.get(CharacterData.class).getClassId()).contains(s.getSlotIndex())) return;
 
         ScreenRenderer.beginGL(0, 0);
 

@@ -1,11 +1,11 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
 
 import com.wynntils.Reference;
-import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.ActionBarData;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -29,7 +29,7 @@ public class ActionBarOverlay extends Overlay {
         super("ActionBar Helper", 75, 10, true, 0.5f, 1f, 0, -70, OverlayGrowFrom.TOP_CENTRE,
                 RenderGameOverlayEvent.ElementType.EXPERIENCE, RenderGameOverlayEvent.ElementType.JUMPBAR);
     }
-    
+
     transient ItemStack highlightItem = ItemStack.EMPTY;
     transient int highlightTicks;
 
@@ -37,7 +37,7 @@ public class ActionBarOverlay extends Overlay {
     public void render(RenderGameOverlayEvent.Pre event) {
         if (!Reference.onWorld) return;
 
-        String lastActionBar = PlayerInfo.getPlayerInfo().getLastActionBar();
+        String lastActionBar = get(ActionBarData.class).getLastActionBar();
         if (lastActionBar == null) return;
 
         String[] divisor = lastActionBar.split("/");
@@ -103,18 +103,18 @@ public class ActionBarOverlay extends Overlay {
     private boolean renderItemName() {
         int newHighlightTicks = ReflectionFields.GuiIngame_remainingHighlightTicks.getValue(Minecraft.getMinecraft().ingameGUI);
         ItemStack newHighlightItem = ReflectionFields.GuiIngame_highlightingItemStack.getValue(Minecraft.getMinecraft().ingameGUI);
-        
+
         if (newHighlightTicks > 0) { // update item
             highlightTicks = newHighlightTicks*5; // this method ticks 5 times as fast as the default
             highlightItem = newHighlightItem;
-            
+
             ReflectionFields.GuiIngame_remainingHighlightTicks.setValue(Minecraft.getMinecraft().ingameGUI, 0);
         } else if (newHighlightItem.isEmpty()) { // clear highlight when player switches to an empty hand
             highlightTicks = 0;
         }
 
         if (highlightTicks > 0 && !highlightItem.isEmpty()) {
-            
+
             String s = highlightItem.getDisplayName();
 
             if (highlightItem.hasDisplayName()) {

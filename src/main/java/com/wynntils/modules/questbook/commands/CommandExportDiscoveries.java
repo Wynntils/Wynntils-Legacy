@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.questbook.commands;
@@ -7,8 +7,8 @@ package com.wynntils.modules.questbook.commands;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.FrameworkManager;
-import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.events.custom.QuestBookUpdateEvent;
@@ -56,9 +56,11 @@ public class CommandExportDiscoveries extends CommandBase implements IClientComm
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         ITextComponent command = new TextComponentString("/exportdiscoveries");
         command.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/exportdiscoveries"));
+
         if (!Reference.onWorld)
             throw new CommandException("You need to be in a Wynncraft world to run %s", command);
-        if (PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.NONE)
+
+        if (!PlayerInfo.get(CharacterData.class).isLoaded())
             throw new CommandException("You need to select a class to run %s", command);
 
         FrameworkManager.getEventBus().register(this);

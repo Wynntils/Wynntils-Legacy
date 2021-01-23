@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.utilities.overlays.inventories;
@@ -8,6 +8,7 @@ import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.enums.Powder;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.Utils;
@@ -91,7 +92,7 @@ public class WynnDataOverlay implements Listener {
         for (int i = 0; i < 9; i++) {
             String lore = ItemUtils.getStringLore(Minecraft.getMinecraft().player.inventory.mainInventory.get(i));
             // Assume that only weapons have class requirements
-            if (lore.contains("Class Req: " + PlayerInfo.getPlayerInfo().getCurrentClass().getDisplayName())) {
+            if (lore.contains("Class Req: " + PlayerInfo.get(CharacterData.class).getCurrentClass().getDisplayName())) {
                 return i;
             }
         }

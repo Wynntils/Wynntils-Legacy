@@ -1,11 +1,12 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
 
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
@@ -46,11 +47,12 @@ public class ExpBarOverlay extends Overlay {
 
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
-        if (!(visible = (getPlayerInfo().getExperiencePercentage() != -1 && !Reference.onLobby && mc.player.getAir() == 300))) return;
+        if (!(visible = (get(CharacterData.class).getExperiencePercentage() != -1 && !Reference.onLobby && mc.player.getAir() == 300))) return;
         if (OverlayConfig.Exp.INSTANCE.animated > 0.0f && OverlayConfig.Exp.INSTANCE.animated < 10.0f)
-            exp -= (OverlayConfig.Exp.INSTANCE.animated * 0.1f) * (exp - getPlayerInfo().getExperiencePercentage());
+            exp -= (OverlayConfig.Exp.INSTANCE.animated * 0.1f) * (exp - get(CharacterData.class).getExperiencePercentage());
         else
-            exp = getPlayerInfo().getExperiencePercentage();
+            exp = get(CharacterData.class).getExperiencePercentage();
+
         if (ModCore.mc().player.getHorseJumpPower() > 0) exp = ModCore.mc().player.getHorseJumpPower();
     }
 
@@ -77,6 +79,6 @@ public class ExpBarOverlay extends Overlay {
 
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2) {
         drawProgressBar(Textures.Overlays.bars_exp, -91, y1, 91, y2, 0, ty1, 182, ty2, (flip ? -exp : exp));
-        drawString(getPlayerInfo().getLevel() + "", textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Exp.INSTANCE.textShadow);
+        drawString(get(CharacterData.class).getLevel() + "", textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Exp.INSTANCE.textShadow);
     }
 }

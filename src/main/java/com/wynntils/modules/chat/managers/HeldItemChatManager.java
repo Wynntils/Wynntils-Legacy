@@ -1,11 +1,12 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.chat.managers;
 
-import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.CharacterData;
+import com.wynntils.core.framework.instances.data.InventoryData;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.helpers.TextAction;
 import com.wynntils.core.utils.objects.Location;
@@ -53,7 +54,7 @@ public class HeldItemChatManager {
             mc.player.inventory.mainInventory.get(7).getItem() != Items.WRITTEN_BOOK ||
             mc.player.inventory.mainInventory.get(8).getItem() != Items.NETHER_STAR &&
             mc.player.inventory.mainInventory.get(8).getItem() != Item.getItemFromBlock(Blocks.SNOW_LAYER) ||
-            PlayerInfo.getPlayerInfo().getCurrentClass() == ClassType.NONE
+            !PlayerInfo.get(CharacterData.class).isLoaded()
         ) {
             reset();
             return null;
@@ -140,7 +141,7 @@ public class HeldItemChatManager {
     }
 
     private static ITextComponent getSoulPointsMessage() {
-        PlayerInfo info = PlayerInfo.getPlayerInfo();
+        InventoryData info = PlayerInfo.get(InventoryData.class);
         int maxSoulPoints = info.getMaxSoulPoints();
         int currentSoulPoints = info.getSoulPoints();
         int time = info.getTicksToNextSoulPoint();
