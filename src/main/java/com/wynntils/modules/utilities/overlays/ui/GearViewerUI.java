@@ -265,9 +265,9 @@ public class GearViewerUI extends FakeGuiContainer {
 
                 // set stars
                 if ((!isInverted && value > 0) || (isInverted && value < 0)) {
-                    if (pct >= 1.01) lore += DARK_GREEN + "*";
-                    if (pct >= 1.25) lore += "*";
-                    if (pct >= 1.30) lore += "*";
+                    if (pct > 1) lore += DARK_GREEN + "*";
+                    if (pct > 1.24) lore += "*";
+                    if (pct > 1.29) lore += "*";
                 }
 
                 lore += " " + GRAY + longName;
