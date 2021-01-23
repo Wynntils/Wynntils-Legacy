@@ -141,7 +141,7 @@ public class QuestManager {
 
                     List<String> lore = ItemUtils.getUnformattedLore(stack);
                     // uppercase on beta
-                    if (lore.isEmpty() || (!lore.contains("Right click to track") && !lore.contains("RIGHT-CLICK TO TRACK"))) continue; // not a valid quest
+                    if (lore.isEmpty() || (!lore.contains("Right click to track") && !lore.contains("RIGHT-CLICK TO TRACK") && !lore.contains("Right click to stop tracking"))) continue; // not a valid quest
 
                     if (fullRead) {
                         gatheredQuests.add(stack);
