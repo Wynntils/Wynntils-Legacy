@@ -330,8 +330,9 @@ public class ServerEvents implements Listener {
 
             FrameworkManager.getEventBus().post(new SchedulerEvent.RegionUpdate());
 
-            if (!PlayerInfo.get(LocationData.class).isInUnknownLocation()) {
-                String location = PlayerInfo.get(LocationData.class).getLocation();
+            LocationData data = PlayerInfo.get(LocationData.class);
+            if (!data.inUnknownLocation()) {
+                String location = data.getLocation();
                 if (!WebManager.getTerritories().containsKey(location)) {
                     location = location.replace('\'', '’');
                 }
@@ -345,13 +346,33 @@ public class ServerEvents implements Listener {
 
             for (TerritoryProfile pf : WebManager.getTerritories().values()) {
                 if (pf.insideArea((int) pl.posX, (int) pl.posZ)) {
-                    PlayerInfo.get(LocationData.class).setLocation(pf.getFriendlyName());
+                    data.setLocation(pf.getFriendlyName());
                     return;
                 }
             }
 
-            if (!PlayerInfo.get(LocationData.class).isInUnknownLocation()) {
-                PlayerInfo.get(LocationData.class).setLocation("");
+            int chunkX = pl.chunkCoordX;
+            int chunkZ = pl.chunkCoordZ;
+
+            // housing instances are over these chunk coordinates
+            if (chunkX >= 4096 && chunkZ >= 4096) {
+                if (data.inHousing()) return;
+
+                data.setLocation("Housing");
+                return;
+            }
+
+            // war arenas are below these chunk coordinates
+            if (chunkX <= -4096 && chunkZ <= -4096) {
+                if (data.inWars()) return;
+
+                data.setLocation("Wars");
+                return;
+            }
+
+            // none match, set to unknow
+            if (!data.inUnknownLocation()) {
+                data.setLocation("");
             }
 
         }, 0, 3, TimeUnit.SECONDS);

@@ -113,7 +113,7 @@ public class ServerEvents implements Listener {
     public void onTick(TickEvent.ClientTickEvent e) {
         if (Reference.onWorld && !Reference.onWars && forceUpdate && PlayerInfo.get(CharacterData.class).isLoaded()) {
             forceUpdate = false;
-            if (!PlayerInfo.get(LocationData.class).isInUnknownLocation()) {
+            if (!PlayerInfo.get(LocationData.class).inUnknownLocation()) {
                 RichPresenceModule.getModule().getRichPresence().updateRichPresence(getWorldDescription(), "In " + PlayerInfo.get(LocationData.class).getLocation(), PlayerInfo.get(CharacterData.class).getCurrentClass().toString().toLowerCase(), getPlayerInfo(), currentTime);
             } else {
                 RichPresenceModule.getModule().getRichPresence().updateRichPresence(getWorldDescription(), "Exploring Wynncraft", PlayerInfo.get(CharacterData.class).getCurrentClass().toString().toLowerCase(), getPlayerInfo(), currentTime);

@@ -24,7 +24,7 @@ public class LocationData extends PlayerData {
 
     /**
      * Updates the player location
-     * @param location
+     * @param location the target location
      */
     public void setLocation(String location) {
         ModCore.mc().addScheduledTask(() -> {
@@ -37,8 +37,22 @@ public class LocationData extends PlayerData {
     /**
      * @return If the player is outside of a territory
      */
-    public boolean isInUnknownLocation() {
+    public boolean inUnknownLocation() {
         return location.isEmpty();
+    }
+
+    /**
+     * @return if the player is inside a housing instance
+     */
+    public boolean inHousing() {
+        return location.equalsIgnoreCase("housing");
+    }
+
+    /**
+     * @return if the player is inside a war arena
+     */
+    public boolean inWars() {
+        return location.equalsIgnoreCase("wars");
     }
 
 }
