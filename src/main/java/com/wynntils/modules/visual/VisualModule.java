@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.visual;
@@ -9,6 +9,7 @@ import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import com.wynntils.modules.visual.configs.VisualConfig;
 import com.wynntils.modules.visual.entities.conditions.AshSpawnCondition;
 import com.wynntils.modules.visual.entities.conditions.FireflySpawnCondition;
+import com.wynntils.modules.visual.entities.conditions.FlameSpawnCondition;
 import com.wynntils.modules.visual.entities.conditions.SnowFlakesSpawnCondition;
 import com.wynntils.modules.visual.events.ClientEvents;
 import com.wynntils.modules.visual.instances.SplashProfile;
@@ -31,11 +32,13 @@ public class VisualModule extends Module {
         registerSettings(VisualConfig.DamageSplash.class);
         registerSettings(VisualConfig.Ashes.class);
         registerSettings(VisualConfig.Snowflakes.class);
+        registerSettings(VisualConfig.Flames.class);
         registerSettings(VisualConfig.CharacterSelector.class);
 
         registerSpawnCondition(new FireflySpawnCondition());
         registerSpawnCondition(new AshSpawnCondition());
         registerSpawnCondition(new SnowFlakesSpawnCondition());
+        registerSpawnCondition(new FlameSpawnCondition());
 
         registerEvents(new ClientEvents());
         registerEvents(new OverlayEvents());

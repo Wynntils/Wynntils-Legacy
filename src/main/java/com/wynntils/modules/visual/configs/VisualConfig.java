@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.visual.configs;
@@ -115,6 +115,35 @@ public class VisualConfig extends SettingsClass {
         @Setting(displayName = "Spawn Rate", description = "How frequently should snowflakes appear?\n\n§8The higher the number is set to, the longer it takes for snowflakes to appear.")
         @Setting.Limitations.IntLimit(min = 100, max = 1000)
         public int spawnRate = 300;
+
+    }
+
+    @SettingsInfo(name = "flames", displayPath = "Visual/Flames")
+    public static class Flames extends SettingsClass {
+        public static Flames INSTANCE;
+
+        @Setting(displayName = "Visual Flames", description = "Should flames be rendered in certain areas?")
+        public boolean enabled = true;
+
+        @Setting(displayName = "Max Duration", description = "In ticks, up to how long should flames appear for?")
+        @Setting.Limitations.IntLimit(min = 50, max = 5000, precision = 5)
+        public int maxLiving = 1000;
+
+        @Setting(displayName = "Spawn Limit", description = "Up to how many flames can spawn around you?")
+        @Setting.Limitations.IntLimit(min = 50, max = 500)
+        public int spawnLimit = 200;
+
+        @Setting(displayName = "Spawn Rate", description = "How frequently should flames appear?\n\n§8The higher the number is set to, the longer it takes for flames to appear.")
+        @Setting.Limitations.IntLimit(min = 100, max = 1000)
+        public int spawnRate = 200;
+
+        @Setting(displayName = "Max Scale", description = "Up to how big should flames be?")
+        @Setting.Limitations.FloatLimit(min = 0.01f, max = 0.5f, precision = 0.01f)
+        public float maxScale = 0.11f;
+
+        @Setting(displayName = "Velocity", description = "How fast should flames be?")
+        @Setting.Limitations.FloatLimit(min = 0.01f, max = 0.1f, precision = 0.01f)
+        public float velocity = 0.05f;
 
     }
 

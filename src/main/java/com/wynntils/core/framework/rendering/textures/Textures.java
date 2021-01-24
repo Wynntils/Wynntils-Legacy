@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.core.framework.rendering.textures;
@@ -57,6 +57,7 @@ public class Textures {
 
     public static class Particles {
         public static AssetsTexture snow;
+        public static AssetsTexture flame;
     }
 
     public static class Map {
