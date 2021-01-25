@@ -38,6 +38,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiYesNo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AbstractHorse;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -894,6 +895,21 @@ public class ClientEvents implements Listener {
         if (!e.getItemStack().hasDisplayName() || !e.getItemStack().getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
         if (e.getEntityPlayer().getHealth() != e.getEntityPlayer().getMaxHealth()) return;
 
+        e.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public void onShiftClickPlayer(PacketEvent<CPacketUseEntity> e) {
+        if (!UtilitiesConfig.INSTANCE.preventTradesDuels) return;
+
+        EntityPlayerSP player = ModCore.mc().player;
+        Entity clicked = e.getPacket().getEntityFromWorld(player.world);
+        if (!(clicked instanceof EntityPlayer)) return;
+
+        EntityPlayer ep = (EntityPlayer) clicked;
+        if (ep.getTeam() == null) return; // player model npc
+
+        if (!player.isSneaking() || player.getHeldItemMainhand().isEmpty()) return;
         e.setCanceled(true);
     }
 
