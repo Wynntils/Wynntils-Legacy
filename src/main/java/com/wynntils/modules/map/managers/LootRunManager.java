@@ -187,6 +187,29 @@ public class LootRunManager {
         recordingPath.addPoint(to);
     }
 
+    public static boolean undoMovement(double x, double y, double z) {
+        if (!isRecording()) return false;
+
+        Location to = new Location(x, y + .25d, z);
+        List<Location> recordedPoints = recordingPath.getPoints();
+        List<Location> removed = new ArrayList<>();
+        boolean pastInitial = false;
+        for (int i = recordedPoints.size() - 1; i >= 0; i--) {
+            if (i == 0) return false; // never found a point to rewind to
+
+            if (recordedPoints.get(i).distanceSquared(to) < 4d) {
+                if (pastInitial) break; // we've reached the player again
+            } else {
+                if (!pastInitial) pastInitial = true; // we've moved past the end of the path
+            }
+
+            removed.add(recordedPoints.get(i));
+        }
+
+        recordingPath.removePoints(removed);
+        return true;
+    }
+
     public static void addChest(BlockPos pos) {
         if (!isRecording()) return;
 

@@ -70,6 +70,11 @@ public class LootRunPath {
         spline.addPoints(0, points);
     }
 
+    public void removePoints(Collection<? extends Point3d> points) {
+        changed();
+        spline.removePoints(points);
+    }
+
     public void addChest(BlockPos loc) {
         chests.add(loc.toImmutable());
     }

@@ -4,13 +4,17 @@
 
 package com.wynntils.modules.map.commands;
 
+import com.wynntils.ModCore;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.map.managers.LootRunManager;
+
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
+import net.minecraft.entity.Entity;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -39,7 +43,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
     public String getName() {
         return "lootrun";
     }
-    
+
     @Override
     public List<String> getAliases() {
         return Arrays.asList("loot", "lr");
@@ -162,6 +166,30 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 sender.sendMessage(new TextComponentString(message));
                 return;
             }
+            case "u":
+            case "undo": {
+                if (!LootRunManager.isRecording()) {
+                    sender.sendMessage(new TextComponentString(RED + "You are not currently recording a lootrun!"));
+                    return;
+                }
+
+                EntityPlayerSP player = ModCore.mc().player;
+                if (player == null) {
+                    sender.sendMessage(new TextComponentString(RED + "An error occurred whilst trying to undo!"));
+                    return;
+                }
+
+                Entity lowest = player.getLowestRidingEntity();
+                String message;
+                if (LootRunManager.undoMovement(lowest.posX, lowest.posY, lowest.posZ)) {
+                    message = GREEN + "Undid your most recent movements!";
+                } else {
+                    message = RED + "Failed to undo your movements!\n" + RED + "Make sure you are standing on the part of the path you want to rewind to";
+                }
+
+                sender.sendMessage(new TextComponentString(message));
+                return;
+            }
             case "list": {
                 StringBuilder message = new StringBuilder(YELLOW.toString()).append("Stored loot runs:");
                 List<String> lootruns = LootRunManager.getStoredLootruns();
@@ -208,6 +236,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                     DARK_GRAY + "/lootrun " + RED + "delete <name> " + GRAY + "Delete a previously saved lootrun\n" +
                     DARK_GRAY + "/lootrun " + RED + "rename <oldname> <newname> " + GRAY + "Rename a lootrun (Will overwrite any lootrun called <newname>)\n" +
                     DARK_GRAY + "/lootrun " + RED + "record " + GRAY + "Start/Stop recording a new loot run\n" +
+                    DARK_GRAY + "/lootrun " + RED + "undo " + GRAY + "Undo the recording loot run to your position" +
                     DARK_GRAY + "/lootrun " + RED + "list " + GRAY + "List all saved lootruns\n" +
                     DARK_GRAY + "/lootrun " + RED + "folder " + GRAY + "Open the folder where lootruns are stored, for import\n" +
                     DARK_GRAY + "/lootrun " + RED + "clear " + GRAY + "Clears/Hide the currently loaded loot run and the loot run being recorded\n" +
@@ -233,9 +262,10 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
             case "folder":
             case "help":
             case "record":
+            case "undo":
             default:
                 if (args.length > 1) return Collections.emptyList();
-                return getListOfStringsMatchingLastWord(args, "load", "save", "delete", "rename", "record", "list", "folder", "clear", "help");
+                return getListOfStringsMatchingLastWord(args, "load", "save", "delete", "rename", "record", "list", "folder", "clear", "help", "undo");
         }
     }
 
