@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.music.events;
@@ -8,7 +8,9 @@ import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.objects.Location;
+import com.wynntils.modules.core.enums.ToggleSetting;
 import com.wynntils.modules.music.configs.MusicConfig;
 import com.wynntils.modules.music.managers.AreaTrackManager;
 import com.wynntils.modules.music.managers.BossTrackManager;
@@ -47,6 +49,11 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void characterChange(WynnClassChangeEvent e) {
         if (e.getNewClass() == ClassType.NONE && Reference.onWorld) return; // character selection
+
+        // Toggle wynncraft music off if wynntils music replacer is enabled
+        if (MusicConfig.INSTANCE.replaceJukebox && Reference.onWorld) {
+            new Delay(() -> ToggleSetting.MUSIC.set(false), 20);
+        }
 
         SoundTrackManager.getPlayer().stop();
     }

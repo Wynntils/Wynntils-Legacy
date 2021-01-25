@@ -5,9 +5,12 @@
 package com.wynntils.modules.music.configs;
 
 import com.wynntils.Reference;
+import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
+import com.wynntils.modules.core.enums.ToggleSetting;
 import com.wynntils.modules.music.managers.SoundTrackManager;
 
 @SettingsInfo(name = "music", displayPath = "Music")
@@ -39,6 +42,9 @@ public class MusicConfig extends SettingsClass {
     public void onSettingChanged(String name) {
         if (!enabled && Reference.onWorld) SoundTrackManager.getPlayer().stop();
         if (!replaceJukebox) SoundTrackManager.getPlayer().stop();
+        else if (Reference.onWorld && PlayerInfo.get(CharacterData.class).isLoaded()) {
+            ToggleSetting.MUSIC.set(false);
+        }
     }
 
 }

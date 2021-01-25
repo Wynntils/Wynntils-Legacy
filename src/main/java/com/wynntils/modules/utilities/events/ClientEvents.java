@@ -80,6 +80,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ClientEvents implements Listener {
+
     private static GuiScreen scheduledGuiScreen = null;
     private static boolean firstNullOccurred = false;
 
