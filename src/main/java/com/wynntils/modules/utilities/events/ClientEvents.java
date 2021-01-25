@@ -897,9 +897,14 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void onShiftClickPlayer(PacketEvent<CPacketUseEntity> e) {
         if (!UtilitiesConfig.INSTANCE.preventTradesDuels) return;
+
         EntityPlayerSP player = ModCore.mc().player;
         Entity clicked = e.getPacket().getEntityFromWorld(player.world);
         if (!(clicked instanceof EntityPlayer)) return;
+
+        EntityPlayer ep = (EntityPlayer) clicked;
+        if (ep.getTeam() == null) return; // player model npc
+
         if (!player.isSneaking() || player.getHeldItemMainhand().isEmpty()) return;
         e.setCanceled(true);
     }
