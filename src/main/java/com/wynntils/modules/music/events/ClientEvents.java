@@ -11,6 +11,7 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.core.enums.ToggleSetting;
+import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.music.configs.MusicConfig;
 import com.wynntils.modules.music.managers.AreaTrackManager;
 import com.wynntils.modules.music.managers.BossTrackManager;
@@ -18,7 +19,9 @@ import com.wynntils.modules.music.managers.SoundTrackManager;
 import com.wynntils.modules.utilities.overlays.hud.WarTimerOverlay;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketTitle;
+import net.minecraft.network.play.server.SPacketWindowItems;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -93,6 +96,28 @@ public class ClientEvents implements Listener {
 
         if (BossTrackManager.isAlive()) return;
         AreaTrackManager.update(new Location(Minecraft.getMinecraft().player));
+    }
+
+    // mythic found sfx
+    @SubscribeEvent
+    public void onMythicFound(PacketEvent<SPacketWindowItems> e) {
+        if (!MusicConfig.SoundEffects.INSTANCE.mythicFound) return;
+        if (Minecraft.getMinecraft().currentScreen == null) return;
+        if (!(Minecraft.getMinecraft().currentScreen instanceof ChestReplacer)) return;
+
+        ChestReplacer chest = (ChestReplacer) Minecraft.getMinecraft().currentScreen;
+        if (!chest.getLowerInv().getName().contains("Loot Chest")) return;
+
+        for (int i = 0; i < e.getPacket().getItemStacks().size(); i++) {
+            ItemStack stack = e.getPacket().getItemStacks().get(i);
+            if (stack.isEmpty() || !stack.hasDisplayName()) continue;
+            if (!stack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString())) continue;
+            if (!stack.getDisplayName().contains("Unidentified")) continue;
+
+            SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("mythicFound"),
+                    true, false, false, false, true, false);
+            break;
+        }
     }
 
 }

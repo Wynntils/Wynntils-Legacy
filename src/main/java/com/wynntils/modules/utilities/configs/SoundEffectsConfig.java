@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.utilities.configs;
@@ -17,8 +17,5 @@ public class SoundEffectsConfig extends SettingsClass {
 
     @Setting(displayName = "War Horn", description = "Should a war horn be played when your guild attacks a territory?")
     public boolean warHorn = true;
-
-    @Setting(displayName = "Mythic Found", description = "Should a sound be played when a mythic is found in a loot chest?")
-    public boolean mythicFound = true;
 
 }

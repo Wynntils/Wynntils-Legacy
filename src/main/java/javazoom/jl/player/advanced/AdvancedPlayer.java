@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2021.
+ */
+
 //
 // Source code recreated from a .class file by IntelliJ IDEA
 // (powered by Fernflower decompiler)
@@ -8,10 +12,12 @@ package javazoom.jl.player.advanced;
 import javazoom.jl.decoder.*;
 import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.FactoryRegistry;
+import javazoom.jl.player.JavaSoundAudioDevice;
 
 import java.io.InputStream;
 
 public class AdvancedPlayer {
+
     private Bitstream bitstream;
     private Decoder decoder;
     private AudioDevice audio;
@@ -20,20 +26,23 @@ public class AdvancedPlayer {
     private int lastPosition;
     private PlaybackListener listener;
 
-    public AdvancedPlayer(InputStream var1) throws JavaLayerException {
-        this(var1, null);
+    public AdvancedPlayer(InputStream var1, float initialVolume) throws JavaLayerException {
+        this(var1, null, initialVolume);
     }
 
-    public AdvancedPlayer(InputStream var1, AudioDevice var2) throws JavaLayerException {
+    public AdvancedPlayer(InputStream var1, AudioDevice var2, float initialVolume) throws JavaLayerException {
         this.closed = false;
         this.complete = false;
         this.lastPosition = 0;
         this.bitstream = new Bitstream(var1);
+
         if (var2 != null) {
             this.audio = var2;
         } else {
             this.audio = FactoryRegistry.systemRegistry().createAudioDevice();
         }
+
+        if (audio instanceof JavaSoundAudioDevice) ((JavaSoundAudioDevice)audio).setInitialVolume(initialVolume);
 
         this.audio.open(this.decoder = new Decoder());
     }

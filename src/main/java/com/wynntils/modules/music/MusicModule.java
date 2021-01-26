@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.music;
@@ -17,6 +17,7 @@ public class MusicModule extends Module {
     @Override
     public void onEnable() {
         registerSettings(MusicConfig.class);
+        registerSettings(MusicConfig.SoundEffects.class);
 
         registerEvents(new ClientEvents());
         registerEvents(new CurrentMusicDisplayer());

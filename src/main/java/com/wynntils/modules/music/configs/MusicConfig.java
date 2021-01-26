@@ -15,7 +15,6 @@ import com.wynntils.modules.music.managers.SoundTrackManager;
 
 @SettingsInfo(name = "music", displayPath = "Music")
 public class MusicConfig extends SettingsClass {
-
     public static MusicConfig INSTANCE;
 
     @Setting(displayName = "Music System", description = "Should Wynntils' music player be enabled?", order = 0)
@@ -37,6 +36,15 @@ public class MusicConfig extends SettingsClass {
     @Setting(displayName = "Transition Jump", description = "How long should song transitions be?")
     @Setting.Limitations.FloatLimit(max = 2f, min= 0f)
     public float switchJump = 0.5f;
+
+    @SettingsInfo(name = "soundeffects", displayPath = "Music/Sound Effects")
+    public static class SoundEffects extends SettingsClass {
+        public static SoundEffects INSTANCE;
+
+        @Setting(displayName = "Mythic Found", description = "Should a sound be played when a mythic is found in a loot chest?")
+        public boolean mythicFound = true;
+
+    }
 
     @Override
     public void onSettingChanged(String name) {
