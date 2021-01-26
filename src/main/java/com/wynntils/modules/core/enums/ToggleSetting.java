@@ -95,7 +95,7 @@ public enum ToggleSetting {
         TextComponentString backCommand = new TextComponentString("/toggle " + name);
         backCommand.getStyle().setColor(TextFormatting.WHITE);
         backCommand.getStyle().setUnderlined(true);
-        backCommand.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/toggle" + name));
+        backCommand.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/toggle " + name));
         backCommand.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                 new TextComponentString("Click to run /toggle " + name))
         );

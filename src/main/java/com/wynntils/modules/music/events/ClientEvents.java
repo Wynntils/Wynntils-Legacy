@@ -54,7 +54,7 @@ public class ClientEvents implements Listener {
         if (e.getNewClass() == ClassType.NONE && Reference.onWorld) return; // character selection
 
         // Toggle wynncraft music off if wynntils music replacer is enabled
-        if (MusicConfig.INSTANCE.replaceJukebox && Reference.onWorld) {
+        if (MusicConfig.INSTANCE.replaceJukebox && MusicConfig.INSTANCE.enabled && Reference.onWorld) {
             new Delay(() -> ToggleSetting.MUSIC.set(false), 20);
         }
 
