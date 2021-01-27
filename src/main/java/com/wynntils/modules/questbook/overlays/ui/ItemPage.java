@@ -327,9 +327,9 @@ public class ItemPage extends QuestBookPage {
         private static final ItemStack spearsIcon = new ItemStack(ItemType.SPEAR.getDefaultItem());
         private static final ItemStack bowsIcon = new ItemStack(ItemType.BOW.getDefaultItem());
         private static final ItemStack relikIcon = new ItemStack(ItemType.RELIK.getDefaultItem(), 1, ItemType.RELIK.getMeta());
-        private static final ItemStack ringsIcon = new ItemStack(ItemType.RING.getDefaultItem());
-        private static final ItemStack necklaceIcon = new ItemStack(ItemType.NECKLACE.getDefaultItem());
-        private static final ItemStack braceletsIcon = new ItemStack(ItemType.BRACELET.getDefaultItem());
+        private static final ItemStack ringsIcon = new ItemStack(ItemType.RING.getDefaultItem(), 1, ItemType.RING.getMeta());
+        private static final ItemStack necklaceIcon = new ItemStack(ItemType.NECKLACE.getDefaultItem(), 1, ItemType.NECKLACE.getMeta());
+        private static final ItemStack braceletsIcon = new ItemStack(ItemType.BRACELET.getDefaultItem(), 1, ItemType.BRACELET.getMeta());
 
         private static final List<ItemType> itemTypeArray = ImmutableList.of(
                 ItemType.HELMET, ItemType.CHESTPLATE, ItemType.LEGGINGS, ItemType.BOOTS,
@@ -337,10 +337,10 @@ public class ItemPage extends QuestBookPage {
                 ItemType.NECKLACE, ItemType.RING, ItemType.BRACELET);
 
         static {
-            NBTTagCompound compound = new NBTTagCompound();
-            compound.setBoolean("Unbreakable", true);
-
-            relikIcon.setTagCompound(compound);
+            relikIcon.setTagCompound(ItemType.RELIK.getNBT());
+            ringsIcon.setTagCompound(ItemType.RING.getNBT());
+            necklaceIcon.setTagCompound(ItemType.NECKLACE.getNBT());
+            braceletsIcon.setTagCompound(ItemType.BRACELET.getNBT());
         }
 
         private final Set<ItemType> allowedTypes = EnumSet.allOf(ItemType.class);

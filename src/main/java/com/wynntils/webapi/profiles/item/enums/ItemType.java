@@ -4,31 +4,36 @@
 
 package com.wynntils.webapi.profiles.item.enums;
 
-import net.minecraft.init.Blocks;
+import com.wynntils.core.utils.ItemUtils;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.nbt.NBTTagCompound;
 
 public enum ItemType {
 
-    WAND(Items.STICK, 0),  // mage
-    SPEAR(Items.IRON_SHOVEL, 0),  // warrior
-    DAGGER(Items.SHEARS, 0),  // assassin
-    BOW(Items.BOW, 0),  // archer
-    RELIK(Items.STONE_SHOVEL, 7),  // shaman
+    WAND(Items.STICK, 0, null),  // mage
+    SPEAR(Items.IRON_SHOVEL, 0, null),  // warrior
+    DAGGER(Items.SHEARS, 0, null),  // assassin
+    BOW(Items.BOW, 0, null),  // archer
+    RELIK(Items.STONE_SHOVEL, 7, ItemUtils.UNBREAKABLE),  // shaman
 
-    HELMET(Items.LEATHER_HELMET, 0),
-    CHESTPLATE(Items.LEATHER_CHESTPLATE, 0),
-    LEGGINGS(Items.LEATHER_LEGGINGS, 0),
-    BOOTS(Items.LEATHER_BOOTS, 0),
+    HELMET(Items.LEATHER_HELMET, 0, null),
+    CHESTPLATE(Items.LEATHER_CHESTPLATE, 0, null),
+    LEGGINGS(Items.LEATHER_LEGGINGS, 0, null),
+    BOOTS(Items.LEATHER_BOOTS, 0, null),
 
-    RING(Item.getItemFromBlock(Blocks.STAINED_GLASS), 0),
-    NECKLACE(Item.getItemFromBlock(Blocks.GLASS_PANE), 0),
-    BRACELET(Item.getItemFromBlock(Blocks.SPRUCE_FENCE), 0);
+    RING(Items.FLINT_AND_STEEL, 2, ItemUtils.UNBREAKABLE),
+    NECKLACE(Items.FLINT_AND_STEEL, 19, ItemUtils.UNBREAKABLE),
+    BRACELET(Items.FLINT_AND_STEEL, 36, ItemUtils.UNBREAKABLE);
 
-    Item defaultItem; int meta;
+    Item defaultItem;
+    int meta;
+    NBTTagCompound nbt;
 
-    ItemType(Item defaultItem, int meta) {
-        this.defaultItem = defaultItem; this.meta = meta;
+    ItemType(Item defaultItem, int meta, NBTTagCompound nbt) {
+        this.defaultItem = defaultItem;
+        this.meta = meta;
+        this.nbt = nbt;
     }
 
     public Item getDefaultItem() {
@@ -37,6 +42,10 @@ public enum ItemType {
 
     public int getMeta() {
         return meta;
+    }
+
+    public NBTTagCompound getNBT() {
+        return nbt;
     }
 
     public static ItemType matchText(String typeStr) {
