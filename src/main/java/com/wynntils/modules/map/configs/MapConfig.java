@@ -32,45 +32,51 @@ public class MapConfig extends SettingsClass {
     @Setting(displayName = "Show Compass Directions", description = "Should the cardinal directions be displayed on the minimap?\n\n§8Cardinal directions are the north, east, south, and west points on a compass.", order = 1)
     public boolean showCompass = true;
 
-    @Setting(displayName = "Enable Minimap", description = "Should a minimap be displayed?", order = 2)
+    @Setting(displayName = "Show Compass Distance", description = "Should the distance to the compass position be displayed on the minimap?", order = 2)
+    public boolean showCompassDistance = true;
+
+    @Setting(displayName = "Enable Minimap", description = "Should a minimap be displayed?", order = 3)
     public boolean enabled = true;
 
-    @Setting(displayName = "Minimap Shape", description = "Should the minimap be a square or a circle?", order = 3)
+    @Setting(displayName = "Minimap Shape", description = "Should the minimap be a square or a circle?", order = 4)
     public MapFormat mapFormat = MapFormat.CIRCLE;
 
-    @Setting(displayName = "Minimap Rotation", description = "Should the minimap be locked facing north or rotate based on the direction you're facing?", order = 4)
+    @Setting(displayName = "Minimap Rotation", description = "Should the minimap be locked facing north or rotate based on the direction you're facing?", order = 5)
     public boolean followPlayerRotation = true;
 
-    @Setting(displayName = "Minimap Size", description = "How large should the minimap be?", order = 5)
+    @Setting(displayName = "Minimap Size", description = "How large should the minimap be?", order = 6)
     @Setting.Limitations.IntLimit(min = 75, max = 200)
     public int mapSize = 100;
 
-    @Setting(displayName = "Minimap Coordinates", description = "Should your coordinates be displayed below the minimap?", order = 6)
+    @Setting(displayName = "Minimap Coordinates", description = "Should your coordinates be displayed below the minimap?", order = 7)
     public boolean showCoords = false;
 
-    @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?\n\n§8This has no effect if compass directions are disabled.", order = 7)
+    @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?\n\n§8This has no effect if compass directions are disabled.", order = 8)
     public boolean northOnly = false;
 
-    @Setting(displayName = "Display Minimap Icons", description = "Should map icons be displayed on the minimap?", order = 8)
+    @Setting(displayName = "Display Minimap Icons", description = "Should map icons be displayed on the minimap?", order = 9)
     public boolean minimapIcons = true;
 
-    @Setting(displayName = "Hide Completed Quest Icons", description = "Should map icons for completed quests be hidden?", order = 9)
+    @Setting(displayName = "Hide Completed Quest Icons", description = "Should map icons for completed quests be hidden?", order = 10)
     public boolean hideCompletedQuests = true;
 
-    @Setting(displayName = "Compass Beacon Colour", description = "What colour should the compass beacon be?", order = 10)
+    @Setting(displayName = "Compass Beacon Colour", description = "What colour should the compass beacon be?", order = 11)
     @Setting.Features.CustomColorFeatures(allowAlpha = true)
     public CustomColor compassBeaconColor = CommonColors.RED;
 
-    @Setting(displayName = "Map Blur", description = "Should the map be rendered using linear textures to avoid aliasing issues?", order = 11)
+    @Setting(displayName = "Map Blur", description = "Should the map be rendered using linear textures to avoid aliasing issues?", order = 12)
     public boolean renderUsingLinear = true;
 
-    @Setting(displayName = "Minimap Icons Size", description = "How big should minimap icons be?", order = 12)
+    @Setting(displayName = "Minimap Icons Size", description = "How big should minimap icons be?", order = 13)
     @Setting.Limitations.FloatLimit(min = 0.5f, max = 2f)
     public float minimapIconSizeMultiplier = 1f;
 
-    @Setting(displayName = "Minimap Zoom", description = "How zoomed out should the minimap be?", order = 13)
+    @Setting(displayName = "Minimap Zoom", description = "How zoomed out should the minimap be?", order = 14)
     @Setting.Limitations.IntLimit(min = MiniMapOverlay.MIN_ZOOM, max = MiniMapOverlay.MAX_ZOOM, precision = 1)
     public int mapZoom = 30;
+
+    @Setting(displayName = "Hide in Non-Mapped Areas", description = "Should the minimap be hidden if the player is outside the map?", order = 15)
+    public boolean hideMinimapOutOfBounds = true;
 
     @Setting
     public Map<String, Boolean> enabledMapIcons = resetMapIcons(false);
@@ -199,7 +205,7 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Rainbow Path Transitioning", description = "How many blocks should loot run paths be shown in a colour before transitioning to a different colour?", order = 5)
         @Setting.Limitations.IntLimit(min = 1, max = 500)
         public int cycleDistance = 20;
-        
+
         @Setting(displayName = "Show Loot Run Path on Map", description = "Should the active lootrun path be shown on the map?", order = 6)
         public boolean displayLootrunOnMap = true;
 

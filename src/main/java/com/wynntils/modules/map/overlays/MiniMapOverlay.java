@@ -6,9 +6,12 @@ package com.wynntils.modules.map.overlays;
 
 import com.wynntils.Reference;
 import com.wynntils.core.framework.overlays.Overlay;
+import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
+import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
@@ -77,7 +80,7 @@ public class MiniMapOverlay extends Overlay {
         float centerX = minX + ((maxX - minX)/2);
         float centerZ = minZ + ((maxZ - minZ)/2);
 
-        if (centerX > 1 || centerX < 0 || centerZ > 1 || centerZ < 0) return;
+        if (MapConfig.INSTANCE.hideMinimapOutOfBounds && (centerX > 1 || centerX < 0 || centerZ > 1 || centerZ < 0)) return;
 
         try {
             GlStateManager.enableAlpha();
@@ -246,8 +249,14 @@ public class MiniMapOverlay extends Overlay {
                         MapCompassIcon.pointer.renderAt(this, dx, dz, sizeMultiplier, 1f);
 
                         GlStateManager.popMatrix();
+
+                        if (MapConfig.INSTANCE.showCompassDistance)
+                            drawTextOverlay(this, dx, dz, StringUtils.integerToShortString(Math.round((float)Math.sqrt(distanceSq) / scaleFactor)) + "m");
                     } else if (rendering) {
                         compassIcon.renderAt(this, dx + halfMapSize, dz + halfMapSize, sizeMultiplier, scaleFactor);
+
+                        if (MapConfig.INSTANCE.showCompassDistance)
+                            drawTextOverlay(this, dx + halfMapSize, dz + halfMapSize, StringUtils.integerToShortString(Math.round((float)Math.sqrt(distanceSq) / scaleFactor)) + "m");
                     }
                 }
             }
@@ -328,6 +337,14 @@ public class MiniMapOverlay extends Overlay {
         } catch (Exception ex) {
             ex.printStackTrace();
         }
+    }
+
+    private static void drawTextOverlay(ScreenRenderer renderer, float x, float y, String text) {
+        ScreenRenderer.scale(0.8f);
+        float w = renderer.getStringWidth(text) / 2f + 3f, h = SmartFontRenderer.CHAR_HEIGHT / 2f + 2f;
+        renderer.drawRectF(new CustomColor(0f, 0f, 0f, 0.7f), x - w, y - h + 1f, x + w, y + h);
+        renderer.drawCenteredString(text, x, y - 3f, CommonColors.WHITE);
+        ScreenRenderer.resetScale();
     }
 
 }
