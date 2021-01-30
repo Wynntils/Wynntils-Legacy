@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.map;
@@ -17,6 +17,7 @@ import com.wynntils.modules.map.events.ClientEvents;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.map.overlays.MiniMapOverlay;
+import com.wynntils.modules.map.overlays.ui.GuildWorldMapUI;
 import com.wynntils.modules.map.overlays.ui.MainWorldMapUI;
 import com.wynntils.modules.map.overlays.ui.WaypointCreationMenu;
 import com.wynntils.webapi.WebManager;
@@ -29,8 +30,10 @@ import org.lwjgl.input.Keyboard;
 public class MapModule extends Module {
 
     private static MapModule module;
-    private KeyHolder mapKey;
     private MapProfile mainMap;
+
+    private KeyHolder mapKey;
+    private KeyHolder guildMapKey;
 
     @Override
     public void onEnable() {
@@ -70,6 +73,16 @@ public class MapModule extends Module {
                 }
             }
         });
+
+        guildMapKey = registerKeyBinding("Open Guild Map", Keyboard.KEY_K, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+            if (Reference.onWorld) {
+                if (WebManager.getApiUrls() == null) {
+                    WebManager.tryReloadApiUrls(true);
+                } else {
+                    Utils.displayGuiScreen(new GuildWorldMapUI());
+                }
+            }
+        });
     }
 
     public static MapModule getModule() {
@@ -81,4 +94,9 @@ public class MapModule extends Module {
     }
 
     public KeyHolder getMapKey() { return mapKey; }
+
+    public KeyHolder getGuildMapKey() {
+        return guildMapKey;
+    }
+
 }

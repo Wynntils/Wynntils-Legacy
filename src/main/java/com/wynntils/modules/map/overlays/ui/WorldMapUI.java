@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.map.overlays.ui;
@@ -21,6 +21,7 @@ import com.wynntils.modules.map.overlays.objects.*;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -31,12 +32,12 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.Point;
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class WorldMapUI extends GuiMovementScreen {
 
@@ -49,7 +50,7 @@ public class WorldMapUI extends GuiMovementScreen {
 
     protected List<WorldMapIcon> icons = new ArrayList<>();
     protected WorldMapIcon compassIcon;
-    protected List<MapTerritory> territories;
+    protected HashMap<String, MapTerritory> territories = new HashMap<>();
 
     protected WorldMapUI() {
         this((float) Minecraft.getMinecraft().player.posX, (float) Minecraft.getMinecraft().player.posZ);
@@ -59,7 +60,9 @@ public class WorldMapUI extends GuiMovementScreen {
         mc = Minecraft.getMinecraft();
 
         // HeyZeer0: Handles the territories
-        territories = WebManager.getTerritories().values().stream().map(c -> new MapTerritory(c).setRenderer(renderer)).collect(Collectors.toList());
+        for (TerritoryProfile territory : WebManager.getTerritories().values()) {
+            territories.put(territory.getFriendlyName(), new MapTerritory(territory).setRenderer(renderer));
+        }
 
         // Also creates icons
         updateCenterPosition(startX, startZ);
@@ -165,7 +168,7 @@ public class WorldMapUI extends GuiMovementScreen {
         createIcons();
 
         forEachIcon(c -> c.updateAxis(map, width, height, maxX, minX, maxZ, minZ, zoom));
-        territories.forEach(c -> c.updateAxis(map, width, height, maxX, minX, maxZ, minZ, zoom));
+        territories.values().forEach(c -> c.updateAxis(map, width, height, maxX, minX, maxZ, minZ, zoom));
     }
 
     int lastMouseX = -Integer.MAX_VALUE;
@@ -302,7 +305,7 @@ public class WorldMapUI extends GuiMovementScreen {
         }
 
         if (MapConfig.WorldMap.INSTANCE.keepTerritoryVisible || Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)) {
-            territories.forEach(c -> c.drawScreen(mouseX, mouseY, partialTicks));
+            territories.values().forEach(c -> c.drawScreen(mouseX, mouseY, partialTicks, false));
         }
 
         forEachIcon(c -> c.drawHovering(mouseX, mouseY, partialTicks, renderer));

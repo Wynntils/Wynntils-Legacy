@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.map.overlays.objects;
@@ -10,7 +10,9 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.map.configs.MapConfig;
+import com.wynntils.modules.map.instances.GuildResourceContainer;
 import com.wynntils.modules.map.instances.MapProfile;
+import com.wynntils.modules.map.managers.GuildResourceManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 
 public class MapTerritory {
@@ -58,7 +60,15 @@ public class MapTerritory {
         shouldRender = false;
     }
 
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
+    public float getCenterX() {
+        return initX + ((endX - initX)/2f);
+    }
+
+    public float getCenterY() {
+        return initY + ((endY - initY)/2f);
+    }
+
+    public void drawScreen(int mouseX, int mouseY, float partialTicks, boolean resource) {
         if (!shouldRender || renderer == null) return;
 
         CustomColor color = territory.getGuildColor() == null ? StringUtils.colorFromString(territory.getGuild()) : StringUtils.colorFromHex(territory.getGuildColor());
@@ -68,12 +78,23 @@ public class MapTerritory {
             renderer.drawRectWBordersF(color.setA(1), initX, initY, endX, endY, 2f);
         }
 
-        float ppX = initX + ((endX - initX)/2f);
-        float ppY = initY + ((endY - initY)/2f);
+        float ppX = getCenterX();
+        float ppY = getCenterY();
 
-        boolean Hovering = (mouseX > initX && mouseX < endX && mouseY > initY && mouseY < endY);
+        boolean hovering = (mouseX > initX && mouseX < endX && mouseY > initY && mouseY < endY);
 
-        if ((MapConfig.WorldMap.INSTANCE.showTerritoryName || Hovering) && alpha > 0)
+        if (resource) {
+            GuildResourceContainer container = GuildResourceManager.getResources(territory.getFriendlyName());
+            if (hovering) {
+                // TODO hover gui
+                return;
+            }
+
+            // TODO hq icon probably
+            return;
+        }
+
+        if ((MapConfig.WorldMap.INSTANCE.showTerritoryName || hovering) && alpha > 0)
             renderer.drawString(territory.getFriendlyName(), ppX, ppY - 10, territoryNameColour.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
 
         if (MapConfig.WorldMap.INSTANCE.useGuildShortNames) alpha = 1;

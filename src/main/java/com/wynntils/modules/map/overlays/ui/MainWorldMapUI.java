@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.map.overlays.ui;
@@ -26,6 +26,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class MainWorldMapUI extends WorldMapUI {
+
     private GuiButton settingsBtn;
     private GuiButton waypointMenuBtn;
     private GuiButton pathWaypointMenuBtn;
@@ -59,12 +60,13 @@ public class MainWorldMapUI extends WorldMapUI {
     }
 
     private static boolean isHoldingMapKey() {
-        int mapKey = MapModule.getModule().getMapKey().getKey();
+        int mapKey = MapModule.getModule().getGuildMapKey().getKey();
         if (mapKey == 0) return false;  // Unknown key
         if (-100 <= mapKey && mapKey <= -85) {
             // Mouse key
             return Mouse.isButtonDown(mapKey + 100);
         }
+
         return Keyboard.isKeyDown(mapKey);
     }
 
@@ -172,11 +174,11 @@ public class MainWorldMapUI extends WorldMapUI {
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if (!holdingMapKey && keyCode == MapModule.getModule().getMapKey().getKeyBinding().getKeyCode()) {
             Minecraft.getMinecraft().displayGuiScreen(null);
-        } else {
-            super.keyTyped(typedChar, keyCode);
+            return;
         }
-    }
 
+        super.keyTyped(typedChar, keyCode);
+    }
 
     private void handleShareButton(boolean leftClick) {
         if (leftClick) {
@@ -186,11 +188,12 @@ public class MainWorldMapUI extends WorldMapUI {
                 int z = (int) location.getZ();
                 CommandCompass.shareCoordinates(null, "compass", x, z);
             }
-        } else {
-            int x = (int) Minecraft.getMinecraft().player.posX;
-            int z = (int) Minecraft.getMinecraft().player.posZ;
-            CommandCompass.shareCoordinates(null, "location", x, z);
+            return;
         }
+
+        int x = (int) Minecraft.getMinecraft().player.posX;
+        int z = (int) Minecraft.getMinecraft().player.posZ;
+        CommandCompass.shareCoordinates(null, "location", x, z);
     }
 
     @Override
@@ -207,4 +210,5 @@ public class MainWorldMapUI extends WorldMapUI {
             handleShareButton(true);
         }
     }
+
 }
