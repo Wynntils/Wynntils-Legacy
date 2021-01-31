@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2021.
+ */
+
 //
 // Source code recreated from a .class file by IntelliJ IDEA
 // (powered by Fernflower decompiler)
@@ -12,9 +16,12 @@ import javax.sound.sampled.*;
 import javax.sound.sampled.DataLine.Info;
 
 public class JavaSoundAudioDevice extends AudioDeviceBase {
+
     private SourceDataLine source = null;
     private AudioFormat fmt = null;
     private byte[] byteBuf = new byte[4096];
+
+    float initialVolume = 0;
 
     public JavaSoundAudioDevice() {
     }
@@ -44,7 +51,6 @@ public class JavaSoundAudioDevice extends AudioDeviceBase {
             this.openImpl();
             this.setOpen(true);
         }
-
     }
 
     protected void openImpl() throws JavaLayerException {
@@ -58,7 +64,8 @@ public class JavaSoundAudioDevice extends AudioDeviceBase {
             if (var2 instanceof SourceDataLine) {
                 this.source = (SourceDataLine)var2;
                 this.source.open(this.fmt);
-                setLineGain(-30);
+                setLineGain(initialVolume);
+
                 this.source.start();
             }
         } catch (RuntimeException var3) {
@@ -139,6 +146,10 @@ public class JavaSoundAudioDevice extends AudioDeviceBase {
         }
     }
 
+    public void setInitialVolume(float initialVolume) {
+        this.initialVolume = initialVolume;
+    }
+
     public void test() throws JavaLayerException {
         try {
             this.open(new AudioFormat(22050.0F, 16, 1, true, false));
@@ -150,4 +161,5 @@ public class JavaSoundAudioDevice extends AudioDeviceBase {
             throw new JavaLayerException("Device test failed: " + var2);
         }
     }
+
 }

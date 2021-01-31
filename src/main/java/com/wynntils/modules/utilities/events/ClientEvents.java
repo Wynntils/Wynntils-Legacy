@@ -56,7 +56,6 @@ import net.minecraft.network.play.client.CPacketPlayerDigging.Action;
 import net.minecraft.network.play.server.SPacketEntityMetadata;
 import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.network.play.server.SPacketTitle;
-import net.minecraft.network.play.server.SPacketWindowItems;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.ChatType;
@@ -304,25 +303,6 @@ public class ClientEvents implements Listener {
         int price = StringUtils.convertEmeraldPrice(e.getMessage());
         if (price != 0) // price of 0 means either garbage input or actual 0, can be ignored either way
             e.setMessage("" + price);
-    }
-
-    @SubscribeEvent
-    public void onMythicFound(PacketEvent<SPacketWindowItems> e) {
-        if (!SoundEffectsConfig.INSTANCE.mythicFound) return;
-        if (Minecraft.getMinecraft().currentScreen == null) return;
-        if (!(Minecraft.getMinecraft().currentScreen instanceof ChestReplacer)) return;
-
-        ChestReplacer chest = (ChestReplacer) Minecraft.getMinecraft().currentScreen;
-        if (!chest.getLowerInv().getName().contains("Loot Chest")) return;
-
-        for (int i = 0; i < 27; i++) {
-            ItemStack stack = e.getPacket().getItemStacks().get(i);
-            if (stack.isEmpty() || !stack.hasDisplayName()) continue;
-            if (!stack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString())) continue;
-            if (!stack.getDisplayName().contains("Unidentified")) continue;
-
-            Minecraft.getMinecraft().addScheduledTask(() -> WynntilsSound.MYTHIC_FOUND.play(1f, 1f));
-        }
     }
 
     @SubscribeEvent

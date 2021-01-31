@@ -30,6 +30,8 @@ public class ItemUtils {
     private static final Pattern LEVEL_PATTERN = Pattern.compile("(?:Combat|Crafting|Mining|Woodcutting|Farming|Fishing) Lv\\. Min: ([0-9]+)");
     private static final Pattern LEVEL_RANGE_PATTERN = Pattern.compile("Lv\\. Range: " + TextFormatting.WHITE.toString() + "([0-9]+)-([0-9]+)");
 
+    public static final NBTTagCompound UNBREAKABLE = new NBTTagCompound();
+
     /**
      * Get the lore NBT tag from an item
      */
@@ -196,6 +198,10 @@ public class ItemUtils {
         m = LEVEL_RANGE_PATTERN.matcher(lore);
         if (m.find()) return new IntRange(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)));
         return null;
+    }
+
+    static {
+        UNBREAKABLE.setBoolean("Unbreakable", true);
     }
 
 }

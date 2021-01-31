@@ -22,7 +22,7 @@ public class BeaconManager {
     private static final Tessellator tessellator = Tessellator.getInstance();
     private static final ResourceLocation beamResource = new ResourceLocation("textures/entity/beacon_beam.png");
 
-    public static void drawBeam(Location loc, CustomColor color) {
+    public static void drawBeam(Location loc, CustomColor color, float partialTicks) {
         RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
         if (renderManager.renderViewEntity == null) return;
 
@@ -41,6 +41,10 @@ public class BeaconManager {
 
         double maxDistance = Minecraft.getMinecraft().gameSettings.renderDistanceChunks * 16d;
         if (distance > maxDistance) {  // this will drag the beam to the visible area if outside of it
+            // partial ticks aren't factored into player pos, so if we're going to use it for rendering, we need to recalculate to account for partial ticks
+            Vec3d prevPosVec = new Vec3d(renderManager.renderViewEntity.prevPosX, renderManager.renderViewEntity.prevPosY, renderManager.renderViewEntity.prevPosZ);
+            playerVec = playerVec.subtract(prevPosVec).scale(partialTicks).add(prevPosVec);
+
             Vec3d delta = positionVec.subtract(playerVec).normalize();
             positionVec = playerVec.add(delta.x * maxDistance, delta.y * maxDistance, delta.z * maxDistance);
         }

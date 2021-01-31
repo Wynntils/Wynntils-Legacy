@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.music.instances;
@@ -142,19 +142,19 @@ public class MusicPlayer {
         if (player != null) kill();
         if (STATUS.isPaused() || STATUS.getCurrentSong() == null) return; // we don't want the player to play if paused
 
+
+
         musicThread = new Thread(() -> {
             try {
                 FileInputStream fis = new FileInputStream(STATUS.getCurrentSong().getTrack());
                 BufferedInputStream bis = new BufferedInputStream(fis);
 
-                player = new AdvancedPlayer(bis);
-                player.setPlayBackListener(new PlaybackListener() {
-                    // starts the song muted
-                    public void playbackStarted(PlaybackEvent var1) {
-                        float baseVolume = -32 + (32 * Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.RECORDS));
-                        STATUS.setCurrentGain(STATUS.getCurrentSong().isFadeIn() ? -30f : baseVolume);
-                    }
+                // updating the volume
+                float baseVolume = -32 + (32 * Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.RECORDS));
+                STATUS.setCurrentGain(STATUS.getCurrentSong().isFadeIn() ? -30f : baseVolume);
 
+                player = new AdvancedPlayer(bis, STATUS.getCurrentGain());
+                player.setPlayBackListener(new PlaybackListener() {
                     // handles the replay
                     public void playbackFinished(PlaybackEvent var1) {
                         FrameworkManager.getEventBus().post(new MusicPlayerEvent.Playback.End(STATUS.getCurrentSong().getName()));

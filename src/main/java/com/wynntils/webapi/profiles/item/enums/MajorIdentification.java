@@ -22,7 +22,10 @@ public enum MajorIdentification {
     MADNESS("Madness", "Casts a random ability every 3 seconds"),
     LIGHTWEIGHT("Lightweight", "You no longer take fall damage"),
     SORCERY("Sorcery", "30% chance for spells and attacks to cast a second time at no additional cost"),
-    TAUNT("Taunt", "Mobs within 12 blocks target you upon casting War Scream");
+    TAUNT("Taunt", "Mobs within 12 blocks target you upon casting War Scream"),
+    FREERUNNER("Freerunner", "Double your sprint speed when your sprint bar is under 30%"),
+    RALLY("Rally", "Charge heals you by 10% and nearby allies by 15% on impact, but becomes harmless"),
+    CHERRY_BOMBS("Cherry Bombs", "Your Smoke Bombs explode instantly on contact, dealing 110% damage each");
 
     String name, description;
 

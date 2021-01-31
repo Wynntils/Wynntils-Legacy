@@ -89,7 +89,9 @@ public class ClientEvents implements Listener {
     public void onClassChange(WynnClassChangeEvent e) {
         if (e.getNewClass() == ClassType.NONE) return;
 
-        new Delay(() -> ToggleSetting.QUEST_TRACKER.set(false), 20);
+        if (QuestBookConfig.INSTANCE.allowCustomQuestbook) {
+            new Delay(() -> ToggleSetting.QUEST_TRACKER.set(false), 20);
+        }
         QuestManager.clearData();
     }
 
