@@ -25,6 +25,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.HashSet;
 
 public class GuildWorldMapUI extends WorldMapUI {
 
@@ -115,14 +116,19 @@ public class GuildWorldMapUI extends WorldMapUI {
     }
 
     protected void generateTradeRoutes() {
+        HashSet<String> alreadyGenerated = new HashSet<>();
         for (String territoryName : territories.keySet()) {
             GuildResourceContainer resources = GuildResourceManager.getResources(territoryName);
             if (resources == null) continue;
 
             MapTerritory origin = territories.get(territoryName);
             for (String tradingRoute : resources.getTradingRoutes()) {
+                // we don't want lines to be duplicated from each route so we just draw them one time
+                if (alreadyGenerated.contains(tradingRoute + territoryName)) continue;
+
                 MapTerritory destination = territories.get(tradingRoute);
 
+                alreadyGenerated.add(territoryName + tradingRoute);
                 drawTradeRoute(origin, destination);
             }
         }
@@ -131,18 +137,30 @@ public class GuildWorldMapUI extends WorldMapUI {
     protected void drawTradeRoute(MapTerritory origin, MapTerritory destination) {
         GlStateManager.pushMatrix();
         {
-            GlStateManager.glLineWidth(3f);
             GlStateManager.disableTexture2D();
             GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
             Tessellator tess = Tessellator.getInstance();
             BufferBuilder buffer = tess.getBuffer();
+
+            // outline
+            GlStateManager.glLineWidth(4f);
+            {
+                buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
+                buffer.pos(destination.getCenterX(), destination.getCenterY(), 0).color(0f, 0f, 0f, .5f).endVertex();
+                buffer.pos(origin.getCenterX(), origin.getCenterY(), 0).color(0f, 0f, 0f, .5f).endVertex();
+            }
+            tess.draw();
+
+            // line
+            GlStateManager.glLineWidth(1.5f);
             {
                 buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
                 buffer.pos(destination.getCenterX(), destination.getCenterY(), 0).color(1f, 1f, 1f, .5f).endVertex();
                 buffer.pos(origin.getCenterX(), origin.getCenterY(), 0).color(1f, 1f, 1f, .5f).endVertex();
             }
             tess.draw();
+
             GlStateManager.enableTexture2D();
         }
         GlStateManager.popMatrix();

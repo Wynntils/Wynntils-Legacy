@@ -5,11 +5,13 @@
 package com.wynntils.modules.map.instances;
 
 import com.wynntils.core.framework.enums.GuildResource;
+import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.utils.objects.Storage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,6 +25,7 @@ public class GuildResourceContainer {
     List<String> tradingRoutes = new ArrayList<>();
 
     boolean headquarters;
+    CustomColor color;
 
     /**
      * Holds and generates data based on the Achievement values gave by Wynncraft
@@ -87,6 +90,36 @@ public class GuildResourceContainer {
                     Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2))
             ));
         }
+
+        float h = 0;
+        float s = 0.6f;
+        float v = 0.9f;
+
+        double sum = generators.entrySet().stream()
+                .filter(c -> c.getKey() != GuildResource.EMERALD).map(Map.Entry::getValue)
+                .mapToInt(Integer::intValue).sum();
+
+        for (Map.Entry<GuildResource, Integer> generator : generators.entrySet()) {
+            switch (generator.getKey()) {
+                case ORE:
+                    v = 1f;
+                    s = 0.3f;
+                    break;
+                case FISH:
+                    h += 180 * (generator.getValue() / sum);
+                    break;
+                case WOOD:
+                    h += 120 * (generator.getValue() / sum);
+                    break;
+                case CROPS:
+                    h += 60 * (generator.getValue() / sum);
+                    break;
+                case EMERALD:
+                    break;
+            }
+        }
+
+        color = CustomColor.fromHSV(h / 360f, s, v, 1);
     }
 
     public HashMap<GuildResource, Integer> getGenerators() {
@@ -107,6 +140,10 @@ public class GuildResourceContainer {
 
     public Storage getStorage(GuildResource resource) {
         return storage.get(resource);
+    }
+
+    public CustomColor getColor() {
+        return color;
     }
 
     public boolean isHeadquarters() {

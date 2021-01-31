@@ -8,7 +8,6 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
-import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.managers.GuildResourceManager;
@@ -78,8 +77,9 @@ public class MapTerritory {
     public void drawScreen(int mouseX, int mouseY, float partialTicks, boolean resource) {
         if (!shouldRender || renderer == null) return;
 
-        CustomColor color = territory.getGuildColor() == null ? StringUtils.colorFromString(territory.getGuild()) : StringUtils.colorFromHex(territory.getGuildColor());
+//        CustomColor color = territory.getGuildColor() == null ? StringUtils.colorFromString(territory.getGuild()) : StringUtils.colorFromHex(territory.getGuildColor());
 
+        CustomColor color = GuildResourceManager.getResources(territory.getFriendlyName()).getColor();
         if (MapConfig.WorldMap.INSTANCE.territoryArea) {
             renderer.drawRectF(color.setA(MapConfig.WorldMap.INSTANCE.colorAlpha), initX, initY, endX, endY);
             renderer.drawRectWBordersF(color.setA(1), initX, initY, endX, endY, 2f);
@@ -105,7 +105,7 @@ public class MapTerritory {
         boolean hovering = (mouseX > initX && mouseX < endX && mouseY > initY && mouseY < endY);
         if (!hovering) return;
 
-        infoBox.render(width - 250, 40);
+        infoBox.render((int)(width * 0.95), (int)(height * 0.1));
     }
 
 }

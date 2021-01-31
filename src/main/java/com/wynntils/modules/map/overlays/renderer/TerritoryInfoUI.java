@@ -50,7 +50,7 @@ public class TerritoryInfoUI {
     public void render(int posX, int posY) {
         pushMatrix();
         {
-            translate(posX, posY, 0);
+            translate(posX - 200, posY, 0);
             color(1f, 1f, 1f, 1f);
 
             int length = description.size() * 10;
@@ -74,7 +74,7 @@ public class TerritoryInfoUI {
                 yPosition += 10;
             }
 
-            translate(-posX, -posY, 0);
+            translate(-posX + 200, -posY, 0);
         }
         popMatrix();
     }
