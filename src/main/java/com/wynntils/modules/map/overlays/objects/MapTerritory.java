@@ -10,9 +10,9 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.map.configs.MapConfig;
-import com.wynntils.modules.map.instances.GuildResourceContainer;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.managers.GuildResourceManager;
+import com.wynntils.modules.map.overlays.renderer.TerritoryInfoUI;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 
 public class MapTerritory {
@@ -28,8 +28,11 @@ public class MapTerritory {
 
     boolean shouldRender = false;
 
+    TerritoryInfoUI infoBox;
+
     public MapTerritory(TerritoryProfile territory) {
         this.territory = territory;
+        this.infoBox = new TerritoryInfoUI(territory, GuildResourceManager.getResources(territory.getFriendlyName()));
     }
 
     public MapTerritory setRenderer(ScreenRenderer renderer) {
@@ -68,6 +71,10 @@ public class MapTerritory {
         return initY + ((endY - initY)/2f);
     }
 
+    public TerritoryProfile getTerritory() {
+        return territory;
+    }
+
     public void drawScreen(int mouseX, int mouseY, float partialTicks, boolean resource) {
         if (!shouldRender || renderer == null) return;
 
@@ -83,16 +90,7 @@ public class MapTerritory {
 
         boolean hovering = (mouseX > initX && mouseX < endX && mouseY > initY && mouseY < endY);
 
-        if (resource) {
-            GuildResourceContainer container = GuildResourceManager.getResources(territory.getFriendlyName());
-            if (hovering) {
-                // TODO hover gui
-                return;
-            }
-
-            // TODO hq icon probably
-            return;
-        }
+        if (resource) return;
 
         if ((MapConfig.WorldMap.INSTANCE.showTerritoryName || hovering) && alpha > 0)
             renderer.drawString(territory.getFriendlyName(), ppX, ppY - 10, territoryNameColour.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
@@ -101,6 +99,13 @@ public class MapTerritory {
         if (alpha <= 0) return;
 
         renderer.drawString(MapConfig.WorldMap.INSTANCE.useGuildShortNames ? territory.getGuildPrefix() : territory.getGuild(), ppX, ppY, color.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+    }
+
+    public void postDraw(int mouseX, int mouseY, float partialTicks, int width, int height) {
+        boolean hovering = (mouseX > initX && mouseX < endX && mouseY > initY && mouseY < endY);
+        if (!hovering) return;
+
+        infoBox.render(width - 250, 40);
     }
 
 }

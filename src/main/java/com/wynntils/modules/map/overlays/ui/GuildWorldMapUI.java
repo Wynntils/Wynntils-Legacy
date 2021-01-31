@@ -28,7 +28,7 @@ import java.io.IOException;
 
 public class GuildWorldMapUI extends WorldMapUI {
 
-    private long creationTime = System.currentTimeMillis();
+    private final long creationTime = System.currentTimeMillis();
     private boolean holdingMapKey = false;
 
     public GuildWorldMapUI() {
@@ -109,6 +109,7 @@ public class GuildWorldMapUI extends WorldMapUI {
 
         generateTradeRoutes();
         territories.values().forEach(c -> c.drawScreen(mouseX, mouseY, partialTicks, true));
+        territories.values().forEach(c -> c.postDraw(mouseX, mouseY, partialTicks, width, height));
 
         clearMask();
     }
@@ -118,12 +119,9 @@ public class GuildWorldMapUI extends WorldMapUI {
             GuildResourceContainer resources = GuildResourceManager.getResources(territoryName);
             if (resources == null) continue;
 
-            if (territoryName.startsWith("Light Peninsula")) continue;
-
             MapTerritory origin = territories.get(territoryName);
             for (String tradingRoute : resources.getTradingRoutes()) {
                 MapTerritory destination = territories.get(tradingRoute);
-                if (destination == null || tradingRoute.startsWith("Light Peninsula")) continue;
 
                 drawTradeRoute(origin, destination);
             }
