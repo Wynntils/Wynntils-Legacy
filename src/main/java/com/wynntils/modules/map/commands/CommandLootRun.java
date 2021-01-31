@@ -7,6 +7,7 @@ package com.wynntils.modules.map.commands;
 import com.wynntils.ModCore;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
+import com.wynntils.modules.map.instances.LootRunNote;
 import com.wynntils.modules.map.managers.LootRunManager;
 
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -29,6 +30,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import static net.minecraft.util.text.TextFormatting.*;
 
@@ -51,7 +53,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "lootrun <load/save/delete/rename/record/list/folder/clear/help>";
+        return "lootrun <load/save/delete/rename/record/undo/note/list/folder/clear/help>";
     }
 
     @Override
@@ -169,17 +171,11 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
             case "u":
             case "undo": {
                 if (!LootRunManager.isRecording()) {
-                    sender.sendMessage(new TextComponentString(RED + "You are not currently recording a lootrun!"));
+                    sender.sendMessage(new TextComponentString(RED + "You are not currently recording a loot run!"));
                     return;
                 }
 
-                EntityPlayerSP player = ModCore.mc().player;
-                if (player == null) {
-                    sender.sendMessage(new TextComponentString(RED + "An error occurred whilst trying to undo!"));
-                    return;
-                }
-
-                Entity lowest = player.getLowestRidingEntity();
+                Entity lowest = ModCore.mc().player.getLowestRidingEntity();
                 String message;
                 if (LootRunManager.undoMovement(lowest.posX, lowest.posY, lowest.posZ)) {
                     message = GREEN + "Undid your most recent movements!";
@@ -188,6 +184,80 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 }
 
                 sender.sendMessage(new TextComponentString(message));
+                return;
+            }
+            case "n":
+            case "note": {
+                if (args.length < 2) {
+                    throw new WrongUsageException("/lootrun note list or /lootrun note <note>");
+                }
+
+                if (args.length == 2 && args[1].equalsIgnoreCase("list")) {
+                    ITextComponent message = new TextComponentString(YELLOW + "Loot run notes:");
+                    Set<LootRunNote> notes = null;
+                    if (LootRunManager.isRecording()) {
+                        notes = LootRunManager.getRecordingPath().getNotes();
+                    } else if (LootRunManager.getActivePath() != null) {
+                        notes = LootRunManager.getActivePath().getNotes();
+                    }
+
+                    if (notes == null) {
+                        message.appendText("\n");
+                        message.appendText(RED + "You have no active or recording loot runs!");
+                    } else if (notes.isEmpty()) {
+                        message.appendText("\n");
+                        message.appendText(GRAY + "No notes to display!");
+                    } else {
+                        for (LootRunNote n : notes) {
+                            ITextComponent deleteButton = new TextComponentString(RED + "[X] ");
+                            deleteButton.getStyle()
+                                .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(
+                                    "Click here to delete this note!"
+                                )))
+                                .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/lootrun deletenote " + n.getShortLocationString()));
+
+                            ITextComponent noteMessage = new TextComponentString(n.getLocationString() + ": " + AQUA + n.getNote());
+                            noteMessage.getStyle().setColor(GRAY);
+
+                            message.appendText("\n");
+                            message.appendSibling(deleteButton);
+                            message.appendSibling(noteMessage);
+                        }
+                    }
+
+                    sender.sendMessage(message);
+                    return;
+                }
+
+                String text = String.join(" ", args);
+                text = text.substring(text.indexOf(" ")).trim();
+                EntityPlayerSP player = ModCore.mc().player;
+                LootRunNote note = new LootRunNote(new Location(player.posX, player.posY, player.posZ), text);
+
+                ITextComponent message;
+                if (LootRunManager.addNote(note)) {
+                    message = new TextComponentString("Saved note at " + note.getLocationString() + "!");
+                    message.getStyle().setColor(GREEN);
+                } else {
+                    message = new TextComponentString(RED + "You have no active or recording loot runs!");
+                }
+
+                sender.sendMessage(message);
+                return;
+            }
+            case "deletenote": {
+                if (args.length < 2) return;
+
+                String location = args[1];
+                ITextComponent message;
+                if (LootRunManager.removeNote(location)) {
+                    message = new TextComponentString("Removed note at (" + location.replace(",", ", ") + ")!");
+                    message.getStyle().setColor(GREEN);
+                } else {
+                    message = new TextComponentString(RED + "You have no active or recording loot runs!");
+                }
+
+                sender.sendMessage(message);
                 return;
             }
             case "list": {
@@ -236,7 +306,8 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                     DARK_GRAY + "/lootrun " + RED + "delete <name> " + GRAY + "Delete a previously saved lootrun\n" +
                     DARK_GRAY + "/lootrun " + RED + "rename <oldname> <newname> " + GRAY + "Rename a lootrun (Will overwrite any lootrun called <newname>)\n" +
                     DARK_GRAY + "/lootrun " + RED + "record " + GRAY + "Start/Stop recording a new loot run\n" +
-                    DARK_GRAY + "/lootrun " + RED + "undo " + GRAY + "Undo the recording loot run to your position" +
+                    DARK_GRAY + "/lootrun " + RED + "undo " + GRAY + "Undo the recording loot run to your current position\n" +
+                    DARK_GRAY + "/lootrun " + RED + "note " + GRAY + "Add or list notes to the active or recording loot run\n" +
                     DARK_GRAY + "/lootrun " + RED + "list " + GRAY + "List all saved lootruns\n" +
                     DARK_GRAY + "/lootrun " + RED + "folder " + GRAY + "Open the folder where lootruns are stored, for import\n" +
                     DARK_GRAY + "/lootrun " + RED + "clear " + GRAY + "Clears/Hide the currently loaded loot run and the loot run being recorded\n" +

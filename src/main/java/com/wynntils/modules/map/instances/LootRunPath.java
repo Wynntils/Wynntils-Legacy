@@ -26,6 +26,7 @@ public class LootRunPath {
 
     private CubicSplines.Spline3D spline;
     private Set<BlockPos> chests;
+    private Set<LootRunNote> notes;
 
     private transient List<LootRunPath.LootRunPathLocation> lastSmoothSample;
     private transient List<Vector3d> lastSmoothDerivative;
@@ -37,18 +38,25 @@ public class LootRunPath {
     private transient Long2ObjectMap<List<List<LootRunPath.LootRunPathLocation>>> lastRoughSampleByChunk;
     private transient Long2ObjectMap<List<List<Vector3d>>> lastRoughDerivativeByChunk;
 
-    public LootRunPath(Collection<? extends Point3d> points, Collection<? extends BlockPos> chests) {
+    public LootRunPath(Collection<? extends Point3d> points, Collection<? extends BlockPos> chests, Collection<LootRunNote> notes) {
         this.spline = new CubicSplines.Spline3D(points);
         this.chests = new LinkedHashSet<>(chests == null ? 11 : Math.max(2 * chests.size(), 11));
+        this.notes = new LinkedHashSet<>(notes == null ? 5 : notes.size());
+
         if (chests != null) {
             for (BlockPos pos : chests) {
                 this.chests.add(pos.toImmutable());
             }
         }
+        if (notes != null) {
+            for (LootRunNote note : notes) {
+                this.notes.add(note);
+            }
+        }
     }
 
     public LootRunPath() {
-        this(Collections.emptyList(), Collections.emptyList());
+        this(Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
     }
 
     public void addPoint(Point3d loc) {
@@ -77,6 +85,23 @@ public class LootRunPath {
 
     public void addChest(BlockPos loc) {
         chests.add(loc.toImmutable());
+    }
+
+    public void addNote(LootRunNote note) {
+        notes.add(note);
+    }
+
+    public void removeNote(String loc) {
+        for(LootRunNote note : notes) {
+            if (note.getShortLocationString().equals(loc)) {
+                notes.remove(note);
+                return;
+            }
+        }
+    }
+
+    public Set<LootRunNote> getNotes() {
+        return Collections.unmodifiableSet(notes);
     }
 
     public Set<BlockPos> getChests() {
