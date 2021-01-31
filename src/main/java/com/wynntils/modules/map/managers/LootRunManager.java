@@ -219,10 +219,34 @@ public class LootRunManager {
         return true;
     }
 
-    public static void addChest(BlockPos pos) {
-        if (!isRecording()) return;
+    public static boolean addChest(BlockPos pos) {
+        if (isRecording()) {
+            recordingPath.addChest(pos);
+            return true;
+        }
 
-        recordingPath.addChest(pos);
+        if (activePath != null) {
+            activePath.addChest(pos);
+            if (activePathName != null) saveToFile(activePathName);
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean removeChest(BlockPos pos) {
+        if (isRecording()) {
+            recordingPath.removeChest(pos);
+            return true;
+        }
+
+        if (activePath != null) {
+            activePath.removeChest(pos);
+            if (activePathName != null) saveToFile(activePathName);
+            return true;
+        }
+
+        return false;
     }
 
     public static boolean addNote(LootRunNote note) {

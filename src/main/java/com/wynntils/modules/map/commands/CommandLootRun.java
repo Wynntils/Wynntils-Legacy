@@ -260,6 +260,45 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 sender.sendMessage(message);
                 return;
             }
+            case "addchest":
+            case "removechest": {
+                String command = args[0].toLowerCase(Locale.ROOT);
+                BlockPos pos;
+                if (args.length < 4) {
+                    pos = new BlockPos((int) ModCore.mc().player.posX, (int) ModCore.mc().player.posY, (int) ModCore.mc().player.posZ - 1);
+                } else {
+                    int x = 0, y = 0, z = 0;
+                    try {
+                        x = Integer.parseInt(args[1]);
+                        y = Integer.parseInt(args[2]);
+                        z = Integer.parseInt(args[3]);
+                    } catch (NumberFormatException e) {
+                        sender.sendMessage(new TextComponentString(RED + "Invalid coordinates!"));
+                        return;
+                    }
+                    pos = new BlockPos(x, y, z - 1); // offset z by one
+                }
+
+                ITextComponent message;
+                if (command.equals("addchest")) {
+                    if (LootRunManager.addChest(pos)) {
+                        message = new TextComponentString("Added chest at (" + pos.getX() + ", " + pos.getY() + ", " + (pos.getZ() + 1) + ")!");
+                        message.getStyle().setColor(GREEN);
+                    } else {
+                        message = new TextComponentString(RED + "You have no active or recording loot runs!");
+                    }
+                } else {
+                    if (LootRunManager.removeChest(pos)) {
+                        message = new TextComponentString("Removed chest at (" + pos.getX() + ", " + pos.getY() + ", " + (pos.getZ() + 1) + ")!");
+                        message.getStyle().setColor(GREEN);
+                    } else {
+                        message = new TextComponentString(RED + "You have no active or recording loot runs!");
+                    }
+                }
+
+                sender.sendMessage(message);
+                return;
+            }
             case "list": {
                 StringBuilder message = new StringBuilder(YELLOW.toString()).append("Stored loot runs:");
                 List<String> lootruns = LootRunManager.getStoredLootruns();
@@ -308,6 +347,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                     DARK_GRAY + "/lootrun " + RED + "record " + GRAY + "Start/Stop recording a new loot run\n" +
                     DARK_GRAY + "/lootrun " + RED + "undo " + GRAY + "Undo the recording loot run to your current position\n" +
                     DARK_GRAY + "/lootrun " + RED + "note " + GRAY + "Add or list notes to the active or recording loot run\n" +
+                    DARK_GRAY + "/lootrun " + RED + "addchest/removechest <x> <y> <z> " + GRAY + "Manually mark a chest in the active or recording loot run\n" +
                     DARK_GRAY + "/lootrun " + RED + "list " + GRAY + "List all saved lootruns\n" +
                     DARK_GRAY + "/lootrun " + RED + "folder " + GRAY + "Open the folder where lootruns are stored, for import\n" +
                     DARK_GRAY + "/lootrun " + RED + "clear " + GRAY + "Clears/Hide the currently loaded loot run and the loot run being recorded\n" +

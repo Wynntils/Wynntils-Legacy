@@ -87,6 +87,15 @@ public class LootRunPath {
         chests.add(loc.toImmutable());
     }
 
+    public void removeChest(BlockPos loc) {
+        for(BlockPos chest : chests) {
+            if (chest.equals(loc)) {
+                chests.remove(chest);
+                return;
+            }
+        }
+    }
+
     public void addNote(LootRunNote note) {
         notes.add(note);
     }
