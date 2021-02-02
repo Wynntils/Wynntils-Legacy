@@ -171,6 +171,11 @@ public final class CubicSplines {
             points.addAll(index, copy);
         }
 
+        public void removePoints(Collection<? extends Point3d> removedPoints) {
+            dirty = true;
+            points.removeAll(removedPoints);
+        }
+
         public List<Location> getPoints() {
             return Collections.unmodifiableList(points);
         }

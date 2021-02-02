@@ -205,9 +205,12 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Rainbow Path Transitioning", description = "How many blocks should loot run paths be shown in a colour before transitioning to a different colour?", order = 5)
         @Setting.Limitations.IntLimit(min = 1, max = 500)
         public int cycleDistance = 20;
-
-        @Setting(displayName = "Show Loot Run Path on Map", description = "Should the active lootrun path be shown on the map?", order = 6)
+      
+        @Setting(displayName = "Show Loot Run Path on Map", description = "Should the active loot run path be shown on the map?", order = 6)
         public boolean displayLootrunOnMap = true;
+
+        @Setting(displayName = "Show Loot Run Notes", description = "Should notes from the active loot run be rendered?", order = 7)
+        public boolean showNotes = true;
 
         @Override
         public void onSettingChanged(String name) {

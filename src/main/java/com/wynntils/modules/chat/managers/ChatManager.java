@@ -362,24 +362,23 @@ public class ChatManager {
 
         // clickable coordinates
         if (ChatConfig.INSTANCE.clickableCoordinates && coordinateReg.matcher(in.getUnformattedText()).find()) {
-            String crdText;
-            Style style;
-            String command = "/compass ";
-            List<ITextComponent> crdMsg = new ArrayList<>();
 
+            ITextComponent temp = new TextComponentString("");
             for (ITextComponent texts: in.getSiblings()) {
                 Matcher m = coordinateReg.matcher(texts.getUnformattedText());
-                if (!m.find())  continue;
+                if (!m.find()) {
+                    temp.getSiblings().add(texts);
+                    continue;
+                }
 
                 // Most likely only needed during the Wynnter Fair for the message with how many more players are required to join.
                 // As far as i could find all other messages from the Wynnter Fair use text components properly.
                 if (m.start() > 0 && texts.getUnformattedText().charAt(m.start() - 1) == '§') continue;
 
-                int index = in.getSiblings().indexOf(texts);
-
-                crdText = texts.getUnformattedText();
-                style = texts.getStyle();
-                in.getSiblings().remove(texts);
+                String crdText = texts.getUnformattedText();
+                Style style = texts.getStyle();
+                String command = "/compass ";
+                List<ITextComponent> crdMsg = new ArrayList<>();
 
                 // Pre-text
                 ITextComponent preText = new TextComponentString(crdText.substring(0, m.start()));
@@ -403,9 +402,9 @@ public class ChatManager {
                 postText.setStyle(style.createShallowCopy());
                 crdMsg.add(postText);
 
-                in.getSiblings().addAll(index, crdMsg);
-                break;
+                temp.getSiblings().addAll(crdMsg);
             }
+            in = temp;
         }
 
         //powder manual
