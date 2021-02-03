@@ -74,7 +74,7 @@ public class MapModule extends Module {
             }
         });
 
-        guildMapKey = registerKeyBinding("Open Guild Map", Keyboard.KEY_K, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+        guildMapKey = registerKeyBinding("Open Guild Map", Keyboard.KEY_L, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
             if (Reference.onWorld) {
                 if (WebManager.getApiUrls() == null) {
                     WebManager.tryReloadApiUrls(true);
