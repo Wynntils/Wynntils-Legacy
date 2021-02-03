@@ -350,7 +350,7 @@ public class GearViewerUI extends FakeGuiContainer {
 
         if (ModCore.mc().objectMouseOver == null) return;
         Entity e = ModCore.mc().objectMouseOver.entityHit;
-        if (e == null || !(e instanceof EntityPlayer)) return;
+        if (!(e instanceof EntityPlayer)) return;
         EntityPlayer ep = (EntityPlayer) e;
         if (ep.getTeam() == null) return; // player model npc
 

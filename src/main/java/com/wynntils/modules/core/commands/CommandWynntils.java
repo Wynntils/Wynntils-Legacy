@@ -5,12 +5,12 @@
 package com.wynntils.modules.core.commands;
 
 import com.wynntils.Reference;
+import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.helpers.TextAction;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
-import com.wynntils.modules.music.managers.SoundTrackManager;
 import com.wynntils.modules.richpresence.RichPresenceModule;
 import com.wynntils.modules.richpresence.profiles.RichProfile;
 import com.wynntils.modules.utilities.managers.KeyManager;
@@ -167,8 +167,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     return;
                 }
 
-                SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("mythicFound"),
-                        true, false, false, false, true, false);
+                Textures.loadTextures();
                 break;
             default:
                 execute(server, sender, new String[] {"help"});

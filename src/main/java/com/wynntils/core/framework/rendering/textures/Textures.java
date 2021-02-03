@@ -68,6 +68,8 @@ public class Textures {
         public static AssetsTexture map_pointers;
         public static AssetsTexture map_options;
         public static AssetsTexture full_map;
+        public static AssetsTexture map_territory_info;
+        public static AssetsTexture map_buttons;
     }
 
     public static class UIs {

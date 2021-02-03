@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.map.overlays.objects;
@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapWaypointIcon extends MapTextureIcon {
+
     public static final int HIDDEN_ZOOM = -1;
 
     private static FloatBuffer currentColorBuf = BufferUtils.createFloatBuffer(16);
@@ -98,37 +99,45 @@ public class MapWaypointIcon extends MapTextureIcon {
         return wp.getName();
     }
 
-    @Override public int getTexPosX() {
+    @Override
+    public int getTexPosX() {
         return sizeMapping[wp.getType().ordinal() * 4 + texPosXIndex];
     }
 
-    @Override public int getTexPosZ() {
+    @Override
+    public int getTexPosZ() {
         return sizeMapping[wp.getType().ordinal() * 4 + texPosZIndex];
     }
 
-    @Override public int getTexSizeX() {
+    @Override
+    public int getTexSizeX() {
         return sizeMapping[wp.getType().ordinal() * 4 + texSizeXIndex];
     }
 
-    @Override public int getTexSizeZ() {
+    @Override
+    public int getTexSizeZ() {
         return sizeMapping[wp.getType().ordinal() * 4 + texSizeZIndex];
     }
 
-    @Override public float getSizeX() {
+    @Override
+    public float getSizeX() {
         int i = wp.getType().ordinal() * 4;
         return (sizeMapping[i + texSizeXIndex] - sizeMapping[i + texPosXIndex]) / 2.5f;
     }
 
-    @Override public float getSizeZ() {
+    @Override
+    public float getSizeZ() {
         int i = wp.getType().ordinal() * 4;
         return (sizeMapping[i + texSizeZIndex] - sizeMapping[i + texPosZIndex]) / 2.5f;
     }
 
-    @Override public int getZoomNeeded() {
+    @Override
+    public int getZoomNeeded() {
         return wp.getZoomNeeded();
     }
 
-    @Override public boolean isEnabled(boolean forMinimap) {
+    @Override
+    public boolean isEnabled(boolean forMinimap) {
         return wp.getZoomNeeded() != HIDDEN_ZOOM;
     }
 
