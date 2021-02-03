@@ -41,6 +41,7 @@ public class DiscordActivity extends Structure implements DiscordGameSDKOptions 
 
     public DiscordActivity() {
         super();
+        setAutoWrite(true);
     }
 
     protected List<String> getFieldOrder() {
@@ -49,6 +50,7 @@ public class DiscordActivity extends Structure implements DiscordGameSDKOptions 
 
     public DiscordActivity(Pointer peer) {
         super(peer);
+        setAutoWrite(true);
     }
 
     public static class ByReference extends DiscordActivity implements Structure.ByReference {
