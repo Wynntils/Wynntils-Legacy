@@ -80,18 +80,18 @@ public class MapTerritory {
         return territory;
     }
 
-    public void drawScreen(int mouseX, int mouseY, float partialTicks, boolean resource) {
+    public void drawScreen(int mouseX, int mouseY, float partialTicks, boolean territoryArea, boolean resourceColor, boolean showHeadquarters, boolean showNames) {
         if (!shouldRender || renderer == null) return;
 
         CustomColor color;
-        if (!resource) {
+        if (!resourceColor) {
             color = territory.getGuildColor() == null ? StringUtils.colorFromString(territory.getGuild()) :
                     StringUtils.colorFromHex(territory.getGuildColor());
         } else {
             color = resources.getColor();
         }
 
-        if (MapConfig.WorldMap.INSTANCE.territoryArea) {
+        if (territoryArea) {
             renderer.drawRectF(color.setA(MapConfig.WorldMap.INSTANCE.colorAlpha), initX, initY, endX, endY);
             renderer.drawRectWBordersF(color.setA(1), initX, initY, endX, endY, 2f);
         }
@@ -101,13 +101,14 @@ public class MapTerritory {
 
         boolean hovering = (mouseX > initX && mouseX < endX && mouseY > initY && mouseY < endY);
 
-        if (resource) {
+        if (showHeadquarters) {
             if (!resources.isHeadquarters()) return;
 
             GlStateManager.color(1f, 1f, 1f, 1f);
             renderer.drawRect(Textures.Map.map_territory_info, (int) ppX-8, (int) ppY-7, (int) ppX+8, (int) ppY+7, 0, 49, 16, 62);
-            return;
         }
+
+        if (!showNames) return;
 
         if ((MapConfig.WorldMap.INSTANCE.showTerritoryName || hovering) && alpha > 0)
             renderer.drawString(territory.getFriendlyName(), ppX, ppY - 10, territoryNameColour.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);

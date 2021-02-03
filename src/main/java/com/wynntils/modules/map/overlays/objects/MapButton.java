@@ -13,6 +13,7 @@ import net.minecraft.init.SoundEvents;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
@@ -24,10 +25,11 @@ public class MapButton {
     MapButtonType type;
     List<String> hoverLore;
     Consumer<Integer> onClick;
+    Function<Void, Boolean> isEnabled;
 
     ScreenRenderer renderer = new ScreenRenderer();
 
-    public MapButton(int posX, int posY, MapButtonType type, List<String> hoverLore, Consumer<Integer> onClick) {
+    public MapButton(int posX, int posY, MapButtonType type, List<String> hoverLore, Function<Void, Boolean> isEnabled, Consumer<Integer> onClick) {
         int halfWidth = type.getWidth() / 2;
         int halfHeight = type.getHeight() / 2;
 
@@ -38,6 +40,7 @@ public class MapButton {
 
         this.type = type;
         this.hoverLore = hoverLore;
+        this.isEnabled = isEnabled;
         this.onClick = onClick;
     }
 
@@ -48,7 +51,11 @@ public class MapButton {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         pushMatrix();
         {
-            color(1f, 1f, 1f, 1f);
+            if (isEnabled.apply(null)) {
+                color(1f, 1f, 1f, 1f);
+            } else {
+                color(.3f, .3f, .3f, 1f);
+            }
 
             // icon itself
             renderer.drawRect(Textures.Map.map_buttons, startX, startY, endX, endY,
@@ -58,8 +65,6 @@ public class MapButton {
     }
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
-        if (type.isIgnoreAction()) return;
-
         Minecraft.getMinecraft().getSoundHandler().playSound(
                 PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f)
         );

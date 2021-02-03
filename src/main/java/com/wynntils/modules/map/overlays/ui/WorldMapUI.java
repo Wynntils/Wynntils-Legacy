@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
@@ -94,15 +95,15 @@ public class WorldMapUI extends GuiMovementScreen {
         this.animationEnd = System.currentTimeMillis() + MapConfig.WorldMap.INSTANCE.animationLength;
     }
 
-    protected void addButton(MapButtonType type, List<String> hover, Consumer<Integer> onClick) {
+    protected void addButton(MapButtonType type, int offsetX, List<String> hover, Function<Void, Boolean> isEnabled, Consumer<Integer> onClick) {
         // add the buttom base
         if (mapButtons.isEmpty()) {
-            mapButtons.add(new MapButton(width / 2, height - 45, MapButtonType.BASE, null, null));
+            mapButtons.add(new MapButton(width / 2, height - 45, MapButtonType.BASE, null, (v) -> true, null));
         }
 
-        int posX = mapButtons.get(0).getStartX() + 13 + (19 * (mapButtons.size() - 1)) + type.getOffsetX();
+        int posX = mapButtons.get(0).getStartX() + 13 + (19 * (mapButtons.size() - 1)) + offsetX;
         int posY = height - 45;
-        mapButtons.add(new MapButton(posX, posY, type, hover, onClick));
+        mapButtons.add(new MapButton(posX, posY, type, hover, isEnabled, onClick));
     }
 
     protected void createIcons() {
@@ -320,7 +321,8 @@ public class WorldMapUI extends GuiMovementScreen {
         }
 
         if (MapConfig.WorldMap.INSTANCE.keepTerritoryVisible || Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)) {
-            territories.values().forEach(c -> c.drawScreen(mouseX, mouseY, partialTicks, false));
+            territories.values().forEach(c -> c.drawScreen(mouseX, mouseY, partialTicks,
+                    MapConfig.WorldMap.INSTANCE.territoryArea, false, false, true));
         }
 
         forEachIcon(c -> c.drawHovering(mouseX, mouseY, partialTicks, renderer));
@@ -429,6 +431,7 @@ public class WorldMapUI extends GuiMovementScreen {
 
         for (MapButton button : mapButtons) {
             if (!button.isHovering(mouseX, mouseY)) continue;
+            if (button.getType().isIgnoreAction()) continue;
 
             button.mouseClicked(mouseX, mouseY, mouseButton);
             return;

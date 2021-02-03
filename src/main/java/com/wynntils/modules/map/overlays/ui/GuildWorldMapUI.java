@@ -12,6 +12,7 @@ import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.GuildResourceContainer;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.managers.GuildResourceManager;
+import com.wynntils.modules.map.overlays.enums.MapButtonType;
 import com.wynntils.modules.map.overlays.objects.MapTerritory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -25,26 +26,56 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashSet;
+
+import static net.minecraft.util.text.TextFormatting.*;
 
 public class GuildWorldMapUI extends WorldMapUI {
 
     private final long creationTime = System.currentTimeMillis();
     private boolean holdingMapKey = false;
 
+    // Properties
+    private boolean showTerritory = true;
+    private boolean showOwners = false;
+    private boolean resourceColors = false;
+    private boolean showTradeRoutes = true;
+
     public GuildWorldMapUI() {
         super((float) Minecraft.getMinecraft().player.posX, (float) Minecraft.getMinecraft().player.posZ);
     }
 
-    private static boolean isHoldingMapKey() {
-        int mapKey = MapModule.getModule().getGuildMapKey().getKey();
-        if (mapKey == 0) return false;  // Unknown key
-        if (-100 <= mapKey && mapKey <= -85) {
-            // Mouse key
-            return Mouse.isButtonDown(mapKey + 100);
-        }
+    @Override
+    public void initGui() {
+        super.initGui();
 
-        return Keyboard.isKeyDown(mapKey);
+        this.mapButtons.clear();
+
+        addButton(MapButtonType.CENTER, 0, Arrays.asList(
+                AQUA + "[>] Show territory borders",
+                GRAY + "Click here to enable/disable",
+                GRAY + "territory borders."
+        ), (v) -> showTerritory, (btn) -> showTerritory = !showTerritory);
+
+        addButton(MapButtonType.PENCIL, 0, Arrays.asList(
+                YELLOW + "[>] Show territory owners",
+                GRAY + "Click here to enable/disable",
+                GRAY + "territory owners."
+        ), (v) -> showOwners, (btn) -> showOwners = !showOwners);
+
+        addButton(MapButtonType.INFO, 1, Arrays.asList(
+                GOLD + "[>] Use resource generation colors",
+                GRAY + "Click here to switch between",
+                GRAY + "resource generation colors and",
+                GRAY + "guild colors."
+        ), (v) -> resourceColors, (btn) -> resourceColors = !resourceColors);
+
+        addButton(MapButtonType.PIN, 2, Arrays.asList(
+                LIGHT_PURPLE + "[>] Show trade routes",
+                GRAY + "Click here to enable/disable",
+                GRAY + "territory trade routes."
+        ), (v) -> showTradeRoutes, (btn) -> showTradeRoutes = !showTradeRoutes);
     }
 
     @Override
@@ -68,6 +99,7 @@ public class GuildWorldMapUI extends WorldMapUI {
         drawMap(mouseX, mouseY, partialTicks);
         drawIcons(mouseX, mouseY, partialTicks);
         drawCoordinates(mouseX, mouseY, partialTicks);
+        drawMapButtons(mouseX, mouseY, partialTicks);
 
         ScreenRenderer.endGL();
 
@@ -108,8 +140,8 @@ public class GuildWorldMapUI extends WorldMapUI {
             GlStateManager.popMatrix();
         }
 
-        generateTradeRoutes();
-        territories.values().forEach(c -> c.drawScreen(mouseX, mouseY, partialTicks, true));
+        if (showTradeRoutes) generateTradeRoutes();
+        territories.values().forEach(c -> c.drawScreen(mouseX, mouseY, partialTicks, showTerritory, resourceColors, !showOwners, showOwners));
         territories.values().forEach(c -> c.postDraw(mouseX, mouseY, partialTicks, width, height));
 
         clearMask();
@@ -164,6 +196,17 @@ public class GuildWorldMapUI extends WorldMapUI {
             GlStateManager.enableTexture2D();
         }
         GlStateManager.popMatrix();
+    }
+
+    private static boolean isHoldingMapKey() {
+        int mapKey = MapModule.getModule().getGuildMapKey().getKey();
+        if (mapKey == 0) return false;  // Unknown key
+        if (-100 <= mapKey && mapKey <= -85) {
+            // Mouse key
+            return Mouse.isButtonDown(mapKey + 100);
+        }
+
+        return Keyboard.isKeyDown(mapKey);
     }
 
     @Override

@@ -4,6 +4,8 @@
 
 package com.wynntils.modules.map.overlays.ui;
 
+import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
@@ -45,46 +47,46 @@ public class MainWorldMapUI extends WorldMapUI {
 
         this.mapButtons.clear();
 
-        addButton(MapButtonType.PLUS, Arrays.asList(
+        addButton(MapButtonType.PLUS, 0, Arrays.asList(
             DARK_GREEN + "[>] Create a new Waypoint",
             GRAY + "Click here to create",
             GRAY + "a new waypoint."
-        ), (btn) -> Minecraft.getMinecraft().displayGuiScreen(new WaypointCreationMenu(null)));
+        ), (v) -> true, (btn) -> Minecraft.getMinecraft().displayGuiScreen(new WaypointCreationMenu(null)));
 
-        addButton(MapButtonType.PENCIL, Arrays.asList(
+        addButton(MapButtonType.PENCIL, 0, Arrays.asList(
             GOLD + "[>] Manage Paths",
             GRAY + "List, Delete or Create",
             GRAY + "drawed lines that help you",
             GRAY + "to navigate around the world!"
-        ), (btn) -> Minecraft.getMinecraft().displayGuiScreen(new PathWaypointOverwiewUI()));
+        ), (v) -> true, (btn) -> Minecraft.getMinecraft().displayGuiScreen(new PathWaypointOverwiewUI()));
 
-        addButton(MapButtonType.PIN, Arrays.asList(
+        addButton(MapButtonType.PIN, 1, Arrays.asList(
                 RED + "[>] Manage Waypoints",
                 GRAY + "List, Delete or Create",
                 GRAY + "all your preview set",
                 GRAY + "waypoints!"
-        ), (btn) -> Minecraft.getMinecraft().displayGuiScreen(new WaypointOverviewUI()));
+        ), (v) -> true, (btn) -> Minecraft.getMinecraft().displayGuiScreen(new WaypointOverviewUI()));
 
-        addButton(MapButtonType.SEARCH, Arrays.asList(
+        addButton(MapButtonType.SEARCH, 2, Arrays.asList(
                 LIGHT_PURPLE + "[>] Search",
                 RED + "In Development"
-        ), (btn) -> {});
+        ), (v) -> true, (btn) -> {});
 
-        addButton(MapButtonType.CENTER, Arrays.asList(
+        addButton(MapButtonType.CENTER, 3, Arrays.asList(
                 AQUA + "[>] Configurate Markers",
                 GRAY + "Enable or disable each",
                 GRAY + "map marker available."
-        ), (btn) -> Minecraft.getMinecraft().displayGuiScreen(new WorldMapSettingsUI()));
+        ), (v) -> true, (btn) -> Minecraft.getMinecraft().displayGuiScreen(new WorldMapSettingsUI()));
 
-        addButton(MapButtonType.SHARE, Arrays.asList(
+        addButton(MapButtonType.SHARE, 4, Arrays.asList(
                 BLUE + "[>] Share Location",
                 AQUA + "Left click" + GRAY +" to share your",
                 GRAY + "pin with your current party.",
                 AQUA + "Right click" + GRAY + " to share your",
                 GRAY + "location with your party."
-        ), (btn) -> handleShareButton(btn == 0));
+        ), (v) -> PlayerInfo.get(SocialData.class).getPlayerParty().isPartying(), (btn) -> handleShareButton(btn == 0));
 
-        addButton(MapButtonType.INFO, Arrays.asList(
+        addButton(MapButtonType.INFO, 5, Arrays.asList(
                 YELLOW + "[>] Quick Guide",
                 GRAY + " - CTRL to show territories",
                 GRAY + " - Left click on waypoint to place a pin.",
@@ -92,7 +94,7 @@ public class MainWorldMapUI extends WorldMapUI {
                 GRAY + " - Double click on a pin to create a waypoint.",
                 GRAY + " - Right click on pin to remove it.",
                 GRAY + " - Right click to center on player."
-        ), (btn) -> {});
+        ), (v) -> true, (btn) -> {});
     }
 
     private static boolean isHoldingMapKey() {
