@@ -44,6 +44,11 @@ public class TerritoryInfoUI {
             description.add(resource.getPrettySymbol() + storage.getCurrent() + "/" + storage.getMax() + " stored");
         }
 
+        if (resources.isHeadquarters()) {
+            description.add(" ");
+            description.add(TextFormatting.RED + "Guild Headquarters");
+        }
+
         description.add(" ");
     }
 

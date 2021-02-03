@@ -37,7 +37,7 @@ public class GuildWorldMapUI extends WorldMapUI {
     }
 
     private static boolean isHoldingMapKey() {
-        int mapKey = MapModule.getModule().getMapKey().getKey();
+        int mapKey = MapModule.getModule().getGuildMapKey().getKey();
         if (mapKey == 0) return false;  // Unknown key
         if (-100 <= mapKey && mapKey <= -85) {
             // Mouse key
