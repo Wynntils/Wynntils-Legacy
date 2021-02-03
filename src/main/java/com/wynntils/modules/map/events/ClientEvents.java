@@ -62,7 +62,8 @@ public class ClientEvents implements Listener {
             return;
         }
 
-        LootRunManager.addChest(lastLocation); // add chest to the current lootrun recording
+        if (LootRunManager.isRecording())
+            LootRunManager.addChest(lastLocation); // add chest to the current lootrun recording
 
         String tier = e.getGui().getLowerInv().getName().replace("Loot Chest ", "");
         if (!MapConfig.Waypoints.INSTANCE.chestTiers.isTierAboveThis(tier)) return;
