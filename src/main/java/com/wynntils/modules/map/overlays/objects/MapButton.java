@@ -9,7 +9,6 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.map.overlays.enums.MapButtonType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.init.SoundEvents;
 
 import java.util.List;
@@ -17,7 +16,7 @@ import java.util.function.Consumer;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
-public class MapButton extends GuiScreen {
+public class MapButton {
 
     int startX, startY;
     int endX, endY;
@@ -46,7 +45,6 @@ public class MapButton extends GuiScreen {
         return mouseX >= startX && mouseX <= endX && mouseY >= startY && mouseY <= endY;
     }
 
-    @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         pushMatrix();
         {
@@ -59,7 +57,6 @@ public class MapButton extends GuiScreen {
         popMatrix();
     }
 
-    @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
         if (type.isIgnoreAction()) return;
 

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.map.overlays.objects;
@@ -12,7 +12,7 @@ import com.wynntils.modules.map.instances.PathWaypointProfile.PathPoint;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.Point;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -284,4 +284,5 @@ public class MapPathWaypointIcon extends MapIcon {
         float perpendicularUnitX;
         float perpendicularUnitZ;
     }
+
 }

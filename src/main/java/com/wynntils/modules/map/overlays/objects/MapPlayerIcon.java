@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.map.overlays.objects;
@@ -151,6 +151,7 @@ public class MapPlayerIcon extends MapIcon {
     private ResourceLocation cachedResource;
     private static final ResourceLocation STEVE_SKIN = DefaultPlayerSkin.getDefaultSkin(new UUID(0, 0));
     private static final ResourceLocation ALEX_SKIN = DefaultPlayerSkin.getDefaultSkin(new UUID(0, 1));
+
     static {
         assert DefaultPlayerSkin.getSkinType(new UUID(0, 0)).equals("default");
         assert DefaultPlayerSkin.getSkinType(new UUID(0, 1)).equals("slim");
