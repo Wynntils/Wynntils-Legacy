@@ -15,7 +15,6 @@ import com.wynntils.modules.map.overlays.enums.MapButtonType;
 import com.wynntils.modules.map.overlays.objects.MapButton;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.gui.GuiButton;
 import net.minecraft.init.SoundEvents;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -212,21 +211,6 @@ public class MainWorldMapUI extends WorldMapUI {
         int x = (int) Minecraft.getMinecraft().player.posX;
         int z = (int) Minecraft.getMinecraft().player.posZ;
         CommandCompass.shareCoordinates(null, "location", x, z);
-    }
-
-    @Override
-    public void actionPerformed(GuiButton btn) {
-//        if (btn == settingsBtn) {
-//            Minecraft.getMinecraft().displayGuiScreen(new WorldMapSettingsUI());
-//        } else if (btn == addWaypointBtn) {
-//            Minecraft.getMinecraft().displayGuiScreen(new WaypointCreationMenu(null));
-//        } else if (btn == waypointMenuBtn) {
-//            Minecraft.getMinecraft().displayGuiScreen(new WaypointOverviewUI());
-//        } else if (btn == pathWaypointMenuBtn) {
-//            Minecraft.getMinecraft().displayGuiScreen(new PathWaypointOverwiewUI());
-//        } else if (btn == shareBtn) {
-//            handleShareButton(true);
-//        }
     }
 
 }

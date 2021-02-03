@@ -91,7 +91,7 @@ public class WorldMapUI extends GuiMovementScreen {
             QuestManager.readQuestBook();
         }
 
-        this.animationEnd = System.currentTimeMillis() + 250;
+        this.animationEnd = System.currentTimeMillis() + MapConfig.WorldMap.INSTANCE.animationLength;
     }
 
     protected void addButton(MapButtonType type, List<String> hover, Consumer<Integer> onClick) {
@@ -359,9 +359,9 @@ public class WorldMapUI extends GuiMovementScreen {
     }
 
     protected void handleOpenAnimation() {
-        if (System.currentTimeMillis() > animationEnd) return;
+        if (System.currentTimeMillis() > animationEnd || !MapConfig.WorldMap.INSTANCE.openAnimation) return;
 
-        float invertedProgress = (animationEnd - System.currentTimeMillis()) / 250f;
+        float invertedProgress = (animationEnd - System.currentTimeMillis()) / (float) MapConfig.WorldMap.INSTANCE.animationLength;
         double radians = (Math.PI / 2f) * invertedProgress;
 
         zoom = (int)(25 * Math.sin(radians));

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.map.configs;
@@ -106,6 +106,13 @@ public class MapConfig extends SettingsClass {
 
         @Setting(displayName = "Show Location Labels", description = "Should location labels be displayed?")
         public boolean showLabels = true;
+
+        @Setting(displayName = "Open Animation", description = "Should the world map have an opening animation?")
+        public boolean openAnimation = true;
+
+        @Setting(displayName = "Opening Animation Length", description = "How long should be the opening animation")
+        @Setting.Limitations.IntLimit(min = 50, max = 1000)
+        public int animationLength = 250;
     }
 
     @SettingsInfo(name = "map_textures", displayPath = "Map/Textures")
