@@ -56,26 +56,26 @@ public class GuildWorldMapUI extends WorldMapUI {
                 AQUA + "[>] Show territory borders",
                 GRAY + "Click here to enable/disable",
                 GRAY + "territory borders."
-        ), (v) -> showTerritory, (btn) -> showTerritory = !showTerritory);
+        ), (v) -> showTerritory, (i, btn) -> showTerritory = !showTerritory);
 
         addButton(MapButtonType.PENCIL, 0, Arrays.asList(
                 YELLOW + "[>] Show territory owners",
                 GRAY + "Click here to enable/disable",
                 GRAY + "territory owners."
-        ), (v) -> showOwners, (btn) -> showOwners = !showOwners);
+        ), (v) -> showOwners, (i, btn) -> showOwners = !showOwners);
 
         addButton(MapButtonType.INFO, 1, Arrays.asList(
                 GOLD + "[>] Use resource generation colors",
                 GRAY + "Click here to switch between",
                 GRAY + "resource generation colors and",
                 GRAY + "guild colors."
-        ), (v) -> resourceColors, (btn) -> resourceColors = !resourceColors);
+        ), (v) -> resourceColors, (i, btn) -> resourceColors = !resourceColors);
 
         addButton(MapButtonType.PIN, 2, Arrays.asList(
                 LIGHT_PURPLE + "[>] Show trade routes",
                 GRAY + "Click here to enable/disable",
                 GRAY + "territory trade routes."
-        ), (v) -> showTradeRoutes, (btn) -> showTradeRoutes = !showTradeRoutes);
+        ), (v) -> showTradeRoutes, (i, btn) -> showTradeRoutes = !showTradeRoutes);
     }
 
     @Override

@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.overlays.ui;
 
+import com.google.common.collect.Lists;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
@@ -15,6 +16,8 @@ import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.overlays.enums.MapButtonType;
 import com.wynntils.modules.map.overlays.objects.MapButton;
+import com.wynntils.modules.music.managers.SoundTrackManager;
+import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
@@ -32,6 +35,8 @@ public class MainWorldMapUI extends WorldMapUI {
     private final long creationTime = System.currentTimeMillis();
     private long lastClickTime = Integer.MAX_VALUE;
     private static final long doubleClickTime = Utils.getDoubleClickTime();
+
+    private int easterEggClicks = 0;
 
     public MainWorldMapUI() {
         super();
@@ -51,32 +56,32 @@ public class MainWorldMapUI extends WorldMapUI {
             DARK_GREEN + "[>] Create a new Waypoint",
             GRAY + "Click here to create",
             GRAY + "a new waypoint."
-        ), (v) -> true, (btn) -> Minecraft.getMinecraft().displayGuiScreen(new WaypointCreationMenu(null)));
+        ), (v) -> true, (i, btn) -> Minecraft.getMinecraft().displayGuiScreen(new WaypointCreationMenu(null)));
 
         addButton(MapButtonType.PENCIL, 0, Arrays.asList(
             GOLD + "[>] Manage Paths",
             GRAY + "List, Delete or Create",
             GRAY + "drawed lines that help you",
             GRAY + "to navigate around the world!"
-        ), (v) -> true, (btn) -> Minecraft.getMinecraft().displayGuiScreen(new PathWaypointOverwiewUI()));
+        ), (v) -> true, (i, btn) -> Minecraft.getMinecraft().displayGuiScreen(new PathWaypointOverwiewUI()));
 
         addButton(MapButtonType.PIN, 1, Arrays.asList(
                 RED + "[>] Manage Waypoints",
                 GRAY + "List, Delete or Create",
                 GRAY + "all your preview set",
                 GRAY + "waypoints!"
-        ), (v) -> true, (btn) -> Minecraft.getMinecraft().displayGuiScreen(new WaypointOverviewUI()));
+        ), (v) -> true, (i, btn) -> Minecraft.getMinecraft().displayGuiScreen(new WaypointOverviewUI()));
 
         addButton(MapButtonType.SEARCH, 2, Arrays.asList(
                 LIGHT_PURPLE + "[>] Search",
                 RED + "In Development"
-        ), (v) -> true, (btn) -> {});
+        ), (v) -> true, (i, btn) -> {});
 
         addButton(MapButtonType.CENTER, 3, Arrays.asList(
                 AQUA + "[>] Configurate Markers",
                 GRAY + "Enable or disable each",
                 GRAY + "map marker available."
-        ), (v) -> true, (btn) -> Minecraft.getMinecraft().displayGuiScreen(new WorldMapSettingsUI()));
+        ), (v) -> true, (i, btn) -> Minecraft.getMinecraft().displayGuiScreen(new WorldMapSettingsUI()));
 
         addButton(MapButtonType.SHARE, 4, Arrays.asList(
                 BLUE + "[>] Share Location",
@@ -84,9 +89,9 @@ public class MainWorldMapUI extends WorldMapUI {
                 GRAY + "pin with your current party.",
                 AQUA + "Right click" + GRAY + " to share your",
                 GRAY + "location with your party."
-        ), (v) -> PlayerInfo.get(SocialData.class).getPlayerParty().isPartying(), (btn) -> handleShareButton(btn == 0));
+        ), (v) -> PlayerInfo.get(SocialData.class).getPlayerParty().isPartying(), (i, btn) -> handleShareButton(btn == 0));
 
-        addButton(MapButtonType.INFO, 5, Arrays.asList(
+        addButton(MapButtonType.INFO, 5, Lists.newArrayList(Arrays.asList(
                 YELLOW + "[>] Quick Guide",
                 GRAY + " - CTRL to show territories",
                 GRAY + " - Left click on waypoint to place a pin.",
@@ -94,7 +99,25 @@ public class MainWorldMapUI extends WorldMapUI {
                 GRAY + " - Double click on a pin to create a waypoint.",
                 GRAY + " - Right click on pin to remove it.",
                 GRAY + " - Right click to center on player."
-        ), (v) -> true, (btn) -> {});
+        )), (v) -> true, (i, btn) -> {
+            easterEggClicks += 1;
+
+            // Easter egg :)
+            if (easterEggClicks == 20) {
+                i.getHoverLore().set(1, RED + "Alright you asked for it...");
+                SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("easterEgg1"),
+                        true, true, true, false, true, false);
+            } else if (easterEggClicks == 15) {
+                i.getHoverLore().set(1, RED + "Are you really sure you want this?");
+                i.getHoverLore().remove(2);
+            } else if (easterEggClicks == 10) {
+                i.getHoverLore().set(1, RED + "You better stop, you'll");
+                i.getHoverLore().set(2, RED + "not like the consequences.");
+            } else if (easterEggClicks == 5) {
+                i.getHoverLore().add(1, RED + "an useless button?");
+                i.getHoverLore().add(1, RED + "Alright why are you clicking");
+            }
+        });
     }
 
     private static boolean isHoldingMapKey() {
