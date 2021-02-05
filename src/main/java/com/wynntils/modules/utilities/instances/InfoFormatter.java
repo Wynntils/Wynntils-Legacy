@@ -484,7 +484,7 @@ public class InfoFormatter {
     private void cacheMoney() {
         int total = PlayerInfo.get(InventoryData.class).getMoney();
 
-        String eb = Integer.toString(total / 64);
+        String eb = Integer.toString((total % 4096) / 64);
         String em = Integer.toString(total % 64);
         String le = Integer.toString(total / 4096);
         String output = Integer.toString(total);
