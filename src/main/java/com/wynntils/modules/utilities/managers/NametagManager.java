@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.utilities.managers;
@@ -7,6 +7,7 @@ package com.wynntils.modules.utilities.managers;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -22,6 +23,7 @@ import com.wynntils.modules.utilities.instances.NametagLabel;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.LeaderboardProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
+import com.wynntils.webapi.profiles.item.enums.ItemTier;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
@@ -32,6 +34,7 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Team;
@@ -59,7 +62,7 @@ public class NametagManager {
     private static final NametagLabel helperLabel = new NametagLabel(CommonColors.LIGHT_GREEN, "Wynntils Helper", 0.7f);
     private static final NametagLabel contentTeamLabel = new NametagLabel(CommonColors.RAINBOW, "Wynntils CT", 0.7f);
     private static final NametagLabel donatorLabel = new NametagLabel(CommonColors.RAINBOW, "Wynntils Donator", 0.7f);
-    private static final HashMap<String, NametagLabel> wynncraftTagLabels = new HashMap<>();
+    private static final Map<String, NametagLabel> wynncraftTagLabels = new HashMap<>();
 
     public static final Pattern MOB_LEVEL = Pattern.compile("(" + TextFormatting.GOLD + " \\[Lv\\. (.*?)\\])");
     private static final ScreenRenderer renderer = new ScreenRenderer();
@@ -76,8 +79,8 @@ public class NametagManager {
         List<NametagLabel> customLabels = new ArrayList<>();
 
         if (entity instanceof EntityPlayer) {
-            if (PlayerInfo.getPlayerInfo().getFriendList().contains(entity.getName())) customLabels.add(friendLabel);  // friend
-            else if (PlayerInfo.getPlayerInfo().getGuildList().contains(entity.getName())) customLabels.add(guildLabel);  // guild
+            if (PlayerInfo.get(SocialData.class).isFriend(entity.getName())) customLabels.add(friendLabel);  // friend
+            else if (PlayerInfo.get(SocialData.class).isGuildMember(entity.getName())) customLabels.add(guildLabel);  // guild
 
             // wynncraft tags (Admin, Moderator, GM, Builder, etc.)
             if (entity.getTeam() != null && entity.getTeam().getName().matches("(tag|pvp)_.*")) {
@@ -158,14 +161,15 @@ public class NametagManager {
                 }
             }
 
-            if (UtilitiesConfig.INSTANCE.renderLeaderboardBadges && LeaderboardManager.isLeader(entity.getUniqueID())) {
-                LeaderboardProfile leader = LeaderboardManager.getLeader(entity.getUniqueID());
-
+            LeaderboardProfile leader = LeaderboardManager.getLeader(entity.getUniqueID());
+            if (UtilitiesConfig.INSTANCE.renderLeaderboardBadges && leader != null) {
                 double horizontalShift = -(((leader.rankSize() - 1) * 21f) / 2);
 
                 // TODO limit max badges to 3 and switch between them by time
                 for (Map.Entry<ProfessionType, Integer> badge : leader.getRanks()) {
-                    drawBadge(badge.getKey(), (int)(1 + (badge.getValue() / 3.0d)) - 1,
+                    if (badge.getValue() == 10) continue;
+
+                    drawBadge(badge.getKey(), ((badge.getValue()-1) / 3),
                             (float)x, (float)y + position, (float)z, horizontalShift, offsetY - 25, playerViewY, playerViewX, thirdPerson, isSneaking);
 
                     horizontalShift += 21f;
@@ -314,22 +318,27 @@ public class NametagManager {
         if (Minecraft.getMinecraft().objectMouseOver == null || Minecraft.getMinecraft().objectMouseOver.entityHit == null || Minecraft.getMinecraft().objectMouseOver.entityHit != player) return labels;
 
         for (ItemStack is : player.getEquipmentAndArmor()) {
-            if (!is.hasDisplayName() || !WebManager.getItems().containsKey(TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()))) continue;
+            if (!is.hasDisplayName()) continue;
+            String itemName = WebManager.getTranslatedItemName(TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName())).replace("֎", "");
 
-            ItemProfile itemProfile = WebManager.getItems().get(TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()));
             CustomColor color;
-            switch (itemProfile.getTier()) {
-                case MYTHIC: color = MinecraftChatColors.DARK_PURPLE; break;
-                case FABLED: color = MinecraftChatColors.RED; break;
-                case LEGENDARY: color = MinecraftChatColors.AQUA; break;
-                case RARE: color = MinecraftChatColors.LIGHT_PURPLE; break;
-                case UNIQUE: color = MinecraftChatColors.YELLOW; break;
-                case SET: color = MinecraftChatColors.GREEN; break;
-                case NORMAL: color = MinecraftChatColors.WHITE; break;
-                default: color = CommonColors.RAINBOW;
-            }
+            String displayName;
+            if (WebManager.getItems().containsKey(itemName)) {
 
-            labels.add(new NametagLabel(color, TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()), 0.4f));
+                ItemProfile itemProfile = WebManager.getItems().get(itemName);
+                color = itemProfile.getTier().getChatColor();
+
+                // this solves an unidentified item showcase exploit
+                // boxes items are STONE_SHOVEL, 1 represents UNIQUE boxes and 6 MYTHIC boxes
+                if (is.getItem() == Items.STONE_SHOVEL && is.getItemDamage() >= 1 && is.getItemDamage() <= 6) {
+                    displayName = "Unidentified Item";
+                } else displayName = itemProfile.getDisplayName();
+            } else if (itemName.contains("Crafted")) {
+                color = ItemTier.CRAFTED.getChatColor();
+                displayName = itemName;
+            } else continue;
+
+            labels.add(new NametagLabel(color, TextFormatting.getTextWithoutFormattingCodes(displayName), 0.4f));
         }
 
         return labels;

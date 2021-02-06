@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.utilities.instances;
@@ -25,7 +25,7 @@ public class Toast {
     }
 
     public enum ToastType {
-        QUEST_COMPLETED, TERRITORY, DISCOVERY, AREA_DISCOVERED
+        QUEST_COMPLETED, TERRITORY, DISCOVERY, AREA_DISCOVERED, LEVEL_UP
     }
 
     public long getCreationTime() {

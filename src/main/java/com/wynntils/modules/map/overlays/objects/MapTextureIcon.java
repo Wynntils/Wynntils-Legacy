@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.map.overlays.objects;
@@ -11,6 +11,7 @@ import com.wynntils.core.framework.rendering.textures.Texture;
  * For {@link MapIcon}s which are represented by a sprite sheet texture
  */
 public abstract class MapTextureIcon extends MapIcon {
+
     public abstract Texture getTexture();
 
     /**
@@ -97,4 +98,5 @@ public abstract class MapTextureIcon extends MapIcon {
             }
         };
     }
+
 }

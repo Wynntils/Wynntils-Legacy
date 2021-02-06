@@ -1,32 +1,35 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.core.events;
 
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
-import com.wynntils.core.events.custom.GameEvent;
-import com.wynntils.core.events.custom.GuiOverlapEvent;
-import com.wynntils.core.events.custom.PacketEvent;
-import com.wynntils.core.events.custom.WynnSocialEvent;
+import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.FrameworkManager;
+import com.wynntils.core.framework.entities.EntityManager;
 import com.wynntils.core.framework.enums.ClassType;
+import com.wynntils.core.framework.enums.DamageType;
 import com.wynntils.core.framework.enums.professions.GatheringMaterial;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.ActionBarData;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.instances.GatheringBake;
 import com.wynntils.modules.core.instances.MainMenuButtons;
+import com.wynntils.modules.core.instances.TotemTracker;
 import com.wynntils.modules.core.managers.*;
 import com.wynntils.modules.core.managers.GuildAndFriendManager.As;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
+import com.wynntils.modules.utilities.UtilitiesModule;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -40,17 +43,17 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.client.CPacketClientSettings;
-import net.minecraft.network.play.server.SPacketChat;
-import net.minecraft.network.play.server.SPacketEntityMetadata;
+import net.minecraft.network.play.client.CPacketHeldItemChange;
+import net.minecraft.network.play.server.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.client.event.GuiScreenEvent;
+import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -58,13 +61,15 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.util.Collection;
-import java.util.Locale;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.wynntils.core.framework.instances.PlayerInfo.getPlayerInfo;
+import static com.wynntils.core.framework.instances.PlayerInfo.get;
 
 public class ClientEvents implements Listener {
+    TotemTracker totemTracker = new TotemTracker();
 
     /**
      * This replace these GUIS into a "provided" format to make it more modular
@@ -97,13 +102,13 @@ public class ClientEvents implements Listener {
         if (e.getGui() instanceof GuiChest) {
             if (e.getGui() instanceof ChestReplacer) return;
 
-            e.setGui(new ChestReplacer(ModCore.mc().player.inventory, (IInventory) ReflectionFields.GuiChest_lowerChestInventory.getValue(e.getGui())));
+            e.setGui(new ChestReplacer(ModCore.mc().player.inventory, ReflectionFields.GuiChest_lowerChestInventory.getValue(e.getGui())));
             return;
         }
         if (e.getGui() instanceof GuiScreenHorseInventory) {
             if (e.getGui() instanceof HorseReplacer) return;
 
-            e.setGui(new HorseReplacer(ModCore.mc().player.inventory, (IInventory) ReflectionFields.GuiScreenHorseInventory_horseInventory.getValue(e.getGui()), (AbstractHorse) ReflectionFields.GuiScreenHorseInventory_horseEntity.getValue(e.getGui())));
+            e.setGui(new HorseReplacer(ModCore.mc().player.inventory, ReflectionFields.GuiScreenHorseInventory_horseInventory.getValue(e.getGui()), (AbstractHorse) ReflectionFields.GuiScreenHorseInventory_horseEntity.getValue(e.getGui())));
         }
         if (e.getGui() instanceof GuiIngameMenu) {
             if (e.getGui() instanceof IngameMenuReplacer) return;
@@ -112,23 +117,24 @@ public class ClientEvents implements Listener {
         }
     }
 
-    private static final Pattern GATHERING_STATUS = Pattern.compile("\\[\\+([0-9]*) [ⒸⒷⒿ] (.*?) XP\\] \\[([0-9]*)%\\]");
+    private static final Pattern GATHERING_STATUS = Pattern.compile("\\[\\+([0-9]*) [ⒸⒷⒿⓀ] (.*?) XP\\] \\[([0-9]*)%\\]");
     private static final Pattern GATHERING_RESOURCE = Pattern.compile("\\[\\+([0-9]+) (.+)\\]");
+    private static final Pattern MOB_DAMAGE = DamageType.compileDamagePattern();
 
     // bake status
     private GatheringBake bakeStatus = null;
 
     @SubscribeEvent
-    public void gatherDetection(PacketEvent<SPacketEntityMetadata> e) {
+    public void gatherAndDamageDetection(PacketEvent<SPacketEntityMetadata> e) {
         // makes this method always be called in main thread
         if (!Minecraft.getMinecraft().isCallingFromMinecraftThread()) {
-            Minecraft.getMinecraft().addScheduledTask(() -> gatherDetection(e));
+            Minecraft.getMinecraft().addScheduledTask(() -> gatherAndDamageDetection(e));
             return;
         }
 
         if (e.getPacket().getDataManagerEntries() == null || e.getPacket().getDataManagerEntries().isEmpty()) return;
         Entity i = Minecraft.getMinecraft().world.getEntityByID(e.getPacket().getEntityId());
-        if (!(i instanceof EntityArmorStand)) return;
+        if (!(i instanceof EntityArmorStand) || !i.hasCustomName()) return;
 
         for (EntityDataManager.DataEntry<?> next : e.getPacket().getDataManagerEntries()) {
             if (!(next.getValue() instanceof String)) continue;
@@ -151,6 +157,18 @@ public class ClientEvents implements Listener {
 
                 bakeStatus.setMaterialAmount(Integer.parseInt(m.group(1)));
                 bakeStatus.setMaterial(GatheringMaterial.valueOf(resourceType.toUpperCase()));
+            } else { // third, damage detection
+                Map<DamageType, Integer> damageList = new HashMap<>();
+
+                m = MOB_DAMAGE.matcher(value);
+                while (m.find()) {
+                    damageList.put(DamageType.fromSymbol(m.group(2)), Integer.valueOf(m.group(1)));
+                }
+
+                if (damageList.isEmpty()) return;
+
+                FrameworkManager.getEventBus().post(new GameEvent.DamageEntity(damageList, i));
+                return;
             }
 
             if (bakeStatus == null || !bakeStatus.isReady()) return;
@@ -199,8 +217,8 @@ public class ClientEvents implements Listener {
     public void updateActionBar(PacketEvent<SPacketChat> e) {
         if (!Reference.onServer || e.getPacket().getType() != ChatType.GAME_INFO) return;
 
-        PlayerInfo.getPlayerInfo().updateActionBar(e.getPacket().getChatComponent().getUnformattedText());
-        e.setCanceled(true);
+        PlayerInfo.get(ActionBarData.class).updateActionBar(e.getPacket().getChatComponent().getUnformattedText());
+        if (UtilitiesModule.getModule().getActionBarOverlay().active) e.setCanceled(true); // only disable when the wynntils action bar is enabled
     }
 
     @SubscribeEvent
@@ -219,6 +237,14 @@ public class ClientEvents implements Listener {
 
         PingManager.calculatePing();
         PacketQueue.proccessQueue();
+    }
+
+    /**
+     * Renders and process fake entities
+     */
+    @SubscribeEvent
+    public void processFakeEntities(RenderWorldLastEvent e) {
+        EntityManager.tickEntities(e.getPartialTicks(), e.getContext());
     }
 
     GuiScreen lastScreen = null;
@@ -276,36 +302,15 @@ public class ClientEvents implements Listener {
             || !e.getSlotIn().getStack().getDisplayName().contains("[>] Select")) return;
 
 
-        getPlayerInfo().setClassId(e.getSlotId());
+        get(CharacterData.class).setClassId(e.getSlotId());
 
         String classLore = ItemUtils.getLore(e.getSlotIn().getStack()).get(1);
-        String classS = classLore.substring(classLore.indexOf(TextFormatting.WHITE.toString()) + 2);
+        String className = classLore.substring(classLore.indexOf(TextFormatting.WHITE.toString()) + 2);
 
-        ClassType selectedClass = ClassType.NONE;
+        ClassType selectedClass = ClassType.fromName(className);
+        boolean selectedClassIsReskinned = ClassType.isReskinned(className);
 
-        try {
-            selectedClass = ClassType.valueOf(classS.toUpperCase(Locale.ROOT));
-        } catch (Exception ex) {
-            switch (classS) {
-                case "Hunter":
-                    selectedClass = ClassType.ARCHER;
-                    break;
-                case "Knight":
-                    selectedClass = ClassType.WARRIOR;
-                    break;
-                case "Dark Wizard":
-                    selectedClass = ClassType.MAGE;
-                    break;
-                case "Ninja":
-                    selectedClass = ClassType.ASSASSIN;
-                    break;
-                case "Skyseer":
-                    selectedClass = ClassType.SHAMAN;
-                    break;
-            }
-        }
-
-        getPlayerInfo().updatePlayerClass(selectedClass);
+        get(CharacterData.class).updatePlayerClass(selectedClass, selectedClassIsReskinned);
     }
 
     @SubscribeEvent
@@ -366,6 +371,41 @@ public class ClientEvents implements Listener {
         if (name.contains("\u0001") || name.contains("§")) return; // avoid player npcs
 
         UserManager.loadUser(e.getEntity().getUniqueID());
+    }
+
+    @SubscribeEvent
+    public void onTotemSpawn(PacketEvent<SPacketSpawnObject> e) {
+        totemTracker.onTotemSpawn(e);
+    }
+
+    @SubscribeEvent
+    public void onTotemSpellCast(SpellEvent.Cast e) {
+        totemTracker.onTotemSpellCast(e);
+    }
+
+    @SubscribeEvent
+    public void onTotemTeleport(PacketEvent<SPacketEntityTeleport> e) {
+        totemTracker.onTotemTeleport(e);
+    }
+
+    @SubscribeEvent
+    public void onTotemRename(PacketEvent<SPacketEntityMetadata> e) {
+        totemTracker.onTotemRename(e);
+    }
+
+    @SubscribeEvent
+    public void onTotemDestroy(PacketEvent<SPacketDestroyEntities> e) {
+        totemTracker.onTotemDestroy(e);
+    }
+
+    @SubscribeEvent
+    public void onTotemClassChange(WynnClassChangeEvent e) {
+        totemTracker.onTotemClassChange(e);
+    }
+
+    @SubscribeEvent
+    public void onWeaponChange(PacketEvent<CPacketHeldItemChange> e) {
+        totemTracker.onWeaponChange(e);
     }
 
 }

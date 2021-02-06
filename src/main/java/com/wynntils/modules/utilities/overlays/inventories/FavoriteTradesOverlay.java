@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.utilities.overlays.inventories;
@@ -26,13 +26,13 @@ import java.util.List;
 
 public class FavoriteTradesOverlay implements Listener {
 
-    private final ArrayList<String> favorites_trade_items_lore = new ArrayList<>();
+    private final List<String> favorites_trade_items_lore = new ArrayList<>();
 
     @SubscribeEvent
     public void onKeyPress(GuiOverlapEvent.ChestOverlap.KeyTyped e) {
         if (!Reference.onWorld || !e.getGui().getLowerInv().getDisplayName().getFormattedText().contains("Marketplace")) return;
         if (e.getKeyCode() != KeyManager.getFavoriteTradeKey().getKeyBinding().getKeyCode()) return;
-        
+
         if (e.getGui().getSlotUnderMouse() != null && Minecraft.getMinecraft().player.inventory != e.getGui().getSlotUnderMouse().inventory) {
             toggleLockState(e.getGui().getSlotUnderMouse().getStack());
         }
@@ -46,7 +46,7 @@ public class FavoriteTradesOverlay implements Listener {
                 favorites_trade_items_lore.clear();
             return;
         }
-        
+
         for (Slot s : e.getGui().inventorySlots.inventorySlots) {
             if (s.slotNumber >= e.getGui().getLowerInv().getSizeInventory()) continue;
             if (isNotMarketItem(s.getStack())) continue;
@@ -84,10 +84,10 @@ public class FavoriteTradesOverlay implements Listener {
 
     private void toggleLockState(ItemStack it) {
         if (!Reference.onWorld || isNotMarketItem(it)) return;
-        
+
         ItemIdentificationOverlay.replaceLore(it);
         String lore = Arrays.toString(ItemUtils.getLore(it).toArray());
-        
+
         if (!favorites_trade_items_lore.remove(lore)) {
             favorites_trade_items_lore.add(lore);
         }

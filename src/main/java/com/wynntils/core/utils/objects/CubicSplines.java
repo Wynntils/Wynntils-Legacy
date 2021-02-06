@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.core.utils.objects;
@@ -120,7 +120,7 @@ public final class CubicSplines {
 
     public static final class Spline3D implements DoubleFunction<Location> {
 
-        private ArrayList<Location> points;
+        private List<Location> points;
         private transient Cubic[] xCubics;
         private transient Cubic[] yCubics;
         private transient Cubic[] zCubics;
@@ -155,7 +155,7 @@ public final class CubicSplines {
         public void addPoints(Collection<? extends Point3d> newPoints) {
             if (newPoints == null || newPoints.isEmpty()) return;
             dirty = true;
-            points.ensureCapacity(points.size() + newPoints.size());
+            ((ArrayList<Location>) points).ensureCapacity(points.size() + newPoints.size());
             for (Point3d point : newPoints) {
                 points.add(new Location(point));
             }
@@ -164,11 +164,16 @@ public final class CubicSplines {
         public void addPoints(int index, Collection<? extends Point3d> newPoints) {
             if (newPoints == null || newPoints.isEmpty()) return;
             dirty = true;
-            ArrayList<Location> copy = new ArrayList<>(newPoints.size());
+            List<Location> copy = new ArrayList<>(newPoints.size());
             for (Point3d point : newPoints) {
                 copy.add(new Location(point));
             }
             points.addAll(index, copy);
+        }
+
+        public void removePoints(Collection<? extends Point3d> removedPoints) {
+            dirty = true;
+            points.removeAll(removedPoints);
         }
 
         public List<Location> getPoints() {
@@ -304,8 +309,8 @@ public final class CubicSplines {
 
             if (dirty) recalculateAllCubics();
 
-            ArrayList<Location> values = new ArrayList<>();
-            ArrayList<Vector3d> derivatives = new ArrayList<>();
+            List<Location> values = new ArrayList<>();
+            List<Vector3d> derivatives = new ArrayList<>();
             double integral = 0;
             for (int i = 0; i < points.size() - 1; ++i) {
                 if (distanceAt(i) > 32D) {

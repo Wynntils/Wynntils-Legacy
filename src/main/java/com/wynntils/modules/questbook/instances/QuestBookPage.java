@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.questbook.instances;
@@ -11,6 +11,7 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.reference.Easing;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
@@ -30,6 +31,7 @@ public class QuestBookPage extends GuiScreen {
 
     protected final ScreenRenderer render = new ScreenRenderer();
     private long time;
+    private boolean open = false;
 
     // Page specific information
     private String title;
@@ -57,7 +59,7 @@ public class QuestBookPage extends GuiScreen {
 
     protected static final CustomColor unselected_cube = new CustomColor(0, 0, 0, 0.2f);
     protected static final CustomColor selected_cube = new CustomColor(0, 0, 0, 0.3f);
-    protected static final CustomColor selected_cube_2 = CustomColor.fromInt(0xadf8b3, 0.3f);
+    protected static final CustomColor selected_cube_2 = CustomColor.fromInt(0x11c920, 0.3f);
 
     /**
      * Base class for all questbook pages
@@ -76,14 +78,24 @@ public class QuestBookPage extends GuiScreen {
      */
     @Override
     public void initGui() {
+        if (open) {
+            if (!showSearchBar) return;
+
+            textField.x = width / 2 + 32;
+            textField.y = height / 2 - 97;
+            return;
+        }
+
+        open = true;
         currentPage = 1;
         selected = 0;
         searchUpdate("");
         refreshAccepts();
         time = Minecraft.getSystemTime();
         lastTick = Minecraft.getSystemTime();
+
         if (showSearchBar) {
-            textField = new GuiTextField(0, Minecraft.getMinecraft().fontRenderer, width / 2 + 32, height / 2 - 97, 133, 23);
+            textField = new GuiTextField(0, Minecraft.getMinecraft().fontRenderer, width / 2 + 32, height / 2 - 97, 113, 23);
             textField.setFocused(!QuestBookConfig.INSTANCE.searchBoxClickRequired);
             textField.setMaxStringLength(50);
             textField.setEnableBackgroundDrawing(false);
@@ -153,46 +165,30 @@ public class QuestBookPage extends GuiScreen {
 
             /*Render search bar when needed*/
             if (showSearchBar) {
-                render.drawRect(Textures.UIs.quest_book, x + 13, y - 109, 52, 255, 133, 23);
-                textField.drawTextBox();
-//                if (searchBarText.length() <= 0 && !QuestBookConfig.INSTANCE.searchBoxClickRequired) {
-//                render.drawString("Type to search", x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-//                } else if (searchBarText.length() <= 0 && !searchBarFocused) {
-//                render.drawString("Click to search", x + 32, y - 97, CommonColors.LIGHT_GRAY, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-//                } else {
-
-//                    String text = searchBarText;
-//
-//                    if (render.getStringWidth(text) >= 110) {
-//                        int remove = searchBarText.length();
-//                        while (render.getStringWidth((text = searchBarText.substring(searchBarText.length() - remove))) >= 110) {
-//                            remove -= 1;
-//                        }
-//                    }
-//
-//                    if (Minecraft.getSystemTime() - text_flicker >= 500) {
-//                        keepForTime = !keepForTime;
-//                        text_flicker = Minecraft.getSystemTime();
-//                    }
-//
-//                    if (keepForTime && (searchBarFocused || !QuestBookConfig.INSTANCE.searchBoxClickRequired)) {
-//                        render.drawString(text + "_", x + 32, y - 97, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-//                    } else {
-//                        render.drawString(text, x + 32, y - 97, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-//                    }
-//                }
+                drawSearchBar(x, y);
             }
         }
 
         ScreenRenderer.endGL();
     }
 
+    protected void drawSearchBar(int centerX, int centerY) {
+        render.drawRect(Textures.UIs.quest_book, centerX + 13, centerY - 109, 52, 255, 133, 23);
+        textField.drawTextBox();
+    }
+
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        if (showSearchBar) {
-            textField.mouseClicked(mouseX, mouseY, mouseButton);
-        }
+        if (!showSearchBar) return;
 
+        textField.mouseClicked(mouseX, mouseY, mouseButton);
+
+        if (mouseButton != 1) return;
+        if (mouseX < textField.x || mouseX >= textField.x + textField.width) return;
+        if (mouseY < textField.y || mouseY >= textField.y + textField.height) return;
+
+        textField.setText("");
+        searchUpdate("");
     }
 
     @Override
@@ -244,23 +240,7 @@ public class QuestBookPage extends GuiScreen {
     protected void searchUpdate(String currentText) { }
 
     protected boolean doesSearchMatch(String toCheck, String searchText) {
-        if (QuestBookConfig.INSTANCE.useFuzzySearch) {
-            int i = 0, j = 0;
-            char[] toCheckArray = toCheck.toCharArray();
-            for (char c : searchText.toCharArray()) {
-                for (; i < toCheck.length(); ) {
-                    if (c == toCheckArray[i]) {
-                        i++;
-                        j++;
-                        break;
-                    }
-                    i++;
-                }
-            }
-            return j == searchText.length();
-        } else {
-            return toCheck.contains(searchText);
-        }
+        return QuestBookConfig.INSTANCE.useFuzzySearch ? StringUtils.fuzzyMatch(toCheck, searchText) : toCheck.contains(searchText);
     }
 
     protected void goForward() {
@@ -306,4 +286,5 @@ public class QuestBookPage extends GuiScreen {
      * @return a list of strings - each index representing a new line.
      */
     public List<String> getHoveredDescription() { return null; }
+
 }

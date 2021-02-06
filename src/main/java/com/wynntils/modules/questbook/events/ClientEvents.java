@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.questbook.events;
@@ -11,6 +11,8 @@ import com.wynntils.core.events.custom.WynnClassChangeEvent;
 import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.utils.helpers.Delay;
+import com.wynntils.modules.core.enums.ToggleSetting;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
@@ -85,8 +87,11 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
-        if (e.getCurrentClass() == ClassType.NONE) return;
+        if (e.getNewClass() == ClassType.NONE) return;
 
+        if (QuestBookConfig.INSTANCE.allowCustomQuestbook) {
+            new Delay(() -> ToggleSetting.QUEST_TRACKER.set(false), 20);
+        }
         QuestManager.clearData();
     }
 

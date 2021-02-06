@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.utilities.configs;
@@ -17,7 +17,6 @@ import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.core.enums.OverlayRotation;
 import com.wynntils.modules.utilities.overlays.hud.ObjectivesOverlay;
 import com.wynntils.modules.utilities.overlays.hud.TerritoryFeedOverlay;
-import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextFormatting;
 
@@ -34,6 +33,9 @@ public class OverlayConfig extends SettingsClass {
 
     @Setting(displayName = "Split Coordinates", description = "Should the coordinates be shown separately to the action bar?")
     public boolean splitCoordinates = false;
+
+    @Setting(displayName = "Use Y position on Action Bar", description = "Should the action bar display the player Y position is instead of their orientation?")
+    public boolean replaceDirection = false;
 
     @SettingsInfo(name = "health_settings", displayPath = "Utilities/Overlays/Health")
     public static class Health extends SettingsClass {
@@ -78,6 +80,7 @@ public class OverlayConfig extends SettingsClass {
             Aether,
             Skull,
             Skyrim,
+            Rune,
             a,
             b,
             c,
@@ -116,6 +119,7 @@ public class OverlayConfig extends SettingsClass {
             Skull,
             Inverse,
             Skyrim,
+            Rune,
             a,
             b,
             c,
@@ -142,20 +146,23 @@ public class OverlayConfig extends SettingsClass {
     public static class ToastsSettings extends SettingsClass {
         public static ToastsSettings INSTANCE;
 
-        @Setting(displayName = "Enable Toast Messages", description = "Should certain messages be displayed in the form of rolling parchment?", order = 0)
+        @Setting(displayName = "Toast Messages", description = "Should certain messages be displayed in the form of rolling parchment?", order = 0)
         public boolean enableToast = true;
 
-        @Setting(displayName = "Enable Territory Enter Messages", description = "Should a toast be displayed to inform that you are entering a territory?")
+        @Setting(displayName = "Territory Enter Messages", description = "Should a toast be displayed to inform that you are entering a territory?")
         public boolean enableTerritoryEnter = true;
 
-        @Setting(displayName = "Enable Area Discovered Messages", description = "Should a toast be displayed to inform that you have discovered an area?")
+        @Setting(displayName = "Area Discovered Messages", description = "Should a toast be displayed to inform that you have discovered an area?")
         public boolean enableAreaDiscovered = true;
 
-        @Setting(displayName = "Enable Quest Completed Messages", description = "Should a toast be displayed to inform that you have completed a quest?")
+        @Setting(displayName = "Quest Completed Messages", description = "Should a toast be displayed to inform that you have completed a quest?")
         public boolean enableQuestCompleted = true;
 
-        @Setting(displayName = "Enable Discovery Found Messages", description = "Should a toast be displayed to inform that you have found a secret discovery?")
+        @Setting(displayName = "Discovery Found Messages", description = "Should a toast be displayed to inform that you have found a secret discovery?")
         public boolean enableDiscovery = true;
+
+        @Setting(displayName = "Level Up Messages", description = "Should a toast be displayed to inform that you have leveled up?")
+        public boolean enableLevelUp = true;
 
         @Setting(displayName = "Flip Toast Messages", description = "Should a toast display from the left to right?\n\n§8Some visual glitches may occur if Toast overlay isn't moved to either side of your screen.")
         public boolean flipToast = false;
@@ -307,52 +314,67 @@ public class OverlayConfig extends SettingsClass {
 
             @Setting(displayName = "Redirect Horse Messages", description = "Should messages related to your horse be redirected to the game update ticker?")
             public boolean redirectHorse = true;
+            
+            @Setting(displayName = "Redirect Resource Pack Messages", description = "Should wynnpack and loading reasource pack messages be disabled or redirected (depending on whether you can see them in classs screen)?")
+            public boolean redirectResourcePack = false;
+            
+            @Setting(displayName = "Redirect Class Messages", description = "Should class messages be redirected to the game update ticker?")
+            public boolean redirectClass = true;
 
             @Setting(displayName = "Redirect Local Login Messages", description = "Should local login messages (for people with ranks) be redirected to the game update ticker?")
             public boolean redirectLoginLocal = true;
 
-            @Setting(displayName = "Redirect Friend Login Messages", description = "Should login messages for friends be redirected to the game-update-ticker?")
+            @Setting(displayName = "Redirect Friend Login Messages", description = "Should login messages for friends be redirected to the game update ticker?")
             public boolean redirectLoginFriend = true;
 
-            @Setting(displayName = "Redirect Guild Login Messages", description = "Should login messages for guild members be redirected to the game-update-ticker?")
+            @Setting(displayName = "Redirect Guild Login Messages", description = "Should login messages for guild members be redirected to the game update ticker?")
             public boolean redirectLoginGuild = true;
 
-            @Setting(displayName = "Redirect Merchant Messages", description = "Should item buyer and identifier messages be redirected to the game-update-ticker?")
+            @Setting(displayName = "Redirect Merchant Messages", description = "Should item buyer and identifier messages be redirected to the game update ticker?")
             public boolean redirectMerchants = true;
 
-            @Setting(displayName = "Redirect Other Messages", description = "Should skill points, price of identifying items, and other users' level up messages be redirected to the game-update-ticker?")
+            @Setting(displayName = "Redirect Other Messages", description = "Should skill points, price of identifying items, and other users' level up messages be redirected to the game update ticker?")
             public boolean redirectOther = true;
 
-            @Setting(displayName = "Redirect Server Status", description = "Should server shutdown messages be redirected to the game-update-ticker?")
+            @Setting(displayName = "Redirect Server Restart Messages", description = "Should server restart messages be redirected to the game update ticker?")
             public boolean redirectServer = true;
 
-            @Setting(displayName = "Redirect Quest Messages", description = "Should messages relating to the progress of a quest be redirected to the game-update-ticker?")
+            @Setting(displayName = "Redirect Quest Messages", description = "Should messages relating to the progress of a quest be redirected to the game update ticker?")
             public boolean redirectQuest = true;
 
-            @Setting(displayName = "Redirect Soul Point Messages", description = "Should messages about regaining soul points be redirected to the game-update-ticker?")
+            @Setting(displayName = "Redirect Soul Point Messages", description = "Should messages about regaining soul points be redirected to the game update ticker?")
             public boolean redirectSoulPoint = true;
 
-            @Setting(displayName = "Redirect Cooldown", description = "Should messages about needing to wait be redirected to the game-update-ticker?")
+            @Setting(displayName = "Redirect Cooldown", description = "Should messages about needing to wait be redirected to the game update ticker?")
             public boolean redirectCooldown = true;
 
-            @Setting(displayName = "Redirect AFK Messages", description = "Should messages about AFK Protection be redirected to the game-update-ticker?")
+            @Setting(displayName = "Redirect AFK Messages", description = "Should messages about AFK Protection be redirected to the game update ticker?")
             public boolean redirectAfk = true;
+
+            @Setting(displayName = "Redirect pouch Messages", description = "Should messages about ingredients being added to your pouch be redirected to the game update ticker?")
+            public boolean redirectPouch = true;
+
+            @Setting(displayName = "Redirect Gathering Tool Messages", description = "Should messages about your gathering tool durability be redirected to the game update ticker?")
+            public boolean redirectGatheringDura = true;
+
+            @Setting(displayName = "Redirect Crafted Item Messages", description = "Should messages about crafted item durability be redirected to the game update ticker?")
+            public boolean redirectCraftedDura = true;
         }
 
         @SettingsInfo(name = "game_update_territory_settings", displayPath = "Utilities/Overlays/Update Ticker/Territory Change")
         public static class TerritoryChangeMessages extends SettingsClass {
             public static TerritoryChangeMessages INSTANCE;
 
-            @Setting(displayName = "Enable Territory Change", description = "Should territory change messages be displayed in the game-update-ticker?")
+            @Setting(displayName = "Enable Territory Change", description = "Should territory change messages be displayed in the game update ticker?")
             public boolean enabled = false;
 
-            @Setting(displayName = "Enable Territory Enter", description = "Should territory enter messages be displayed in the game-update-ticker?")
+            @Setting(displayName = "Enable Territory Enter", description = "Should territory enter messages be displayed in the game update ticker?")
             public boolean enter = true;
 
-            @Setting(displayName = "Enable Territory Leave", description = "Should territory leave messages be displayed in the game-update-ticker?")
+            @Setting(displayName = "Enable Territory Leave", description = "Should territory leave messages be displayed in the game update ticker?")
             public boolean leave = false;
 
-            @Setting(displayName = "Enable Music Change", description = "Should music change messages be displayed in the game-update-ticker?\n\n§8This has no effect if the Music module is disabled.")
+            @Setting(displayName = "Enable Music Change", description = "Should music change messages be displayed in the game update ticker?\n\n§8This has no effect if the Music module is disabled.")
             public boolean musicChange = true;
 
             @Setting(displayName = "Territory Enter Format", description = "How should the format of the territory enter ticker messages be displayed?")
@@ -406,7 +428,6 @@ public class OverlayConfig extends SettingsClass {
         @Override
         public void onSettingChanged(String name) {
             if (name.equals("enabled")) {
-                WebManager.updateTerritoryThreadStatus(enabled);
                 TerritoryFeedOverlay.clearQueue();
             }
         }
@@ -423,51 +444,51 @@ public class OverlayConfig extends SettingsClass {
         public static InfoOverlays INSTANCE;
 
         @Setting.Features.StringParameters(parameters = {"x", "y", "z", "dir", "fps", "class", "lvl"})
-        @Setting(displayName = "Info 1 text", description = "What should the first box display?", order = 1)
+        @Setting(displayName = "Info 1 Text", description = "What should the first box display?", order = 1)
         @Setting.Limitations.StringLimit(maxLength = 200)
         public String info1Format = "";
 
-        @Setting(displayName = "Info 1 alignment", description = "How should the text in the first box be aligned?", order = 2)
+        @Setting(displayName = "Info 1 Alignment", description = "How should the text in the first box be aligned?", order = 2)
         public TextAlignment info1Alignment = TextAlignment.MIDDLE;
 
         @Setting.Features.StringParameters(parameters = {"x", "y", "z", "dir", "fps", "class", "lvl"})
-        @Setting(displayName = "Info 2 text", description = "What should the second box display?", order = 3)
+        @Setting(displayName = "Info 2 Text", description = "What should the second box display?", order = 3)
         @Setting.Limitations.StringLimit(maxLength = 200)
         public String info2Format = "";
 
-        @Setting(displayName = "Info 2 alignment", description = "How should the text in the second box be aligned?", order = 4)
+        @Setting(displayName = "Info 2 Alignment", description = "How should the text in the second box be aligned?", order = 4)
         public TextAlignment info2Alignment = TextAlignment.MIDDLE;
 
         @Setting.Features.StringParameters(parameters = {"x", "y", "z", "dir", "fps", "class", "lvl"})
-        @Setting(displayName = "Info 3 text", description = "What should the third box display?", order = 5)
+        @Setting(displayName = "Info 3 Text", description = "What should the third box display?", order = 5)
         @Setting.Limitations.StringLimit(maxLength = 200)
         public String info3Format = "";
 
-        @Setting(displayName = "Info 3 alignment", description = "How should the text in the third box be aligned?", order = 6)
+        @Setting(displayName = "Info 3 Alignment", description = "How should the text in the third box be aligned?", order = 6)
         public TextAlignment info3Alignment = TextAlignment.MIDDLE;
 
         @Setting.Features.StringParameters(parameters = {"x", "y", "z", "dir", "fps", "class", "lvl"})
-        @Setting(displayName = "Info 4 text", description = "What should the fourth box display?", order = 7)
+        @Setting(displayName = "Info 4 Text", description = "What should the fourth box display?", order = 7)
         @Setting.Limitations.StringLimit(maxLength = 200)
         public String info4Format = "";
 
-        @Setting(displayName = "Info 4 alignment", description = "How should the text in the fourth box be aligned?", order = 8)
+        @Setting(displayName = "Info 4 Alignment", description = "How should the text in the fourth box be aligned?", order = 8)
         public TextAlignment info4Alignment = TextAlignment.MIDDLE;
 
-        @Setting(displayName = "Presets", description = "Copies various formats to the clipboard (Paste to one of the fields above)", upload = false, order = 9)
+        @Setting(displayName = "Presets", description = "Click on the button below to cycle through various formats. The formats will automatically be copied to your clipboard for you to paste in the above fields.", upload = false, order = 9)
         public Presets preset = Presets.CLICK_ME;
 
-        @Setting(displayName = "Variables", description = "Copies the selected variable to the clipboard (Paste to one of the fields above)", upload = false, order = 10)
+        @Setting(displayName = "Variables", description = "Click on the button below to cycle through various variables. The variables will automatically be copied to your clipboard for you to paste in the above fields.", upload = false, order = 10)
         public Variables variables = Variables.CLICK_ME;
 
-        @Setting(displayName = "Symbols/Escaped Characters ", description = "Copies the selected character to the clipboard (Paste to one of the fields above)", upload = false, order = 11)
+        @Setting(displayName = "Symbols/Escaped Characters ", description = "Click on the button below to cycle through various characters. The characters will automatically be copied to your clipboard for you to paste in the above fields.", upload = false, order = 11)
         public Escaped escapedChars = Escaped.CLICK_ME;
 
-        @Setting(displayName = "Background Opacity", description = "How dark should the background box be (% opacity)?", order = 12)
+        @Setting(displayName = "Background Opacity", description = "How dark should the background box be?", order = 12)
         @Setting.Limitations.IntLimit(min = 0, max = 100)
         public int opacity = 0;
 
-        @Setting(displayName = "Background Color", description = "What should the text shadow look like?", order = 13)
+        @Setting(displayName = "Background Color", description = "What color should the text shadow be?\n\n§aClick the coloured box to open the colour wheel.", order = 13)
         public CustomColor backgroundColor = CustomColor.fromInt(0x000000, 0);
 
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
@@ -516,7 +537,8 @@ public class OverlayConfig extends SettingsClass {
             MEMORY_USAGE("Memory usage", "%mem_pct%\\% %mem_used%/%mem_max%MB"),
             PING("Ping", "%ping%ms/15s"),
             BLOCKSPERSECOND("Blocks Per Second", "%bps% bps"),
-            BLOCKSPERMINUTE("Blocks Per Minute", "%bpm% bpm");
+            BLOCKSPERMINUTE("Blocks Per Minute", "%bpm% bpm"),
+            AREA_DPS("Area Damage Per Second", "Area DPS: ❤ %adps%");
 
             public final String displayName;
             public final String value;
@@ -560,6 +582,7 @@ public class OverlayConfig extends SettingsClass {
             WORLD("The current world/server"),
             PING("The current ping"),
             CLOCK("The current time"),
+            CLOCKM("The current time (24h)"),
             MANA("Current mana"),
             MANA_MAX("Max mana"),
             HEALTH("Current health"),
@@ -599,7 +622,8 @@ public class OverlayConfig extends SettingsClass {
             PARTY_COUNT("Amount of members in the players party"),
             PARTY_OWNER("Owner of the current party"),
             UNPROCESSED("Current amount of unprocessed materials"),
-            UNPROCESSED_MAX("Max amount of unprocessed materials");
+            UNPROCESSED_MAX("Max amount of unprocessed materials"),
+            AREA_DPS("Current area damage per second");
 
             public final String displayName;
             public final String value;
@@ -627,23 +651,36 @@ public class OverlayConfig extends SettingsClass {
         @Setting.Limitations.FloatLimit(min = .0f, max = 1f)
         public float backgroundAlpha = 0.3f;
 
+        @Setting(displayName = "Player List Opening Duration", description = "How long should the opening animation of the custom player list last?", order = 3)
+        @Setting.Limitations.DoubleLimit(min = 0D, max = 500D, precision = 5D)
+        public double openingDuration = 125D;
+
     }
 
     @SettingsInfo(name = "consumable_timer_settings", displayPath = "Utilities/Overlays/Consumable Timer")
     public static class ConsumableTimer extends SettingsClass {
         public static ConsumableTimer INSTANCE;
 
-        @Setting(displayName = "Show Effects", description = "Should the effects be displayed in the overlay?")
+        @Setting(displayName = "Effects", description = "Should active effects be displayed in the overlay?")
         public boolean showEffects = true;
 
-        @Setting(displayName = "Show Cool Down", description = "Should loot chest cool down be displayed as a timer?")
+        @Setting(displayName = "Loot Chest Cooldown", description = "Should loot chests cooldown be displayed as a timer?")
         public boolean showCooldown = true;
 
-        @Setting(displayName = "Show Spell Effects", description = "Should spell effects such as speed boost be displayed?")
+        @Setting(displayName = "Spell Effects", description = "Should spell effects be displayed?")
         public boolean showSpellEffects = true;
 
-        @Setting(displayName = "Show Server Restart", description = "Should server restart countdown be displayed?")
+        @Setting(displayName = "Track Totem (Experimental)", description = "Should shaman's totem be displayed?")
+        public boolean trackTotem = false;
+
+        @Setting(displayName = "Server Restart", description = "Should server restart countdown be displayed?")
         public boolean showServerRestart = false;
+
+        @Setting(displayName = "Text Alignment", description = "What alignment should the overlay use?")
+        public TextAlignment textAlignment = TextAlignment.RIGHT_LEFT;
+
+        @Setting(displayName = "Text Shadow", description = "What shadow should the text use?")
+        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
     }
 
     @SettingsInfo(name = "objectives_settings", displayPath = "Utilities/Overlays/Objectives")
@@ -663,13 +700,13 @@ public class OverlayConfig extends SettingsClass {
         @Setting.Limitations.FloatLimit(min = 0.0f, max = 1.0f)
         public float objectivesAlpha = 0.8f;
 
-        @Setting(displayName = "Grow from Bottom", description = "Should the list of objectives grow from the bottom?")
+        @Setting(displayName = "Grow From Bottom", description = "Should the list of objectives grow from the bottom?")
         public boolean growFromBottom = true;
 
         @Setting(displayName = "Objectives Bar Texture", description = "What texture should be used for the objectives bar?")
         public objectivesTextures objectivesTexture = objectivesTextures.a;
 
-        @Setting(displayName = "Text Colour", description = "What colour should the objective text be?")
+        @Setting(displayName = "Text Colour", description = "What colour should the objective text be?\n\n§aClick the coloured box to open the colour wheel.")
         public CustomColor textColour = CommonColors.GREEN;
 
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")

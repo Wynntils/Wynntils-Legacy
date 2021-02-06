@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.core.utils.objects;
@@ -115,9 +115,12 @@ public class Location extends Point3d {
         return new BlockPos(x, y, z);
     }
 
-
     public final net.minecraft.util.math.Vec3d toMinecraftVec3d() {
         return new net.minecraft.util.math.Vec3d(x, y, z);
+    }
+
+    public Location clone() {
+        return new Location(x, y, z);
     }
 
     @Override
@@ -133,6 +136,10 @@ public class Location extends Point3d {
     public boolean equals(Tuple3d other) {
         if (other == null) return false;
         return x == other.x && y == other.y && z == other.z;
+    }
+
+    public String toString() {
+        return "[" + (int) Math.round(this.x) + ", " + (int) Math.round(this.y) + ", " + (int) Math.round(this.z) + "]";
     }
 
 }

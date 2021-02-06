@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.chat.overlays.gui;
@@ -8,14 +8,12 @@ import com.wynntils.modules.chat.instances.ChatTab;
 import com.wynntils.modules.chat.managers.TabManager;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import net.minecraft.client.gui.*;
-import net.minecraft.util.text.TextFormatting;
+import static net.minecraft.util.text.TextFormatting.*;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 import java.util.regex.Pattern;
 
 
@@ -30,7 +28,7 @@ public class TabGUI extends GuiScreen {
         if (id != -2)
             tab = TabManager.getTabById(id);
     }
-    ArrayList<GuiCheckBox> simpleRegexSettings = new ArrayList<>();
+    List<GuiCheckBox> simpleRegexSettings = new ArrayList<>();
 
     // ui things
     GuiButton saveButton;
@@ -64,9 +62,9 @@ public class TabGUI extends GuiScreen {
         int x = width / 2; int y = height / 2;
 
         // General
-        buttonList.add(saveButton = new GuiButton(0, x - 90, y + 40, 40, 20, TextFormatting.GREEN + "Save"));
-        buttonList.add(deleteButton = new GuiButton(1, x - 45, y + 40, 40, 20, TextFormatting.DARK_RED + "Delete"));
-        buttonList.add(closeButton = new GuiButton(2, x + 50, y + 40, 40, 20, TextFormatting.WHITE + "Close"));
+        buttonList.add(saveButton = new GuiButton(0, x - 90, y + 40, 40, 20, GREEN + "Save"));
+        buttonList.add(deleteButton = new GuiButton(1, x - 45, y + 40, 40, 20, DARK_RED + "Delete"));
+        buttonList.add(closeButton = new GuiButton(2, x + 50, y + 40, 40, 20, WHITE + "Close"));
         buttonList.add(advancedButton = new GuiButton(4, x - 65, y - 60, 130, 20, "Show Advanced Settings"));
 
         deleteButton.enabled = (id != -2) && TabManager.getAvailableTabs().size() > 1;
@@ -93,7 +91,7 @@ public class TabGUI extends GuiScreen {
 
         // Simple
         labelList.add(simpleSettings = new GuiLabel(mc.fontRenderer, 4, x - 100, y - 35, 10, 10, 0xFFFFFF));
-        simpleSettings.addLine("Message types " + TextFormatting.RED + "*");
+        simpleSettings.addLine("Message types " + RED + "*");
 
         simpleRegexSettings.add(allRegex = new GuiCheckBox(10, x - 100, y - 25, "All", false));
         simpleRegexSettings.add(localRegex = new GuiCheckBox(11, x - 50, y - 25, "Local", false));
@@ -120,9 +118,9 @@ public class TabGUI extends GuiScreen {
         }
 
         labelList.add(nameLabel = new GuiLabel(mc.fontRenderer, 0, x - 110, y - 105, 10, 10, 0xFFFFFF));
-        nameLabel.addLine("Name " + TextFormatting.RED + "*");
+        nameLabel.addLine("Name " + RED + "*");
         labelList.add(regexLabel = new GuiLabel(mc.fontRenderer, 1, x - 100, y - 35, 10, 10, 0xFFFFFF));
-        regexLabel.addLine("Regex " + TextFormatting.RED + "*");
+        regexLabel.addLine("Regex " + RED + "*");
         regexLabel.visible = false;
         labelList.add(autoCommand = new GuiLabel(mc.fontRenderer, 2, x - 12, y - 105, 10, 10, 0xFFFFFF));
         autoCommand.addLine("Auto Command");
@@ -158,7 +156,7 @@ public class TabGUI extends GuiScreen {
                 } else {
                     mc.displayGuiScreen(this);
                 }
-            }, TextFormatting.WHITE + (TextFormatting.BOLD + "Do you really want to delete this chat tab?"), TextFormatting.RED + "This action is irreversible!", 0));
+            }, WHITE + (BOLD + "Do you really want to delete this chat tab?"), RED + "This action is irreversible!", 0));
         } else if (button == advancedButton) {
             boolean simple;
             if (button.displayString.equals("Show Advanced Settings")) {
@@ -193,41 +191,41 @@ public class TabGUI extends GuiScreen {
         if (orderNbField != null) orderNbField.drawTextBox();
 
         if (mouseX >= nameTextField.x && mouseX < nameTextField.x + nameTextField.width && mouseY >= nameTextField.y && mouseY < nameTextField.y + nameTextField.height)
-            drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Name"), TextFormatting.GRAY + "This is how your tab", TextFormatting.GRAY + "will be named", "", TextFormatting.RED + "Required"), mouseX, mouseY);
+            drawHoveringText(Arrays.asList(GREEN + (BOLD + "Name"), GRAY + "This is how your tab", GRAY + "will be named", "", RED + "Required"), mouseX, mouseY);
 
         if (regexTextField.getVisible() && mouseX >= regexTextField.x && mouseX < regexTextField.x + regexTextField.width && mouseY >= regexTextField.y && mouseY < regexTextField.y + regexTextField.height)
-            drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "RegEx"), TextFormatting.GRAY + "This will parse the chat", " ", TextFormatting.GREEN + "You can learn RegEx at", TextFormatting.GOLD + "https://regexr.com/", "", TextFormatting.RED + "Required"), mouseX, mouseY);
+            drawHoveringText(Arrays.asList(GREEN + (BOLD + "RegEx"), GRAY + "This will parse the chat", " ", GREEN + "You can learn RegEx at", GOLD + "https://regexr.com/", "", RED + "Required"), mouseX, mouseY);
 
         if (mouseX >= autoCommandField.x && mouseX < autoCommandField.x + autoCommandField.width && mouseY >= autoCommandField.y && mouseY < autoCommandField.y + autoCommandField.height)
-            drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Auto Command"), TextFormatting.GRAY + "This will automatically", TextFormatting.GRAY + "put this command before", TextFormatting.GRAY + "any message.", "", TextFormatting.RED + "Optional"), mouseX, mouseY);
+            drawHoveringText(Arrays.asList(GREEN + (BOLD + "Auto Command"), GRAY + "This will automatically", GRAY + "put this command before", GRAY + "any message.", "", RED + "Optional"), mouseX, mouseY);
 
         if (mouseX >= orderNbField.x && mouseX < orderNbField.x + orderNbField.width && mouseY >= orderNbField.y && mouseY < orderNbField.y + orderNbField.height)
-            drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Order number"), TextFormatting.GRAY + "This determines the", TextFormatting.GRAY + "arrangement of the", TextFormatting.GRAY + "chat tabs.", TextFormatting.DARK_GRAY + "(lowest to highest)", TextFormatting.RED + "Optional"), mouseX, mouseY);
+            drawHoveringText(Arrays.asList(GREEN + (BOLD + "Order number"), GRAY + "This determines the", GRAY + "arrangement of the", GRAY + "chat tabs.", DARK_GRAY + "(lowest to highest)", RED + "Optional"), mouseX, mouseY);
 
         if (mouseX >= lowPriority.x && mouseX < lowPriority.x + lowPriority.width && mouseY >= lowPriority.y && mouseY < lowPriority.y + lowPriority.height)
-            drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Low priority"), TextFormatting.GRAY + "If selected, messages", TextFormatting.GRAY + "will attempt to match", TextFormatting.GRAY + "with other tabs first.", "", TextFormatting.GRAY + "This will also duplicate", TextFormatting.GRAY + "messages across other", TextFormatting.GRAY + "low priority tabs.", TextFormatting.RED + "Optional"), mouseX, mouseY);
+            drawHoveringText(Arrays.asList(GREEN + (BOLD + "Low priority"), GRAY + "If selected, messages", GRAY + "will attempt to match", GRAY + "with other tabs first.", "", GRAY + "This will also duplicate", GRAY + "messages across other", GRAY + "low priority tabs.", RED + "Optional"), mouseX, mouseY);
 
         if (advancedButton.displayString.equals("Show Advanced Settings")) {
             if (mouseX >= allRegex.x && mouseX < allRegex.x + allRegex.width && mouseY >= allRegex.y && mouseY < allRegex.y + allRegex.height) {
-                drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Message Type: All"), TextFormatting.GRAY + "This will send all", TextFormatting.GRAY + "messages, except those", TextFormatting.GRAY + "deselected to this tab."), mouseX, mouseY);
+                drawHoveringText(Arrays.asList(GREEN + (BOLD + "Message Type: All"), GRAY + "This will send all", GRAY + "messages, except those", GRAY + "deselected to this tab."), mouseX, mouseY);
             } else if (mouseX >= localRegex.x && mouseX < localRegex.x + localRegex.width && mouseY >= localRegex.y && mouseY < localRegex.y + localRegex.height) {
-                drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Message Type: Local"), TextFormatting.GRAY + "This will send all", TextFormatting.GRAY + "messages send by nearby", TextFormatting.GRAY + "players to this tab."), mouseX, mouseY);
+                drawHoveringText(Arrays.asList(GREEN + (BOLD + "Message Type: Local"), GRAY + "This will send all", GRAY + "messages send by nearby", GRAY + "players to this tab."), mouseX, mouseY);
             } else if (mouseX >= guildRegex.x && mouseX < guildRegex.x + guildRegex.width && mouseY >= guildRegex.y && mouseY < guildRegex.y + guildRegex.height) {
-                drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Message Type: Guild"), TextFormatting.GRAY + "This will send all", TextFormatting.GRAY + "messages send by guild", TextFormatting.GRAY + "members to this tab."), mouseX, mouseY);
+                drawHoveringText(Arrays.asList(GREEN + (BOLD + "Message Type: Guild"), GRAY + "This will send all", GRAY + "messages send by guild", GRAY + "members to this tab."), mouseX, mouseY);
             } else if (mouseX >= partyRegex.x && mouseX < partyRegex.x + partyRegex.width && mouseY >= partyRegex.y && mouseY < partyRegex.y + partyRegex.height) {
-                drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Message Type: Party"), TextFormatting.GRAY + "This will send all", TextFormatting.GRAY + "messages send by party", TextFormatting.GRAY + "members to this tab."), mouseX, mouseY);
+                drawHoveringText(Arrays.asList(GREEN + (BOLD + "Message Type: Party"), GRAY + "This will send all", GRAY + "messages send by party", GRAY + "members to this tab."), mouseX, mouseY);
             } else if (mouseX >= shoutsRegex.x && mouseX < shoutsRegex.x + shoutsRegex.width && mouseY >= shoutsRegex.y && mouseY < shoutsRegex.y + shoutsRegex.height) {
-                drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Message Type: Shouts"), TextFormatting.GRAY + "This will send all", TextFormatting.GRAY + "shouts messages", TextFormatting.GRAY + "to this tab."), mouseX, mouseY);
+                drawHoveringText(Arrays.asList(GREEN + (BOLD + "Message Type: Shouts"), GRAY + "This will send all", GRAY + "shouts messages", GRAY + "to this tab."), mouseX, mouseY);
             } else if (mouseX >= pmRegex.x && mouseX < pmRegex.x + pmRegex.width && mouseY >= pmRegex.y && mouseY < pmRegex.y + pmRegex.height) {
-                drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Message Type: PMs"), TextFormatting.GRAY + "This will send all", TextFormatting.GRAY + "private messages", TextFormatting.GRAY + "to this tab."), mouseX, mouseY);
+                drawHoveringText(Arrays.asList(GREEN + (BOLD + "Message Type: PMs"), GRAY + "This will send all", GRAY + "private messages", GRAY + "to this tab."), mouseX, mouseY);
             }
         }
 
         if (saveButton.enabled && mouseX >= saveButton.x && mouseX < saveButton.x + saveButton.width && mouseY >= saveButton.y && mouseY < saveButton.y + saveButton.height)
-            drawHoveringText(Arrays.asList(TextFormatting.GREEN + (TextFormatting.BOLD + "Save"), TextFormatting.GRAY + "Click here to save", TextFormatting.GRAY + "this chat tab."), mouseX, mouseY);
+            drawHoveringText(Arrays.asList(GREEN + (BOLD + "Save"), GRAY + "Click here to save", GRAY + "this chat tab."), mouseX, mouseY);
 
         if (deleteButton.enabled && mouseX >= deleteButton.x && mouseX < deleteButton.x + deleteButton.width && mouseY >= deleteButton.y && mouseY < deleteButton.y + deleteButton.height)
-            drawHoveringText(Arrays.asList(TextFormatting.DARK_RED + (TextFormatting.BOLD + "Delete"), TextFormatting.GRAY + "Click here to delete", TextFormatting.GRAY + "this chat tab.", "", TextFormatting.RED + "Irreversible action"), mouseX, mouseY);
+            drawHoveringText(Arrays.asList(DARK_RED + (BOLD + "Delete"), GRAY + "Click here to delete", GRAY + "this chat tab.", "", RED + "Irreversible action"), mouseX, mouseY);
 
         saveButton.enabled = !regexTextField.getText().isEmpty() && regexValid && !nameTextField.getText().isEmpty();
     }
@@ -266,10 +264,10 @@ public class TabGUI extends GuiScreen {
         regexValid = false;
     }
 
-    private HashMap<String, Boolean> regexSettingsCreator() {
+    private Map<String, Boolean> regexSettingsCreator() {
         if (advancedButton.displayString.equals("Hide Advanced Settings")) return null;
 
-        HashMap<String, Boolean> r = new HashMap<>();
+        Map<String, Boolean> r = new HashMap<>();
         simpleRegexSettings.forEach(b-> r.put(b.displayString, b.isChecked()));
         return r;
     }
@@ -288,8 +286,8 @@ public class TabGUI extends GuiScreen {
     private String regexCreator() {
         if (advancedButton.displayString.equals("Hide Advanced Settings")) return "";
 
-        HashMap<String, Boolean> regexSettings = regexSettingsCreator();
-        ArrayList<String> result = new ArrayList<>();
+        Map<String, Boolean> regexSettings = regexSettingsCreator();
+        List<String> result = new ArrayList<>();
         boolean allIsPresent = regexSettings.get("All");
 
         regexSettings.forEach((k, v) -> {

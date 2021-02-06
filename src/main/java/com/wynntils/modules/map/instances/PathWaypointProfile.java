@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.map.instances;
@@ -7,6 +7,7 @@ package com.wynntils.modules.map.instances;
 import com.google.gson.*;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
+import com.wynntils.modules.map.configs.MapConfig;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class PathWaypointProfile {
 
     public PathWaypointProfile(String name) {
         this.name = name == null ? "Path" : name;
+        points = new ArrayList<>();
         recalculateBounds();
     }
 
@@ -57,7 +59,7 @@ public class PathWaypointProfile {
         isCircular = other.isCircular;
         isEnabled = other.isEnabled;
         color = other.color;
-        ((ArrayList<PathPoint>) points).ensureCapacity(other.points.size());
+        this.points = new ArrayList<>(other.points.size());
         other.points.forEach(c -> points.add(new PathPoint(c.x, c.z)));
         minX = other.minX;
         minZ = other.minZ;
@@ -67,6 +69,14 @@ public class PathWaypointProfile {
         posZ = other.posZ;
         sizeX = other.sizeX;
         sizeZ = other.sizeZ;
+    }
+    
+    public PathWaypointProfile(LootRunPath lootrun) {
+        name = "Lootrun path";
+        color = MapConfig.LootRun.INSTANCE.activePathColour;
+        this.points = new ArrayList<>(lootrun.getPoints().size());
+        lootrun.getPoints().forEach(c -> points.add(new PathPoint((int) c.x, (int) c.z)));
+        recalculateBounds();
     }
 
     public PathPoint getPoint(int index) {
@@ -188,26 +198,10 @@ public class PathWaypointProfile {
         }
     }
 
-    public static class Serializer implements JsonDeserializer<ArrayList<PathWaypointProfile>>, JsonSerializer<ArrayList<PathWaypointProfile>> {
+    public static class Serializer implements JsonDeserializer<PathWaypointProfile>, JsonSerializer<PathWaypointProfile> {
 
-        @Override
-        public ArrayList<PathWaypointProfile> deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-            if (!json.isJsonArray()) {
-                throw new JsonParseException("Path waypoints not an array");
-            }
-            JsonArray arr = (JsonArray) json;
-            ArrayList<PathWaypointProfile> deserialized = new ArrayList<>(arr.size());
-            for (JsonElement obj : arr) {
-                if (!obj.isJsonObject()) {
-                    throw new JsonParseException("Path waypoint item is not an object");
-                }
-                deserialized.add(deserializeOne((JsonObject) obj, context));
-            }
-
-            return deserialized;
-        }
-
-        private static PathWaypointProfile deserializeOne(JsonObject o, JsonDeserializationContext context) {
+        public PathWaypointProfile deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) {
+            JsonObject o = json.getAsJsonObject();
             JsonElement nameEl = o.get("name");
             JsonElement isCircularEl = o.get("isCircular");
             JsonElement isEnabledEl = o.get("isEnabled");
@@ -253,16 +247,7 @@ public class PathWaypointProfile {
             return new PathWaypointProfile(name, isCircular, isEnabled, colour, points);
         }
 
-        @Override
-        public JsonElement serialize(ArrayList<PathWaypointProfile> src, Type typeOfSrc, JsonSerializationContext context) {
-            JsonArray serialized = new JsonArray();
-            for (PathWaypointProfile wp : src) {
-                serialized.add(serializeOne(wp, context));
-            }
-            return serialized;
-        }
-
-        private static JsonObject serializeOne(PathWaypointProfile wp, JsonSerializationContext context) {
+        public JsonObject serialize(PathWaypointProfile wp, Type typeOfSrc, JsonSerializationContext context) {
             JsonObject serialized = new JsonObject();
             serialized.addProperty("name", wp.name);
             serialized.addProperty("isCircular", wp.isCircular);

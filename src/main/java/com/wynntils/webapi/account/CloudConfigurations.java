@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.webapi.account;
@@ -16,6 +16,8 @@ import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -33,7 +35,7 @@ public class CloudConfigurations {
         this.service = service; this.token = token;
     }
 
-    private final ConcurrentHashMap<String, File> toUpload = new ConcurrentHashMap<>();
+    private final Map<String, File> toUpload = new ConcurrentHashMap<>();
 
     public void queueConfig(File f) {
         synchronized (toUpload) {
@@ -55,7 +57,7 @@ public class CloudConfigurations {
             PostRequest request = new PostRequest(WebManager.getApiUrls().get("Athena") + "/user/uploadConfigs", "uploadConfigs");
             request.handleJsonObject(json -> true);
 
-            ArrayList<IMultipartFormPart> formParts = new ArrayList<>();
+            List<IMultipartFormPart> formParts = new ArrayList<>();
 
             formParts.add(new MultipartFormDataPart("authToken", token.getBytes(StandardCharsets.UTF_8)));
 

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.questbook.overlays.hud;
@@ -14,7 +14,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 public class TrackedQuestOverlay extends Overlay {
 
     public TrackedQuestOverlay() {
-        super("Tracked Quest", 215, 70, true, 0.0f, 0.0f, 10, 10, OverlayGrowFrom.TOP_LEFT);
+        super("Tracked Quest", 215, 70, true, 0.0f, 0.0f, 120, 10, OverlayGrowFrom.TOP_LEFT);
     }
 
 

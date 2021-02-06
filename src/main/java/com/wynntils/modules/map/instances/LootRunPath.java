@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.map.instances;
@@ -25,7 +25,8 @@ public class LootRunPath {
     private static List<CustomColor> COLORS = Arrays.asList(CommonColors.RED, CommonColors.ORANGE, CommonColors.YELLOW, CommonColors.GREEN, CommonColors.BLUE, new CustomColor(63, 0, 255), CommonColors.PURPLE);
 
     private CubicSplines.Spline3D spline;
-    private LinkedHashSet<BlockPos> chests;
+    private Set<BlockPos> chests;
+    private Set<LootRunNote> notes;
 
     private transient List<LootRunPath.LootRunPathLocation> lastSmoothSample;
     private transient List<Vector3d> lastSmoothDerivative;
@@ -37,18 +38,25 @@ public class LootRunPath {
     private transient Long2ObjectMap<List<List<LootRunPath.LootRunPathLocation>>> lastRoughSampleByChunk;
     private transient Long2ObjectMap<List<List<Vector3d>>> lastRoughDerivativeByChunk;
 
-    public LootRunPath(Collection<? extends Point3d> points, Collection<? extends BlockPos> chests) {
+    public LootRunPath(Collection<? extends Point3d> points, Collection<? extends BlockPos> chests, Collection<LootRunNote> notes) {
         this.spline = new CubicSplines.Spline3D(points);
         this.chests = new LinkedHashSet<>(chests == null ? 11 : Math.max(2 * chests.size(), 11));
+        this.notes = new LinkedHashSet<>(notes == null ? 5 : notes.size());
+
         if (chests != null) {
             for (BlockPos pos : chests) {
                 this.chests.add(pos.toImmutable());
             }
         }
+        if (notes != null) {
+            for (LootRunNote note : notes) {
+                this.notes.add(note);
+            }
+        }
     }
 
     public LootRunPath() {
-        this(Collections.emptyList(), Collections.emptyList());
+        this(Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
     }
 
     public void addPoint(Point3d loc) {
@@ -70,8 +78,39 @@ public class LootRunPath {
         spline.addPoints(0, points);
     }
 
+    public void removePoints(Collection<? extends Point3d> points) {
+        changed();
+        spline.removePoints(points);
+    }
+
     public void addChest(BlockPos loc) {
         chests.add(loc.toImmutable());
+    }
+
+    public void removeChest(BlockPos loc) {
+        for(BlockPos chest : chests) {
+            if (chest.equals(loc)) {
+                chests.remove(chest);
+                return;
+            }
+        }
+    }
+
+    public void addNote(LootRunNote note) {
+        notes.add(note);
+    }
+
+    public void removeNote(String loc) {
+        for(LootRunNote note : notes) {
+            if (note.getShortLocationString().equals(loc)) {
+                notes.remove(note);
+                return;
+            }
+        }
+    }
+
+    public Set<LootRunNote> getNotes() {
+        return Collections.unmodifiableSet(notes);
     }
 
     public Set<BlockPos> getChests() {

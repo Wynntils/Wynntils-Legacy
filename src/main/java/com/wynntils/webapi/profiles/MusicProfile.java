@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.webapi.profiles;
@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public class MusicProfile {
 
-    String name, downloadUrl, nameWithoutMP3;
+    String name, downloadUrl, formattedName;
     long size;
 
     File f = null;
@@ -19,12 +19,12 @@ public class MusicProfile {
     public MusicProfile(String name, String downloadUrl, long size) {
         this.name = name; this.downloadUrl = downloadUrl; this.size = size;
 
-        this.nameWithoutMP3 = name.replace(".mp3", "");
+        this.formattedName = name.replace(".mp3", "");
     }
 
     public MusicProfile(File f) {
         this.name = f.getName(); this.downloadUrl = null; this.size = f.length();
-        this.nameWithoutMP3 = name.replace(".mp3", "");
+        this.formattedName = name.replace(".mp3", "");
 
         this.f = f;
     }
@@ -33,8 +33,8 @@ public class MusicProfile {
         return name;
     }
 
-    public String getNameWithoutMP3() {
-        return nameWithoutMP3;
+    public String getFormattedName() {
+        return formattedName;
     }
 
     public String getDownloadUrl() {

@@ -1,8 +1,10 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.core.utils.objects;
+
+import java.util.Objects;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import net.minecraft.client.gui.ScaledResolution;
@@ -58,4 +60,8 @@ public class Position {
         return anchorX == pos.anchorX && anchorY == pos.anchorY && offsetX == pos.offsetX && offsetY == pos.offsetY;
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(drawingX, drawingY, offsetX, offsetY, anchorX, anchorY);
+    }
 }

@@ -1,10 +1,13 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.core.utils;
 
+import com.wynntils.core.utils.objects.IntRange;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
+import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.item.enums.ItemType;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.IInventory;
@@ -13,12 +16,21 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ItemUtils {
+
+    private static final Pattern LEVEL_PATTERN = Pattern.compile("(?:Combat|Crafting|Mining|Woodcutting|Farming|Fishing) Lv\\. Min: ([0-9]+)");
+    private static final Pattern LEVEL_RANGE_PATTERN = Pattern.compile("Lv\\. Range: " + TextFormatting.WHITE.toString() + "([0-9]+)-([0-9]+)");
+
+    public static final NBTTagCompound UNBREAKABLE = new NBTTagCompound();
 
     /**
      * Get the lore NBT tag from an item
@@ -57,6 +69,22 @@ public class ItemUtils {
     }
 
     /**
+     * Replace the lore on an item's NBT tag.
+     *
+     * @param stack
+     * @param lore
+     */
+    public static void replaceLore(ItemStack stack, List<String> lore) {
+        NBTTagCompound nbt = stack.getTagCompound();
+        NBTTagCompound display = nbt.getCompoundTag("display");
+        NBTTagList tag = new NBTTagList();
+        lore.forEach(s -> tag.appendTag(new NBTTagString(s)));
+        display.setTag("Lore", tag);
+        nbt.setTag("display", display);
+        stack.setTagCompound(nbt);
+    }
+
+    /**
      * Same as {@link #getLore(ItemStack)}, but after calling
      * {@link TextFormatting#getTextWithoutFormattingCodes(String) getTextWithoutFormattingCodes} on each lore line
      *
@@ -83,6 +111,33 @@ public class ItemUtils {
         return toReturn.toString();
     }
 
+    /**
+     * Determines the equipment type of the given item.
+     *
+     * @param item
+     * @return The ItemType of the item, or null if invalid or not an equipment piece
+     */
+    public static ItemType getItemType(ItemStack item) {
+        for (Entry<ItemType, String[]> e : WebManager.getMaterialTypes().entrySet()) {
+            for (String id : e.getValue()) {
+                if (id.matches("[A-Za-z_:]+")) {
+                    if (Item.getByNameOrId(id).equals(item.getItem())) return e.getKey();
+                } else {
+                    int damageValue = 0;
+
+                    String[] values = id.split(":");
+                    int i = Integer.parseInt(values[0]);
+                    if (values.length == 2) {
+                        damageValue = Integer.parseInt(values[1]);
+                    }
+
+                    if (Item.getIdFromItem(item.getItem()) == i && item.getItemDamage() == damageValue) return e.getKey();
+                }
+            }
+        }
+        return null;
+    }
+
     private static final Item EMERALD_BLOCK = Item.getItemFromBlock(Blocks.EMERALD_BLOCK);
 
     /**
@@ -97,11 +152,11 @@ public class ItemUtils {
             ItemStack it = inv.getStackInSlot(i);
             if (it.isEmpty()) continue;
 
-            if (it.getItem() == Items.EMERALD) {
+            if (it.getItem() == Items.EMERALD && it.getDisplayName().equals(TextFormatting.GREEN + "Emerald")) {
                 money += it.getCount();
-            } else if (it.getItem() == EMERALD_BLOCK) {
+            } else if (it.getItem() == EMERALD_BLOCK && it.getDisplayName().equals(TextFormatting.GREEN + "Emerald Block")) {
                 money += it.getCount() * 64;
-            } else if (it.getItem() == Items.EXPERIENCE_BOTTLE) {
+            } else if (it.getItem() == Items.EXPERIENCE_BOTTLE && it.getDisplayName().equals(TextFormatting.GREEN + "Liquid Emerald")) {
                 money += it.getCount() * (64 * 64);
             }
         }
@@ -136,4 +191,17 @@ public class ItemUtils {
         }
         return desc.toString();
     }
+
+    public static IntRange getLevel(String lore) {
+        Matcher m = LEVEL_PATTERN.matcher(lore);
+        if (m.find()) return new IntRange(Integer.parseInt(m.group(1)));
+        m = LEVEL_RANGE_PATTERN.matcher(lore);
+        if (m.find()) return new IntRange(Integer.parseInt(m.group(1)), Integer.parseInt(m.group(2)));
+        return null;
+    }
+
+    static {
+        UNBREAKABLE.setBoolean("Unbreakable", true);
+    }
+
 }

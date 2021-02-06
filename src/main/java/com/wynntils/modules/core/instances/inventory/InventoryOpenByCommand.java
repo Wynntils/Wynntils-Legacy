@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2021.
+ */
+
 package com.wynntils.modules.core.instances.inventory;
 
 import com.wynntils.modules.core.interfaces.IInventoryOpenAction;

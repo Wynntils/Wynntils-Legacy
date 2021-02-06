@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.richpresence.events;
@@ -10,6 +10,7 @@ import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.FilterType;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.utils.ServerUtils;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.core.enums.InventoryResult;
@@ -118,7 +119,7 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
         }
 
         // handles the party owner
-        if (PlayerInfo.getPlayerInfo().getPlayerParty().isPartying()) {
+        if (PlayerInfo.get(SocialData.class).getPlayerParty().isPartying()) {
             String text = e.getMessage().getFormattedText();
             Matcher m = dmRegex.matcher(text);
 

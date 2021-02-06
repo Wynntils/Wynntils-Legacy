@@ -1,15 +1,15 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.core.commands;
 
 import com.wynntils.Reference;
+import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.helpers.TextAction;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
-import com.wynntils.modules.core.managers.UserManager;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.modules.richpresence.RichPresenceModule;
 import com.wynntils.modules.richpresence.profiles.RichProfile;
@@ -166,8 +166,8 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                     Minecraft.getMinecraft().player.sendMessage(message);
                     return;
                 }
-                UserManager.clearRegistry();
-                UserManager.loadUser(Minecraft.getMinecraft().player.getUniqueID());
+
+                Textures.loadTextures();
                 break;
             default:
                 execute(server, sender, new String[] {"help"});

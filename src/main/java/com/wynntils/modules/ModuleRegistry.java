@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules;
@@ -14,13 +14,14 @@ import com.wynntils.modules.music.MusicModule;
 import com.wynntils.modules.questbook.QuestBookModule;
 import com.wynntils.modules.richpresence.RichPresenceModule;
 import com.wynntils.modules.utilities.UtilitiesModule;
+import com.wynntils.modules.visual.VisualModule;
 
-public class ModuleManager {
+public class ModuleRegistry {
 
     /**
      * This registers all modules that should be loaded
      */
-    public static void initModules() {
+    public static void registerModules() {
         FrameworkManager.registerModule(new QuestBookModule());
         FrameworkManager.registerModule(new CoreModule());
         FrameworkManager.registerModule(new UtilitiesModule());
@@ -29,6 +30,7 @@ public class ModuleManager {
         FrameworkManager.registerModule(new MusicModule());
         FrameworkManager.registerModule(new ChatModule());
         FrameworkManager.registerModule(new MapModule());
+        FrameworkManager.registerModule(new VisualModule());
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.map.events;
@@ -7,6 +7,7 @@ package com.wynntils.modules.map.events;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GameEvent;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
+import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.utils.objects.Location;
@@ -15,6 +16,7 @@ import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.map.managers.BeaconManager;
+import com.wynntils.modules.map.managers.GuildResourceManager;
 import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.utilities.instances.Toast;
 import com.wynntils.modules.utilities.overlays.hud.ToastOverlay;
@@ -24,6 +26,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
+import net.minecraft.network.play.server.SPacketAdvancementInfo;
 import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.RenderWorldLastEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -42,7 +45,7 @@ public class ClientEvents implements Listener {
         if (!MapConfig.INSTANCE.showCompassBeam || CompassManager.getCompassLocation() == null) return;
 
         Location compass = CompassManager.getCompassLocation();
-        BeaconManager.drawBeam(new Location(compass.getX(), compass.getY(), compass.getZ()), MapConfig.INSTANCE.compassBeaconColor);
+        BeaconManager.drawBeam(new Location(compass.getX(), compass.getY(), compass.getZ()), MapConfig.INSTANCE.compassBeaconColor, e.getPartialTicks());
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -62,7 +65,8 @@ public class ClientEvents implements Listener {
             return;
         }
 
-        LootRunManager.addChest(lastLocation); // add chest to the current lootrun recording
+        if (LootRunManager.isRecording())
+            LootRunManager.addChest(lastLocation); // add chest to the current lootrun recording
 
         String tier = e.getGui().getLowerInv().getName().replace("Loot Chest ", "");
         if (!MapConfig.Waypoints.INSTANCE.chestTiers.isTierAboveThis(tier)) return;
@@ -113,6 +117,12 @@ public class ClientEvents implements Listener {
         if (!MapConfig.Telemetry.INSTANCE.allowGatheringSpot) return;
 
         WebManager.getAccount().sendGatheringSpot(e.getType(), e.getMaterial(), e.getLocation());
+    }
+
+    @SubscribeEvent
+    public void receiveAdvancements(PacketEvent.Incoming<SPacketAdvancementInfo> event) {
+        // can be done async without problems
+        GuildResourceManager.processAdvancements(event.getPacket());
     }
 
 }

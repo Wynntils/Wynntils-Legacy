@@ -1,10 +1,11 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
 
 import com.wynntils.Reference;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -36,13 +37,16 @@ public class HealthBarOverlay extends Overlay {
 
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
-        if (!(visible = (getPlayerInfo().getCurrentHealth() != -1 && !Reference.onLobby))) return;
-        if (OverlayConfig.Health.INSTANCE.animated > 0.0f && OverlayConfig.Health.INSTANCE.animated < 10.0f && !(health >= (float) getPlayerInfo().getMaxHealth())) {
-            health -= (OverlayConfig.Health.INSTANCE.animated * 0.1f) * (health - (float) getPlayerInfo().getCurrentHealth());
+        if (!(visible = (get(CharacterData.class).getCurrentHealth() != -1 && !Reference.onLobby))) return;
+
+        if (OverlayConfig.Health.INSTANCE.animated > 0.0f && OverlayConfig.Health.INSTANCE.animated < 10.0f
+                && !(health >= (float) get(CharacterData.class).getMaxHealth())) {
+            health -= (OverlayConfig.Health.INSTANCE.animated * 0.1f)
+                    * (health - (float) get(CharacterData.class).getCurrentHealth());
             return;
         }
 
-        health = getPlayerInfo().getCurrentHealth();
+        health = get(CharacterData.class).getCurrentHealth();
     }
 
     @Override
@@ -69,16 +73,19 @@ public class HealthBarOverlay extends Overlay {
             case Skyrim:
                 drawDefaultBar(-1, 8, 132, 147, textColor);
                 break;
+            case Rune:
+                drawDefaultBar(-1, 8, 148, 163, textColor);
+                break;
         }
     }
 
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2, CustomColor cc) {
         if (OverlayConfig.Health.INSTANCE.overlayRotation == OverlayRotation.NORMAL) {
-            drawString(getPlayerInfo().getCurrentHealth() + " ❤ " + getPlayerInfo().getMaxHealth(), textPositionOffset.a  - (81-OverlayConfig.Health.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Health.INSTANCE.textShadow);
+            drawString(get(CharacterData.class).getCurrentHealth() + " ❤ " + get(CharacterData.class).getMaxHealth(), textPositionOffset.a  - (81-OverlayConfig.Health.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Health.INSTANCE.textShadow);
         }
 
         rotate(OverlayConfig.Health.INSTANCE.overlayRotation.getDegrees());
-        drawProgressBar(Textures.Overlays.bars_health, -OverlayConfig.Health.INSTANCE.width, y1, 0, y2, ty1, ty2, (flip ? -health : health) / (float) getPlayerInfo().getMaxHealth());
+        drawProgressBar(Textures.Overlays.bars_health, -OverlayConfig.Health.INSTANCE.width, y1, 0, y2, 0, ty1, 81, ty2, (flip ? -health : health) / (float) get(CharacterData.class).getMaxHealth());
     }
 
 }

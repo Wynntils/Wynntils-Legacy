@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.webapi.profiles;
@@ -11,9 +11,10 @@ import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.webapi.WebManager;
-import com.wynntils.webapi.WebReader;
 
 public class UpdateProfile {
+
+    static boolean updateDownloaded = false;
 
     boolean hasUpdate = false;
     boolean updateCheckFailed = false;
@@ -47,7 +48,11 @@ public class UpdateProfile {
     }
 
     public boolean hasUpdate() {
-        return hasUpdate;
+        return (!updateDownloaded && hasUpdate);
+    }
+
+    public void updateDownloaded() {
+        updateDownloaded = true;
     }
 
     public void forceUpdate() {

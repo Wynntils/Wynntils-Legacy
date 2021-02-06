@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.core.managers;
@@ -11,6 +11,7 @@ import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class GuildAndFriendManager {
@@ -20,7 +21,7 @@ public class GuildAndFriendManager {
         Boolean isFriend;
     }
 
-    private static HashMap<String, UnresolvedInfo> unresolvedNames = new HashMap<>();
+    private static Map<String, UnresolvedInfo> unresolvedNames = new HashMap<>();
 
     public static void tryResolveNames() {
         // Try to resolve names from the connection map

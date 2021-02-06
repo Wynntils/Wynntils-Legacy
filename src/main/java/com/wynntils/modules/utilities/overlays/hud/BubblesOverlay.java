@@ -1,10 +1,12 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
 
 import com.wynntils.Reference;
+import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
@@ -41,7 +43,7 @@ public class BubblesOverlay extends Overlay {
         if (!(visible = (mc.player.getAir() != 300 && !Reference.onLobby))) return;
         if (OverlayConfig.Bubbles.INSTANCE.animated > 0.0f && OverlayConfig.Bubbles.INSTANCE.animated < 10.0f && !(amount >= 300))
             amount -= (OverlayConfig.Bubbles.INSTANCE.animated * 0.1f) * (amount - mc.player.getAir());
-        else amount = getPlayerInfo().getCurrentHealth();
+        else amount = PlayerInfo.get(CharacterData.class).getCurrentHealth();
 
         if (amount <= 0) amount = 0;
     }
@@ -73,7 +75,7 @@ public class BubblesOverlay extends Overlay {
     }
 
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2) {
-        drawProgressBar(Textures.Overlays.bars_bubbles, -91, y1, 91, y2, ty1, ty2, (flip ? -amount : amount) / 300);
+        drawProgressBar(Textures.Overlays.bars_bubbles, -91, y1, 91, y2, 0, ty1, 182, ty2, (flip ? -amount : amount) / 300);
         drawString(Integer.toString(Math.max(mc.player.getAir() / 3, 0)), textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Exp.INSTANCE.textShadow);
     }
 

@@ -1,10 +1,11 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.core.instances;
 
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.modules.core.managers.GuildAndFriendManager;
 import com.wynntils.modules.core.managers.PlayerEntityManager;
 import com.wynntils.modules.map.overlays.objects.MapPlayerIcon;
@@ -16,6 +17,7 @@ import net.minecraft.entity.player.EnumPlayerModelParts;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class OtherPlayerProfile {
@@ -31,8 +33,8 @@ public class OtherPlayerProfile {
     private boolean isMutualFriend = false;
     private boolean inSameWorld = false;
 
-    private static HashMap<UUID, OtherPlayerProfile> profiles = new HashMap<>();
-    private static HashMap<String, OtherPlayerProfile> nameMap = new HashMap<>();
+    private static Map<UUID, OtherPlayerProfile> profiles = new HashMap<>();
+    private static Map<String, OtherPlayerProfile> nameMap = new HashMap<>();
 
     private OtherPlayerProfile(UUID uuid, String username) {
         this.uuid = uuid;
@@ -224,7 +226,7 @@ public class OtherPlayerProfile {
         String username = getUsername();
         if (username == null) return false;
 
-        return PlayerInfo.getPlayerInfo().getPlayerParty().getPartyMembers().contains(username);
+        return PlayerInfo.get(SocialData.class).getPlayerParty().getPartyMembers().contains(username);
     }
 
     public boolean isGuildmate() {

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.core.framework.overlays;
@@ -8,6 +8,7 @@ import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.containers.ModuleContainer;
+import com.wynntils.core.framework.instances.containers.PlayerData;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.settings.annotations.Setting;
@@ -16,7 +17,7 @@ import com.wynntils.core.utils.objects.Position;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.awt.Point;
+import java.awt.*;
 
 import static com.wynntils.core.framework.rendering.SmartFontRenderer.TextAlignment.*;
 
@@ -51,8 +52,8 @@ public abstract class Overlay extends ScreenRenderer implements SettingsHolder {
     public void render(RenderGameOverlayEvent.Post event) {}
     public void tick(TickEvent.ClientTickEvent event, long ticks) {}
 
-    public PlayerInfo getPlayerInfo() {
-        return PlayerInfo.getPlayerInfo();
+    public <T extends PlayerData> T get(Class<T> clazz) {
+        return PlayerInfo.get(clazz);
     }
 
     public SmartFontRenderer.TextAlignment getAlignment() {

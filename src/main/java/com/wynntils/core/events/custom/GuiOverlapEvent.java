@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.core.events.custom;
@@ -39,7 +39,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
         }
 
         public List<GuiButton> getButtonList() {
-            return (List<GuiButton>) ReflectionFields.GuiScreen_buttonList.getValue(getGui());
+            return ReflectionFields.GuiScreen_buttonList.getValue(getGui());
         }
 
     }
@@ -89,6 +89,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 this.slotIn = slotIn; this.slotId = slotId; this.mouseButton = mouseButton; this.type = type;
             }
 
+            @Override
             public boolean isCancelable() {
                 return true;
             }
@@ -167,6 +168,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 return keyCode;
             }
 
+            @Override
             public boolean isCancelable() {
                 return true;
             }
@@ -207,6 +209,14 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
             }
 
         }
+
+        public static class GuiClosed extends InventoryOverlap {
+
+            public GuiClosed(InventoryReplacer guiInventory) {
+                super(guiInventory);
+            }
+        }
+
     }
 
     public static class ChestOverlap extends GuiScreenOverlapEvent<ChestReplacer> {
@@ -242,6 +252,27 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 return mouseY;
             }
 
+            public static class Pre extends DrawScreen {
+
+                public Pre(ChestReplacer guiChest, int mouseX, int mouseY, float partialTicks) {
+                    super(guiChest, mouseX, mouseY, partialTicks);
+                }
+
+                @Override
+                public boolean isCancelable() {
+                    return true;
+                }
+
+            }
+
+            public static class Post extends DrawScreen {
+
+                public Post(ChestReplacer guiChest, int mouseX, int mouseY, float partialTicks) {
+                    super(guiChest, mouseX, mouseY, partialTicks);
+                }
+
+            }
+
         }
 
         public static class HandleMouseClick extends ChestOverlap {
@@ -254,6 +285,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 this.slotIn = slotIn; this.slotId = slotId; this.mouseButton = mouseButton; this.type = type;
             }
 
+            @Override
             public boolean isCancelable() {
                 return true;
             }
@@ -273,6 +305,59 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
             public Slot getSlotIn() {
                 return slotIn;
             }
+        }
+
+        public static class MouseClickMove extends ChestOverlap {
+
+            int mouseX;
+            int mouseY;
+            int clickedMouseButton;
+            long timeSinceLastClick;
+
+            public MouseClickMove(ChestReplacer guiChest, int mouseX, int mouseY, int clickedMouseButton, long timeSinceLastClick)  {
+                super(guiChest);
+
+                this.gui = guiChest;
+                this.mouseX = mouseX;
+                this.mouseY = mouseY;
+                this.clickedMouseButton = clickedMouseButton;
+                this.timeSinceLastClick = timeSinceLastClick;
+            }
+
+            @Override
+            public boolean isCancelable() {
+                return true;
+            }
+
+            public int getClickedMouseButton() {
+                return clickedMouseButton;
+            }
+
+            public int getMouseX() {
+                return mouseX;
+            }
+
+            public int getMouseY() {
+                return mouseY;
+            }
+
+            public long getTimeSinceLastClick() {
+                return timeSinceLastClick;
+            }
+
+        }
+
+        public static class HandleMouseInput extends ChestOverlap {
+
+            public HandleMouseInput(ChestReplacer guiChest)  {
+                super(guiChest);
+            }
+
+            @Override
+            public boolean isCancelable() {
+                return true;
+            }
+
         }
 
         public static class DrawGuiContainerForegroundLayer extends ChestOverlap {
@@ -332,6 +417,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 return keyCode;
             }
 
+            @Override
             public boolean isCancelable() {
                 return true;
             }
@@ -346,6 +432,11 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 super(guiChest);
 
                 this.mouseX = mouseX; this.mouseY = mouseY; this.mouseButton = mouseButton;
+            }
+
+            @Override
+            public boolean isCancelable() {
+                return true;
             }
 
             public int getMouseY() {
@@ -414,6 +505,13 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
 
         }
 
+        public static class GuiClosed extends ChestOverlap {
+
+            public GuiClosed(ChestReplacer guiInventory) {
+                super(guiInventory);
+            }
+        }
+
     }
 
     public static class HorseOverlap extends GuiScreenOverlapEvent<HorseReplacer> {
@@ -461,6 +559,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 this.slotIn = slotIn; this.slotId = slotId; this.mouseButton = mouseButton; this.type = type;
             }
 
+            @Override
             public boolean isCancelable() {
                 return true;
             }
@@ -539,6 +638,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 return keyCode;
             }
 
+            @Override
             public boolean isCancelable() {
                 return true;
             }
@@ -583,6 +683,13 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 }
             }
 
+        }
+
+        public static class GuiClosed extends HorseOverlap {
+
+            public GuiClosed(HorseReplacer guiHorse) {
+                super(guiHorse);
+            }
         }
 
     }
@@ -672,6 +779,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 this.button = button;
             }
 
+            @Override
             public boolean isCancelable() {
                 return true;
             }
@@ -696,6 +804,7 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
                 super(replacer);
             }
 
+            @Override
             public boolean isCancelable() {
                 return true;
             }

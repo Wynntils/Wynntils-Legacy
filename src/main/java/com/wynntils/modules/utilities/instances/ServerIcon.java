@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.utilities.instances;
@@ -41,7 +41,7 @@ public class ServerIcon {
     private String lastIcon = null;
     private final ResourceLocation serverIcon;
     private DynamicTexture icon;
-    private ArrayList<Consumer<ServerIcon>> onDone = new ArrayList<>();
+    private List<Consumer<ServerIcon>> onDone = new ArrayList<>();
     private boolean allowStale;
 
     public ServerIcon(ServerData server, boolean allowStale) {

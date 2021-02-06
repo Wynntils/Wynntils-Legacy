@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.webapi.account;
@@ -43,6 +43,10 @@ public class WynntilsAccount {
 
     public String getToken() {
         return token;
+    }
+    
+    public boolean isConnected() {
+        return ready;
     }
 
     public HashMap<String, String> getEncodedConfigs() {
@@ -150,12 +154,7 @@ public class WynntilsAccount {
     }
 
     public void uploadConfig(File f) {
-        if (!ready || configurationUploader == null)  {
-            if(!login()) return;
-
-            uploadConfig(f); // try again
-            return;
-        }
+        if (!ready || configurationUploader == null) return;
 
         configurationUploader.queueConfig(f);
     }

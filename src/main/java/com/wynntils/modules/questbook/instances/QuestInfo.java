@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.questbook.instances;
@@ -17,8 +17,7 @@ import com.wynntils.webapi.services.TranslationManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -30,14 +29,13 @@ public class QuestInfo {
 
     private static final Pattern coordinatePattern = Pattern.compile("\\[(-?\\d+), ?(-?\\d+), ?(-?\\d+)\\]");
 
-    private ItemStack originalStack;
+    private final ItemStack originalStack;
 
-    private String name;
+    private final String name;
+    private final Map<QuestLevelType, Integer> minLevels = new HashMap<>();
     private QuestStatus status;
-    private QuestLevelType levelType;
     private QuestSize size;
-    private int minLevel;
-    private List<String> lore;
+    private final List<String> lore;
     private String description;
 
     private String friendlyName;
@@ -45,38 +43,51 @@ public class QuestInfo {
     private Location targetLocation = null;
 
     private boolean valid = false;
-    private boolean isMiniQuest;
+    private final boolean isMiniQuest;
 
     public QuestInfo(ItemStack originalStack, boolean isMiniQuest) {
         this.originalStack = originalStack;
         this.isMiniQuest = isMiniQuest;
 
         lore = ItemUtils.getLore(originalStack);
-        name = StringUtils.normalizeBadString(getTextWithoutFormattingCodes(originalStack.getDisplayName()));
+        name = StringUtils.normalizeBadString(getTextWithoutFormattingCodes(originalStack.getDisplayName())).replace(" [Tracked]", "");
 
+        Iterator<String> loreIterator = lore.iterator();
+
+        String statusString = loreIterator.next();
         //quest status
-        if (lore.get(0).contains("Completed!")) status = QuestStatus.COMPLETED;
-        else if (lore.get(0).contains("Started")) status = QuestStatus.STARTED;
-        else if (lore.get(0).contains("Can start")) status = QuestStatus.CAN_START;
-        else if (lore.get(0).contains("Cannot start")) status = QuestStatus.CANNOT_START;
+        if (statusString.contains("Completed!")) status = QuestStatus.COMPLETED;
+        else if (statusString.contains("Started")) status = QuestStatus.STARTED;
+        else if (statusString.contains("Can start")) status = QuestStatus.CAN_START;
+        else if (statusString.contains("Cannot start")) status = QuestStatus.CANNOT_START;
         else return;
+        loreIterator.next();
 
-        String[] parts = getTextWithoutFormattingCodes(lore.get(2)).split("\\s+");
-        levelType = QuestLevelType.valueOf(parts[1].toUpperCase(Locale.ROOT));
-        minLevel = Integer.parseInt(parts[parts.length - 1]);
-        size = QuestSize.valueOf(getTextWithoutFormattingCodes(lore.get(3)).replace("- Length: ", "").toUpperCase(Locale.ROOT));
+        String levelTypes;
+        while ((levelTypes = (loreIterator.next())).contains("Lv. Min:")) {
+            String[] parts = getTextWithoutFormattingCodes(levelTypes).split("\\s+");
+            QuestLevelType levelType = QuestLevelType.valueOf(parts[1].toUpperCase(Locale.ROOT));
+            int minLevel = Integer.parseInt(parts[parts.length - 1]);
+            minLevels.put(levelType, minLevel);
+        }
+        size = QuestSize.valueOf(getTextWithoutFormattingCodes(levelTypes).replace("- Length: ", "").toUpperCase(Locale.ROOT));
 
+        loreIterator.next();
         // flat description
         StringBuilder descriptionBuilder = new StringBuilder();
-        for (int x = 5; x < lore.size(); x++) {
-            if (lore.get(x).equalsIgnoreCase(GRAY + "Right click to track")) {
+        while (loreIterator.hasNext()) {
+            String description = loreIterator.next();
+            if (description.equalsIgnoreCase(DARK_RED + "Right click to stop tracking") || description.equalsIgnoreCase(LIGHT_PURPLE + "" + BOLD + "RIGHT-CLICK TO TRACK")) {
                 break;
             }
+
             if (descriptionBuilder.length() > 0 && !descriptionBuilder.substring(descriptionBuilder.length() - 1).equals(" ")) {
                 descriptionBuilder.append(" ");
             }
-            descriptionBuilder.append(getTextWithoutFormattingCodes(lore.get(x)));
+
+            descriptionBuilder.append(getTextWithoutFormattingCodes(description));
         }
+
         description = descriptionBuilder.toString();
 
         // splitted description
@@ -119,16 +130,12 @@ public class QuestInfo {
         return name;
     }
 
-    public int getMinLevel() {
-        return minLevel;
+    public Map<QuestLevelType, Integer> getMinLevel() {
+        return minLevels;
     }
 
     public List<String> getLore() {
         return lore;
-    }
-
-    public QuestLevelType getLevelType() {
-        return levelType;
     }
 
     public QuestSize getSize() {
@@ -178,7 +185,9 @@ public class QuestInfo {
         lore.add(WHITE.toString() + BOLD + name);
         lore.add(GREEN + "Completed!");
         lore.add(WHITE + " ");
-        lore.add(GREEN + "✔ " + GRAY + "Combat Lv. Min: " + WHITE + minLevel);
+        for (Map.Entry<QuestLevelType, Integer> levels : minLevels.entrySet()) {
+            lore.add(GREEN + "✔ " + GRAY + levels.getKey().name().toLowerCase() + " Lv. Min: " + WHITE + levels.getValue());
+        }
         lore.add(GREEN + "- " + GRAY + "Length: " + WHITE + StringUtils.capitalizeFirst(size.name().toLowerCase()));
     }
 
@@ -190,6 +199,7 @@ public class QuestInfo {
 
     @Override
     public String toString() {
-        return name + ":" + minLevel + ":" + levelType + ":" + size.toString() + ":" + status.toString() + ":" + description;
+        return name + ":" + minLevels + ":" + size.toString() + ":" + status.toString() + ":" + description;
     }
+
 }

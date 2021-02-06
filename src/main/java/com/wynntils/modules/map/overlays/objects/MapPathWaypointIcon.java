@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.map.overlays.objects;
@@ -12,7 +12,7 @@ import com.wynntils.modules.map.instances.PathWaypointProfile.PathPoint;
 import net.minecraft.client.renderer.GlStateManager;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.Point;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -241,8 +241,7 @@ public class MapPathWaypointIcon extends MapIcon {
         if (size == 0) return null;
 
         int nSegments = profile.size() + (profile.isCircular ? 1 : 0) - 1;
-        ArrayList<PathSegment> path = new ArrayList<>();
-        path.ensureCapacity(nSegments);
+        ArrayList<PathSegment> path = new ArrayList<>(nSegments);
         PathPoint first;
         PathPoint second = profile.getPoint(0);
         for (int i = 1; i < nSegments + 1; ++i) {
@@ -285,4 +284,5 @@ public class MapPathWaypointIcon extends MapIcon {
         float perpendicularUnitX;
         float perpendicularUnitZ;
     }
+
 }

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.core.framework.rendering;
@@ -7,6 +7,7 @@ package com.wynntils.core.framework.rendering;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Texture;
 import com.wynntils.core.utils.StringUtils;
+import com.wynntils.modules.core.config.CoreDBConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -15,7 +16,7 @@ import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.Arrays;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -56,14 +57,11 @@ public class ScreenRenderer {
     public static void refresh() {
         mc = Minecraft.getMinecraft();
         screen = new ScaledResolution(mc);
-        if (fontRenderer == null)
-            try {
-                fontRenderer = new SmartFontRenderer();
-            } catch (Exception ignored) {
-
-            } finally {
-                fontRenderer.onResourceManagerReload(mc.getResourceManager());
-            }
+        if (fontRenderer == null) {
+            fontRenderer = new SmartFontRenderer();
+            fontRenderer.onResourceManagerReload(mc.getResourceManager());
+        }
+        fontRenderer.setUnicodeFlag(CoreDBConfig.INSTANCE.useUnicode);
         if (itemRenderer == null)
             itemRenderer = Minecraft.getMinecraft().getRenderItem();
     }
@@ -655,12 +653,14 @@ public class ScreenRenderer {
      * @param y1 top y on screen
      * @param x2 right x on screen
      * @param y2 bottom right on screen
+     * @param tx1 texture left x for the part
      * @param ty1 texture top y for the part
+     * @param tx2 texture right x for the part
      * @param ty2 texture bottom y for the part
      * @param progress progress of the bar, 0.0f to 1.0f is left to right and 0.0f to -1.0f is right to left
      * @param background is it drawing the background or not(whole ty part is background)
      */
-    public void drawProgressBar(Texture texture, int x1, int y1, int x2, int y2, int ty1, int ty2, float progress, boolean background) {
+    public void drawProgressBar(Texture texture, int x1, int y1, int x2, int y2, int tx1, int ty1, int tx2, int ty2, float progress, boolean background) {
         if (!rendering || !texture.loaded) return;
 
         if (background) {
@@ -671,8 +671,8 @@ public class ScreenRenderer {
                   xMax = Math.max(x1, x2) + drawingOrigin.x,
                   yMin = Math.min(y1, y2) + drawingOrigin.y,
                   yMax = Math.max(y1, y2) + drawingOrigin.y,
-                  txMin = 0.0f,
-                  txMax = 1.0f,
+                  txMin = (float) Math.min(tx1, tx2) / texture.width,
+                  txMax = (float) Math.max(tx1, tx2) / texture.width,
                   tyMin = (float) Math.min(ty1, ty2) / texture.height,
                   tyMax = (float) Math.max(ty1, ty2) / texture.height;
 
@@ -694,18 +694,18 @@ public class ScreenRenderer {
                   xMax =  Math.max(x1, x2) + drawingOrigin.x,
                   yMin =  Math.min(y1, y2) + drawingOrigin.y,
                   yMax =  Math.max(y1, y2) + drawingOrigin.y - 1.5f,
-                  txMin = 0.0f,
-                  txMax = 1.0f,
+                  txMin = (float) Math.min(tx1, tx2) / texture.width,
+                  txMax = (float) Math.max(tx1, tx2) / texture.width,
                   tyMin = (float) Math.min(ty1, ty2) / texture.height,
                   tyMax = (float) Math.max(ty1, ty2) / texture.height;
 
             if (progress < 1.0f && progress > -1.0f) {
                 if (progress < 0.0f) {
                     xMin += (1.0f + progress) * (xMax - xMin);
-                    txMin += (1.0f + progress);
+                    txMin += (1.0f + progress) * (txMax - txMin);
                 } else {
                     xMax -= (1.0f - progress) * (xMax - xMin);
-                    txMax -= (1.0f - progress);
+                    txMax -= (1.0f - progress) * (txMax - txMin);
                 }
             }
             GlStateManager.glBegin(GL_QUADS);
@@ -729,14 +729,16 @@ public class ScreenRenderer {
      * @param y1 top y on screen
      * @param x2 right x on screen
      * @param y2 bottom right on screen
+     * @param tx1 texture left x for the part
      * @param ty1 texture top y for the part(top of background)
+     * @param tx2 texture right x for the part
      * @param ty2 texture bottom y for the part(bottom of bar)
      * @param progress progress of the bar, 0.0f to 1.0f is left to right and 0.0f to -1.0f is right to left
      */
-    public void drawProgressBar(Texture texture, int x1, int y1, int x2, int y2, int ty1, int ty2, float progress) {
+    public void drawProgressBar(Texture texture, int x1, int y1, int x2, int y2, int tx1, int ty1, int tx2, int ty2, float progress) {
         int half = (ty1 + ty2) / 2;
-        drawProgressBar(texture, x1, y1, x2, y2, ty1, half + 1, progress, true);
-        drawProgressBar(texture, x1, y1, x2, y2, half + 1, ty2, progress, false);
+        drawProgressBar(texture, x1, y1, x2, y2, tx1, ty1, tx2, half + 1, progress, true);
+        drawProgressBar(texture, x1, y1, x2, y2, tx1, half + 1, tx2, ty2, progress, false);
     }
 
     /** drawProgressBar
@@ -748,17 +750,19 @@ public class ScreenRenderer {
      * @param y1 top y on screen
      * @param x2 right x on screen
      * @param y2 bottom right on screen
+     * @param tx1 texture left x for the part
      * @param ty1 texture top y for the part(top of background)
+     * @param tx2 texture left x for the part
      * @param ty2 texture bottom y for the part(bottom of bar)
      * @param progress progress of the bar, 0.0f to 1.0f is left to right and 0.0f to -1.0f is right to left
      * @param alpha the alpha value of the progress bar
      */
-    public void drawProgressBar(Texture texture, int x1, int y1, int x2, int y2, int ty1, int ty2, float progress, float alpha) {
+    public void drawProgressBar(Texture texture, int x1, int y1, int x2, int y2, int tx1, int ty1, int tx2, int ty2, float progress, float alpha) {
         int half = (ty1 + ty2) / 2;
         GlStateManager.enableBlend();
         GlStateManager.color(1, 1, 1, alpha);
-        drawProgressBar(texture, x1, y1, x2, y2, ty1, half + 1, progress, true);
-        drawProgressBar(texture, x1, y1, x2, y2, half + 1, ty2, progress, false);
+        drawProgressBar(texture, x1, y1, x2, y2, tx1, ty1, tx2, half + 1, progress, true);
+        drawProgressBar(texture, x1, y1, x2, y2, tx1, half + 1, tx2, ty2, progress, false);
         GlStateManager.disableBlend();
     }
 
@@ -840,6 +844,10 @@ public class ScreenRenderer {
         itemRenderer.renderItemOverlayIntoGUI(font, is, x + drawingOrigin.x, y + drawingOrigin.y, text.isEmpty() ? count ? Integer.toString(is.getCount()) : null : text);
         itemRenderer.zLevel = 0.0F;
         RenderHelper.disableStandardItemLighting();
+    }
+
+    public static void setRendering(boolean status) {
+        rendering = status;
     }
 
 }

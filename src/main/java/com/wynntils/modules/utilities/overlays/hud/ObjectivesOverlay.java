@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
@@ -11,9 +11,12 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.play.server.SPacketDisplayObjective;
 import net.minecraft.network.play.server.SPacketScoreboardObjective;
 import net.minecraft.network.play.server.SPacketUpdateScore;
+import net.minecraft.scoreboard.ScoreObjective;
+import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.GuiIngameForge;
@@ -33,6 +36,9 @@ public class ObjectivesOverlay extends Overlay {
     private static final Objective[] objectives = new Objective[MAX_OBJECTIVES];
     private static String sidebarObjectiveName;
     private static long keepVisibleTimestamp;
+    private static int objectivesPosition;
+    private static int objectivesEnd;
+    private static boolean daily;
 
     public ObjectivesOverlay() {
         super("Objectives", WIDTH, HEIGHT, true, 1f, 1f, -1, -1, OverlayGrowFrom.BOTTOM_RIGHT);
@@ -52,15 +58,16 @@ public class ObjectivesOverlay extends Overlay {
         if (scoreboardObjective.getAction() != 1 || !scoreboardObjective.getObjectiveName().equals(sidebarObjectiveName)) {
             return;
         }
+        objectivesPosition = 0;
+        objectivesEnd = 0;
+        daily = false;
 
         // Sidebar scoreboard is removed
-        for (int i = 0; i < MAX_OBJECTIVES; i++) {
-            objectives[i] = null;
-        }
+        removeAllObjectives();
     }
 
     private static Objective parseObjectiveLine(String objectiveLine) {
-        Matcher matcher = OBJECTIVE_PATTERN.matcher(objectiveLine);
+        Matcher matcher = OBJECTIVE_PATTERN.matcher(TextFormatting.getTextWithoutFormattingCodes(objectiveLine));
         String goal = null;
         int score = 0;
         int maxScore = 0;
@@ -87,7 +94,7 @@ public class ObjectivesOverlay extends Overlay {
             }
         }
 
-        return new Objective(goal, score, maxScore);
+        return new Objective(goal, score, maxScore, objectiveLine);
     }
 
     private static void removeObjective(Objective objective) {
@@ -100,35 +107,106 @@ public class ObjectivesOverlay extends Overlay {
         }
     }
 
-    public static void checkObjectiveUpdate(SPacketUpdateScore updateScore) {
-        if (updateScore.getObjectiveName().equals(sidebarObjectiveName)) {
-            if (updateScore.getScoreAction() == SPacketUpdateScore.Action.REMOVE) {
-                String objectiveLine = TextFormatting.getTextWithoutFormattingCodes(updateScore.getPlayerName());
-                Objective objective = parseObjectiveLine(objectiveLine);
-                removeObjective(objective);
-                return;
-            }
-
-            if (updateScore.getScoreValue() <= 7) {
-                int pos = 7 - updateScore.getScoreValue();
-                if (pos > MAX_OBJECTIVES) {
-                    Reference.LOGGER.warn("Too many objectives to handle, can only store " + MAX_OBJECTIVES);
-                    return;
-                }
-
-                String objectiveLine = TextFormatting.getTextWithoutFormattingCodes(updateScore.getPlayerName());
-                objectives[pos] = parseObjectiveLine(objectiveLine);
-            }
+    public static void removeAllObjectives() {
+        for (int i = 0; i < objectives.length; i++) {
+            objectives[i] = null;
         }
     }
 
+    public static boolean checkObjectiveUpdate(SPacketUpdateScore updateScore) {
+        if (updateScore.getObjectiveName().equals(sidebarObjectiveName)) {
+            if (updateScore.getScoreAction() == SPacketUpdateScore.Action.REMOVE) {
+                String objectiveLine = TextFormatting.getTextWithoutFormattingCodes(updateScore.getPlayerName());
+                if (objectiveLine.equals("Objective" + (objectives[1] != null ? "s" : "") + ":") || objectiveLine.equals("Daily Objective" + (objectives[1] != null ? "s" : "") + ":")) {
+                    objectivesPosition = 0;
+                    return true;
+                }
+                Objective objective = parseObjectiveLine(objectiveLine);
+                removeObjective(objective);
+                return true;
+            }
+
+            String text = TextFormatting.getTextWithoutFormattingCodes(updateScore.getPlayerName());
+            if (text.matches("Objectives?:") || text.matches("Daily Objectives?:")) {
+                if (text.contains("Daily")) {
+                    daily = true;
+                } else {
+                    daily = false;
+                }
+                objectivesPosition = updateScore.getScoreValue();
+                return true;
+            } else if (updateScore.getPlayerName().equals(TextFormatting.BLACK.toString())) {
+                objectivesEnd = updateScore.getScoreValue();
+                Scoreboard scoreboard = Minecraft.getMinecraft().world.getScoreboard();
+                Minecraft.getMinecraft().addScheduledTask(() -> {
+                    scoreboard.setObjectiveInDisplaySlot(1, scoreboard.getObjective(sidebarObjectiveName));
+                });
+                return true;
+            }
+
+            if (updateScore.getScoreValue() < objectivesPosition && (objectivesEnd == 0 || updateScore.getScoreValue() > objectivesEnd)) {
+                int pos = objectivesPosition - 1 - updateScore.getScoreValue();
+                if (pos + 1 > MAX_OBJECTIVES) {
+                    Reference.LOGGER.warn("Too many objectives to handle, can only store " + MAX_OBJECTIVES);
+                    return true;
+                }
+
+                String objectiveLine = updateScore.getPlayerName();
+                objectives[pos] = parseObjectiveLine(objectiveLine);
+                return true;
+            }
+        }
+        return false;
+    }
+
     public static void updateOverlayActivation() {
-        if (Reference.onServer) {
-            GuiIngameForge.renderObjective = !OverlayConfig.Objectives.INSTANCE.enableObjectives;
+        if (Reference.onWorld) {
+            Scoreboard scoreboard = Minecraft.getMinecraft().world.getScoreboard();
+            ScoreObjective scoreObjective = scoreboard.getObjective(sidebarObjectiveName);
+            if (OverlayConfig.Objectives.INSTANCE.enableObjectives) {
+                if (objectivesPosition != 0) {
+                    if (daily) {
+                        scoreboard.removeObjectiveFromEntity(TextFormatting.RED + "" + TextFormatting.BOLD + "Daily Objective" + (objectives[1] != null ? "s" : "") + ":", scoreObjective);
+                    } else {
+                        scoreboard.removeObjectiveFromEntity(TextFormatting.GREEN + "" + TextFormatting.BOLD + "Objective" + (objectives[1] != null ? "s" : "") + ":", scoreObjective);
+                    }
+                }
+                if (objectivesEnd != 0) {
+                    scoreboard.removeObjectiveFromEntity(TextFormatting.BLACK.toString(), scoreObjective);
+                } else {
+                    scoreboard.setObjectiveInDisplaySlot(1, null);
+                }
+                for (Objective objective : objectives) {
+                    if (objective != null && !objective.getOriginal().isEmpty()) {
+                        scoreboard.removeObjectiveFromEntity(objective.getOriginal(), scoreObjective);
+                    }
+                }
+            } else {
+                if (objectivesPosition != 0) {
+                    if (daily) {
+                        scoreboard.getOrCreateScore(TextFormatting.RED + "" + TextFormatting.BOLD + "Daily Objective" + (objectives[1] != null ? "s" : "") + ":", scoreObjective).setScorePoints(objectivesPosition);
+                    } else {
+                        scoreboard.getOrCreateScore(TextFormatting.GREEN + "" + TextFormatting.BOLD + "Objective" + (objectives[1] != null ? "s" : "") + ":", scoreObjective).setScorePoints(objectivesPosition);
+                    }
+                }
+                if (objectivesEnd != 0) {
+                    scoreboard.getOrCreateScore(TextFormatting.BLACK.toString(), scoreObjective).setScorePoints(objectivesEnd);
+                }
+                scoreboard.setObjectiveInDisplaySlot(1, scoreObjective);
+                for (int i = 0; i < objectives.length; i++) {
+                    Objective objective = objectives[i];
+                    if (objective != null && !objective.getOriginal().isEmpty()) {
+                        scoreboard.getOrCreateScore(objective.getOriginal(), scoreObjective).setScorePoints(objectivesPosition - 1 - i);
+                    }
+                }
+            }
         }
     }
 
     public static void restoreVanillaScoreboard() {
+        objectivesPosition = 0;
+        objectivesEnd = 0;
+        daily = false;
         GuiIngameForge.renderObjective = true;
     }
 
@@ -150,7 +228,7 @@ public class ObjectivesOverlay extends Overlay {
 
         String msg = e.getMessage().getUnformattedText();
         if (msg.contains("Click here to claim your rewards")) {
-            objectives[0] = new Objective("Claim your reward");
+            objectives[0] = new Objective("Claim your reward with /daily");
         }
     }
 
@@ -201,7 +279,7 @@ public class ObjectivesOverlay extends Overlay {
 
         if (OverlayConfig.Objectives.INSTANCE.enableProgressBar && objective.hasProgress()) {
             drawProgressBar(Textures.Overlays.bars_exp, -WIDTH, -HEIGHT + height + 11,
-                    -WIDTH / 3, -HEIGHT + height + 11 + 5, getTextureOffset(), getTextureOffset() + 9,
+                    -WIDTH / 3, -HEIGHT + height + 11 + 5, 0, getTextureOffset(), 182, getTextureOffset() + 9,
                     objective.getProgress(),OverlayConfig.Objectives.INSTANCE.objectivesAlpha * fadeAlpha);
         }
     }
@@ -237,16 +315,18 @@ public class ObjectivesOverlay extends Overlay {
         private final int score;
         private final int maxScore;
         private long updatedAt;
+        private final String original;
 
         public Objective(String goal) {
-            this(goal, 0, 0);
+            this(goal, 0, 0, "");
         }
 
-        public Objective(String goal, int score, int maxScore) {
+        public Objective(String goal, int score, int maxScore, String original) {
             this.goal = goal;
             this.score = score;
             this.maxScore = maxScore;
             this.updatedAt = System.currentTimeMillis();
+            this.original = original;
         }
 
         @Override
@@ -276,6 +356,10 @@ public class ObjectivesOverlay extends Overlay {
 
         public String getGoal() {
             return this.goal;
+        }
+
+        public String getOriginal() {
+            return this.original;
         }
 
     }

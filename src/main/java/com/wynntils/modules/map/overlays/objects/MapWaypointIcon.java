@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.map.overlays.objects;
@@ -11,6 +11,8 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.map.instances.WaypointProfile.WaypointType;
+import net.minecraft.client.Minecraft;
+import net.minecraft.util.math.MathHelper;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
@@ -19,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapWaypointIcon extends MapTextureIcon {
+
     public static final int HIDDEN_ZOOM = -1;
 
     private static FloatBuffer currentColorBuf = BufferUtils.createFloatBuffer(16);
@@ -96,46 +99,71 @@ public class MapWaypointIcon extends MapTextureIcon {
         return wp.getName();
     }
 
-    @Override public int getTexPosX() {
+    @Override
+    public int getTexPosX() {
         return sizeMapping[wp.getType().ordinal() * 4 + texPosXIndex];
     }
 
-    @Override public int getTexPosZ() {
+    @Override
+    public int getTexPosZ() {
         return sizeMapping[wp.getType().ordinal() * 4 + texPosZIndex];
     }
 
-    @Override public int getTexSizeX() {
+    @Override
+    public int getTexSizeX() {
         return sizeMapping[wp.getType().ordinal() * 4 + texSizeXIndex];
     }
 
-    @Override public int getTexSizeZ() {
+    @Override
+    public int getTexSizeZ() {
         return sizeMapping[wp.getType().ordinal() * 4 + texSizeZIndex];
     }
 
-    @Override public float getSizeX() {
+    @Override
+    public float getSizeX() {
         int i = wp.getType().ordinal() * 4;
         return (sizeMapping[i + texSizeXIndex] - sizeMapping[i + texPosXIndex]) / 2.5f;
     }
 
-    @Override public float getSizeZ() {
+    @Override
+    public float getSizeZ() {
         int i = wp.getType().ordinal() * 4;
         return (sizeMapping[i + texSizeZIndex] - sizeMapping[i + texPosZIndex]) / 2.5f;
     }
 
-    @Override public int getZoomNeeded() {
+    @Override
+    public int getZoomNeeded() {
         return wp.getZoomNeeded();
     }
 
-    @Override public boolean isEnabled(boolean forMinimap) {
+    @Override
+    public boolean isEnabled(boolean forMinimap) {
         return wp.getZoomNeeded() != HIDDEN_ZOOM;
     }
 
     @Override
     public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier, float blockScale) {
+        int distancePlayerWp = 0;
+        float percentage = 1f;
+        // TODO: Find a better solution to detect whether icon is being drawn on minimap
+        if (MapConfig.Waypoints.INSTANCE.iconFade && Minecraft.getMinecraft().currentScreen == null) {
+            // If negative the waypoint is above the player
+            distancePlayerWp = (int) (Minecraft.getMinecraft().player.posY - wp.getY());
+
+            if (MathHelper.abs(distancePlayerWp) > MapConfig.Waypoints.INSTANCE.iconFadeScale) return;
+            percentage = (float) ((1 - (MathHelper.abs(distancePlayerWp) / (float) MapConfig.Waypoints.INSTANCE.iconFadeScale)) * 0.8 + 0.2);
+        }
+
         CustomColor color = wp.getColor();
         if (color != null) {
             GL11.glGetFloat(GL11.GL_CURRENT_COLOR, currentColorBuf);
-            GL11.glColor4f(color.r, color.g, color.b, color.a * currentColorBuf.get(3));
+            if (distancePlayerWp < 0) {
+                // Lighten icon
+                GL11.glColor4f(color.r, color.g, color.b, color.a * percentage * currentColorBuf.get(3));
+            } else {
+                // Darken icon
+                GL11.glColor4f(color.r * percentage, color.g * percentage, color.b * percentage, color.a * currentColorBuf.get(3));
+            }
         }
         super.renderAt(renderer, centreX, centreZ, sizeMultiplier, blockScale);
         if (color != null) {

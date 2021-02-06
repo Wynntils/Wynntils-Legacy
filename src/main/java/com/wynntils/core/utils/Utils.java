@@ -1,18 +1,22 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.core.utils;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.wynntils.ModCore;
+import com.wynntils.core.utils.reflections.ReflectionFields;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.datasync.DataParameter;
+import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.scoreboard.Team;
@@ -38,9 +42,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Utils {
+
+    @SuppressWarnings("unchecked")
+    private static final DataParameter<String> NAME_KEY = ReflectionFields.Entity_CUSTOM_NAME.getValue(Entity.class);
+    public static final Pattern CHAR_INFO_PAGE_TITLE = Pattern.compile("§c([0-9]+)§4 skill points? remaining");
+    public static final Pattern SERVER_SELECTOR_TITLE = Pattern.compile("Wynncraft Servers(: Page \\d+)?");
 
     private static ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("wynntils-utilities-%d").build());
     private static Random random = new Random();
@@ -130,7 +140,18 @@ public class Utils {
      * Return true if the GuiScreen is the character information page (selected from the compass)
      */
     public static boolean isCharacterInfoPage(GuiScreen gui) {
-        return (gui instanceof GuiContainer && ((GuiContainer)gui).inventorySlots.getSlot(0).inventory.getName().contains("skill points remaining"));
+        if (!(gui instanceof GuiContainer)) return false;
+        Matcher m = CHAR_INFO_PAGE_TITLE.matcher(((GuiContainer)gui).inventorySlots.getSlot(0).inventory.getName());
+        return m.find();
+    }
+
+    /**
+     * @return true if the GuiScreen is the server selection, false otherwise
+     */
+    public static boolean isServerSelector(GuiScreen gui) {
+        if (!(gui instanceof GuiContainer)) return false;
+        Matcher m = SERVER_SELECTOR_TITLE.matcher(((GuiContainer) gui).inventorySlots.getSlot(0).inventory.getName());
+        return m.find();
     }
 
     /**
@@ -255,11 +276,7 @@ public class Utils {
      */
     public static String encodeItemNameForUrl(ItemStack stack) {
         String name = getRawItemName(stack);
-        try {
-            name = URLEncoder.encode(name, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
+        name = Utils.encodeUrl(name);
         return name;
     }
 
@@ -297,6 +314,23 @@ public class Utils {
         text.appendSibling(urlComponent);
 
         ModCore.mc().player.sendMessage(text);
+    }
+
+    public static String encodeUrl(String url) {
+        try {
+            return URLEncoder.encode(url, "UTF-8");
+        } catch (UnsupportedEncodingException ignored) {
+            // will not happen since UTF-8 is part of core charsets
+            return null;
+        }
+    }
+
+    public static String encodeForWikiTitle(String pageTitle) {
+        return encodeUrl(pageTitle.replace(" ", "_"));
+    }
+
+    public static String encodeForCargoQuery(String name) {
+        return encodeUrl("'" + name.replace("'", "\\'") + "'");
     }
 
     public static void clearClipboard() {
@@ -344,6 +378,18 @@ public class Utils {
         selected.setFocused(true);
         selected.setCursorPosition(0);
         selected.setSelectionPos(selected.getText().length());
+    }
+
+    public static String getNameFromMetadata(List <EntityDataManager.DataEntry<?>> dataManagerEntries) {
+        assert NAME_KEY != null;
+        if (dataManagerEntries != null) {
+            for (EntityDataManager.DataEntry<?> entry : dataManagerEntries) {
+                if (NAME_KEY.equals(entry.getKey())) {
+                    return (String) entry.getValue();
+                }
+            }
+        }
+        return null;
     }
 
     // Alias if using already imported org.apache.commons.lang3.StringUtils

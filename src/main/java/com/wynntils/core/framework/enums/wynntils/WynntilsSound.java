@@ -1,12 +1,12 @@
 /*
- *  * Copyright © Wynntils - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.core.framework.enums.wynntils;
 
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
-import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 
@@ -36,7 +36,7 @@ public enum WynntilsSound {
 
     public void play(float volume, float pitch) {
         ModCore.mc().addScheduledTask(() ->
-                Minecraft.getMinecraft().player.playSound(event, volume, pitch));
+                ModCore.mc().getSoundHandler().playSound(PositionedSoundRecord.getRecord(event, pitch, volume)));
     }
 
     public void play() {

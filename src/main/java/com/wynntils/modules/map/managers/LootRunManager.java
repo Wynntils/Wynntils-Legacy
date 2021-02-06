@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.map.managers;
@@ -11,8 +11,14 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.map.configs.MapConfig;
+import com.wynntils.modules.map.instances.LootRunNote;
 import com.wynntils.modules.map.instances.LootRunPath;
+import com.wynntils.modules.map.instances.PathWaypointProfile;
+import com.wynntils.modules.map.overlays.objects.MapIcon;
+import com.wynntils.modules.map.overlays.objects.MapPathWaypointIcon;
 import com.wynntils.modules.map.rendering.PointRenderer;
+
+import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 
@@ -20,6 +26,7 @@ import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -33,7 +40,16 @@ public class LootRunManager {
     public static final File STORAGE_FOLDER = new File(Reference.MOD_STORAGE_ROOT, "lootruns");
 
     private static LootRunPath activePath = null;
+    private static String activePathName = null;
     private static LootRunPath recordingPath = null;
+    private static PathWaypointProfile mapPath = null;
+
+    public static void setup() {
+        // Make sure lootrun folder exists at startup to simplify for users wanting to import lootruns
+        if (!LootRunManager.STORAGE_FOLDER.exists()) {
+            LootRunManager.STORAGE_FOLDER.mkdirs();
+        }
+    }
 
     public static List<String> getStoredLootruns() {
         String[] files = STORAGE_FOLDER.list();
@@ -61,17 +77,18 @@ public class LootRunManager {
 
     public static void hide() {
         activePath = null;
+        activePathName = null;
+        updateMapPath();
     }
 
     public static boolean loadFromFile(String lootRunName) {
-        if (!STORAGE_FOLDER.exists()) return false;
-
         File file = new File(STORAGE_FOLDER, lootRunName + ".json");
         if (!file.exists()) return false;
 
         try {
             InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
             activePath = GSON.fromJson(reader, LootRunPathIntermediary.class).toPath();
+            updateMapPath();
 
             reader.close();
         } catch (Exception ex) {
@@ -79,31 +96,28 @@ public class LootRunManager {
             return false;
         }
 
+        activePathName = lootRunName;
         return true;
     }
 
     public static boolean saveToFile(String lootRunName) {
-        if (!STORAGE_FOLDER.exists()) STORAGE_FOLDER.mkdirs();
-
         try {
             File file = new File(STORAGE_FOLDER, lootRunName + ".json");
             if (!file.exists()) file.createNewFile();
 
-            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8);
-            GSON.toJson(new LootRunPathIntermediary(activePath), writer);
-
-            writer.close();
+            try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
+                GSON.toJson(new LootRunPathIntermediary(activePath), writer);
+            }
         } catch (Exception ex) {
             ex.printStackTrace();
             return false;
         }
 
+        activePathName = lootRunName;
         return true;
     }
 
     public static boolean delete(String lootRunName) {
-        if (!STORAGE_FOLDER.exists()) return false;
-
         try {
             File f = new File(STORAGE_FOLDER, lootRunName + ".json");
             if (!f.exists()) return false;
@@ -117,8 +131,6 @@ public class LootRunManager {
     }
 
     public static boolean rename(String oldName, String newName) {
-        if (!STORAGE_FOLDER.exists()) return false;
-
         try {
             File f = new File(STORAGE_FOLDER, oldName + ".json");
             if (!f.exists()) return false;
@@ -132,7 +144,9 @@ public class LootRunManager {
 
     public static void clear() {
         activePath = null;
+        activePathName = null;
         recordingPath = null;
+        updateMapPath();
     }
 
     public static LootRunPath getActivePath() {
@@ -143,6 +157,17 @@ public class LootRunManager {
         return recordingPath;
     }
 
+    public static PathWaypointProfile getMapPath() {
+        return mapPath;
+    }
+
+    public static List<MapIcon> getMapPathWaypoints() {
+        if (mapPath != null && MapConfig.LootRun.INSTANCE.displayLootrunOnMap)
+            return Arrays.asList(new MapPathWaypointIcon(mapPath));
+        else
+            return new ArrayList<>();
+    }
+
     public static boolean isRecording() {
         return recordingPath != null;
     }
@@ -150,6 +175,7 @@ public class LootRunManager {
     public static void stopRecording() {
         activePath = recordingPath;
         recordingPath = null;
+        activePathName = null;
     }
 
     public static void startRecording() {
@@ -170,10 +196,87 @@ public class LootRunManager {
         recordingPath.addPoint(to);
     }
 
-    public static void addChest(BlockPos pos) {
-        if (!isRecording()) return;
+    public static boolean undoMovement(double x, double y, double z) {
+        if (!isRecording()) return false;
 
-        recordingPath.addChest(pos);
+        Location to = new Location(x, y + .25d, z);
+        List<Location> recordedPoints = recordingPath.getPoints();
+        List<Location> removed = new ArrayList<>();
+        boolean pastInitial = false;
+        for (int i = recordedPoints.size() - 1; i >= 0; i--) {
+            if (i == 0) return false; // never found a point to rewind to
+
+            if (recordedPoints.get(i).distanceSquared(to) < 4d) {
+                if (pastInitial) break; // we've reached the player again
+            } else {
+                if (!pastInitial) pastInitial = true; // we've moved past the end of the path
+            }
+
+            removed.add(recordedPoints.get(i));
+        }
+
+        recordingPath.removePoints(removed);
+        return true;
+    }
+
+    public static boolean addChest(BlockPos pos) {
+        if (isRecording()) {
+            recordingPath.addChest(pos);
+            return true;
+        }
+
+        if (activePath != null) {
+            activePath.addChest(pos);
+            if (activePathName != null) saveToFile(activePathName);
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean removeChest(BlockPos pos) {
+        if (isRecording()) {
+            recordingPath.removeChest(pos);
+            return true;
+        }
+
+        if (activePath != null) {
+            activePath.removeChest(pos);
+            if (activePathName != null) saveToFile(activePathName);
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean addNote(LootRunNote note) {
+        if (isRecording()) {
+            recordingPath.addNote(note);
+            return true;
+        }
+
+        if (activePath != null) {
+            activePath.addNote(note);
+            if (activePathName != null) saveToFile(activePathName);
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean removeNote(String location) {
+        if (isRecording()) {
+            recordingPath.removeNote(location);
+            return true;
+        }
+
+        if (activePath != null) {
+            activePath.removeNote(location);
+            if (activePathName != null) saveToFile(activePathName);
+            return true;
+        }
+
+        return false;
     }
 
     public static void renderActivePaths() {
@@ -187,27 +290,38 @@ public class LootRunManager {
             }
 
             activePath.getChests().forEach(c -> PointRenderer.drawCube(c, MapConfig.LootRun.INSTANCE.activePathColour));
+            if (MapConfig.LootRun.INSTANCE.showNotes) activePath.getNotes().forEach(n -> n.drawNote(MapConfig.LootRun.INSTANCE.activePathColour));
         }
 
         if (recordingPath != null) {
             PointRenderer.drawLines(recordingPath.getSmoothPointsByChunk(), MapConfig.LootRun.INSTANCE.recordingPathColour);
             recordingPath.getChests().forEach(c -> PointRenderer.drawCube(c, MapConfig.LootRun.INSTANCE.recordingPathColour));
+            recordingPath.getNotes().forEach(n -> n.drawNote(MapConfig.LootRun.INSTANCE.recordingPathColour));
+        }
+    }
+
+    private static void updateMapPath() {
+        mapPath = null;
+        if (activePath != null) {
+            mapPath = new PathWaypointProfile(activePath);
         }
     }
 
     private static class LootRunPathIntermediary {
         public List<Location> points;
         public List<BlockPos> chests;
+        public List<LootRunNote> notes;
         public Date date;
 
         LootRunPathIntermediary(LootRunPath fromPath) {
             this.points = fromPath.getPoints();
             this.chests = new ArrayList<>(fromPath.getChests());
+            this.notes = new ArrayList<>(fromPath.getNotes());
             date = new Date();
         }
 
         LootRunPath toPath() {
-            return new LootRunPath(points, chests);
+            return new LootRunPath(points, chests, notes);
         }
     }
 

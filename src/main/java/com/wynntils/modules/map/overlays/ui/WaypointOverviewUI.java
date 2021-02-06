@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.map.overlays.ui;
@@ -30,11 +30,11 @@ public class WaypointOverviewUI extends GuiScreen {
     private GuiButton previousPageBtn;
     private GuiButton nextGroupBtn;
     private GuiButton previousGroupBtn;
-    private ArrayList<GuiButton> groupBtns = new ArrayList<>();
+    private List<GuiButton> groupBtns = new ArrayList<>();
     private GuiButton exitBtn;
     private GuiButton exportBtn;
     private GuiButton importBtn;
-    private ArrayList<GuiButton> editButtons = new ArrayList<>();
+    private List<GuiButton> editButtons = new ArrayList<>();
 
     private List<String> exportText;
     private List<String> importText;
@@ -42,9 +42,9 @@ public class WaypointOverviewUI extends GuiScreen {
     private static final int ungroupedIndex = WaypointProfile.WaypointType.values().length;
 
     private ScreenRenderer renderer = new ScreenRenderer();
-    private ArrayList<WaypointProfile> waypoints;
+    private List<WaypointProfile> waypoints;
     @SuppressWarnings("unchecked")
-    private ArrayList<WaypointProfile>[] groupedWaypoints = (ArrayList<WaypointProfile>[]) new ArrayList[ungroupedIndex + 1];
+    private List<WaypointProfile>[] groupedWaypoints = (ArrayList<WaypointProfile>[]) new ArrayList[ungroupedIndex + 1];
     private boolean[] enabledGroups;
     private int page;
     private int pageHeight;
@@ -95,7 +95,7 @@ public class WaypointOverviewUI extends GuiScreen {
         drawRect(this.width/2 - 185 - groupShift, 52, this.width/2 + 170 + groupShift, 53, 0xFFFFFFFF);
 
         ScreenRenderer.beginGL(0, 0);
-        ArrayList<WaypointProfile> waypoints = getWaypoints();
+        List<WaypointProfile> waypoints = getWaypoints();
         int hovered = getHoveredWaypoint(mouseX, mouseY);
         for (int i = 0, lim = Math.min(pageHeight, waypoints.size() - pageHeight * page); i < lim; i++) {
             WaypointProfile wp = waypoints.get(page * pageHeight + i);
@@ -230,7 +230,7 @@ public class WaypointOverviewUI extends GuiScreen {
                 );
                 return;
             }
-            ArrayList<WaypointProfile> imported;
+            List<WaypointProfile> imported;
             try {
                 imported = WaypointProfile.decode(data);
             } catch (IllegalArgumentException e) {
@@ -242,7 +242,7 @@ public class WaypointOverviewUI extends GuiScreen {
                 return;
             }
             int newWaypoints = 0;
-            HashSet<Location> existing = new HashSet<>(waypoints.size());
+            Set<Location> existing = new HashSet<>(waypoints.size());
             for (WaypointProfile wp : waypoints) {
                 existing.add(new Location(wp.getX(), wp.getY(), wp.getZ()));
             }
@@ -291,7 +291,7 @@ public class WaypointOverviewUI extends GuiScreen {
         }
     }
 
-    private ArrayList<WaypointProfile> getWaypoints() {
+    private List<WaypointProfile> getWaypoints() {
         if (group == ungroupedIndex) {
             return waypoints;
         }

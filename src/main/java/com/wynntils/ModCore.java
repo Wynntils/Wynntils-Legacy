@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils;
@@ -7,9 +7,10 @@ package com.wynntils;
 import com.wynntils.core.CoreManager;
 import com.wynntils.core.events.custom.ClientEvent;
 import com.wynntils.core.framework.FrameworkManager;
+import com.wynntils.core.framework.rendering.WynnRenderItem;
 import com.wynntils.core.framework.rendering.textures.Mappings;
 import com.wynntils.core.framework.rendering.textures.Textures;
-import com.wynntils.modules.ModuleManager;
+import com.wynntils.modules.ModuleRegistry;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.overlays.ui.ModConflictScreen;
@@ -26,6 +27,7 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 
 @Mod(
         name = Reference.NAME,
@@ -58,15 +60,17 @@ public class ModCore {
         WebManager.setupUserAccount();
         WebManager.setupWebApi(true);
 
-        CoreManager.setupCore();
-        ModuleManager.initModules();
+        CoreManager.preModules();
 
+        ModuleRegistry.registerModules();
         FrameworkManager.startModules();
+
+        CoreManager.afterModules();
     }
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent e) {
-        HashMap<String, String> conflicts = new HashMap<>();
+        Map<String, String> conflicts = new HashMap<>();
         for (ModContainer mod : Loader.instance().getActiveModList()) {
             if (!mod.getModId().equalsIgnoreCase("labymod")) continue;
 
@@ -74,6 +78,8 @@ public class ModCore {
         }
 
         if (!conflicts.isEmpty()) throw new ModConflictScreen(conflicts);
+
+        WynnRenderItem.inject();
 
         FrameworkManager.postEnableModules();
 
@@ -93,13 +99,13 @@ public class ModCore {
         FMLCommonHandler.instance().registerCrashCallable(new ICrashCallable() {
             @Override
             public String getLabel() {
-                return "Wynntils Version";
+                return "Wynntils Details";
             }
 
             @Override
             public String call() {
                 UpdateStream stream = CoreDBConfig.INSTANCE == null ? null : CoreDBConfig.INSTANCE.updateStream;
-                return "Running Wynntils v" + Reference.VERSION + " in " + stream + ", " + (Reference.developmentEnvironment ? "being a dev env" : "at a normal env");
+                return "Running Wynntils v" + Reference.VERSION + " in " + stream + ", " + (Reference.developmentEnvironment ? "being a dev env" : "at a normal env") + (Reference.onBeta ? " (This crash occured on the Hero Beta)" : "");
             }
         });
 

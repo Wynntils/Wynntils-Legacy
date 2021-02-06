@@ -1,11 +1,11 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
 
 import com.wynntils.Reference;
-import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.ActionBarData;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -30,11 +30,14 @@ public class ActionBarOverlay extends Overlay {
                 RenderGameOverlayEvent.ElementType.EXPERIENCE, RenderGameOverlayEvent.ElementType.JUMPBAR);
     }
 
+    transient ItemStack highlightItem = ItemStack.EMPTY;
+    transient int highlightTicks;
+
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
         if (!Reference.onWorld) return;
 
-        String lastActionBar = PlayerInfo.getPlayerInfo().getLastActionBar();
+        String lastActionBar = get(ActionBarData.class).getLastActionBar();
         if (lastActionBar == null) return;
 
         String[] divisor = lastActionBar.split("/");
@@ -51,14 +54,19 @@ public class ActionBarOverlay extends Overlay {
 
         BlockPos blockPos = new BlockPos(ScreenRenderer.mc.player);
         String lCoord = TextFormatting.GRAY.toString() + blockPos.getX();
-        String middleCoord = TextFormatting.GREEN + Utils.getPlayerDirection(ScreenRenderer.mc.player.rotationYaw);
+        String middleCoord;
+        if (!OverlayConfig.INSTANCE.replaceDirection) {
+            middleCoord = TextFormatting.GREEN + Utils.getPlayerDirection(ScreenRenderer.mc.player.rotationYaw);
+        } else {
+            middleCoord = TextFormatting.GRAY.toString() + blockPos.getY();
+        }
         String rCoord = TextFormatting.GRAY.toString() + blockPos.getZ();
         // Order:
         // Powder % | RLR | Sprint | and if there is nothing more coordinates
         if (OverlayConfig.INSTANCE.splitCoordinates && OverlayConfig.INSTANCE.actionBarCoordinates) {
-            drawString(lCoord, (-ScreenRenderer.mc.fontRenderer.getStringWidth(lCoord) - ScreenRenderer.mc.fontRenderer.getStringWidth(middleCoord) / 2.0f - padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
+            drawString(lCoord, (-ScreenRenderer.fontRenderer.getStringWidth(lCoord) - ScreenRenderer.fontRenderer.getStringWidth(middleCoord) / 2.0f - padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
             drawString(middleCoord, 0, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.INSTANCE.textShadow);
-            drawString(rCoord, (ScreenRenderer.mc.fontRenderer.getStringWidth(middleCoord) / 2.0f + padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
+            drawString(rCoord, (ScreenRenderer.fontRenderer.getStringWidth(middleCoord) / 2.0f + padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
             y -= 11;
             staticSize.y = 21;
             growth = OverlayGrowFrom.MIDDLE_CENTRE;
@@ -87,21 +95,29 @@ public class ActionBarOverlay extends Overlay {
         // breaks if it's rendering an item name or if doesn't have preference
         if (!preference && renderItemName()) return;
 
-        drawString(l, (-ScreenRenderer.mc.fontRenderer.getStringWidth(l) - ScreenRenderer.mc.fontRenderer.getStringWidth(middle) / 2.0f - padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
+        drawString(l, (-ScreenRenderer.fontRenderer.getStringWidth(l) - ScreenRenderer.fontRenderer.getStringWidth(middle) / 2.0f - padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
         drawString(middle, 0, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.INSTANCE.textShadow);
-        drawString(r, (ScreenRenderer.mc.fontRenderer.getStringWidth(middle) / 2.0f + padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
+        drawString(r, (ScreenRenderer.fontRenderer.getStringWidth(middle) / 2.0f + padding), y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.INSTANCE.textShadow);
     }
 
     private boolean renderItemName() {
-        ScreenRenderer.mc.gameSettings.heldItemTooltips = false;
+        int newHighlightTicks = ReflectionFields.GuiIngame_remainingHighlightTicks.getValue(Minecraft.getMinecraft().ingameGUI);
+        ItemStack newHighlightItem = ReflectionFields.GuiIngame_highlightingItemStack.getValue(Minecraft.getMinecraft().ingameGUI);
 
-        int remainingHighlightTicks = (int) ReflectionFields.GuiIngame_remainingHighlightTicks.getValue(Minecraft.getMinecraft().ingameGUI);
-        ItemStack highlightingItemStack = (ItemStack) ReflectionFields.GuiIngame_highlightingItemStack.getValue(Minecraft.getMinecraft().ingameGUI);
+        if (newHighlightTicks > 0) { // update item
+            highlightTicks = newHighlightTicks*5; // this method ticks 5 times as fast as the default
+            highlightItem = newHighlightItem;
 
-        if (remainingHighlightTicks > 0 && !highlightingItemStack.isEmpty()) {
-            String s = highlightingItemStack.getDisplayName();
+            ReflectionFields.GuiIngame_remainingHighlightTicks.setValue(Minecraft.getMinecraft().ingameGUI, 0);
+        } else if (newHighlightItem.isEmpty()) { // clear highlight when player switches to an empty hand
+            highlightTicks = 0;
+        }
 
-            if (highlightingItemStack.hasDisplayName()) {
+        if (highlightTicks > 0 && !highlightItem.isEmpty()) {
+
+            String s = highlightItem.getDisplayName();
+
+            if (highlightItem.hasDisplayName()) {
                 s = TextFormatting.ITALIC + s;
             }
 
@@ -112,7 +128,8 @@ public class ActionBarOverlay extends Overlay {
                 j += 14;
             }
 
-            int k = (int) ((float) remainingHighlightTicks * 256.0F / 10.0F);
+            int k = (int) ((float) highlightTicks * 256.0F / 50.0F);
+            highlightTicks--;
 
             if (k > 255) {
                 k = 255;

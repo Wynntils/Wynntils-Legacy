@@ -1,11 +1,12 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.core.managers;
 
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.containers.PartyContainer;
+import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.utils.helpers.CommandResponse;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ITextComponent;
@@ -18,11 +19,11 @@ public class PartyManager {
     private static final CommandResponse listExecutor = new CommandResponse("/party list", (matcher, text) -> {
         String entire = matcher.group(0);
         if (entire.contains("You must be in")) {  // clears the party
-            PlayerInfo.getPlayerInfo().getPlayerParty().removeMember(Minecraft.getMinecraft().player.getName());
+            PlayerInfo.get(SocialData.class).getPlayerParty().removeMember(Minecraft.getMinecraft().player.getName());
             return;
         }
 
-        PartyContainer partyContainer = PlayerInfo.getPlayerInfo().getPlayerParty();
+        PartyContainer partyContainer = PlayerInfo.get(SocialData.class).getPlayerParty();
         for (ITextComponent components : text.getSiblings()) {
             if (components.getFormattedText().startsWith("§e")) continue;
 
@@ -44,19 +45,19 @@ public class PartyManager {
             handlePartyList();
             return;
         }
-        if (component.getUnformattedText().startsWith("You have been removed from the party.")) {
-            PartyContainer partyContainer = PlayerInfo.getPlayerInfo().getPlayerParty();
+        if (component.getUnformattedText().startsWith("You have been removed from the party.") || component.getUnformattedText().startsWith("Your party has been disbanded since you were the only member remaining.")) {
+            PartyContainer partyContainer = PlayerInfo.get(SocialData.class).getPlayerParty();
             partyContainer.removeMember(Minecraft.getMinecraft().player.getName());
             return;
         }
         if (component.getUnformattedText().startsWith("You have successfully created a party.")) {
-            PartyContainer partyContainer = PlayerInfo.getPlayerInfo().getPlayerParty();
+            PartyContainer partyContainer = PlayerInfo.get(SocialData.class).getPlayerParty();
             partyContainer.setOwner(Minecraft.getMinecraft().player.getName());
             partyContainer.addMember(Minecraft.getMinecraft().player.getName());
             return;
         }
         if (component.getFormattedText().startsWith("§e") && component.getUnformattedText().contains("has joined the party.")) {
-            PartyContainer partyContainer = PlayerInfo.getPlayerInfo().getPlayerParty();
+            PartyContainer partyContainer = PlayerInfo.get(SocialData.class).getPlayerParty();
 
             String member = component.getUnformattedText().split(" has joined the party.")[0];
             partyContainer.addMember(member);
@@ -64,7 +65,7 @@ public class PartyManager {
         }
         if (component.getFormattedText().startsWith("§e") && component.getUnformattedText().contains("has left the party.")) {
             handlePartyList();
-            PartyContainer partyContainer = PlayerInfo.getPlayerInfo().getPlayerParty();
+            PartyContainer partyContainer = PlayerInfo.get(SocialData.class).getPlayerParty();
 
             String member = component.getUnformattedText().split(" has left the party.")[0];
             partyContainer.removeMember(member);

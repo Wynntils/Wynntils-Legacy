@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.core.managers;
@@ -15,10 +15,11 @@ import net.minecraft.world.World;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class PlayerEntityManager {
-    private static HashMap<UUID, EntityPlayer> map = new HashMap<>();
+    private static Map<UUID, EntityPlayer> map = new HashMap<>();
 
     /**
      * @param uuid UUID of player

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.core.instances;
@@ -13,12 +13,14 @@ import com.wynntils.modules.core.overlays.ui.UpdateAvailableScreen;
 import com.wynntils.modules.utilities.instances.ServerIcon;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.client.multiplayer.ServerList;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.FMLClientHandler;
 
@@ -30,6 +32,8 @@ public class MainMenuButtons {
     private static final int WYNNCRAFT_BUTTON_ID = 3790627;
 
     private static WynncraftButton lastButton = null;
+    
+    private static boolean alreadyLoaded = false;
 
     public static void addButtons(GuiMainMenu to, List<GuiButton> buttonList, boolean resize) {
         if (!CoreDBConfig.INSTANCE.addMainMenuButton) return;
@@ -43,6 +47,12 @@ public class MainMenuButtons {
             UpdateOverlay.reset();
 
             buttonList.add(lastButton);
+
+            // little pling when finished loading
+            if (!alreadyLoaded) {
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1f));
+                alreadyLoaded = true;
+            }
             return;
         }
 
@@ -111,7 +121,8 @@ public class MainMenuButtons {
 
             if (hasUpdate) {
                 Textures.UIs.main_menu.bind();
-                drawModalRectWithCustomSizedTexture(x, y, 0, 0, 20, 20, 20, 20);
+                // When not provided with the texture size vanilla automatically assumes both the height and width are 256
+                drawTexturedModalRect(x, y, 0, 0, 20, 20);
             }
 
             GlStateManager.disableBlend();

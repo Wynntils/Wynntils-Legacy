@@ -1,11 +1,12 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.questbook.overlays.ui;
 
 import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -36,14 +37,12 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class DiscoveriesPage extends QuestBookPage {
 
-    private ArrayList<DiscoveryInfo> discoverySearch;
+    private List<DiscoveryInfo> discoverySearch;
     private DiscoveryInfo overDiscovery;
 
     private boolean territory = true;
@@ -322,7 +321,6 @@ public class DiscoveriesPage extends QuestBookPage {
                 for (String line : textToDisplay.split("\n")) {
                     currentY += render.drawSplitString(line, 120, x + 26, y - 95 + currentY, 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE) * 10 + 2;
                 }
-                updateSearch();
             }
         }
         ScreenRenderer.endGL();
@@ -354,7 +352,7 @@ public class DiscoveriesPage extends QuestBookPage {
                         }
                     break;
                     case 2: //Middle Click
-                        String wikiUrl = "https://wynncraft.gamepedia.com/" + URLEncoder.encode(name.replace(" ", "_"), "UTF-8");
+                        String wikiUrl = "https://wynncraft.gamepedia.com/" + Utils.encodeForWikiTitle(name);
                         Utils.openUrl(wikiUrl);
                         Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                     break;
@@ -470,7 +468,7 @@ public class DiscoveriesPage extends QuestBookPage {
                 .filter(c -> {
                     // Shows/Hides discoveries if requirements met/not met
                     if (!QuestBookConfig.INSTANCE.showAllDiscoveries) {
-                        if (c.getLevel() > PlayerInfo.getPlayerInfo().getLevel()) {
+                        if (c.getLevel() > PlayerInfo.get(CharacterData.class).getLevel()) {
                             return false;
                         }
 
@@ -544,13 +542,9 @@ public class DiscoveriesPage extends QuestBookPage {
      * Uses the Wynncraft Wiki API to get the coordinates of a secret discovery from the Template:Infobox/Town
      */
     private void locateSecretDiscovery(String name, String action) {
-        String queryUrl = "https://wynncraft.gamepedia.com/api.php?action=parse&format=json&prop=wikitext&section=0&redirects=true&page=";
+        String queryUrl = WebManager.getApiUrl("WikiDiscoveryQuery");
 
-        try {
-            queryUrl += URLEncoder.encode(name.replace(" ", "_"), "UTF-8");
-        } catch (UnsupportedEncodingException e) {}
-
-        Request query = new Request(queryUrl, "SecretWikiQuery");
+        Request query = new Request(queryUrl + Utils.encodeForWikiTitle(name), "SecretWikiQuery");
         RequestHandler handler = new RequestHandler();
 
         handler.addAndDispatch(query.handleJsonObject(jsonOutput -> {

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.core.utils.reflections;
@@ -12,6 +12,7 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiScreenHorseInventory;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.network.play.client.CPacketClientSettings;
 import net.minecraftforge.fml.common.eventhandler.Event;
@@ -37,7 +38,9 @@ public enum ReflectionFields {
     GuiPlayerTabOverlay_ENTRY_ORDERING(GuiPlayerTabOverlay.class, "ENTRY_ORDERING", "field_175252_a"),
     Minecraft_resourcePackRepository(Minecraft.class, "resourcePackRepository", "field_110448_aq"),
     CPacketClientSettings_chatVisibility(CPacketClientSettings.class, "chatVisibility", "field_149529_c"),
-    ModelRenderer_compiled(ModelRenderer.class, "compiled", "field_78812_q");
+    ModelRenderer_compiled(ModelRenderer.class, "compiled", "field_78812_q"),
+    Minecraft_renderItem(Minecraft.class, "renderItem", "field_175621_X"),
+    RenderItem_itemModelMesher(RenderItem.class, "itemModelMesher", "field_175059_m");
 
     static {
         GuiPlayerTabOverlay_ENTRY_ORDERING.removeFinal();
@@ -49,9 +52,9 @@ public enum ReflectionFields {
         this.field = ReflectionHelper.findField(holdingClass, values);
     }
 
-    public Object getValue(Object parent) {
+    public <T> T getValue(Object parent) {
         try {
-            return field.get(parent);
+            return (T) field.get(parent);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
             return null;

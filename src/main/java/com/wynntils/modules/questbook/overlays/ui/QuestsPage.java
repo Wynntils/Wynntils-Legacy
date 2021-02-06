@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.questbook.overlays.ui;
@@ -19,6 +19,7 @@ import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookPage;
 import com.wynntils.modules.questbook.instances.QuestInfo;
 import com.wynntils.modules.questbook.managers.QuestManager;
+import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.request.Request;
 import com.wynntils.webapi.request.RequestHandler;
 import net.minecraft.client.Minecraft;
@@ -31,7 +32,6 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextFormatting;
 
 import java.io.IOException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 
 public class QuestsPage extends QuestBookPage {
 
-    private ArrayList<QuestInfo> questSearch;
+    private List<QuestInfo> questSearch;
     private QuestInfo overQuest;
     private SortMethod sort = SortMethod.LEVEL;
     private boolean showingMiniQuests = false;
@@ -84,8 +84,8 @@ public class QuestsPage extends QuestBookPage {
             render.drawRect(Textures.UIs.quest_book, x - 87, y - 100, 16, 255 + (showingMiniQuests ? 16 : 0), 16, 16);
             if ( posX >= 71 && posX <= 87 && posY >= 84 && posY <= 100) {
                 hoveredText = new ArrayList<>(showingMiniQuests ? QuestManager.getMiniQuestsLore() : QuestManager.getQuestsLore());
-                
-                if (!hoveredText.isEmpty()) { 
+
+                if (!hoveredText.isEmpty()) {
                     hoveredText.set(0, showingMiniQuests ? "Mini-Quests:" : "Quests:");
                     hoveredText.add(" ");
                     hoveredText.add(TextFormatting.GREEN + "Click to see " + (showingMiniQuests ? "Quests" : "Mini-Quests"));
@@ -196,6 +196,8 @@ public class QuestsPage extends QuestBookPage {
                         lore.remove(lore.size() - 1);
                         lore.remove(lore.size() - 1);
                     } else if (selected.getStatus() == QuestStatus.CAN_START) {
+                        lore.remove(lore.size() - 2);
+                        if(!lore.remove(lore.size() - 2).isEmpty()) lore.remove(lore.size() - 2); // quest is tracked, has extra line
                         if (selected.isMiniQuest()) {
                             render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 272, 245, 11, 7);
                         } else {
@@ -207,6 +209,8 @@ public class QuestsPage extends QuestBookPage {
                             lore.add(TextFormatting.GREEN + (TextFormatting.BOLD + "Left click to pin it!"));
                         }
                     } else if (selected.getStatus() == QuestStatus.STARTED) {
+                        lore.remove(lore.size() - 2);
+                        if(!lore.remove(lore.size() - 2).isEmpty()) lore.remove(lore.size() - 2); // quest is tracked, has extra line
                         render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 245, 245, 8, 7);
                         if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(selected.getName())) {
                             lore.add(TextFormatting.RED + (TextFormatting.BOLD + "Left click to unpin it!"));
@@ -280,7 +284,7 @@ public class QuestsPage extends QuestBookPage {
         ScreenRenderer.endGL();
         renderHoveredText(hoveredText, mouseX, mouseY);
     }
-    
+
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         ScaledResolution res = new ScaledResolution(mc);
@@ -292,7 +296,7 @@ public class QuestsPage extends QuestBookPage {
             if (mouseButton == 0) { // left click
                 if (overQuest.getStatus() == QuestStatus.COMPLETED || overQuest.getStatus() == QuestStatus.CANNOT_START)
                     return;
-                
+
                 if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(overQuest.getName())) {
                     QuestManager.setTrackedQuest(null);
                     Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
@@ -305,31 +309,25 @@ public class QuestsPage extends QuestBookPage {
                 Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
 
                 final String baseUrl = "https://wynncraft.gamepedia.com/";
-                
+
                 if (overQuest.isMiniQuest()) {
                     String type = overQuest.getFriendlyName().split(" ")[0];
-                    
+
                     String wikiName = "Quests#" + type + "ing_posts"; // Don't encode #
-                    
+
                     Utils.openUrl(baseUrl + wikiName);
                 } else {
                     String name = overQuest.getName();
-                    
-                    String url = "https://wynncraft.gamepedia.com/api.php?action=query&format=json&titles=" + URLEncoder.encode(name + " (Quest)", "UTF-8");
+                    String wikiQuestPageNameQuery = WebManager.getApiUrl("WikiQuestQuery");
+                    String url = wikiQuestPageNameQuery + Utils.encodeForCargoQuery(name);
                     Request req = new Request(url, "WikiQuestQuery");
-                    
+
                     RequestHandler handler = new RequestHandler();
-                    
-                    handler.addAndDispatch(req.handleJsonObject(jsonOutput -> {
-                        boolean needsExtension = !jsonOutput.get("query").getAsJsonObject().get("pages").getAsJsonObject().has("-1");
-                        
-                        String wikiName = (name + (needsExtension ? " (Quest)" : "")).replace(' ', '_');
-                        
-                        Utils.openUrl(baseUrl + wikiName);
+
+                    handler.addAndDispatch(req.handleJsonArray(jsonOutput -> {
+                        String pageTitle = jsonOutput.get(0).getAsJsonObject().get("_pageTitle").getAsString();
+                        Utils.openUrl(baseUrl + Utils.encodeForWikiTitle(pageTitle));
                         return true;
-                    }).onError(code -> {
-                        Utils.openUrl(baseUrl + name);
-                        return false;
                     }), true);
                 }
                 return;
@@ -409,7 +407,15 @@ public class QuestsPage extends QuestBookPage {
     private enum SortMethod {
         LEVEL(
             Comparator.comparing(QuestInfo::getStatus)
-                .thenComparing(q -> q.getLevelType() != QuestLevelType.COMBAT).thenComparingInt(QuestInfo::getMinLevel),
+                        .thenComparing(q -> !q.getMinLevel().containsKey(QuestLevelType.COMBAT) && !q.getMinLevel().isEmpty()).thenComparingInt((q) -> {
+                            if (q.getMinLevel().containsKey(QuestLevelType.COMBAT)) {
+                                return q.getMinLevel().get(QuestLevelType.COMBAT);
+                            } else if (!q.getMinLevel().isEmpty()) {
+                                return q.getMinLevel().values().iterator().next();
+                            } else {
+                                return 1;
+                            }
+                        }),
             130, 281, 152, 303, Arrays.asList(
                 "Sort by Level", // Replace with translation keys during l10n
                 "Lowest level quests first")),
@@ -420,7 +426,15 @@ public class QuestsPage extends QuestBookPage {
             }
 
             return (long) new Location(player).distance(q.getTargetLocation());
-        }).thenComparing(q -> q.getLevelType() != QuestLevelType.COMBAT).thenComparingInt(QuestInfo::getMinLevel),
+        }).thenComparing(q -> !q.getMinLevel().containsKey(QuestLevelType.COMBAT) && !q.getMinLevel().isEmpty()).thenComparingInt((q) -> {
+            if (q.getMinLevel().containsKey(QuestLevelType.COMBAT)) {
+                return q.getMinLevel().get(QuestLevelType.COMBAT);
+            } else if (!q.getMinLevel().isEmpty()) {
+                return q.getMinLevel().values().iterator().next();
+            } else {
+                return 1;
+            }
+        }),
             174, 281, 196, 303, Arrays.asList(
                 "Sort by Distance",
                 "Closest quests first"));

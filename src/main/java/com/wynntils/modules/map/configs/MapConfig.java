@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.map.configs;
@@ -20,9 +20,7 @@ import com.wynntils.modules.map.overlays.objects.MapPathWaypointIcon;
 import com.wynntils.modules.map.overlays.objects.MapWaypointIcon;
 import com.wynntils.webapi.profiles.MapMarkerProfile;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.*;
 
 @SettingsInfo(name = "map", displayPath = "Map")
 public class MapConfig extends SettingsClass {
@@ -31,54 +29,60 @@ public class MapConfig extends SettingsClass {
     @Setting(displayName = "Show Compass Beam", description = "Should a beacon beam be displayed at your compass position?", order = 0)
     public boolean showCompassBeam = true;
 
-    @Setting(displayName = "Show Compass Directions", description = "Should the cardinal directions (N, E, S, W) been displayed on the minimap", order = 1)
+    @Setting(displayName = "Show Compass Directions", description = "Should the cardinal directions be displayed on the minimap?\n\n§8Cardinal directions are the north, east, south, and west points on a compass.", order = 1)
     public boolean showCompass = true;
 
-    @Setting(displayName = "Enable Minimap", description = "Should a minimap be displayed?", order = 2)
+    @Setting(displayName = "Show Compass Distance", description = "Should the distance to the compass position be displayed on the minimap?", order = 2)
+    public boolean showCompassDistance = true;
+
+    @Setting(displayName = "Enable Minimap", description = "Should a minimap be displayed?", order = 3)
     public boolean enabled = true;
 
-    @Setting(displayName = "Minimap Shape", description = "Should the minimap be a square or a circle?", order = 3)
+    @Setting(displayName = "Minimap Shape", description = "Should the minimap be a square or a circle?", order = 4)
     public MapFormat mapFormat = MapFormat.CIRCLE;
 
-    @Setting(displayName = "Minimap Rotation", description = "Should the minimap be locked facing north or rotate based on the direction you're facing?", order = 4)
+    @Setting(displayName = "Minimap Rotation", description = "Should the minimap be locked facing north or rotate based on the direction you're facing?", order = 5)
     public boolean followPlayerRotation = true;
 
-    @Setting(displayName = "Minimap Size", description = "How large should the minimap be?", order = 5)
+    @Setting(displayName = "Minimap Size", description = "How large should the minimap be?", order = 6)
     @Setting.Limitations.IntLimit(min = 75, max = 200)
     public int mapSize = 100;
 
-    @Setting(displayName = "Minimap Coordinates", description = "Should your coordinates be displayed below the minimap?", order = 6)
+    @Setting(displayName = "Minimap Coordinates", description = "Should your coordinates be displayed below the minimap?", order = 7)
     public boolean showCoords = false;
 
-    @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?", order = 7)
+    @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?\n\n§8This has no effect if compass directions are disabled.", order = 8)
     public boolean northOnly = false;
 
-    @Setting(displayName = "Display Minimap Icons", description = "Should map icons be displayed on the minimap?", order = 8)
+    @Setting(displayName = "Display Minimap Icons", description = "Should map icons be displayed on the minimap?", order = 9)
     public boolean minimapIcons = true;
 
-    @Setting(displayName = "Hide Completed Quest Icons", description = "Should map icons for completed quests be hidden?", order = 9)
+    @Setting(displayName = "Hide Completed Quest Icons", description = "Should map icons for completed quests be hidden?", order = 10)
     public boolean hideCompletedQuests = true;
 
-    @Setting(displayName = "Compass Beacon Colour", description = "What colour should the compass beacon be?", order = 10)
+    @Setting(displayName = "Compass Beacon Colour", description = "What colour should the compass beacon be?", order = 11)
     @Setting.Features.CustomColorFeatures(allowAlpha = true)
     public CustomColor compassBeaconColor = CommonColors.RED;
 
-    @Setting(displayName = "Map Blur", description = "Should the map be rendered using linear textures to avoid aliasing issues?", order = 11)
+    @Setting(displayName = "Map Blur", description = "Should the map be rendered using linear textures to avoid aliasing issues?", order = 12)
     public boolean renderUsingLinear = true;
 
-    @Setting(displayName = "Minimap Icons Size", description = "How big should minimap icons be?", order = 12)
+    @Setting(displayName = "Minimap Icons Size", description = "How big should minimap icons be?", order = 13)
     @Setting.Limitations.FloatLimit(min = 0.5f, max = 2f)
     public float minimapIconSizeMultiplier = 1f;
 
-    @Setting(displayName = "Minimap Zoom", description = "How far zoomed out should the minimap be?", order = 13)
+    @Setting(displayName = "Minimap Zoom", description = "How zoomed out should the minimap be?", order = 14)
     @Setting.Limitations.IntLimit(min = MiniMapOverlay.MIN_ZOOM, max = MiniMapOverlay.MAX_ZOOM, precision = 1)
     public int mapZoom = 30;
 
-    @Setting
-    public HashMap<String, Boolean> enabledMapIcons = resetMapIcons(false);
+    @Setting(displayName = "Hide in Non-Mapped Areas", description = "Should the minimap be hidden if the player is outside the map?", order = 15)
+    public boolean hideMinimapOutOfBounds = true;
 
     @Setting
-    public HashMap<String, Boolean> enabledMinimapIcons = resetMapIcons(true);
+    public Map<String, Boolean> enabledMapIcons = resetMapIcons(false);
+
+    @Setting
+    public Map<String, Boolean> enabledMinimapIcons = resetMapIcons(true);
 
     @SettingsInfo(name = "map_worldmap", displayPath = "Map/World Map")
     public static class WorldMap extends SettingsClass {
@@ -90,7 +94,7 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Territory Names", description = "Should territory names be displayed?")
         public boolean showTerritoryName = false;
 
-        @Setting(displayName = "Territory Guild Tags", description = "Should be guild names be replaced by their guild tags?")
+        @Setting(displayName = "Territory Guild Tags", description = "Should guild names be replaced by their guild tags?")
         public boolean useGuildShortNames = true;
 
         @Setting(displayName = "Territory Colour Transparency", description = "How transparent should the colour of territories be?")
@@ -100,8 +104,15 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Show Territory Areas", description = "Should territory rectangles be visible?")
         public boolean territoryArea = true;
 
-        @Setting(displayName = "Show Labels", description = "Should place labels be displayed on your map?")
+        @Setting(displayName = "Show Location Labels", description = "Should location labels be displayed?")
         public boolean showLabels = true;
+
+        @Setting(displayName = "Open Animation", description = "Should the world map have an opening animation?")
+        public boolean openAnimation = true;
+
+        @Setting(displayName = "Opening Animation Length", description = "How long should be the opening animation")
+        @Setting.Limitations.IntLimit(min = 50, max = 1000)
+        public int animationLength = 250;
     }
 
     @SettingsInfo(name = "map_textures", displayPath = "Map/Textures")
@@ -126,10 +137,17 @@ public class MapConfig extends SettingsClass {
 
         // HeyZeer0: this stores all waypoints
         @Setting(upload = true)
-        public ArrayList<WaypointProfile> waypoints = new ArrayList<>();
+        public List<WaypointProfile> waypoints = new ArrayList<>();
 
         @Setting(upload = true)
-        public ArrayList<PathWaypointProfile> pathWaypoints = new ArrayList<>();
+        public List<PathWaypointProfile> pathWaypoints = new ArrayList<>();
+
+        @Setting(displayName = "Minimap Waypoint Fade", description = "Should waypoints become more clear the closer you are in elevation?\n\n§8Waypoints below you will darken, and waypoints above you will lighten.", order = 1)
+        public boolean iconFade = true;
+
+        @Setting(displayName = "Minimap Waypoint Fade Scale", description = "At which Y difference should waypoints become invisible?", order = 2)
+        @Setting.Limitations.IntLimit(min = 10, max = 100, precision = 10)
+        public int iconFadeScale = 30;
 
 
         @Setting(displayName = "Recording Chest Waypoints", description = "Which chest tiers should be recorded as waypoints?\n\n§8Tiers higher than the specified value will also be recorded.", order = 6)
@@ -150,12 +168,12 @@ public class MapConfig extends SettingsClass {
             }
 
             public boolean isTierAboveThis(String testTier) {
-                ArrayList<String> allowedTiers = new ArrayList<>(Arrays.asList(Arrays.copyOfRange(tiers, 0, tierArrayIndex)));
+                List<String> allowedTiers = new ArrayList<>(Arrays.asList(Arrays.copyOfRange(tiers, 0, tierArrayIndex)));
                 return allowedTiers.contains(testTier);
             }
         }
 
-        @Setting(displayName = "Compass Marker", description = "Should a marker appear on the map where the compass is currently pointing towards?")
+        @Setting(displayName = "Compass Marker", description = "Should a marker appear on the map where the compass location is set to?")
         public boolean compassMarker = true;
 
         @Override
@@ -177,14 +195,14 @@ public class MapConfig extends SettingsClass {
     public static class LootRun extends SettingsClass {
         public static LootRun INSTANCE;
 
-        @Setting(displayName = "Loot Run Path Type", description = "How should paths be drawn?\n\n§8Available options are textures and lines.", order = 1)
+        @Setting(displayName = "Loot Run Path Type", description = "How should paths be drawn?", order = 1)
         public PathType pathType = PathType.TEXTURED;
 
-        @Setting(displayName = "Loot Run Path Colour", description = "What should the colour of the displayed path be?", order = 2)
+        @Setting(displayName = "Loot Run Path Colour", description = "What should the colour of displayed paths be?\n\n§aClick the coloured box to open the colour wheel.", order = 2)
         @Setting.Features.CustomColorFeatures(allowAlpha = true)
         public CustomColor activePathColour = MinecraftChatColors.AQUA;
 
-        @Setting(displayName = "Recording Loot Run Path Colour", description = "What should the colour of the currently recording path be?", order = 3)
+        @Setting(displayName = "Recording Loot Run Path Colour", description = "What should the colour of the currently recording path be?\n\n§aClick the coloured box to open the colour wheel.", order = 3)
         @Setting.Features.CustomColorFeatures(allowAlpha = true)
         public CustomColor recordingPathColour = CommonColors.RED;
 
@@ -194,6 +212,12 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Rainbow Path Transitioning", description = "How many blocks should loot run paths be shown in a colour before transitioning to a different colour?", order = 5)
         @Setting.Limitations.IntLimit(min = 1, max = 500)
         public int cycleDistance = 20;
+      
+        @Setting(displayName = "Show Loot Run Path on Map", description = "Should the active loot run path be shown on the map?", order = 6)
+        public boolean displayLootrunOnMap = true;
+
+        @Setting(displayName = "Show Loot Run Notes", description = "Should notes from the active loot run be rendered?", order = 7)
+        public boolean showNotes = true;
 
         @Override
         public void onSettingChanged(String name) {
@@ -239,8 +263,8 @@ public class MapConfig extends SettingsClass {
         }
     }
 
-    public static HashMap<String, Boolean> resetMapIcons(boolean forMiniMap) {
-        HashMap<String, Boolean> enabledIcons = new HashMap<>();
+    public static Map<String, Boolean> resetMapIcons(boolean forMiniMap) {
+        Map<String, Boolean> enabledIcons = new HashMap<>();
         for (String icon : new String[]{
             "Dungeons", "Accessory Merchant", "Armour Merchant", "Dungeon Merchant", "Horse Merchant",
             "Key Forge Merchant", "LE Merchant", "Emerald Merchant", "TNT Merchant", "Ore Refinery",

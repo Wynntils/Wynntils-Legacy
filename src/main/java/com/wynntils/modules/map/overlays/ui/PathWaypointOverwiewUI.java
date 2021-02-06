@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.map.overlays.ui;
@@ -19,16 +19,17 @@ import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class PathWaypointOverwiewUI extends GuiScreen {
     private GuiButton nextPageBtn;
     private GuiButton previousPageBtn;
     private GuiButton exitBtn;
     private GuiButton newBtn;
-    private ArrayList<GuiButton> editButtons = new ArrayList<>();
+    private List<GuiButton> editButtons = new ArrayList<>();
 
     private ScreenRenderer renderer = new ScreenRenderer();
-    private ArrayList<PathWaypointProfile> paths;
+    private List<PathWaypointProfile> paths;
     private int page;
     private int pageHeight;
 

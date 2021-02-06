@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.questbook.managers;
@@ -35,13 +35,13 @@ import static net.minecraft.util.text.TextFormatting.*;
 
 public class QuestManager {
 
-    private static final Pattern QUEST_BOOK_WINDOW_TITLE_PATTERN = Pattern.compile("\\[Pg\\. \\d+] [a-zA-Z0-9_]{1,16}'s? (?:Discoveries|(?:Mini-)?Quests)");
+    private static final Pattern QUEST_BOOK_WINDOW_TITLE_PATTERN = Pattern.compile("\\[Pg\\. \\d+] [a-zA-Z0-9_ ]+'s? (?:Discoveries|(?:Mini-)?Quests)");
     private static final int MESSAGE_ID = 423375494;
 
     private static FakeInventory lastInventory = null;
-    private static LinkedHashMap<String, QuestInfo> currentQuests = new LinkedHashMap<>();
-    private static LinkedHashMap<String, QuestInfo> currentMiniQuests = new LinkedHashMap<>();
-    private static LinkedHashMap<String, DiscoveryInfo> currentDiscoveries = new LinkedHashMap<>();
+    private static Map<String, QuestInfo> currentQuests = new LinkedHashMap<>();
+    private static Map<String, QuestInfo> currentMiniQuests = new LinkedHashMap<>();
+    private static Map<String, DiscoveryInfo> currentDiscoveries = new LinkedHashMap<>();
     private static String trackedQuest = null;
 
     private static List<String> questsLore = new ArrayList<>();
@@ -101,9 +101,9 @@ public class QuestManager {
         sendMessage(GRAY + "[Analysing quest book...]");
         hasInterrupted = false;
 
-        ArrayList<ItemStack> gatheredQuests = new ArrayList<>();
-        ArrayList<ItemStack> gatheredMiniQuests = new ArrayList<>();
-        ArrayList<ItemStack> gatheredDiscoveries = new ArrayList<>();
+        List<ItemStack> gatheredQuests = new ArrayList<>();
+        List<ItemStack> gatheredMiniQuests = new ArrayList<>();
+        List<ItemStack> gatheredDiscoveries = new ArrayList<>();
 
         FakeInventory inv = new FakeInventory(QUEST_BOOK_WINDOW_TITLE_PATTERN, new InventoryOpenByItem(7));
         inv.setLimitTime(15000); // 15 seconds
@@ -140,7 +140,8 @@ public class QuestManager {
                     if (!stack.hasDisplayName()) continue; // also checks for nbt
 
                     List<String> lore = ItemUtils.getUnformattedLore(stack);
-                    if (lore.isEmpty() || !lore.contains("Right click to track")) continue; //not a valid quest
+                    // uppercase on beta
+                    if (lore.isEmpty() || (!lore.contains("Right click to track") && !lore.contains("RIGHT-CLICK TO TRACK") && !lore.contains("Right click to stop tracking"))) continue; // not a valid quest
 
                     if (fullRead) {
                         gatheredQuests.add(stack);
@@ -165,7 +166,7 @@ public class QuestManager {
                     if (!stack.hasDisplayName()) continue; // also checks for nbt
 
                     List<String> lore = ItemUtils.getUnformattedLore(stack);
-                    if (lore.isEmpty() || !lore.contains("Right click to track")) continue; //not a valid mini-quest
+                    if (lore.isEmpty() || (!lore.contains("Right click to track") && !lore.contains("RIGHT-CLICK TO TRACK"))) continue; // not a valid mini-quest
 
                     if (fullRead) {
                         gatheredMiniQuests.add(stack);
@@ -299,7 +300,7 @@ public class QuestManager {
         if (secretDiscoveries != null) secretDiscoveriesLore = ItemUtils.getLore(secretDiscoveries.b);
     }
 
-    private static void parseQuests(ArrayList<ItemStack> quests) {
+    private static void parseQuests(List<ItemStack> quests) {
         for (ItemStack stack : quests) {
             try {
                 QuestInfo quest = new QuestInfo(stack, false);
@@ -318,7 +319,7 @@ public class QuestManager {
         }
     }
 
-    private static void parseMiniQuests(ArrayList<ItemStack> miniQuests) {
+    private static void parseMiniQuests(List<ItemStack> miniQuests) {
         for (ItemStack stack : miniQuests) {
             try {
                 QuestInfo miniQuest = new QuestInfo(stack, true);
@@ -331,7 +332,7 @@ public class QuestManager {
         }
     }
 
-    private static void parseDiscoveries(ArrayList<ItemStack> discoveries) {
+    private static void parseDiscoveries(List<ItemStack> discoveries) {
         for (ItemStack stack : discoveries) {
             try {
                 DiscoveryInfo discovery = new DiscoveryInfo(stack, true);
@@ -465,7 +466,7 @@ public class QuestManager {
     private static void sendMessage(String msg) {
         // Can be called from nio thread by FakeInventory
         Minecraft.getMinecraft().addScheduledTask(() ->
-                ChatOverlay.getChat().printChatMessageWithOptionalDeletion(new TextComponentString(msg), MESSAGE_ID)
+            ChatOverlay.getChat().printChatMessageWithOptionalDeletion(new TextComponentString(msg), MESSAGE_ID)
         );
     }
 

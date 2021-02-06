@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.core.utils.objects;
@@ -40,4 +40,8 @@ public class Pair<T, J> {
         return Objects.deepEquals(a, other.a) && Objects.deepEquals(b, other.b);
     }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(a, b);
+    }
 }

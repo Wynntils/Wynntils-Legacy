@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.utilities.instances;
@@ -8,6 +8,7 @@ import com.wynntils.webapi.profiles.item.enums.IdentificationModifier;
 import net.minecraft.client.Minecraft;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class ConsumableContainer {
 
@@ -15,7 +16,7 @@ public class ConsumableContainer {
     private long expirationTime = 0;
     private boolean persistent = false;
 
-    HashMap<String, IdentificationHolder> effects = new HashMap<>();
+    Map<String, IdentificationHolder> effects = new HashMap<>();
 
     public ConsumableContainer(String name) {
         this.name = name;
@@ -43,7 +44,7 @@ public class ConsumableContainer {
     /**
      * @return the effects for the current Consumable
      */
-    public HashMap<String, IdentificationHolder> getEffects() {
+    public Map<String, IdentificationHolder> getEffects() {
         return effects;
     }
 
@@ -100,4 +101,5 @@ public class ConsumableContainer {
     public boolean isPersistent() {
         return persistent;
     }
+
 }

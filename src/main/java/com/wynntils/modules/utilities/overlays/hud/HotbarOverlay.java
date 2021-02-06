@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
@@ -13,6 +13,7 @@ import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.events.ClientEvents;
+import com.wynntils.webapi.profiles.item.enums.ItemTier;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -58,12 +59,12 @@ public class HotbarOverlay extends Overlay {
             if (UtilitiesConfig.Items.INSTANCE.hotbarHighlight && UtilitiesConfig.Items.INSTANCE.hotbarAlpha > 0 && !description.isEmpty()) {
                 CustomColor color = null;
 
-                if (description.contains(TextFormatting.YELLOW + "Unique")) color = UtilitiesConfig.Items.INSTANCE.uniqueHighlightColor;
-                else if (description.contains(TextFormatting.LIGHT_PURPLE + "Rare")) color = UtilitiesConfig.Items.INSTANCE.rareHighlightColor;
-                else if (description.contains(TextFormatting.AQUA + "Legendary")) color = UtilitiesConfig.Items.INSTANCE.lengendaryHighlightColor;
-                else if (description.contains(TextFormatting.RED + "Fabled")) color = UtilitiesConfig.Items.INSTANCE.fabledHighlightColor;
-                else if (description.contains(TextFormatting.GREEN + "Set")) color = UtilitiesConfig.Items.INSTANCE.setHighlightColor;
-                else if (description.contains(TextFormatting.DARK_PURPLE + "Mythic")) color = UtilitiesConfig.Items.INSTANCE.mythicHighlightColor;
+                if (description.contains(ItemTier.UNIQUE.asFormattedName())) color = UtilitiesConfig.Items.INSTANCE.uniqueHighlightColor;
+                else if (description.contains(ItemTier.RARE.asFormattedName())) color = UtilitiesConfig.Items.INSTANCE.rareHighlightColor;
+                else if (description.contains(ItemTier.SET.asFormattedName())) color = UtilitiesConfig.Items.INSTANCE.setHighlightColor;
+                else if (description.contains(ItemTier.LEGENDARY.asFormattedName())) color = UtilitiesConfig.Items.INSTANCE.legendaryHighlightColor;
+                else if (description.contains(ItemTier.FABLED.asFormattedName())) color = UtilitiesConfig.Items.INSTANCE.fabledHighlightColor;
+                else if (description.contains(ItemTier.MYTHIC.asFormattedName())) color = UtilitiesConfig.Items.INSTANCE.mythicHighlightColor;
 
                 if (color != null) {
                     color.setA(UtilitiesConfig.Items.INSTANCE.hotbarAlpha / 100);

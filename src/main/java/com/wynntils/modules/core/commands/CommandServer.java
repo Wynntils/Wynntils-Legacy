@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.core.commands;
@@ -119,7 +119,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
         String finalSelectedType = selectedType;
         Utils.runAsync(() -> {
             try {
-                HashMap<String, ArrayList<String>> onlinePlayers = WebManager.getOnlinePlayers();
+                Map<String, List<String>> onlinePlayers = WebManager.getOnlinePlayers();
 
                 if (options.contains("group") && finalSelectedType == null) {
                     TextComponentString toEdit = new TextComponentString("Available servers" +
@@ -185,13 +185,13 @@ public class CommandServer extends CommandBase implements IClientCommand {
             }
             // args.length == 1 and no help
             try {
-                HashMap<String, ArrayList<String>> onlinePlayers = WebManager.getOnlinePlayers();
+                Map<String, List<String>> onlinePlayers = WebManager.getOnlinePlayers();
                 for (String serverName : onlinePlayers.keySet()) {
                     if (args[0].equalsIgnoreCase(serverName)) {
                         TextComponentString text = new TextComponentString(String.format("%s: ", serverName));
                         TextComponentString playerText = new TextComponentString("");
 
-                        ArrayList<String> players = onlinePlayers.get(serverName);
+                        List<String> players = onlinePlayers.get(serverName);
 
                         if (players.size() > 0) {
                             for (String player : players.subList(0, players.size() - 1)) {
@@ -230,7 +230,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
         });
     }
 
-    private static TextComponentString getFilteredServerList(HashMap<String, ArrayList<String>> onlinePlayers,
+    private static TextComponentString getFilteredServerList(Map<String, List<String>> onlinePlayers,
                                                        String filter,
                                                        List<String> options) {
         TextComponentString text = new TextComponentString("");

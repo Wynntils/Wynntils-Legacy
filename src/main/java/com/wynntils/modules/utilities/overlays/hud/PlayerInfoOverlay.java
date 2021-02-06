@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
@@ -13,6 +13,7 @@ import com.wynntils.modules.core.managers.TabManager;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import java.util.ArrayList;
@@ -26,29 +27,38 @@ public class PlayerInfoOverlay extends Overlay {
     }
 
     transient double animationProgress = 0;
+    transient long lastTime = -1;
 
     @Override
     public void render(RenderGameOverlayEvent.Post event) {
         if (!Reference.onWorld || !OverlayConfig.PlayerInfo.INSTANCE.replaceVanilla) return;
+        if (!mc.gameSettings.keyBindPlayerList.isKeyDown() && animationProgress <= 0.0) return;
 
-        // TODO make the animation be TIME, instead of FRAME, reliant. This is currently causing some slowdowns
-        {  // Animation Detection
+        double animation = 1;
+        if (OverlayConfig.PlayerInfo.INSTANCE.openingDuration > 0) { // Animation Detection
+            if (lastTime == -1) lastTime += Minecraft.getSystemTime();
+
             if (mc.gameSettings.keyBindPlayerList.isKeyDown()) {
-                if (animationProgress < 1.0) animationProgress += 0.02;
+                animationProgress += (Minecraft.getSystemTime() - lastTime) / OverlayConfig.PlayerInfo.INSTANCE.openingDuration;
+                animationProgress = Math.min(1, animationProgress);
             } else if (animationProgress > 0.0) {
-                animationProgress -= 0.02;
+                animationProgress -= (Minecraft.getSystemTime() - lastTime) / OverlayConfig.PlayerInfo.INSTANCE.openingDuration;
+                animationProgress = Math.max(0, animationProgress);
             }
+            animation = MathHelper.sin((float) (animationProgress * 1f / 2f * Math.PI));
 
-            if (animationProgress <= 0.0) return;
+            lastTime = animationProgress <= 0.0 ? -1 : Minecraft.getSystemTime();
+
+            if (OverlayConfig.PlayerInfo.INSTANCE.openingDuration == 0 && animationProgress <= 0.0) return;
         }
 
-        // scales if the screen don't fit the texture height
-        float yScale = screen.getScaledHeight() < 280f ? (float)screen.getScaledHeight_double() / 280f : 1;
+        //scales if the screen don't fit the texture height
+        float yScale = screen.getScaledHeight() < 280f ? (float) screen.getScaledHeight_double() / 280f : 1;
 
         { scale(yScale);
 
             {  // mask
-                int halfWidth = (int) (178 * animationProgress);
+                int halfWidth = (int) (178 * animation);
                 enableScissorTestX(-halfWidth, 2 * halfWidth);
 
                 color(1f, 1f, 1f, OverlayConfig.PlayerInfo.INSTANCE.backgroundAlpha);  // apply transparency
@@ -67,12 +77,12 @@ public class PlayerInfoOverlay extends Overlay {
 
                     for (int x = 0; x < 4; x++) {
                         for (int y = 0; y < 20; y++) {
-                            int position = (x * 20) + (y+1);
+                            int position = (x * 20) + (y + 1);
 
-                            if (players.size() < position) break;  // not enough players
+                            if (players.size() < position) break; //not enough players
 
-                            String entry = players.get(position-1);
-                            if (entry.contains("§l")) continue;  // avoid the titles
+                            String entry = players.get(position - 1);
+                            if (entry.contains("§l")) continue; //avoid the titles
 
                             int xPos = -166 + (87 * x);
                             int yPos = 11 + (10 * y);
@@ -89,15 +99,15 @@ public class PlayerInfoOverlay extends Overlay {
             color(1f, 1f, 1f, OverlayConfig.PlayerInfo.INSTANCE.backgroundAlpha);  // apply transparency
             {  // paper rolls
                 drawRect(Textures.UIs.tab_overlay,
-                        (int) (177 * animationProgress),
+                        (int) (177 * animation),
                         -5,
-                        (int) (27 + (177 * animationProgress)),
+                        (int) (27 + (177 * animation)),
                         229, 0, 0, 27, 229);
 
                 drawRect(Textures.UIs.tab_overlay,
-                        -(int) (27 + (177 * animationProgress)),
+                        -(int) (27 + (177 * animation)),
                         -5,
-                        -(int) (177 * animationProgress),
+                        -(int) (177 * animation),
                         229, 0, 0, 27, 229);
             }
             color(1f, 1f, 1f, 1f);
@@ -111,6 +121,7 @@ public class PlayerInfoOverlay extends Overlay {
 
     private List<String> getAvailablePlayers() {
         if (Minecraft.getSystemTime() < nextExecution && !lastPlayers.isEmpty()) return lastPlayers;
+
         nextExecution = Minecraft.getSystemTime() + 250;
 
         List<NetworkPlayerInfo> players = TabManager.getEntryOrdering()

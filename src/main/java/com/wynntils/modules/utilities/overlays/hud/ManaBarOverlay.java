@@ -1,10 +1,11 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
 
 import com.wynntils.Reference;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -35,10 +36,10 @@ public class ManaBarOverlay extends Overlay {
 
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
-        if (!(visible = (getPlayerInfo().getCurrentMana() != -1 && !Reference.onLobby))) return;
+        if (!(visible = (get(CharacterData.class).getCurrentMana() != -1 && !Reference.onLobby))) return;
         if (OverlayConfig.Mana.INSTANCE.animated > 0.0f && OverlayConfig.Mana.INSTANCE.animated < 10.0f)
-            mana -= (OverlayConfig.Mana.INSTANCE.animated * 0.1f) * (mana - (float) getPlayerInfo().getCurrentMana());
-        else mana = getPlayerInfo().getCurrentMana();
+            mana -= (OverlayConfig.Mana.INSTANCE.animated * 0.1f) * (mana - (float) get(CharacterData.class).getCurrentMana());
+        else mana = get(CharacterData.class).getCurrentMana();
     }
 
     @Override
@@ -70,15 +71,18 @@ public class ManaBarOverlay extends Overlay {
             case Skyrim:
                 drawDefaultBar(-1, 8, 148, 163, textColor);
                 break;
+            case Rune:
+                drawDefaultBar(-1, 8, 164, 179, textColor);
+                break;
         }
     }
 
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2, CustomColor cc) {
         if (OverlayConfig.Mana.INSTANCE.overlayRotation == OverlayRotation.NORMAL) {
-            drawString(getPlayerInfo().getCurrentMana() + " ✺ " + getPlayerInfo().getMaxMana(), textPositionOffset.a - (81-OverlayConfig.Mana.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Mana.INSTANCE.textShadow);
+            drawString(get(CharacterData.class).getCurrentMana() + " ✺ " + get(CharacterData.class).getMaxMana(), textPositionOffset.a - (81-OverlayConfig.Mana.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Mana.INSTANCE.textShadow);
         }
         rotate(OverlayConfig.Mana.INSTANCE.overlayRotation.getDegrees());
-        drawProgressBar(Textures.Overlays.bars_mana, OverlayConfig.Mana.INSTANCE.width, y1, 0, y2, ty1, ty2, (flip ? -mana : mana) / (float) getPlayerInfo().getMaxMana());
+        drawProgressBar(Textures.Overlays.bars_mana, OverlayConfig.Mana.INSTANCE.width, y1, 0, y2, 0, ty1, 81, ty2, (flip ? -mana : mana) / (float) get(CharacterData.class).getMaxMana());
     }
 
 }

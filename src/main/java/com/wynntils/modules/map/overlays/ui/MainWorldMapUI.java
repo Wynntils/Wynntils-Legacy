@@ -1,42 +1,42 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.map.overlays.ui;
 
+import com.google.common.collect.Lists;
+import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynntils.core.framework.rendering.textures.Textures;
-import com.wynntils.core.framework.ui.elements.GuiButtonImageBetter;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.core.commands.CommandCompass;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.instances.MapProfile;
+import com.wynntils.modules.map.overlays.enums.MapButtonType;
+import com.wynntils.modules.map.overlays.objects.MapButton;
+import com.wynntils.modules.music.managers.SoundTrackManager;
+import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiButtonImage;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
 import java.util.Arrays;
 
+import static net.minecraft.util.text.TextFormatting.*;
+
 public class MainWorldMapUI extends WorldMapUI {
-    private GuiButton settingsBtn;
-    private GuiButton waypointMenuBtn;
-    private GuiButton pathWaypointMenuBtn;
-    private GuiButtonImage addWaypointBtn;
-    private GuiButtonImage shareBtn;
-    private GuiButtonImage helpBtn;
 
     private boolean holdingMapKey = false;
-    private long creationTime = System.currentTimeMillis();
+    private final long creationTime = System.currentTimeMillis();
     private long lastClickTime = Integer.MAX_VALUE;
     private static final long doubleClickTime = Utils.getDoubleClickTime();
+
+    private int easterEggClicks = 0;
 
     public MainWorldMapUI() {
         super();
@@ -50,12 +50,74 @@ public class MainWorldMapUI extends WorldMapUI {
     public void initGui() {
         super.initGui();
 
-        this.buttonList.add(settingsBtn = new GuiButton(1, 22, 23, 60, 18, "Markers"));
-        this.buttonList.add(waypointMenuBtn = new GuiButton(3, 22, 46, 60, 18, "Waypoints"));
-        this.buttonList.add(pathWaypointMenuBtn = new GuiButton(3, 22, 69, 60, 18, "Paths"));
-        this.buttonList.add(addWaypointBtn = new GuiButtonImageBetter(2, 24, 92, 14, 14, 0, 0, Textures.Map.map_options.resourceLocation));
-        this.buttonList.add(shareBtn = new GuiButtonImageBetter(4, 23, 110, 16, 14, 0, 58, Textures.Map.map_options.resourceLocation));
-        this.buttonList.add(helpBtn = new GuiButtonImageBetter(3, 24, height - 34, 11, 16, 0, 72, Textures.Map.map_options.resourceLocation));
+        this.mapButtons.clear();
+
+        addButton(MapButtonType.PLUS, 0, Arrays.asList(
+            DARK_GREEN + "[>] Create a new Waypoint",
+            GRAY + "Click here to create",
+            GRAY + "a new waypoint."
+        ), (v) -> true, (i, btn) -> Minecraft.getMinecraft().displayGuiScreen(new WaypointCreationMenu(null)));
+
+        addButton(MapButtonType.PENCIL, 0, Arrays.asList(
+            GOLD + "[>] Manage Paths",
+            GRAY + "List, Delete or Create",
+            GRAY + "drawed lines that help you",
+            GRAY + "to navigate around the world!"
+        ), (v) -> true, (i, btn) -> Minecraft.getMinecraft().displayGuiScreen(new PathWaypointOverwiewUI()));
+
+        addButton(MapButtonType.PIN, 1, Arrays.asList(
+                RED + "[>] Manage Waypoints",
+                GRAY + "List, Delete or Create",
+                GRAY + "all your preview set",
+                GRAY + "waypoints!"
+        ), (v) -> true, (i, btn) -> Minecraft.getMinecraft().displayGuiScreen(new WaypointOverviewUI()));
+
+        addButton(MapButtonType.SEARCH, 2, Arrays.asList(
+                LIGHT_PURPLE + "[>] Search",
+                RED + "In Development"
+        ), (v) -> true, (i, btn) -> {});
+
+        addButton(MapButtonType.CENTER, 3, Arrays.asList(
+                AQUA + "[>] Configurate Markers",
+                GRAY + "Enable or disable each",
+                GRAY + "map marker available."
+        ), (v) -> true, (i, btn) -> Minecraft.getMinecraft().displayGuiScreen(new WorldMapSettingsUI()));
+
+        addButton(MapButtonType.SHARE, 4, Arrays.asList(
+                BLUE + "[>] Share Location",
+                AQUA + "Left click" + GRAY +" to share your",
+                GRAY + "pin with your current party.",
+                AQUA + "Right click" + GRAY + " to share your",
+                GRAY + "location with your party."
+        ), (v) -> PlayerInfo.get(SocialData.class).getPlayerParty().isPartying(), (i, btn) -> handleShareButton(btn == 0));
+
+        addButton(MapButtonType.INFO, 5, Lists.newArrayList(Arrays.asList(
+                YELLOW + "[>] Quick Guide",
+                GRAY + " - CTRL to show territories",
+                GRAY + " - Left click on waypoint to place a pin.",
+                GRAY + " - Middle click to place a pin.",
+                GRAY + " - Double click on a pin to create a waypoint.",
+                GRAY + " - Right click on pin to remove it.",
+                GRAY + " - Right click to center on player."
+        )), (v) -> true, (i, btn) -> {
+            easterEggClicks += 1;
+
+            // Easter egg :)
+            if (easterEggClicks == 20) {
+                i.getHoverLore().set(1, RED + "Alright you asked for it...");
+                SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("easterEgg1"),
+                        true, true, true, false, true, false);
+            } else if (easterEggClicks == 15) {
+                i.getHoverLore().set(1, RED + "Are you really sure you want this?");
+                i.getHoverLore().remove(2);
+            } else if (easterEggClicks == 10) {
+                i.getHoverLore().set(1, RED + "You better stop, you'll");
+                i.getHoverLore().set(2, RED + "not like the consequences.");
+            } else if (easterEggClicks == 5) {
+                i.getHoverLore().add(1, RED + "an useless button?");
+                i.getHoverLore().add(1, RED + "Alright why are you clicking");
+            }
+        });
     }
 
     private static boolean isHoldingMapKey() {
@@ -65,6 +127,7 @@ public class MainWorldMapUI extends WorldMapUI {
             // Mouse key
             return Mouse.isButtonDown(mapKey + 100);
         }
+
         return Keyboard.isKeyDown(mapKey);
     }
 
@@ -89,44 +152,25 @@ public class MainWorldMapUI extends WorldMapUI {
         drawMap(mouseX, mouseY, partialTicks);
         drawIcons(mouseX, mouseY, partialTicks);
         drawCoordinates(mouseX, mouseY, partialTicks);
+        drawMapButtons(mouseX, mouseY, partialTicks);
 
         ScreenRenderer.endGL();
 
         super.drawScreen(mouseX, mouseY, partialTicks);
-
-        if (addWaypointBtn.isMouseOver()) {
-            drawHoveringText(TextFormatting.GRAY + "Add waypoint", mouseX, mouseY);
-        }
-        if (shareBtn.isMouseOver()) {
-            drawHoveringText(Arrays.asList(
-                    TextFormatting.GRAY + "Left click to share compass beacon with party",
-                    TextFormatting.GRAY + "Right click to share your location with party"), mouseX, mouseY);
-        }
-        if (helpBtn.isMouseOver()) {
-            drawHoveringText(Arrays.asList(
-                    TextFormatting.UNDERLINE + "Help",
-                    TextFormatting.GRAY + "CTRL to show territories",
-                    TextFormatting.GRAY + "Left click on waypoint to place compass beacon there",
-                    TextFormatting.GRAY + "Middle click to place compass beacon",
-                    TextFormatting.GRAY + "Double click on compass beacon to create waypoint there",
-                    TextFormatting.GRAY + "Right click on compass beacon to remove it",
-                    TextFormatting.GRAY + "Right click to centre on player"
-            ), mouseX, mouseY, fontRenderer);
-        }
     }
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        if (shareBtn.isMouseOver() && mouseButton == 1) {
-            shareBtn.playPressSound(this.mc.getSoundHandler());
-            handleShareButton(false);
+        // Map buttons
+        for (MapButton button : mapButtons) {
+            if (!button.isHovering(mouseX, mouseY)) continue;
+            if (button.getType().isIgnoreAction()) continue;
+
+            button.mouseClicked(mouseX, mouseY, mouseButton);
             return;
         }
 
-        if ((settingsBtn.isMouseOver() || addWaypointBtn.isMouseOver() || waypointMenuBtn.isMouseOver() || pathWaypointMenuBtn.isMouseOver() || shareBtn.isMouseOver())) {
-            super.mouseClicked(mouseX, mouseY, mouseButton);
-            return;
-        } else if (mouseButton == 1) {
+        if (mouseButton == 1) {
             if (compassIcon.mouseOver(mouseX, mouseY)) {
                 CompassManager.reset();
                 resetCompassMapIcon();
@@ -172,11 +216,11 @@ public class MainWorldMapUI extends WorldMapUI {
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if (!holdingMapKey && keyCode == MapModule.getModule().getMapKey().getKeyBinding().getKeyCode()) {
             Minecraft.getMinecraft().displayGuiScreen(null);
-        } else {
-            super.keyTyped(typedChar, keyCode);
+            return;
         }
-    }
 
+        super.keyTyped(typedChar, keyCode);
+    }
 
     private void handleShareButton(boolean leftClick) {
         if (leftClick) {
@@ -186,25 +230,12 @@ public class MainWorldMapUI extends WorldMapUI {
                 int z = (int) location.getZ();
                 CommandCompass.shareCoordinates(null, "compass", x, z);
             }
-        } else {
-            int x = (int) Minecraft.getMinecraft().player.posX;
-            int z = (int) Minecraft.getMinecraft().player.posZ;
-            CommandCompass.shareCoordinates(null, "location", x, z);
+            return;
         }
+
+        int x = (int) Minecraft.getMinecraft().player.posX;
+        int z = (int) Minecraft.getMinecraft().player.posZ;
+        CommandCompass.shareCoordinates(null, "location", x, z);
     }
 
-    @Override
-    public void actionPerformed(GuiButton btn) {
-        if (btn == settingsBtn) {
-            Minecraft.getMinecraft().displayGuiScreen(new WorldMapSettingsUI());
-        } else if (btn == addWaypointBtn) {
-            Minecraft.getMinecraft().displayGuiScreen(new WaypointCreationMenu(null));
-        } else if (btn == waypointMenuBtn) {
-            Minecraft.getMinecraft().displayGuiScreen(new WaypointOverviewUI());
-        } else if (btn == pathWaypointMenuBtn) {
-            Minecraft.getMinecraft().displayGuiScreen(new PathWaypointOverwiewUI());
-        } else if (btn == shareBtn) {
-            handleShareButton(true);
-        }
-    }
 }

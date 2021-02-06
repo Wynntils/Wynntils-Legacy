@@ -1,12 +1,11 @@
 /*
- *  * Copyright © Wynntils - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.webapi.profiles;
 
 import com.wynntils.core.framework.enums.professions.ProfessionType;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
@@ -15,9 +14,9 @@ public class LeaderboardProfile {
     String name;
     int timePlayed;
 
-    HashMap<ProfessionType, Integer> ranks;
+    Map<ProfessionType, Integer> ranks;
 
-    public LeaderboardProfile(String name, int timePlayed, HashMap<ProfessionType, Integer> ranks) {
+    public LeaderboardProfile(String name, int timePlayed, Map<ProfessionType, Integer> ranks) {
         this.name = name;
         this.timePlayed = timePlayed;
         this.ranks = ranks;

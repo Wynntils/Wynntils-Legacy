@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.core.overlays.ui;
@@ -8,13 +8,13 @@ import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiErrorScreen;
 import net.minecraftforge.fml.client.CustomModLoadingErrorDisplayException;
 
-import java.util.HashMap;
+import java.util.Map;
 
 public class ModConflictScreen extends CustomModLoadingErrorDisplayException {
 
-    public HashMap<String, String> conflictMods;
+    public Map<String, String> conflictMods;
 
-    public ModConflictScreen(HashMap<String, String> conflictMods) {
+    public ModConflictScreen(Map<String, String> conflictMods) {
         this.conflictMods = conflictMods;
     }
 

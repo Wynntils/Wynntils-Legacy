@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.utilities;
@@ -24,6 +24,7 @@ public class UtilitiesModule extends Module {
 
     private static UtilitiesModule module;
     private GameUpdateOverlay gameUpdateOverlay;
+    private ActionBarOverlay actionBarOverlay;
     private InfoFormatter infoFormatter;
 
     public void onEnable() {
@@ -38,6 +39,7 @@ public class UtilitiesModule extends Module {
         // Inventory Overlays
         registerEvents(new ItemIdentificationOverlay());
         registerEvents(new RarityColorOverlay());
+        registerEvents(new ItemLevelOverlay());
         registerEvents(new SkillPointOverlay());
         registerEvents(new ItemLockOverlay());
         registerEvents(new FavoriteTradesOverlay());
@@ -46,11 +48,14 @@ public class UtilitiesModule extends Module {
         registerEvents(new EmeraldCountOverlay());
         registerEvents(new LoreChangerOverlay());
         registerEvents(new WynnDataOverlay());
+        registerEvents(new ItemSpecificationOverlay());
         registerEvents(new ServerUptimeOverlay());
+        registerEvents(new BankOverlay());
+        registerEvents(new ServerSelectorOverlay());
 
         // Real overlays
         registerOverlay(new WarTimerOverlay(), Priority.LOWEST);
-        registerOverlay(new ActionBarOverlay(), Priority.LOWEST);
+        registerOverlay(actionBarOverlay = new ActionBarOverlay(), Priority.LOWEST);
         registerOverlay(new HealthBarOverlay(), Priority.NORMAL);
         registerOverlay(new HotbarOverlay(), Priority.NORMAL);
         registerOverlay(new ManaBarOverlay(), Priority.NORMAL);
@@ -82,6 +87,8 @@ public class UtilitiesModule extends Module {
         registerSettings(UtilitiesConfig.Items.class);
         registerSettings(UtilitiesConfig.Wars.class);
         registerSettings(UtilitiesConfig.Market.class);
+        registerSettings(UtilitiesConfig.Bank.class);
+        registerSettings(UtilitiesConfig.Identifications.class);
 
         registerSettings(TranslationConfig.class);
 
@@ -114,6 +121,10 @@ public class UtilitiesModule extends Module {
 
     public GameUpdateOverlay getGameUpdateOverlay() {
         return gameUpdateOverlay;
+    }
+    
+    public ActionBarOverlay getActionBarOverlay() {
+        return actionBarOverlay;
     }
 
     public InfoFormatter getInfoFormatter() {

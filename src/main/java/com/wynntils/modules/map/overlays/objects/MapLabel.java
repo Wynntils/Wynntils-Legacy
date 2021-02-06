@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.map.overlays.objects;
@@ -19,15 +19,18 @@ public class MapLabel extends MapIcon {
         this.mlp = mlp;
     }
 
-    @Override public int getPosX() {
+    @Override
+    public int getPosX() {
         return mlp.getX();
     }
 
-    @Override public int getPosZ() {
+    @Override
+    public int getPosZ() {
         return mlp.getZ();
     }
 
-    @Override public String getName() {
+    @Override
+    public String getName() {
         return mlp.getName();
     }
 
@@ -39,19 +42,23 @@ public class MapLabel extends MapIcon {
         return mlp.getLayer();
     }
 
-    @Override public float getSizeX() {
+    @Override
+    public float getSizeX() {
         return ScreenRenderer.fontRenderer.getStringWidth(getName()) / 2.0f;
     }
 
-    @Override public float getSizeZ() {
+    @Override
+    public float getSizeZ() {
         return 4;
     }
 
-    @Override public int getZoomNeeded() {
+    @Override
+    public int getZoomNeeded() {
         throw new UnsupportedOperationException("Not valid for MapLabel");
     }
 
-    @Override public boolean isEnabled(boolean forMinimap) {
+    @Override
+    public boolean isEnabled(boolean forMinimap) {
         return !forMinimap && MapConfig.WorldMap.INSTANCE.showLabels;
     }
 

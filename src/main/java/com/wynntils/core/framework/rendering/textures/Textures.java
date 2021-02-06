@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.core.framework.rendering.textures;
@@ -19,6 +19,7 @@ public class Textures {
 
         textureClasses.add(Masks.class);
         textureClasses.add(Overlays.class);
+        textureClasses.add(Particles.class);
         textureClasses.add(UIs.class);
         textureClasses.add(Map.class);
         textureClasses.add(World.class);
@@ -54,6 +55,11 @@ public class Textures {
         public static AssetsTexture professions;
     }
 
+    public static class Particles {
+        public static AssetsTexture snow;
+        public static AssetsTexture flame;
+    }
+
     public static class Map {
         public static AssetsTexture wynn_map_textures;
         public static AssetsTexture paper_map_textures;
@@ -62,6 +68,8 @@ public class Textures {
         public static AssetsTexture map_pointers;
         public static AssetsTexture map_options;
         public static AssetsTexture full_map;
+        public static AssetsTexture map_territory_info;
+        public static AssetsTexture map_buttons;
     }
 
     public static class UIs {
@@ -86,12 +94,13 @@ public class Textures {
         public static AssetsTexture quest_book;
 
         public static AssetsTexture tab_overlay;
+
+        public static AssetsTexture character_selection;
     }
 
     public static class World {
-
         public static AssetsTexture path_arrow;
         public static AssetsTexture leaderboard_badges;
-
+        public static AssetsTexture solid_color;
     }
 }

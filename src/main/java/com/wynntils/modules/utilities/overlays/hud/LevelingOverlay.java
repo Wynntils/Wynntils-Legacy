@@ -1,11 +1,11 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
 
 import com.wynntils.Reference;
-import com.wynntils.core.framework.enums.ClassType;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -34,21 +34,22 @@ public class LevelingOverlay extends Overlay {
 
     @Override
     public void tick(ClientTickEvent event, long ticks) {
-        this.visible = this.getPlayerInfo().getXpNeededToLevelUp() != -1;
+        this.visible = get(CharacterData.class).getXpNeededToLevelUp() != -1;
     }
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
-        if (((event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) || (event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR)) && Reference.onWorld && getPlayerInfo().getCurrentClass() != ClassType.NONE) {
-            String text = OverlayConfig.Leveling.INSTANCE.levelingText.replace("%actual%", "" + getPlayerInfo().getCurrentXP())
-                    .replace("%max%", "" + getPlayerInfo().getXpNeededToLevelUp())
-                    .replace("%percent%", getPlayerInfo().getCurrentXPAsPercentage())
-                    .replace("%needed%", "" + (getPlayerInfo().getXpNeededToLevelUp() - getPlayerInfo().getCurrentXP()))
-                    .replace("%actualg%", GROUPED_FORMAT.format(getPlayerInfo().getCurrentXP()))
-                    .replace("%maxg%", GROUPED_FORMAT.format(getPlayerInfo().getXpNeededToLevelUp()))
-                    .replace("%neededg%", GROUPED_FORMAT.format(getPlayerInfo().getXpNeededToLevelUp() - getPlayerInfo().getCurrentXP()))
-                    .replace("%curlvl%", "" + getPlayerInfo().getLevel())
-                    .replace("%nextlvl%", getPlayerInfo().getLevel() == 104 ? "" : "" + (getPlayerInfo().getLevel() + 1));
+        CharacterData data = get(CharacterData.class);
+        if (((event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) || (event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR)) && Reference.onWorld && data.isLoaded()) {
+            String text = OverlayConfig.Leveling.INSTANCE.levelingText.replace("%actual%", "" + data.getCurrentXP())
+                    .replace("%max%", "" + data.getXpNeededToLevelUp())
+                    .replace("%percent%", data.getCurrentXPAsPercentage())
+                    .replace("%needed%", "" + (data.getXpNeededToLevelUp() - data.getCurrentXP()))
+                    .replace("%actualg%", GROUPED_FORMAT.format(data.getCurrentXP()))
+                    .replace("%maxg%", GROUPED_FORMAT.format(data.getXpNeededToLevelUp()))
+                    .replace("%neededg%", GROUPED_FORMAT.format(data.getXpNeededToLevelUp() - data.getCurrentXP()))
+                    .replace("%curlvl%", "" + data.getLevel())
+                    .replace("%nextlvl%", data.getLevel() == 104 ? "" : "" + (data.getLevel() + 1));
             drawString(text, 0, 0, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Leveling.INSTANCE.textShadow);
             staticSize.x = (int) getStringWidth(text);
         }

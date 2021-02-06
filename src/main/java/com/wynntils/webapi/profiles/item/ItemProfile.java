@@ -1,9 +1,11 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.webapi.profiles.item;
 
+import com.wynntils.core.framework.enums.ClassType;
+import com.wynntils.core.framework.enums.DamageType;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.profiles.item.enums.ItemAttackSpeed;
@@ -18,9 +20,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static net.minecraft.util.text.TextFormatting.*;
@@ -37,23 +37,31 @@ public class ItemProfile {
     ItemInfoContainer itemInfo;
     ItemRequirementsContainer requirements;
 
-    HashMap<String, String> damageTypes = new HashMap<>();
-    HashMap<String, Integer> defenseTypes = new HashMap<>();
-    HashMap<String, IdentificationContainer> statuses = new HashMap<>();
+    Map<String, String> damageTypes = new HashMap<>();
+    Map<String, Integer> defenseTypes = new HashMap<>();
+    Map<String, IdentificationContainer> statuses = new HashMap<>();
 
-    ArrayList<MajorIdentification> majorIds = new ArrayList<>();
+    List<MajorIdentification> majorIds = new ArrayList<>();
 
     String restriction;
     String lore;
+
+    transient Map<DamageType, Integer> parsedAvgDamages = null;
+    transient int parsedHealth = Integer.MIN_VALUE;
+    transient Map<DamageType, Integer> parsedDefenses = null;
 
     transient ItemStack guideStack = null;
     transient boolean replacedLore = false;
 
     public ItemProfile(String displayName,
                        ItemTier tier, boolean identified, ItemAttackSpeed attackSpeed, ItemInfoContainer itemInfo,
-                       ItemRequirementsContainer requirements, HashMap<String, String> damageTypes,
-                       HashMap<String, Integer> defenseTypes, HashMap<String, IdentificationContainer> statuses,
+                       ItemRequirementsContainer requirements, Map<String, String> damageTypes,
+                       Map<String, Integer> defenseTypes, Map<String, IdentificationContainer> statuses,
                        ArrayList<MajorIdentification> majorIds, String restriction, String lore) {}
+
+    public void registerIdTypes() {
+        statuses.entrySet().forEach(e -> e.getValue().registerIdType(e.getKey()));
+    }
 
     public String getDisplayName() {
         return displayName;
@@ -83,24 +91,68 @@ public class ItemProfile {
         return requirements;
     }
 
-    public HashMap<String, String> getDamageTypes() {
+    public Map<String, String> getDamageTypes() {
         return damageTypes;
     }
 
-    public HashMap<String, Integer> getDefenseTypes() {
+    public Map<DamageType, Integer> getAverageDamages() {
+        if (parsedAvgDamages == null) {
+            parsedAvgDamages = new EnumMap<>(DamageType.class);
+            for (Map.Entry<String, String> entry : damageTypes.entrySet()) {
+                String dmgStr = entry.getValue();
+                int n = dmgStr.indexOf('-');
+                parsedAvgDamages.put(DamageType.valueOf(entry.getKey().toUpperCase(Locale.ROOT)),
+                        Math.round((Integer.parseInt(dmgStr.substring(0, n)) + Integer.parseInt(dmgStr.substring(n + 1))) / 2f));
+            }
+        }
+
+        return parsedAvgDamages;
+    }
+
+    public Map<String, Integer> getDefenseTypes() {
         return defenseTypes;
     }
 
-    public HashMap<String, IdentificationContainer> getStatuses() {
+    private void parseDefenses() {
+        if (parsedDefenses != null) return;
+
+        parsedDefenses = new EnumMap<>(DamageType.class);
+        for (Map.Entry<String, Integer> entry : defenseTypes.entrySet()) {
+            if (entry.getKey().equals("health")) { // parse hp separately from defenses
+                parsedHealth = entry.getValue();
+                continue;
+            }
+            parsedDefenses.put(DamageType.valueOf(entry.getKey().toUpperCase(Locale.ROOT)), entry.getValue());
+        }
+
+        if (parsedHealth != Integer.MIN_VALUE) return;
+        parsedHealth = 0; // no hp entry => item provides zero hp
+    }
+
+    public int getHealth() {
+        parseDefenses();
+        return parsedHealth;
+    }
+
+    public Map<DamageType, Integer> getElementalDefenses() {
+        parseDefenses();
+        return parsedDefenses;
+    }
+
+    public Map<String, IdentificationContainer> getStatuses() {
         return statuses;
     }
 
-    public ArrayList<MajorIdentification> getMajorIds() {
+    public List<MajorIdentification> getMajorIds() {
         return majorIds;
     }
 
     public String getRestriction() {
         return restriction;
+    }
+
+    public ClassType getClassNeeded() {
+        return getRequirements().getRealClass(this.getItemInfo().getType());
     }
 
     public String getLore() {
@@ -186,14 +238,14 @@ public class ItemProfile {
 
             // ids
             if (statuses.size() > 0) {
-                HashMap<String, String> statusLore = new HashMap<>();
+                Map<String, String> statusLore = new HashMap<>();
                 for (String idName : statuses.keySet()) {
                     IdentificationContainer id = statuses.get(idName);
 
                     statusLore.put(idName, getIDLore(id, idName));
                 }
 
-                itemLore.addAll(IdentificationOrderer.INSTANCE.order(statusLore, UtilitiesConfig.INSTANCE.addItemIdentificationSpacing));
+                itemLore.addAll(IdentificationOrderer.INSTANCE.order(statusLore, UtilitiesConfig.Identifications.INSTANCE.addSpacing));
                 itemLore.add(" ");
             }
 
@@ -229,7 +281,7 @@ public class ItemProfile {
             itemLore.forEach(c -> loreList.appendTag(new NBTTagString(c)));
 
             display.setTag("Lore", loreList);
-            display.setString("Name", tier.getColor() + displayName);  // item display name
+            display.setString("Name", tier.getTextColor() + displayName);  // item display name
 
             // armor color
             if (itemInfo.isArmorColorValid()) display.setInteger("color", itemInfo.getArmorColorAsInt());

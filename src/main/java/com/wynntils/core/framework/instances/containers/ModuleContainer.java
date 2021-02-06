@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.core.framework.instances.containers;
@@ -14,18 +14,16 @@ import com.wynntils.core.framework.settings.instances.SettingsHolder;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.*;
 
 public class ModuleContainer {
 
     ModuleInfo info;
     Module module;
 
-    ArrayList<KeyHolder> keyHolders = new ArrayList<>();
-    HashMap<String, SettingsContainer> registeredSettings = new HashMap<>();
-    HashSet<Object> registeredEvents = new HashSet<>();
+    List<KeyHolder> keyHolders = new ArrayList<>();
+    Map<String, SettingsContainer> registeredSettings = new HashMap<>();
+    Set<Object> registeredEvents = new HashSet<>();
 
     public ModuleContainer(ModuleInfo info, Module module) {
         this.info = info; this.module = module;
@@ -47,14 +45,12 @@ public class ModuleContainer {
         if (!getModule().isActive()) {
             return;
         }
-        if (keyHolders.size() <= 0) {
+        if (keyHolders.isEmpty()) {
             return;
         }
         keyHolders.forEach(k -> {
-            if (k.isPress() && k.getKeyBinding().isPressed()) {
-                k.getOnAction().run();
-            } else if (!k.isPress() && k.getKeyBinding().isKeyDown()) {
-                k.getOnAction().run();
+            if ((k.isPress() && k.getKeyBinding().isPressed()) || (!k.isPress() && k.getKeyBinding().isKeyDown())) {
+                k.getOnPress().run();
             }
         });
     }
@@ -99,7 +95,7 @@ public class ModuleContainer {
         });
     }
 
-    public HashMap<String, SettingsContainer> getRegisteredSettings() {
+    public Map<String, SettingsContainer> getRegisteredSettings() {
         return registeredSettings;
     }
 

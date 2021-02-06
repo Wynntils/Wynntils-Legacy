@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.core.overlays;
@@ -120,27 +120,20 @@ public class UpdateOverlay extends Overlay {
             download = false;
 
             try {
-                File f = new File(Reference.MOD_STORAGE_ROOT, "updates");
-
-                String url;
-                if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.CUTTING_EDGE) {
-                    url = WebManager.getCuttingEdgeJarFileUrl();
-                } else {
-                    url = WebManager.getStableJarFileUrl();
-                }
-                String[] sUrl = url.split("/");
-                String jar_name = sUrl[sUrl.length - 1];
+                File directory = new File(Reference.MOD_STORAGE_ROOT, "updates");
+                String url = getUpdateDownloadUrl();
+                String jarName = getJarNameFromUrl(url);
 
                 DownloadOverlay.size = 0;
                 DownloaderManager.restartGameOnNextQueue();
-                DownloaderManager.queueDownload("Updating to " + WebManager.getUpdate().getLatestUpdate(), url, f, DownloadAction.SAVE, (x) -> {
+                DownloaderManager.queueDownload("Updating to " + WebManager.getUpdate().getLatestUpdate(), url, directory, DownloadAction.SAVE, (x) -> {
                     if (x) {
                         try {
                             String message = TextFormatting.DARK_AQUA + "An update to Wynntils (";
-                            message += CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE ? "Version " + jar_name.split("_")[0].split("-")[1] : "Build " + jar_name.split("_")[1].replace(".jar", "");
+                            message += CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE ? "Version " + jarName.split("_")[0].split("-")[1] : "Build " + jarName.split("_")[1].replace(".jar", "");
                             message += ") has been downloaded, and will be applied when the game is restarted.";
                             ModCore.mc().player.sendMessage(new TextComponentString(message));
-                            copyUpdate(jar_name);
+                            scheduleCopyUpdateAtShutdown(jarName);
                         } catch (Exception ex) {
                             ex.printStackTrace();
                         }
@@ -168,7 +161,20 @@ public class UpdateOverlay extends Overlay {
         }
     }
 
-    public static void copyUpdate(String jarName) {
+    public static String getJarNameFromUrl(String url) {
+        String[] sUrl = url.split("/");
+        return sUrl[sUrl.length - 1];
+    }
+
+    public static String getUpdateDownloadUrl() throws IOException {
+        if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.CUTTING_EDGE) {
+            return WebManager.getCuttingEdgeJarFileUrl();
+        } else {
+            return WebManager.getStableJarFileUrl();
+        }
+    }
+
+    public static void scheduleCopyUpdateAtShutdown(String jarName) {
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             try {
                 Reference.LOGGER.info("Attempting to apply Wynntils update.");
@@ -187,6 +193,7 @@ public class UpdateOverlay extends Overlay {
                 Reference.LOGGER.error("Unable to apply Wynntils update.", ex);
             }
         }, "wynntils-autoupdate-applier"));
+        WebManager.getUpdate().updateDownloaded();
     }
 
     public static boolean isDownloading() {

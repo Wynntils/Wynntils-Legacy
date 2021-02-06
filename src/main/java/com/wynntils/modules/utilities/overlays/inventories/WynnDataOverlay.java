@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.utilities.overlays.inventories;
@@ -8,6 +8,7 @@ import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.enums.Powder;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.Utils;
@@ -45,7 +46,7 @@ public class WynnDataOverlay implements Listener {
     }
 
     @SubscribeEvent
-    public void drawScreen(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
+    public void drawScreen(GuiOverlapEvent.ChestOverlap.DrawScreen.Post e) {
         e.getButtonList().forEach(gb -> {
             if (gb.id == 12 && gb.isMouseOver()) {
                 e.getGui().drawHoveringText(Arrays.asList("Left click: Open Build on WynnData", "Shift + Right click on item: Open Item on WynnData"), e.getMouseX(), e.getMouseY());
@@ -91,7 +92,7 @@ public class WynnDataOverlay implements Listener {
         for (int i = 0; i < 9; i++) {
             String lore = ItemUtils.getStringLore(Minecraft.getMinecraft().player.inventory.mainInventory.get(i));
             // Assume that only weapons have class requirements
-            if (lore.contains("Class Req: " + PlayerInfo.getPlayerInfo().getCurrentClass().getDisplayName())) {
+            if (lore.contains("Class Req: " + PlayerInfo.get(CharacterData.class).getCurrentClass().getDisplayName())) {
                 return i;
             }
         }

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.utilities.events;
@@ -9,10 +9,12 @@ import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.Utils;
-import com.wynntils.core.utils.reflections.ReflectionFields;
+import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
@@ -25,6 +27,10 @@ import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.*;
 import com.wynntils.modules.utilities.overlays.hud.ConsumableTimerOverlay;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
+import com.wynntils.modules.utilities.overlays.ui.FakeGuiContainer;
+import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.item.enums.ItemType;
+import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -32,19 +38,24 @@ import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiYesNo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AbstractHorse;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.Blocks;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
+import net.minecraft.inventory.Slot;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.client.CPacketPlayerDigging.Action;
 import net.minecraft.network.play.server.SPacketEntityMetadata;
 import net.minecraft.network.play.server.SPacketSetSlot;
-import net.minecraft.network.play.server.SPacketWindowItems;
+import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.ChatType;
@@ -56,12 +67,20 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import org.lwjgl.opengl.Display;
 
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ClientEvents implements Listener {
+
     private static GuiScreen scheduledGuiScreen = null;
     private static boolean firstNullOccurred = false;
 
@@ -77,6 +96,11 @@ public class ClientEvents implements Listener {
     private int tickCounter;
 
     public static boolean isAwaitingHorseMount = false;
+    private static int lastHorseId = -1;
+
+    private static boolean priceInput = false;
+
+    private static Pattern CRAFTED_USES = Pattern.compile(".* \\[(\\d)/\\d\\]");
 
     @SubscribeEvent
     public void onMoveEvent(InputEvent.MouseInputEvent e) {
@@ -213,9 +237,22 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onFovUpdate(FOVUpdateEvent e) {
-        if (!UtilitiesConfig.INSTANCE.disableFovChanges) return;
+        switch (UtilitiesConfig.INSTANCE.fovScalingFunction) {
+            case Arctangent:
+                e.setNewfov(1f + (float) (Math.atan(2d * Math.PI * (e.getNewfov() - 1d)) / (2d * Math.PI)));
+                break;
+            case Sprint_Only:
+                e.setNewfov(1f + (e.getEntity().isSprinting() ? 0.15f : 0));
+                break;
+            case None:
+                e.setNewfov(1f);
+                break;
+        }
+    }
 
-        e.setNewfov(1f + (e.getEntity().isSprinting() ? 0.15f : 0));
+    @SubscribeEvent
+    public void onDamage(GameEvent.DamageEntity e) {
+        e.getDamageTypes().forEach((k, v) -> AreaDPSManager.registerDamage(v));
     }
 
     @SubscribeEvent
@@ -239,12 +276,19 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onPostChatEvent(ChatEvent.Post e) {
+        if (e.getMessage().getUnformattedText().matches("Type the price in emeralds or type 'cancel' to cancel:")) {
+            priceInput = true;
+            if (UtilitiesConfig.Market.INSTANCE.openChatMarket)
+                scheduledGuiScreen = new ChatGUI();
+        }
+
         if (UtilitiesConfig.Market.INSTANCE.openChatMarket) {
-            if (e.getMessage().getUnformattedText().matches("Type the (item name|amount you wish to (buy|sell)|price in emeralds) or type 'cancel' to cancel:")) {
+            if (e.getMessage().getUnformattedText().matches("Type the (item name|amount you wish to (buy|sell)) or type 'cancel' to cancel:")) {
                 scheduledGuiScreen = new ChatGUI();
             }
         }
-        if (UtilitiesConfig.INSTANCE.openChatBankSearch) {
+
+        if (UtilitiesConfig.Bank.INSTANCE.openChatBankSearch) {
             if (e.getMessage().getUnformattedText().matches("Please type an item name in chat!")) {
                 scheduledGuiScreen = new ChatGUI();
             }
@@ -252,38 +296,44 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void onMythicFound(PacketEvent<SPacketWindowItems> e) {
-        if (!SoundEffectsConfig.INSTANCE.mythicFound) return;
+    public void onSendMessage(ClientChatEvent e) {
+        if (!priceInput) return;
+
+        priceInput = false;
+        int price = StringUtils.convertEmeraldPrice(e.getMessage());
+        if (price != 0) // price of 0 means either garbage input or actual 0, can be ignored either way
+            e.setMessage("" + price);
+    }
+
+    @SubscribeEvent
+    public void onSlotSet(PacketEvent<SPacketSetSlot> e) {
         if (Minecraft.getMinecraft().currentScreen == null) return;
-        if (!(Minecraft.getMinecraft().currentScreen instanceof ChestReplacer)) return;
+        if (!(Minecraft.getMinecraft().currentScreen instanceof FakeGuiContainer)) return;
 
-        ChestReplacer chest = (ChestReplacer) Minecraft.getMinecraft().currentScreen;
-        if (!chest.getLowerInv().getName().contains("Loot Chest")) return;
-
-        for (int i = 0; i < 27; i++) {
-            ItemStack stack = e.getPacket().getItemStacks().get(i);
-            if (stack.isEmpty() || !stack.hasDisplayName()) continue;
-            if (!stack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString())) continue;
-            if (!stack.getDisplayName().contains("Unidentified")) continue;
-
-            Minecraft.getMinecraft().addScheduledTask(() -> WynntilsSound.MYTHIC_FOUND.play(1f, 1f));
-        }
+        e.setCanceled(true); // stops wynncraft from adding pouch to gui
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void chatHandler(ClientChatReceivedEvent e) {
-        if (e.isCanceled() || e.getType() == ChatType.GAME_INFO) {
-            return;
-        }
+        if (e.isCanceled() || e.getType() == ChatType.GAME_INFO) return;
+
         String msg = e.getMessage().getUnformattedText();
         if (msg.startsWith("[Daily Rewards:")) {
             DailyReminderManager.openedDaily();
         }
     }
 
-    private static int lastHorseId = -1;
-    @SuppressWarnings("unchecked")
-    private static final DataParameter<String> nameKey = (DataParameter<String>) ReflectionFields.Entity_CUSTOM_NAME.getValue(Entity.class);
+    @SubscribeEvent
+    public void onTitle(PacketEvent<SPacketTitle> e) {
+        if (!OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectPouch) return;
+
+        SPacketTitle packet = e.getPacket();
+        if (packet.getType() != SPacketTitle.Type.SUBTITLE) return;
+        if (!packet.getMessage().getUnformattedText().matches("^§a\\+\\d+ §7.+§a to pouch$")) return;
+
+        e.setCanceled(true);
+        GameUpdateOverlay.queueMessage(packet.getMessage().getFormattedText());
+    }
 
     @SubscribeEvent
     public void onHorseSpawn(PacketEvent<SPacketEntityMetadata> e) {
@@ -303,26 +353,22 @@ public class ClientEvents implements Listener {
         }
 
         EntityPlayerSP player = ModCore.mc().player;
-        assert nameKey != null;
-        for (EntityDataManager.DataEntry<?> entry : e.getPacket().getDataManagerEntries()) {
-            if (!nameKey.equals(entry.getKey())) continue;
-            Object value = entry.getValue();
-            if (value == null || !MountHorseManager.isPlayersHorse((String)value, player.getName())) continue;
+        String entityName = Utils.getNameFromMetadata(e.getPacket().getDataManagerEntries());
+        if (entityName == null ||  entityName.isEmpty() ||
+                !MountHorseManager.isPlayersHorse(entityName, player.getName())) return;
 
-            lastHorseId = thisId;
+        lastHorseId = thisId;
 
-            if (SoundEffectsConfig.INSTANCE.horseWhistle) WynntilsSound.HORSE_WHISTLE.play();
+        if (SoundEffectsConfig.INSTANCE.horseWhistle) WynntilsSound.HORSE_WHISTLE.play();
 
-            if (isAwaitingHorseMount) {
-                MountHorseManager.retryMountHorseAndShowMessage();
-                isAwaitingHorseMount = false;
-                return;
-            }
-
-            if(!UtilitiesConfig.INSTANCE.autoMount) return;
-            MountHorseManager.mountHorseAndLogMessage();
+        if (isAwaitingHorseMount) {
+            MountHorseManager.retryMountHorseAndShowMessage();
+            isAwaitingHorseMount = false;
             return;
         }
+
+        if(!UtilitiesConfig.INSTANCE.autoMount) return;
+        MountHorseManager.mountHorseAndLogMessage();
     }
 
     @SubscribeEvent
@@ -333,6 +379,105 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void inventoryOpened(GuiScreenEvent.InitGuiEvent.Post e) {
         DailyReminderManager.openedDailyInventory(e);
+    }
+
+    private int getSecondsUntilDailyReward() {
+        return (int) ((UtilitiesConfig.Data.INSTANCE.lastOpenedDailyReward + 86400000 - System.currentTimeMillis()) / 1000);
+    }
+
+    private int getSecondsUntilDailyObjectiveReset() {
+        LocalDateTime tomorrowMidnight = LocalDateTime.of(LocalDate.now(ZoneOffset.UTC), LocalTime.MIDNIGHT).plusDays(1).plusSeconds(1);
+        return (int) Duration.between(LocalDateTime.now(ZoneOffset.UTC), tomorrowMidnight).getSeconds();
+    }
+
+    private String getFormattedTimeString(int secondsLeft) {
+        LocalDateTime date = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofLocalizedTime(FormatStyle.SHORT);
+
+        int hoursLeft = secondsLeft / 3600;
+        int minutesLeft = secondsLeft % 3600 / 60;
+        return String.format(TextFormatting.AQUA + date.plusSeconds(secondsLeft).format(formatter) + TextFormatting.GRAY
+                + " (in " + TextFormatting.WHITE + "%02d:%02d" + TextFormatting.GRAY + ")", hoursLeft, minutesLeft);
+    }
+
+    @SubscribeEvent
+    public void onDrawScreen(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
+        if (!Reference.onWorld) return;
+        if (!Utils.isCharacterInfoPage(e.getGui())) return;
+
+        Slot slot = e.getGui().inventorySlots.getSlot(20);
+
+        ItemStack stack = slot.getStack();
+        if (stack.getItem() == Item.getItemFromBlock(Blocks.SNOW_LAYER) || stack.getItem() == Items.CLOCK) {
+            // There's no chest, create a clock with timer as lore
+            NBTTagCompound nbt = new NBTTagCompound();
+            ItemStack newStack = new ItemStack(Items.CLOCK);
+            NBTTagCompound display = nbt.getCompoundTag("display");
+            display.setTag("Name", new NBTTagString("" + TextFormatting.GREEN + "Daily Reward Countdown"));
+            nbt.setTag("display", display);
+            newStack.setTagCompound(nbt);
+
+            List<String> lore = new LinkedList<>();
+            lore.add("");
+            lore.add(TextFormatting.GOLD + "Daily Reward");
+            if (getSecondsUntilDailyReward() < 0) {
+                // We've missed last time the user opened the chest; reset timer
+                UtilitiesConfig.Data.INSTANCE.lastOpenedDailyReward = 0;
+            }
+            if (UtilitiesConfig.Data.INSTANCE.lastOpenedDailyReward == 0) {
+                lore.add(""+ TextFormatting.GRAY + TextFormatting.ITALIC + "Unknown renewal time");
+            } else {
+                lore.add(TextFormatting.GRAY + "Will renew " + getFormattedTimeString(getSecondsUntilDailyReward()));
+            }
+
+            ItemUtils.replaceLore(newStack, lore);
+            slot.putStack(newStack);
+            stack = newStack; // use this for next check
+        }
+
+        if (stack.getItem() == Item.getItemFromBlock(Blocks.CHEST)  || stack.getItem() == Items.CLOCK) {
+            // We need to strip the old time from the lore, if existent
+            List<String> lore = ItemUtils.getLore(stack);
+            List<String> newLore = new LinkedList<>();
+            for (String line : lore) {
+                if (line.contains("Daily Objective")) break;
+                newLore.add(line);
+            }
+            int lastLine = newLore.size()-1;
+            if (lastLine >= 0 && newLore.get(lastLine).isEmpty()) {
+                newLore.remove(lastLine);
+            }
+
+            PlayerStatsProfile profile = WebManager.getPlayerProfile();
+            PlayerStatsProfile.PlayerTag playerRank = profile != null ? profile.getTag() : PlayerStatsProfile.PlayerTag.NONE;
+
+            newLore.add("");
+            newLore.add(TextFormatting.GOLD + "Daily Objective");
+            if (playerRank.isVip()) {
+                newLore.add(TextFormatting.GOLD + "Daily Mob Totems");
+            }
+            if (playerRank.isVipPlus()) {
+                newLore.add(TextFormatting.GOLD + "Daily Crate");
+            }
+            newLore.add(TextFormatting.GRAY + "Will renew " + getFormattedTimeString(getSecondsUntilDailyObjectiveReset()));
+
+            if (!playerRank.isVip()) {
+                newLore.add("");
+                newLore.add(TextFormatting.GOLD + "Daily Mob Totems");
+                newLore.add(""+ TextFormatting.GRAY + TextFormatting.ITALIC + "Purchase a rank at wynncraft.com");
+                newLore.add(""+ TextFormatting.GRAY + TextFormatting.ITALIC + "for daily mob totems");
+            }
+
+            if (!playerRank.isVipPlus()) {
+                newLore.add("");
+                newLore.add(TextFormatting.GOLD + "Daily Crate");
+                newLore.add(""+ TextFormatting.GRAY + TextFormatting.ITALIC + "Get VIP+ or Hero rank");
+                newLore.add(""+ TextFormatting.GRAY + TextFormatting.ITALIC + "for daily crates");
+            }
+
+            ItemUtils.replaceLore(stack, newLore);
+            slot.putStack(stack);
+        }
     }
 
     // HeyZeer0: Handles the inventory lock, 7 methods below, first 6 on inventory, last one by dropping the item (without inventory)
@@ -348,8 +493,13 @@ public class ClientEvents implements Listener {
             return;
         }
 
+        if (e.getKeyCode() == KeyManager.getItemScreenshotKey().getKeyBinding().getKeyCode()) {
+            ItemScreenshotManager.takeScreenshot();
+            return;
+        }
+
         if (e.getGui().getSlotUnderMouse() != null && Minecraft.getMinecraft().player.inventory == e.getGui().getSlotUnderMouse().inventory) {
-            if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return;
+            if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId())) return;
 
             e.setCanceled(checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex(), e.getKeyCode()));
         }
@@ -390,8 +540,13 @@ public class ClientEvents implements Listener {
             return;
         }
 
+        if (e.getKeyCode() == KeyManager.getItemScreenshotKey().getKeyBinding().getKeyCode()) {
+            ItemScreenshotManager.takeScreenshot();
+            return;
+        }
+
         if (e.getGui().getSlotUnderMouse() != null && Minecraft.getMinecraft().player.inventory == e.getGui().getSlotUnderMouse().inventory) {
-            if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return;
+            if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId())) return;
 
             e.setCanceled(checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex(), e.getKeyCode()));
         }
@@ -409,18 +564,114 @@ public class ClientEvents implements Listener {
             return;
         }
 
+        if (e.getKeyCode() == KeyManager.getItemScreenshotKey().getKeyBinding().getKeyCode()) {
+            ItemScreenshotManager.takeScreenshot();
+            return;
+        }
+
         if (e.getGui().getSlotUnderMouse() != null && Minecraft.getMinecraft().player.inventory == e.getGui().getSlotUnderMouse().inventory) {
-            if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return;
+            if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId())) return;
 
             e.setCanceled(checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex(), e.getKeyCode()));
         }
     }
 
+    private static int accessoryDestinationSlot = -1;
+
     @SubscribeEvent
     public void clickOnInventory(GuiOverlapEvent.InventoryOverlap.HandleMouseClick e) {
+        if(!Reference.onWorld) return;
+
         if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().inventory == Minecraft.getMinecraft().player.inventory) {
-            e.setCanceled(checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex(), Minecraft.getMinecraft().gameSettings.keyBindDrop.getKeyCode()));
+            if (checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex(), Minecraft.getMinecraft().gameSettings.keyBindDrop.getKeyCode())) {
+                e.setCanceled(true);
+                return;
+            }
         }
+
+        if (UtilitiesConfig.INSTANCE.shiftClickAccessories && e.getGui().isShiftKeyDown() && e.getGui().getSlotUnderMouse() != null && ModCore.mc().player.inventory.getItemStack().isEmpty() && e.getGui().getSlotUnderMouse().inventory == ModCore.mc().player.inventory) {
+            if (e.getSlotId() >= 9 && e.getSlotId() <= 12) { // taking off accessory
+                // check if hotbar has open slot; if so, no action required
+                for (int i = 36; i < 45; i++) {
+                    if (!e.getGui().inventorySlots.getSlot(i).getHasStack()) return;
+                }
+
+                // move accessory into inventory
+                // find first open slot
+                int openSlot = 0;
+                for (int i = 14; i < 36; i++) {
+                    if (!e.getGui().inventorySlots.getSlot(i).getHasStack()) {
+                        openSlot = i;
+                        break;
+                    }
+                }
+                if (openSlot == 0) return; // no open slots, cannot move accessory anywhere
+                accessoryDestinationSlot = openSlot;
+
+                e.setCanceled(true);
+
+            } else { // putting on accessory
+                // verify it's an accessory
+                ItemType item = ItemUtils.getItemType(e.getSlotIn().getStack());
+                if (item != ItemType.RING && item != ItemType.BRACELET && item != ItemType.NECKLACE) return;
+
+                // check if the appropriate slot is open (snow layer = empty)
+                int openSlot = 0;
+                switch (item) {
+                    case RING:
+                        if (e.getGui().inventorySlots.getSlot(9).getHasStack() && e.getGui().inventorySlots.getSlot(9).getStack().getItem().equals(Item.getItemFromBlock(Blocks.SNOW_LAYER)))
+                            openSlot = 9; // first ring slot
+                        else if (e.getGui().inventorySlots.getSlot(10).getHasStack() && e.getGui().inventorySlots.getSlot(10).getStack().getItem().equals(Item.getItemFromBlock(Blocks.SNOW_LAYER)))
+                            openSlot = 10; // second ring slot
+                        break;
+                    case BRACELET:
+                        if (e.getGui().inventorySlots.getSlot(11).getHasStack() && e.getGui().inventorySlots.getSlot(11).getStack().getItem().equals(Item.getItemFromBlock(Blocks.SNOW_LAYER)))
+                            openSlot = 11; // bracelet slot
+                        break;
+                    case NECKLACE:
+                        if (e.getGui().inventorySlots.getSlot(12).getHasStack() && e.getGui().inventorySlots.getSlot(12).getStack().getItem().equals(Item.getItemFromBlock(Blocks.SNOW_LAYER)))
+                            openSlot = 12; // necklace slot
+                        break;
+                    default:
+                        return;
+                }
+                if (openSlot == 0) return;
+                accessoryDestinationSlot = openSlot;
+
+                e.setCanceled(true); // only cancel after finding open slot
+            }
+
+            // pick up accessory
+            CPacketClickWindow packet = new CPacketClickWindow(e.getGui().inventorySlots.windowId, e.getSlotId(), 0, ClickType.PICKUP, e.getSlotIn().getStack(), e.getGui().inventorySlots.getNextTransactionID(ModCore.mc().player.inventory));
+            ModCore.mc().getConnection().sendPacket(packet);
+        }
+    }
+
+    @SubscribeEvent
+    public void handleAccessoryMovement(TickEvent.ClientTickEvent e) {
+        if (e.phase != Phase.END) return;
+        if (!Reference.onWorld || accessoryDestinationSlot == -1) return;
+
+        // inventory was closed
+        if (!(ModCore.mc().currentScreen instanceof InventoryReplacer)) {
+            accessoryDestinationSlot = -1;
+            return;
+        }
+        InventoryReplacer gui = (InventoryReplacer) ModCore.mc().currentScreen;
+
+        // no item picked up
+        if (ModCore.mc().player.inventory.getItemStack().isEmpty()) return;
+
+        // destination slot was filled in the meantime
+        if (gui.inventorySlots.getSlot(accessoryDestinationSlot).getHasStack() &&
+                !gui.inventorySlots.getSlot(accessoryDestinationSlot).getStack().getItem().equals(Item.getItemFromBlock(Blocks.SNOW_LAYER))) {
+            accessoryDestinationSlot = -1;
+            return;
+        }
+
+        // move accessory
+        gui.handleMouseClick(gui.inventorySlots.getSlot(accessoryDestinationSlot), accessoryDestinationSlot, 0, ClickType.PICKUP);
+        accessoryDestinationSlot = -1;
     }
 
     private boolean bankPageConfirmed = false;
@@ -435,29 +686,26 @@ public class ClientEvents implements Listener {
             }
         }
 
-        if (UtilitiesConfig.INSTANCE.addBankConfirmation && e.getSlotIn() != null) {
+        if (UtilitiesConfig.Bank.INSTANCE.addBankConfirmation && e.getSlotIn() != null) {
             IInventory inventory = e.getSlotIn().inventory;
             if (inventory.getDisplayName().getUnformattedText().contains("Bank") && e.getSlotIn().getHasStack()) {
                 ItemStack item = e.getSlotIn().getStack();
                 if (item.getDisplayName().contains(">" + TextFormatting.DARK_RED + ">" + TextFormatting.RED + ">" + TextFormatting.DARK_RED + ">" + TextFormatting.RED + ">")) {
-                    String E = "\u00B2";
-                    String B = "\u00BD";
-                    String L = "\u00BC";
                     List<String> lore = ItemUtils.getLore(item);
                     String price = lore.get(4);
-                    int actualPrice = Integer.parseInt(price.substring(20, price.indexOf(TextFormatting.GRAY + E)));
+                    int actualPrice = Integer.parseInt(price.substring(20, price.indexOf(TextFormatting.GRAY + EmeraldSymbols.EMERALDS)));
                     int le = (int) Math.floor(actualPrice) / 4096;
                     int eb = (int) Math.floor(((double) (actualPrice % 4096)) / 64);
                     int emeralds = actualPrice % 64;
                     String priceDisplay = "";
                     if (le != 0) {
-                        priceDisplay += le + L + E + " ";
+                        priceDisplay += le + EmeraldSymbols.LE + " ";
                     }
                     if (eb != 0) {
-                        priceDisplay += eb + E + B + " ";
+                        priceDisplay += eb + EmeraldSymbols.BLOCKS + " ";
                     }
                     if (emeralds != 0) {
-                        priceDisplay += emeralds + E + " ";
+                        priceDisplay += emeralds + EmeraldSymbols.EMERALDS + " ";
                     }
                     priceDisplay = priceDisplay.substring(0, priceDisplay.length() - 1);
                     String itemName = item.getDisplayName();
@@ -497,10 +745,12 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void keyPress(PacketEvent<CPacketPlayerDigging> e) {
-        if ((e.getPacket().getAction() != Action.DROP_ITEM && e.getPacket().getAction() != Action.DROP_ALL_ITEMS) || !UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return;
+        if ((e.getPacket().getAction() != Action.DROP_ITEM && e.getPacket().getAction() != Action.DROP_ALL_ITEMS)
+                || !UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId()))
+            return;
 
         lastWasDrop = true;
-        if (UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).contains(Minecraft.getMinecraft().player.inventory.currentItem))
+        if (UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.get(CharacterData.class).getClassId()).contains(Minecraft.getMinecraft().player.inventory.currentItem))
             e.setCanceled(true);
     }
 
@@ -523,8 +773,26 @@ public class ClientEvents implements Listener {
 
         if (oldStack.isEmpty() || !newStack.isEmpty() && !oldStack.isItemEqual(newStack)) return; // invalid move
         if (!oldStack.hasDisplayName()) return; // old item is not a valid item
-        if (!newStack.isEmpty() && oldStack.getDisplayName().equalsIgnoreCase(newStack.getDisplayName())) return; // not consumed
 
+        String oldName = TextFormatting.getTextWithoutFormattingCodes(oldStack.getDisplayName());
+        Matcher oldMatcher = CRAFTED_USES.matcher(oldName);
+        if (!oldMatcher.matches()) return;
+        int oldUses = Integer.parseInt(oldMatcher.group(1));
+
+        int newUses = 0;
+        if (!newStack.isEmpty()) {
+            String newName = TextFormatting.getTextWithoutFormattingCodes(StringUtils.normalizeBadString(newStack.getDisplayName()));
+            Matcher newMatcher = CRAFTED_USES.matcher(newName);
+            if (newMatcher.matches()) {
+                newUses = Integer.parseInt(newMatcher.group(1));
+            } else {
+                return;
+            }
+        }
+
+        if (oldUses - 1 != newUses) {
+            return;
+        }
         Minecraft.getMinecraft().addScheduledTask(() -> ConsumableTimerOverlay.addConsumable(oldStack));
     }
 
@@ -539,9 +807,9 @@ public class ClientEvents implements Listener {
         if (!Reference.onWorld) return false;
 
         if (key == Minecraft.getMinecraft().gameSettings.keyBindDrop.getKeyCode()) {
-            if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) return false;
+            if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId())) return false;
 
-            return UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).contains(slot);
+            return UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.get(CharacterData.class).getClassId()).contains(slot);
         }
         return false;
     }
@@ -549,14 +817,14 @@ public class ClientEvents implements Listener {
     private static void checkLockState(int slot) {
         if (!Reference.onWorld) return;
 
-        if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.getPlayerInfo().getClassId())) {
-            UtilitiesConfig.INSTANCE.locked_slots.put(PlayerInfo.getPlayerInfo().getClassId(), new HashSet<>());
+        if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId())) {
+            UtilitiesConfig.INSTANCE.locked_slots.put(PlayerInfo.get(CharacterData.class).getClassId(), new HashSet<>());
         }
 
-        if (UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).contains(slot)) {
-            UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).remove(slot);
+        if (UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.get(CharacterData.class).getClassId()).contains(slot)) {
+            UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.get(CharacterData.class).getClassId()).remove(slot);
         } else {
-            UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.getPlayerInfo().getClassId()).add(slot);
+            UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.get(CharacterData.class).getClassId()).add(slot);
         }
 
         UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
@@ -567,7 +835,7 @@ public class ClientEvents implements Listener {
     public void onUseItem(PacketEvent<CPacketPlayerTryUseItem> e) {
         ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
 
-        if (item.isEmpty() || !item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
+        if (item.isEmpty() || !item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing") || !UtilitiesConfig.INSTANCE.blockHealingPots) return;
 
         EntityPlayerSP player = Minecraft.getMinecraft().player;
         if (player.getHealth() != player.getMaxHealth()) return;
@@ -580,7 +848,7 @@ public class ClientEvents implements Listener {
     public void onUseItemOnBlock(PacketEvent<CPacketPlayerTryUseItemOnBlock> e) {
         ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
 
-        if (item.isEmpty() || !item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
+        if (item.isEmpty() || !item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing") || !UtilitiesConfig.INSTANCE.blockHealingPots) return;
 
         EntityPlayerSP player = Minecraft.getMinecraft().player;
         if (player.getHealth() != player.getMaxHealth()) return;
@@ -593,7 +861,7 @@ public class ClientEvents implements Listener {
     public void onUseItemOnEntity(PacketEvent<CPacketUseEntity> e) {
         ItemStack item = Minecraft.getMinecraft().player.getHeldItem(EnumHand.MAIN_HAND);
 
-        if (item.isEmpty() || !item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
+        if (item.isEmpty() || !item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing") || !UtilitiesConfig.INSTANCE.blockHealingPots) return;
 
         EntityPlayerSP player = Minecraft.getMinecraft().player;
         if (player.getHealth() != player.getMaxHealth()) return;
@@ -607,6 +875,21 @@ public class ClientEvents implements Listener {
         if (!e.getItemStack().hasDisplayName() || !e.getItemStack().getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
         if (e.getEntityPlayer().getHealth() != e.getEntityPlayer().getMaxHealth()) return;
 
+        e.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public void onShiftClickPlayer(PacketEvent<CPacketUseEntity> e) {
+        if (!UtilitiesConfig.INSTANCE.preventTradesDuels) return;
+
+        EntityPlayerSP player = ModCore.mc().player;
+        Entity clicked = e.getPacket().getEntityFromWorld(player.world);
+        if (!(clicked instanceof EntityPlayer)) return;
+
+        EntityPlayer ep = (EntityPlayer) clicked;
+        if (ep.getTeam() == null) return; // player model npc
+
+        if (!player.isSneaking() || player.getHeldItemMainhand().isEmpty()) return;
         e.setCanceled(true);
     }
 
@@ -659,7 +942,7 @@ public class ClientEvents implements Listener {
         } catch (NoClassDefFoundError e) { /* ignore */ }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void clearEmptyTooltip(GuiOverlapEvent.ChestOverlap.HoveredToolTip.Pre e) {
         if (e.getGui().getSlotUnderMouse() == null || e.getGui().getSlotUnderMouse().getStack().isEmpty()) return;
 

@@ -1,11 +1,13 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.chat.managers;
 
 import com.wynntils.ModCore;
+import com.wynntils.core.framework.enums.PowderManualChapter;
 import com.wynntils.core.utils.StringUtils;
+import com.wynntils.core.utils.helpers.TextAction;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.chat.configs.ChatConfig;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
@@ -54,9 +56,9 @@ public class ChatManager {
     private static final String nonTranslatable = "[^a-zA-Z.!?]";
     private static final String optionalTranslatable = "[.!?]";
 
-    private static final Pattern inviteReg = Pattern.compile("((" + TextFormatting.GOLD + "|" + TextFormatting.AQUA + ")/(party|guild) join [a-zA-Z0-9._-]+)");
-    private static final Pattern tradeReg = Pattern.compile("\\w+ would like to trade! Type /trade \\w+ to accept\\.");
-    private static final Pattern duelReg = Pattern.compile("\\w+ \\[Lv\\. \\d+] would like to duel! Type /duel \\w+ to accept\\.");
+    private static final Pattern inviteReg = Pattern.compile("((" + TextFormatting.GOLD + "|" + TextFormatting.AQUA + ")/(party|guild) join [a-zA-Z0-9._\\- ]+)");
+    private static final Pattern tradeReg = Pattern.compile("[\\w ]+ would like to trade! Type /trade [\\w ]+ to accept\\.");
+    private static final Pattern duelReg = Pattern.compile("[\\w ]+ \\[Lv\\. \\d+] would like to duel! Type /duel [\\w ]+ to accept\\.");
     private static final Pattern coordinateReg = Pattern.compile("(-?\\d{1,5}[ ,]{1,2})(\\d{1,3}[ ,]{1,2})?(-?\\d{1,5})");
 
     public static ITextComponent processRealMessage(ITextComponent in) {
@@ -66,10 +68,11 @@ public class ChatManager {
         // Reorganizing
         if (!in.getUnformattedComponentText().isEmpty()) {
             ITextComponent newMessage = new TextComponentString("");
-            newMessage.setStyle(in.getStyle().createDeepCopy());
-            newMessage.appendSibling(in);
-            newMessage.getSiblings().addAll(in.getSiblings());
-            in.getSiblings().clear();
+            for (ITextComponent component : in) {
+                component = component.createCopy();
+                component.getSiblings().clear();
+                newMessage.appendSibling(component);
+            }
             in = newMessage;
         }
 
@@ -113,28 +116,30 @@ public class ChatManager {
         if (in.getUnformattedText().contains(" requires your ") && in.getUnformattedText().contains(" skill to be at least "))
             ModCore.mc().player.playSound(popOffSound, 1f, 1f);
 
-        // wynnic translator
-        if (StringUtils.hasWynnic(in.getUnformattedText())) {
+        // wynnic and gavellian translator
+        if (StringUtils.hasWynnic(in.getUnformattedText()) || StringUtils.hasGavellian(in.getUnformattedText())) {
             List<ITextComponent> newTextComponents = new ArrayList<>();
             boolean capital = false;
             boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find();
             boolean foundStart = false;
             boolean foundEndTimestamp = !ChatConfig.INSTANCE.addTimestampsToChat;
-            boolean previousWynnic = false;
+            boolean previousTranslated = false;
             boolean translateIntoHover = !ChatConfig.INSTANCE.translateIntoChat;
             ITextComponent currentTranslatedComponents = new TextComponentString("");
             List<ITextComponent> currentOldComponents = new ArrayList<>();
             if (foundEndTimestamp && !in.getSiblings().get(ChatConfig.INSTANCE.addTimestampsToChat ? 3 : 0).getUnformattedText().contains("/") && !isGuildOrParty) {
                 foundStart = true;
             }
-            for (ITextComponent component : in.getSiblings()) {
+            for (ITextComponent component : in) {
+                component = component.createCopy();
+                component.getSiblings().clear();
                 String toAdd = "";
                 String currentNonTranslated = "";
                 StringBuilder oldText = new StringBuilder();
                 StringBuilder number = new StringBuilder();
                 for (char character : component.getUnformattedText().toCharArray()) {
                     if (StringUtils.isWynnicNumber(character)) {
-                        if (previousWynnic) {
+                        if (previousTranslated) {
                             toAdd += currentNonTranslated;
                             oldText.append(currentNonTranslated);
                         } else {
@@ -145,7 +150,7 @@ public class ChatManager {
                                 oldText = new StringBuilder();
                                 toAdd = "";
                             }
-                            previousWynnic = true;
+                            previousTranslated = true;
                         }
                         currentNonTranslated = "";
                         number.append(character);
@@ -162,7 +167,7 @@ public class ChatManager {
                         }
 
                         if (StringUtils.isWynnic(character)) {
-                            if (previousWynnic) {
+                            if (previousTranslated) {
                                 toAdd += currentNonTranslated;
                                 oldText.append(currentNonTranslated);
                                 currentNonTranslated = "";
@@ -174,7 +179,7 @@ public class ChatManager {
                                     oldText = new StringBuilder();
                                     toAdd = "";
                                 }
-                                previousWynnic = true;
+                                previousTranslated = true;
                             }
                             String englishVersion = StringUtils.translateCharacterFromWynnic(character);
                             if (capital && englishVersion.matches("[a-z]")) {
@@ -192,8 +197,34 @@ public class ChatManager {
                             } else {
                                 oldText.append(englishVersion);
                             }
+                        } else if (StringUtils.isGavellian(character)) {
+                            if (previousTranslated) {
+                                toAdd += currentNonTranslated;
+                                oldText.append(currentNonTranslated);
+                                currentNonTranslated = "";
+                            } else {
+                                if (translateIntoHover) {
+                                    ITextComponent newComponent = new TextComponentString(oldText.toString());
+                                    newComponent.setStyle(component.getStyle().createDeepCopy());
+                                    newTextComponents.add(newComponent);
+                                    oldText = new StringBuilder();
+                                    toAdd = "";
+                                }
+                                previousTranslated = true;
+                            }
+                            String englishVersion = StringUtils.translateCharacterFromGavellian(character);
+                            if (capital && englishVersion.matches("[a-z]")) {
+                                englishVersion = Character.toString(Character.toUpperCase(englishVersion.charAt(0)));
+                                capital = false;
+                            }
+                            toAdd += englishVersion;
+                            if (translateIntoHover) {
+                                oldText.append(character);
+                            } else {
+                                oldText.append(englishVersion);
+                            }
                         } else if (Character.toString(character).matches(nonTranslatable) || Character.toString(character).matches(optionalTranslatable)) {
-                            if (previousWynnic) {
+                            if (previousTranslated) {
                                 currentNonTranslated += character;
                             } else {
                                 oldText.append(character);
@@ -205,8 +236,8 @@ public class ChatManager {
                                 capital = false;
                             }
                         } else {
-                            if (previousWynnic) {
-                                previousWynnic = false;
+                            if (previousTranslated) {
+                                previousTranslated = false;
                                 if (translateIntoHover) {
                                     ITextComponent oldComponent = new TextComponentString(oldText.toString());
                                     oldComponent.setStyle(component.getStyle().createDeepCopy());
@@ -237,12 +268,12 @@ public class ChatManager {
                         }
                     }
                 }
-                if (!number.toString().isEmpty() && previousWynnic) {
+                if (!number.toString().isEmpty() && previousTranslated) {
                     toAdd += StringUtils.translateNumberFromWynnic(number.toString());
                 }
                 if (!currentNonTranslated.isEmpty()) {
                     oldText.append(currentNonTranslated);
-                    if (previousWynnic) {
+                    if (previousTranslated) {
                         toAdd += currentNonTranslated;
                     }
                 }
@@ -250,7 +281,7 @@ public class ChatManager {
                 ITextComponent oldComponent = new TextComponentString(oldText.toString());
                 oldComponent.setStyle(component.getStyle().createDeepCopy());
                 newTextComponents.add(oldComponent);
-                if (previousWynnic && translateIntoHover) {
+                if (previousTranslated && translateIntoHover) {
                     ITextComponent newComponent = new TextComponentString(toAdd);
                     newComponent.setStyle(component.getStyle().createDeepCopy());
 
@@ -283,8 +314,11 @@ public class ChatManager {
                 }
             }
 
-            in.getSiblings().clear();
-            in.getSiblings().addAll(newTextComponents);
+            in = new TextComponentString("");
+            for (ITextComponent component : newTextComponents) {
+                component.getSiblings().clear();
+                in.appendSibling(component);
+            }
         }
 
         // clickable party invites
@@ -328,24 +362,23 @@ public class ChatManager {
 
         // clickable coordinates
         if (ChatConfig.INSTANCE.clickableCoordinates && coordinateReg.matcher(in.getUnformattedText()).find()) {
-            String crdText;
-            Style style;
-            String command = "/compass ";
-            List<ITextComponent> crdMsg = new ArrayList<>();
 
+            ITextComponent temp = new TextComponentString("");
             for (ITextComponent texts: in.getSiblings()) {
                 Matcher m = coordinateReg.matcher(texts.getUnformattedText());
-                if (!m.find())  continue;
+                if (!m.find()) {
+                    temp.getSiblings().add(texts);
+                    continue;
+                }
 
                 // Most likely only needed during the Wynnter Fair for the message with how many more players are required to join.
                 // As far as i could find all other messages from the Wynnter Fair use text components properly.
                 if (m.start() > 0 && texts.getUnformattedText().charAt(m.start() - 1) == '§') continue;
 
-                int index = in.getSiblings().indexOf(texts);
-
-                crdText = texts.getUnformattedText();
-                style = texts.getStyle();
-                in.getSiblings().remove(texts);
+                String crdText = texts.getUnformattedText();
+                Style style = texts.getStyle();
+                String command = "/compass ";
+                List<ITextComponent> crdMsg = new ArrayList<>();
 
                 // Pre-text
                 ITextComponent preText = new TextComponentString(crdText.substring(0, m.start()));
@@ -369,10 +402,37 @@ public class ChatManager {
                 postText.setStyle(style.createShallowCopy());
                 crdMsg.add(postText);
 
-                in.getSiblings().addAll(index, crdMsg);
-                break;
+                temp.getSiblings().addAll(crdMsg);
             }
+            in = temp;
         }
+
+        //powder manual
+        if (ChatConfig.INSTANCE.customPowderManual && in.getUnformattedText().equals("                         Powder Manual")) {
+            List<ITextComponent> chapterSelect = new ArrayList<ITextComponent>();
+
+            ITextComponent offset = new TextComponentString("\n               "); //to center chapter select
+            ITextComponent spacer = new TextComponentString("   "); //space between chapters
+
+            chapterSelect.add(offset);
+
+            for (int i = 1; i <= 3; i++) {
+                ITextComponent chapter = new TextComponentString("Chapter " + i);
+                chapter.getStyle()
+                        .setColor(TextFormatting.GOLD)
+                        .setUnderlined(true)
+                        .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click to read Chapter " + i)));
+                chapter = TextAction.withDynamicEvent(chapter, new ChapterReader(i));
+
+                chapterSelect.add(chapter);
+                chapterSelect.add(spacer);
+            }
+
+            chapterSelect.add(new TextComponentString("\n"));
+            in.getSiblings().addAll(chapterSelect);
+
+        }
+        System.out.println(in.getFormattedText().replace('§', '&'));
 
         return in;
     }
@@ -426,7 +486,7 @@ public class ChatManager {
 
     public static boolean processUserMention(ITextComponent in, ITextComponent original) {
         if (ChatConfig.INSTANCE.allowChatMentions && in != null && Minecraft.getMinecraft().player != null) {
-            String match = ModCore.mc().player.getName() + (ChatConfig.INSTANCE.mentionNames.length() > 0 ? "|" + ChatConfig.INSTANCE.mentionNames.replace(",", "|") : "");
+            String match = ModCore.mc().player.getName() + (ChatConfig.INSTANCE.mentionNames.length() > 0 ? "|" + ChatConfig.INSTANCE.mentionNames.replace(",", "|") : "") + "\b";
             Pattern pattern = Pattern.compile(match, Pattern.CASE_INSENSITIVE);
 
             Matcher looseMatcher = pattern.matcher(in.getUnformattedText());
@@ -438,7 +498,7 @@ public class ChatManager {
                 boolean foundStart = false;
                 boolean foundEndTimestamp = !ChatConfig.INSTANCE.addTimestampsToChat;
 
-                ArrayList<ITextComponent> components = new ArrayList<>();
+                List<ITextComponent> components = new ArrayList<>();
 
                 for (ITextComponent component : in.getSiblings()) {
                     String text = component.getUnformattedText();
@@ -500,186 +560,234 @@ public class ChatManager {
 
         boolean cancel = false;
 
-        if (message.contains("{")) {
-            StringBuilder newString = new StringBuilder();
-            boolean isWynnic = false;
-            boolean isNumber = false;
-            boolean invalidNumber = false;
-            int number = 0;
-            StringBuilder oldNumber = new StringBuilder();
-            for (char character : message.toCharArray()) {
-                if (character == '{') {
-                    isWynnic = true;
-                    isNumber = false;
-                    number = 0;
-                    oldNumber = new StringBuilder();
-                } else if (isWynnic && character == '}') {
-                    isWynnic = false;
-                } else if (isWynnic) {
-                    if (Character.isDigit(character) && !invalidNumber) {
-                        if (oldNumber.toString().endsWith(".")) {
-                            invalidNumber = true;
-                            isNumber = false;
-                            newString.append(oldNumber);
-                            newString.append(character);
-                            oldNumber = new StringBuilder();
-                            number = 0;
-                            continue;
-                        }
-                        number = number * 10 + Integer.parseInt(Character.toString(character));
-                        oldNumber.append(character);
-                        if (number >= 400) {
-                            invalidNumber = true;
-                            isNumber = false;
-                            newString.append(oldNumber);
-                            oldNumber = new StringBuilder();
-                            number = 0;
+        if (ChatConfig.INSTANCE.useBrackets) {
+            if (message.contains("{") || message.contains("<")) {
+                StringBuilder newString = new StringBuilder();
+                boolean isWynnic = false;
+                boolean isNumber = false;
+                boolean invalidNumber = false;
+                boolean isGavellian = false;
+                int number = 0;
+                StringBuilder oldNumber = new StringBuilder();
+                for (char character : message.toCharArray()) {
+                    if (character == '{') {
+                        isGavellian = false;
+                        isWynnic = true;
+                        isNumber = false;
+                        number = 0;
+                        oldNumber = new StringBuilder();
+                    } else if (character == '<') {
+                        isGavellian = true;
+                        isWynnic = false;
+                        isNumber = false;
+                        number = 0;
+                        oldNumber = new StringBuilder();
+                    } else if (isWynnic && character == '}') {
+                        isWynnic = false;
+                    } else if (isGavellian && character == '>') {
+                        isGavellian = false;
+                    } else if (isWynnic) {
+                        if (Character.isDigit(character) && !invalidNumber) {
+                            if (oldNumber.toString().endsWith(".")) {
+                                invalidNumber = true;
+                                isNumber = false;
+                                newString.append(oldNumber);
+                                newString.append(character);
+                                oldNumber = new StringBuilder();
+                                number = 0;
+                                continue;
+                            }
+                            number = number * 10 + Integer.parseInt(Character.toString(character));
+                            oldNumber.append(character);
+                            if (number >= 400) {
+                                invalidNumber = true;
+                                isNumber = false;
+                                newString.append(oldNumber);
+                                oldNumber = new StringBuilder();
+                                number = 0;
+                            } else {
+                                isNumber = true;
+                            }
+                        } else if (character == ',' && isNumber) {
+                            oldNumber.append(character);
+                        } else if (character == '.' && isNumber) {
+                            oldNumber.append('.');
                         } else {
-                            isNumber = true;
-                        }
-                    } else if (character == ',' && isNumber) {
-                        oldNumber.append(character);
-                    } else if (character == '.' && isNumber) {
-                        oldNumber.append('.');
-                    } else {
-                        if (isNumber) {
-                            if (1 <= number && number <= 9) {
-                                newString.append((char) (number + 0x2473));
-                            } else if (number == 10 || number == 50 || number == 100) {
-                                switch (number) {
-                                    case 10:
-                                        newString.append('⑽');
-                                        break;
-                                    case 50:
-                                        newString.append('⑾');
-                                        break;
-                                    case 100:
+                            if (isNumber) {
+                                if (1 <= number && number <= 9) {
+                                    newString.append((char) (number + 0x2473));
+                                } else if (number == 10 || number == 50 || number == 100) {
+                                    switch (number) {
+                                        case 10:
+                                            newString.append('⑽');
+                                            break;
+                                        case 50:
+                                            newString.append('⑾');
+                                            break;
+                                        case 100:
+                                            newString.append('⑿');
+                                            break;
+                                    }
+                                } else if (1 <= number && number <= 399) {
+                                    int hundreds = number / 100;
+                                    for (int hundred = 1; hundred <= hundreds; hundred++) {
                                         newString.append('⑿');
-                                        break;
-                                }
-                            } else if (1 <= number && number <= 399) {
-                                int hundreds = number / 100;
-                                for (int hundred = 1; hundred <= hundreds; hundred++) {
-                                    newString.append('⑿');
-                                }
-
-                                int tens = (number % 100) / 10;
-                                if (1 <= tens && tens <= 3) {
-                                    for (int ten = 1; ten <= tens; ten++) {
-                                        newString.append('⑽');
                                     }
-                                } else if (4 == tens) {
-                                    newString.append("⑽⑾");
-                                } else if (5 <= tens && tens <= 8) {
-                                    newString.append('⑾');
-                                    for (int ten = 1; ten <= tens - 5; ten++) {
-                                        newString.append('⑽');
-                                    }
-                                } else if (9 == tens) {
-                                    newString.append("⑽⑿");
-                                }
 
-                                int ones = number % 10;
-                                if (1 <= ones) {
-                                    newString.append((char) (ones + 0x2473));
+                                    int tens = (number % 100) / 10;
+                                    if (1 <= tens && tens <= 3) {
+                                        for (int ten = 1; ten <= tens; ten++) {
+                                            newString.append('⑽');
+                                        }
+                                    } else if (4 == tens) {
+                                        newString.append("⑽⑾");
+                                    } else if (5 <= tens && tens <= 8) {
+                                        newString.append('⑾');
+                                        for (int ten = 1; ten <= tens - 5; ten++) {
+                                            newString.append('⑽');
+                                        }
+                                    } else if (9 == tens) {
+                                        newString.append("⑽⑿");
+                                    }
+
+                                    int ones = number % 10;
+                                    if (1 <= ones) {
+                                        newString.append((char) (ones + 0x2473));
+                                    }
+                                } else {
+                                    newString.append(number);
+                                }
+                                number = 0;
+                                isNumber = false;
+                                if (oldNumber.toString().endsWith(",")) {
+                                    newString.append(',');
+                                }
+                                if (oldNumber.toString().endsWith(".")) {
+                                    newString.append('０');
+                                }
+                                oldNumber = new StringBuilder();
+                            }
+
+                            if (invalidNumber && !Character.isDigit(character)) {
+                                invalidNumber = false;
+                            }
+
+                            if (!Character.toString(character).matches(nonTranslatable)) {
+                                if (Character.toString(character).matches("[a-z]")) {
+                                    newString.append((char) ((character) + 0x243B));
+                                } else if (Character.toString(character).matches("[A-Z]")) {
+                                    newString.append((char) ((character) + 0x245B));
+                                } else if (character == '.') {
+                                    newString.append('０');
+                                } else if (character == '!') {
+                                    newString.append('１');
+                                } else if (character == '?') {
+                                    newString.append('２');
                                 }
                             } else {
-                                newString.append(number);
+                                newString.append(character);
                             }
-                            number = 0;
-                            isNumber = false;
-                            if (oldNumber.toString().endsWith(",")) {
-                                newString.append(',');
-                            }
-                            if (oldNumber.toString().endsWith(".")) {
-                                newString.append('０');
-                            }
-                            oldNumber = new StringBuilder();
                         }
-
-                        if (invalidNumber && !Character.isDigit(character)) {
-                            invalidNumber = false;
+                    } else if (isGavellian) {
+                        if ('a' <= character && character <= 'z') {
+                            newString.append((char) (character + 9327));
+                        } else if ('A' <= character && character <= 'Z') {
+                            newString.append((char) (character + 9359));
                         }
-
-                        if (!Character.toString(character).matches(nonTranslatable)) {
-                            if (Character.toString(character).matches("[a-z]")) {
-                                newString.append((char) ((character) + 0x243B));
-                            } else if (Character.toString(character).matches("[A-Z]")) {
-                                newString.append((char) ((character) + 0x245B));
-                            } else if (character == '.') {
-                                newString.append('０');
-                            } else if (character == '!') {
-                                newString.append('１');
-                            } else if (character == '?') {
-                                newString.append('２');
-                            }
-                        } else {
-                            newString.append(character);
-                        }
+                    } else {
+                        newString.append(character);
                     }
-                } else {
-                    newString.append(character);
                 }
-            }
 
-            if (isNumber) {
-                if (1 <= number && number <= 9) {
-                    newString.append((char) (number + 0x2473));
-                } else if (number == 10 || number == 50 || number == 100) {
-                    switch (number) {
-                        case 10:
-                            newString.append('⑽');
-                            break;
-                        case 50:
-                            newString.append('⑾');
-                            break;
-                        case 100:
+                if (isNumber) {
+                    if (1 <= number && number <= 9) {
+                        newString.append((char) (number + 0x2473));
+                    } else if (number == 10 || number == 50 || number == 100) {
+                        switch (number) {
+                            case 10:
+                                newString.append('⑽');
+                                break;
+                            case 50:
+                                newString.append('⑾');
+                                break;
+                            case 100:
+                                newString.append('⑿');
+                                break;
+                        }
+                    } else if (1 <= number && number <= 399) {
+                        int hundreds = number / 100;
+                        for (int hundred = 1; hundred <= hundreds; hundred++) {
                             newString.append('⑿');
-                            break;
-                    }
-                } else if (1 <= number && number <= 399) {
-                    int hundreds = number / 100;
-                    for (int hundred = 1; hundred <= hundreds; hundred++) {
-                        newString.append('⑿');
-                    }
-
-                    int tens = (number % 100) / 10;
-                    if (1 <= tens && tens <= 3) {
-                        for (int ten = 1; ten <= tens; ten++) {
-                            newString.append('⑽');
                         }
-                    } else if (4 == tens) {
-                        newString.append("⑽⑾");
-                    } else if (5 <= tens && tens <= 8) {
-                        newString.append('⑾');
-                        for (int ten = 1; ten <= tens - 5; ten++) {
-                            newString.append('⑽');
+
+                        int tens = (number % 100) / 10;
+                        if (1 <= tens && tens <= 3) {
+                            for (int ten = 1; ten <= tens; ten++) {
+                                newString.append('⑽');
+                            }
+                        } else if (4 == tens) {
+                            newString.append("⑽⑾");
+                        } else if (5 <= tens && tens <= 8) {
+                            newString.append('⑾');
+                            for (int ten = 1; ten <= tens - 5; ten++) {
+                                newString.append('⑽');
+                            }
+                        } else if (9 == tens) {
+                            newString.append("⑽⑿");
                         }
-                    } else if (9 == tens) {
-                        newString.append("⑽⑿");
+
+                        int ones = number % 10;
+                        if (1 <= ones) {
+                            newString.append((char) (ones + 0x2473));
+                        }
+                    } else {
+                        newString.append(number);
                     }
 
-                    int ones = number % 10;
-                    if (1 <= ones) {
-                        newString.append((char) (ones + 0x2473));
+                    if (oldNumber.toString().endsWith(",")) {
+                        newString.append(',');
                     }
-                } else {
-                    newString.append(number);
+                    if (oldNumber.toString().endsWith(".")) {
+                        newString.append('０');
+                    }
                 }
 
-                if (oldNumber.toString().endsWith(",")) {
-                    newString.append(',');
-                }
-                if (oldNumber.toString().endsWith(".")) {
-                    newString.append('０');
-                }
+                after = newString.toString();
+
             }
-
-            after = newString.toString();
-
         }
 
         return new Pair<>(after, cancel);
+    }
+
+    private static class ChapterReader implements Runnable {
+
+        ITextComponent chapterText;
+
+        public ChapterReader(int chapter) {
+            String text;
+            switch (chapter) {
+                case 1:
+                    text = PowderManualChapter.ONE.getText();
+                    break;
+                case 2:
+                    text = PowderManualChapter.TWO.getText();
+                    break;
+                case 3:
+                    text = PowderManualChapter.THREE.getText();
+                    break;
+                default: text = "";
+            }
+
+            chapterText = new TextComponentString(text);
+
+        }
+
+        @Override
+        public void run() {
+            Minecraft.getMinecraft().player.sendMessage(chapterText);
+        }
+
     }
 
 }

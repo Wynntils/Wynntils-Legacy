@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.utilities.managers;
@@ -7,7 +7,7 @@ package com.wynntils.modules.utilities.managers;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
-import com.wynntils.core.framework.instances.PlayerInfo.HorseData;
+import com.wynntils.core.framework.instances.data.HorseData;
 import com.wynntils.modules.utilities.events.ClientEvents;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
 import net.minecraft.client.Minecraft;
@@ -43,6 +43,7 @@ public class MountHorseManager {
     public static MountHorseStatus mountHorse(boolean allowRetry) {
         Minecraft mc = ModCore.mc();
         EntityPlayerSP player = mc.player;
+
         if (player.isRiding()) {
             return MountHorseStatus.ALREADY_RIDING;
         }
@@ -63,20 +64,20 @@ public class MountHorseManager {
         }
 
         if (playersHorse == null) {
-            HorseData horse = PlayerInfo.getPlayerInfo().getHorseData();
-            
-            if (horse == null || horse.inventorySlot > 8 || !allowRetry) {
+            HorseData horse = PlayerInfo.get(HorseData.class);
+
+            if (!horse.hasHorse() || horse.getInventorySlot() > 8 || !allowRetry) {
                 return MountHorseStatus.NO_HORSE;
             }
-            
+
             int prev = mc.player.inventory.currentItem;
-            
-            mc.player.inventory.currentItem = horse.inventorySlot;
+
+            mc.player.inventory.currentItem = horse.getInventorySlot();
             mc.playerController.processRightClick(player, player.world, EnumHand.MAIN_HAND);
             mc.player.inventory.currentItem = prev;
-            
+
             ClientEvents.isAwaitingHorseMount = true;
-            
+
             return MountHorseStatus.SUCCESS;
         }
 
@@ -85,7 +86,11 @@ public class MountHorseManager {
             return MountHorseStatus.HORSE_TOO_FAR;
         }
 
+        int prev = mc.player.inventory.currentItem;
+
+        mc.player.inventory.currentItem = 8; // swap to soul points to avoid any right-click conflicts
         mc.playerController.interactWithEntity(player, playersHorse, EnumHand.MAIN_HAND);
+        mc.player.inventory.currentItem = prev;
         return MountHorseStatus.SUCCESS;
     }
 
@@ -134,7 +139,7 @@ public class MountHorseManager {
 
         Reference.LOGGER.warn("mountHorse failed onHorseSpawn. Reason: " + message);
     }
-    
+
     // Called post horse spawn after key press
     public static void retryMountHorseAndShowMessage() {
         String message = getMountHorseErrorMessage(mountHorse(false));

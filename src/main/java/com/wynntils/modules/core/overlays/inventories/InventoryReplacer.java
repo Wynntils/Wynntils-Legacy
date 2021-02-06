@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.core.overlays.inventories;
@@ -86,6 +86,12 @@ public class InventoryReplacer extends GuiInventory {
     public void renderToolTip(ItemStack stack, int x, int y) {
         GlStateManager.translate(0, 0, -300d);
         super.renderToolTip(stack, x, y);
+    }
+
+    @Override
+    public void onGuiClosed() {
+        FrameworkManager.getEventBus().post(new GuiOverlapEvent.InventoryOverlap.GuiClosed(this));
+        super.onGuiClosed();
     }
 
     public List<GuiButton> getButtonList() {

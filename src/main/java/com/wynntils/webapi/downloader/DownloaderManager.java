@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.webapi.downloader;
@@ -14,13 +14,14 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 public class DownloaderManager {
 
-    private static ArrayList<DownloadProfile> futureDownloads = new ArrayList<>();
+    private static List<DownloadProfile> futureDownloads = new ArrayList<>();
     public static int progression = 0;
     public static DownloadPhase currentPhase = DownloadPhase.WAITING;
 

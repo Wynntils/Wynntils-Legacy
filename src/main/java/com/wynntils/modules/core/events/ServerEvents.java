@@ -1,16 +1,23 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.core.events;
 
 import com.google.common.collect.Sets;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.FrameworkManager;
+import com.wynntils.core.framework.entities.EntityManager;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.CharacterData;
+import com.wynntils.core.framework.instances.data.LocationData;
+import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
@@ -26,23 +33,32 @@ import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.modules.core.overlays.ui.PlayerInfoReplacer;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.downloader.DownloaderManager;
+import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.network.play.server.SPacketSpawnPosition;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ServerEvents implements Listener {
+
+    private static final Pattern FRIENDS_LIST = Pattern.compile("^§e(.*)'s? friends \\([0-9]+\\): §r§6(.*)§r$");
 
     /**
      * Does 5 different things and is triggered when the user joins Wynncraft:
@@ -65,6 +81,8 @@ public class ServerEvents implements Listener {
 
         WebManager.tryReloadApiUrls(true);
         WebManager.checkForUpdatesOnJoin();
+
+        DownloaderManager.startDownloading();
     }
 
     boolean waitingForFriendList = false;
@@ -81,13 +99,16 @@ public class ServerEvents implements Listener {
      */
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void joinWorldEvent(WynnWorldEvent.Join e) {
-        if (PlayerInfo.getPlayerInfo().getClassId() == -1 || CoreDBConfig.INSTANCE.lastClass == ClassType.NONE)
+        if (PlayerInfo.get(CharacterData.class).getClassId() == -1 || CoreDBConfig.INSTANCE.lastClass == ClassType.NONE)
             Minecraft.getMinecraft().player.sendChatMessage("/class");
 
-        if (CoreDBConfig.INSTANCE.lastClass != ClassType.NONE)
-            PlayerInfo.getPlayerInfo().updatePlayerClass(CoreDBConfig.INSTANCE.lastClass);
-
-        DownloaderManager.startDownloading();
+        // This codeblock will only be executed if the Wynncraft AUTOJOIN setting is enabled
+        // Reason: When you join a world with autojoin enabled, your current class is NONE,
+        // while joining without autojoin will make your current class into the selected over the character selection.
+        CharacterData data = PlayerInfo.get(CharacterData.class);
+        if (data.getCurrentClass() == ClassType.NONE && CoreDBConfig.INSTANCE.lastClass != ClassType.NONE) {
+            data.updatePlayerClass(CoreDBConfig.INSTANCE.lastClass, CoreDBConfig.INSTANCE.lastClassIsReskinned);
+        }
 
         if (Reference.onWars || Reference.onNether) return; // avoid dispatching commands while in wars/nether
 
@@ -103,6 +124,8 @@ public class ServerEvents implements Listener {
 
         // party members
         PartyManager.handlePartyList();  // party list here
+
+        startUpdateRegionName();
     }
 
     /**
@@ -121,30 +144,40 @@ public class ServerEvents implements Listener {
         PartyManager.handleMessages(e.getMessage());  // party messages here
 
         String messageText = e.getMessage().getUnformattedText();
-        if (messageText.startsWith(Minecraft.getMinecraft().player.getName() + "'")) {
-            String[] splited = messageText.split(":");
+        String formatted = e.getMessage().getFormattedText();
+        Matcher m = FRIENDS_LIST.matcher(formatted);
+        if (m.find() && m.group(1).equals(Minecraft.getMinecraft().player.getName())) {
+            String[] friends = m.group(2).split(", ");
 
-            String[] friends;
-            if (splited[1].contains(",")) {
-                friends = splited[1].substring(1).split(", ");
-            } else { friends = new String[] {splited[1].substring(1)}; }
-
-            HashSet<String> friendsList = PlayerInfo.getPlayerInfo().getFriendList();
-            HashSet<String> newFriendsList = new HashSet<>(Arrays.asList(friends));
-            PlayerInfo.getPlayerInfo().setFriendList(newFriendsList);
+            Set<String> friendsList = PlayerInfo.get(SocialData.class).getFriendList();
+            Set<String> newFriendsList = new HashSet<>(Arrays.asList(friends));
+            PlayerInfo.get(SocialData.class).setFriendList(newFriendsList);
 
             FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Remove(Sets.difference(friendsList, newFriendsList), false));
-            FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Add(Sets.intersection(friendsList, newFriendsList), false));
+            FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Add(Sets.difference(newFriendsList, friendsList), false));
 
             if (waitingForFriendList) e.setCanceled(true);
             waitingForFriendList = false;
             return;
         }
+
+        // If you don't have any friends, we get a two line response. Hide both.
+        if (waitingForFriendList && formatted.equals("§eWe couldn't find any friends.§r")) {
+            e.setCanceled(true);
+        }
+        if (waitingForFriendList && formatted.equals("§eTry typing §r§6/friend add Username§r§e!§r")) {
+            waitingForFriendList = false;
+            e.setCanceled(true);
+        }
+        if (waitingForGuildList && formatted.equals("§cYou are not in a guild.§r")) {
+            waitingForGuildList = false;
+            e.setCanceled(true);
+        }
         if (messageText.startsWith("#") && messageText.contains(" XP -")) {
             if (waitingForGuildList) e.setCanceled(true);
 
             String[] splitMessage = messageText.split(" ");
-            if (PlayerInfo.getPlayerInfo().getGuildList().add(splitMessage[1])) {
+            if (PlayerInfo.get(SocialData.class).addGuildMember(splitMessage[1])) {
                 FrameworkManager.getEventBus().post(new WynnSocialEvent.Guild.Join(splitMessage[1]));
             }
             return;
@@ -154,11 +187,14 @@ public class ServerEvents implements Listener {
             if (!splittedText[1].equalsIgnoreCase("has")) return;
 
             if (splittedText[2].equalsIgnoreCase("joined")) {
-                if (PlayerInfo.getPlayerInfo().getGuildList().add(splittedText[0])) {
+                if (PlayerInfo.get(SocialData.class).addGuildMember(splittedText[0])) {
                     FrameworkManager.getEventBus().post(new WynnSocialEvent.Guild.Join(splittedText[0]));
                 }
-            } else if (splittedText[2].equalsIgnoreCase("kicked")) {
-                if (PlayerInfo.getPlayerInfo().getGuildList().remove(splittedText[3])) {
+                return;
+            }
+
+            if (splittedText[2].equalsIgnoreCase("kicked")) {
+                if (PlayerInfo.get(SocialData.class).removeGuildMember(splittedText[3])) {
                     FrameworkManager.getEventBus().post(new WynnSocialEvent.Guild.Leave(splittedText[3]));
                 }
             }
@@ -177,12 +213,12 @@ public class ServerEvents implements Listener {
     public void addFriend(ClientChatEvent e) {
         if (e.getMessage().startsWith("/friend add ")) {
             String addedFriend = e.getMessage().replace("/friend add ", "");
-            if (PlayerInfo.getPlayerInfo().getFriendList().add(addedFriend)) {
+            if (PlayerInfo.get(SocialData.class).addFriend(addedFriend)) {
                 FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Add(Collections.singleton(addedFriend), true));
             }
         } else if (e.getMessage().startsWith("/friend remove ")) {
             String removedFriend = e.getMessage().replace("/friend remove ", "");
-            if (PlayerInfo.getPlayerInfo().getFriendList().remove(removedFriend)) {
+            if (PlayerInfo.get(SocialData.class).removeFriend(removedFriend)) {
                 FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Remove(Collections.singleton(removedFriend), true));
             }
         } else if (e.getMessage().startsWith("/guild list") || e.getMessage().startsWith("/gu list")) {
@@ -198,6 +234,19 @@ public class ServerEvents implements Listener {
         PacketQueue.checkResponse(e.getPacket());
     }
 
+    /**
+     * Warns user if Athena is currently down
+     */
+    @SubscribeEvent
+    public void onJoinServer(WynncraftServerEvent.Login e) {
+        if (WebManager.isAthenaOnline()) return;
+
+        TextComponentString msg = new TextComponentString("Failed to connect to the Wynntils servers! You can still use Wynntils, but some features may not work.");
+        msg.getStyle().setColor(TextFormatting.RED);
+        msg.getStyle().setBold(true);
+        new Delay(() -> Minecraft.getMinecraft().player.sendMessage(msg), 30); // delay so the player actually loads in
+    }
+
     private static boolean triedToShowChangelog = false;
 
     /**
@@ -208,7 +257,7 @@ public class ServerEvents implements Listener {
     public void onJoinLobby(WynnClassChangeEvent e) {
         if (!Reference.onServer || !CoreDBConfig.INSTANCE.enableChangelogOnUpdate || !CoreDBConfig.INSTANCE.showChangelogs) return;
         if (UpdateOverlay.isDownloading() || DownloaderManager.isRestartOnQueueFinish() || Minecraft.getMinecraft().world == null) return;
-        if (e.getCurrentClass() == ClassType.NONE) return;
+        if (e.getNewClass() == ClassType.NONE) return;
 
         synchronized (this) {
             if (triedToShowChangelog) return;
@@ -249,12 +298,84 @@ public class ServerEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void joinServer(WynncraftServerEvent.Leave e) {
+    public void leaveServer(WynncraftServerEvent.Leave e) {
         UserManager.clearRegistry();
+        EntityManager.clearEntities();
+
+        if (updateTimer != null && !updateTimer.isCancelled()) {
+            updateTimer.cancel(true);
+        }
     }
 
     public static BlockPos getCurrentSpawnPosition() {
         return currentSpawn;
+    }
+
+    @SubscribeEvent
+    public void worldLeave(WynnWorldEvent.Leave e) {
+        if (updateTimer != null) {
+            updateTimer.cancel(true);
+        }
+    }
+
+    private static ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("wynntils-location-updater").build());
+    private static ScheduledFuture updateTimer;
+
+    /**
+     * Starts to check player location for current player territory info
+     */
+    private static void startUpdateRegionName() {
+        updateTimer = executor.scheduleAtFixedRate(() -> {
+            EntityPlayerSP pl = ModCore.mc().player;
+
+            FrameworkManager.getEventBus().post(new SchedulerEvent.RegionUpdate());
+
+            LocationData data = PlayerInfo.get(LocationData.class);
+            if (!data.inUnknownLocation()) {
+                String location = data.getLocation();
+                if (!WebManager.getTerritories().containsKey(location)) {
+                    location = location.replace('\'', '’');
+                }
+
+                TerritoryProfile currentLocation = WebManager.getTerritories().get(location);
+
+                if (currentLocation != null && currentLocation.insideArea((int) pl.posX, (int) pl.posZ)) {
+                    return;
+                }
+            }
+
+            for (TerritoryProfile pf : WebManager.getTerritories().values()) {
+                if (pf.insideArea((int) pl.posX, (int) pl.posZ)) {
+                    data.setLocation(pf.getFriendlyName());
+                    return;
+                }
+            }
+
+            int chunkX = pl.chunkCoordX;
+            int chunkZ = pl.chunkCoordZ;
+
+            // housing instances are over these chunk coordinates
+            if (chunkX >= 4096 && chunkZ >= 4096) {
+                if (data.inHousing()) return;
+
+                data.setLocation("Housing");
+                return;
+            }
+
+            // war arenas are below these chunk coordinates
+            if (chunkX <= -4096 && chunkZ <= -4096) {
+                if (data.inWars()) return;
+
+                data.setLocation("Wars");
+                return;
+            }
+
+            // none match, set to unknow
+            if (!data.inUnknownLocation()) {
+                data.setLocation("");
+            }
+
+        }, 0, 3, TimeUnit.SECONDS);
     }
 
 }

@@ -1,14 +1,20 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.webapi.profiles.item.objects;
 
-import com.wynntils.core.utils.StringUtils;
-import com.wynntils.webapi.profiles.item.enums.IdentificationModifier;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.lang3.math.Fraction;
 
+import com.wynntils.core.utils.StringUtils;
+import com.wynntils.webapi.profiles.item.enums.IdentificationModifier;
+
 public class IdentificationContainer {
+
+    private static Map<String, IdentificationModifier> typeMap = new HashMap<>();
 
     private IdentificationModifier type;
     private int baseValue;
@@ -31,6 +37,11 @@ public class IdentificationContainer {
 
         min = (int) Math.round(baseValue * (baseValue < 0 ? 1.3 : 0.3));
         max = (int) Math.round(baseValue * (baseValue < 0 ? 0.7 : 1.3));
+    }
+
+    public void registerIdType(String name) {
+        if (typeMap.containsKey(name)) return;
+        typeMap.put(name, type);
     }
 
     public IdentificationModifier getType() {
@@ -70,6 +81,10 @@ public class IdentificationContainer {
         }
 
         return StringUtils.capitalizeFirst(nameBuilder.toString());
+    }
+
+    public static IdentificationModifier getTypeFromName(String name) {
+        return typeMap.get(name);
     }
 
     public static class ReidentificationChances {

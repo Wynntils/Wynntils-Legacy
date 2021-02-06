@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.core.framework.ui;
@@ -152,11 +152,11 @@ public abstract class UI extends GuiScreen {
         static ScreenRenderer render = new ScreenRenderer();
         public static void drawBook() {
             int wh = ScreenRenderer.screen.getScaledWidth()/2, hh = ScreenRenderer.screen.getScaledHeight()/2;
-            render.drawRect(Textures.UIs.book, wh-200, hh-110, wh+200, hh+110, 0f, 0f, 1f, 1f);
+            render.drawRect(Textures.UIs.book, wh - 200, hh - 110, wh + 200, hh + 110, 0, 0, 400, 220);
         }
         public static void drawScrollArea() {
             int wh = ScreenRenderer.screen.getScaledWidth()/2, hh = ScreenRenderer.screen.getScaledHeight()/2;
-            render.drawRect(Textures.UIs.book_scrollarea_settings, wh-190, hh-100, wh-12, hh+85, 0f, 0f, 1f, 1f);
+            render.drawRect(Textures.UIs.book_scrollarea_settings, wh - 190, hh - 100, wh - 12, hh + 85, 0, 0, 178, 185);
         }
     }
 }

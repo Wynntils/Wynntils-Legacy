@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.core.overlays.inventories;
@@ -76,6 +76,12 @@ public class HorseReplacer extends GuiScreenHorseInventory  {
     @Override
     public void renderToolTip(ItemStack stack, int x, int y) {
         super.renderToolTip(stack, x, y);
+    }
+
+    @Override
+    public void onGuiClosed() {
+        FrameworkManager.getEventBus().post(new GuiOverlapEvent.HorseOverlap.GuiClosed(this));
+        super.onGuiClosed();
     }
 
     public List<GuiButton> getButtonList() {

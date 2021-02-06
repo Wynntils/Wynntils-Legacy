@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.webapi.profiles;
@@ -9,84 +9,86 @@ import com.wynntils.core.utils.StringUtils;
 
 import java.util.*;
 
-public class MapMarkerProfile {
+public class MapMarkerProfile extends LocationProfile {
 
-    private static final Map<String, String> MAPMARKERNAME_TRANSLATION = Collections.unmodifiableMap(new HashMap<String, String>() {{
-        put("Content_Dungeon", "Dungeons");
-        put("Content_CorruptedDungeon", "Corrupted Dungeons");
-        put("Content_BossAltar", "Boss Altar");
-        put("Merchant_Accessory", "Accessory Merchant");
-        put("Merchant_Armour", "Armour Merchant");
-        put("Merchant_Dungeon", "Dungeon Merchant");
-        put("Merchant_Horse", "Horse Merchant");
-        put("Merchant_KeyForge", "Key Forge Merchant");
-        put("Merchant_Liquid", "LE Merchant");
-        put("Merchant_Potion", "Potion Merchant");
-        put("Merchant_Powder", "Powder Merchant");
-        put("Merchant_Scroll", "Scroll Merchant");
-        put("Merchant_Seasail", "Seasail Merchant");
-        put("Merchant_Weapon", "Weapon Merchant");
-        put("NPC_Blacksmith", "Blacksmith");
-        put("NPC_GuildMaster", "Guild Master");
-        put("NPC_ItemIdentifier", "Item Identifier");
-        put("NPC_PowderMaster", "Powder Master");
-        put("Special_FastTravel", "Fast Travel");
-        put("tnt", "TNT Merchant");
-        put("painting", "Art Merchant");
-        put("Ore_Refinery", "Ore Refinery");
-        put("Fish_Refinery", "Fish Refinery");
-        put("Wood_Refinery", "Wood Refinery");
-        put("Crop_Refinery", "Crop Refinery");
-        put("NPC_TradeMarket", "Marketplace");
-        put("Content_Quest", "Quests");
-        put("Content_Miniquest", "Mini-Quests");
-        put("Special_Rune", "Runes");
-        put("Special_RootsOfCorruption", "Nether Portal");
-        put("Content_UltimateDiscovery", "Ultimate Discovery");
-        put("Content_Cave", "Caves");
-        put("Content_GrindSpot", "Grind Spots");
-        put("Merchant_Other", "Other Merchants");
-        put("Special_LightRealm", "Light's Secret");
-        put("Merchant_Emerald", "Emerald Merchant");
-        put("Profession_Weaponsmithing", "Weaponsmithing Station");
-        put("Profession_Armouring", "Armouring Station");
-        put("Profession_Alchemism", "Alchemism Station");
-        put("Profession_Jeweling", "Jeweling Station");
-        put("Profession_Tailoring", "Tailoring Station");
-        put("Profession_Scribing", "Scribing Station");
-        put("Profession_Cooking", "Cooking Station");
-        put("Profession_Woodworking", "Woodworking Station");
-        put("Merchant_Tool", "Tool Merchant");
-    }});
+    private static final Map<String, String> MAPMARKERNAME_TRANSLATION;
 
-    private static final Map<String, String> MAPMARKERNAME_REVERSE_TRANSLATION = Collections.unmodifiableMap(new HashMap<String, String>(MAPMARKERNAME_TRANSLATION.size()) {{
-        for (Entry<String, String> entry : MAPMARKERNAME_TRANSLATION.entrySet()) {
-            this.put(entry.getValue(), entry.getKey());
-        }
-    }});
+    static {
+        Map<String, String> mmn_t = new HashMap<>();
+        mmn_t.put("Content_Dungeon", "Dungeons");
+        mmn_t.put("Content_CorruptedDungeon", "Corrupted Dungeons");
+        mmn_t.put("Content_BossAltar", "Boss Altar");
+        mmn_t.put("Merchant_Accessory", "Accessory Merchant");
+        mmn_t.put("Merchant_Armour", "Armour Merchant");
+        mmn_t.put("Merchant_Dungeon", "Dungeon Merchant");
+        mmn_t.put("Merchant_Horse", "Horse Merchant");
+        mmn_t.put("Merchant_KeyForge", "Key Forge Merchant");
+        mmn_t.put("Merchant_Liquid", "LE Merchant");
+        mmn_t.put("Merchant_Potion", "Potion Merchant");
+        mmn_t.put("Merchant_Powder", "Powder Merchant");
+        mmn_t.put("Merchant_Scroll", "Scroll Merchant");
+        mmn_t.put("Merchant_Seasail", "Seasail Merchant");
+        mmn_t.put("Merchant_Weapon", "Weapon Merchant");
+        mmn_t.put("NPC_Blacksmith", "Blacksmith");
+        mmn_t.put("NPC_GuildMaster", "Guild Master");
+        mmn_t.put("NPC_ItemIdentifier", "Item Identifier");
+        mmn_t.put("NPC_PowderMaster", "Powder Master");
+        mmn_t.put("Special_FastTravel", "Fast Travel");
+        mmn_t.put("tnt", "TNT Merchant");
+        mmn_t.put("painting", "Art Merchant");
+        mmn_t.put("Ore_Refinery", "Ore Refinery");
+        mmn_t.put("Fish_Refinery", "Fish Refinery");
+        mmn_t.put("Wood_Refinery", "Wood Refinery");
+        mmn_t.put("Crop_Refinery", "Crop Refinery");
+        mmn_t.put("NPC_TradeMarket", "Marketplace");
+        mmn_t.put("Content_Quest", "Quests");
+        mmn_t.put("Content_Miniquest", "Mini-Quests");
+        mmn_t.put("Special_Rune", "Runes");
+        mmn_t.put("Special_RootsOfCorruption", "Nether Portal");
+        mmn_t.put("Content_UltimateDiscovery", "Ultimate Discovery");
+        mmn_t.put("Content_Cave", "Caves");
+        mmn_t.put("Content_GrindSpot", "Grind Spots");
+        mmn_t.put("Merchant_Other", "Other Merchants");
+        mmn_t.put("Special_LightRealm", "Light's Secret");
+        mmn_t.put("Merchant_Emerald", "Emerald Merchant");
+        mmn_t.put("Profession_Weaponsmithing", "Weaponsmithing Station");
+        mmn_t.put("Profession_Armouring", "Armouring Station");
+        mmn_t.put("Profession_Alchemism", "Alchemism Station");
+        mmn_t.put("Profession_Jeweling", "Jeweling Station");
+        mmn_t.put("Profession_Tailoring", "Tailoring Station");
+        mmn_t.put("Profession_Scribing", "Scribing Station");
+        mmn_t.put("Profession_Cooking", "Cooking Station");
+        mmn_t.put("Profession_Woodworking", "Woodworking Station");
+        mmn_t.put("Merchant_Tool", "Tool Merchant");
 
-    private static final Set<String> IGNORED_MARKERS = Collections.unmodifiableSet(new HashSet<String>() {{
-        for (String ignored : new String[]{
-            "Content_CorruptedDungeon"
-        }) {
-            add(ignored);
-            String translated = MAPMARKERNAME_TRANSLATION.get(ignored);
-            assert translated != null;
-            add(translated);
-        }
-    }});
+        MAPMARKERNAME_TRANSLATION = Collections.unmodifiableMap(mmn_t);
+    }
 
-    String name;
-    int x;
+    private static final Map<String, String> MAPMARKERNAME_REVERSE_TRANSLATION;
+
+    static {
+        Map<String, String> mmn_r_t = new HashMap<>(MAPMARKERNAME_TRANSLATION.size());
+        MAPMARKERNAME_TRANSLATION.forEach((k, v) -> mmn_r_t.put(v, k));
+        MAPMARKERNAME_REVERSE_TRANSLATION = Collections.unmodifiableMap(mmn_r_t);
+    }
+
+    private static final Set<String> IGNORED_MARKERS;
+
+    static {
+        Set<String> ignored = new HashSet<>();
+        Collections.singletonList("Content_CorruptedDungeon").forEach(s -> {
+            ignored.add(s);
+            ignored.add(MAPMARKERNAME_TRANSLATION.get(s));
+        });
+        IGNORED_MARKERS = Collections.unmodifiableSet(ignored);
+    }
+
     int y;
-    int z;
     String icon;
 
     public MapMarkerProfile(String name, int x, int y, int z, String icon) {
-        this.name = name;
-        this.x = x;
+        super(name, x, z);
         this.y = y;
-        this.z = z;
         this.icon = icon;
         ensureNormalized();
     }
@@ -95,20 +97,8 @@ public class MapMarkerProfile {
         return IGNORED_MARKERS.contains(this.name);
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public int getX() {
-        return x;
-    }
-
     public int getY() {
         return y;
-    }
-
-    public int getZ() {
-        return z;
     }
 
     public String getIcon() {
@@ -120,6 +110,7 @@ public class MapMarkerProfile {
         icon = icon.replace(".png", "");
     }
 
+    @Override
     public String getTranslatedName() {
         return MAPMARKERNAME_TRANSLATION.get(icon);
     }
@@ -135,7 +126,7 @@ public class MapMarkerProfile {
     /*
      * Debug function run in developmentEnvironment to verify consistency
      */
-    public static void validateIcons(HashMap<String, Boolean> enabledIcons) {
+    public static void validateIcons(Map<String, Boolean> enabledIcons) {
         for (String icon : MAPMARKERNAME_TRANSLATION.values()) {
             if (IGNORED_MARKERS.contains(icon)) continue;
             if (!enabledIcons.containsKey(icon)) Reference.LOGGER.warn("Missing option for icon \"" + icon + "\"");

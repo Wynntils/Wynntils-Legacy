@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.modules.core.managers;
@@ -8,11 +8,12 @@ import com.wynntils.modules.core.instances.packet.PacketResponse;
 import net.minecraft.network.Packet;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 
 public class PacketQueue {
 
-    private static ArrayList<PacketResponse> complexQueue = new ArrayList<>();
+    private static List<PacketResponse> complexQueue = new ArrayList<>();
 
     public static PacketResponse queueSimplePacket(Packet packet) {
         PacketResponse response = new PacketResponse(packet);

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2020.
+ *  * Copyright © Wynntils - 2018 - 2021.
  */
 
 package com.wynntils.webapi.profiles;
@@ -11,7 +11,8 @@ import com.wynntils.webapi.downloader.enums.DownloadAction;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class FileUpdater {
 
@@ -40,9 +41,9 @@ public class FileUpdater {
         if (reader == null) throw new NullPointerException("Web reader is null");
         if (runnable == null) throw new NullPointerException("There is no specified runnable");
 
-        HashMap<String, String> values = reader.getValues();
+        Map<String, String> values = reader.getValues();
 
-        ArrayList<String> localFiles = new ArrayList<>();
+        List<String> localFiles = new ArrayList<>();
         for (File f : location.listFiles()) {
             localFiles.add(f.getName());
         }
