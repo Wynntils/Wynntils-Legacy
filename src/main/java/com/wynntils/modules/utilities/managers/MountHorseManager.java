@@ -70,7 +70,11 @@ public class MountHorseManager {
         }
 
         int prev = mc.player.inventory.currentItem;
-        boolean far = playersHorse != null && player.getDistanceSq(playersHorse) > (player.canEntityBeSeen(playersHorse) ? 36.0D : 9.0D);
+        boolean far = false;
+        if(playersHorse != null) {
+            double maxDistance = player.canEntityBeSeen(playersHorse) ? 36.0D : 9.0D;
+            far = player.getDistanceSq(playersHorse) > maxDistance;
+        }
 
         if(playersHorse == null || far) {
             mc.player.inventory.currentItem = horse.getInventorySlot();
