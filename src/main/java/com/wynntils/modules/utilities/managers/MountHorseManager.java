@@ -24,7 +24,7 @@ import java.util.List;
 public class MountHorseManager {
 
     public enum MountHorseStatus {
-        SUCCESS, ALREADY_RIDING, NO_HORSE, HORSE_TOO_FAR
+        SUCCESS, ALREADY_RIDING, NO_HORSE
     }
 
     private static final int searchRadius = 18;  // Search a bit further for message "too far" instead of "not found"
@@ -113,8 +113,6 @@ public class MountHorseManager {
                 return "You are already riding " + ridingEntityType;
             case NO_HORSE:
                 return "Your horse was unable to be found";
-            case HORSE_TOO_FAR:
-                return "Your horse is too far away";
             default:
                 return null;
         }
