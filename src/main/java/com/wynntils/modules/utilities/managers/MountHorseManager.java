@@ -44,6 +44,12 @@ public class MountHorseManager {
         Minecraft mc = ModCore.mc();
         EntityPlayerSP player = mc.player;
 
+        HorseData horse = PlayerInfo.get(HorseData.class);
+
+        if (!horse.hasHorse() || horse.getInventorySlot() > 8 || !allowRetry) {
+            return MountHorseStatus.NO_HORSE;
+        }
+
         if (player.isRiding()) {
             return MountHorseStatus.ALREADY_RIDING;
         }
@@ -56,37 +62,28 @@ public class MountHorseManager {
         Entity playersHorse = null;
         String playerName = player.getName();
 
-        for (Entity horse : horses) {
-            if (isPlayersHorse(horse, playerName)) {
-                playersHorse = horse;
+        for (Entity h : horses) {
+            if (isPlayersHorse(h, playerName)) {
+                playersHorse = h;
                 break;
             }
         }
 
-        if (playersHorse == null) {
-            HorseData horse = PlayerInfo.get(HorseData.class);
+        int prev = mc.player.inventory.currentItem;
+        boolean far = playersHorse != null && player.getDistanceSq(playersHorse) > (player.canEntityBeSeen(playersHorse) ? 36.0D : 9.0D);
 
-            if (!horse.hasHorse() || horse.getInventorySlot() > 8 || !allowRetry) {
-                return MountHorseStatus.NO_HORSE;
-            }
-
-            int prev = mc.player.inventory.currentItem;
-
+        if(playersHorse == null || far) {
             mc.player.inventory.currentItem = horse.getInventorySlot();
+            // No horse -> click to spawn; Horse too far -> despawn respawn
             mc.playerController.processRightClick(player, player.world, EnumHand.MAIN_HAND);
+            if(far) {
+                mc.playerController.processRightClick(player, player.world, EnumHand.MAIN_HAND);
+            }
             mc.player.inventory.currentItem = prev;
-
             ClientEvents.isAwaitingHorseMount = true;
 
             return MountHorseStatus.SUCCESS;
         }
-
-        double maxDistance = player.canEntityBeSeen(playersHorse) ? 36.0D : 9.0D;
-        if (player.getDistanceSq(playersHorse) > maxDistance) {
-            return MountHorseStatus.HORSE_TOO_FAR;
-        }
-
-        int prev = mc.player.inventory.currentItem;
 
         mc.player.inventory.currentItem = 8; // swap to soul points to avoid any right-click conflicts
         mc.playerController.interactWithEntity(player, playersHorse, EnumHand.MAIN_HAND);
