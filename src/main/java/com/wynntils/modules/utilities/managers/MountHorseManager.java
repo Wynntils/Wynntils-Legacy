@@ -71,16 +71,16 @@ public class MountHorseManager {
 
         int prev = mc.player.inventory.currentItem;
         boolean far = false;
-        if(playersHorse != null) {
+        if (playersHorse != null) {
             double maxDistance = player.canEntityBeSeen(playersHorse) ? 36.0D : 9.0D;
             far = player.getDistanceSq(playersHorse) > maxDistance;
         }
 
-        if(playersHorse == null || far) {
+        if (playersHorse == null || far) {
             mc.player.inventory.currentItem = horse.getInventorySlot();
             // No horse -> click to spawn; Horse too far -> despawn respawn
             mc.playerController.processRightClick(player, player.world, EnumHand.MAIN_HAND);
-            if(far) {
+            if (far) {
                 mc.playerController.processRightClick(player, player.world, EnumHand.MAIN_HAND);
             }
             mc.player.inventory.currentItem = prev;
