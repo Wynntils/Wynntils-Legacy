@@ -61,7 +61,7 @@ public class GameUpdateOverlay extends Overlay {
                 break;  // breaks the loop if the limit was reached
 
             int lineOffset;
-            if (OverlayConfig.GameUpdate.INSTANCE.stackBeforeGrowth) {
+            if (OverlayConfig.GameUpdate.INSTANCE.newMessagesFirst) {
                 int messagesDisplayed = Math.min(messageQueue.size(), OverlayConfig.GameUpdate.INSTANCE.messageLimit);
                 lineOffset = (LINE_HEIGHT * (messagesDisplayed - lines));  // display newest messages at bottommost / topmost slot
             } else {
