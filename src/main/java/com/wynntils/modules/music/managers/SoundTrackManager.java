@@ -8,6 +8,7 @@ import com.wynntils.Reference;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.music.configs.MusicConfig;
 import com.wynntils.modules.music.instances.MusicPlayer;
+import com.wynntils.modules.music.instances.QueuedTrack;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import com.wynntils.webapi.downloader.enums.DownloadAction;
@@ -201,6 +202,15 @@ public class SoundTrackManager {
         } else if (lessPossible.isPresent()) { selected = lessPossible.get(); }
 
        playSong(selected, false, false, true, true, false, false);
+    }
+
+    /**
+     * @return the current song that is being played or null if none is playing
+     */
+    public static QueuedTrack getCurrentSong() {
+        if (player == null || player.getStatus() == null) return null;
+
+        return player.getStatus().getCurrentSong();
     }
 
 }
