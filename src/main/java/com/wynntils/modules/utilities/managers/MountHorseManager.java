@@ -77,7 +77,10 @@ public class MountHorseManager {
         }
 
         if (playersHorse == null || far) {
-            if(!allowRetry) return MountHorseStatus.NO_HORSE;
+            if (!allowRetry) {
+                return MountHorseStatus.NO_HORSE;
+            }
+            
             mc.player.inventory.currentItem = horse.getInventorySlot();
             // No horse -> click to spawn; Horse too far -> despawn respawn
             mc.playerController.processRightClick(player, player.world, EnumHand.MAIN_HAND);
