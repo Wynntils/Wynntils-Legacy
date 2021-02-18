@@ -262,7 +262,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Invert Growth", description = "Should the way ticker messages appear be inverted?")
         public boolean invertGrowth = true;
 
-        @Setting(displayName = "Stack Before Growth Direction", description = "Should new messages appear before old messages in the direction of growth?")
+        @Setting(displayName = "Stack Before Growth Direction", description = "Should new messages appear before old messages in the direction of growth, rather than adding onto each other?")
         public boolean stackBeforeGrowth = false;
 
         @Setting(displayName = "Max Message Length", description = "What should the maximum length of messages in the game-update-ticker be?\n\n§8Messages longer than this set value will be truncated. Set this to 0 for no maximum length.")

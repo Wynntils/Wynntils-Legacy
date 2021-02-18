@@ -63,9 +63,9 @@ public class GameUpdateOverlay extends Overlay {
             int lineOffset;
             if (OverlayConfig.GameUpdate.INSTANCE.stackBeforeGrowth) {
                 int messagesDisplayed = Math.min(messageQueue.size(), OverlayConfig.GameUpdate.INSTANCE.messageLimit);
-                lineOffset = (LINE_HEIGHT * (messagesDisplayed - lines));
+                lineOffset = (LINE_HEIGHT * (messagesDisplayed - lines));  // display newest messages at bottommost / topmost slot
             } else {
-                lineOffset = (LINE_HEIGHT * lines);
+                lineOffset = (LINE_HEIGHT * lines); // otherwise newest messages will come after existing messages
             }
             int y;
             if (OverlayConfig.GameUpdate.INSTANCE.invertGrowth) {
