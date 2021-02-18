@@ -8,13 +8,13 @@ import net.minecraft.util.text.TextFormatting;
 
 public enum MajorIdentification {
 
-    PLAGUE("Plague", "Poisoned mobs spread 70% of their poison to nearby mobs"),
-    HAWKEYE("Hawkeye", "Arrow storm fires 5 arrows each dealing 120% damage"),
+    PLAGUE("Plague", "Poisoned mobs spread their poison to nearby mobs"),
+    HAWKEYE("Hawkeye", "Arrow storm fires 5 arrows each dealing 80% damage"),
     GREED("Greed", "Picking up emeralds heals you and nearby players for 15% max health"),
     CAVALRYMAN("Cavalryman", "You may cast spells and attack with a 70% damage penalty while on a horse"),
     GUARDIAN("Guardian", "50% of damage taken by nearby allies is redirected to you"),
     ALTRUISM("Heart of the Pack", "Nearby players gain 35% of the health you naturally regenerate"),
-    HERO("Saviour's Sacrifice", "While under 30% maximum health, nearby allies gain 50% bonus damage and defence"),
+    HERO("Saviour's Sacrifice", "While under 50% maximum health, nearby allies gain 50% bonus damage and defence"),
     ARCANES("Transcendence", "50% chance for spells to cost no mana when casted"),
     ENTROPY("Entropy", "Meteor falls three times faster"),
     ROVINGASSASSIN("Roving Assassin", "Vanish no longer drains mana while invisible"),
