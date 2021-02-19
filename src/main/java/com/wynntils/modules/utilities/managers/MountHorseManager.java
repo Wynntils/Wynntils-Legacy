@@ -43,6 +43,24 @@ public class MountHorseManager {
         return defaultName.equals(horseName) || horseName.endsWith(customSuffix);
     }
 
+    private static Entity findHorseInRadius(Minecraft mc) {
+        EntityPlayerSP player = mc.player;
+
+        List<Entity> horses = mc.world.getEntitiesWithinAABB(AbstractHorse.class, new AxisAlignedBB(
+                player.posX - searchRadius, player.posY - searchRadius, player.posZ - searchRadius,
+                player.posX + searchRadius, player.posY + searchRadius, player.posZ + searchRadius
+        ));
+
+        String playerName = player.getName();
+
+        for (Entity h : horses) {
+            if (isPlayersHorse(h, playerName)) {
+                return h;
+            }
+        }
+        return null;
+    }
+
     public static MountHorseStatus mountHorse(boolean allowRetry) {
         Minecraft mc = ModCore.mc();
         EntityPlayerSP player = mc.player;
@@ -57,20 +75,7 @@ public class MountHorseManager {
             return MountHorseStatus.ALREADY_RIDING;
         }
 
-        List<Entity> horses = mc.world.getEntitiesWithinAABB(AbstractHorse.class, new AxisAlignedBB(
-                player.posX - searchRadius, player.posY - searchRadius, player.posZ - searchRadius,
-                player.posX + searchRadius, player.posY + searchRadius, player.posZ + searchRadius
-        ));
-
-        Entity playersHorse = null;
-        String playerName = player.getName();
-
-        for (Entity h : horses) {
-            if (isPlayersHorse(h, playerName)) {
-                playersHorse = h;
-                break;
-            }
-        }
+        Entity playersHorse = findHorseInRadius(mc);
 
         int prev = mc.player.inventory.currentItem;
         boolean far = false;
