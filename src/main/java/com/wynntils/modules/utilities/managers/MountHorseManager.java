@@ -8,6 +8,7 @@ import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.HorseData;
+import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.modules.utilities.events.ClientEvents;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
 import net.minecraft.client.Minecraft;
@@ -19,6 +20,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.TextFormatting;
 
+import java.sql.Ref;
 import java.util.List;
 
 public class MountHorseManager {
@@ -28,6 +30,7 @@ public class MountHorseManager {
     }
 
     private static final int searchRadius = 18;  // Search a bit further for message "too far" instead of "not found"
+    private static final int remountTickDelay = 25;
 
     public static boolean isPlayersHorse(Entity horse, String playerName) {
         return (horse instanceof AbstractHorse) && isPlayersHorse(horse.getCustomNameTag(), playerName);
@@ -80,14 +83,18 @@ public class MountHorseManager {
             if (!allowRetry) {
                 return MountHorseStatus.NO_HORSE;
             }
-            
+
             mc.player.inventory.currentItem = horse.getInventorySlot();
             // No horse -> click to spawn; Horse too far -> despawn respawn
             mc.playerController.processRightClick(player, player.world, EnumHand.MAIN_HAND);
-            if (far) {
-                mc.playerController.processRightClick(player, player.world, EnumHand.MAIN_HAND);
-            }
             mc.player.inventory.currentItem = prev;
+            if (far) {
+                new Delay(() -> {
+                    mc.player.inventory.currentItem = horse.getInventorySlot();
+                    mc.playerController.processRightClick(player, player.world, EnumHand.MAIN_HAND);
+                    mc.player.inventory.currentItem = prev;
+                }, remountTickDelay);
+            }
             ClientEvents.isAwaitingHorseMount = true;
 
             return MountHorseStatus.SUCCESS;
