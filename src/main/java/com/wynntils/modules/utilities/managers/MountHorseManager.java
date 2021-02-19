@@ -64,6 +64,7 @@ public class MountHorseManager {
     public static MountHorseStatus mountHorse(boolean allowRetry) {
         Minecraft mc = ModCore.mc();
         EntityPlayerSP player = mc.player;
+        PlayerControllerMP playerController = mc.playerController;
 
         HorseData horse = PlayerInfo.get(HorseData.class);
 
@@ -77,7 +78,7 @@ public class MountHorseManager {
 
         Entity playersHorse = findHorseInRadius(mc);
 
-        int prev = mc.player.inventory.currentItem;
+        int prev = player.inventory.currentItem;
         boolean far = false;
         if (playersHorse != null) {
             double maxDistance = player.canEntityBeSeen(playersHorse) ? 36.0D : 9.0D;
@@ -89,15 +90,15 @@ public class MountHorseManager {
                 return MountHorseStatus.NO_HORSE;
             }
 
-            mc.player.inventory.currentItem = horse.getInventorySlot();
+            player.inventory.currentItem = horse.getInventorySlot();
             // No horse -> click to spawn; Horse too far -> despawn respawn
-            mc.playerController.processRightClick(player, player.world, EnumHand.MAIN_HAND);
-            mc.player.inventory.currentItem = prev;
+            playerController.processRightClick(player, player.world, EnumHand.MAIN_HAND);
+            player.inventory.currentItem = prev;
             if (far) {
                 new Delay(() -> {
-                    mc.player.inventory.currentItem = horse.getInventorySlot();
-                    mc.playerController.processRightClick(player, player.world, EnumHand.MAIN_HAND);
-                    mc.player.inventory.currentItem = prev;
+                    player.inventory.currentItem = horse.getInventorySlot();
+                    playerController.processRightClick(player, player.world, EnumHand.MAIN_HAND);
+                    player.inventory.currentItem = prev;
                 }, remountTickDelay);
             }
             ClientEvents.isAwaitingHorseMount = true;
@@ -105,9 +106,9 @@ public class MountHorseManager {
             return MountHorseStatus.SUCCESS;
         }
 
-        mc.player.inventory.currentItem = 8; // swap to soul points to avoid any right-click conflicts
-        mc.playerController.interactWithEntity(player, playersHorse, EnumHand.MAIN_HAND);
-        mc.player.inventory.currentItem = prev;
+        player.inventory.currentItem = 8; // swap to soul points to avoid any right-click conflicts
+        playerController.interactWithEntity(player, playersHorse, EnumHand.MAIN_HAND);
+        player.inventory.currentItem = prev;
         return MountHorseStatus.SUCCESS;
     }
 
