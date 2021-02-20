@@ -63,7 +63,7 @@ public class MountHorseManager {
         return null;
     }
 
-    private static void tryDelayedSpawn(Minecraft mc, HorseData horse, int attempts, AtomicBoolean success) {
+    private static void tryDelayedSpawnMount(Minecraft mc, HorseData horse, int attempts, AtomicBoolean success) {
         if (attempts <= 0) {
             success.set(false);
             return;
@@ -77,8 +77,9 @@ public class MountHorseManager {
 
             if (findHorseInRadius(mc) != null) {
                 success.set(true);
+                ClientEvents.isAwaitingHorseMount = true;
             } else {
-                tryDelayedSpawn(mc, horse, attempts - 1, success);
+                tryDelayedSpawnMount(mc, horse, attempts - 1, success);
             }
         }, remountTickDelay);
     }
