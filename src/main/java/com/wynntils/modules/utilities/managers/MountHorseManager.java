@@ -35,6 +35,8 @@ public class MountHorseManager {
     private static final int remountTickDelay = 5;
     private static final int spawnAttempts = 8;
 
+    public static boolean ingamePrevention = false;
+
     public static boolean isPlayersHorse(Entity horse, String playerName) {
         return (horse instanceof AbstractHorse) && isPlayersHorse(horse.getCustomNameTag(), playerName);
     }
@@ -65,9 +67,15 @@ public class MountHorseManager {
     }
 
     private static void tryDelayedSpawnMount(Minecraft mc, HorseData horse, int attempts) {
+        if (ingamePrevention) {
+            ingamePrevention = false;
+            return;
+        }
+
         if (attempts <= 0) {
             String message = getMountHorseErrorMessage(MountHorseStatus.NO_HORSE);
             GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + message);
+            ingamePrevention = false;
             return;
         }
 
@@ -121,7 +129,11 @@ public class MountHorseManager {
                 tryDelayedSpawnMount(mc, horse, spawnAttempts);
                 return MountHorseStatus.SPAWNING;
             } else {
-                ClientEvents.isAwaitingHorseMount = true;
+                if (ingamePrevention) {
+                    ingamePrevention = false;
+                } else {
+                    ClientEvents.isAwaitingHorseMount = true;
+                }
                 return MountHorseStatus.SUCCESS;
             }
 
