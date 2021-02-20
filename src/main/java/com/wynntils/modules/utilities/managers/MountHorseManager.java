@@ -23,6 +23,7 @@ import net.minecraft.util.text.TextFormatting;
 
 import java.sql.Ref;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MountHorseManager {
 
@@ -60,6 +61,26 @@ public class MountHorseManager {
             }
         }
         return null;
+    }
+
+    private static void tryDelayedSpawn(Minecraft mc, HorseData horse, int attempts, AtomicBoolean success) {
+        if (attempts <= 0) {
+            success.set(false);
+            return;
+        }
+
+        int prev = mc.player.inventory.currentItem;
+        new Delay(() -> {
+            mc.player.inventory.currentItem = horse.getInventorySlot();
+            mc.playerController.processRightClick(mc.player, mc.player.world, EnumHand.MAIN_HAND);
+            mc.player.inventory.currentItem = prev;
+
+            if (findHorseInRadius(mc) != null) {
+                success.set(true);
+            } else {
+                tryDelayedSpawn(mc, horse, attempts - 1, success);
+            }
+        }, remountTickDelay);
     }
 
     public static MountHorseStatus mountHorse(boolean allowRetry) {
