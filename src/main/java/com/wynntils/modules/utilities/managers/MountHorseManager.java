@@ -28,11 +28,12 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class MountHorseManager {
 
     public enum MountHorseStatus {
-        SUCCESS, ALREADY_RIDING, NO_HORSE
+        SUCCESS, ALREADY_RIDING, NO_HORSE, SPAWNING
     }
 
     private static final int searchRadius = 18;  // Search a bit further for message "too far" instead of "not found"
-    private static final int remountTickDelay = 25;
+    private static final int remountTickDelay = 5;
+    private static final int spawnAttempts = 8;
 
     public static boolean isPlayersHorse(Entity horse, String playerName) {
         return (horse instanceof AbstractHorse) && isPlayersHorse(horse.getCustomNameTag(), playerName);
@@ -63,9 +64,10 @@ public class MountHorseManager {
         return null;
     }
 
-    private static void tryDelayedSpawnMount(Minecraft mc, HorseData horse, int attempts, AtomicBoolean success) {
+    private static void tryDelayedSpawnMount(Minecraft mc, HorseData horse, int attempts) {
         if (attempts <= 0) {
-            success.set(false);
+            String message = getMountHorseErrorMessage(MountHorseStatus.NO_HORSE);
+            GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + message);
             return;
         }
 
@@ -76,10 +78,9 @@ public class MountHorseManager {
             mc.player.inventory.currentItem = prev;
 
             if (findHorseInRadius(mc) != null) {
-                success.set(true);
                 ClientEvents.isAwaitingHorseMount = true;
             } else {
-                tryDelayedSpawnMount(mc, horse, attempts - 1, success);
+                tryDelayedSpawnMount(mc, horse, attempts - 1);
             }
         }, remountTickDelay);
     }
@@ -114,19 +115,16 @@ public class MountHorseManager {
             }
 
             player.inventory.currentItem = horse.getInventorySlot();
-            // No horse -> click to spawn; Horse too far -> despawn respawn
             playerController.processRightClick(player, player.world, EnumHand.MAIN_HAND);
             player.inventory.currentItem = prev;
             if (far) {
-                new Delay(() -> {
-                    player.inventory.currentItem = horse.getInventorySlot();
-                    playerController.processRightClick(player, player.world, EnumHand.MAIN_HAND);
-                    player.inventory.currentItem = prev;
-                }, remountTickDelay);
+                tryDelayedSpawnMount(mc, horse, spawnAttempts);
+                return MountHorseStatus.SPAWNING;
+            } else {
+                ClientEvents.isAwaitingHorseMount = true;
+                return MountHorseStatus.SUCCESS;
             }
-            ClientEvents.isAwaitingHorseMount = true;
 
-            return MountHorseStatus.SUCCESS;
         }
 
         player.inventory.currentItem = 8; // swap to soul points to avoid any right-click conflicts
