@@ -686,6 +686,20 @@ public class OverlayConfig extends SettingsClass {
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
     }
 
+    @SettingsInfo(name = "tracked_quest_info_settings", displayPath = "Utilities/Overlays/Tracked Quest Info")
+    public static class TrackedQuestInfo extends SettingsClass {
+        public static TrackedQuestInfo INSTANCE;
+
+        @Setting(displayName = "Display Quest Name", description = "Should the quest name be shown in the overlay?")
+        public boolean displayQuestName = false;
+
+        @Setting(displayName = "Text Alignment", description = "What alignment should the overlay use?")
+        public TextAlignment textAlignment = TextAlignment.LEFT_RIGHT;
+
+        @Setting(displayName = "Text Shadow", description = "What shadow should the text use?")
+        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+    }
+
     @SettingsInfo(name = "objectives_settings", displayPath = "Utilities/Overlays/Objectives")
     public static class Objectives extends SettingsClass {
         public static Objectives INSTANCE;
