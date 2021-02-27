@@ -52,6 +52,7 @@ public class UtilitiesModule extends Module {
         registerEvents(new ServerUptimeOverlay());
         registerEvents(new BankOverlay());
         registerEvents(new ServerSelectorOverlay());
+        registerEvents(new ServerNumberOverlay());
 
         // Real overlays
         registerOverlay(new WarTimerOverlay(), Priority.LOWEST);
@@ -122,7 +123,7 @@ public class UtilitiesModule extends Module {
     public GameUpdateOverlay getGameUpdateOverlay() {
         return gameUpdateOverlay;
     }
-    
+
     public ActionBarOverlay getActionBarOverlay() {
         return actionBarOverlay;
     }
