@@ -106,9 +106,9 @@ public class ClientEvents implements Listener {
         if (!(Minecraft.getMinecraft().currentScreen instanceof ChestReplacer)) return;
 
         ChestReplacer chest = (ChestReplacer) Minecraft.getMinecraft().currentScreen;
-        if (!chest.getLowerInv().getName().contains("Loot Chest")) return;
+        if (!chest.getLowerInv().getName().contains("Loot Chest") && !chest.getLowerInv().getName().contains("Rewards")) return;
 
-        for (int i = 0; i < e.getPacket().getItemStacks().size(); i++) {
+        for (int i = 0; i < chest.getLowerInv().getSizeInventory(); i++) {
             ItemStack stack = e.getPacket().getItemStacks().get(i);
             if (stack.isEmpty() || !stack.hasDisplayName()) continue;
             if (!stack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString())) continue;

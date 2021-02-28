@@ -512,7 +512,7 @@ public class ClientEvents implements Listener {
         if (UtilitiesConfig.INSTANCE.preventMythicChestClose) {
             if (e.getKeyCode() == 1 || e.getKeyCode() == ModCore.mc().gameSettings.keyBindInventory.getKeyCode()) {
                 IInventory inv = e.getGui().getLowerInv();
-                if (inv.getDisplayName().getUnformattedText().contains("Loot Chest")) {
+                if (inv.getDisplayName().getUnformattedText().contains("Loot Chest") || inv.getDisplayName().getUnformattedText().contains("Rewards")) {
                     for (int i = 0; i < inv.getSizeInventory(); i++) {
                         ItemStack stack = inv.getStackInSlot(i);
                         if (!stack.hasDisplayName() ||
