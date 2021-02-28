@@ -432,7 +432,6 @@ public class ChatManager {
             in.getSiblings().addAll(chapterSelect);
 
         }
-        System.out.println(in.getFormattedText().replace('§', '&'));
 
         return in;
     }

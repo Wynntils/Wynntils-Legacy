@@ -25,7 +25,9 @@ public enum MajorIdentification {
     TAUNT("Taunt", "Mobs within 12 blocks target you upon casting War Scream"),
     FREERUNNER("Freerunner", "Double your sprint speed when your sprint bar is under 30%"),
     RALLY("Rally", "Charge heals you by 10% and nearby allies by 15% on impact, but becomes harmless"),
-    CHERRY_BOMBS("Cherry Bombs", "Your Smoke Bombs explode instantly on contact, dealing 110% damage each");
+    CHERRY_BOMBS("Cherry Bombs", "Your Smoke Bombs explode instantly on contact, dealing 110% damage each"),
+    PEACEFUL_EFFIGY("Peaceful Effigy", "Your Totem will last twice as long"),
+    FURIOUS_EFFIGY("Furious Effigy", "Totem effects are twice as fast, but duration is halved");
 
     String name, description;
 
