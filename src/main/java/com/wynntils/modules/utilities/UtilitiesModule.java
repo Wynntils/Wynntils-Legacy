@@ -109,6 +109,7 @@ public class UtilitiesModule extends Module {
         registerSettings(OverlayConfig.InfoOverlays.class);
         registerSettings(OverlayConfig.PlayerInfo.class);
         registerSettings(OverlayConfig.ConsumableTimer.class);
+        registerSettings(OverlayConfig.TrackedQuestInfo.class);
         registerSettings(OverlayConfig.GameUpdate.GameUpdateEXPMessages.class);
         registerSettings(OverlayConfig.GameUpdate.GameUpdateInventoryMessages.class);
         registerSettings(OverlayConfig.GameUpdate.RedirectSystemMessages.class);
