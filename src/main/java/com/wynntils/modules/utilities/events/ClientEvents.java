@@ -883,13 +883,17 @@ public class ClientEvents implements Listener {
         if (!UtilitiesConfig.INSTANCE.preventTradesDuels) return;
 
         EntityPlayerSP player = ModCore.mc().player;
+        if (!player.isSneaking()) return;
+
         Entity clicked = e.getPacket().getEntityFromWorld(player.world);
         if (!(clicked instanceof EntityPlayer)) return;
 
         EntityPlayer ep = (EntityPlayer) clicked;
         if (ep.getTeam() == null) return; // player model npc
 
-        if (!player.isSneaking() || player.getHeldItemMainhand().isEmpty()) return;
+        ItemType item = ItemUtils.getItemType(player.getHeldItemMainhand());
+        if (item == null) return; // not any type of gear
+        if (item != ItemType.WAND && item != ItemType.DAGGER && item != ItemType.BOW && item != ItemType.SPEAR && item != ItemType.RELIK) return; // not a weapon
         e.setCanceled(true);
     }
 
