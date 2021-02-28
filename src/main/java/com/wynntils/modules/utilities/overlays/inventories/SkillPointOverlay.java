@@ -271,7 +271,7 @@ public class SkillPointOverlay implements Listener {
         String lore = TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(stack));
         int start = lore.indexOf(" points ") - 3;
 
-        return Integer.parseInt(lore.substring(start, start + 3).trim());
+        return (start < 0) ? 0 : Integer.parseInt(lore.substring(start, start + 3).trim());
     }
 
     public void addManaTables(ChestReplacer gui) {
