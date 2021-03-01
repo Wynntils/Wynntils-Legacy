@@ -74,26 +74,10 @@ public class WynnDataOverlay implements Listener {
             if (line.contains("Powder Slots [")) {
                 List<Powder> powders;
                 StringBuilder sb = new StringBuilder();
-                if (typeName.equals("weapon")){
-                    powders = Powder.findTieredPowdersWeapon(stack);
-                    if (powders != null) {
-                        powders.forEach(powder -> { sb.append(powder.name()); });
-                    } else {
-                        powders = Powder.findPowders(line);
-                        powders.forEach(powder -> {
-                            sb.append(powder.getLetterRepresentation());
-                            sb.append("1");
-                        });
-                    }
-                } else {
-                    powders = Powder.findPowders(line);
-                    powders.forEach(powder -> {
-                        sb.append(powder.getLetterRepresentation());
-                        sb.append("1");
-                    });
-                    // Make sure user starts at the update powders screen
-                    urlData.put("action", "powders");
-                }
+
+                //powders shouldn't be null because the item has the "Powder Slots [" string
+                powders = Powder.findTieredPowders(stack);
+                powders.forEach(powder -> sb.append(powder.name()));
                 urlData.put(typeName + "_powders", sb.toString());
             }
         });

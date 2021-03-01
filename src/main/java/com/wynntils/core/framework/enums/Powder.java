@@ -7,6 +7,7 @@ package com.wynntils.core.framework.enums;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.ItemProfile;
+import com.wynntils.webapi.profiles.item.enums.ItemType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 
@@ -108,6 +109,24 @@ public enum Powder {
         return DamageType.valueOf(this.getBase().name());
     }
 
+    public DamageType getOppositeDamageType() {
+        String s = String.valueOf(this.name().charAt(0));
+        //Could maybe be optimized because the opposite is just the previous one
+        switch (s){
+            case "E":
+                return DamageType.AIR;
+            case "T":
+                return DamageType.EARTH;
+            case "W":
+                return DamageType.THUNDER;
+            case "F":
+                return DamageType.WATER;
+            case "A":
+                return DamageType.FIRE;
+        }
+        return null;
+    }
+
     private Powder[] getTiers(){
         Powder[] v = values();
         String s = this.name().substring(0,1);
@@ -135,21 +154,28 @@ public enum Powder {
         return foundPowders;
     }
 
-    public static List<Powder> findTieredPowdersWeapon(ItemStack stack) throws NullPointerException {
+
+    public static List<Powder> findTieredPowders(ItemStack stack){
+        String itemName =  WebManager.getTranslatedItemName(TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName())).replace("֎", "");
+        ItemProfile baseItem = WebManager.getItems().get(itemName);
+        ItemType t = ItemUtils.getItemType(stack);
+        if (t == ItemType.BOW || t == ItemType.DAGGER || t == ItemType.WAND || t == ItemType.RELIK || t == ItemType.SPEAR){
+            return findTieredPowdersWeapon(stack, baseItem);
+        } else {
+            return findTieredPowdersArmor(stack, baseItem);
+        }
+    }
+
+    private static List<Powder> findTieredPowdersWeapon(ItemStack stack, ItemProfile baseItem){
         List<String> itemLore = ItemUtils.getUnformattedLore(stack);
         List<Powder> powderTypes = new LinkedList<>();
 
         Hashtable<DamageType, int[]> damageValues = new Hashtable<>();
         for( DamageType dt: DamageType.values()){ damageValues.put(dt, new int[]{0, 0}); }
 
-
-        //Get the base item without powders
-        String itemName =  WebManager.getTranslatedItemName(TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName())).replace("֎", "");
-        ItemProfile baseItem = WebManager.getItems().get(itemName);
-
         //Probably not optimized...
         //This loop finds the amount of powders used [(3 air powders 1 earth), (2 water 2 fire), (1 thunder), etc.]
-        //As well as the elemental damages displayed in the item lore
+        //As well as the elemental damages as displayed in the item lore
         itemLore.forEach(line -> {
             if (line.contains("Powder Slots [")) {
                 //Get what types of powders there are (Not tiered)
@@ -205,19 +231,38 @@ public enum Powder {
 
         //System.out.println("Beginning combo checks");
 
-        //Start at limit for starting with all t6 powders as that is most likely
+        //Start at limit because that is all tier 6 powders and that is most likely
         for (int i = combinations-1; i >= 0; i--){
             List<Powder> combo = new LinkedList<>();
             for (int n = 0; n < powderTypes.size(); n++){
                 combo.add(powderTypes.get(n).getTiers()[((int) (i/ Math.pow(6,n))) % 6]);
             }
 
-            if (match(getDamages(combo, baseItem),damageValues)){
+            if (matchDam(getDamages(combo, baseItem),damageValues)){
                 return combo;
             }
         }
 
         return null;
+    }
+
+    private static Hashtable<DamageType, Integer> getDefences(List<Powder> combo, ItemProfile base){
+
+        Hashtable<DamageType, Integer> defences = new Hashtable<>();
+
+        //Initialize with all values 0
+        for( DamageType dt: DamageType.values()){ defences.put(dt, 0); }
+
+        //Add damages from the base unpowdered weapon
+        base.getElementalDefenses().forEach(defences::put);
+
+        combo.forEach(powder -> {
+            defences.put(powder.asDamage(), defences.get(powder.asDamage()) + powder.defPlus);
+            defences.put(powder.getOppositeDamageType(), defences.get(powder.getOppositeDamageType()) - powder.defMinus);
+        });
+
+        return defences;
+
     }
 
     private static Hashtable<DamageType, int[]> getDamages(List<Powder> combo, ItemProfile base){
@@ -255,24 +300,87 @@ public enum Powder {
 
         });
 
-
-        /*
-        StringBuilder comboS = new StringBuilder("Combo: ");
-        combo.forEach(powder -> comboS.append(powder.name()));
-        System.out.println(comboS.toString());
-        System.out.println("Damage Values:");
-        damages.forEach((damageType, i) -> System.out.println(damageType.toString() + ": "+i[0]+"-"+i[1]));
-        */
-
         return damages;
 
     }
 
-    private static boolean match(Hashtable<DamageType, int[]> d1, Hashtable<DamageType, int[]> d2){
+    private static List<Powder> findTieredPowdersArmor (ItemStack stack, ItemProfile baseItem){
+        List<String> itemLore = ItemUtils.getUnformattedLore(stack);
+        List<Powder> powderTypes = new LinkedList<>();
+
+        Hashtable<DamageType, Integer> defValues = new Hashtable<>();
+        for( DamageType dt: DamageType.values()){ defValues.put(dt, 0); }
+
+        itemLore.forEach(line -> {
+            if (line.contains("Powder Slots [")) {
+                //Get what types of powders there are (Not tiered)
+                line.chars().forEach(ch -> {
+                    for (Powder powder : getBases()) {
+                        if (ch == powder.getSymbol()) {
+                            powderTypes.add(powder);
+                        }
+                    }
+                });
+            } else {
+                DamageType dt = null;
+
+                //Get defences displayed on an item:
+                if (line.startsWith("✤")) {
+                    dt = DamageType.EARTH;
+                } else if (line.startsWith("✦")) {
+                    dt = DamageType.THUNDER;
+                } else if (line.startsWith("❉")) {
+                    dt = DamageType.WATER;
+                } else if (line.startsWith("✹")) {
+                    dt = DamageType.FIRE;
+                } else if (line.startsWith("❋")) {
+                    dt = DamageType.AIR;
+                }
+
+                if (dt != null) {
+                    defValues.put(dt, Integer.parseInt(line.substring(line.indexOf(": ")+2)));
+                }
+            }
+        });
+
+        int combinations = (int) Math.pow(6,powderTypes.size());
+        if (combinations == 1) return null;
+
+        //System.out.println("Beginning combo checks");
+
+        //Start at limit because that is all tier 6 powders and that is most likely
+        for (int i = combinations-1; i >= 0; i--){
+            List<Powder> combo = new LinkedList<>();
+            for (int n = 0; n < powderTypes.size(); n++){
+                combo.add(powderTypes.get(n).getTiers()[((int) (i/ Math.pow(6,n))) % 6]);
+            }
+
+            if (matchDef(getDefences(combo, baseItem),defValues)){
+                return combo;
+            }
+        }
+
+        return null;
+
+    }
+
+    private static boolean matchDam(Hashtable<DamageType, int[]> d1, Hashtable<DamageType, int[]> d2){
         AtomicBoolean b = new AtomicBoolean(true);
 
         d1.forEach(((damageType, ints) -> {
             if (!(d2.get(damageType)[0] == ints[0] && d2.get(damageType)[1] == ints[1])){
+                b.set(false);
+            }
+        }));
+
+        return b.get();
+    }
+
+    private static boolean matchDef(Hashtable<DamageType, Integer> d1, Hashtable<DamageType, Integer> d2){
+        AtomicBoolean b = new AtomicBoolean(true);
+
+        d1.forEach(((damageType, integer) -> {
+            if (!(d2.get(damageType).equals(integer))){
                 b.set(false);
             }
         }));
