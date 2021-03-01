@@ -296,7 +296,7 @@ public class Utils {
                 Keyboard.destroy();
                 Keyboard.create();
             } else {
-                Runtime.getRuntime().exec("xgd-open " + url);
+                Runtime.getRuntime().exec("xdg-open " + url);
             }
             return;
         } catch (IOException | LWJGLException e) {
