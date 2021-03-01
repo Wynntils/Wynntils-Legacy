@@ -53,7 +53,7 @@ public class ItemUtils {
     /**
      * Get the lore from an item
      *
-     * @return an {@link List} containing all item lore
+     * @return A {@link List} containing all item lore.
      */
     public static List<String> getLore(ItemStack item) {
         NBTTagList loreTag = getLoreTag(item);

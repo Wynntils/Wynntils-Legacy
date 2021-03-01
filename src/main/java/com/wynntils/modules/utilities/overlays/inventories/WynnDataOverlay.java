@@ -24,10 +24,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.input.Keyboard;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class WynnDataOverlay implements Listener {
 
@@ -75,15 +72,29 @@ public class WynnDataOverlay implements Listener {
         }
         ItemUtils.getLore(stack).forEach(line -> {
             if (line.contains("Powder Slots [")) {
-                List<Powder> powders = Powder.findPowders(line);
+                List<Powder> powders;
                 StringBuilder sb = new StringBuilder();
-                powders.forEach(powder -> {
-                    sb.append(powder.getLetterRepresentation());
-                    sb.append("1");
-                });
+                if (typeName.equals("weapon")){
+                    powders = Powder.findTieredPowdersWeapon(stack);
+                    if (powders != null) {
+                        powders.forEach(powder -> { sb.append(powder.name()); });
+                    } else {
+                        powders = Powder.findPowders(line);
+                        powders.forEach(powder -> {
+                            sb.append(powder.getLetterRepresentation());
+                            sb.append("1");
+                        });
+                    }
+                } else {
+                    powders = Powder.findPowders(line);
+                    powders.forEach(powder -> {
+                        sb.append(powder.getLetterRepresentation());
+                        sb.append("1");
+                    });
+                    // Make sure user starts at the update powders screen
+                    urlData.put("action", "powders");
+                }
                 urlData.put(typeName + "_powders", sb.toString());
-                // Make sure user starts at the update powders screen
-                urlData.put("action", "powders");
             }
         });
     }
