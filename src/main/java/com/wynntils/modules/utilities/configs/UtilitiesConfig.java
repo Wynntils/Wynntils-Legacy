@@ -135,9 +135,6 @@ public class UtilitiesConfig extends SettingsClass {
     @SettingsInfo(name = "afk", displayPath = "Utilities/AFK Protection")
     public static class AfkProtection extends SettingsClass {
         public static AfkProtection INSTANCE;
-        @Setting(displayName = "Block Player Collision When AFK", description = "Should player collision be blocked when you are AFK?")
-        public boolean blockAfkPushs = true;
-
         @Setting(displayName = "AFK Protection", description = "Should you enter the class selection menu when you are AFK?")
         public boolean afkProtection = false;
 

@@ -56,7 +56,6 @@ import net.minecraft.network.play.client.CPacketPlayerDigging.Action;
 import net.minecraft.network.play.server.SPacketEntityMetadata;
 import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.network.play.server.SPacketTitle;
-import net.minecraft.scoreboard.Team;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
@@ -68,7 +67,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import org.lwjgl.opengl.Display;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -84,7 +82,6 @@ public class ClientEvents implements Listener {
     private static GuiScreen scheduledGuiScreen = null;
     private static boolean firstNullOccurred = false;
 
-    private static boolean pushBlockingEnabled = false;
     private static boolean afkProtectionEnabled = false;
     private static boolean afkProtectionActivated = false;
     private static boolean afkProtectionRequested = false;
@@ -137,7 +134,6 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void classChange(WynnClassChangeEvent e) {
-        pushBlockingEnabled = false;
         afkProtectionEnabled = false;
         afkProtectionActivated = false;
 
@@ -154,7 +150,7 @@ public class ClientEvents implements Listener {
 
         DailyReminderManager.checkDailyReminder(ModCore.mc().player);
 
-        if (!UtilitiesConfig.AfkProtection.INSTANCE.blockAfkPushs && !UtilitiesConfig.AfkProtection.INSTANCE.afkProtection) return;
+        if (!UtilitiesConfig.AfkProtection.INSTANCE.afkProtection) return;
 
         if (afkProtectionRequested) {
             afkProtectionRequested = false;
@@ -164,22 +160,6 @@ public class ClientEvents implements Listener {
 
         long currentTime = System.currentTimeMillis();
         long timeSinceActivity = currentTime - this.lastUserInput;
-
-        if (UtilitiesConfig.AfkProtection.INSTANCE.blockAfkPushs) {
-            if (!pushBlockingEnabled) {
-                if (timeSinceActivity >= 10000 || !Display.isActive()) {
-                    // If not enabled, but we lose focus or no activity for 10 seconds, turn on
-                    Utils.createFakeScoreboard("Afk", Team.CollisionRule.NEVER);
-                    pushBlockingEnabled = true;
-                }
-            } else  {
-                if (timeSinceActivity < 10000 && Display.isActive()) {
-                    // If turned on, but we gain focus or have activity, turn off
-                    pushBlockingEnabled = false;
-                    Utils.removeFakeScoreboard("Afk");
-                }
-            }
-        }
 
         if (UtilitiesConfig.AfkProtection.INSTANCE.afkProtection) {
             if (afkProtectionActivated) {
