@@ -485,7 +485,7 @@ public class ChatManager {
 
     public static boolean processUserMention(ITextComponent in, ITextComponent original) {
         if (ChatConfig.INSTANCE.allowChatMentions && in != null && Minecraft.getMinecraft().player != null) {
-            String match = ModCore.mc().player.getName() + (ChatConfig.INSTANCE.mentionNames.length() > 0 ? "|" + ChatConfig.INSTANCE.mentionNames.replace(",", "|") : "") + "\b";
+            String match = "\\b(" + ModCore.mc().player.getName() + (ChatConfig.INSTANCE.mentionNames.length() > 0 ? "|" + ChatConfig.INSTANCE.mentionNames.replace(",", "|") : "") + ")\\b";
             Pattern pattern = Pattern.compile(match, Pattern.CASE_INSENSITIVE);
 
             Matcher looseMatcher = pattern.matcher(in.getUnformattedText());
