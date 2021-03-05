@@ -10,11 +10,8 @@ import com.wynntils.modules.utilities.interfaces.IIdentificationAnalyser;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 import org.apache.commons.lang3.math.Fraction;
 
-import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.regex.Pattern;
 
 import static net.minecraft.util.text.TextFormatting.*;
 
