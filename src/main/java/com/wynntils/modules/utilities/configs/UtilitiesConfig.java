@@ -112,6 +112,10 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Show Advanced Identifications", description = "Should items show advanced identifications?", order = 0)
         public boolean enabled = true;
 
+        @Setting.Limitations.IntLimit(min = 0, max = 4)
+        @Setting(displayName = "Advanced Identifications Decimal Places", description = "How many decimal places should advanced identifications have?\n\n§8 This requires your inventory to be reloaded to update. To do that, open the bank once.")
+        public int decimalPlaces = 0;
+
         @Setting(displayName = "Show Item Identification Stars", description = "Should the star rating of an item's identifications be shown?")
         public boolean addStars = false;
 

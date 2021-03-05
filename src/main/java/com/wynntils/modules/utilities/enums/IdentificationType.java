@@ -4,10 +4,17 @@
 
 package com.wynntils.modules.utilities.enums;
 
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.instances.IdentificationResult;
 import com.wynntils.modules.utilities.interfaces.IIdentificationAnalyser;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 import org.apache.commons.lang3.math.Fraction;
+
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.util.regex.Pattern;
 
 import static net.minecraft.util.text.TextFormatting.*;
 
@@ -17,9 +24,22 @@ public enum IdentificationType implements IIdentificationAnalyser {
 
         @Override
         public String getTitle(double specialAmount) {
-            int amount = normalize(specialAmount);
+            // Use DecimalFormat and a switch to determine how our decimals are formatted
+            String decimalPattern;
+            switch (UtilitiesConfig.Identifications.INSTANCE.decimalPlaces) {
+                case 1: decimalPattern = "0.0"; break;
+                case 2: decimalPattern = "0.00"; break;
+                case 3: decimalPattern = "0.000"; break;
+                case 4: decimalPattern = "0.0000"; break;
+                default: decimalPattern = "0"; break;
+            }
+            DecimalFormat df = new DecimalFormat(decimalPattern);
+            df.setRoundingMode(RoundingMode.HALF_UP);
+            String stringAmount = df.format(normalize(specialAmount));
+            // Make another int variable so our comparison isn't messed up by string formatting
+            double amount = normalize(specialAmount);
 
-            return amount != -1 ? getColor(amount) + "[" + amount + "%]" : GOLD + " NEW";
+            return amount != -1 ? getColor(amount) + "[" + stringAmount + "%]" : GOLD + " NEW";
         }
 
         @Override
@@ -41,20 +61,23 @@ public enum IdentificationType implements IIdentificationAnalyser {
             return isInverted ? 1 - value : value;
         }
 
-        String getColor(double amount) {
+        String getColor(double rawamount) {
+            // Round the provided decimals to make sure values such as 79.8% show up as green instead of yellow
+            // This is so zero decimals and four decimals are consistent with true roll percentages
+            // Also most people seem to prefer proper rounding anyway
+            int amount = (int)Math.round(rawamount);
             if (amount >= 96d) return AQUA.toString();
             if (amount >= 80d) return GREEN.toString();
             if (amount >= 30d) return YELLOW.toString();
             return RED.toString();
         }
 
-        int normalize(double amount) {
+        double normalize(double amount) {
             if (amount < 0d) return -1;
             if (amount > 1d) return -1;
 
-            return (int)(amount * 100);
+            return (amount * 100);
         }
-
     },
 
     MIN_MAX {
