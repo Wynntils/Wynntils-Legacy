@@ -120,6 +120,9 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Show Item Identification Stars", description = "Should the star rating of an item's identifications be shown?")
         public boolean addStars = false;
 
+        @Setting(displayName = "Rainbow Perfect Items", description = "Should perfect items have rainbow names?")
+        public boolean rainbowPerfect = true;
+
         @Setting(displayName = "Categorize Identifications", description = "Should the identifications in an item's tooltip be categorized?")
         public boolean addSpacing = true;
 
