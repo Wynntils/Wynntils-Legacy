@@ -323,7 +323,7 @@ public class ItemIdentificationOverlay implements Listener {
         }
 
         // check for item perfection
-        if (relativeTotal/idAmount >= 1d && idType == IdentificationType.PERCENTAGES && !hasNewId) {
+        if (relativeTotal/idAmount >= 1d && idType == IdentificationType.PERCENTAGES && !hasNewId && UtilitiesConfig.Identifications.INSTANCE.rainbowPerfect) {
             wynntils.setBoolean("isPerfect", true);
         }
 

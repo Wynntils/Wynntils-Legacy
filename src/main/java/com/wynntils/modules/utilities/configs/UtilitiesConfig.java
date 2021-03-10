@@ -15,6 +15,8 @@ import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 import com.wynntils.webapi.profiles.item.enums.ItemTier;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -112,8 +114,14 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Show Advanced Identifications", description = "Should items show advanced identifications?", order = 0)
         public boolean enabled = true;
 
+        @Setting(displayName = "Advanced Identifications Decimal Places", description = "How many decimal places should advanced identifications have?\n\n§8 This requires your inventory to be reloaded to update. To do that, open the bank once.")
+        public IdentificationDecimalPlaces decimalPlaces = IdentificationDecimalPlaces.Zero;
+
         @Setting(displayName = "Show Item Identification Stars", description = "Should the star rating of an item's identifications be shown?")
         public boolean addStars = false;
+
+        @Setting(displayName = "Rainbow Perfect Items", description = "Should perfect items have rainbow names?")
+        public boolean rainbowPerfect = true;
 
         @Setting(displayName = "Categorize Identifications", description = "Should the identifications in an item's tooltip be categorized?")
         public boolean addSpacing = true;
@@ -129,6 +137,25 @@ public class UtilitiesConfig extends SettingsClass {
 
         @Setting(displayName = "Identification Price Guesses", description = "Should the guesses for prices of identifying unidentified items be displayed?\n\n§8 This requires your inventory to be reloaded to update. To do that, open the bank once.")
         public boolean showGuessesPrice = false;
+
+        public enum IdentificationDecimalPlaces {
+            Zero("0"),
+            One("0.0"),
+            Two("0.00"),
+            Three("0.000"),
+            Four("0.0000");
+
+            DecimalFormat df;
+
+            IdentificationDecimalPlaces(String format) {
+                df = new DecimalFormat(format);
+                df.setRoundingMode(RoundingMode.DOWN);
+            }
+
+            public String format(double number) {
+                return df.format(number);
+            }
+        }
 
     }
 
