@@ -87,9 +87,9 @@ public class MountHorseManager {
 
             if (findHorseInRadius(mc) != null) {
                 ClientEvents.isAwaitingHorseMount = true;
-            } else {
-                tryDelayedSpawnMount(mc, horse, attempts - 1);
+                return;
             }
+            tryDelayedSpawnMount(mc, horse, attempts - 1);
         }, remountTickDelay);
     }
 
@@ -128,14 +128,13 @@ public class MountHorseManager {
             if (far) {
                 tryDelayedSpawnMount(mc, horse, spawnAttempts);
                 return MountHorseStatus.SPAWNING;
-            } else {
-                if (ingamePrevention) {
-                    ingamePrevention = false;
-                } else {
-                    ClientEvents.isAwaitingHorseMount = true;
-                }
-                return MountHorseStatus.SUCCESS;
             }
+            if (ingamePrevention) {
+                ingamePrevention = false;
+            } else {
+                ClientEvents.isAwaitingHorseMount = true;
+            }
+            return MountHorseStatus.SUCCESS;
 
         }
 
