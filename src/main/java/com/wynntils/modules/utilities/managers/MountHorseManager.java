@@ -8,10 +8,12 @@ import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.HorseData;
+import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.modules.utilities.events.ClientEvents;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.passive.AbstractHorse;
@@ -19,15 +21,21 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.TextFormatting;
 
+import java.sql.Ref;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MountHorseManager {
 
     public enum MountHorseStatus {
-        SUCCESS, ALREADY_RIDING, NO_HORSE
+        SUCCESS, ALREADY_RIDING, NO_HORSE, SPAWNING
     }
 
     private static final int searchRadius = 18;  // Search a bit further for message "too far" instead of "not found"
+    private static final int remountTickDelay = 5;
+    private static final int spawnAttempts = 8;
+
+    private static boolean ingamePrevention = false;
 
     public static boolean isPlayersHorse(Entity horse, String playerName) {
         return (horse instanceof AbstractHorse) && isPlayersHorse(horse.getCustomNameTag(), playerName);
@@ -40,13 +48,63 @@ public class MountHorseManager {
         return defaultName.equals(horseName) || horseName.endsWith(customSuffix);
     }
 
+    private static Entity findHorseInRadius(Minecraft mc) {
+        EntityPlayerSP player = mc.player;
+
+        List<Entity> horses = mc.world.getEntitiesWithinAABB(AbstractHorse.class, new AxisAlignedBB(
+                player.posX - searchRadius, player.posY - searchRadius, player.posZ - searchRadius,
+                player.posX + searchRadius, player.posY + searchRadius, player.posZ + searchRadius
+        ));
+
+        String playerName = player.getName();
+
+        for (Entity h : horses) {
+            if (isPlayersHorse(h, playerName)) {
+                return h;
+            }
+        }
+        return null;
+    }
+
+    private static void tryDelayedSpawnMount(Minecraft mc, HorseData horse, int attempts) {
+        if (ingamePrevention) {
+            ingamePrevention = false;
+            return;
+        }
+
+        if (attempts <= 0) {
+            String message = getMountHorseErrorMessage(MountHorseStatus.NO_HORSE);
+            GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + message);
+            ingamePrevention = false;
+            return;
+        }
+
+        int prev = mc.player.inventory.currentItem;
+        new Delay(() -> {
+            mc.player.inventory.currentItem = horse.getInventorySlot();
+            mc.playerController.processRightClick(mc.player, mc.player.world, EnumHand.MAIN_HAND);
+            mc.player.inventory.currentItem = prev;
+
+            if (findHorseInRadius(mc) != null) {
+                ClientEvents.isAwaitingHorseMount = true;
+                return;
+            }
+            tryDelayedSpawnMount(mc, horse, attempts - 1);
+        }, remountTickDelay);
+    }
+
+    public static void preventNextMount() {
+        ingamePrevention = true;
+    }
+
     public static MountHorseStatus mountHorse(boolean allowRetry) {
         Minecraft mc = ModCore.mc();
         EntityPlayerSP player = mc.player;
+        PlayerControllerMP playerController = mc.playerController;
 
         HorseData horse = PlayerInfo.get(HorseData.class);
 
-        if (!horse.hasHorse() || horse.getInventorySlot() > 8 || !allowRetry) {
+        if (!horse.hasHorse() || horse.getInventorySlot() > 8) {
             return MountHorseStatus.NO_HORSE;
         }
 
@@ -54,22 +112,9 @@ public class MountHorseManager {
             return MountHorseStatus.ALREADY_RIDING;
         }
 
-        List<Entity> horses = mc.world.getEntitiesWithinAABB(AbstractHorse.class, new AxisAlignedBB(
-                player.posX - searchRadius, player.posY - searchRadius, player.posZ - searchRadius,
-                player.posX + searchRadius, player.posY + searchRadius, player.posZ + searchRadius
-        ));
+        Entity playersHorse = findHorseInRadius(mc);
 
-        Entity playersHorse = null;
-        String playerName = player.getName();
-
-        for (Entity h : horses) {
-            if (isPlayersHorse(h, playerName)) {
-                playersHorse = h;
-                break;
-            }
-        }
-
-        int prev = mc.player.inventory.currentItem;
+        int prev = player.inventory.currentItem;
         boolean far = false;
         if (playersHorse != null) {
             double maxDistance = player.canEntityBeSeen(playersHorse) ? 36.0D : 9.0D;
@@ -77,21 +122,29 @@ public class MountHorseManager {
         }
 
         if (playersHorse == null || far) {
-            mc.player.inventory.currentItem = horse.getInventorySlot();
-            // No horse -> click to spawn; Horse too far -> despawn respawn
-            mc.playerController.processRightClick(player, player.world, EnumHand.MAIN_HAND);
-            if (far) {
-                mc.playerController.processRightClick(player, player.world, EnumHand.MAIN_HAND);
+            if (!allowRetry) {
+                return MountHorseStatus.NO_HORSE;
             }
-            mc.player.inventory.currentItem = prev;
-            ClientEvents.isAwaitingHorseMount = true;
 
+            player.inventory.currentItem = horse.getInventorySlot();
+            playerController.processRightClick(player, player.world, EnumHand.MAIN_HAND);
+            player.inventory.currentItem = prev;
+            if (far) {
+                tryDelayedSpawnMount(mc, horse, spawnAttempts);
+                return MountHorseStatus.SPAWNING;
+            }
+            if (ingamePrevention) {
+                ingamePrevention = false;
+            } else {
+                ClientEvents.isAwaitingHorseMount = true;
+            }
             return MountHorseStatus.SUCCESS;
+
         }
 
-        mc.player.inventory.currentItem = 8; // swap to soul points to avoid any right-click conflicts
-        mc.playerController.interactWithEntity(player, playersHorse, EnumHand.MAIN_HAND);
-        mc.player.inventory.currentItem = prev;
+        player.inventory.currentItem = 8; // swap to soul points to avoid any right-click conflicts
+        playerController.interactWithEntity(player, playersHorse, EnumHand.MAIN_HAND);
+        player.inventory.currentItem = prev;
         return MountHorseStatus.SUCCESS;
     }
 
