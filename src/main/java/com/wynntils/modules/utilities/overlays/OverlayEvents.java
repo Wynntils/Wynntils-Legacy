@@ -183,7 +183,7 @@ public class OverlayEvents implements Listener {
                 case "There is no room for a horse.":
                     GameUpdateOverlay.queueMessage(DARK_RED + "There is no room for a horse.");
                     e.setCanceled(true);
-                    MountHorseManager.ingamePrevention = true;
+                    MountHorseManager.preventNextMount();
                     return;
                 case "Since you interacted with your inventory, your horse has despawned.":
                     GameUpdateOverlay.queueMessage(LIGHT_PURPLE + "Horse despawned.");
@@ -192,7 +192,7 @@ public class OverlayEvents implements Listener {
                 case "Your horse is scared to come out right now, too many mobs are nearby.":
                     GameUpdateOverlay.queueMessage(DARK_RED + "Too many mobs nearby to spawn your horse");
                     e.setCanceled(true);
-                    MountHorseManager.ingamePrevention = true;
+                    MountHorseManager.preventNextMount();
                     return;
             }
         }

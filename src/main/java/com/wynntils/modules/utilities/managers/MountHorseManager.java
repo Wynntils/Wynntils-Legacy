@@ -35,7 +35,7 @@ public class MountHorseManager {
     private static final int remountTickDelay = 5;
     private static final int spawnAttempts = 8;
 
-    public static boolean ingamePrevention = false;
+    private static boolean ingamePrevention = false;
 
     public static boolean isPlayersHorse(Entity horse, String playerName) {
         return (horse instanceof AbstractHorse) && isPlayersHorse(horse.getCustomNameTag(), playerName);
@@ -91,6 +91,10 @@ public class MountHorseManager {
             }
             tryDelayedSpawnMount(mc, horse, attempts - 1);
         }, remountTickDelay);
+    }
+
+    public static void preventNextMount() {
+        ingamePrevention = true;
     }
 
     public static MountHorseStatus mountHorse(boolean allowRetry) {
