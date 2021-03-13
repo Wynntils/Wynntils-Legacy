@@ -34,6 +34,7 @@ public enum Powder {
     AIR('❋', TextFormatting.WHITE),
     A1(2, 6, 11, 3, 1), A2(4, 9, 14, 6, 2), A3(7, 10, 17, 10, 3), A4(9, 13, 22, 16, 5), A5(13, 18, 28, 24, 9), A6(16, 18, 35, 34, 13);
 
+    private static final Powder[] bases = {EARTH, THUNDER, WATER, FIRE, AIR};
 
     char symbol;
     String color;
@@ -88,12 +89,7 @@ public enum Powder {
     }
 
     private static Powder[] getBases(){
-        Powder[] out = new Powder[5];
-        Powder[] v = values();
-        for (int i = 0; i < 29; i+=7){
-            out[i/7] = v[i];
-        }
-        return out;
+        return bases;
     }
 
     private Powder getBase(){
