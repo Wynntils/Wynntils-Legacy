@@ -9,7 +9,6 @@ import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.map.instances.LootRunNote;
 import com.wynntils.modules.map.managers.LootRunManager;
-
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -26,11 +25,7 @@ import net.minecraftforge.client.IClientCommand;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 import static net.minecraft.util.text.TextFormatting.*;
 
@@ -78,7 +73,9 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
 
                 String message;
                 if (result) message = GREEN + "Loaded loot run " + name + " successfully! " + GRAY + "(" + LootRunManager.getActivePath().getChests().size() + " chests)";
-                else message = RED + "The specified loot run doesn't exist!";
+                else {
+                    throw new CommandException("The specified loot run doesn't exist!");
+                }
 
                 sender.sendMessage(new TextComponentString(message));
 
