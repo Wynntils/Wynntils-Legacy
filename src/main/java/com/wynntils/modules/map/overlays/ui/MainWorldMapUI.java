@@ -5,8 +5,6 @@
 package com.wynntils.modules.map.overlays.ui;
 
 import com.google.common.collect.Lists;
-import com.wynntils.core.framework.instances.PlayerInfo;
-import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
@@ -78,7 +76,7 @@ public class MainWorldMapUI extends WorldMapUI {
         ), (v) -> true, (i, btn) -> {});
 
         addButton(MapButtonType.CENTER, 3, Arrays.asList(
-                AQUA + "[>] Configurate Markers",
+                AQUA + "[>] Configure Markers",
                 GRAY + "Enable or disable each",
                 GRAY + "map marker available."
         ), (v) -> true, (i, btn) -> Minecraft.getMinecraft().displayGuiScreen(new WorldMapSettingsUI()));
@@ -86,10 +84,12 @@ public class MainWorldMapUI extends WorldMapUI {
         addButton(MapButtonType.SHARE, 4, Arrays.asList(
                 BLUE + "[>] Share Location",
                 AQUA + "Left click" + GRAY +" to share your",
-                GRAY + "pin with your current party.",
+                GRAY + "location with your guild..",
                 AQUA + "Right click" + GRAY + " to share your",
-                GRAY + "location with your party."
-        ), (v) -> PlayerInfo.get(SocialData.class).getPlayerParty().isPartying(), (i, btn) -> handleShareButton(btn == 0));
+                GRAY + "location with your party.",
+                AQUA + "Shift" + GRAY + " to share your",
+                GRAY + "pin location instead."
+        ), (v) -> true, (i, btn) -> handleShareButton(btn == 0));
 
         addButton(MapButtonType.INFO, 5, Lists.newArrayList(Arrays.asList(
                 YELLOW + "[>] Quick Guide",
@@ -223,19 +223,24 @@ public class MainWorldMapUI extends WorldMapUI {
     }
 
     private void handleShareButton(boolean leftClick) {
-        if (leftClick) {
+        int x, z;
+        String type;
+        if (isShiftKeyDown()) {
+            type = "compass";
             Location location = CompassManager.getCompassLocation();
-            if (location != null) {
-                int x = (int) location.getX();
-                int z = (int) location.getZ();
-                CommandCompass.shareCoordinates(null, "compass", x, z);
-            }
-            return;
+            if (location == null) return;
+            x = (int) location.getX();
+            z = (int) location.getZ();
+        } else {
+            type = "location";
+            x = (int) Minecraft.getMinecraft().player.posX;
+            z = (int) Minecraft.getMinecraft().player.posZ;
         }
 
-        int x = (int) Minecraft.getMinecraft().player.posX;
-        int z = (int) Minecraft.getMinecraft().player.posZ;
-        CommandCompass.shareCoordinates(null, "location", x, z);
+        if (leftClick)
+            CommandCompass.shareCoordinates("guild", type, x, z);
+        else
+            CommandCompass.shareCoordinates(null, type, x, z);
     }
 
 }

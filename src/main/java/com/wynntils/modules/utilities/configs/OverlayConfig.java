@@ -262,6 +262,9 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Invert Growth", description = "Should the way ticker messages appear be inverted?")
         public boolean invertGrowth = true;
 
+        @Setting(displayName = "New Messages Display Prominently", description = "Should new messages appear before old messages in the direction of growth, pushing older messages further away?")
+        public boolean newMessagesFirst = false;
+
         @Setting(displayName = "Max Message Length", description = "What should the maximum length of messages in the game-update-ticker be?\n\n§8Messages longer than this set value will be truncated. Set this to 0 for no maximum length.")
         @Setting.Limitations.IntLimit(min = 0, max = 100)
         public int messageMaxLength = 0;
@@ -314,10 +317,10 @@ public class OverlayConfig extends SettingsClass {
 
             @Setting(displayName = "Redirect Horse Messages", description = "Should messages related to your horse be redirected to the game update ticker?")
             public boolean redirectHorse = true;
-            
+
             @Setting(displayName = "Redirect Resource Pack Messages", description = "Should wynnpack and loading reasource pack messages be disabled or redirected (depending on whether you can see them in classs screen)?")
             public boolean redirectResourcePack = false;
-            
+
             @Setting(displayName = "Redirect Class Messages", description = "Should class messages be redirected to the game update ticker?")
             public boolean redirectClass = true;
 
@@ -678,6 +681,20 @@ public class OverlayConfig extends SettingsClass {
 
         @Setting(displayName = "Text Alignment", description = "What alignment should the overlay use?")
         public TextAlignment textAlignment = TextAlignment.RIGHT_LEFT;
+
+        @Setting(displayName = "Text Shadow", description = "What shadow should the text use?")
+        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+    }
+
+    @SettingsInfo(name = "tracked_quest_info_settings", displayPath = "Utilities/Overlays/Tracked Quest Info")
+    public static class TrackedQuestInfo extends SettingsClass {
+        public static TrackedQuestInfo INSTANCE;
+
+        @Setting(displayName = "Display Quest Name", description = "Should the quest name be shown in the overlay?")
+        public boolean displayQuestName = false;
+
+        @Setting(displayName = "Text Alignment", description = "What alignment should the overlay use?")
+        public TextAlignment textAlignment = TextAlignment.LEFT_RIGHT;
 
         @Setting(displayName = "Text Shadow", description = "What shadow should the text use?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;

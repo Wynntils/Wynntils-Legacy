@@ -82,17 +82,13 @@ public class WaypointOverviewUI extends GuiScreen {
         drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        int groupShift = 0;
-        if (group == ungroupedIndex) {
-            groupShift = 20;
-            fontRenderer.drawString(TextFormatting.BOLD + "Group", this.width/2 - 205, 43, 0xFFFFFF);
-        }
-        fontRenderer.drawString(TextFormatting.BOLD + "Icon", this.width / 2 - 185 + groupShift, 43, 0xFFFFFF);
-        fontRenderer.drawString(TextFormatting.BOLD + "Name", this.width / 2 - 150 + groupShift, 43, 0xFFFFFF);
-        drawCenteredString(fontRenderer, TextFormatting.BOLD + "X", this.width/2 - 35 + groupShift, 43, 0xFFFFFF);
-        drawCenteredString(fontRenderer, TextFormatting.BOLD + "Z", this.width/2 + 20 + groupShift, 43, 0xFFFFFF);
-        drawCenteredString(fontRenderer, TextFormatting.BOLD + "Y", this.width/2 + 60 + groupShift, 43, 0xFFFFFF);
-        drawRect(this.width/2 - 185 - groupShift, 52, this.width/2 + 170 + groupShift, 53, 0xFFFFFFFF);
+        fontRenderer.drawString(TextFormatting.BOLD + "Group", this.width/2 - 205, 43, 0xFFFFFF);
+        fontRenderer.drawString(TextFormatting.BOLD + "Icon", this.width / 2 - 165, 43, 0xFFFFFF);
+        fontRenderer.drawString(TextFormatting.BOLD + "Name", this.width / 2 - 130, 43, 0xFFFFFF);
+        drawCenteredString(fontRenderer, TextFormatting.BOLD + "X", this.width/2 - 15, 43, 0xFFFFFF);
+        drawCenteredString(fontRenderer, TextFormatting.BOLD + "Z", this.width/2 + 40, 43, 0xFFFFFF);
+        drawCenteredString(fontRenderer, TextFormatting.BOLD + "Y", this.width/2 + 80, 43, 0xFFFFFF);
+        drawRect(this.width/2 - 205, 52, this.width/2 + 190, 53, 0xFFFFFFFF);
 
         ScreenRenderer.beginGL(0, 0);
         List<WaypointProfile> waypoints = getWaypoints();
@@ -110,32 +106,30 @@ public class WaypointOverviewUI extends GuiScreen {
             MapWaypointIcon wpIcon = new MapWaypointIcon(wp);
             float centreZ = 64 + 25 * i;
             float multiplier = 9f / Math.max(wpIcon.getSizeX(), wpIcon.getSizeZ());
-            wpIcon.renderAt(renderer, this.width / 2f - 171 + groupShift, centreZ, multiplier, 1);
+            wpIcon.renderAt(renderer, this.width / 2f - 151, centreZ, multiplier, 1);
 
-            if (group == ungroupedIndex) {
-                if (i == hovered) {
-                    GuiButtonImageBetter.setColour(true, true);
-                }
-                if (wp.getGroup() == null) {
-                    String text = "NONE";
-                    fontRenderer.drawString(text, (int) (this.width / 2f - 191 - fontRenderer.getStringWidth(text) / 2f), (int) centreZ, 0xFFFFFFFF);
-                } else {
-                    MapWaypointIcon groupIcon = MapWaypointIcon.getFree(wp.getGroup());
-                    float groupIconMultiplier = 9f / Math.max(groupIcon.getSizeX(), groupIcon.getSizeZ());
-                    groupIcon.renderAt(renderer, this.width / 2f - 191, centreZ, groupIconMultiplier, 1);
-                }
-                if (i == hovered) {
-                    GuiButtonImageBetter.setColour(false, true);
-                }
+            if (i == hovered) {
+                GuiButtonImageBetter.setColour(true, true);
+            }
+            if (wp.getGroup() == null) {
+                String text = "NONE";
+                fontRenderer.drawString(text, (int) (this.width / 2f - 191 - fontRenderer.getStringWidth(text) / 2f), (int) centreZ, 0xFFFFFFFF);
+            } else {
+                MapWaypointIcon groupIcon = MapWaypointIcon.getFree(wp.getGroup());
+                float groupIconMultiplier = 9f / Math.max(groupIcon.getSizeX(), groupIcon.getSizeZ());
+                groupIcon.renderAt(renderer, this.width / 2f - 191, centreZ, groupIconMultiplier, 1);
+            }
+            if (i == hovered) {
+                GuiButtonImageBetter.setColour(false, true);
             }
 
-            fontRenderer.drawString(wp.getName(), this.width/2 - 150 + groupShift, 60 + 25 * i, colour);
-            drawCenteredString(fontRenderer, Integer.toString((int) wp.getX()), this.width/2 - 35 + groupShift, 60 + 25 * i, colour);
-            drawCenteredString(fontRenderer, Integer.toString((int) wp.getZ()), this.width/2 + 20 + groupShift, 60 + 25 * i, colour);
-            drawCenteredString(fontRenderer, Integer.toString((int) wp.getY()), this.width/2 + 60 + groupShift, 60 + 25 * i, colour);
+            fontRenderer.drawString(wp.getName(), this.width/2 - 130, 60 + 25 * i, colour);
+            drawCenteredString(fontRenderer, Integer.toString((int) wp.getX()), this.width/2 - 15, 60 + 25 * i, colour);
+            drawCenteredString(fontRenderer, Integer.toString((int) wp.getZ()), this.width/2 + 40, 60 + 25 * i, colour);
+            drawCenteredString(fontRenderer, Integer.toString((int) wp.getY()), this.width/2 + 80, 60 + 25 * i, colour);
 
             if (hidden) {
-                drawHorizontalLine(this.width / 2 - 155 + groupShift, this.width / 2 + 75 + groupShift, (int) centreZ - 1, colour | 0xFF000000);
+                drawHorizontalLine(this.width / 2 - 135, this.width / 2 + 95, (int) centreZ - 1, colour | 0xFF000000);
                 GlStateManager.color(1, 1, 1, 1);
             }
         }
@@ -150,7 +144,7 @@ public class WaypointOverviewUI extends GuiScreen {
 
     // Returns the index of the waypoint (on the current page) that is being hovered over (Or -1 if no hover)
     private int getHoveredWaypoint(int mouseX, int mouseY) {
-        if (group == ungroupedIndex && this.width / 2f - 205 <= mouseX && mouseX <= this.width / 2f - 170) {
+        if (this.width / 2f - 205 <= mouseX && mouseX <= this.width / 2f - 170) {
             int i = Math.round((mouseY - 64) / 25f);
             int offset = mouseY - 25 * i - 64;
             if (i >= 0 && -10 <= offset && offset <= 10 && i < Math.min(pageHeight, getWaypoints().size() - pageHeight * page)) {
@@ -162,7 +156,7 @@ public class WaypointOverviewUI extends GuiScreen {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        if ((mouseButton == 0 || mouseButton == 1) && group == ungroupedIndex) {
+        if (mouseButton == 0 || mouseButton == 1) {
             int i = getHoveredWaypoint(mouseX, mouseY);
             if (i >= 0) {
                 // Clicked on group button of ith waypoint on this page

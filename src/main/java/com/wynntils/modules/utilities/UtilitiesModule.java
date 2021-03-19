@@ -52,6 +52,7 @@ public class UtilitiesModule extends Module {
         registerEvents(new ServerUptimeOverlay());
         registerEvents(new BankOverlay());
         registerEvents(new ServerSelectorOverlay());
+        registerEvents(new ServerNumberOverlay());
 
         // Real overlays
         registerOverlay(new WarTimerOverlay(), Priority.LOWEST);
@@ -108,6 +109,7 @@ public class UtilitiesModule extends Module {
         registerSettings(OverlayConfig.InfoOverlays.class);
         registerSettings(OverlayConfig.PlayerInfo.class);
         registerSettings(OverlayConfig.ConsumableTimer.class);
+        registerSettings(OverlayConfig.TrackedQuestInfo.class);
         registerSettings(OverlayConfig.GameUpdate.GameUpdateEXPMessages.class);
         registerSettings(OverlayConfig.GameUpdate.GameUpdateInventoryMessages.class);
         registerSettings(OverlayConfig.GameUpdate.RedirectSystemMessages.class);
@@ -122,7 +124,7 @@ public class UtilitiesModule extends Module {
     public GameUpdateOverlay getGameUpdateOverlay() {
         return gameUpdateOverlay;
     }
-    
+
     public ActionBarOverlay getActionBarOverlay() {
         return actionBarOverlay;
     }
