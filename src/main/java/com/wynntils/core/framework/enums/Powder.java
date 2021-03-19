@@ -51,23 +51,8 @@ public enum Powder {
 
     Powder(char symbol, TextFormatting color, int minDmg, int maxDmg, int convPct, int defPlus, int defMinus){
 
-
-
-        /*if (color == null) {
-            Powder parent = null;
-            char c = this.name().charAt(0);
-            for (Powder p: Powder.values()){
-                if (p.name().length() > 2 && p.name().startsWith(String.valueOf(c))){
-                    parent = p;
-                    break;
-                }
-            }
-            this.symbol = parent.symbol;
-            this.color  = parent.color;
-        } else { */
-            this.symbol = symbol;
-            this.color  = color.toString();
-        //}
+        this.symbol = symbol;
+        this.color  = color.toString();
 
         this.minDmg   = minDmg;
         this.maxDmg   = maxDmg;
@@ -209,23 +194,9 @@ public enum Powder {
             }
         });
 
-        /*
-        System.out.println("Base Damage Values:");
-        getDamages(new LinkedList<Powder>(), baseItem);
-
-        System.out.println("Weapon Damage Values:");
-        damageValues.forEach((damageType, i) -> System.out.println(damageType.toString() + ": "+i[0]+"-"+i[1]));
-
-        System.out.println("Powders (Not tiered):");
-        powderTypes.forEach(powder -> System.out.println(powder.toString()));
-        */
-
         //Number of different possible powder combinations
         int combinations = (int) Math.pow(6,powderTypes.size());
         if (combinations == 1) return null;
-
-
-        //System.out.println("Beginning combo checks");
 
         //Start at limit because that is all tier 6 powders and that is most likely
         for (int i = combinations-1; i >= 0; i--){
@@ -342,8 +313,6 @@ public enum Powder {
         int combinations = (int) Math.pow(6,powderTypes.size());
         if (combinations == 1) return null;
 
-        //System.out.println("Beginning combo checks");
-
         //Start at limit because that is all tier 6 powders and that is most likely
         for (int i = combinations-1; i >= 0; i--){
             List<Powder> combo = new LinkedList<>();
@@ -357,7 +326,6 @@ public enum Powder {
         }
 
         return null;
-
     }
 
     private static boolean matchDam(Hashtable<DamageType, int[]> d1, Hashtable<DamageType, int[]> d2){
@@ -383,5 +351,4 @@ public enum Powder {
 
         return b.get();
     }
-
 }
