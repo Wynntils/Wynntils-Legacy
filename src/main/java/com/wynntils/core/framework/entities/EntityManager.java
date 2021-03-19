@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.core.framework.entities;
@@ -42,11 +42,8 @@ public class EntityManager {
 
     /**
      * Called on RenderWorldLastEvent, proccess the rendering queue
-     *
-     * @param partialTicks the world partial ticks
-     * @param context the rendering context
      */
-    public static void tickEntities(float partialTicks, RenderGlobal context) {
+    public static void tickEntities() {
         if (entityList.isEmpty() && toSpawn.isEmpty()) return;
 
         Minecraft.getMinecraft().profiler.startSection("fakeEntities");
@@ -76,10 +73,46 @@ public class EntityManager {
                 Minecraft.getMinecraft().profiler.startSection(next.getName());
                 { // render
                     next.livingTicks += 1;
-                    next.tick(partialTicks, Utils.getRandom(), player);
+                    next.tick(Utils.getRandom(), player);
+                }
+                Minecraft.getMinecraft().profiler.endSection();
+            }
+        }
+        Minecraft.getMinecraft().profiler.endSection();
+    }
 
+    /**
+     * Called on RenderWorldLastEvent, proccess the rendering queue
+     *
+     * @param partialTicks the world partial ticks
+     * @param context the rendering context
+     */
+    public static void renderEntities(float partialTicks, RenderGlobal context) {
+        if (entityList.isEmpty() && toSpawn.isEmpty()) return;
+
+        Minecraft.getMinecraft().profiler.startSection("fakeEntities");
+        {
+            // adds all new entities to the set
+            Iterator<FakeEntity> it = toSpawn.iterator();
+            while (it.hasNext()) {
+                entityList.add(it.next());
+                it.remove();
+            }
+
+            RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
+            if (renderManager == null || renderManager.options == null) return;
+
+            EntityPlayerSP player = Minecraft.getMinecraft().player;
+            // ticks each entity
+            it = entityList.iterator();
+            while (it.hasNext()) {
+                FakeEntity next = it.next();
+
+                Minecraft.getMinecraft().profiler.startSection(next.getName());
+                {
                     pushMatrix();
                     {
+                        next.preRender(partialTicks, context, renderManager);
                         // translates to the correctly entity position
                         // subtracting the viewer position offset
                         translate(

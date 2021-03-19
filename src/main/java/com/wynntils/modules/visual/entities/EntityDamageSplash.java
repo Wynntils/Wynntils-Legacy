@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.visual.entities;
@@ -27,10 +27,15 @@ public class EntityDamageSplash extends FakeEntity {
     private static final WeakHashMap<String, Boolean> added = new WeakHashMap<>();
 
     String displayText;
-    private float scale = 1f;
+
+    private final float initialScale;
+    private final float maxLiving;
 
     public EntityDamageSplash(Map<DamageType, Integer> damages, Location currentLocation) {
         super(currentLocation);
+
+        this.initialScale = VisualConfig.DamageSplash.INSTANCE.initialScale;
+        this.maxLiving = VisualConfig.DamageSplash.INSTANCE.maxLiving * 0.1f;
 
         StringBuilder text = new StringBuilder();
         for (Map.Entry<DamageType, Integer> damage : damages.entrySet()) {
@@ -58,18 +63,10 @@ public class EntityDamageSplash extends FakeEntity {
     }
 
     @Override
-    public void tick(float partialTicks, Random r, EntityPlayerSP player) {
-        int maxLiving = VisualConfig.DamageSplash.INSTANCE.maxLiving;
-        if (livingTicks > maxLiving) {
-            remove();
-            return;
-        }
+    public void tick(Random r, EntityPlayerSP player) {
+        if (livingTicks < maxLiving) return;
 
-        float initialScale = VisualConfig.DamageSplash.INSTANCE.initialScale;
-
-        // makes the text goes down and resize
-        currentLocation.subtract(0, 2 / (double)maxLiving, 0);
-        scale = initialScale - ((livingTicks * initialScale) / maxLiving);
+        remove();
     }
 
     @Override
@@ -77,9 +74,13 @@ public class EntityDamageSplash extends FakeEntity {
         boolean thirdPerson = render.options.thirdPersonView == 2;
         Location loc = getCurrentLocation();
 
+        float percentage = Math.min(1f, (livingTicks + partialTicks) / maxLiving);
+        float scale = initialScale * (1f - percentage);
+
         renderer.setRendering(true);
         {
             { // setting up
+                translate(0, -1 * percentage, 0);
                 rotate(-render.playerViewY, 0f, 1f, 0f); // rotates yaw
                 rotate((float) (thirdPerson ? -1 : 1) * render.playerViewX, 1.0F, 0.0F, 0.0F); // rotates pitch
                 scale(-0.025F, -0.025F, 0.025F); // size the text to the same size as a nametag

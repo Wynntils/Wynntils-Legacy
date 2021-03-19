@@ -244,7 +244,14 @@ public class ClientEvents implements Listener {
      */
     @SubscribeEvent
     public void processFakeEntities(RenderWorldLastEvent e) {
-        EntityManager.tickEntities(e.getPartialTicks(), e.getContext());
+        EntityManager.renderEntities(e.getPartialTicks(), e.getContext());
+    }
+
+    @SubscribeEvent
+    public void processFakeEntitiesTick(TickEvent.ClientTickEvent e) {
+        if (e.phase != TickEvent.Phase.END) return;
+
+        EntityManager.tickEntities();
     }
 
     GuiScreen lastScreen = null;

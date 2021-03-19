@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.visual.entities;
@@ -25,12 +25,16 @@ public class EntityFirefly extends FakeEntity {
 
     public static AtomicInteger fireflies = new AtomicInteger();
 
-    int lifespan;
+    float lifespan;
     float r, g, b;
+    float alpha;
 
     // movement
-    Location step = null;
-    long nextChange = 0;
+    Location nextGoal;
+    Location origin;
+    float velocity = 1f;
+    float nextChange = 0;
+    float currentPosition = 0;
 
     public EntityFirefly(Location currentLocation, float r, float g, float b) {
         super(currentLocation);
@@ -39,7 +43,7 @@ public class EntityFirefly extends FakeEntity {
         this.g = g;
         this.b = b;
 
-        lifespan = VisualConfig.Fireflies.INSTANCE.maxLiving;
+        lifespan = VisualConfig.Fireflies.INSTANCE.maxLiving * 0.3f;
         fireflies.incrementAndGet();
     }
 
@@ -49,34 +53,46 @@ public class EntityFirefly extends FakeEntity {
     }
 
     private void generateNextGoal(Random r) {
-        if (livingTicks < nextChange) return;
+        if (currentPosition < nextChange) {
+            currentPosition++;
+            return;
+        }
 
         // generates a random location with a 3 blocks radius based on the last one
-        Location nextGoal = currentLocation.clone().add(
+        origin = currentLocation.clone();
+        nextGoal = currentLocation.clone().add(
                 r.nextInt(3) * (r.nextBoolean() ? 1 : -1),
                 r.nextInt(3) * (r.nextBoolean() ? 1 : -1),
                 r.nextInt(3) * (r.nextBoolean() ? 1 : -1));
 
         // randomize the movement velocity
-        double velocity = 0.0008 * r.nextDouble();
-
-        // calculate the difference and how much the particle should move by each tick
-        step = nextGoal.clone().subtract(currentLocation).multiply(velocity);
+        velocity = 1.5f * r.nextFloat();
 
         // generate a random age until the next goal
-        nextChange = livingTicks + r.nextInt(VisualConfig.Fireflies.INSTANCE.maxGoal);
+        nextChange = r.nextInt(VisualConfig.Fireflies.INSTANCE.maxGoal) * 1.3f;
+        currentPosition = 0;
     }
 
     @Override
-    public void tick(float partialTicks, Random r, EntityPlayerSP player) {
-        if (livingTicks > lifespan) { // verifies if the entity should die
+    public void tick(Random r, EntityPlayerSP player) {
+        if (livingTicks >= lifespan) { // verifies if the entity should die
             remove();
             return;
         }
 
         // generates the next goal if needed and apply the step
         generateNextGoal(r);
-        currentLocation.add(step);
+    }
+
+    @Override
+    public void preRender(float partialTicks, RenderGlobal context, RenderManager render) {
+        if (nextGoal == null) return;
+        float percentage = Math.min(1f, ((currentPosition + partialTicks) / nextChange) * velocity);
+
+        float smooth = (float) Math.sin((Math.PI / 2d) * percentage);
+
+        Location increase = nextGoal.clone().subtract(origin).multiply(smooth);
+        currentLocation = origin.clone().add(increase);
     }
 
     @Override

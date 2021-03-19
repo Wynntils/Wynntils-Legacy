@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.visual.entities;
@@ -25,11 +25,14 @@ public class EntityAsh extends FakeEntity {
 
     public static AtomicInteger ashes = new AtomicInteger();
 
-    int lifespan;
+    float lifespan;
     float scale;
     float color;
+    float alpha;
 
     double sinDegrees, cosDegrees;
+    Location nextPosition;
+    Location previousPosition;
 
     public EntityAsh(Location currentLocation, Random r) {
         super(currentLocation);
@@ -37,7 +40,7 @@ public class EntityAsh extends FakeEntity {
         // adds a little Y offset
         currentLocation.add(0, r.nextInt(14), 0);
 
-        lifespan = r.nextInt(VisualConfig.Ashes.INSTANCE.maxLiving);
+        lifespan = r.nextInt(VisualConfig.Ashes.INSTANCE.maxLiving) * 0.1f;
         scale = VisualConfig.Ashes.INSTANCE.maxScale * r.nextFloat();
         color = VisualConfig.Ashes.INSTANCE.maxGrayScale * r.nextFloat();
 
@@ -49,24 +52,39 @@ public class EntityAsh extends FakeEntity {
     }
 
     @Override
-    public void tick(float partialTicks, Random r, EntityPlayerSP player) {
-        if (livingTicks > lifespan) { // verifies if the entity should die
+    public void tick(Random r, EntityPlayerSP player) {
+        if (livingTicks >= lifespan) { // verifies if the entity should die
             remove();
             return;
         }
 
-        if (sinDegrees + 1 > 360) sinDegrees = 0;
-        sinDegrees++;
+        if (sinDegrees + 5 > 360) sinDegrees = 0;
+        sinDegrees+=5;
 
-        if (cosDegrees + 1 > 360) cosDegrees = 0;
-        cosDegrees++;
+        if (cosDegrees + 5 > 360) cosDegrees = 0;
+        cosDegrees+=5;
 
-        currentLocation.add(0.01 * Math.cos(Math.toRadians(cosDegrees)), -0.01, 0.01 * Math.sin(Math.toRadians(sinDegrees)));
+        previousPosition = currentLocation;
+        nextPosition = currentLocation.clone().add(
+                0.05 * Math.cos(Math.toRadians(cosDegrees)),
+                -0.1,
+                0.05 * Math.sin(Math.toRadians(sinDegrees))
+        );
+    }
+
+    @Override
+    public void preRender(float partialTicks, RenderGlobal context, RenderManager render) {
+        if (nextPosition == null || previousPosition == null) return;
+        float percentage = Math.min(1f, (livingTicks + partialTicks) / lifespan);
+
+        Location interpolation = nextPosition.clone().subtract(previousPosition).multiply(partialTicks);
+        currentLocation = previousPosition.clone().add(interpolation);
+
+        alpha = 1f - percentage;
     }
 
     @Override
     public void render(float partialTicks, RenderGlobal context, RenderManager render) {
-        float alpha = (1 - (livingTicks / (float)lifespan));
         boolean thirdPerson = render.options.thirdPersonView == 2;
 
         { // setting up

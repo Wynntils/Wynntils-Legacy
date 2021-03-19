@@ -56,7 +56,7 @@ public class VisualConfig extends SettingsClass {
         public float scale = 0.04f;
 
         @Setting(displayName = "3D Fireflies", description = "Should fireflies be rendered in 3D?")
-        public boolean threeDimensions = true;
+        public boolean threeDimensions = false;
 
     }
 

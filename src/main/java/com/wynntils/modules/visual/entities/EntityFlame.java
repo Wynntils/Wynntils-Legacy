@@ -25,35 +25,34 @@ public class EntityFlame extends FakeEntity {
 
     public static AtomicInteger flames = new AtomicInteger();
 
-    int lifespan;
+    float lifespan;
     float scale;
 
     public EntityFlame(Location currentLocation, Random r) {
         super(currentLocation);
 
-        lifespan = VisualConfig.Flames.INSTANCE.maxLiving;
+        lifespan = VisualConfig.Flames.INSTANCE.maxLiving * 0.1f;
         scale = VisualConfig.Flames.INSTANCE.maxScale * r.nextFloat();
 
         flames.incrementAndGet();
     }
 
     @Override
-    public void tick(float partialTicks, Random r, EntityPlayerSP player) {
-        if (livingTicks > lifespan) { // verifies if the entity should die
-            remove();
-            return;
-        }
+    public void tick(Random r, EntityPlayerSP player) {
+        if (livingTicks < lifespan) return;
 
-        float velocity = (livingTicks / ((float)lifespan + 100));
-        currentLocation.add(0, VisualConfig.Flames.INSTANCE.velocity * velocity, 0);
+        remove();
     }
 
     @Override
     public void render(float partialTicks, RenderGlobal context, RenderManager render) {
-        float alpha = (1 - (livingTicks / (float)lifespan));
+        float percentage = ((livingTicks + partialTicks) / lifespan);
+
+        float alpha = (1f - percentage);
         boolean thirdPerson = render.options.thirdPersonView == 2;
 
         { // setting up rotation
+            translate(0, 10 * percentage * (10 * percentage), 0);
             depthMask(false);
             enableBlend();
             enableAlpha();
