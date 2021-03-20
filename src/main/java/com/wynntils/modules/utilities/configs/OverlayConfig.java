@@ -705,7 +705,7 @@ public class OverlayConfig extends SettingsClass {
     public static class Objectives extends SettingsClass {
         public static Objectives INSTANCE;
 
-        @Setting(displayName = "Enable Objectives Overlay", description = "Should the sidebar scoreboard be replaced by this overlay?", order = 0)
+        @Setting(displayName = "Enable Objectives Overlay", description = "Should the sidebar scoreboard be replaced by this overlay?\n\n§8This overlay works best if the scoreboard overlay is enabled as well.", order = 0)
         public boolean enableObjectives = true;
 
         @Setting(displayName = "Hide on Inactivity", description = "Should the overlay be hidden unless the objective has been updated?", order = 1)
