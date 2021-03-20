@@ -89,6 +89,7 @@ public class ScoreboardOverlay extends Overlay {
 
     private void removeObjectiveLines(List<Score> scores) {
         scores.removeIf(s -> TextFormatting.getTextWithoutFormattingCodes(s.getPlayerName()).matches(ObjectivesOverlay.OBJECTIVE_PATTERN.pattern()));
+        scores.removeIf(s -> TextFormatting.getTextWithoutFormattingCodes(s.getPlayerName()).matches("- All done"));
         scores.removeIf(s -> TextFormatting.getTextWithoutFormattingCodes(s.getPlayerName()).matches("(Daily )?Objectives?:"));
     }
 

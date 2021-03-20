@@ -732,10 +732,6 @@ public class OverlayConfig extends SettingsClass {
 
         @Override
         public void onSettingChanged(String name) {
-            if (name.equals("enableObjectives")) {
-                ObjectivesOverlay.updateOverlayActivation();
-            }
-
             if (name.equals("hideOnInactivity")) {
                 ObjectivesOverlay.refreshAllTimestamps();
             }
