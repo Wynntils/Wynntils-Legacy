@@ -28,7 +28,8 @@ import java.util.regex.Pattern;
 
 public class ObjectivesOverlay extends Overlay {
 
-    private static final Pattern OBJECTIVE_PATTERN = Pattern.compile("^[- ] (.*): *([0-9]+)/([0-9]+)$");
+    public static final Pattern OBJECTIVE_PATTERN = Pattern.compile("^[- ] (.*): *([0-9]+)/([0-9]+)$");
+
     private static final int WIDTH = 130;
     private static final int HEIGHT = 52;
     private static final int MAX_OBJECTIVES = 3;

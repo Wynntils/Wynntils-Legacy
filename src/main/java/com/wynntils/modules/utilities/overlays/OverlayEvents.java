@@ -685,11 +685,13 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onServerLeave(WynncraftServerEvent.Leave e) {
         ObjectivesOverlay.restoreVanillaScoreboard();
+        ScoreboardOverlay.enableCustomScoreboard(false);
     }
 
     @SubscribeEvent
     public void onServerJoin(WynncraftServerEvent.Login e) {
         ObjectivesOverlay.updateOverlayActivation();
+        ScoreboardOverlay.enableCustomScoreboard(OverlayConfig.Scoreboard.INSTANCE.enableScoreboard);
     }
 
     @SubscribeEvent
