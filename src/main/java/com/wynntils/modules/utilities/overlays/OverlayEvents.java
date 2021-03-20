@@ -687,12 +687,13 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void onServerLeave(WynncraftServerEvent.Leave e) {
-        ObjectivesOverlay.restoreVanillaScoreboard();
+        ScoreboardOverlay.enableCustomScoreboard(false);
+        ObjectivesOverlay.resetObjectives();
     }
 
     @SubscribeEvent
     public void onServerJoin(WynncraftServerEvent.Login e) {
-        ObjectivesOverlay.updateOverlayActivation();
+        ScoreboardOverlay.enableCustomScoreboard(OverlayConfig.Scoreboard.INSTANCE.enableScoreboard);
     }
 
     @SubscribeEvent
@@ -715,7 +716,6 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onDisplayObjective(PacketEvent<SPacketDisplayObjective> e) {
         ObjectivesOverlay.checkForSidebar(e.getPacket());
-        e.setCanceled(OverlayConfig.Objectives.INSTANCE.enableObjectives);
     }
 
     @SubscribeEvent
@@ -725,7 +725,7 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void onUpdateScore(PacketEvent<SPacketUpdateScore> e) {
-        e.setCanceled(ObjectivesOverlay.checkObjectiveUpdate(e.getPacket()) && OverlayConfig.Objectives.INSTANCE.enableObjectives);
+        ObjectivesOverlay.checkObjectiveUpdate(e.getPacket());
     }
 
     @SubscribeEvent

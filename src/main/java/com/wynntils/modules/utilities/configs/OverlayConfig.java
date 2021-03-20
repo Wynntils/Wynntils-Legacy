@@ -16,6 +16,7 @@ import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.core.enums.OverlayRotation;
 import com.wynntils.modules.utilities.overlays.hud.ObjectivesOverlay;
+import com.wynntils.modules.utilities.overlays.hud.ScoreboardOverlay;
 import com.wynntils.modules.utilities.overlays.hud.TerritoryFeedOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextFormatting;
@@ -704,7 +705,7 @@ public class OverlayConfig extends SettingsClass {
     public static class Objectives extends SettingsClass {
         public static Objectives INSTANCE;
 
-        @Setting(displayName = "Enable Objectives Overlay", description = "Should the sidebar scoreboard be replaced by this overlay?", order = 0)
+        @Setting(displayName = "Enable Objectives Overlay", description = "Should the sidebar scoreboard be replaced by this overlay?\n\n§8This overlay works best if the scoreboard overlay is enabled as well.", order = 0)
         public boolean enableObjectives = true;
 
         @Setting(displayName = "Hide on Inactivity", description = "Should the overlay be hidden unless the objective has been updated?", order = 1)
@@ -731,10 +732,6 @@ public class OverlayConfig extends SettingsClass {
 
         @Override
         public void onSettingChanged(String name) {
-            if (name.equals("enableObjectives")) {
-                ObjectivesOverlay.updateOverlayActivation();
-            }
-
             if (name.equals("hideOnInactivity")) {
                 ObjectivesOverlay.refreshAllTimestamps();
             }
@@ -748,6 +745,39 @@ public class OverlayConfig extends SettingsClass {
             a,
             b,
             c
+        }
+    }
+
+    @SettingsInfo(name = "scoreboard_settings", displayPath = "Utilities/Overlays/Scoreboard")
+    public static class Scoreboard extends SettingsClass {
+        public static Scoreboard INSTANCE;
+
+        @Setting(displayName = "Enable Scoreboard Overlay", description = "Should the custom Wynntils scoreboard be used?", order = 0)
+        public boolean enableScoreboard = true;
+
+        @Setting(displayName = "Show Scoreboard Numbers", description = "Should the numbers on the right side of the scoreboard be shown?", order = 1)
+        public boolean showNumbers = false;
+
+        @Setting(displayName = "Show Scoreboard Title", description = "Should the title at the top of the scoreboard be shown?", order = 2)
+        public boolean showTitle = true;
+
+        @Setting(displayName = "Show Compass Reminder", description = "Should the compass text be removed from the tracked quest section?", order = 3)
+        public boolean showCompass = false;
+
+        @Setting(displayName = "Background Opacity", description = "How dark should the background box be?", order = 4)
+        @Setting.Limitations.IntLimit(min = 0, max = 100)
+        public int opacity = 20;
+
+        @Setting(displayName = "Background Color", description = "What color should the text shadow be?\n\n§aClick the coloured box to open the colour wheel.", order = 5)
+        public CustomColor backgroundColor = CustomColor.fromInt(0x000000, 0.2f);
+
+        @Override
+        public void onSettingChanged(String name) {
+            backgroundColor.setA(opacity/100f);
+
+            if (name.equals("enableScoreboard")) {
+                ScoreboardOverlay.enableCustomScoreboard(enableScoreboard);
+            }
         }
     }
 }
