@@ -47,7 +47,7 @@ public class KeyManager {
             ModCore.mc().gameSettings.gammaSetting = lastGamma;
         });
 
-        checkForUpdatesKey = CoreModule.getModule().registerKeyBinding("Check for Updates", Keyboard.KEY_L, "Wynntils", true, WebManager::checkForUpdates);
+        checkForUpdatesKey = CoreModule.getModule().registerKeyBinding("Check for Updates", Keyboard.KEY_L, "Wynntils", true, () -> WebManager.checkForUpdates(false));
 
         CoreModule.getModule().registerKeyBinding("Open Settings", Keyboard.KEY_P, "Wynntils", KeyConflictContext.IN_GAME, true, () -> ModCore.mc().displayGuiScreen(SettingsUI.getInstance(ModCore.mc().currentScreen)));
 

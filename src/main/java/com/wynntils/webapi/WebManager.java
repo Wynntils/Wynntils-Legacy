@@ -11,6 +11,7 @@ import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynnGuildWarEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.overlays.objects.MapApiIcon;
@@ -135,10 +136,14 @@ public class WebManager {
             ignoringJoinUpdate = false;
             return;
         }
-        checkForUpdates();
+        checkForUpdates(true);
     }
 
-    public static void checkForUpdates() {
+    public static void checkForUpdates(boolean automatic) {
+        if (automatic && !CoreDBConfig.INSTANCE.autoCheckUpdates) {
+            return;
+        }
+
         if (Reference.developmentEnvironment) {
             Reference.LOGGER.info("An update check would have occurred, but you are in a development environment.");
             return;

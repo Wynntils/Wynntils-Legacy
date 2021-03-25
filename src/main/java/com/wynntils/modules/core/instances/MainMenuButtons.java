@@ -32,7 +32,7 @@ public class MainMenuButtons {
     private static final int WYNNCRAFT_BUTTON_ID = 3790627;
 
     private static WynncraftButton lastButton = null;
-    
+
     private static boolean alreadyLoaded = false;
 
     public static void addButtons(GuiMainMenu to, List<GuiButton> buttonList, boolean resize) {
@@ -43,7 +43,7 @@ public class MainMenuButtons {
             FMLClientHandler.instance().setupServerList();
 
             lastButton = new WynncraftButton(s, WYNNCRAFT_BUTTON_ID, to.width / 2 + 104, to.height / 4 + 48 + 24);
-            WebManager.checkForUpdates();
+            WebManager.checkForUpdates(true);
             UpdateOverlay.reset();
 
             buttonList.add(lastButton);
