@@ -4,9 +4,11 @@
 
 package com.wynntils.modules.visual.configs;
 
+import com.wynntils.Reference;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
+import com.wynntils.modules.visual.managers.CachedChunkManager;
 
 @SettingsInfo(name = "visual", displayPath = "Visual")
 public class VisualConfig extends SettingsClass {
@@ -153,6 +155,29 @@ public class VisualConfig extends SettingsClass {
 
         @Setting(displayName = "Custom Character Selector", description = "Should the custom character selector be enabled?")
         public boolean enabled = true;
+
+    }
+
+    @SettingsInfo(name = "cachedChunks", displayPath = "Visual/Cached Chunks")
+    public static class CachedChunks extends SettingsClass {
+        public static CachedChunks INSTANCE;
+
+        @Setting(displayName = "Enable Cached Chunks", description = "Should Wynntils cache the server chunks in order to fullfill your game render distance?\n\n§cEnabling this feature will cause the game to use more disk space.\nDisabling it will delete any cached chunks.")
+        public boolean enabled = false;
+
+        @Override
+        public void onSettingChanged(String name) {
+            if (name.equals("enabled")) {
+                if (enabled){
+                    if (Reference.onWorld) {
+                        CachedChunkManager.startAsyncChunkLoader();
+                    }
+                    return;
+                }
+
+                CachedChunkManager.deleteCache();
+            }
+        }
 
     }
 

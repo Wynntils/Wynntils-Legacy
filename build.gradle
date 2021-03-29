@@ -44,6 +44,7 @@ configurations {
 
 dependencies {
     embed "javazoom:jlayer:1.0.1"
+    embed "com.github.luben:zstd-jni:1.4.9-2"
 }
 
 processResources {
@@ -79,6 +80,10 @@ shadowJar {
 task wrapper(type: Wrapper) {
     gradleVersion = '4.4'
 }
+
+/*
+ *  * Copyright © Wynntils - 2021.
+ */
 
 class Version {
     int major, minor, revision
