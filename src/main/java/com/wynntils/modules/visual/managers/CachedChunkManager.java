@@ -4,7 +4,6 @@
 
 package com.wynntils.modules.visual.managers;
 
-import com.github.luben.zstd.Zstd;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.wynntils.Reference;
 import com.wynntils.modules.visual.configs.VisualConfig;
@@ -16,6 +15,7 @@ import net.minecraft.network.play.server.SPacketChunkData;
 import net.minecraft.util.math.ChunkPos;
 import org.apache.commons.io.FileUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -24,10 +24,12 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.zip.Deflater;
+import java.util.zip.Inflater;
 
 public class CachedChunkManager {
 
-    private static final int VERSION = 1; // if you change the saved content update this number
+    private static final int VERSION = 2; // if you change the saved content update this number
     private static final File CACHE_FOLDER = new File(Reference.MOD_STORAGE_ROOT, "cachedChunks");
     private static final ReadWriteLock LOCK = new ReentrantReadWriteLock();
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool(new ThreadFactoryBuilder()
@@ -58,8 +60,13 @@ public class CachedChunkManager {
      * Deletes all available chunk cache
      */
     public static void deleteCache() {
+        if (!CACHE_FOLDER.exists()) return;
         try {
             LOCK.writeLock().lock();
+
+            for (File f : CACHE_FOLDER.listFiles()) {
+                f.delete();
+            }
 
             CACHE_FOLDER.delete();
         } finally {
@@ -99,13 +106,13 @@ public class CachedChunkManager {
 
             // Compress the packet data
             byte[] original = buffer.array();
-            byte[] compressed = Zstd.compress(original);
+            byte[] compressed = deflate(original);
 
             // Write the header that includes the original size and the compressed size
             PacketBuffer headed = new PacketBuffer(Unpooled.buffer());
             headed.writeVarInt(VERSION);
-            headed.writeInt(original.length);
-            headed.writeInt(compressed.length);
+            headed.writeVarInt(original.length);
+            headed.writeVarInt(compressed.length);
             headed.writeBytes(compressed);
 
             // Compress the data using ZSTD since it's way faster than ZLIB
@@ -196,11 +203,11 @@ public class CachedChunkManager {
                     if (chunkVersion != VERSION) continue;
 
                     // Decompress the data
-                    int originalSize = originalBuffer.readInt();
-                    byte[] compressed = new byte[originalBuffer.readInt()];
+                    int originalSize = originalBuffer.readVarInt();
+                    byte[] compressed = new byte[originalBuffer.readVarInt()];
                     original.readBytes(compressed);
 
-                    byte[] decompressed = Zstd.decompress(compressed, originalSize);
+                    byte[] decompressed = inflate(compressed, originalSize);
 
                     // Generate the buffer based on the bytes we had earlier
                     ByteBuf buffer = Unpooled.buffer();
@@ -226,6 +233,41 @@ public class CachedChunkManager {
         // Whatever needs to be executed when the thread dies
         loadedChunks.clear();
         running = false;
+    }
+
+    private static byte[] deflate(byte[] input) throws Exception {
+        Deflater deflater = new Deflater(9);
+        deflater.setInput(input);
+        deflater.finish();
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(input.length);
+        byte[] buffer = new byte[input.length];
+
+        while (!deflater.finished()) {
+            int count = deflater.deflate(buffer);
+            outputStream.write(buffer, 0, count);
+        }
+
+        outputStream.close();
+
+        return outputStream.toByteArray();
+    }
+
+    private static byte[] inflate(byte[] input, int length) throws Exception {
+        Inflater deflater = new Inflater();
+        deflater.setInput(input);
+
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream(input.length);
+        byte[] buffer = new byte[length];
+
+        while (!deflater.finished()) {
+            int count = deflater.inflate(buffer);
+            outputStream.write(buffer, 0, count);
+        }
+
+        outputStream.close();
+
+        return outputStream.toByteArray();
     }
 
 }
