@@ -138,7 +138,6 @@ public class CachedChunkManager {
                 Thread.sleep(1000);
             } catch (Exception ignored) { }
 
-
             int renderDistance = mc.gameSettings.renderDistanceChunks;
             ChunkPos player = new ChunkPos(mc.player.chunkCoordX, mc.player.chunkCoordZ);
 

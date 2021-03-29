@@ -14,6 +14,7 @@ import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.visual.configs.VisualConfig;
 import com.wynntils.modules.visual.entities.EntityDamageSplash;
 import com.wynntils.modules.visual.managers.CachedChunkManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.play.server.SPacketChunkData;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -32,7 +33,16 @@ public class ClientEvents implements Listener {
     public void cacheChunks(PacketEvent<SPacketChunkData> event) {
         if (!Reference.onWorld || !VisualConfig.CachedChunks.INSTANCE.enabled) return;
 
-        CachedChunkManager.asyncCacheChunk(event.getPacket());
+        Minecraft mc = Minecraft.getMinecraft();
+        SPacketChunkData packet = event.getPacket();
+
+        // Requests the chunk to be unloaded if loaded before loading (???)
+        // this fixes some weird ass issue with optifine, don't ask too much
+        if (packet.isFullChunk() && mc.world.getChunk(packet.getChunkX(), packet.getChunkZ()).isLoaded()) {
+            mc.world.getChunkProvider().unloadChunk(packet.getChunkX(), packet.getChunkZ());
+        }
+
+        CachedChunkManager.asyncCacheChunk(packet);
     }
 
     @SubscribeEvent
