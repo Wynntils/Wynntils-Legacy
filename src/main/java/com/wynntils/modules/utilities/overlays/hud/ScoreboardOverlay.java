@@ -7,10 +7,10 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.overlays.Overlay;
-import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.ScorePlayerTeam;
@@ -31,6 +31,9 @@ public class ScoreboardOverlay extends Overlay {
         if (!Reference.onWorld || !OverlayConfig.Scoreboard.INSTANCE.enableScoreboard ||
                 event.getType() != RenderGameOverlayEvent.ElementType.ALL) return;
 
+        // vanilla fontrenderer
+        FontRenderer fontRenderer = mc.fontRenderer;
+
         ScoreObjective objective = mc.world.getScoreboard().getObjectiveInDisplaySlot(1); // sidebar objective
         if (objective == null) return;
 
@@ -48,7 +51,7 @@ public class ScoreboardOverlay extends Overlay {
         if (scores.isEmpty()) return;
 
         // calculate width based on widest line
-        int width = fontRenderer.getStringWidth(objective.getDisplayName());
+        int width = OverlayConfig.Scoreboard.INSTANCE.showTitle ? fontRenderer.getStringWidth(objective.getDisplayName()) : 0;
         for (Score s : scores) {
             ScorePlayerTeam team = scoreboard.getPlayersTeam(s.getPlayerName());
             String line = ScorePlayerTeam.formatPlayerName(team, s.getPlayerName());
@@ -75,13 +78,13 @@ public class ScoreboardOverlay extends Overlay {
 
             // draw line, including score if enabled
             int y = yOffset - (lineCount * fontRenderer.FONT_HEIGHT);
-            drawString(name, xOffset, y, CommonColors.WHITE,SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            if (OverlayConfig.Scoreboard.INSTANCE.showNumbers) drawString(score, -1 - fontRenderer.getStringWidth(score), y, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            fontRenderer.drawString(name, drawingOrigin().x + xOffset, drawingOrigin().y + y, CommonColors.WHITE.toInt());
+            if (OverlayConfig.Scoreboard.INSTANCE.showNumbers) fontRenderer.drawString(score, drawingOrigin().x - 1 - fontRenderer.getStringWidth(score), drawingOrigin().y + y, CommonColors.WHITE.toInt());
 
             lineCount++;
             if (lineCount > scores.size() && OverlayConfig.Scoreboard.INSTANCE.showTitle) { // end of scores, draw title if enabled
                 String title = objective.getDisplayName();
-                drawString(title, xOffset + width/2 - fontRenderer.getStringWidth(title)/2, y - fontRenderer.FONT_HEIGHT, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                fontRenderer.drawString(title, drawingOrigin().x + xOffset + width/2 - fontRenderer.getStringWidth(title)/2, drawingOrigin().y + y - fontRenderer.FONT_HEIGHT, CommonColors.WHITE.toInt());
             }
         }
 
