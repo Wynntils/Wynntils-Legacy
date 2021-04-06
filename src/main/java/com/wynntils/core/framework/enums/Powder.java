@@ -135,7 +135,6 @@ public enum Powder {
         return foundPowders;
     }
 
-
     public static List<Powder> findTieredPowders(ItemStack stack){
         String itemName =  WebManager.getTranslatedItemName(TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName())).replace("֎", "");
         ItemProfile baseItem = WebManager.getItems().get(itemName);
@@ -147,6 +146,8 @@ public enum Powder {
         }
     }
 
+
+    //###########--WEAPONS--###########
     private static List<Powder> findTieredPowdersWeapon(ItemStack stack, ItemProfile baseItem){
         List<String> itemLore = ItemUtils.getUnformattedLore(stack);
         List<Powder> powderTypes = new LinkedList<>();
@@ -154,9 +155,8 @@ public enum Powder {
         Hashtable<DamageType, int[]> damageValues = new Hashtable<>();
         for( DamageType dt: DamageType.values()){ damageValues.put(dt, new int[]{0, 0}); }
 
-        //Probably not optimized...
         //This loop finds the amount of powders used [(3 air powders 1 earth), (2 water 2 fire), (1 thunder), etc.]
-        //As well as the elemental damages as displayed in the item lore
+        //as well as the elemental damages as displayed in the item lore
         itemLore.forEach(line -> {
             if (line.contains("Powder Slots [")) {
                 //Get what types of powders there are (Not tiered)
@@ -196,8 +196,7 @@ public enum Powder {
             for (Powder powderType : powderTypes) {
                 combo.add(powderType.getTiers()[tier]);
             }
-            //Check if def values are closer to actual. Return closest
-            System.out.println(combo.toString());
+            //Check if calculated dam values for this powder combo are closer to actual
             int damDiff = damDiff(getDamages(combo, baseItem),damageValues);
             if (damDiff < leadingDiff){
                 leadingDiff = damDiff;
@@ -206,25 +205,6 @@ public enum Powder {
         }
 
         return leadingCombo;
-    }
-
-    private static Hashtable<DamageType, Integer> getDefences(List<Powder> combo, ItemProfile base){
-
-        Hashtable<DamageType, Integer> defences = new Hashtable<>();
-
-        //Initialize with all values 0
-        for( DamageType dt: DamageType.values()){ defences.put(dt, 0); }
-
-        //Add damages from the base unpowdered weapon
-        base.getElementalDefenses().forEach(defences::put);
-
-        combo.forEach(powder -> {
-            defences.put(powder.asDamage(), defences.get(powder.asDamage()) + powder.defPlus);
-            defences.put(powder.getOppositeDamageType(), defences.get(powder.getOppositeDamageType()) - powder.defMinus);
-        });
-
-        return defences;
-
     }
 
     private static Hashtable<DamageType, int[]> getDamages(List<Powder> combo, ItemProfile base){
@@ -237,7 +217,7 @@ public enum Powder {
         //Add damages from the base unpowdered weapon
         base.getDamageTypes().forEach((dt, d) -> damages.put(DamageType.valueOf(dt.toUpperCase()), Arrays.stream(d.split("-")).mapToInt(Integer::parseInt).toArray()));
 
-        //For percent convert calculations
+        //For percent convert calculations, keep base neutral damage
         int[] baseNeutral = damages.get(DamageType.NEUTRAL).clone();
 
         combo.forEach(powder -> {
@@ -266,6 +246,17 @@ public enum Powder {
 
     }
 
+    private static int damDiff(Hashtable<DamageType, int[]> d1, Hashtable<DamageType, int[]> d2){
+        AtomicInteger diff = new AtomicInteger();
+        d1.forEach(((damageType, ints) -> {
+            diff.addAndGet(Math.abs(d2.get(damageType)[0] - ints[0] + d2.get(damageType)[1] - ints[1]));
+        }));
+
+        return diff.get();
+    }
+
+
+    //###########--ARMOR--###########
     private static List<Powder> findTieredPowdersArmor (ItemStack stack, ItemProfile baseItem){
         List<String> itemLore = ItemUtils.getUnformattedLore(stack);
         List<Powder> powderTypes = new LinkedList<>();
@@ -307,7 +298,7 @@ public enum Powder {
             for (Powder powderType : powderTypes) {
                 combo.add(powderType.getTiers()[tier]);
             }
-            //Check if def values are closer to actual. Return closest
+            //Check if calculated def values for this powder combo are closer to actual
             int defDiff = defDiff(getDefences(combo, baseItem),defValues);
             if (defDiff < leadingDiff){
                 leadingDiff = defDiff;
@@ -319,13 +310,23 @@ public enum Powder {
 
     }
 
-    private static int damDiff(Hashtable<DamageType, int[]> d1, Hashtable<DamageType, int[]> d2){
-        AtomicInteger diff = new AtomicInteger();
-        d1.forEach(((damageType, ints) -> {
-            diff.addAndGet(Math.abs(d2.get(damageType)[0] - ints[0] + d2.get(damageType)[1] - ints[1]));
-        }));
+    private static Hashtable<DamageType, Integer> getDefences(List<Powder> combo, ItemProfile base){
 
-        return diff.get();
+        Hashtable<DamageType, Integer> defences = new Hashtable<>();
+
+        //Initialize with all values 0
+        for( DamageType dt: DamageType.values()){ defences.put(dt, 0); }
+
+        //Add damages from the base unpowdered weapon
+        base.getElementalDefenses().forEach(defences::put);
+
+        combo.forEach(powder -> {
+            defences.put(powder.asDamage(), defences.get(powder.asDamage()) + powder.defPlus);
+            defences.put(powder.getOppositeDamageType(), defences.get(powder.getOppositeDamageType()) - powder.defMinus);
+        });
+
+        return defences;
+
     }
 
     private static int defDiff(Hashtable<DamageType, Integer> d1, Hashtable<DamageType, Integer> d2){
