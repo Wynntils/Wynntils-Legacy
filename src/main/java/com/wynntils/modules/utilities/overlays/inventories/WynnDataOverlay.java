@@ -75,7 +75,7 @@ public class WynnDataOverlay implements Listener {
                 List<Powder> powders;
                 StringBuilder sb = new StringBuilder();
 
-                //powders shouldn't be null because the item has the "Powder Slots [" string
+                //powders can't be null because the item has the "Powder Slots [" string
                 powders = Powder.findTieredPowders(stack);
                 powders.forEach(powder -> sb.append(powder.name()));
                 urlData.put(typeName + "_powders", sb.toString());

@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public enum Powder {
 
@@ -160,13 +160,7 @@ public enum Powder {
         itemLore.forEach(line -> {
             if (line.contains("Powder Slots [")) {
                 //Get what types of powders there are (Not tiered)
-                line.chars().forEach(ch -> {
-                    for (Powder powder : getBases()) {
-                        if (ch == powder.getSymbol()) {
-                            powderTypes.add(powder);
-                        }
-                    }
-                });
+                powderTypes.addAll(findPowders(line));
             } else {
                 DamageType dt = null;
 
@@ -194,23 +188,24 @@ public enum Powder {
             }
         });
 
-        //Number of different possible powder combinations
-        int combinations = (int) Math.pow(6,powderTypes.size());
-        if (combinations == 1) return null;
-
-        //Start at limit because that is all tier 6 powders and that is most likely
-        for (int i = combinations-1; i >= 0; i--){
+        //Start at all T6, then check all T5, then T4, etc.
+        List<Powder> leadingCombo = null;
+        int leadingDiff = Integer.MAX_VALUE;
+        for (int tier = 5; tier >= 0; tier--){
             List<Powder> combo = new LinkedList<>();
-            for (int n = 0; n < powderTypes.size(); n++){
-                combo.add(powderTypes.get(n).getTiers()[((int) (i/ Math.pow(6,n))) % 6]);
+            for (Powder powderType : powderTypes) {
+                combo.add(powderType.getTiers()[tier]);
             }
-
-            if (matchDam(getDamages(combo, baseItem),damageValues)){
-                return combo;
+            //Check if def values are closer to actual. Return closest
+            System.out.println(combo.toString());
+            int damDiff = damDiff(getDamages(combo, baseItem),damageValues);
+            if (damDiff < leadingDiff){
+                leadingDiff = damDiff;
+                leadingCombo = combo;
             }
         }
 
-        return null;
+        return leadingCombo;
     }
 
     private static Hashtable<DamageType, Integer> getDefences(List<Powder> combo, ItemProfile base){
@@ -281,13 +276,7 @@ public enum Powder {
         itemLore.forEach(line -> {
             if (line.contains("Powder Slots [")) {
                 //Get what types of powders there are (Not tiered)
-                line.chars().forEach(ch -> {
-                    for (Powder powder : getBases()) {
-                        if (ch == powder.getSymbol()) {
-                            powderTypes.add(powder);
-                        }
-                    }
-                });
+                powderTypes.addAll(findPowders(line));
             } else {
                 DamageType dt = null;
 
@@ -310,45 +299,42 @@ public enum Powder {
             }
         });
 
-        int combinations = (int) Math.pow(6,powderTypes.size());
-        if (combinations == 1) return null;
-
-        //Start at limit because that is all tier 6 powders and that is most likely
-        for (int i = combinations-1; i >= 0; i--){
+        //Start at all T6, then check all T5, then T4, etc.
+        List<Powder> leadingCombo = null;
+        int leadingDiff = Integer.MAX_VALUE;
+        for (int tier = 5; tier >= 0; tier--){
             List<Powder> combo = new LinkedList<>();
-            for (int n = 0; n < powderTypes.size(); n++){
-                combo.add(powderTypes.get(n).getTiers()[((int) (i/ Math.pow(6,n))) % 6]);
+            for (Powder powderType : powderTypes) {
+                combo.add(powderType.getTiers()[tier]);
             }
-
-            if (matchDef(getDefences(combo, baseItem),defValues)){
-                return combo;
+            //Check if def values are closer to actual. Return closest
+            int defDiff = defDiff(getDefences(combo, baseItem),defValues);
+            if (defDiff < leadingDiff){
+                leadingDiff = defDiff;
+                leadingCombo = combo;
             }
         }
 
-        return null;
+        return leadingCombo;
+
     }
 
-    private static boolean matchDam(Hashtable<DamageType, int[]> d1, Hashtable<DamageType, int[]> d2){
-        AtomicBoolean b = new AtomicBoolean(true);
-
+    private static int damDiff(Hashtable<DamageType, int[]> d1, Hashtable<DamageType, int[]> d2){
+        AtomicInteger diff = new AtomicInteger();
         d1.forEach(((damageType, ints) -> {
-            if (!(d2.get(damageType)[0] == ints[0] && d2.get(damageType)[1] == ints[1])){
-                b.set(false);
-            }
+            diff.addAndGet(Math.abs(d2.get(damageType)[0] - ints[0] + d2.get(damageType)[1] - ints[1]));
         }));
 
-        return b.get();
+        return diff.get();
     }
 
-    private static boolean matchDef(Hashtable<DamageType, Integer> d1, Hashtable<DamageType, Integer> d2){
-        AtomicBoolean b = new AtomicBoolean(true);
-
+    private static int defDiff(Hashtable<DamageType, Integer> d1, Hashtable<DamageType, Integer> d2){
+        AtomicInteger diff = new AtomicInteger();
         d1.forEach(((damageType, integer) -> {
-            if (!(d2.get(damageType).equals(integer))){
-                b.set(false);
-            }
+            diff.addAndGet(Math.abs(d2.get(damageType) - integer));
         }));
 
-        return b.get();
+        return diff.get();
     }
+
 }
