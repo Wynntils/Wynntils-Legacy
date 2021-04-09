@@ -259,10 +259,7 @@ public class WorldMapUI extends GuiMovementScreen {
         float minX = this.minX / (float)map.getImageWidth(); float maxX = this.maxX / (float)map.getImageWidth();
         float minZ = this.minZ / (float)map.getImageHeight(); float maxZ = this.maxZ / (float)map.getImageHeight();
 
-        outsideMap = (minX > 1 && maxX > 1)
-                || (minX < 0 && maxX < 0)
-                || (minZ > 1 && maxZ > 1)
-                || (minZ < 0 && maxZ < 0);
+        outsideMap = (minX > 1) || (maxX < 0) || (minZ > 1) || (maxZ < 0);
 
         try {
             enableAlpha();
