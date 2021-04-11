@@ -27,9 +27,7 @@ public class LootRunPage extends QuestBookPage {
     int MESSAGE_ID = 103002;
 
     List<String> names;
-    int selected;
-    String selectedName;
-    int active = -1;
+    public static String selectedName;
 
     public LootRunPage() {
         super("Your Lootruns", true, IconContainer.lootrunIcon);
@@ -79,8 +77,7 @@ public class LootRunPage extends QuestBookPage {
             render.drawString("by clicking on the two buttons", x - 154, y + 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             render.drawString("or by scrolling your mouse.", x - 154, y + 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             render.drawString("You can import lootruns at", x - 154, y + 50, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            render.drawString("/Wynntilds/Lootruns in app data", x - 154, y + 60, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-
+            render.drawString("/Wynntils/Lootruns in app data", x - 154, y + 60, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
             // back to menu button
             if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
@@ -137,7 +134,6 @@ public class LootRunPage extends QuestBookPage {
                             lastTick = Minecraft.getSystemTime();
                         }
 
-                        selected = i;
                         selectedName = names.get(i);
 
                         if (!animationCompleted) {
@@ -151,7 +147,7 @@ public class LootRunPage extends QuestBookPage {
                         }
 
                         int width = Math.min(animationTick, 133);
-                        if (active == i) {
+                        if (LootRunManager.getActivePathName().equals(selectedName)) {
                             render.drawRectF(background_3, x + 9, y - 96 + currentY, x + 13 + width, y - 87 + currentY);
                             render.drawRectF(background_4, x + 9, y - 96 + currentY, x + 146, y - 87 + currentY);
                         } else {
@@ -161,7 +157,7 @@ public class LootRunPage extends QuestBookPage {
 
                         GlStateManager.disableLighting();
 
-                        if (active == i) {
+                        if (LootRunManager.getActivePathName().equals(selectedName)) {
                             hoveredText = Arrays.asList(names.get(i), TextFormatting.YELLOW + "Tracked", TextFormatting.GREEN + "Left click to select");
                         } else {
                             hoveredText = Arrays.asList(names.get(i), TextFormatting.GREEN + "Left click to select");
@@ -245,7 +241,7 @@ public class LootRunPage extends QuestBookPage {
 
             try {
                 Location start = LootRunManager.getActivePath().getPoints().get(0);
-                String startingPointMsg = "Loot run starts at [" + (int) start.getX() + ", " + (int) start.getZ() + "]";
+                String startingPointMsg = "Loot run" + LootRunManager.getActivePathName() + "starts at [" + (int) start.getX() + ", " + (int) start.getZ() + "]";
                 //some number idk
                 Minecraft.getMinecraft().addScheduledTask(() ->
                         ChatOverlay.getChat().printChatMessageWithOptionalDeletion(new TextComponentString(startingPointMsg), MESSAGE_ID)
@@ -254,7 +250,6 @@ public class LootRunPage extends QuestBookPage {
                 e.printStackTrace();
             }
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
-            active = selected;
         }
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
