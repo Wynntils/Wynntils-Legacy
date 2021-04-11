@@ -153,6 +153,10 @@ public class LootRunManager {
         return activePath;
     }
 
+    public static String getActivePathName() {
+        return activePathName;
+    }
+
     public static LootRunPath getRecordingPath() {
         return recordingPath;
     }
