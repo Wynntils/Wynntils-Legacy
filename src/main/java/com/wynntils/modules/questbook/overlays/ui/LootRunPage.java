@@ -24,7 +24,6 @@ import java.util.*;
 
 public class LootRunPage extends QuestBookPage {
 
-    //random number
     int MESSAGE_ID = 103002;
 
     List<String> names;
@@ -126,11 +125,7 @@ public class LootRunPage extends QuestBookPage {
                     if (names.size() <= i) {
                         break;
                     }
-                    if (active == i) {
-                        render.drawRectF(background_4, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
-                    } else {
-                        render.drawRectF(background_2, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
-                    }
+
                     render.drawString(names.get(i), x + 26, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
                     boolean hovered = posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY;
@@ -165,21 +160,17 @@ public class LootRunPage extends QuestBookPage {
                         }
 
                         GlStateManager.disableLighting();
+
+                        if (active == i) {
+                            hoveredText = Arrays.asList(names.get(i), TextFormatting.YELLOW + "Tracked", TextFormatting.GREEN + "Left click to select");
+                        } else {
+                            hoveredText = Arrays.asList(names.get(i), TextFormatting.GREEN + "Left click to select");
+                        }
                     } else {
                         if (this.selected == i) {
                             animationCompleted = false;
 
                             if (!showAnimation) lastTick = 0;
-                        }
-
-                        if (hovered) {
-                            if (active == i) {
-                                hoveredText = Arrays.asList(names.get(i), TextFormatting.YELLOW + "Tracked", TextFormatting.GREEN + "Left click to select");
-                                render.drawRectF(background_4, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
-                            } else {
-                                hoveredText = Arrays.asList(names.get(i), TextFormatting.GREEN + "Left click to select");
-                                render.drawRectF(background_2, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
-                            }
                         }
                     }
 
