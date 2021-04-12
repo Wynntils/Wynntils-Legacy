@@ -499,18 +499,22 @@ public class ChatManager {
 
                 List<ITextComponent> components = new ArrayList<>();
 
-                for (ITextComponent component : in.getSiblings()) {
-                    String text = component.getUnformattedText();
+                for (ITextComponent component : in) {
+                    String text = component.getUnformattedComponentText();
 
                     if (!foundEndTimestamp) {
                         foundEndTimestamp = text.contains("]");
-                        components.add(component);
+                        ITextComponent newComponent = new TextComponentString(text);
+                        newComponent.setStyle(component.getStyle());
+                        components.add(newComponent);
                         continue;
                     }
 
                     if (!foundStart) {
                         foundStart = text.contains((isGuildOrParty ? "]" : ":")); // Party and guild messages end in ']' while normal chat end in ':'
-                        components.add(component);
+                        ITextComponent newComponent = new TextComponentString(text);
+                        newComponent.setStyle(component.getStyle());
+                        components.add(newComponent);
                         continue;
                     }
 
