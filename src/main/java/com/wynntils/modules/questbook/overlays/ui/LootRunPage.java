@@ -27,7 +27,8 @@ public class LootRunPage extends QuestBookPage {
     int MESSAGE_ID = 103002;
 
     List<String> names;
-    public static String selectedName;
+    int selected = -1;
+    String selectedName;
 
     public LootRunPage() {
         super("Your Lootruns", true, IconContainer.lootrunIcon);
@@ -43,6 +44,8 @@ public class LootRunPage extends QuestBookPage {
     public void initGui() {
         super.initGui();
         initBasicSearch();
+        updateSelected();
+        names = LootRunManager.getStoredLootruns();
     }
 
     private void initBasicSearch() {
@@ -115,8 +118,6 @@ public class LootRunPage extends QuestBookPage {
             // available lootruns
             int currentY = 12;
 
-
-
             if (names.size() > 0) {
                 for (int i = ((currentPage - 1) * 13); i < 13 * currentPage; i++) {
                     if (names.size() <= i) {
@@ -127,6 +128,7 @@ public class LootRunPage extends QuestBookPage {
 
                     boolean hovered = posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY;
 
+                    String currentName = names.get(i);
 
                     int animationTick = -1;
                     if (hovered && !showAnimation) {
@@ -134,7 +136,8 @@ public class LootRunPage extends QuestBookPage {
                             lastTick = Minecraft.getSystemTime();
                         }
 
-                        selectedName = names.get(i);
+                        selected = i;
+                        selectedName = currentName;
 
                         if (!animationCompleted) {
                             animationTick = (int) (Minecraft.getSystemTime() - lastTick) / 2;
@@ -147,7 +150,7 @@ public class LootRunPage extends QuestBookPage {
                         }
 
                         int width = Math.min(animationTick, 133);
-                        if (LootRunManager.getActivePathName().equals(selectedName)) {
+                        if (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(currentName)) {
                             render.drawRectF(background_3, x + 9, y - 96 + currentY, x + 13 + width, y - 87 + currentY);
                             render.drawRectF(background_4, x + 9, y - 96 + currentY, x + 146, y - 87 + currentY);
                         } else {
@@ -157,16 +160,22 @@ public class LootRunPage extends QuestBookPage {
 
                         GlStateManager.disableLighting();
 
-                        if (LootRunManager.getActivePathName().equals(selectedName)) {
+                        if (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(currentName)) {
                             hoveredText = Arrays.asList(names.get(i), TextFormatting.YELLOW + "Tracked", TextFormatting.GREEN + "Left click to select");
                         } else {
                             hoveredText = Arrays.asList(names.get(i), TextFormatting.GREEN + "Left click to select");
                         }
                     } else {
-                        if (this.selected == i) {
+                        if (selected == i) {
                             animationCompleted = false;
 
                             if (!showAnimation) lastTick = 0;
+                        }
+
+                        if (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(names.get(i))) {
+                            render.drawRectF(background_4, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
+                        } else {
+                            render.drawRectF(background_2, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
                         }
                     }
 
@@ -198,9 +207,21 @@ public class LootRunPage extends QuestBookPage {
 
         Collections.sort(names);
 
+        updateSelected();
+
         pages = names.size() <= 13 ? 1 : (int) Math.ceil(names.size() / 13d);
         currentPage = Math.min(currentPage, pages);
         refreshAccepts();
+    }
+
+    private void updateSelected() {
+        if (selectedName != null) {
+            selected = names.indexOf(selectedName);
+
+            if (selected == -1) {
+                selectedName = null;
+            }
+        }
     }
 
     @Override
@@ -232,17 +253,13 @@ public class LootRunPage extends QuestBookPage {
 
         boolean hovered = posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY;
 
-        if (hovered) {
-
-
-            System.out.println(selectedName);
-
+        if (hovered && names.size() >= selected) {
             boolean result = LootRunManager.loadFromFile(selectedName);
 
             try {
                 Location start = LootRunManager.getActivePath().getPoints().get(0);
-                String startingPointMsg = "Loot run" + LootRunManager.getActivePathName() + "starts at [" + (int) start.getX() + ", " + (int) start.getZ() + "]";
-                //some number idk
+                String startingPointMsg = "Loot run" + LootRunManager.getActivePathName() + " starts at [" + (int) start.getX() + ", " + (int) start.getZ() + "]";
+
                 Minecraft.getMinecraft().addScheduledTask(() ->
                         ChatOverlay.getChat().printChatMessageWithOptionalDeletion(new TextComponentString(startingPointMsg), MESSAGE_ID)
                 );
