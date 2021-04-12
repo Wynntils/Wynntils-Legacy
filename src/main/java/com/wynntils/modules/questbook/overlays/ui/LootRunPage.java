@@ -44,6 +44,7 @@ public class LootRunPage extends QuestBookPage {
     public void initGui() {
         super.initGui();
         initBasicSearch();
+
         updateSelected();
         names = LootRunManager.getStoredLootruns();
     }
@@ -161,9 +162,9 @@ public class LootRunPage extends QuestBookPage {
                         GlStateManager.disableLighting();
 
                         if (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(currentName)) {
-                            hoveredText = Arrays.asList(names.get(i), TextFormatting.YELLOW + "Tracked", TextFormatting.GREEN + "Left click to select");
+                            hoveredText = Arrays.asList(TextFormatting.BOLD + names.get(i), TextFormatting.YELLOW + "Loaded", TextFormatting.GREEN + "Left click to unload Lootrun");
                         } else {
-                            hoveredText = Arrays.asList(names.get(i), TextFormatting.GREEN + "Left click to select");
+                            hoveredText = Arrays.asList(TextFormatting.BOLD + names.get(i), TextFormatting.GREEN + "Left click to load", TextFormatting.RED + (TextFormatting.BOLD + "Shift-Right Click to delete"));
                         }
                     } else {
                         if (selected == i) {
@@ -252,22 +253,38 @@ public class LootRunPage extends QuestBookPage {
         int currentY = 12 + 13 * (selected % 13);
 
         boolean hovered = posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY;
+        boolean isTracked = (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(selectedName));
 
-        if (hovered && names.size() >= selected) {
-            boolean result = LootRunManager.loadFromFile(selectedName);
+        if (hovered) {
+            if (names.size() >= selected && mouseButton == 0) {
+                if (!isTracked) {
+                    boolean result = LootRunManager.loadFromFile(selectedName);
 
-            try {
-                Location start = LootRunManager.getActivePath().getPoints().get(0);
-                String startingPointMsg = "Loot run" + LootRunManager.getActivePathName() + " starts at [" + (int) start.getX() + ", " + (int) start.getZ() + "]";
+                    try {
+                        Location start = LootRunManager.getActivePath().getPoints().get(0);
+                        String startingPointMsg = "Loot run" + LootRunManager.getActivePathName() + " starts at [" + (int) start.getX() + ", " + (int) start.getZ() + "]";
 
-                Minecraft.getMinecraft().addScheduledTask(() ->
-                        ChatOverlay.getChat().printChatMessageWithOptionalDeletion(new TextComponentString(startingPointMsg), MESSAGE_ID)
-                );
-            } catch (Exception e) {
-                e.printStackTrace();
+                        Minecraft.getMinecraft().addScheduledTask(() ->
+                                ChatOverlay.getChat().printChatMessageWithOptionalDeletion(new TextComponentString(startingPointMsg), MESSAGE_ID)
+                        );
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
+                }
+                else if (isTracked) {
+                    if (LootRunManager.getActivePath() != null) {
+                        LootRunManager.clear();
+                    }
+                }
+            } else if (mouseButton == 1 && isShiftKeyDown() && !isTracked) {
+                boolean result = LootRunManager.delete(selectedName);
+                names.remove(selected);
+                updateSelected();
+                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
             }
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
         }
+
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 }
