@@ -673,23 +673,29 @@ public class ClientEvents implements Listener {
             if (inventory.getDisplayName().getUnformattedText().contains("Bank") && e.getSlotIn().getHasStack()) {
                 ItemStack item = e.getSlotIn().getStack();
                 if (item.getDisplayName().contains(">" + TextFormatting.DARK_RED + ">" + TextFormatting.RED + ">" + TextFormatting.DARK_RED + ">" + TextFormatting.RED + ">")) {
-                    List<String> lore = ItemUtils.getLore(item);
-                    String price = lore.get(4);
-                    int actualPrice = Integer.parseInt(price.substring(20, price.indexOf(TextFormatting.GRAY + EmeraldSymbols.EMERALDS)));
-                    int le = (int) Math.floor(actualPrice) / 4096;
-                    int eb = (int) Math.floor(((double) (actualPrice % 4096)) / 64);
-                    int emeralds = actualPrice % 64;
-                    String priceDisplay = "";
-                    if (le != 0) {
-                        priceDisplay += le + EmeraldSymbols.LE + " ";
+                    String lore = TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(item));
+                    String price = lore.substring(lore.indexOf(" Price: ") + 8, lore.length());
+                    String priceDisplay;
+                    if (price.matches("\\d+" + EmeraldSymbols.EMERALDS)) {
+                        int actualPrice = Integer.parseInt(price.replace(EmeraldSymbols.EMERALDS, ""));
+                        int le = (int) Math.floor(actualPrice) / 4096;
+                        int eb = (int) Math.floor(((double) (actualPrice % 4096)) / 64);
+                        int emeralds = actualPrice % 64;
+                        StringBuilder priceBuilder = new StringBuilder();
+                        if (le != 0) {
+                            priceBuilder.append(le + EmeraldSymbols.LE + " ");
+                        }
+                        if (eb != 0) {
+                            priceBuilder.append(eb + EmeraldSymbols.BLOCKS + " ");
+                        }
+                        if (emeralds != 0) {
+                            priceBuilder.append(emeralds + EmeraldSymbols.EMERALDS + " ");
+                        }
+                        priceBuilder.deleteCharAt(priceBuilder.length() - 1);
+                        priceDisplay = priceBuilder.toString();
+                    } else {
+                        priceDisplay = price;
                     }
-                    if (eb != 0) {
-                        priceDisplay += eb + EmeraldSymbols.BLOCKS + " ";
-                    }
-                    if (emeralds != 0) {
-                        priceDisplay += emeralds + EmeraldSymbols.EMERALDS + " ";
-                    }
-                    priceDisplay = priceDisplay.substring(0, priceDisplay.length() - 1);
                     String itemName = item.getDisplayName();
                     String pageNumber = itemName.substring(9, itemName.indexOf(TextFormatting.RED + " >"));
                     ChestReplacer gui = e.getGui();
