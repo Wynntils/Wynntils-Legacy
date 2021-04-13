@@ -364,10 +364,12 @@ public class ChatManager {
         if (ChatConfig.INSTANCE.clickableCoordinates && coordinateReg.matcher(in.getUnformattedText()).find()) {
 
             ITextComponent temp = new TextComponentString("");
-            for (ITextComponent texts: in.getSiblings()) {
-                Matcher m = coordinateReg.matcher(texts.getUnformattedText());
+            for (ITextComponent texts : in) {
+                Matcher m = coordinateReg.matcher(texts.getUnformattedComponentText());
                 if (!m.find()) {
-                    temp.getSiblings().add(texts);
+                    ITextComponent newComponent = new TextComponentString(texts.getUnformattedComponentText());
+                    newComponent.setStyle(texts.getStyle().createShallowCopy());
+                    temp.appendSibling(newComponent);
                     continue;
                 }
 
