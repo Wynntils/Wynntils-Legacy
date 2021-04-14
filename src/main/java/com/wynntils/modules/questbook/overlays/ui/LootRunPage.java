@@ -108,7 +108,7 @@ public class LootRunPage extends QuestBookPage {
                 //render map of starting point
                 //x1 and y1 is top left corner of map
                 int x1 = x - 154;
-                int y1 = y + 40;
+                int y1 = y + 41;
                 int width = 145;
                 int height = 40;
                 MapProfile map = MapModule.getModule().getMainMap();
@@ -126,12 +126,14 @@ public class LootRunPage extends QuestBookPage {
                     GlStateManager.enableAlpha();
                     GlStateManager.enableTexture2D();
 
+                    //boundary around map
+                    int boundarySize = 3;
+                    render.drawRect(Textures.Map.paper_map_textures, x1 - boundarySize, y1 - boundarySize, x1 + width + boundarySize, y1 + height + boundarySize, 0, 0, 217, 217);
                     ScreenRenderer.enableScissorTest(x1, y1, width, height);
 
                     map.bindTexture();
                     GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 
-                    //int option = MapConfig.INSTANCE.renderUsingLinear ? GL11.GL_LINEAR : GL11.GL_NEAREST;
                     GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 
                     GlStateManager.enableBlend();
