@@ -1,28 +1,43 @@
 package com.wynntils.modules.questbook.overlays.ui;
 
+import com.wynntils.ModCore;
 import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
+import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
+import com.wynntils.modules.map.MapModule;
+import com.wynntils.modules.map.configs.MapConfig;
+import com.wynntils.modules.map.instances.LootRunPath;
+import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.managers.LootRunManager;
+import com.wynntils.modules.map.overlays.objects.MapIcon;
+import com.wynntils.modules.map.overlays.objects.MapPathWaypointIcon;
+import com.wynntils.modules.map.overlays.objects.WorldMapIcon;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookPage;
+import javafx.stage.Screen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.ScaledResolution;
+import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.opengl.GL11;
 
+import javax.vecmath.Vector3d;
 import java.io.File;
 import java.io.IOException;
-import java.net.URI;
 import java.util.*;
 
 public class LootRunPage extends QuestBookPage {
@@ -76,17 +91,95 @@ public class LootRunPage extends QuestBookPage {
 
         ScreenRenderer.beginGL(0, 0);
         {
-            render.drawString("Here you can see all lootruns", x - 154, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            render.drawString("you have downloaded. You can", x - 154, y - 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            render.drawString("also search for a specific", x - 154, y - 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            render.drawString("quest just by typing its name.", x - 154, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            render.drawString("You can go to the next page", x - 154, y + 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            render.drawString("by clicking on the two buttons", x - 154, y + 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            render.drawString("or by scrolling your mouse.", x - 154, y + 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            render.drawString("To add lootruns, access the", x - 154, y + 50, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            render.drawString("folder for lootruns by running", x - 154, y + 60, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            render.drawString("/lootrun folder", x - 154, y + 70, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            if (LootRunManager.getActivePathName() != null) {
+                ScreenRenderer.scale(1.2f);
+                render.drawString("Lootrun Loaded:", x/1.2f - 154/1.2f, y/1.2f - 30/1.2f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString(LootRunManager.getActivePathName(), x/1.2f - 154/1.2f, y/1.2f - 20/1.2f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                ScreenRenderer.resetScale();
 
+
+                LootRunPath path = LootRunManager.getActivePath();
+                Location start = path.getPoints().get(0);
+                render.drawString("Chests: " + path.getChests().size(), x - 154, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("Notes: " + path.getNotes().size(), x - 154, y + 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("Start point: " + start, x - 154, y + 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("End point: " + path.getLastPoint(), x - 154, y + 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+
+                //render map of starting point
+                //x1 and y1 is top left corner of map
+                int x1 = x - 154;
+                int y1 = y + 40;
+                int width = 145;
+                int height = 40;
+                MapProfile map = MapModule.getModule().getMainMap();
+
+                float minX = map.getTextureXPosition(start.x) - 1.5f * (width/2f);  // <--- min texture x point
+                float minZ = map.getTextureZPosition(start.z) - 1.5f * (height/2f);  // <--- min texture z point
+
+                float maxX = map.getTextureXPosition(start.x) + 1.5f * (width/2f);  // <--- max texture x point
+                float maxZ = map.getTextureZPosition(start.z) + 1.5f * (height/2f);  // <--- max texture z point
+
+                minX /= (float)map.getImageWidth(); maxX /= (float)map.getImageWidth();
+                minZ /= (float)map.getImageHeight(); maxZ /= (float)map.getImageHeight();
+
+                try {
+                    GlStateManager.enableAlpha();
+                    GlStateManager.enableTexture2D();
+
+                    ScreenRenderer.enableScissorTest(x1, y1, width, height);
+
+                    map.bindTexture();
+                    GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+
+                    //int option = MapConfig.INSTANCE.renderUsingLinear ? GL11.GL_LINEAR : GL11.GL_NEAREST;
+                    GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+
+                    GlStateManager.enableBlend();
+                    GlStateManager.enableTexture2D();
+                    Tessellator tessellator = Tessellator.getInstance();
+                    BufferBuilder bufferbuilder = tessellator.getBuffer();
+                    {
+                        bufferbuilder.begin(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.POSITION_TEX);
+
+                        bufferbuilder.pos(x1 - width/4f, y1 + height * 5/4f, 0).tex(minX, maxZ).endVertex();
+                        bufferbuilder.pos(x1 + width * 5/4f, y1 + height * 5/4f, 0).tex(maxX, maxZ).endVertex();
+                        bufferbuilder.pos(x1 + width * 5/4f, y1 - height/4f, 0).tex(maxX, minZ).endVertex();
+                        bufferbuilder.pos(x1 - width/4f, y1 - height/4f, 0).tex(minX, minZ).endVertex();
+
+                        tessellator.draw();
+                    }
+
+                    //render the line on maps
+
+                    if (MapConfig.LootRun.INSTANCE.displayLootrunOnMap) {
+                        List<MapIcon> icons = LootRunManager.getMapPathWaypoints();
+                        for (MapIcon mapIcon : icons) {
+                            //            x1 + width/2f = (p.getX() - posX) * blockScale + centre
+                            //centre =  x1 + width/2f - (p.getX() - posX) * blockScale
+                            mapIcon.renderAt(render, (float) (x1 + width/2f - (start.getX() - mapIcon.getPosX())), (float) (y1 + height/2f - (start.getZ() - mapIcon.getPosZ())), 1f, 1f);
+                        }
+                    }
+                }
+                catch (Exception e) {
+                    ModCore.mc().player.sendMessage(new TextComponentString("Fail"));
+                }
+                GlStateManager.disableAlpha();
+                GlStateManager.disableBlend();
+                ScreenRenderer.disableScissorTest();
+                ScreenRenderer.clearMask();
+            }
+            else {
+                render.drawString("Here you can see all lootruns", x - 154, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("you have downloaded. You can", x - 154, y - 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("also search for a specific", x - 154, y - 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("quest just by typing its name.", x - 154, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("You can go to the next page", x - 154, y + 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("by clicking on the two buttons", x - 154, y + 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("or by scrolling your mouse.", x - 154, y + 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("To add lootruns, access the", x - 154, y + 50, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("folder for lootruns by running", x - 154, y + 60, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("/lootrun folder", x - 154, y + 70, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            }
 
             // back to menu button
             if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
@@ -133,7 +226,7 @@ public class LootRunPage extends QuestBookPage {
                     boolean hovered = posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY;
                     //is string length of selectedName > 120?
                     String currentName = names.get(i);
-                    boolean toCrop = !getFriendlyName(currentName).equals(currentName);
+                    boolean toCrop = !getFriendlyName(currentName, 120).equals(currentName);
 
                     int animationTick = -1;
                     if (hovered && !showAnimation) {
@@ -190,7 +283,7 @@ public class LootRunPage extends QuestBookPage {
                         }
                     }
 
-                    String friendlyName = getFriendlyName(currentName);
+                    String friendlyName = getFriendlyName(currentName, 120);
                     if (selected == i && toCrop && animationTick > 0) {
                         int maxScroll = fontRenderer.getStringWidth(friendlyName) - (120 - 10);
                         int scrollAmount = (animationTick / 20) % (maxScroll + 60);
@@ -257,13 +350,13 @@ public class LootRunPage extends QuestBookPage {
         }
     }
 
-    public String getFriendlyName(String str) {
+    public String getFriendlyName(String str, int width) {
 
-        if (Minecraft.getMinecraft().fontRenderer.getStringWidth(str) > 120) str += "...";
+        if (Minecraft.getMinecraft().fontRenderer.getStringWidth(str) > width) str += "...";
         else {
             return str;
         }
-        while (Minecraft.getMinecraft().fontRenderer.getStringWidth(str) > 120) {
+        while (Minecraft.getMinecraft().fontRenderer.getStringWidth(str) > width) {
             str = str.substring(0, str.length() - 4).trim() + "...";
         }
         return str;
