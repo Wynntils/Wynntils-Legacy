@@ -18,12 +18,10 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -32,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class ChatManager {
 
@@ -50,6 +49,12 @@ public class ChatManager {
             "(?:§5[^:]*: §r§d)" + "|" +  // interaction with e.g. blacksmith
             "(?:§[0-9a-z])" + // generic system message
             ")(.*)(§r)$");
+
+    public static boolean inDialogue = false;
+    private static List<ITextComponent> last = null;
+    private static int newMessageCount = 0;
+    private static String lastChat = null;
+    private static final int WYNN_DIALOGUE_NEW_MESSAGES_ID = "wynn_dialogue_new_messages".hashCode();
 
     private static final SoundEvent popOffSound = new SoundEvent(new ResourceLocation("minecraft", "entity.blaze.hurt"));
 
@@ -763,6 +768,80 @@ public class ChatManager {
         }
 
         return new Pair<>(after, cancel);
+    }
+
+    public static Pair<Boolean, ITextComponent> applyToDialogue(ITextComponent component) {
+        List<ITextComponent> siblings = component.getSiblings();
+        List<ITextComponent> dialogue = siblings.size() >= 4 ? siblings.subList(siblings.size() - 4, siblings.size()) : null;
+        if (inDialogue
+                && (dialogue == null
+                        || !dialogue.get(0).getUnformattedText().equals("\n")
+                        || !dialogue.get(2).getUnformattedText().equals("\n")
+                        || (!dialogue.get(3).getUnformattedText().equals("\n")
+                                && !dialogue.get(3).getUnformattedText().equals("                       Press SHIFT to continue\n")
+                                && !dialogue.get(3).getUnformattedText().equals("                       Press SNEAK to continue\n")))
+                && component.getUnformattedText().equals(lastChat)) {
+
+            inDialogue = false;
+            int max = Math.max(0, siblings.size() - newMessageCount);
+            for (int i = max; i < siblings.size(); i++) {
+                ITextComponent line = siblings.get(i).createCopy();
+                // Remove new line if present
+                if (i != siblings.size() - 1) {
+                    line.getSiblings().remove(line.getSiblings().size() - 1);
+                }
+
+                line = ForgeEventFactory.onClientChat(ChatType.SYSTEM, line);
+                if (line != null) {
+                    ChatOverlay.getChat().printChatMessage(line);
+                }
+            }
+            newMessageCount = 0;
+            lastChat = null;
+            ChatOverlay.getChat().deleteChatLine(WYNN_DIALOGUE_NEW_MESSAGES_ID);
+            return new Pair<>(true, null);
+        }
+        if (component.getSiblings().size() >= 4) {
+            // Each line of chat is a separate sibling
+
+            // Very very long string of À's get sent in place of dialogue initially
+            if (dialogue.get(1).getUnformattedText().matches("À{50,}\n") || inDialogue) {
+                // Detect new messages
+                if (inDialogue) {
+                    // If dialogue is the exact same as previously then most likely a message was received
+                    if (dialogue.equals(last)) {
+                        newMessageCount++;
+                    }
+
+                    if (newMessageCount > 0) {
+                        ITextComponent message = new TextComponentString(newMessageCount + " delayed message" + (newMessageCount > 1 ? "s" : ""));
+                        message.getStyle().setColor(TextFormatting.GRAY);
+                        ChatOverlay.getChat().printChatMessageWithOptionalDeletion(message, WYNN_DIALOGUE_NEW_MESSAGES_ID);
+                    }
+                }
+
+                List<ITextComponent> chat = siblings.subList(0, siblings.size() - 4);
+                lastChat = chat.stream().map(ITextComponent::getUnformattedText).collect(Collectors.joining());
+                // Remove ending \n
+                lastChat = lastChat.substring(0, lastChat.length() - 1);
+
+                inDialogue = true;
+                ITextComponent newComponent = new TextComponentString("");
+                newComponent.getSiblings().addAll(dialogue);
+                last = new ArrayList<>(dialogue);
+                return new Pair<>(true, newComponent);
+            }
+        }
+        return new Pair<>(false, component);
+    }
+
+    public static void onLeave() {
+        inDialogue = false;
+        newMessageCount = 0;
+        lastChat = null;
+
+        ChatOverlay.getChat().deleteChatLine(WYNN_DIALOGUE_NEW_MESSAGES_ID);
+        ChatOverlay.getChat().deleteChatLine(ChatOverlay.WYNN_DIALOGUE_ID);
     }
 
     private static class ChapterReader implements Runnable {
