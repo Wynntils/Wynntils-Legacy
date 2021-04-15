@@ -1,11 +1,11 @@
 package com.wynntils.modules.questbook.overlays.ui;
 
 import com.wynntils.ModCore;
+import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
-import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
@@ -16,12 +16,13 @@ import com.wynntils.modules.map.instances.LootRunPath;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.map.overlays.objects.MapIcon;
-import com.wynntils.modules.map.overlays.objects.MapPathWaypointIcon;
-import com.wynntils.modules.map.overlays.objects.WorldMapIcon;
+import com.wynntils.modules.map.overlays.ui.MainWorldMapUI;
+import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookPage;
-import javafx.stage.Screen;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.ScaledResolution;
@@ -30,12 +31,10 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.opengl.GL11;
 
-import javax.vecmath.Vector3d;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
@@ -87,7 +86,12 @@ public class LootRunPage extends QuestBookPage {
         int posY = (y - mouseY);
         List<String> hoveredText = new ArrayList<>();
 
+        int mapX = x - 154;
+        int mapY = y + 41;
+        int mapWidth = 145;
+        int mapHeight = 40;
 
+        float scale = QuestBookConfig.INSTANCE.scaleOfLootrun;
 
         ScreenRenderer.beginGL(0, 0);
         {
@@ -106,69 +110,71 @@ public class LootRunPage extends QuestBookPage {
                 render.drawString("End point: " + path.getLastPoint(), x - 154, y + 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
                 //render map of starting point
-                //x1 and y1 is top left corner of map
-                int x1 = x - 154;
-                int y1 = y + 41;
-                int width = 145;
-                int height = 40;
                 MapProfile map = MapModule.getModule().getMainMap();
 
-                float minX = map.getTextureXPosition(start.x) - 1.5f * (width/2f);  // <--- min texture x point
-                float minZ = map.getTextureZPosition(start.z) - 1.5f * (height/2f);  // <--- min texture z point
+                if (map != null) {
+                    float minX = map.getTextureXPosition(start.x) - scale * (mapWidth / 2f);  // <--- min texture x point
+                    float minZ = map.getTextureZPosition(start.z) - scale * (mapHeight / 2f);  // <--- min texture z point
 
-                float maxX = map.getTextureXPosition(start.x) + 1.5f * (width/2f);  // <--- max texture x point
-                float maxZ = map.getTextureZPosition(start.z) + 1.5f * (height/2f);  // <--- max texture z point
+                    float maxX = map.getTextureXPosition(start.x) + scale * (mapWidth / 2f);  // <--- max texture x point
+                    float maxZ = map.getTextureZPosition(start.z) + scale * (mapHeight / 2f);  // <--- max texture z point
 
-                minX /= (float)map.getImageWidth(); maxX /= (float)map.getImageWidth();
-                minZ /= (float)map.getImageHeight(); maxZ /= (float)map.getImageHeight();
+                    minX /= (float) map.getImageWidth();
+                    maxX /= (float) map.getImageWidth();
+                    minZ /= (float) map.getImageHeight();
+                    maxZ /= (float) map.getImageHeight();
 
-                try {
-                    GlStateManager.enableAlpha();
-                    GlStateManager.enableTexture2D();
+                    try {
+                        GlStateManager.enableAlpha();
+                        GlStateManager.enableTexture2D();
 
-                    //boundary around map
-                    int boundarySize = 3;
-                    render.drawRect(Textures.Map.paper_map_textures, x1 - boundarySize, y1 - boundarySize, x1 + width + boundarySize, y1 + height + boundarySize, 0, 0, 217, 217);
-                    ScreenRenderer.enableScissorTest(x1, y1, width, height);
+                        //boundary around map
+                        int boundarySize = 3;
+                        render.drawRect(Textures.Map.paper_map_textures, mapX - boundarySize, mapY - boundarySize, mapX + mapWidth + boundarySize, mapY + mapHeight + boundarySize, 0, 0, 217, 217);
+                        ScreenRenderer.enableScissorTest(mapX, mapY, mapWidth, mapHeight);
 
-                    map.bindTexture();
-                    GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+                        map.bindTexture();
+                        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 
-                    GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+                        GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 
-                    GlStateManager.enableBlend();
-                    GlStateManager.enableTexture2D();
-                    Tessellator tessellator = Tessellator.getInstance();
-                    BufferBuilder bufferbuilder = tessellator.getBuffer();
-                    {
-                        bufferbuilder.begin(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.POSITION_TEX);
+                        GlStateManager.enableBlend();
+                        GlStateManager.enableTexture2D();
+                        Tessellator tessellator = Tessellator.getInstance();
+                        BufferBuilder bufferbuilder = tessellator.getBuffer();
+                        {
+                            bufferbuilder.begin(GL11.GL_TRIANGLE_FAN, DefaultVertexFormats.POSITION_TEX);
 
-                        bufferbuilder.pos(x1 - width/4f, y1 + height * 5/4f, 0).tex(minX, maxZ).endVertex();
-                        bufferbuilder.pos(x1 + width * 5/4f, y1 + height * 5/4f, 0).tex(maxX, maxZ).endVertex();
-                        bufferbuilder.pos(x1 + width * 5/4f, y1 - height/4f, 0).tex(maxX, minZ).endVertex();
-                        bufferbuilder.pos(x1 - width/4f, y1 - height/4f, 0).tex(minX, minZ).endVertex();
+                            bufferbuilder.pos(mapX, mapY + mapHeight, 0).tex(minX, maxZ).endVertex();
+                            bufferbuilder.pos(mapX + mapWidth, mapY + mapHeight, 0).tex(maxX, maxZ).endVertex();
+                            bufferbuilder.pos(mapX + mapWidth, mapY, 0).tex(maxX, minZ).endVertex();
+                            bufferbuilder.pos(mapX, mapY, 0).tex(minX, minZ).endVertex();
 
-                        tessellator.draw();
-                    }
-
-                    //render the line on maps
-
-                    if (MapConfig.LootRun.INSTANCE.displayLootrunOnMap) {
-                        List<MapIcon> icons = LootRunManager.getMapPathWaypoints();
-                        for (MapIcon mapIcon : icons) {
-                            //            x1 + width/2f = (p.getX() - posX) * blockScale + centre
-                            //centre =  x1 + width/2f - (p.getX() - posX) * blockScale
-                            mapIcon.renderAt(render, (float) (x1 + width/2f - (start.getX() - mapIcon.getPosX())), (float) (y1 + height/2f - (start.getZ() - mapIcon.getPosZ())), 1f, 1f);
+                            tessellator.draw();
                         }
+
+                        //render the line on maps
+
+                        if (MapConfig.LootRun.INSTANCE.displayLootrunOnMap) {
+                            List<MapIcon> icons = LootRunManager.getMapPathWaypoints();
+                            for (MapIcon mapIcon : icons) {
+                                mapIcon.renderAt(render, (float) (mapX + mapWidth / 2f - (start.getX() - mapIcon.getPosX())), (float) (mapY + mapHeight / 2f - (start.getZ() - mapIcon.getPosZ())), 1f, 1f);
+                            }
+                        }
+
+                        boolean mapHovered = posX <= 154 && posX >= 154 - mapWidth && posY <= -41 && posY >= -41 - mapHeight;
+                        if (mapHovered) {
+                            hoveredText = Collections.singletonList(TextFormatting.YELLOW + "Click to open Map!");
+                        }
+
+                    } catch (Exception e) {
+                        ModCore.mc().player.sendMessage(new TextComponentString("Fail"));
                     }
+                    GlStateManager.disableAlpha();
+                    GlStateManager.disableBlend();
+                    ScreenRenderer.disableScissorTest();
+                    ScreenRenderer.clearMask();
                 }
-                catch (Exception e) {
-                    ModCore.mc().player.sendMessage(new TextComponentString("Fail"));
-                }
-                GlStateManager.disableAlpha();
-                GlStateManager.disableBlend();
-                ScreenRenderer.disableScissorTest();
-                ScreenRenderer.clearMask();
             }
             else {
                 render.drawString("Here you can see all lootruns", x - 154, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
@@ -195,7 +201,7 @@ public class LootRunPage extends QuestBookPage {
 
             render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
-            // but next and back button
+            // put next and back button
             if (currentPage == pages) {
                 render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
             } else {
@@ -412,11 +418,13 @@ public class LootRunPage extends QuestBookPage {
                         }
                         Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
                     }
+                    return;
                 }
                 else {
                     if (LootRunManager.getActivePath() != null) {
                         LootRunManager.clear();
                     }
+                    return;
                 }
             } else if (mouseButton == 1 && isShiftKeyDown() && !isTracked) { //shift right click means delete
                 boolean result = LootRunManager.delete(selectedName);
@@ -425,11 +433,27 @@ public class LootRunPage extends QuestBookPage {
                     updateSelected();
                     Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
                 }
+                return;
             }
             else if (mouseButton == 2) { //middle click means open up folder
                 File lootrunPath = new File(LootRunManager.STORAGE_FOLDER, selectedName + ".json");
                 String uri = lootrunPath.toURI().toString();
                 Utils.openUrl(uri);
+                return;
+            }
+        }
+        int mapWidth = 145;
+        int mapHeight = 40;
+
+        boolean mapHovered = posX <= 154 && posX >= 154 - mapWidth && posY <= -41 && posY >= -41 - mapHeight;
+        if (mapHovered && LootRunManager.getActivePathName() != null) {
+            if (Reference.onWorld) {
+                if (WebManager.getApiUrls() == null) {
+                    WebManager.tryReloadApiUrls(true);
+                } else {
+                    Location start = LootRunManager.getActivePath().getPoints().get(0);
+                    Utils.displayGuiScreen(new MainWorldMapUI((int) start.x, (int) start.z));
+                }
             }
         }
 
