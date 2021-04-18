@@ -11,6 +11,7 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.core.utils.QuestPageUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.core.managers.CompassManager;
@@ -73,12 +74,8 @@ public class DiscoveriesPage extends QuestBookPage {
             render.drawString("You can use the filters below.", x - 154, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
             // Back button
-            if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
-                hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Back to Menu", TextFormatting.GRAY + "Click here to go", TextFormatting.GRAY + "back to the main page", "", TextFormatting.GREEN + "Left click to select");
-                render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 238, 234, 16, 9);
-            } else {
-                render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 222, 234, 16, 9);
-            }
+            List<String> result = QuestPageUtils.drawMenuButton(render, x, y, posX, posY);
+            if (result != null) hoveredText = result;
 
             // World and Territory Progress icon
             if (posX >= 81 && posX <= 97 && posY >= 84 && posY <= 100) {
@@ -105,26 +102,7 @@ public class DiscoveriesPage extends QuestBookPage {
             }
 
             // Next Page Button
-            if (currentPage == pages) {
-                render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
-            } else {
-                if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
-                    render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
-                } else {
-                    render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 205, 222, 18, 10);
-                }
-            }
-
-            // Back Page Button
-            if (currentPage == 1) {
-                render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 241, 222, 18, 10);
-            } else {
-                if (posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) {
-                    render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 241, 222, 18, 10);
-                } else {
-                    render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 259, 222, 18, 10);
-                }
-            }
+            QuestPageUtils.drawForwardAndBackButtons(render, x, y, posX, posY, currentPage, pages);
 
             // Discovered Territories Filter
             if (mouseX >= x - 130 && mouseX <= x - 100 && mouseY >= y + 15 && mouseY <= y + 45) {

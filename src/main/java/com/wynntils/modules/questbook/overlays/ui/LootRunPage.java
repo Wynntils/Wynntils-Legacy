@@ -1,12 +1,12 @@
 package com.wynntils.modules.questbook.overlays.ui;
 
-import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.core.utils.QuestPageUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
@@ -21,13 +21,11 @@ import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookPage;
-import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.SoundEvents;
@@ -38,6 +36,9 @@ import org.lwjgl.opengl.GL11;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+
+import static net.minecraft.client.renderer.GlStateManager.*;
+
 
 public class LootRunPage extends QuestBookPage {
 
@@ -54,7 +55,6 @@ public class LootRunPage extends QuestBookPage {
     public List<String> getHoveredDescription() {
         return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Lootruns", TextFormatting.GRAY + "See all lootruns", TextFormatting.GRAY + "you have", TextFormatting.GRAY + "saved in the game.", "", TextFormatting.GREEN + "Left click to select");
     }
-
 
     @Override
     public void initGui() {
@@ -96,18 +96,17 @@ public class LootRunPage extends QuestBookPage {
         ScreenRenderer.beginGL(0, 0);
         {
             if (LootRunManager.getActivePathName() != null) {
+                //render info
                 ScreenRenderer.scale(1.2f);
-                render.drawString("Lootrun Loaded:", x/1.2f - 154/1.2f, y/1.2f - 30/1.2f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.drawString(LootRunManager.getActivePathName(), x/1.2f - 154/1.2f, y/1.2f - 20/1.2f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString(LootRunManager.getActivePathName(), x/1.2f - 154/1.2f, y/1.2f - 30/1.2f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 ScreenRenderer.resetScale();
-
 
                 LootRunPath path = LootRunManager.getActivePath();
                 Location start = path.getPoints().get(0);
-                render.drawString("Chests: " + path.getChests().size(), x - 154, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.drawString("Notes: " + path.getNotes().size(), x - 154, y + 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.drawString("Start point: " + start, x - 154, y + 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.drawString("End point: " + path.getLastPoint(), x - 154, y + 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("Chests: " + path.getChests().size(), x - 154, y - 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("Notes: " + path.getNotes().size(), x - 154, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("Start point: " + start, x - 154, y + 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("End point: " + path.getLastPoint(), x - 154, y + 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
                 //render map of starting point
                 MapProfile map = MapModule.getModule().getMainMap();
@@ -121,12 +120,13 @@ public class LootRunPage extends QuestBookPage {
 
                     minX /= (float) map.getImageWidth();
                     maxX /= (float) map.getImageWidth();
+
                     minZ /= (float) map.getImageHeight();
                     maxZ /= (float) map.getImageHeight();
 
                     try {
-                        GlStateManager.enableAlpha();
-                        GlStateManager.enableTexture2D();
+                        enableAlpha();
+                        enableTexture2D();
 
                         //boundary around map
                         int boundarySize = 3;
@@ -134,12 +134,12 @@ public class LootRunPage extends QuestBookPage {
                         ScreenRenderer.enableScissorTest(mapX, mapY, mapWidth, mapHeight);
 
                         map.bindTexture();
-                        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+                        color(1.0f, 1.0f, 1.0f, 1.0f);
 
-                        GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
+                        glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 
-                        GlStateManager.enableBlend();
-                        GlStateManager.enableTexture2D();
+                        enableBlend();
+                        enableTexture2D();
                         Tessellator tessellator = Tessellator.getInstance();
                         BufferBuilder bufferbuilder = tessellator.getBuffer();
                         {
@@ -153,8 +153,7 @@ public class LootRunPage extends QuestBookPage {
                             tessellator.draw();
                         }
 
-                        //render the line on maps
-
+                        //render the line on the map
                         if (MapConfig.LootRun.INSTANCE.displayLootrunOnMap) {
                             List<MapIcon> icons = LootRunManager.getMapPathWaypoints();
                             for (MapIcon mapIcon : icons) {
@@ -167,16 +166,15 @@ public class LootRunPage extends QuestBookPage {
                             hoveredText = Collections.singletonList(TextFormatting.YELLOW + "Click to open Map!");
                         }
 
-                    } catch (Exception e) {
-                        ModCore.mc().player.sendMessage(new TextComponentString("Fail"));
-                    }
-                    GlStateManager.disableAlpha();
-                    GlStateManager.disableBlend();
+                    } catch (Exception ignored) { }
+
+                    //reset settings
+                    disableAlpha();
+                    disableBlend();
                     ScreenRenderer.disableScissorTest();
                     ScreenRenderer.clearMask();
                 }
-            }
-            else {
+            } else {
                 render.drawString("Here you can see all lootruns", x - 154, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 render.drawString("you have downloaded. You can", x - 154, y - 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 render.drawString("also search for a specific", x - 154, y - 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
@@ -190,37 +188,13 @@ public class LootRunPage extends QuestBookPage {
             }
 
             // back to menu button
-            if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
-                hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Back to Menu", TextFormatting.GRAY + "Click here to go", TextFormatting.GRAY + "back to the main page", "", TextFormatting.GREEN + "Left click to select");
-                render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 238, 234, 16, 9);
-            } else {
-                render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 222, 234, 16, 9);
-            }
+            List<String> result = QuestPageUtils.drawMenuButton(render, x, y, posX, posY);
+            if (result != null) hoveredText = result;
 
-            // title text
-
+            //Page text
             render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
-            // put next and back button
-            if (currentPage == pages) {
-                render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
-            } else {
-                if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
-                    render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
-                } else {
-                    render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 205, 222, 18, 10);
-                }
-            }
-
-            if (currentPage == 1) {
-                render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 241, 222, 18, 10);
-            } else {
-                if (posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) {
-                    render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 241, 222, 18, 10);
-                } else {
-                    render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 259, 222, 18, 10);
-                }
-            }
+            QuestPageUtils.drawForwardAndBackButtons(render, x, y, posX, posY, currentPage, pages);
 
             // available lootruns
             int currentY = 12;
@@ -270,7 +244,7 @@ public class LootRunPage extends QuestBookPage {
                             render.drawRectF(background_2, x + 9, y - 96 + currentY, x + 146, y - 87 + currentY);
                         }
 
-                        GlStateManager.disableLighting();
+                        disableLighting();
 
                         if (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(currentName)) {
                             hoveredText = Arrays.asList(TextFormatting.BOLD + names.get(i), TextFormatting.YELLOW + "Loaded", TextFormatting.GOLD + "Middle click to open lootrun in folder",  TextFormatting.GREEN + "Left click to unload this lootrun");
@@ -324,8 +298,6 @@ public class LootRunPage extends QuestBookPage {
                     currentY += render.drawSplitString(line, 120, x + 26, y - 95 + currentY, 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE) * 10 + 2;
                 }
             }
-
-
         }
         ScreenRenderer.endGL();
     }
@@ -418,14 +390,13 @@ public class LootRunPage extends QuestBookPage {
                         }
                         Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
                     }
-                    return;
-                }
-                else {
+                } else {
                     if (LootRunManager.getActivePath() != null) {
                         LootRunManager.clear();
                     }
-                    return;
                 }
+
+                return;
             } else if (mouseButton == 1 && isShiftKeyDown() && !isTracked) { //shift right click means delete
                 boolean result = LootRunManager.delete(selectedName);
                 if (result) {
@@ -433,15 +404,17 @@ public class LootRunPage extends QuestBookPage {
                     updateSelected();
                     Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
                 }
+
                 return;
-            }
-            else if (mouseButton == 2) { //middle click means open up folder
+            } else if (mouseButton == 2) { //middle click means open up folder
                 File lootrunPath = new File(LootRunManager.STORAGE_FOLDER, selectedName + ".json");
                 String uri = lootrunPath.toURI().toString();
                 Utils.openUrl(uri);
                 return;
             }
         }
+
+        //open the map when clicked
         int mapWidth = 145;
         int mapHeight = 40;
 

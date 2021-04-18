@@ -13,6 +13,7 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
+import com.wynntils.core.utils.QuestPageUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.helpers.ItemFilter;
 import com.wynntils.core.utils.helpers.ItemFilter.ByStat;
@@ -121,12 +122,8 @@ public class ItemPage extends QuestBookPage {
             }
 
             // back to menu button
-            if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
-                hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Back to Menu", TextFormatting.GRAY + "Click here to go", TextFormatting.GRAY + "back to the main page", "", TextFormatting.GREEN + "Left click to select");
-                render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 238, 234, 16, 9);
-            } else {
-                render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 222, 234, 16, 9);
-            }
+            List<String> result = QuestPageUtils.drawMenuButton(render, x, y, posX, posY);
+            if (result != null) hoveredText = result;
 
             // title text (or search error text, if any)
             if (searchError != null) {
@@ -134,28 +131,10 @@ public class ItemPage extends QuestBookPage {
             } else {
                 render.drawString("Available Items", x + 80, y - 78, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
             }
+
             render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
-            // but next and back button
-            if (currentPage == pages) {
-                render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
-            } else {
-                if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
-                    render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
-                } else {
-                    render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 205, 222, 18, 10);
-                }
-            }
-
-            if (currentPage == 1) {
-                render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 241, 222, 18, 10);
-            } else {
-                if (posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) {
-                    render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 241, 222, 18, 10);
-                } else {
-                    render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 259, 222, 18, 10);
-                }
-            }
+            QuestPageUtils.drawForwardAndBackButtons(render, x, y, posX, posY, currentPage, pages);
 
             // available items
             int placedCubes = 0;
