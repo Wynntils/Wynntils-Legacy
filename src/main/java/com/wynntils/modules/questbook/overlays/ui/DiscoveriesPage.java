@@ -69,11 +69,6 @@ public class DiscoveriesPage extends QuestBookPage {
         ScreenRenderer.beginGL(0, 0);
         {
             // Explanatory Text
-            /*
-            render.drawString("Here you can see all", x - 154, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            render.drawString("the discoveries.", x - 154, y - 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            render.drawString("You can use the filters below.", x - 154, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            */
             QuestPageUtils.drawTextLines(render, Arrays.asList("Here you can see all", "the discoveries.", "", "You can use the filters below."), x - 154, y - 30, 1);
 
             // Back button
