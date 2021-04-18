@@ -87,9 +87,9 @@ public class LootRunPage extends QuestBookPage {
         List<String> hoveredText = new ArrayList<>();
 
         int mapX = x - 154;
-        int mapY = y + 41;
+        int mapY = y + 23;
         int mapWidth = 145;
-        int mapHeight = 40;
+        int mapHeight = 58;
 
         float scale = QuestBookConfig.INSTANCE.scaleOfLootrun;
 
@@ -98,15 +98,15 @@ public class LootRunPage extends QuestBookPage {
             if (LootRunManager.getActivePathName() != null) {
                 //render info
                 ScreenRenderer.scale(1.2f);
-                render.drawString(LootRunManager.getActivePathName(), x/1.2f - 154/1.2f, y/1.2f - 30/1.2f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString(LootRunManager.getActivePathName(), x/1.2f - 154/1.2f, y/1.2f - 35/1.2f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 ScreenRenderer.resetScale();
 
                 LootRunPath path = LootRunManager.getActivePath();
                 Location start = path.getPoints().get(0);
-                render.drawString("Chests: " + path.getChests().size(), x - 154, y - 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.drawString("Notes: " + path.getNotes().size(), x - 154, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.drawString("Start point: " + start, x - 154, y + 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                render.drawString("End point: " + path.getLastPoint(), x - 154, y + 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("Chests: " + path.getChests().size(), x - 154, y - 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("Notes: " + path.getNotes().size(), x - 154, y - 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("Start point: " + start, x - 154, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString("End point: " + path.getLastPoint(), x - 154, y + 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
                 //render map of starting point
                 MapProfile map = MapModule.getModule().getMainMap();
