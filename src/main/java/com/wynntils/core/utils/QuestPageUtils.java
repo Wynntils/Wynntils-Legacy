@@ -1,9 +1,12 @@
 package com.wynntils.core.utils;
 
 import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.framework.rendering.SmartFontRenderer;
+import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import net.minecraft.util.text.TextFormatting;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -12,8 +15,8 @@ public class QuestPageUtils {
      * Draw the Menu Button
      *
      * @param render the ScreenRender to be used
-     * @param x x (from drawingOrigin) to render at
-     * @param y y (from drawingOrigin) to render at
+     * @param x drawingOrigin x
+     * @param y drawingOrigin y
      * @param posX mouseX (from drawingOrigin)
      * @param posY mouseY (from drawingOrigin)
      *
@@ -34,8 +37,8 @@ public class QuestPageUtils {
      * Draws the Forward and Back Button
      *
      * @param render the ScreenRender to be used
-     * @param x x (from drawingOrigin) to render at
-     * @param y y (from drawingOrigin) to render at
+     * @param x drawingOrigin x
+     * @param y drawingOrigin y
      * @param posX mouseX (from drawingOrigin)
      * @param posY mouseY (from drawingOrigin)
      */
@@ -48,8 +51,8 @@ public class QuestPageUtils {
      * Draws the Forward Button
      *
      * @param render the ScreenRender to be used
-     * @param x x (from drawingOrigin) to render at
-     * @param y y (from drawingOrigin) to render at
+     * @param x drawingOrigin x
+     * @param y drawingOrigin y
      * @param posX mouseX (from drawingOrigin)
      * @param posY mouseY (from drawingOrigin)
      * @param atLimit whether the button can be pressed
@@ -74,8 +77,8 @@ public class QuestPageUtils {
      * Draws the Back button
      *
      * @param render the ScreenRender to be used
-     * @param x x (from drawingOrigin) to render at
-     * @param y y (from drawingOrigin) to render at
+     * @param x drawingOrigin x
+     * @param y drawingOrigin y
      * @param posX mouseX (from drawingOrigin)
      * @param posY mouseY (from drawingOrigin)
      * @param atLimit whether the button can be pressed
@@ -94,5 +97,23 @@ public class QuestPageUtils {
         }
 
         render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 259, 222, 18, 10);
+    }
+
+    /**
+     * Draws a list of text lines
+     *
+     * @param render the ScreenRender to be used
+     * @param lines list of lines to be rendered
+     * @param startX x to start rendering at
+     * @param startY y to start rendering at
+     */
+    public static void drawTextLines(ScreenRenderer render, List<String> lines, int startX, int startY, int scale) {
+        int currentY = startY;
+        for (String line : lines) {
+            ScreenRenderer.scale(scale);
+            render.drawString(line, startX, currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            ScreenRenderer.resetScale();
+            currentY += 10 * scale;
+        }
     }
 }

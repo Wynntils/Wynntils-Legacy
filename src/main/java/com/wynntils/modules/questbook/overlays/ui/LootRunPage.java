@@ -175,6 +175,7 @@ public class LootRunPage extends QuestBookPage {
                     ScreenRenderer.clearMask();
                 }
             } else {
+                /*
                 render.drawString("Here you can see all lootruns", x - 154, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 render.drawString("you have downloaded. You can", x - 154, y - 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 render.drawString("also search for a specific", x - 154, y - 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
@@ -185,6 +186,10 @@ public class LootRunPage extends QuestBookPage {
                 render.drawString("To add lootruns, access the", x - 154, y + 50, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 render.drawString("folder for lootruns by", x - 154, y + 60, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
                 render.drawString("running /lootrun folder", x - 154, y + 70, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                 */
+                List<String> textLines = Arrays.asList("Here you can see all lootruns", "you have downloaded. You can", "also search for a specific", "quest just by typing its name.", "You can go to the next page", "by clicking on the two buttons", "or by scrolling your mouse.", "", "To add lootruns, access the", "folder for lootruns by", "running /lootrun folder");
+                QuestPageUtils.drawTextLines(render, textLines, x - 154, y - 30, 1);
+
             }
 
             // back to menu button
@@ -231,6 +236,7 @@ public class LootRunPage extends QuestBookPage {
                                 animationCompleted = false;
                                 lastTick = Minecraft.getSystemTime() - 133 * 2;
                             }
+
                             animationTick = 133;
                         }
 
@@ -290,8 +296,7 @@ public class LootRunPage extends QuestBookPage {
                     currentY += 13;
                 }
                 renderHoveredText(hoveredText, mouseX, mouseY);
-            }
-            else {
+            } else {
                 String textToDisplay = "No Lootruns were found!\nTry changing your search.";
 
                 for (String line : textToDisplay.split("\n")) {
@@ -321,24 +326,24 @@ public class LootRunPage extends QuestBookPage {
     }
 
     private void updateSelected() {
-        if (selectedName != null) {
-            selected = names.indexOf(selectedName);
+        if (selectedName == null) return;
 
-            if (selected == -1) {
-                selectedName = null;
-            }
+        selected = names.indexOf(selectedName);
+
+        if (selected == -1) {
+            selectedName = null;
         }
     }
 
     public String getFriendlyName(String str, int width) {
+        if (!(Minecraft.getMinecraft().fontRenderer.getStringWidth(str) > width)) return str;
 
-        if (Minecraft.getMinecraft().fontRenderer.getStringWidth(str) > width) str += "...";
-        else {
-            return str;
-        }
+        str += "...";
+
         while (Minecraft.getMinecraft().fontRenderer.getStringWidth(str) > width) {
             str = str.substring(0, str.length() - 4).trim() + "...";
         }
+
         return str;
     }
 
@@ -357,11 +362,11 @@ public class LootRunPage extends QuestBookPage {
             goForward();
             return;
         }
-        else if (posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) { // page backwards button
+        if (posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) { // page backwards button
             goBack();
             return;
         }
-        else if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) { // quest book back button
+        if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) { // quest book back button
             WynntilsSound.QUESTBOOK_PAGE.play();
             QuestBookPages.MAIN.getPage().open(false);
             return;
@@ -385,10 +390,11 @@ public class LootRunPage extends QuestBookPage {
                             Minecraft.getMinecraft().addScheduledTask(() ->
                                     ChatOverlay.getChat().printChatMessageWithOptionalDeletion(new TextComponentString(startingPointMsg), MESSAGE_ID)
                             );
+
+                            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
                     }
                 } else {
                     if (LootRunManager.getActivePath() != null) {
@@ -417,6 +423,7 @@ public class LootRunPage extends QuestBookPage {
         //open the map when clicked
         int mapWidth = 145;
         int mapHeight = 40;
+
 
         boolean mapHovered = posX <= 154 && posX >= 154 - mapWidth && posY <= -41 && posY >= -41 - mapHeight;
         if (mapHovered && LootRunManager.getActivePathName() != null) {
