@@ -9,7 +9,6 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
-import com.wynntils.core.utils.QuestPageUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.map.overlays.ui.MainWorldMapUI;
@@ -45,6 +44,7 @@ public class QuestsPage extends QuestBookPage {
     private QuestInfo overQuest;
     private SortMethod sort = SortMethod.LEVEL;
     private boolean showingMiniQuests = false;
+    final static List<String> textLines = Arrays.asList("Here you can see all quests", "available for you. You can", "also search for a specific", "quest just by typing its name.", "You can go to the next page", "by clicking on the two buttons", "or by scrolling your mouse.", "", "You can pin/unpin a quest", "by clicking on it.");
 
     public QuestsPage() {
         super("Quests", true, IconContainer.questPageIcon);
@@ -58,16 +58,15 @@ public class QuestsPage extends QuestBookPage {
         int y = height / 2;
         int posX = (x - mouseX);
         int posY = (y - mouseY);
-        List<String> hoveredText = new ArrayList<>();
+        hoveredText = new ArrayList<>();
 
         ScreenRenderer.beginGL(0, 0);
         {
             // Explanatory Text
-            List<String> textLines = Arrays.asList("Here you can see all quests", "available for you. You can", "also search for a specific", "quest just by typing its name.", "You can go to the next page", "by clicking on the two buttons", "or by scrolling your mouse.", "", "You can pin/unpin a quest", "by clicking on it.");
-            QuestPageUtils.drawTextLines(render, textLines, x - 154, y - 30, 1);
+            drawTextLines(textLines, x - 154, y - 30, 1);
 
             // Back Button
-            List<String> result = QuestPageUtils.drawMenuButton(render, x, y, posX, posY);
+            List<String> result = drawMenuButton(x, y, posX, posY);
             if (result != null) hoveredText = result;
 
             // Progress Icon/Mini-Quest Switcher
@@ -85,7 +84,7 @@ public class QuestsPage extends QuestBookPage {
             // Page Text
             render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
-            QuestPageUtils.drawForwardAndBackButtons(render, x, y, posX, posY, currentPage, pages);
+            drawForwardAndBackButtons(x, y, posX, posY, currentPage, pages);
 
             // Draw all Quests
             int currentY = 12;
@@ -252,7 +251,7 @@ public class QuestsPage extends QuestBookPage {
             render.drawRect(Textures.UIs.quest_book, x + 1, y - 99, x + 12, y - 88, sort.tx1 + dX, sort.ty1, sort.tx2 + dX, sort.ty2);
         }
         ScreenRenderer.endGL();
-        renderHoveredText(hoveredText, mouseX, mouseY);
+        renderHoveredText(mouseX, mouseY);
     }
 
     @Override

@@ -21,10 +21,13 @@ import net.minecraft.client.gui.GuiPageButtonList;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class QuestBookPage extends GuiScreen {
@@ -37,6 +40,7 @@ public class QuestBookPage extends GuiScreen {
     private String title;
     private IconContainer icon;
     protected boolean showAnimation;
+    protected List<String> hoveredText = new ArrayList<>();
 
     private boolean showSearchBar;
     protected int currentPage;
@@ -228,7 +232,7 @@ public class QuestBookPage extends GuiScreen {
         }
     }
 
-    protected void renderHoveredText(List<String> hoveredText, int mouseX, int mouseY) {
+    protected void renderHoveredText(int mouseX, int mouseY) {
         ScreenRenderer.beginGL(0, 0);
         {
             GlStateManager.disableLighting();
@@ -285,6 +289,106 @@ public class QuestBookPage extends GuiScreen {
      * Can be null
      * @return a list of strings - each index representing a new line.
      */
-    public List<String> getHoveredDescription() { return null; }
+    public List<String> getHoveredDescription() { return hoveredText; }
+
+    /**
+     * Draw the Menu Button
+     *
+     * @param x drawingOrigin x
+     * @param y drawingOrigin y
+     * @param posX mouseX (from drawingOrigin)
+     * @param posY mouseY (from drawingOrigin)
+     *
+     * @return the hovered text
+     */
+    public List<String> drawMenuButton(int x, int y, int posX, int posY) {
+        if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
+            render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 238, 234, 16, 9);
+            return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Back to Menu", TextFormatting.GRAY + "Click here to go", TextFormatting.GRAY + "back to the main page", "", TextFormatting.GREEN + "Left click to select");
+        }
+
+        render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 222, 234, 16, 9);
+        return null;
+    }
+
+    /**
+     * Draws the Forward and Back Button
+     *
+     * @param x drawingOrigin x
+     * @param y drawingOrigin y
+     * @param posX mouseX (from drawingOrigin)
+     * @param posY mouseY (from drawingOrigin)
+     */
+    public void drawForwardAndBackButtons(int x, int y, int posX, int posY, int currentPage, int pages) {
+        drawForwardButton(x, y, posX, posY, currentPage == pages);
+        drawBackButton(x, y, posX, posY, currentPage == 1);
+    }
+
+    /**
+     * Draws the Forward Button
+     *
+     * @param x drawingOrigin x
+     * @param y drawingOrigin y
+     * @param posX mouseX (from drawingOrigin)
+     * @param posY mouseY (from drawingOrigin)
+     * @param atLimit whether the button can be pressed
+     */
+    public void drawForwardButton(int x, int y, int posX, int posY, boolean atLimit) {
+        //Reached page limit
+        if (atLimit) {
+            render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
+            return;
+        }
+
+        //Hovering
+        if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
+            render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
+            return;
+        }
+
+        render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 205, 222, 18, 10);
+    }
+
+    /**
+     * Draws the Back button
+     *
+     * @param x drawingOrigin x
+     * @param y drawingOrigin y
+     * @param posX mouseX (from drawingOrigin)
+     * @param posY mouseY (from drawingOrigin)
+     * @param atLimit whether the button can be pressed
+     */
+    public void drawBackButton(int x, int y, int posX, int posY, boolean atLimit) {
+        //Reached page limit
+        if (atLimit) {
+            render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 241, 222, 18, 10);
+            return;
+        }
+
+        //Hovering
+        if (posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) {
+            render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 241, 222, 18, 10);
+            return;
+        }
+
+        render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 259, 222, 18, 10);
+    }
+
+    /**
+     * Draws a list of text lines
+     *
+     * @param lines list of lines to be rendered
+     * @param startX x to start rendering at
+     * @param startY y to start rendering at
+     */
+    public void drawTextLines(List<String> lines, int startX, int startY, int scale) {
+        int currentY = startY;
+        for (String line : lines) {
+            ScreenRenderer.scale(scale);
+            render.drawString(line, startX, currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            ScreenRenderer.resetScale();
+            currentY += 10 * scale;
+        }
+    }
 
 }

@@ -13,7 +13,6 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
-import com.wynntils.core.utils.QuestPageUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.helpers.ItemFilter;
 import com.wynntils.core.utils.helpers.ItemFilter.ByStat;
@@ -105,8 +104,8 @@ public class ItemPage extends QuestBookPage {
         int y = height / 2;
         int posX = (x - mouseX);
         int posY = (y - mouseY);
-        List<String> hoveredText;
         selected = 0;
+        hoveredText = new ArrayList<>();
 
         ScreenRenderer.beginGL(0, 0);
         {
@@ -122,7 +121,7 @@ public class ItemPage extends QuestBookPage {
             }
 
             // back to menu button
-            List<String> result = QuestPageUtils.drawMenuButton(render, x, y, posX, posY);
+            List<String> result = drawMenuButton(x, y, posX, posY);
             if (result != null) hoveredText = result;
 
             // title text (or search error text, if any)
@@ -134,7 +133,7 @@ public class ItemPage extends QuestBookPage {
 
             render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
-            QuestPageUtils.drawForwardAndBackButtons(render, x, y, posX, posY, currentPage, pages);
+            drawForwardAndBackButtons(x, y, posX, posY, currentPage, pages);
 
             // available items
             int placedCubes = 0;
@@ -191,7 +190,7 @@ public class ItemPage extends QuestBookPage {
             }
         }
         ScreenRenderer.endGL();
-        renderHoveredText(hoveredText, mouseX, mouseY);
+        renderHoveredText(mouseX, mouseY);
     }
 
     @Override

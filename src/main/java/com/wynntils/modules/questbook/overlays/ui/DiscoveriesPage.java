@@ -11,7 +11,6 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
-import com.wynntils.core.utils.QuestPageUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.core.managers.CompassManager;
@@ -52,6 +51,7 @@ public class DiscoveriesPage extends QuestBookPage {
     private boolean undiscoveredTerritory = false;
     private boolean undiscoveredWorld = false;
     private boolean undiscoveredSecret = false;
+    final static List<String> textLines =  Arrays.asList("Here you can see all", "the discoveries.", "", "You can use the filters below.");
 
     public DiscoveriesPage() {
         super("Discoveries", true, IconContainer.discoveriesIcon);
@@ -64,15 +64,15 @@ public class DiscoveriesPage extends QuestBookPage {
         int y = height / 2;
         int posX = (x - mouseX);
         int posY = (y - mouseY);
-        List<String> hoveredText = new ArrayList<>();
+        hoveredText = new ArrayList<>();
 
         ScreenRenderer.beginGL(0, 0);
         {
             // Explanatory Text
-            QuestPageUtils.drawTextLines(render, Arrays.asList("Here you can see all", "the discoveries.", "", "You can use the filters below."), x - 154, y - 30, 1);
+            drawTextLines(textLines, x - 154, y - 30, 1);
 
             // Back button
-            List<String> result = QuestPageUtils.drawMenuButton(render, x, y, posX, posY);
+            List<String> result = drawMenuButton(x, y, posX, posY);
             if (result != null) hoveredText = result;
 
             // World and Territory Progress icon
@@ -100,7 +100,7 @@ public class DiscoveriesPage extends QuestBookPage {
             }
 
             // Next Page Button
-            QuestPageUtils.drawForwardAndBackButtons(render, x, y, posX, posY, currentPage, pages);
+            drawForwardAndBackButtons(x, y, posX, posY, currentPage, pages);
 
             // Discovered Territories Filter
             if (mouseX >= x - 130 && mouseX <= x - 100 && mouseY >= y + 15 && mouseY <= y + 45) {
@@ -300,7 +300,7 @@ public class DiscoveriesPage extends QuestBookPage {
             }
         }
         ScreenRenderer.endGL();
-        renderHoveredText(hoveredText, mouseX, mouseY);
+        renderHoveredText(mouseX, mouseY);
     }
 
     @Override

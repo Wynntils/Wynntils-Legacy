@@ -6,7 +6,6 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
-import com.wynntils.core.utils.QuestPageUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
@@ -46,6 +45,7 @@ public class LootRunPage extends QuestBookPage {
 
     List<String> names;
     String selectedName;
+    final static List<String> textLines = Arrays.asList("Here you can see all lootruns", "you have downloaded. You can", "also search for a specific", "quest just by typing its name.", "You can go to the next page", "by clicking on the two buttons", "or by scrolling your mouse.", "", "To add lootruns, access the", "folder for lootruns by", "running /lootrun folder");
 
     public LootRunPage() {
         super("Your Lootruns", true, IconContainer.lootrunIcon);
@@ -84,12 +84,12 @@ public class LootRunPage extends QuestBookPage {
         int y = height / 2;
         int posX = (x - mouseX);
         int posY = (y - mouseY);
-        List<String> hoveredText = new ArrayList<>();
 
         int mapX = x - 154;
         int mapY = y + 23;
         int mapWidth = 145;
         int mapHeight = 58;
+        hoveredText = new ArrayList<>();
 
         float scale = QuestBookConfig.INSTANCE.scaleOfLootrun;
 
@@ -175,19 +175,18 @@ public class LootRunPage extends QuestBookPage {
                     ScreenRenderer.clearMask();
                 }
             } else {
-                List<String> textLines = Arrays.asList("Here you can see all lootruns", "you have downloaded. You can", "also search for a specific", "quest just by typing its name.", "You can go to the next page", "by clicking on the two buttons", "or by scrolling your mouse.", "", "To add lootruns, access the", "folder for lootruns by", "running /lootrun folder");
-                QuestPageUtils.drawTextLines(render, textLines, x - 154, y - 30, 1);
+                drawTextLines(textLines, x - 154, y - 30, 1);
 
             }
 
             // back to menu button
-            List<String> result = QuestPageUtils.drawMenuButton(render, x, y, posX, posY);
+            List<String> result = drawMenuButton(x, y, posX, posY);
             if (result != null) hoveredText = result;
 
             //Page text
             render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
-            QuestPageUtils.drawForwardAndBackButtons(render, x, y, posX, posY, currentPage, pages);
+            drawForwardAndBackButtons(x, y, posX, posY, currentPage, pages);
 
             // available lootruns
             int currentY = 12;
@@ -283,7 +282,7 @@ public class LootRunPage extends QuestBookPage {
 
                     currentY += 13;
                 }
-                renderHoveredText(hoveredText, mouseX, mouseY);
+                renderHoveredText(mouseX, mouseY);
             } else {
                 String textToDisplay = "No Lootruns were found!\nTry changing your search.";
 

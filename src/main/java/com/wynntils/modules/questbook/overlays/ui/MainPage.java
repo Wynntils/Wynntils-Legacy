@@ -41,7 +41,7 @@ public class MainPage extends QuestBookPage {
         super.drawScreen(mouseX, mouseY, partialTicks);
         int x = width / 2; int y = height / 2;
         int posX = (x - mouseX); int posY = (y - mouseY);
-        List<String> hoveredText = new ArrayList<>();
+        hoveredText = new ArrayList<>();
 
         ScreenRenderer.beginGL(0, 0);
         {
@@ -131,7 +131,7 @@ public class MainPage extends QuestBookPage {
             render.drawString("User Profile", (x - 158f) / 2.0f, (y - 74) / 2.0f, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
         }
         ScreenRenderer.endGL();
-        renderHoveredText(hoveredText, mouseX, mouseY);
+        renderHoveredText(mouseX, mouseY);
     }
 
     @Override
