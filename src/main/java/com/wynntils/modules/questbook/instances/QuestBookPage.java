@@ -417,7 +417,7 @@ public class QuestBookPage extends GuiScreen {
     }
 
     /**
-     * Checks if Forward or Back button is clicked, goes back to MainPage
+     * Checks if Forward button is clicked, goes back to MainPage
      *
      * @param posX mouseX (from drawingOrigin)
      * @param posY mouseY (from drawingOrigin)
@@ -430,7 +430,7 @@ public class QuestBookPage extends GuiScreen {
     }
 
     /**
-     * Checks if Forward or Back button is clicked, goes back to MainPage
+     * Checks if Back button is clicked, goes back to MainPage
      *
      * @param posX mouseX (from drawingOrigin)
      * @param posY mouseY (from drawingOrigin)
