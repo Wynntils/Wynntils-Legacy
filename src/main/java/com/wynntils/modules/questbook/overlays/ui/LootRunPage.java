@@ -36,7 +36,6 @@ import java.util.*;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
-
 public class LootRunPage extends QuestBookPage {
 
     private final int MESSAGE_ID = 103002;
@@ -59,7 +58,6 @@ public class LootRunPage extends QuestBookPage {
         super.initGui();
         initBasicSearch();
 
-        updateSelected();
         names = LootRunManager.getStoredLootruns();
         Collections.sort(names);
     }
@@ -180,7 +178,6 @@ public class LootRunPage extends QuestBookPage {
             // back to menu button
             drawMenuButton(x, y, posX, posY);
 
-
             //Page text
             render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
@@ -280,6 +277,7 @@ public class LootRunPage extends QuestBookPage {
 
                     currentY += 13;
                 }
+
                 renderHoveredText(mouseX, mouseY);
             } else {
                 String textToDisplay = "No Lootruns were found!\nTry changing your search.";
@@ -353,7 +351,11 @@ public class LootRunPage extends QuestBookPage {
 
         if (hovered && names.size() > selected) {
             if (mouseButton == 0) { //left click means either load or unload
-                if (!isTracked) {
+                if (isTracked) {
+                    if (LootRunManager.getActivePath() != null) {
+                        LootRunManager.clear();
+                    }
+                } else {
                     boolean result = LootRunManager.loadFromFile(selectedName);
 
                     if (result) {
@@ -369,10 +371,6 @@ public class LootRunPage extends QuestBookPage {
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
-                    }
-                } else {
-                    if (LootRunManager.getActivePath() != null) {
-                        LootRunManager.clear();
                     }
                 }
 
