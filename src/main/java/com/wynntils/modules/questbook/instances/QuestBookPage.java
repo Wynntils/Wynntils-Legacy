@@ -301,7 +301,7 @@ public class QuestBookPage extends GuiScreen {
      *
      * @return the hovered text
      */
-    public List<String> drawMenuButton(int x, int y, int posX, int posY) {
+    protected List<String> drawMenuButton(int x, int y, int posX, int posY) {
         if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
             render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 238, 234, 16, 9);
             return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Back to Menu", TextFormatting.GRAY + "Click here to go", TextFormatting.GRAY + "back to the main page", "", TextFormatting.GREEN + "Left click to select");
@@ -319,7 +319,7 @@ public class QuestBookPage extends GuiScreen {
      * @param posX mouseX (from drawingOrigin)
      * @param posY mouseY (from drawingOrigin)
      */
-    public void drawForwardAndBackButtons(int x, int y, int posX, int posY, int currentPage, int pages) {
+    protected void drawForwardAndBackButtons(int x, int y, int posX, int posY, int currentPage, int pages) {
         drawForwardButton(x, y, posX, posY, currentPage == pages);
         drawBackButton(x, y, posX, posY, currentPage == 1);
     }
@@ -333,7 +333,7 @@ public class QuestBookPage extends GuiScreen {
      * @param posY mouseY (from drawingOrigin)
      * @param atLimit whether the button can be pressed
      */
-    public void drawForwardButton(int x, int y, int posX, int posY, boolean atLimit) {
+    protected void drawForwardButton(int x, int y, int posX, int posY, boolean atLimit) {
         //Reached page limit
         if (atLimit) {
             render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
@@ -358,7 +358,7 @@ public class QuestBookPage extends GuiScreen {
      * @param posY mouseY (from drawingOrigin)
      * @param atLimit whether the button can be pressed
      */
-    public void drawBackButton(int x, int y, int posX, int posY, boolean atLimit) {
+    protected void drawBackButton(int x, int y, int posX, int posY, boolean atLimit) {
         //Reached page limit
         if (atLimit) {
             render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 241, 222, 18, 10);
@@ -381,7 +381,7 @@ public class QuestBookPage extends GuiScreen {
      * @param startX x to start rendering at
      * @param startY y to start rendering at
      */
-    public void drawTextLines(List<String> lines, int startX, int startY, int scale) {
+    protected void drawTextLines(List<String> lines, int startX, int startY, int scale) {
         int currentY = startY;
         for (String line : lines) {
             ScreenRenderer.scale(scale);

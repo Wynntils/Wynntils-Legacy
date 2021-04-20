@@ -41,11 +41,11 @@ import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class LootRunPage extends QuestBookPage {
 
-    int MESSAGE_ID = 103002;
+    private final int MESSAGE_ID = 103002;
 
-    List<String> names;
-    String selectedName;
-    final static List<String> textLines = Arrays.asList("Here you can see all lootruns", "you have downloaded. You can", "also search for a specific", "quest just by typing its name.", "You can go to the next page", "by clicking on the two buttons", "or by scrolling your mouse.", "", "To add lootruns, access the", "folder for lootruns by", "running /lootrun folder");
+    private List<String> names;
+    private String selectedName;
+    private final static List<String> textLines = Arrays.asList("Here you can see all lootruns", "you have downloaded. You can", "also search for a specific", "quest just by typing its name.", "You can go to the next page", "by clicking on the two buttons", "or by scrolling your mouse.", "", "To add lootruns, access the", "folder for lootruns by", "running /lootrun folder");
 
     public LootRunPage() {
         super("Your Lootruns", true, IconContainer.lootrunIcon);
