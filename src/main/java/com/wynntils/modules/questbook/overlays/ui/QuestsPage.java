@@ -66,8 +66,7 @@ public class QuestsPage extends QuestBookPage {
             drawTextLines(textLines, x - 154, y - 30, 1);
 
             // Back Button
-            List<String> result = drawMenuButton(x, y, posX, posY);
-            if (result != null) hoveredText = result;
+            drawMenuButton(x, y, posX, posY);
 
             // Progress Icon/Mini-Quest Switcher
             render.drawRect(Textures.UIs.quest_book, x - 87, y - 100, 16, 255 + (showingMiniQuests ? 16 : 0), 16, 16);
