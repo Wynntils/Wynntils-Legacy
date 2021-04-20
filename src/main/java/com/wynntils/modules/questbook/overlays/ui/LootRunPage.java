@@ -1,7 +1,6 @@
 package com.wynntils.modules.questbook.overlays.ui;
 
 import com.wynntils.Reference;
-import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -17,7 +16,6 @@ import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.map.overlays.objects.MapIcon;
 import com.wynntils.modules.map.overlays.ui.MainWorldMapUI;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
-import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookPage;
 import com.wynntils.webapi.WebManager;
@@ -161,7 +159,7 @@ public class LootRunPage extends QuestBookPage {
                             }
                         }
 
-                        boolean mapHovered = posX <= 154 && posX >= 154 - mapWidth && posY <= -41 && posY >= -41 - mapHeight;
+                        boolean mapHovered = posX <= 154 && posX >= 154 - mapWidth && posY <= -23 && posY >= -23 - mapHeight;
                         if (mapHovered) {
                             hoveredText = Collections.singletonList(TextFormatting.YELLOW + "Click to open Map!");
                         }
@@ -398,10 +396,9 @@ public class LootRunPage extends QuestBookPage {
 
         //open the map when clicked
         int mapWidth = 145;
-        int mapHeight = 40;
+        int mapHeight = 58;
 
-
-        boolean mapHovered = posX <= 154 && posX >= 154 - mapWidth && posY <= -41 && posY >= -41 - mapHeight;
+        boolean mapHovered = posX <= 154 && posX >= 154 - mapWidth && posY <= -23 && posY >= -23 - mapHeight;
         if (mapHovered && LootRunManager.getActivePathName() != null) {
             if (Reference.onWorld) {
                 if (WebManager.getApiUrls() == null) {
