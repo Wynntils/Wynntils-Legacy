@@ -121,8 +121,7 @@ public class ItemPage extends QuestBookPage {
             }
 
             // back to menu button
-            List<String> result = drawMenuButton(x, y, posX, posY);
-            if (result != null) hoveredText = result;
+            drawMenuButton(x, y, posX, posY);
 
             // title text (or search error text, if any)
             if (searchError != null) {
@@ -210,19 +209,9 @@ public class ItemPage extends QuestBookPage {
         int posX = ((res.getScaledWidth() / 2) - mouseX);
         int posY = ((res.getScaledHeight() / 2) - mouseY);
 
-        if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) { // page forwards button
-            goForward();
-            return;
-        }
-        if (posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) { // page backwards button
-            goBack();
-            return;
-        }
-        if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) { // quest book back button
-            WynntilsSound.QUESTBOOK_PAGE.play();
-            QuestBookPages.MAIN.getPage().open(false);
-            return;
-        }
+        checkMenuButton(posX, posY);
+        checkForwardAndBackButtons(posX, posY);
+
         if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) { // search mode toggle button
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             if (QuestBookConfig.INSTANCE.advancedItemSearch) {

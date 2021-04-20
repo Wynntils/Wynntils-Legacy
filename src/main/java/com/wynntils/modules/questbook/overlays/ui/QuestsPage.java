@@ -66,8 +66,7 @@ public class QuestsPage extends QuestBookPage {
             drawTextLines(textLines, x - 154, y - 30, 1);
 
             // Back Button
-            List<String> result = drawMenuButton(x, y, posX, posY);
-            if (result != null) hoveredText = result;
+            drawMenuButton(x, y, posX, posY);
 
             // Progress Icon/Mini-Quest Switcher
             render.drawRect(Textures.UIs.quest_book, x - 87, y - 100, 16, 255 + (showingMiniQuests ? 16 : 0), 16, 16);
@@ -309,17 +308,10 @@ public class QuestsPage extends QuestBookPage {
             }
         }
 
-        if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) { // Next Page Button
-            goForward();
-            return;
-        } else if (acceptBack && posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) { // Back Page Button
-            goBack();
-            return;
-        } else if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) { // Back Button
-            WynntilsSound.QUESTBOOK_PAGE.play();
-            QuestBookPages.MAIN.getPage().open(false);
-            return;
-        } else if (posX >= 71 && posX <= 87 && posY >= 84 && posY <= 100) { // Mini-Quest Switcher
+        checkMenuButton(posX, posY);
+        checkForwardAndBackButtons(posX, posY);
+
+        if (posX >= 71 && posX <= 87 && posY >= 84 && posY <= 100) { // Mini-Quest Switcher
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             showingMiniQuests = !showingMiniQuests;
             textField.setText("");

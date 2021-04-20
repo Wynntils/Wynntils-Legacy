@@ -72,8 +72,7 @@ public class DiscoveriesPage extends QuestBookPage {
             drawTextLines(textLines, x - 154, y - 30, 1);
 
             // Back button
-            List<String> result = drawMenuButton(x, y, posX, posY);
-            if (result != null) hoveredText = result;
+            drawMenuButton(x, y, posX, posY);
 
             // World and Territory Progress icon
             if (posX >= 81 && posX <= 97 && posY >= 84 && posY <= 100) {
@@ -357,17 +356,10 @@ public class DiscoveriesPage extends QuestBookPage {
             }
         }
 
-        if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) { // Next Page Button
-            goForward();
-            return;
-        } else if (posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) { // Back Page Button
-            goBack();
-            return;
-        } else if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) { // Back Button
-            WynntilsSound.QUESTBOOK_PAGE.play();
-            QuestBookPages.MAIN.getPage().open(false);
-            return;
-        } else if (posX >= 100 && posX <= 130 && posY >= -45 && posY <= -15) { // Discovered Territory
+        checkMenuButton(posX, posY);
+        checkForwardAndBackButtons(posX, posY);
+
+        if (posX >= 100 && posX <= 130 && posY >= -45 && posY <= -15) { // Discovered Territory
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             territory = !territory;
             updateSearch();

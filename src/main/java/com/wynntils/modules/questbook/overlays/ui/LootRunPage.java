@@ -180,8 +180,8 @@ public class LootRunPage extends QuestBookPage {
             }
 
             // back to menu button
-            List<String> result = drawMenuButton(x, y, posX, posY);
-            if (result != null) hoveredText = result;
+            drawMenuButton(x, y, posX, posY);
+
 
             //Page text
             render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
@@ -345,19 +345,8 @@ public class LootRunPage extends QuestBookPage {
         int posX = ((res.getScaledWidth() / 2) - mouseX);
         int posY = ((res.getScaledHeight() / 2) - mouseY);
 
-        if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) { // page forwards button
-            goForward();
-            return;
-        }
-        if (posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) { // page backwards button
-            goBack();
-            return;
-        }
-        if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) { // quest book back button
-            WynntilsSound.QUESTBOOK_PAGE.play();
-            QuestBookPages.MAIN.getPage().open(false);
-            return;
-        }
+        checkMenuButton(posX, posY);
+        checkForwardAndBackButtons(posX, posY);
 
         int currentY = 12 + 13 * (selected % 13);
 

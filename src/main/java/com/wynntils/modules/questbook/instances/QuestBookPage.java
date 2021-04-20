@@ -16,6 +16,7 @@ import com.wynntils.core.utils.reference.Easing;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
+import com.wynntils.modules.questbook.enums.QuestBookPages;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiPageButtonList;
 import net.minecraft.client.gui.GuiScreen;
@@ -301,14 +302,14 @@ public class QuestBookPage extends GuiScreen {
      *
      * @return the hovered text
      */
-    protected List<String> drawMenuButton(int x, int y, int posX, int posY) {
+    protected void drawMenuButton(int x, int y, int posX, int posY) {
         if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
             render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 238, 234, 16, 9);
-            return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Back to Menu", TextFormatting.GRAY + "Click here to go", TextFormatting.GRAY + "back to the main page", "", TextFormatting.GREEN + "Left click to select");
+            hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Back to Menu", TextFormatting.GRAY + "Click here to go", TextFormatting.GRAY + "back to the main page", "", TextFormatting.GREEN + "Left click to select");
+        return;
         }
 
         render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 222, 234, 16, 9);
-        return null;
     }
 
     /**
@@ -388,6 +389,58 @@ public class QuestBookPage extends GuiScreen {
             render.drawString(line, startX, currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             ScreenRenderer.resetScale();
             currentY += 10 * scale;
+        }
+    }
+
+    /**
+     * Checks if menu button is clicked, goes back to MainPage
+     *
+     * @param posX mouseX (from drawingOrigin)
+     * @param posY mouseY (from drawingOrigin)
+     *
+     */
+    protected void checkMenuButton(int posX, int posY) {
+        if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) { // Back Button
+            WynntilsSound.QUESTBOOK_PAGE.play();
+            QuestBookPages.MAIN.getPage().open(false);
+        }
+    }
+
+    /**
+     * Checks if Forward or Back button is clicked, goes back to MainPage
+     *
+     * @param posX mouseX (from drawingOrigin)
+     * @param posY mouseY (from drawingOrigin)
+     *
+     */
+    protected void checkForwardAndBackButtons(int posX, int posY) {
+        checkForwardButton(posX, posY);
+        checkBackButton(posX, posY);
+    }
+
+    /**
+     * Checks if Forward or Back button is clicked, goes back to MainPage
+     *
+     * @param posX mouseX (from drawingOrigin)
+     * @param posY mouseY (from drawingOrigin)
+     *
+     */
+    protected void checkForwardButton(int posX, int posY) {
+        if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) { // Next Page Button
+            goForward();
+        }
+    }
+
+    /**
+     * Checks if Forward or Back button is clicked, goes back to MainPage
+     *
+     * @param posX mouseX (from drawingOrigin)
+     * @param posY mouseY (from drawingOrigin)
+     *
+     */
+    protected void checkBackButton(int posX, int posY) {
+        if (posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) { // Back Page Button
+            goBack();
         }
     }
 
