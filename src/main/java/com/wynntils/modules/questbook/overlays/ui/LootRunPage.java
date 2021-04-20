@@ -180,7 +180,8 @@ public class LootRunPage extends QuestBookPage {
             }
 
             // back to menu button
-            drawMenuButton(x, y, posX, posY);
+            List<String> result = drawMenuButton(x, y, posX, posY);
+            if (result != null) hoveredText = result;
 
             //Page text
             render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);

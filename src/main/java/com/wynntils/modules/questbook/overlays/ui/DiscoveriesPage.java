@@ -72,7 +72,8 @@ public class DiscoveriesPage extends QuestBookPage {
             drawTextLines(textLines, x - 154, y - 30, 1);
 
             // Back button
-            drawMenuButton(x, y, posX, posY);
+            List<String> result = drawMenuButton(x, y, posX, posY);
+            if (result != null) hoveredText = result;
 
             // World and Territory Progress icon
             if (posX >= 81 && posX <= 97 && posY >= 84 && posY <= 100) {

@@ -121,7 +121,8 @@ public class ItemPage extends QuestBookPage {
             }
 
             // back to menu button
-            drawMenuButton(x, y, posX, posY);
+            List<String> result = drawMenuButton(x, y, posX, posY);
+            if (result != null) hoveredText = result;
 
             // title text (or search error text, if any)
             if (searchError != null) {
