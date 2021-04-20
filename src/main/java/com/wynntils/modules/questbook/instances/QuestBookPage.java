@@ -299,8 +299,6 @@ public class QuestBookPage extends GuiScreen {
      * @param y drawingOrigin y
      * @param posX mouseX (from drawingOrigin)
      * @param posY mouseY (from drawingOrigin)
-     *
-     * @return the hovered text
      */
     protected void drawMenuButton(int x, int y, int posX, int posY) {
         if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
