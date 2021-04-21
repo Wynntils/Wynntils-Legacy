@@ -300,29 +300,6 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 return;
             }
             case "list": {
-                /*
-                StringBuilder message = new StringBuilder(YELLOW.toString()).append("Stored loot runs:");
-                List<String> lootruns = LootRunManager.getStoredLootruns();
-                if (lootruns.isEmpty()) {
-                    message.append('\n').append(GRAY).append("You currently have no saved loot runs!");
-                } else {
-                    for (String lootrun : lootruns) {
-                        message.append('\n').append(WHITE).append(lootrun);
-                    }
-                }
-                ITextComponent messageText = new TextComponentString(message.toString());
-                try {
-                    messageText.getStyle()
-                        .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(
-                            "Loot runs are saved in\n" + LootRunManager.STORAGE_FOLDER.getCanonicalPath() + "\nClick here to open!"
-                        )))
-                        .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, LootRunManager.STORAGE_FOLDER.getCanonicalPath()));
-                } catch (IOException e) {
-                    // Shouldn't throw
-                }
-                sender.sendMessage(messageText);
-                */
-
                 new Delay(() -> QuestBookPages.LOOTRUNS.getPage().open(true), 1);
                 return;
             }
