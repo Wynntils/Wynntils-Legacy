@@ -6,6 +6,7 @@ package com.wynntils.modules.chat.overlays;
 
 import com.wynntils.core.events.custom.ChatEvent;
 import com.wynntils.core.framework.FrameworkManager;
+import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.chat.configs.ChatConfig;
 import com.wynntils.modules.chat.instances.ChatTab;
 import com.wynntils.modules.chat.language.WynncraftLanguage;
@@ -31,6 +32,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ChatOverlay extends GuiNewChat {
+
+    public static final int WYNN_DIALOGUE_ID = "wynn_dialogue".hashCode();
 
     private static ChatOverlay chat;
 
@@ -156,6 +159,16 @@ public class ChatOverlay extends GuiNewChat {
             if (FrameworkManager.getEventBus().post(event)) return;
             chatComponent = event.getMessage();
             chatLineId = event.getChatLineId();
+        }
+
+        Pair<Boolean, ITextComponent> dialogue = ChatManager.applyToDialogue(chatComponent.createCopy());
+        if (dialogue.a) {
+            chatComponent = dialogue.b;
+            chatLineId = WYNN_DIALOGUE_ID;
+            if (dialogue.b == null) {
+                deleteChatLine(chatLineId);
+                return;
+            }
         }
 
         if (chatLineId != 0) {

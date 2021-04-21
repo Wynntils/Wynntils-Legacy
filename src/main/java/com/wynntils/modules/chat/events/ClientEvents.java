@@ -5,6 +5,7 @@
 package com.wynntils.modules.chat.events;
 
 import com.wynntils.Reference;
+import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.objects.Pair;
@@ -108,6 +109,11 @@ public class ClientEvents implements Listener {
         if (!Reference.onWorld) return;
 
         HeldItemChatManager.onTick();
+    }
+
+    @SubscribeEvent
+    public void onLeaveWorld(WynnWorldEvent.Leave e) {
+        ChatManager.onLeave();
     }
 
 }
