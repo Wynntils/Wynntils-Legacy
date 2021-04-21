@@ -361,7 +361,7 @@ public class LootRunPage extends QuestBookPage {
                     if (result) {
                         try {
                             Location start = LootRunManager.getActivePath().getPoints().get(0);
-                            String startingPointMsg = "Loot run" + LootRunManager.getActivePathName() + " starts at [" + (int) start.getX() + ", " + (int) start.getZ() + "]";
+                            String startingPointMsg = "Loot run " + LootRunManager.getActivePathName() + " starts at [" + (int) start.getX() + ", " + (int) start.getZ() + "]";
 
                             Minecraft.getMinecraft().addScheduledTask(() ->
                                     ChatOverlay.getChat().printChatMessageWithOptionalDeletion(new TextComponentString(startingPointMsg), MESSAGE_ID)
