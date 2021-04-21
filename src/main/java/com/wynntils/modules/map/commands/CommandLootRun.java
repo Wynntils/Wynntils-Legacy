@@ -6,9 +6,12 @@ package com.wynntils.modules.map.commands;
 
 import com.wynntils.ModCore;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.map.instances.LootRunNote;
 import com.wynntils.modules.map.managers.LootRunManager;
+import com.wynntils.modules.questbook.enums.QuestBookPages;
+import com.wynntils.modules.questbook.instances.QuestBookPage;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -297,6 +300,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 return;
             }
             case "list": {
+                /*
                 StringBuilder message = new StringBuilder(YELLOW.toString()).append("Stored loot runs:");
                 List<String> lootruns = LootRunManager.getStoredLootruns();
                 if (lootruns.isEmpty()) {
@@ -317,6 +321,9 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                     // Shouldn't throw
                 }
                 sender.sendMessage(messageText);
+                */
+
+                new Delay(() -> QuestBookPages.LOOTRUNS.getPage().open(true), 1);
                 return;
             }
             case "folder": {
