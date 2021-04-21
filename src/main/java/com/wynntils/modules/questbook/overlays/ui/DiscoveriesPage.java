@@ -51,6 +51,7 @@ public class DiscoveriesPage extends QuestBookPage {
     private boolean undiscoveredTerritory = false;
     private boolean undiscoveredWorld = false;
     private boolean undiscoveredSecret = false;
+    final static List<String> textLines =  Arrays.asList("Here you can see all", "the discoveries.", "", "You can use the filters below.");
 
     public DiscoveriesPage() {
         super("Discoveries", true, IconContainer.discoveriesIcon);
@@ -63,22 +64,15 @@ public class DiscoveriesPage extends QuestBookPage {
         int y = height / 2;
         int posX = (x - mouseX);
         int posY = (y - mouseY);
-        List<String> hoveredText = new ArrayList<>();
+        hoveredText = new ArrayList<>();
 
         ScreenRenderer.beginGL(0, 0);
         {
             // Explanatory Text
-            render.drawString("Here you can see all", x - 154, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            render.drawString("the discoveries.", x - 154, y - 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            render.drawString("You can use the filters below.", x - 154, y, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            drawTextLines(textLines, x - 154, y - 30, 1);
 
             // Back button
-            if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
-                hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Back to Menu", TextFormatting.GRAY + "Click here to go", TextFormatting.GRAY + "back to the main page", "", TextFormatting.GREEN + "Left click to select");
-                render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 238, 234, 16, 9);
-            } else {
-                render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 222, 234, 16, 9);
-            }
+            drawMenuButton(x, y, posX, posY);
 
             // World and Territory Progress icon
             if (posX >= 81 && posX <= 97 && posY >= 84 && posY <= 100) {
@@ -105,26 +99,7 @@ public class DiscoveriesPage extends QuestBookPage {
             }
 
             // Next Page Button
-            if (currentPage == pages) {
-                render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
-            } else {
-                if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) {
-                    render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 223, 222, 18, 10);
-                } else {
-                    render.drawRect(Textures.UIs.quest_book, x + 128, y + 88, 205, 222, 18, 10);
-                }
-            }
-
-            // Back Page Button
-            if (currentPage == 1) {
-                render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 241, 222, 18, 10);
-            } else {
-                if (posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) {
-                    render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 241, 222, 18, 10);
-                } else {
-                    render.drawRect(Textures.UIs.quest_book, x + 13, y + 88, 259, 222, 18, 10);
-                }
-            }
+            drawForwardAndBackButtons(x, y, posX, posY, currentPage, pages);
 
             // Discovered Territories Filter
             if (mouseX >= x - 130 && mouseX <= x - 100 && mouseY >= y + 15 && mouseY <= y + 45) {
@@ -324,7 +299,7 @@ public class DiscoveriesPage extends QuestBookPage {
             }
         }
         ScreenRenderer.endGL();
-        renderHoveredText(hoveredText, mouseX, mouseY);
+        renderHoveredText(mouseX, mouseY);
     }
 
     @Override
@@ -381,17 +356,10 @@ public class DiscoveriesPage extends QuestBookPage {
             }
         }
 
-        if (posX >= -145 && posX <= -127 && posY >= -97 && posY <= -88) { // Next Page Button
-            goForward();
-            return;
-        } else if (posX >= -30 && posX <= -13 && posY >= -97 && posY <= -88) { // Back Page Button
-            goBack();
-            return;
-        } else if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) { // Back Button
-            WynntilsSound.QUESTBOOK_PAGE.play();
-            QuestBookPages.MAIN.getPage().open(false);
-            return;
-        } else if (posX >= 100 && posX <= 130 && posY >= -45 && posY <= -15) { // Discovered Territory
+        checkMenuButton(posX, posY);
+        checkForwardAndBackButtons(posX, posY);
+
+        if (posX >= 100 && posX <= 130 && posY >= -45 && posY <= -15) { // Discovered Territory
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             territory = !territory;
             updateSearch();
