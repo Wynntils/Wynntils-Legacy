@@ -71,7 +71,7 @@ public class ChatManager {
         ITextComponent original = in.createCopy();
 
         // Reorganizing
-        if (!in.getUnformattedComponentText().isEmpty()) {
+        if (!in.getUnformattedComponentText().x()) {
             ITextComponent newMessage = new TextComponentString("");
             for (ITextComponent component : in) {
                 component = component.createCopy();
@@ -275,6 +275,9 @@ public class ChatManager {
                 }
                 if (!number.toString().isEmpty() && previousTranslated) {
                     toAdd += StringUtils.translateNumberFromWynnic(number.toString());
+                    if (!translateIntoHover) {
+                        oldText.append(StringUtils.translateNumberFromWynnic(number.toString()));
+                    }
                 }
                 if (!currentNonTranslated.isEmpty()) {
                     oldText.append(currentNonTranslated);
