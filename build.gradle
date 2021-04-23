@@ -30,65 +30,65 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
-            
+
             environment 'MC_VERSION', '1.12.2'
-            
+
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
         }
-    
+
         if (project.hasProperty("minecraftEmailUsername") || project.hasProperty("minecraftPassword")) {
             eclipseUnsuppliedClient {
                 parent runs.client
-                
+
                 args '--username=${string_prompt:Minecraft Email/Username}'
                 args '--password=${password_prompt:Minecraft Password}'
             }
-            
+
             intellijUnsuppliedClient {
                 parent runs.client
-                
+
                 // If someone knows a prompt variable that actually hides the password when entering it for intellij then put it after "--password="
                 args '--username=$Prompt$'
                 args '--password=$Prompt$'
             }
-            
+
             if (project.hasProperty('minecraftEmailUsername') && project.hasProperty('minecraftPassword')) {
                 suppliedClient {
                     parent runs.client
-                    
+
                     args "--username=" + minecraftEmailUsername
                     args "--password=" + minecraftPassword
                 }
             } else {
                 eclipseSuppliedClient {
                     parent runs.client
-                    
+
                     if (project.hasProperty("minecraftEmailUsername")) {
                         args "--username=" + minecraftEmailUsername
                     } else {
                         args '--username=${string_prompt:Minecraft Email/Username}'
                     }
-                    
+
                     if (project.hasProperty("minecraftPassword")) {
                         args "--password=" + minecraftPassword
                     } else {
                         args '--password=${password_prompt:Minecraft Password}'
                     }
                 }
-                
+
                 intellijSuppliedClient {
                     parent runs.client
-                    
+
                     if (project.hasProperty("minecraftEmailUsername")) {
                         args "--username=" + minecraftEmailUsername
                     } else {
                         args '--username=$Prompt$'
                     }
-                    
+
                     if (project.hasProperty("minecraftPassword")) {
                         args "--password=" + minecraftPassword
                     } else {
@@ -99,14 +99,14 @@ minecraft {
         } else {
             eclipseClient {
                 parent runs.client
-                
+
                 args '--username=${string_prompt:Minecraft Email/Username}'
                 args '--password=${password_prompt:Minecraft Password}'
             }
-            
+
             intellijClient {
                 parent runs.client
-                
+
                 // If someone knows a prompt variable that actually hides the password when entering it for intellij then put it after "--password="
                 args '--username=$Prompt$'
                 args '--password=$Prompt$'
@@ -120,14 +120,9 @@ repositories {
     jcenter()
 }
 
-configurations {
-    embed
-    compile.extendsFrom(embed)
-}
-
 dependencies {
     minecraft "net.minecraftforge:forge:1.12.2-14.23.5.2854"
-    embed "javazoom:jlayer:1.0.1"
+    compile "javazoom:jlayer:1.0.1"
 }
 
 processResources {
@@ -142,22 +137,32 @@ processResources {
 }
 
 jar {
-    from configurations.embed.collect { it.isDirectory() ? it : zipTree(it) }
     manifest {
         attributes [:]
     }
 }
 
+/*
+ *  * Copyright © Wynntils - 2021.
+ */
+
+// We need to reobfuscate the Shadow Jar
+reobf {
+    shadowJar {}
+}
+
 shadowJar {
+    dependencies {
+        include(dependency('javazoom:jlayer:.*'))
+    }
+
     baseName = archivesBaseName + "-" + version
     classifier = null
     version = null
     configurations = [project.configurations.compile]
 }
 
-/*
- *  * Copyright © Wynntils - 2021.
- */
+
 
 class Version {
     int major, minor, revision
