@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
@@ -17,7 +17,6 @@ import com.wynntils.webapi.profiles.item.enums.ItemTier;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 public class HotbarOverlay extends Overlay {
@@ -52,6 +51,7 @@ public class HotbarOverlay extends Overlay {
 
         for (int i = 0; i < 9; i++) {
             ItemStack stack = player.inventory.mainInventory.get(i);
+            if (stack.isEmpty()) continue;
 
             int x = -88 + (i*20);
 
@@ -79,4 +79,5 @@ public class HotbarOverlay extends Overlay {
             drawRect(Textures.Overlays.hotbar, 68, 4, 22, textureY + 22, 24, 22);
         }
     }
+
 }

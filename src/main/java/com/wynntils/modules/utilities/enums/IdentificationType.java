@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.enums;
 
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.instances.IdentificationResult;
 import com.wynntils.modules.utilities.interfaces.IIdentificationAnalyser;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
@@ -17,9 +18,11 @@ public enum IdentificationType implements IIdentificationAnalyser {
 
         @Override
         public String getTitle(double specialAmount) {
+            String amountString = UtilitiesConfig.Identifications.INSTANCE.decimalPlaces.format(specialAmount * 100);
+
             int amount = normalize(specialAmount);
 
-            return amount != -1 ? getColor(amount) + "[" + amount + "%]" : GOLD + " NEW";
+            return amount != -1 ? getColor(amount) + "[" + amountString + "%]" : GOLD + " NEW";
         }
 
         @Override

@@ -256,6 +256,7 @@ public class ItemIdentificationOverlay implements Listener {
         // Major ids
         if (item.getMajorIds() != null && item.getMajorIds().size() > 0) {
             for (MajorIdentification majorId : item.getMajorIds()) {
+                if (majorId == null) continue;
                 Stream.of(StringUtils.wrapTextBySize(majorId.asLore(), 150)).forEach(c -> newLore.add(DARK_AQUA + c));
             }
             newLore.add(" ");
@@ -322,7 +323,7 @@ public class ItemIdentificationOverlay implements Listener {
         }
 
         // check for item perfection
-        if (relativeTotal/idAmount >= 1d && idType == IdentificationType.PERCENTAGES && !hasNewId) {
+        if (relativeTotal/idAmount >= 1d && idType == IdentificationType.PERCENTAGES && !hasNewId && UtilitiesConfig.Identifications.INSTANCE.rainbowPerfect) {
             wynntils.setBoolean("isPerfect", true);
         }
 

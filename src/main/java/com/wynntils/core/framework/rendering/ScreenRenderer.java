@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.core.framework.rendering;
@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.awt.Point;
+import java.awt.*;
 import java.util.Arrays;
 
 import static org.lwjgl.opengl.GL11.*;
@@ -40,7 +40,7 @@ public class ScreenRenderer {
     private static Point drawingOrigin = new Point(0, 0); public static Point drawingOrigin() { return drawingOrigin; }
     private static Point transformationOrigin = new Point(0, 0);
     public static void transformationOrigin(int x, int y) {transformationOrigin.x = x; transformationOrigin.y = y;}protected static Point transformationOrigin() {return transformationOrigin;}
-    private static RenderItem itemRenderer = null;
+    public static RenderItem itemRenderer = null;
 
     public static boolean isRendering() { return rendering; }
     public static float getScale() { return scale; }

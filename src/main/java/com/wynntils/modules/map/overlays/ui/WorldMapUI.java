@@ -10,6 +10,7 @@ import com.wynntils.core.framework.instances.GuiMovementScreen;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
+import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.managers.CompassManager;
@@ -73,6 +74,12 @@ public class WorldMapUI extends GuiMovementScreen {
 
     // Open Animation Stuff
     protected long animationEnd;
+
+    // Outside the map text
+    protected final CustomColor OUTSIDE_MAP_COLOR_1 = new CustomColor(1f, 1f, 1f);
+    protected final CustomColor OUTSIDE_MAP_COLOR_2 = new CustomColor(.5f, .5f, .5f);
+    protected boolean outsideMap = false;
+    protected float outsideTextOpacity = 0f;
 
     protected WorldMapUI() {
         this((float) Minecraft.getMinecraft().player.posX, (float) Minecraft.getMinecraft().player.posZ);
@@ -252,6 +259,8 @@ public class WorldMapUI extends GuiMovementScreen {
         float minX = this.minX / (float)map.getImageWidth(); float maxX = this.maxX / (float)map.getImageWidth();
         float minZ = this.minZ / (float)map.getImageHeight(); float maxZ = this.maxZ / (float)map.getImageHeight();
 
+        outsideMap = (minX > 1) || (maxX < 0) || (minZ > 1) || (maxZ < 0);
+
         try {
             enableAlpha();
             color(1, 1, 1, 1f);
@@ -334,6 +343,7 @@ public class WorldMapUI extends GuiMovementScreen {
         }
 
         forEachIcon(c -> c.drawHovering(mouseX, mouseY, partialTicks, renderer));
+        handleOutsideAreaText();
 
         clearMask();
     }
@@ -376,6 +386,33 @@ public class WorldMapUI extends GuiMovementScreen {
 
         zoom = (int)(25 * Math.sin(radians));
         updateCenterPosition(centerPositionX, centerPositionZ);
+    }
+
+    protected void handleOutsideAreaText() {
+        if (outsideTextOpacity > 0f && (clicking[0] || !outsideMap)) {
+            outsideTextOpacity -= 0.1f;
+        } else if (outsideTextOpacity < 1f && outsideMap) {
+            outsideTextOpacity += 0.1f;
+        }
+
+        if (outsideTextOpacity <= 0.0f) return;
+
+        OUTSIDE_MAP_COLOR_1.setA(outsideTextOpacity);
+        OUTSIDE_MAP_COLOR_2.setA(outsideTextOpacity);
+
+        pushMatrix();
+        {
+            translate(width / 2, height / 2, 0);
+            scale(2, 2, 2);
+            renderer.drawString("You're outside the main map area", 0, 0, OUTSIDE_MAP_COLOR_1,
+                    SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL
+            );
+            scale(0.5, 0.5, 0.5);
+            renderer.drawString("Don't worry, you'll come back soon", 0, 20, OUTSIDE_MAP_COLOR_2,
+                    SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL
+            );
+        }
+        popMatrix();
     }
 
     private void zoomBy(int by) {

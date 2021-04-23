@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.visual.entities;
@@ -43,21 +43,20 @@ public class EntitySnowFlake extends FakeEntity {
     }
 
     @Override
-    public void tick(float partialTicks, Random r, EntityPlayerSP player) {
-        if (livingTicks > lifespan) { // verifies if the entity should die
-            remove();
-            return;
-        }
+    public void tick(Random r, EntityPlayerSP player) {
+        if (livingTicks < lifespan) return;
 
-        currentLocation.add(0, -0.01, 0);
+        remove();
     }
 
     @Override
     public void render(float partialTicks, RenderGlobal context, RenderManager render) {
-        float alpha = (1 - (livingTicks / (float)lifespan));
+        float percentage = ((livingTicks + partialTicks) / (float) lifespan);
+        float alpha = (1f - percentage);
         boolean thirdPerson = render.options.thirdPersonView == 2;
 
         { // setting up
+            translate(0, -25 * percentage, 0);
             depthMask(false);
             enableBlend();
             enableAlpha();

@@ -6,10 +6,12 @@ package com.wynntils.modules.map.commands;
 
 import com.wynntils.ModCore;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.map.instances.LootRunNote;
 import com.wynntils.modules.map.managers.LootRunManager;
-
+import com.wynntils.modules.questbook.enums.QuestBookPages;
+import com.wynntils.modules.questbook.instances.QuestBookPage;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -26,11 +28,7 @@ import net.minecraftforge.client.IClientCommand;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.util.*;
 
 import static net.minecraft.util.text.TextFormatting.*;
 
@@ -78,7 +76,9 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
 
                 String message;
                 if (result) message = GREEN + "Loaded loot run " + name + " successfully! " + GRAY + "(" + LootRunManager.getActivePath().getChests().size() + " chests)";
-                else message = RED + "The specified loot run doesn't exist!";
+                else {
+                    throw new CommandException("The specified loot run doesn't exist!");
+                }
 
                 sender.sendMessage(new TextComponentString(message));
 
@@ -300,26 +300,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 return;
             }
             case "list": {
-                StringBuilder message = new StringBuilder(YELLOW.toString()).append("Stored loot runs:");
-                List<String> lootruns = LootRunManager.getStoredLootruns();
-                if (lootruns.isEmpty()) {
-                    message.append('\n').append(GRAY).append("You currently have no saved loot runs!");
-                } else {
-                    for (String lootrun : lootruns) {
-                        message.append('\n').append(WHITE).append(lootrun);
-                    }
-                }
-                ITextComponent messageText = new TextComponentString(message.toString());
-                try {
-                    messageText.getStyle()
-                        .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(
-                            "Loot runs are saved in\n" + LootRunManager.STORAGE_FOLDER.getCanonicalPath() + "\nClick here to open!"
-                        )))
-                        .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, LootRunManager.STORAGE_FOLDER.getCanonicalPath()));
-                } catch (IOException e) {
-                    // Shouldn't throw
-                }
-                sender.sendMessage(messageText);
+                new Delay(() -> QuestBookPages.LOOTRUNS.getPage().open(true), 1);
                 return;
             }
             case "folder": {

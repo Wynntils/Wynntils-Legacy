@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.core.framework.entities.instances;
@@ -46,9 +46,8 @@ public class FakeEntity {
      * Called before rendering.
      * Use this to calculate pathfinders and related things.
      *
-     * @param partialTicks the world partial ticks
      */
-    public void tick(float partialTicks, Random r, EntityPlayerSP player) {
+    public void tick(Random r, EntityPlayerSP player) {
 
     }
 
@@ -60,6 +59,18 @@ public class FakeEntity {
      * @param render the Minecraft Render Manager
      */
     public void render(float partialTicks, RenderGlobal context, RenderManager render) {
+
+    }
+
+    /**
+     * Called right before render, does NOT contains the location translations
+     * basically the entity will be out of position
+     *
+     * @param partialTicks the world partial ticks
+     * @param context the rendering context
+     * @param render the Minecraft Render Manager
+     */
+    public void preRender(float partialTicks, RenderGlobal context, RenderManager render) {
 
     }
 

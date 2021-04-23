@@ -4,6 +4,9 @@
 
 package com.wynntils.modules.utilities.overlays.hud;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.overlays.Overlay;
@@ -11,24 +14,19 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.network.play.server.SPacketDisplayObjective;
 import net.minecraft.network.play.server.SPacketScoreboardObjective;
 import net.minecraft.network.play.server.SPacketUpdateScore;
-import net.minecraft.scoreboard.ScoreObjective;
-import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class ObjectivesOverlay extends Overlay {
 
-    private static final Pattern OBJECTIVE_PATTERN = Pattern.compile("^[- ] (.*): *([0-9]+)/([0-9]+)$");
+    public static final Pattern OBJECTIVE_PATTERN = Pattern.compile("^[- ] (.*): *([0-9]+)/([0-9]+)$");
+
     private static final int WIDTH = 130;
     private static final int HEIGHT = 52;
     private static final int MAX_OBJECTIVES = 3;
@@ -38,7 +36,6 @@ public class ObjectivesOverlay extends Overlay {
     private static long keepVisibleTimestamp;
     private static int objectivesPosition;
     private static int objectivesEnd;
-    private static boolean daily;
 
     public ObjectivesOverlay() {
         super("Objectives", WIDTH, HEIGHT, true, 1f, 1f, -1, -1, OverlayGrowFrom.BOTTOM_RIGHT);
@@ -60,7 +57,6 @@ public class ObjectivesOverlay extends Overlay {
         }
         objectivesPosition = 0;
         objectivesEnd = 0;
-        daily = false;
 
         // Sidebar scoreboard is removed
         removeAllObjectives();
@@ -128,19 +124,10 @@ public class ObjectivesOverlay extends Overlay {
 
             String text = TextFormatting.getTextWithoutFormattingCodes(updateScore.getPlayerName());
             if (text.matches("Objectives?:") || text.matches("Daily Objectives?:")) {
-                if (text.contains("Daily")) {
-                    daily = true;
-                } else {
-                    daily = false;
-                }
                 objectivesPosition = updateScore.getScoreValue();
                 return true;
             } else if (updateScore.getPlayerName().equals(TextFormatting.BLACK.toString())) {
                 objectivesEnd = updateScore.getScoreValue();
-                Scoreboard scoreboard = Minecraft.getMinecraft().world.getScoreboard();
-                Minecraft.getMinecraft().addScheduledTask(() -> {
-                    scoreboard.setObjectiveInDisplaySlot(1, scoreboard.getObjective(sidebarObjectiveName));
-                });
                 return true;
             }
 
@@ -159,55 +146,9 @@ public class ObjectivesOverlay extends Overlay {
         return false;
     }
 
-    public static void updateOverlayActivation() {
-        if (Reference.onWorld) {
-            Scoreboard scoreboard = Minecraft.getMinecraft().world.getScoreboard();
-            ScoreObjective scoreObjective = scoreboard.getObjective(sidebarObjectiveName);
-            if (OverlayConfig.Objectives.INSTANCE.enableObjectives) {
-                if (objectivesPosition != 0) {
-                    if (daily) {
-                        scoreboard.removeObjectiveFromEntity(TextFormatting.RED + "" + TextFormatting.BOLD + "Daily Objective" + (objectives[1] != null ? "s" : "") + ":", scoreObjective);
-                    } else {
-                        scoreboard.removeObjectiveFromEntity(TextFormatting.GREEN + "" + TextFormatting.BOLD + "Objective" + (objectives[1] != null ? "s" : "") + ":", scoreObjective);
-                    }
-                }
-                if (objectivesEnd != 0) {
-                    scoreboard.removeObjectiveFromEntity(TextFormatting.BLACK.toString(), scoreObjective);
-                } else {
-                    scoreboard.setObjectiveInDisplaySlot(1, null);
-                }
-                for (Objective objective : objectives) {
-                    if (objective != null && !objective.getOriginal().isEmpty()) {
-                        scoreboard.removeObjectiveFromEntity(objective.getOriginal(), scoreObjective);
-                    }
-                }
-            } else {
-                if (objectivesPosition != 0) {
-                    if (daily) {
-                        scoreboard.getOrCreateScore(TextFormatting.RED + "" + TextFormatting.BOLD + "Daily Objective" + (objectives[1] != null ? "s" : "") + ":", scoreObjective).setScorePoints(objectivesPosition);
-                    } else {
-                        scoreboard.getOrCreateScore(TextFormatting.GREEN + "" + TextFormatting.BOLD + "Objective" + (objectives[1] != null ? "s" : "") + ":", scoreObjective).setScorePoints(objectivesPosition);
-                    }
-                }
-                if (objectivesEnd != 0) {
-                    scoreboard.getOrCreateScore(TextFormatting.BLACK.toString(), scoreObjective).setScorePoints(objectivesEnd);
-                }
-                scoreboard.setObjectiveInDisplaySlot(1, scoreObjective);
-                for (int i = 0; i < objectives.length; i++) {
-                    Objective objective = objectives[i];
-                    if (objective != null && !objective.getOriginal().isEmpty()) {
-                        scoreboard.getOrCreateScore(objective.getOriginal(), scoreObjective).setScorePoints(objectivesPosition - 1 - i);
-                    }
-                }
-            }
-        }
-    }
-
-    public static void restoreVanillaScoreboard() {
+    public static void resetObjectives() {
         objectivesPosition = 0;
         objectivesEnd = 0;
-        daily = false;
-        GuiIngameForge.renderObjective = true;
     }
 
     public static void refreshVisibility() {

@@ -16,6 +16,7 @@ import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.instances.Toast;
+import com.wynntils.modules.utilities.managers.MountHorseManager;
 import com.wynntils.modules.utilities.overlays.hud.*;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.enums.ItemTier;
@@ -182,6 +183,7 @@ public class OverlayEvents implements Listener {
                 case "There is no room for a horse.":
                     GameUpdateOverlay.queueMessage(DARK_RED + "There is no room for a horse.");
                     e.setCanceled(true);
+                    MountHorseManager.preventNextMount();
                     return;
                 case "Since you interacted with your inventory, your horse has despawned.":
                     GameUpdateOverlay.queueMessage(LIGHT_PURPLE + "Horse despawned.");
@@ -190,6 +192,7 @@ public class OverlayEvents implements Listener {
                 case "Your horse is scared to come out right now, too many mobs are nearby.":
                     GameUpdateOverlay.queueMessage(DARK_RED + "Too many mobs nearby to spawn your horse");
                     e.setCanceled(true);
+                    MountHorseManager.preventNextMount();
                     return;
             }
         }
@@ -684,12 +687,13 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void onServerLeave(WynncraftServerEvent.Leave e) {
-        ObjectivesOverlay.restoreVanillaScoreboard();
+        ScoreboardOverlay.enableCustomScoreboard(false);
+        ObjectivesOverlay.resetObjectives();
     }
 
     @SubscribeEvent
     public void onServerJoin(WynncraftServerEvent.Login e) {
-        ObjectivesOverlay.updateOverlayActivation();
+        ScoreboardOverlay.enableCustomScoreboard(OverlayConfig.Scoreboard.INSTANCE.enableScoreboard);
     }
 
     @SubscribeEvent
@@ -712,7 +716,6 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onDisplayObjective(PacketEvent<SPacketDisplayObjective> e) {
         ObjectivesOverlay.checkForSidebar(e.getPacket());
-        e.setCanceled(OverlayConfig.Objectives.INSTANCE.enableObjectives);
     }
 
     @SubscribeEvent
@@ -722,7 +725,7 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void onUpdateScore(PacketEvent<SPacketUpdateScore> e) {
-        e.setCanceled(ObjectivesOverlay.checkObjectiveUpdate(e.getPacket()) && OverlayConfig.Objectives.INSTANCE.enableObjectives);
+        ObjectivesOverlay.checkObjectiveUpdate(e.getPacket());
     }
 
     @SubscribeEvent

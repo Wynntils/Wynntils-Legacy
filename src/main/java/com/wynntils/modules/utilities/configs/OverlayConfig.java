@@ -16,6 +16,7 @@ import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.core.enums.OverlayRotation;
 import com.wynntils.modules.utilities.overlays.hud.ObjectivesOverlay;
+import com.wynntils.modules.utilities.overlays.hud.ScoreboardOverlay;
 import com.wynntils.modules.utilities.overlays.hud.TerritoryFeedOverlay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextFormatting;
@@ -262,6 +263,9 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Invert Growth", description = "Should the way ticker messages appear be inverted?")
         public boolean invertGrowth = true;
 
+        @Setting(displayName = "New Messages Display Prominently", description = "Should new messages appear before old messages in the direction of growth, pushing older messages further away?")
+        public boolean newMessagesFirst = false;
+
         @Setting(displayName = "Max Message Length", description = "What should the maximum length of messages in the game-update-ticker be?\n\n§8Messages longer than this set value will be truncated. Set this to 0 for no maximum length.")
         @Setting.Limitations.IntLimit(min = 0, max = 100)
         public int messageMaxLength = 0;
@@ -314,10 +318,10 @@ public class OverlayConfig extends SettingsClass {
 
             @Setting(displayName = "Redirect Horse Messages", description = "Should messages related to your horse be redirected to the game update ticker?")
             public boolean redirectHorse = true;
-            
+
             @Setting(displayName = "Redirect Resource Pack Messages", description = "Should wynnpack and loading reasource pack messages be disabled or redirected (depending on whether you can see them in classs screen)?")
             public boolean redirectResourcePack = false;
-            
+
             @Setting(displayName = "Redirect Class Messages", description = "Should class messages be redirected to the game update ticker?")
             public boolean redirectClass = true;
 
@@ -683,11 +687,25 @@ public class OverlayConfig extends SettingsClass {
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
     }
 
+    @SettingsInfo(name = "tracked_quest_info_settings", displayPath = "Utilities/Overlays/Tracked Quest Info")
+    public static class TrackedQuestInfo extends SettingsClass {
+        public static TrackedQuestInfo INSTANCE;
+
+        @Setting(displayName = "Display Quest Name", description = "Should the quest name be shown in the overlay?")
+        public boolean displayQuestName = false;
+
+        @Setting(displayName = "Text Alignment", description = "What alignment should the overlay use?")
+        public TextAlignment textAlignment = TextAlignment.LEFT_RIGHT;
+
+        @Setting(displayName = "Text Shadow", description = "What shadow should the text use?")
+        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+    }
+
     @SettingsInfo(name = "objectives_settings", displayPath = "Utilities/Overlays/Objectives")
     public static class Objectives extends SettingsClass {
         public static Objectives INSTANCE;
 
-        @Setting(displayName = "Enable Objectives Overlay", description = "Should the sidebar scoreboard be replaced by this overlay?", order = 0)
+        @Setting(displayName = "Enable Objectives Overlay", description = "Should the sidebar scoreboard be replaced by this overlay?\n\n§8This overlay works best if the scoreboard overlay is enabled as well.", order = 0)
         public boolean enableObjectives = true;
 
         @Setting(displayName = "Hide on Inactivity", description = "Should the overlay be hidden unless the objective has been updated?", order = 1)
@@ -714,10 +732,6 @@ public class OverlayConfig extends SettingsClass {
 
         @Override
         public void onSettingChanged(String name) {
-            if (name.equals("enableObjectives")) {
-                ObjectivesOverlay.updateOverlayActivation();
-            }
-
             if (name.equals("hideOnInactivity")) {
                 ObjectivesOverlay.refreshAllTimestamps();
             }
@@ -731,6 +745,39 @@ public class OverlayConfig extends SettingsClass {
             a,
             b,
             c
+        }
+    }
+
+    @SettingsInfo(name = "scoreboard_settings", displayPath = "Utilities/Overlays/Scoreboard")
+    public static class Scoreboard extends SettingsClass {
+        public static Scoreboard INSTANCE;
+
+        @Setting(displayName = "Enable Scoreboard Overlay", description = "Should the custom Wynntils scoreboard be used?", order = 0)
+        public boolean enableScoreboard = true;
+
+        @Setting(displayName = "Show Scoreboard Numbers", description = "Should the numbers on the right side of the scoreboard be shown?", order = 1)
+        public boolean showNumbers = false;
+
+        @Setting(displayName = "Show Scoreboard Title", description = "Should the title at the top of the scoreboard be shown?", order = 2)
+        public boolean showTitle = true;
+
+        @Setting(displayName = "Show Compass Reminder", description = "Should the compass text be removed from the tracked quest section?", order = 3)
+        public boolean showCompass = false;
+
+        @Setting(displayName = "Background Opacity", description = "How dark should the background box be?", order = 4)
+        @Setting.Limitations.IntLimit(min = 0, max = 100)
+        public int opacity = 20;
+
+        @Setting(displayName = "Background Color", description = "What color should the text shadow be?\n\n§aClick the coloured box to open the colour wheel.", order = 5)
+        public CustomColor backgroundColor = CustomColor.fromInt(0x000000, 0.2f);
+
+        @Override
+        public void onSettingChanged(String name) {
+            backgroundColor.setA(opacity/100f);
+
+            if (name.equals("enableScoreboard")) {
+                ScoreboardOverlay.enableCustomScoreboard(enableScoreboard);
+            }
         }
     }
 }

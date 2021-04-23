@@ -1,9 +1,10 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.music.managers;
 
+import com.wynntils.modules.music.instances.QueuedTrack;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
@@ -18,6 +19,8 @@ public class BossTrackManager {
     private static final Pattern MOB_NAMETAG = Pattern.compile("(?<Name>.+?) ?(?<Phases>▪*?) \\[Lv\\.(?<Level>.*?)\\]");
 
     private static int bossEntityId = -1;
+    private static long gracePeriod = -1;
+    private static QueuedTrack previousTrack = null;
 
     public static void update() {
         for (Entity i : Minecraft.getMinecraft().world.loadedEntityList) {
@@ -29,12 +32,28 @@ public class BossTrackManager {
         }
 
         if (bossEntityId == -1) return;
+
         // check if the boss is still alive
         Entity in = Minecraft.getMinecraft().world.getEntityByID(bossEntityId);
         if (in != null && Math.abs(Minecraft.getMinecraft().player.posY - in.posY) <= 15) return;
 
+        // grace period for bosses that have multiple phases (somewhat a transition)
+        if (gracePeriod == -1) gracePeriod = System.currentTimeMillis() + 3000;
+        if (System.currentTimeMillis() <= gracePeriod) return;
+
+        gracePeriod = -1;
         bossEntityId = -1;
-        SoundTrackManager.getPlayer().getStatus().setStopping(true);
+
+        // start playing the previous song if available
+        if (previousTrack != null) {
+            SoundTrackManager.getPlayer().getStatus().setNextSong(previousTrack);
+            previousTrack = null;
+            return;
+        }
+
+        // stop track player if the previous song is not available so we don't keep playing the boss
+        // music infinitely
+        SoundTrackManager.getPlayer().stop();
     }
 
     private static boolean checkEntity(Entity entity, String name) {
@@ -42,6 +61,13 @@ public class BossTrackManager {
         if (soundTrack == null || Math.abs(Minecraft.getMinecraft().player.posY - entity.posY) >= 15) return false;
 
         bossEntityId = entity.getEntityId();
+        gracePeriod = -1;
+
+        QueuedTrack previous = SoundTrackManager.getCurrentSong();
+        if (!previous.getName().equals(soundTrack)) {
+            previousTrack = SoundTrackManager.getCurrentSong();
+        }
+
         SoundTrackManager.findTrack(soundTrack, true);
         return true;
     }

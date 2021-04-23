@@ -16,7 +16,8 @@ public enum QuestBookPages {
     SETTINGS(new SettingsPage(), 2),
     ITEMGUIDE(new ItemPage(), 3),
     HUDCONFIG(new HUDConfigPage(), 4),
-    DISCOVERIES(new DiscoveriesPage(), 5);
+    DISCOVERIES(new DiscoveriesPage(), 5),
+    LOOTRUNS(new LootRunPage(), 6);
 
     private QuestBookPage questBookPage;
     private int slotNb;

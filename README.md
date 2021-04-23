@@ -13,12 +13,30 @@ If you find any bug or have crashed because of the mod, please report it at our 
 
 Setup the Workspace
 ========
-To set up the workspace, you'll need to run the Forge ``setupDecompWorkspace`` gradle command, with that all the Forge source will be generated. It's that easy!
-<br> Building the mod is even simpler. Just call the ``buildDependents`` and the artifact should be generated in `build/libs`.
+To set up the workspace, just import the project as a gradle project into your IDE
+<br> To build the mod just call the ``buildDependents`` and the artifact should be generated in `build/libs`.
 
-You can also setup a test environment. Using IntelliJ, execute the ``genIntellijRuns`` task, which will generate a run environment for you.
-Then go to `Preferences` > `Build, Execution, Deployment` > `Gradle`, select `Wynntils` in the list of Gradle projects, and make sure `Build and run using` is set to `IntelliJ IDEA`.
-Go to `Edit Configurations`, select `Minecraft Client`, and in `Program Arguments` add `--username <username> --password <password>` with your Minecraft username and password.
+You can also setup a test environment. Run the task for generating run configurations for your IDE
+
+* Eclipse - `genEclipseRuns` 
+* Intellij - `genIntellijRuns`
+* VSCode - `genVSCodeRuns`
+
+When launching a run configuration use the run configuration for your IDE
+
+* Eclipse - `runEclipseClient`
+* Intellij - `runIntellijClient`
+
+two input boxes will appear
+
+1.  Email that you use to log into your mojang account
+2.  Password that you use to log into your mojang account
+
+If you want to have atleast some of your information preentered or you are using VSCode edit the `gradle.properties` in the `.gradle` directory in your user directory and add either or both:
+
+* `minecraftEmailUsername=` then your email that you use to login to your mojang account
+* `minecraftPassword=` then your password that you use to login to your mojang account 
+
  
 Pull Request
 ========

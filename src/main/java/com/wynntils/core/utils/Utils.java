@@ -55,6 +55,8 @@ public class Utils {
     private static ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("wynntils-utilities-%d").build());
     private static Random random = new Random();
 
+    private static String previousTeam = null;
+
     /**
      * Runs a runnable after the determined time
      *
@@ -165,10 +167,13 @@ public class Utils {
         Scoreboard mc = Minecraft.getMinecraft().world.getScoreboard();
         if (mc.getTeam(name) != null) return mc.getTeam(name);
 
+        String player = Minecraft.getMinecraft().player.getName();
+        if (mc.getPlayersTeam(player) != null) previousTeam = mc.getPlayersTeam(player).getName();
+
         ScorePlayerTeam team = mc.createTeam(name);
         team.setCollisionRule(rule);
 
-        mc.addPlayerToTeam(Minecraft.getMinecraft().player.getName(), name);
+        mc.addPlayerToTeam(player, name);
         return team;
     }
 
@@ -182,6 +187,7 @@ public class Utils {
         if (mc.getTeam(name) == null) return;
 
         mc.removeTeam(mc.getTeam(name));
+        if (previousTeam != null) mc.addPlayerToTeam(Minecraft.getMinecraft().player.getName(), previousTeam);
     }
 
     /**
@@ -296,7 +302,7 @@ public class Utils {
                 Keyboard.destroy();
                 Keyboard.create();
             } else {
-                Runtime.getRuntime().exec("xgd-open " + url);
+                Runtime.getRuntime().exec("xdg-open " + url);
             }
             return;
         } catch (IOException | LWJGLException e) {

@@ -5,8 +5,8 @@
 package com.wynntils.modules.chat.events;
 
 import com.wynntils.Reference;
+import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
-import com.wynntils.core.framework.enums.PowderManualChapter;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.core.utils.reflections.ReflectionFields;
@@ -18,6 +18,7 @@ import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import com.wynntils.webapi.services.TranslationManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -27,8 +28,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ClientEvents implements Listener {
-
-    private boolean ignoreNextBlank = false;
 
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent e) {
@@ -42,17 +41,16 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChatReceived(ClientChatReceivedEvent e) {
-        if (e.getMessage().getUnformattedText().startsWith("[Info] ") && ChatConfig.INSTANCE.filterWynncraftInfo) {
+        ITextComponent msg = e.getMessage();
+        if (msg.getUnformattedText().startsWith("[Info] ") && ChatConfig.INSTANCE.filterWynncraftInfo) {
             e.setCanceled(true);
-        } else if (e.getMessage().getFormattedText().startsWith(TextFormatting.GRAY + "[You are now entering") && ChatConfig.INSTANCE.filterTerritoryEnter) {
+        } else if (msg.getFormattedText().startsWith("\n                       " + TextFormatting.GOLD + TextFormatting.BOLD + "Welcome to Wynncraft!") &&
+                !msg.getFormattedText().contains("n the Trade Market") && ChatConfig.INSTANCE.filterWynncraftInfo) {
             e.setCanceled(true);
-        } else if (PowderManualChapter.isPowderManualLine(e.getMessage().getUnformattedText()) && ChatConfig.INSTANCE.customPowderManual) {
+        } else if (msg.getFormattedText().startsWith(TextFormatting.GRAY + "[You are now entering") && ChatConfig.INSTANCE.filterTerritoryEnter) {
             e.setCanceled(true);
-        } else if (e.getMessage().getUnformattedText().equals("                         Powder Manual") && ChatConfig.INSTANCE.customPowderManual) {
-            ignoreNextBlank = true;
-        } else if (e.getMessage().getUnformattedText().isEmpty() && ignoreNextBlank) {
+        } else if (msg.getFormattedText().startsWith(TextFormatting.GRAY + "[You are now leaving") && ChatConfig.INSTANCE.filterTerritoryEnter) {
             e.setCanceled(true);
-            ignoreNextBlank = false;
         }
     }
 
@@ -111,6 +109,11 @@ public class ClientEvents implements Listener {
         if (!Reference.onWorld) return;
 
         HeldItemChatManager.onTick();
+    }
+
+    @SubscribeEvent
+    public void onLeaveWorld(WynnWorldEvent.Leave e) {
+        ChatManager.onLeave();
     }
 
 }

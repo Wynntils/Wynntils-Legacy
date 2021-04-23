@@ -1,9 +1,10 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.webapi.profiles.music;
 
+import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.objects.SquareRegion;
 
 public class SongAreaProfile {
@@ -35,6 +36,10 @@ public class SongAreaProfile {
 
     public boolean isFastSwitch() {
         return fastSwitch;
+    }
+
+    public double distanceSquared(Location other) {
+        return getRegion().getStartLocation().distanceSquared(other);
     }
 
 }

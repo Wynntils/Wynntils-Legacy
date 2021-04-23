@@ -2,19 +2,19 @@ buildscript {
     repositories {
         jcenter()
         maven { url "https://plugins.gradle.org/m2/" }
-        maven { url = "http://files.minecraftforge.net/maven" }
+        maven { url = "http://maven.minecraftforge.net" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:4.1.+'
         classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.1'
     }
 }
 
-apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'java'
 
-def versionObj = new Version(major: 1, minor: 9, revision: 1)
+def versionObj = new Version(major: 1, minor: 9, revision: 2)
 
 version = versionObj.toString()
 group = "com.wynntils"
@@ -25,11 +25,94 @@ targetCompatibility = "1.8"
 compileJava.options.encoding = 'UTF-8'
 
 minecraft {
-    version = "1.12.2-14.23.5.2768"
-    runDir = "run"
+    mappings channel: "stable", version: "39-1.12"
 
-    mappings = "stable_39"
-    makeObfSourceJar = false
+    runs {
+        client {
+            workingDirectory project.file('run')
+            
+            environment 'MC_VERSION', '1.12.2'
+            
+            // Recommended logging data for a userdev environment
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            // Recommended logging level for the console
+            property 'forge.logging.console.level', 'debug'
+        }
+    
+        if (project.hasProperty("minecraftEmailUsername") || project.hasProperty("minecraftPassword")) {
+            eclipseUnsuppliedClient {
+                parent runs.client
+                
+                args '--username=${string_prompt:Minecraft Email/Username}'
+                args '--password=${password_prompt:Minecraft Password}'
+            }
+            
+            intellijUnsuppliedClient {
+                parent runs.client
+                
+                // If someone knows a prompt variable that actually hides the password when entering it for intellij then put it after "--password="
+                args '--username=$Prompt$'
+                args '--password=$Prompt$'
+            }
+            
+            if (project.hasProperty('minecraftEmailUsername') && project.hasProperty('minecraftPassword')) {
+                suppliedClient {
+                    parent runs.client
+                    
+                    args "--username=" + minecraftEmailUsername
+                    args "--password=" + minecraftPassword
+                }
+            } else {
+                eclipseSuppliedClient {
+                    parent runs.client
+                    
+                    if (project.hasProperty("minecraftEmailUsername")) {
+                        args "--username=" + minecraftEmailUsername
+                    } else {
+                        args '--username=${string_prompt:Minecraft Email/Username}'
+                    }
+                    
+                    if (project.hasProperty("minecraftPassword")) {
+                        args "--password=" + minecraftPassword
+                    } else {
+                        args '--password=${password_prompt:Minecraft Password}'
+                    }
+                }
+                
+                intellijSuppliedClient {
+                    parent runs.client
+                    
+                    if (project.hasProperty("minecraftEmailUsername")) {
+                        args "--username=" + minecraftEmailUsername
+                    } else {
+                        args '--username=$Prompt$'
+                    }
+                    
+                    if (project.hasProperty("minecraftPassword")) {
+                        args "--password=" + minecraftPassword
+                    } else {
+                        args '--password=$Prompt$'
+                    }
+                }
+            }
+        } else {
+            eclipseClient {
+                parent runs.client
+                
+                args '--username=${string_prompt:Minecraft Email/Username}'
+                args '--password=${password_prompt:Minecraft Password}'
+            }
+            
+            intellijClient {
+                parent runs.client
+                
+                // If someone knows a prompt variable that actually hides the password when entering it for intellij then put it after "--password="
+                args '--username=$Prompt$'
+                args '--password=$Prompt$'
+            }
+        }
+    }
 }
 
 repositories {
@@ -43,6 +126,7 @@ configurations {
 }
 
 dependencies {
+    minecraft "net.minecraftforge:forge:1.12.2-14.23.5.2854"
     embed "javazoom:jlayer:1.0.1"
 }
 
@@ -64,10 +148,6 @@ jar {
     }
 }
 
-reobfJar {
-    dependsOn shadowJar
-}
-
 shadowJar {
     baseName = archivesBaseName + "-" + version
     classifier = null
@@ -75,10 +155,9 @@ shadowJar {
     configurations = [project.configurations.compile]
 }
 
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.4'
-}
+/*
+ *  * Copyright © Wynntils - 2021.
+ */
 
 class Version {
     int major, minor, revision

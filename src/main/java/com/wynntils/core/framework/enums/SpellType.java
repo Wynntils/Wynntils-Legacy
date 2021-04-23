@@ -11,13 +11,13 @@ public enum SpellType {
     ARROW_SHIELD(ClassType.ARCHER, 4, "Arrow Shield", "Dagger Aura", 8, 1),
 
     SPIN_ATTACK(ClassType.ASSASSIN, 1, "Spin Attack", "Whirlwind", 6, 0),
-    VANISH(ClassType.ASSASSIN, 2, "Vanish", "Shadow Clone", 1, 0),
+    VANISH(ClassType.ASSASSIN, 2, "Vanish", "Shadow Clone", 2, 0),
     MULTI_HIT(ClassType.ASSASSIN, 3, "Multi Hit", "Leopard Punches", 8, 0),
     SMOKE_BOMB(ClassType.ASSASSIN, 4, "Smoke Bomb", "Blinding Cloud", 8, 0),
 
     BASH(ClassType.WARRIOR, 1, "Bash", "Holy Blast", 6, 0),
     CHARGE(ClassType.WARRIOR, 2, "Charge", "Leap", 4, 0),
-    UPPERCUT(ClassType.WARRIOR, 3, "Uppercut", "Heaven Jolt", 10, 0),
+    UPPERCUT(ClassType.WARRIOR, 3, "Uppercut", "Heaven Jolt", 8, 0),
     WAR_SCREAM(ClassType.WARRIOR, 4, "War Scream", "Cry of the Gods", 7, -1),
 
     HEAL(ClassType.MAGE, 1, "Heal", "Remedy", 8, -1),

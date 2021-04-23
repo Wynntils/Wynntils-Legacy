@@ -7,5 +7,4 @@ jdk:
 
 script:
   - ./gradlew clean
-  - ./gradlew setupDecompWorkspace
   - ./gradlew buildDependents
