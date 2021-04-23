@@ -71,7 +71,7 @@ public class ChatManager {
         ITextComponent original = in.createCopy();
 
         // Reorganizing
-        if (!in.getUnformattedComponentText().x()) {
+        if (!in.getUnformattedComponentText().isEmpty()) {
             ITextComponent newMessage = new TextComponentString("");
             for (ITextComponent component : in) {
                 component = component.createCopy();
