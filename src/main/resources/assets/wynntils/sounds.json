@@ -31,11 +31,5 @@
       "sounds": [
           "wynntils:questbook_opening"
       ]
-  },
-  "mythic_found": {
-      "category": "gui",
-      "sounds": [
-          "wynntils:mythic_found"
-      ]
   }
 }
