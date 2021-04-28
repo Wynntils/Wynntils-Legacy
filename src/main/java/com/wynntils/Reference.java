@@ -10,6 +10,7 @@ import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.webapi.WebManager;
+import com.google.common.collect.Sets;
 import net.minecraft.client.multiplayer.ServerData;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -22,6 +23,7 @@ public class Reference {
     public static final String MOD_ID = "wynntils";
     public static final String NAME = "Wynntils";
     public static final String MINECRAFT_VERSIONS = "1.12,1.12.2";
+    public static final Set<String> CONFLICTING_MODS = Sets.newHashSet("labymod");
     public static String VERSION = "";
     public static int BUILD_NUMBER = -1;
     public static final File MOD_STORAGE_ROOT = new File(ModCore.mc().gameDir, MOD_ID);
