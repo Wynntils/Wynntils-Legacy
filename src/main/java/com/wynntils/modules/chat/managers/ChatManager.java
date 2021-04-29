@@ -11,6 +11,8 @@ import com.wynntils.core.utils.helpers.TextAction;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.chat.configs.ChatConfig;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
+import com.wynntils.modules.questbook.enums.AnalysePosition;
+import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.utilities.configs.TranslationConfig;
 import com.wynntils.webapi.services.TranslationManager;
 import net.minecraft.client.Minecraft;
@@ -55,6 +57,7 @@ public class ChatManager {
     private static int newMessageCount = 0;
     private static String lastChat = null;
     private static final int WYNN_DIALOGUE_NEW_MESSAGES_ID = "wynn_dialogue_new_messages".hashCode();
+    private static int lineCount = -1;
 
     private static final SoundEvent popOffSound = new SoundEvent(new ResourceLocation("minecraft", "entity.blaze.hurt"));
 
@@ -772,16 +775,8 @@ public class ChatManager {
 
     public static Pair<Boolean, ITextComponent> applyToDialogue(ITextComponent component) {
         List<ITextComponent> siblings = component.getSiblings();
-        List<ITextComponent> dialogue = siblings.size() >= 4 ? siblings.subList(siblings.size() - 4, siblings.size()) : null;
-        if (inDialogue
-                && (dialogue == null
-                        || !dialogue.get(0).getUnformattedText().equals("\n")
-                        || !dialogue.get(2).getUnformattedText().equals("\n")
-                        || (!dialogue.get(3).getUnformattedText().equals("\n")
-                                && !dialogue.get(3).getUnformattedText().equals("                       Press SHIFT to continue\n")
-                                && !dialogue.get(3).getUnformattedText().equals("                       Press SNEAK to continue\n")))
-                && component.getUnformattedText().equals(lastChat)) {
-
+        List<ITextComponent> dialogue = new ArrayList<>();
+        if (inDialogue && component.getUnformattedText().equals(lastChat)) {
             inDialogue = false;
             int max = Math.max(0, siblings.size() - newMessageCount);
             for (int i = max; i < siblings.size(); i++) {
@@ -798,39 +793,56 @@ public class ChatManager {
             }
             newMessageCount = 0;
             lastChat = null;
+            lineCount = -1;
             ChatOverlay.getChat().deleteChatLine(WYNN_DIALOGUE_NEW_MESSAGES_ID);
+            QuestManager.updateAnalysis(AnalysePosition.QUESTS, true, true);
             return new Pair<>(true, null);
         }
-        if (component.getSiblings().size() >= 4) {
-            // Each line of chat is a separate sibling
 
-            // Very very long string of À's get sent in place of dialogue initially
-            if (dialogue.get(1).getUnformattedText().matches("À{50,}\n") || inDialogue) {
-                // Detect new messages
-                if (inDialogue) {
-                    // If dialogue is the exact same as previously then most likely a message was received
-                    if (dialogue.equals(last)) {
-                        newMessageCount++;
-                    }
+        // Each line of chat is a separate sibling
 
-                    if (newMessageCount > 0) {
-                        ITextComponent message = new TextComponentString(newMessageCount + " delayed message" + (newMessageCount > 1 ? "s" : ""));
-                        message.getStyle().setColor(TextFormatting.GRAY);
-                        ChatOverlay.getChat().printChatMessageWithOptionalDeletion(message, WYNN_DIALOGUE_NEW_MESSAGES_ID);
-                    }
+        // Very very long string of À's get sent in place of dialogue initially
+        if (component.getUnformattedText().contains("ÀÀÀÀ")) {
+            inDialogue = true;
+            lineCount = 0;
+            for (int componentIndex = siblings.size() - 1; componentIndex >= 0; componentIndex--) {
+                ITextComponent componentSibling = siblings.get(componentIndex);
+                if (componentSibling.getUnformattedText().matches("À*\n")) {
+                    dialogue.add(0, componentSibling);
+                    lineCount++;
+                } else {
+                    break;
+                }
+            }
+        } else if (inDialogue) {
+            dialogue = new ArrayList<>(siblings.subList(siblings.size() - lineCount, siblings.size()));
+        }
+
+        if (inDialogue) {
+            // Detect new messages
+            if (inDialogue) {
+                // If dialogue is the exact same as previously then most likely a message was received
+                if (dialogue.equals(last)) {
+                    newMessageCount++;
                 }
 
-                List<ITextComponent> chat = siblings.subList(0, siblings.size() - 4);
-                lastChat = chat.stream().map(ITextComponent::getUnformattedText).collect(Collectors.joining());
-                // Remove ending \n
-                lastChat = lastChat.substring(0, lastChat.length() - 1);
-
-                inDialogue = true;
-                ITextComponent newComponent = new TextComponentString("");
-                newComponent.getSiblings().addAll(dialogue);
-                last = new ArrayList<>(dialogue);
-                return new Pair<>(true, newComponent);
+                if (newMessageCount > 0) {
+                    ITextComponent message = new TextComponentString(newMessageCount + " delayed message" + (newMessageCount > 1 ? "s" : ""));
+                    message.getStyle().setColor(TextFormatting.GRAY);
+                    ChatOverlay.getChat().printChatMessageWithOptionalDeletion(message, WYNN_DIALOGUE_NEW_MESSAGES_ID);
+                }
             }
+
+            List<ITextComponent> chat = siblings.subList(0, siblings.size() - lineCount);
+            lastChat = chat.stream().map(ITextComponent::getUnformattedText).collect(Collectors.joining());
+            // Remove ending \n
+            lastChat = lastChat.substring(0, lastChat.length() - 1);
+
+            inDialogue = true;
+            ITextComponent newComponent = new TextComponentString("");
+            newComponent.getSiblings().addAll(dialogue);
+            last = new ArrayList<>(dialogue);
+            return new Pair<>(true, newComponent);
         }
         return new Pair<>(false, component);
     }
