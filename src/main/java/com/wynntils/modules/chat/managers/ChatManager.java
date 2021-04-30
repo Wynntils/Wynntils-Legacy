@@ -802,6 +802,7 @@ public class ChatManager {
         // Each line of chat is a separate sibling
 
         // Very very long string of À's get sent in place of dialogue initially
+        String chat = "";
         if (component.getUnformattedText().contains("ÀÀÀÀ")) {
             inDialogue = true;
             lineCount = 0;
@@ -814,31 +815,34 @@ public class ChatManager {
                     break;
                 }
             }
+            chat = siblings.subList(0, siblings.size() - lineCount).stream().map(ITextComponent::getUnformattedText).collect(Collectors.joining());
+            chat = chat.substring(0, chat.length() - 1);
         } else if (inDialogue) {
+            if (siblings.size() < lineCount) {
+                return new Pair<>(false, component);
+            }
+            chat = siblings.subList(0, siblings.size() - lineCount).stream().map(ITextComponent::getUnformattedText).collect(Collectors.joining());
+            chat = chat.substring(0, chat.length() - 1);
             dialogue = new ArrayList<>(siblings.subList(siblings.size() - lineCount, siblings.size()));
+            if (!chat.equals(lastChat) && !dialogue.equals(last)) {
+                return new Pair<>(false, component);
+            }
         }
 
         if (inDialogue) {
             // Detect new messages
-            if (inDialogue) {
-                // If dialogue is the exact same as previously then most likely a message was received
-                if (dialogue.equals(last)) {
-                    newMessageCount++;
-                }
-
-                if (newMessageCount > 0) {
-                    ITextComponent message = new TextComponentString(newMessageCount + " delayed message" + (newMessageCount > 1 ? "s" : ""));
-                    message.getStyle().setColor(TextFormatting.GRAY);
-                    ChatOverlay.getChat().printChatMessageWithOptionalDeletion(message, WYNN_DIALOGUE_NEW_MESSAGES_ID);
-                }
+            // If dialogue is the exact same as previously then most likely a message was received
+            if (dialogue.equals(last)) {
+                newMessageCount++;
             }
 
-            List<ITextComponent> chat = siblings.subList(0, siblings.size() - lineCount);
-            lastChat = chat.stream().map(ITextComponent::getUnformattedText).collect(Collectors.joining());
-            // Remove ending \n
-            lastChat = lastChat.substring(0, lastChat.length() - 1);
+            if (newMessageCount > 0) {
+                ITextComponent message = new TextComponentString(newMessageCount + " delayed message" + (newMessageCount > 1 ? "s" : ""));
+                message.getStyle().setColor(TextFormatting.GRAY);
+                ChatOverlay.getChat().printChatMessageWithOptionalDeletion(message, WYNN_DIALOGUE_NEW_MESSAGES_ID);
+            }
+            lastChat = chat;
 
-            inDialogue = true;
             ITextComponent newComponent = new TextComponentString("");
             newComponent.getSiblings().addAll(dialogue);
             last = new ArrayList<>(dialogue);
@@ -851,6 +855,7 @@ public class ChatManager {
         inDialogue = false;
         newMessageCount = 0;
         lastChat = null;
+        last = null;
 
         ChatOverlay.getChat().deleteChatLine(WYNN_DIALOGUE_NEW_MESSAGES_ID);
         ChatOverlay.getChat().deleteChatLine(ChatOverlay.WYNN_DIALOGUE_ID);
