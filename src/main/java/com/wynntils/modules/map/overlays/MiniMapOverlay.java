@@ -254,9 +254,6 @@ public class MiniMapOverlay extends Overlay {
                             drawTextOverlay(this, dx, dz, StringUtils.integerToShortString(Math.round((float)Math.sqrt(distanceSq) / scaleFactor)) + "m");
                     } else if (rendering) {
                         compassIcon.renderAt(this, dx + halfMapSize, dz + halfMapSize, sizeMultiplier, scaleFactor);
-
-                        if (MapConfig.INSTANCE.showCompassDistance)
-                            drawTextOverlay(this, dx + halfMapSize, dz + halfMapSize, StringUtils.integerToShortString(Math.round((float)Math.sqrt(distanceSq) / scaleFactor)) + "m");
                     }
                 }
             }
