@@ -6,6 +6,7 @@ package com.wynntils.modules.utilities.overlays.inventories;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -41,7 +42,7 @@ public class ItemSpecificationOverlay implements Listener {
             List<String> lore = ItemUtils.getLore(stack);
             if (lore.isEmpty()) continue;
             String name = StringUtils.normalizeBadString(stack.getDisplayName());
-            
+
             // name and lore fixing
             stack.setStackDisplayName(name);
             List<String> fixedLore = new ArrayList<>();
@@ -52,6 +53,22 @@ public class ItemSpecificationOverlay implements Listener {
 
             String destinationName = null;
             CustomColor color = null;
+
+            if (UtilitiesConfig.Items.INSTANCE.unidentifiedSpecification) {
+                Pattern unidentifiedItem = Pattern.compile("^§.Unidentified (.*)");
+                Matcher m = unidentifiedItem.matcher(name);
+                if (m.find()) {
+                    try {
+                        ItemTypeMapper type = ItemTypeMapper.valueOf(m.group(1).toUpperCase(Locale.ROOT));
+                        destinationName = type.name();
+                        color = MinecraftChatColors.BLUE;
+                    } catch (IllegalArgumentException e) {
+                        // This is an un-id:ed but named item
+                        destinationName = "?";
+                        color = MinecraftChatColors.GRAY;
+                    }
+                }
+            }
 
             if (UtilitiesConfig.Items.INSTANCE.potionSpecification) {
                 if (name.startsWith("§aPotion of §")) {
@@ -108,7 +125,7 @@ public class ItemSpecificationOverlay implements Listener {
 
             if (destinationName != null) {
                 ScreenRenderer.beginGL(gui.getGuiLeft(), gui.getGuiTop());
-                GlStateManager.translate(0, 0, 251);
+                GlStateManager.translate(0, 0, 260);
                 ScreenRenderer r = new ScreenRenderer();
                 RenderHelper.disableStandardItemLighting();
                 // Make a modifiable copy
@@ -135,4 +152,18 @@ public class ItemSpecificationOverlay implements Listener {
         renderOverlay(e.getGui());
     }
 
+    public enum ItemTypeMapper {
+        HELMET,
+        CHESTPLATE,
+        LEGGINGS,
+        BOOTS,
+        RING,
+        BRACELET,
+        NECKLACE,
+        SPEAR,
+        DAGGER,
+        BOW,
+        WAND,
+        RELIK
+    }
 }

@@ -228,25 +228,28 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Dungeon Key Specification", description = "Should a letter indicating the destination of dungeon keys be displayed?", order = 8)
         public boolean keySpecification = true;
 
-        @Setting(displayName = "Skill Potion Specification", description = "Should a symbol indicating the skill of skill potions be displayed?", order = 9)
+        @Setting(displayName = "Unidentified Item Type", description = "Should a symbol indicating the type of unidentified items be displayed?", order = 9)
+        public boolean unidentifiedSpecification = false;
+
+        @Setting(displayName = "Skill Potion Specification", description = "Should a symbol indicating the skill of skill potions be displayed?", order = 10)
         public boolean potionSpecification = true;
 
-        @Setting(displayName = "Transportation Item Specification", description = "Should a letter indicating the destination of teleport scrolls and boat passes be displayed?", order = 10)
+        @Setting(displayName = "Transportation Item Specification", description = "Should a letter indicating the destination of teleport scrolls and boat passes be displayed?", order = 11)
         public boolean transportationSpecification = true;
 
-        @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted according to rarity in remote containers?\n\n§8Remote containers are items such as chests and banks.", order = 11)
+        @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted according to rarity in remote containers?\n\n§8Remote containers are items such as chests and banks.", order = 12)
         public boolean mainHighlightChest = true;
 
-        @Setting(displayName = "Item Highlights in Inventory", description = "Should items be highlighted according to rarity in your inventory?", order = 12)
+        @Setting(displayName = "Item Highlights in Inventory", description = "Should items be highlighted according to rarity in your inventory?", order = 13)
         public boolean mainHighlightInventory = true;
 
-        @Setting(displayName = "Accessories Highlight", description = "Should your worn accessories be highlighted according to rarity?", order = 13)
+        @Setting(displayName = "Accessories Highlight", description = "Should your worn accessories be highlighted according to rarity?", order = 14)
         public boolean accesoryHighlight = true;
 
-        @Setting(displayName = "Highlight Hotbar Items", description = "Should the items in your hotbar be highlighted according to rarity?", order = 14)
+        @Setting(displayName = "Highlight Hotbar Items", description = "Should the items in your hotbar be highlighted according to rarity?", order = 15)
         public boolean hotbarHighlight = true;
 
-        @Setting(displayName = "Highlight Armour Items", description = "Should your worn armour be highlighted according to rarity?", order = 15)
+        @Setting(displayName = "Highlight Armour Items", description = "Should your worn armour be highlighted according to rarity?", order = 16)
         public boolean armorHighlight = true;
 
         @Setting(displayName = "Highlight Mythics", description = "Should mythic items be highlighted?", order = 20)
