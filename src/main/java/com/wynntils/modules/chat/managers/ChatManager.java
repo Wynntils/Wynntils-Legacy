@@ -18,7 +18,9 @@ import com.wynntils.modules.utilities.configs.TranslationConfig;
 import com.wynntils.webapi.services.TranslationManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.*;
@@ -151,27 +153,38 @@ public class ChatManager {
                                 condition = QuestManager.getCurrentDiscoveries().stream()
                                         .filter(DiscoveryInfo::wasDiscovered)
                                         .map(DiscoveryInfo::getName)
-                                        .collect(Collectors.toList()).contains("Wynnic thing");
+                                        .collect(Collectors.toList()).contains("Wynn Plains Monument");
                             }
                             else if (StringUtils.hasGavellian(untranslated.getUnformattedText())) {
                                 condition = QuestManager.getCurrentDiscoveries().stream()
                                         .filter(DiscoveryInfo::wasDiscovered)
                                         .map(DiscoveryInfo::getName)
-                                        .collect(Collectors.toList()).contains("Gavellian thing");
+                                        .collect(Collectors.toList()).contains("Ne du Valeos du Ellach");
                             }
 
                             break;
                         case book:
                             if (StringUtils.hasWynnic(untranslated.getUnformattedText())) {
-                                //TODO - check inventory
+                                for (Slot slot : ModCore.mc().player.inventoryContainer.inventorySlots) {
+                                    condition = slot.getStack().getDisplayName().equals("Ancient Wynnic Transcriber") && slot.getStack().getItem() == Items.BOOK;
+
+                                    if (condition) {
+                                        break;
+                                    }
+                                }
                             }
                             else if (StringUtils.hasGavellian(untranslated.getUnformattedText())) {
-                                //TODO - check inventory
+                                for (Slot slot : ModCore.mc().player.inventoryContainer.inventorySlots) {
+                                    condition = slot.getStack().getDisplayName().equals("High Gavellian Transcriber") && slot.getStack().getItem() == Items.BOOK;
+
+                                    if (condition) {
+                                        break;
+                                    }
+                                }
                             }
 
                             break;
                         case never:
-                            //TODO - log result
                             //shouldn't be reached ever
                     }
 
@@ -181,12 +194,16 @@ public class ChatManager {
                             in.appendSibling(translated);
                         } else {
                             untranslated.getSiblings().clear();
-                            untranslated.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, translated));
+                            if (!translated.getUnformattedText().equals(untranslated.getUnformattedText())) {
+                                untranslated.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, translated));
+                            }
                             in.appendSibling(untranslated);
                         }
                     }
                     else {
-                        //TODO - Implement else condition
+                        untranslated.getSiblings().clear();
+                        untranslated.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,  new TextComponentString(TextFormatting.GRAY + "You don't know this language!")));
+                        in.appendSibling(untranslated);
                     }
                 }
             }
@@ -337,8 +354,8 @@ public class ChatManager {
             for (char character : component.getUnformattedText().toCharArray()) {
                 if (StringUtils.isWynnicNumber(character)) {
                     if (previousTranslated) {
-                        newText.append(currentNonTranslated);
                         oldText.append(currentNonTranslated);
+                        newText.append(currentNonTranslated);
                         currentNonTranslated = "";
                     } else {
                         previousTranslated = true;
@@ -400,10 +417,14 @@ public class ChatManager {
                         } else {
                             previousTranslated = true;
 
-                            ITextComponent newComponent = new TextComponentString(oldText.toString());
+                            ITextComponent oldComponent = new TextComponentString(oldText.toString());
+                            oldComponent.setStyle(component.getStyle().createDeepCopy());
+                            untranslatedComponents.add(oldComponent);
+
+                            ITextComponent newComponent = new TextComponentString(newText.toString());
                             newComponent.setStyle(component.getStyle().createDeepCopy());
-                            untranslatedComponents.add(newComponent);
                             translatedComponents.add(newComponent);
+
                             oldText = new StringBuilder();
                             newText = new StringBuilder();
                         }
@@ -428,13 +449,13 @@ public class ChatManager {
                     } else {
                         if (previousTranslated) {
                             previousTranslated = false;
-                            //TODO - rewrite this!
+
                             ITextComponent oldComponent = new TextComponentString(oldText.toString());
                             oldComponent.setStyle(component.getStyle().createDeepCopy());
+                            untranslatedComponents.add(oldComponent);
+
                             ITextComponent newComponent = new TextComponentString(newText.toString());
                             newComponent.setStyle(component.getStyle().createDeepCopy());
-
-                            untranslatedComponents.add(oldComponent);
                             translatedComponents.add(newComponent);
 
                             oldText = new StringBuilder(currentNonTranslated);
@@ -470,8 +491,8 @@ public class ChatManager {
             ITextComponent newComponent = new TextComponentString(newText.toString());
             newComponent.setStyle(component.getStyle().createDeepCopy());
 
-            untranslatedComponents.add(newComponent);
-            translatedComponents.add(oldComponent);
+            untranslatedComponents.add(oldComponent);
+            translatedComponents.add(newComponent);
 
             //if found, capitalize
             if (!foundStart) {
