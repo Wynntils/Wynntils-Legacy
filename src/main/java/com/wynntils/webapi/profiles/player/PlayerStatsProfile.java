@@ -346,8 +346,9 @@ public class PlayerStatsProfile {
     }
 
     public enum GuildRank {
-        OWNER("★★★★"),
-        CHIEF("★★★"),
+        OWNER("★★★★★"),
+        CHIEF("★★★★"),
+        STRATEGIST("★★★"),
         CAPTAIN("★★"),
         RECRUITER("★"),
         RECRUIT(""),
