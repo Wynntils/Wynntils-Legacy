@@ -17,6 +17,7 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
+import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
@@ -60,8 +61,16 @@ public class ItemSpecificationOverlay implements Listener {
                 if (m.find()) {
                     ItemType type = ItemType.from(m.group(1));
                     if (type != null) {
-                        destinationName = type.name();
-                        color = MinecraftChatColors.BLUE;
+                        // Draw an icon representing the type on top
+                        ScreenRenderer.beginGL(0, 0);
+                        GlStateManager.translate(0, 0, 270);
+
+                        ScreenRenderer r = new ScreenRenderer();
+                        RenderHelper.disableStandardItemLighting();
+                        float scaleFactor = 0.75f;
+                        ScreenRenderer.scale(scaleFactor);
+                        r.drawRect(Textures.UIs.hud_overlays, (int)((gui.getGuiLeft() + s.xPos) / scaleFactor) + 3, (int)((gui.getGuiTop() + s.yPos) / scaleFactor) + 3 , type.getTextureX(), type.getTextureY(), 16, 16);
+                        ScreenRenderer.endGL();
                     } else {
                         // This is an un-id:ed but named item
                         destinationName = "?";
