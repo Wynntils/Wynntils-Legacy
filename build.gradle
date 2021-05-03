@@ -116,12 +116,18 @@ minecraft {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
     jcenter()
 }
 
+// Allow for local override with different Forge
+if (!project.hasProperty("wynntilsForgeVersion")) {
+    ext.wynntilsForgeVersion='1.12.2-14.23.5.2854'
+}
+
 dependencies {
-    minecraft "net.minecraftforge:forge:1.12.2-14.23.5.2854"
+    minecraft "net.minecraftforge:forge:${wynntilsForgeVersion}"
     compile "javazoom:jlayer:1.0.1"
 }
 
