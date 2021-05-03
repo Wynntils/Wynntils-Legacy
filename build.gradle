@@ -13,6 +13,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'java'
+apply plugin: 'idea'
 
 def versionObj = new Version(major: 1, minor: 10, revision: 1)
 
@@ -112,6 +113,12 @@ minecraft {
                 args '--password=$Prompt$'
             }
         }
+    }
+}
+
+idea {
+    module {
+        inheritOutputDirs = true
     }
 }
 
