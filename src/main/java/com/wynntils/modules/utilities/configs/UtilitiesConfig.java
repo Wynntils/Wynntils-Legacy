@@ -229,7 +229,7 @@ public class UtilitiesConfig extends SettingsClass {
         public boolean keySpecification = true;
 
         @Setting(displayName = "Unidentified Item Type", description = "Should a symbol indicating the type of unidentified items be displayed?", order = 9)
-        public boolean unidentifiedSpecification = false;
+        public boolean unidentifiedSpecification = true;
 
         @Setting(displayName = "Skill Potion Specification", description = "Should a symbol indicating the skill of skill potions be displayed?", order = 10)
         public boolean potionSpecification = true;
