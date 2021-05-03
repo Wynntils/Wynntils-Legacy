@@ -9,6 +9,8 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
 
+import java.util.Locale;
+
 public enum ItemType {
 
     WAND(Items.STICK, 0, null),  // mage
@@ -48,8 +50,8 @@ public enum ItemType {
         return nbt;
     }
 
-    public static ItemType matchText(String typeStr) {
-        switch (typeStr) {
+    public static ItemType from(String typeStr) {
+        switch (typeStr.toLowerCase(Locale.ROOT)) {
             case "wand":
             case "stick":
             case "mage":

@@ -6,7 +6,6 @@ package com.wynntils.modules.utilities.overlays.inventories;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -21,6 +20,7 @@ import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import com.wynntils.webapi.profiles.item.enums.ItemType;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -58,11 +58,11 @@ public class ItemSpecificationOverlay implements Listener {
                 Pattern unidentifiedItem = Pattern.compile("^§.Unidentified (.*)");
                 Matcher m = unidentifiedItem.matcher(name);
                 if (m.find()) {
-                    try {
-                        ItemTypeMapper type = ItemTypeMapper.valueOf(m.group(1).toUpperCase(Locale.ROOT));
+                    ItemType type = ItemType.from(m.group(1));
+                    if (type != null) {
                         destinationName = type.name();
                         color = MinecraftChatColors.BLUE;
-                    } catch (IllegalArgumentException e) {
+                    } else {
                         // This is an un-id:ed but named item
                         destinationName = "?";
                         color = MinecraftChatColors.GRAY;
@@ -150,20 +150,5 @@ public class ItemSpecificationOverlay implements Listener {
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onHorseGui(GuiOverlapEvent.HorseOverlap.HoveredToolTip.Pre e) {
         renderOverlay(e.getGui());
-    }
-
-    public enum ItemTypeMapper {
-        HELMET,
-        CHESTPLATE,
-        LEGGINGS,
-        BOOTS,
-        RING,
-        BRACELET,
-        NECKLACE,
-        SPEAR,
-        DAGGER,
-        BOW,
-        WAND,
-        RELIK
     }
 }
