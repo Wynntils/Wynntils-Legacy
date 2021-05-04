@@ -74,7 +74,7 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Clickable Duel Requests", description = "Should duel requests provide a clickable command?")
     public boolean clickableDuelMessage = true;
 
-    @Setting(displayName = "Wynnic/Gavellian Translation Condition", description = "What is the condition for translating Wynnic and Gavellian be translated?\n\nDiscovery - The discovery for the transcriber has been discovered\n\nBook - The transcriber is in the player's inventory")
+    @Setting(displayName = "Wynnic/Gavellian Translation Condition", description = "What is the condition for translating Wynnic and Gavellian be translated?\n\n§8Discovery - The discovery for the transcriber has been discovered\n\n§8Book - The transcriber is in the player's inventory")
     public TranslateConditions translateCondition = TranslateConditions.always;
 
     @Setting(displayName = "Wynnic/Gavellian Translations", description = "Should Ingame languages such as Wynnic be directly replaced with English translations in chat?\n\n§8If this option is disabled, translation tooltips will appear when hovering over messages with Wynnic/Gavellian.")

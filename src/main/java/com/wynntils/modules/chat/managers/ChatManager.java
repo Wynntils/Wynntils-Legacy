@@ -5,6 +5,7 @@
 package com.wynntils.modules.chat.managers;
 
 import com.wynntils.ModCore;
+import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.PowderManualChapter;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.helpers.TextAction;
@@ -27,11 +28,13 @@ import net.minecraft.util.text.*;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.event.ForgeEventFactory;
+import org.apache.logging.log4j.Level;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -134,77 +137,84 @@ public class ChatManager {
             ArrayList<ITextComponent> untranslatedComponents = result.a;
             ArrayList<ITextComponent> translatedComponents = result.b;
 
-            if (ChatConfig.INSTANCE.translateCondition != ChatConfig.TranslateConditions.never) {
-                in = new TextComponentString("");
+            in = new TextComponentString("");
 
-                for (int i = 0; i < untranslatedComponents.size(); i++) {
-                    ITextComponent untranslated = untranslatedComponents.get(i);
-                    ITextComponent translated = translatedComponents.get(i);
+            for (int i = 0; i < untranslatedComponents.size(); i++) {
+                ITextComponent untranslated = untranslatedComponents.get(i);
+                ITextComponent translated = translatedComponents.get(i);
 
-                    boolean condition = false;
+                boolean condition = false;
 
-                    switch (ChatConfig.INSTANCE.translateCondition) {
-                        case always:
-                            condition = true;
-                        case discovery:
-                            if (QuestManager.getCurrentDiscoveries().isEmpty()) break;
+                switch (ChatConfig.INSTANCE.translateCondition) {
+                    case always:
+                        condition = true;
+                    case discovery:
+                        if (QuestManager.getCurrentDiscoveries().isEmpty()) QuestManager.updateAnalysis(EnumSet.of(AnalysePosition.DISCOVERIES, AnalysePosition.SECRET_DISCOVERIES), true, true);
 
-                            if (StringUtils.hasWynnic(untranslated.getUnformattedText())) {
-                                condition = QuestManager.getCurrentDiscoveries().stream()
-                                        .filter(DiscoveryInfo::wasDiscovered)
-                                        .map(DiscoveryInfo::getName)
-                                        .collect(Collectors.toList()).contains("Wynn Plains Monument");
+                        if (StringUtils.hasWynnic(untranslated.getUnformattedText())) {
+                            condition = QuestManager.getCurrentDiscoveries().stream()
+                                    .map(DiscoveryInfo::getName)
+                                    .collect(Collectors.toList()).contains("Wynn Plains Monument");
+
+                            for (DiscoveryInfo info : QuestManager.getCurrentDiscoveries()) {
+                                Reference.LOGGER.log(Level.ALL, info.getName());
                             }
-                            else if (StringUtils.hasGavellian(untranslated.getUnformattedText())) {
-                                condition = QuestManager.getCurrentDiscoveries().stream()
-                                        .filter(DiscoveryInfo::wasDiscovered)
-                                        .map(DiscoveryInfo::getName)
-                                        .collect(Collectors.toList()).contains("Ne du Valeos du Ellach");
-                            }
-
-                            break;
-                        case book:
-                            if (StringUtils.hasWynnic(untranslated.getUnformattedText())) {
-                                for (Slot slot : ModCore.mc().player.inventoryContainer.inventorySlots) {
-                                    condition = slot.getStack().getDisplayName().equals("Ancient Wynnic Transcriber") && slot.getStack().getItem() == Items.BOOK;
-
-                                    if (condition) {
-                                        break;
-                                    }
-                                }
-                            }
-                            else if (StringUtils.hasGavellian(untranslated.getUnformattedText())) {
-                                for (Slot slot : ModCore.mc().player.inventoryContainer.inventorySlots) {
-                                    condition = slot.getStack().getDisplayName().equals("High Gavellian Transcriber") && slot.getStack().getItem() == Items.BOOK;
-
-                                    if (condition) {
-                                        break;
-                                    }
-                                }
-                            }
-
-                            break;
-                        case never:
-                            //shouldn't be reached ever
-                    }
-
-                    if (condition) {
-                        if (ChatConfig.INSTANCE.translateIntoChat) {
-                            translated.getSiblings().clear();
-                            in.appendSibling(translated);
-                        } else {
-                            untranslated.getSiblings().clear();
-                            if (!translated.getUnformattedText().equals(untranslated.getUnformattedText())) {
-                                untranslated.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, translated));
-                            }
-                            in.appendSibling(untranslated);
                         }
-                    }
-                    else {
+                        else if (StringUtils.hasGavellian(untranslated.getUnformattedText())) {
+                            condition = QuestManager.getCurrentDiscoveries().stream()
+                                    .map(DiscoveryInfo::getName)
+                                    .collect(Collectors.toList()).contains("Ne du Valeos du Ellach");
+
+                            for (DiscoveryInfo info : QuestManager.getCurrentDiscoveries()) {
+                                Reference.LOGGER.log(Level.ALL, info.getName());
+                            }
+                        }
+
+                        break;
+                    case book:
+                        if (StringUtils.hasWynnic(untranslated.getUnformattedText())) {
+                            for (Slot slot : ModCore.mc().player.inventoryContainer.inventorySlots) {
+                                condition = slot.getStack().getDisplayName().equals("Ancient Wynnic Transcriber") && slot.getStack().getItem() == Items.ENCHANTED_BOOK;
+
+                                if (condition) {
+                                    break;
+                                }
+                            }
+                        }
+                        else if (StringUtils.hasGavellian(untranslated.getUnformattedText())) {
+                            for (Slot slot : ModCore.mc().player.inventoryContainer.inventorySlots) {
+                                condition = slot.getStack().getDisplayName().equals("High Gavellian Transcriber") && slot.getStack().getItem() == Items.ENCHANTED_BOOK;
+
+                                if (condition) {
+                                    break;
+                                }
+                            }
+                        }
+
+                        break;
+                    case never:
+                        condition = false;
+                        break;
+                }
+
+                if (condition) {
+                    if (ChatConfig.INSTANCE.translateIntoChat) {
+                        translated.getSiblings().clear();
+                        in.appendSibling(translated);
+                    } else {
                         untranslated.getSiblings().clear();
-                        untranslated.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,  new TextComponentString(TextFormatting.GRAY + "You don't know this language!")));
+                        if (!translated.getUnformattedText().equals(untranslated.getUnformattedText())) {
+                            untranslated.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, translated));
+                        }
                         in.appendSibling(untranslated);
                     }
+                }
+                else {
+                    untranslated.getSiblings().clear();
+                    if (!translated.getUnformattedText().equals(untranslated.getUnformattedText())) {
+                        untranslated.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,  new TextComponentString(TextFormatting.GRAY + "You don't know this language!")));
+                    }
+                    in.appendSibling(untranslated);
                 }
             }
         }
@@ -333,10 +343,10 @@ public class ChatManager {
         boolean foundStart = false;
         boolean foundEndTimestamp = !ChatConfig.INSTANCE.addTimestampsToChat;
         boolean previousTranslated = false;
-        boolean translateIntoHover = !ChatConfig.INSTANCE.translateIntoChat;
 
         ArrayList<ITextComponent> untranslatedComponents = new ArrayList<>();
         ArrayList<ITextComponent> translatedComponents = new ArrayList<>();
+        IngameLanguage language = IngameLanguage.NORMAL;
 
         if (foundEndTimestamp && !in.getSiblings().get(ChatConfig.INSTANCE.addTimestampsToChat ? 3 : 0).getUnformattedText().contains("/") && !isGuildOrParty) {
             foundStart = true;
@@ -353,11 +363,14 @@ public class ChatManager {
 
             for (char character : component.getUnformattedText().toCharArray()) {
                 if (StringUtils.isWynnicNumber(character)) {
-                    if (previousTranslated) {
+
+                    if (previousTranslated && language == IngameLanguage.WYNNIC) {
                         oldText.append(currentNonTranslated);
                         newText.append(currentNonTranslated);
                         currentNonTranslated = "";
                     } else {
+                        //If not previous translated or the language is different
+                        language = IngameLanguage.WYNNIC;
                         previousTranslated = true;
 
                         ITextComponent oldComponent = new TextComponentString(oldText.toString());
@@ -380,12 +393,13 @@ public class ChatManager {
                     }
 
                     if (StringUtils.isWynnic(character)) {
-                        if (previousTranslated) {
+                        if (previousTranslated && language == IngameLanguage.WYNNIC) {
                             newText.append(currentNonTranslated);
                             oldText.append(currentNonTranslated);
                             currentNonTranslated = "";
                         } else {
                             previousTranslated = true;
+                            language = IngameLanguage.WYNNIC;
 
                             ITextComponent oldComponent = new TextComponentString(oldText.toString());
                             oldComponent.setStyle(component.getStyle().createDeepCopy());
@@ -410,12 +424,13 @@ public class ChatManager {
                         newText.append(englishVersion);
 
                     } else if (StringUtils.isGavellian(character)) {
-                        if (previousTranslated) {
+                        if (previousTranslated && language == IngameLanguage.GAVELLIAN) {
                             newText.append(currentNonTranslated);
                             oldText.append(currentNonTranslated);
                             currentNonTranslated = "";
                         } else {
                             previousTranslated = true;
+                            language = IngameLanguage.GAVELLIAN;
 
                             ITextComponent oldComponent = new TextComponentString(oldText.toString());
                             oldComponent.setStyle(component.getStyle().createDeepCopy());
@@ -466,6 +481,8 @@ public class ChatManager {
                         oldText.append(character);
                         newText.append(character);
 
+                        language = IngameLanguage.NORMAL;
+
                         if (character != ' ') {
                             capital = false;
                         }
@@ -473,10 +490,10 @@ public class ChatManager {
                 }
             }
             if (!number.toString().isEmpty() && previousTranslated) {
+                oldText.append(number);
                 newText.append(StringUtils.translateNumberFromWynnic(number.toString()));
-                if (!translateIntoHover) {
-                    oldText.append(StringUtils.translateNumberFromWynnic(number.toString()));
-                }
+                language = IngameLanguage.WYNNIC;
+
             }
             if (!currentNonTranslated.isEmpty()) {
                 oldText.append(currentNonTranslated);
@@ -961,6 +978,12 @@ public class ChatManager {
             Minecraft.getMinecraft().player.sendMessage(chapterText);
         }
 
+    }
+
+    private enum IngameLanguage {
+        NORMAL,
+        WYNNIC,
+        GAVELLIAN;
     }
 
 }
