@@ -668,30 +668,25 @@ public class ChatManager {
         if (ChatConfig.INSTANCE.useBrackets) {
             if (message.contains("{") || message.contains("<")) {
                 StringBuilder newString = new StringBuilder();
-                boolean isWynnic = false;
+                IngameLanguage language = IngameLanguage.NORMAL;
                 boolean isNumber = false;
                 boolean invalidNumber = false;
-                boolean isGavellian = false;
                 int number = 0;
                 StringBuilder oldNumber = new StringBuilder();
                 for (char character : message.toCharArray()) {
                     if (character == '{') {
-                        isGavellian = false;
-                        isWynnic = true;
+                        language = IngameLanguage.WYNNIC;
                         isNumber = false;
                         number = 0;
                         oldNumber = new StringBuilder();
                     } else if (character == '<') {
-                        isGavellian = true;
-                        isWynnic = false;
+                        language = IngameLanguage.GAVELLIAN;
                         isNumber = false;
                         number = 0;
                         oldNumber = new StringBuilder();
-                    } else if (isWynnic && character == '}') {
-                        isWynnic = false;
-                    } else if (isGavellian && character == '>') {
-                        isGavellian = false;
-                    } else if (isWynnic) {
+                    } else if ((language == IngameLanguage.WYNNIC && character == '}') || (language == IngameLanguage.GAVELLIAN && character == '>')) {
+                        language = IngameLanguage.NORMAL;
+                    } else if (language == IngameLanguage.WYNNIC) {
                         if (Character.isDigit(character) && !invalidNumber) {
                             if (oldNumber.toString().endsWith(".")) {
                                 invalidNumber = true;
@@ -793,7 +788,7 @@ public class ChatManager {
                                 newString.append(character);
                             }
                         }
-                    } else if (isGavellian) {
+                    } else if (language == IngameLanguage.GAVELLIAN) {
                         if ('a' <= character && character <= 'z') {
                             newString.append((char) (character + 9327));
                         } else if ('A' <= character && character <= 'Z') {
