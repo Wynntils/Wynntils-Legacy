@@ -5,7 +5,6 @@
 package com.wynntils.modules.chat.managers;
 
 import com.wynntils.ModCore;
-import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.PowderManualChapter;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.helpers.TextAction;
@@ -30,6 +29,7 @@ import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.event.ForgeEventFactory;
 import org.apache.logging.log4j.Level;
 
+import javax.xml.soap.Text;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -148,42 +148,33 @@ public class ChatManager {
                 switch (ChatConfig.INSTANCE.translateCondition) {
                     case always:
                         condition = true;
+                        break;
                     case discovery:
                         if (QuestManager.getCurrentDiscoveries().isEmpty()) QuestManager.updateAnalysis(EnumSet.of(AnalysePosition.DISCOVERIES, AnalysePosition.SECRET_DISCOVERIES), true, true);
 
                         if (StringUtils.hasWynnic(untranslated.getUnformattedText())) {
                             condition = QuestManager.getCurrentDiscoveries().stream()
-                                    .map(DiscoveryInfo::getName)
+                                    .map(DiscoveryInfo::getName).map(TextFormatting::getTextWithoutFormattingCodes)
                                     .collect(Collectors.toList()).contains("Wynn Plains Monument");
-
-                            for (DiscoveryInfo info : QuestManager.getCurrentDiscoveries()) {
-                                Reference.LOGGER.log(Level.ALL, info.getName());
-                            }
-                        }
-                        else if (StringUtils.hasGavellian(untranslated.getUnformattedText())) {
+                        } else if (StringUtils.hasGavellian(untranslated.getUnformattedText())) {
                             condition = QuestManager.getCurrentDiscoveries().stream()
-                                    .map(DiscoveryInfo::getName)
+                                    .map(DiscoveryInfo::getName).map(TextFormatting::getTextWithoutFormattingCodes)
                                     .collect(Collectors.toList()).contains("Ne du Valeos du Ellach");
-
-                            for (DiscoveryInfo info : QuestManager.getCurrentDiscoveries()) {
-                                Reference.LOGGER.log(Level.ALL, info.getName());
-                            }
                         }
 
                         break;
                     case book:
                         if (StringUtils.hasWynnic(untranslated.getUnformattedText())) {
                             for (Slot slot : ModCore.mc().player.inventoryContainer.inventorySlots) {
-                                condition = slot.getStack().getDisplayName().equals("Ancient Wynnic Transcriber") && slot.getStack().getItem() == Items.ENCHANTED_BOOK;
+                                condition = TextFormatting.getTextWithoutFormattingCodes(slot.getStack().getDisplayName()).equals("Ancient Wynnic Transcriber") && slot.getStack().getItem() == Items.ENCHANTED_BOOK;
 
                                 if (condition) {
                                     break;
                                 }
                             }
-                        }
-                        else if (StringUtils.hasGavellian(untranslated.getUnformattedText())) {
+                        } else if (StringUtils.hasGavellian(untranslated.getUnformattedText())) {
                             for (Slot slot : ModCore.mc().player.inventoryContainer.inventorySlots) {
-                                condition = slot.getStack().getDisplayName().equals("High Gavellian Transcriber") && slot.getStack().getItem() == Items.ENCHANTED_BOOK;
+                                condition = TextFormatting.getTextWithoutFormattingCodes(slot.getStack().getDisplayName()).equals("High Gavellian Transcriber") && slot.getStack().getItem() == Items.ENCHANTED_BOOK;
 
                                 if (condition) {
                                     break;
@@ -206,14 +197,15 @@ public class ChatManager {
                         if (!translated.getUnformattedText().equals(untranslated.getUnformattedText())) {
                             untranslated.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, translated));
                         }
+
                         in.appendSibling(untranslated);
                     }
-                }
-                else {
+                } else {
                     untranslated.getSiblings().clear();
                     if (!translated.getUnformattedText().equals(untranslated.getUnformattedText())) {
                         untranslated.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,  new TextComponentString(TextFormatting.GRAY + "You don't know this language!")));
                     }
+
                     in.appendSibling(untranslated);
                 }
             }
@@ -357,6 +349,8 @@ public class ChatManager {
             component.getSiblings().clear();
 
             String currentNonTranslated = "";
+            //oldText is the untranslated component that is being built
+            //newText is the translated component that is being built
             StringBuilder oldText = new StringBuilder();
             StringBuilder newText = new StringBuilder();
             StringBuilder number = new StringBuilder();
@@ -364,13 +358,13 @@ public class ChatManager {
             for (char character : component.getUnformattedText().toCharArray()) {
                 if (StringUtils.isWynnicNumber(character)) {
 
-                    if (previousTranslated && language == IngameLanguage.WYNNIC) {
+                    if (previousTranslated) {
                         oldText.append(currentNonTranslated);
                         newText.append(currentNonTranslated);
                         currentNonTranslated = "";
-                    } else {
-                        //If not previous translated or the language is different
-                        language = IngameLanguage.WYNNIC;
+                    }
+
+                    if (!previousTranslated || language != IngameLanguage.WYNNIC) {
                         previousTranslated = true;
 
                         ITextComponent oldComponent = new TextComponentString(oldText.toString());
@@ -379,11 +373,14 @@ public class ChatManager {
 
                         ITextComponent newComponent = new TextComponentString(newText.toString());
                         newComponent.setStyle(component.getStyle().createDeepCopy());
+                        if (language.getFormat() != null) newComponent.getStyle().setColor(language.getFormat());
                         translatedComponents.add(newComponent);
 
+                        language = IngameLanguage.WYNNIC;
                         oldText = new StringBuilder();
                         newText = new StringBuilder();
                     }
+
                     number.append(character);
                 } else {
                     if (!number.toString().isEmpty()) {
@@ -393,13 +390,14 @@ public class ChatManager {
                     }
 
                     if (StringUtils.isWynnic(character)) {
-                        if (previousTranslated && language == IngameLanguage.WYNNIC) {
+                        if (previousTranslated) {
                             newText.append(currentNonTranslated);
                             oldText.append(currentNonTranslated);
                             currentNonTranslated = "";
-                        } else {
+                        }
+
+                        if (!previousTranslated || language != IngameLanguage.WYNNIC) {
                             previousTranslated = true;
-                            language = IngameLanguage.WYNNIC;
 
                             ITextComponent oldComponent = new TextComponentString(oldText.toString());
                             oldComponent.setStyle(component.getStyle().createDeepCopy());
@@ -407,8 +405,10 @@ public class ChatManager {
 
                             ITextComponent newComponent = new TextComponentString(newText.toString());
                             newComponent.setStyle(component.getStyle().createDeepCopy());
+                            if (language.getFormat() != null) newComponent.getStyle().setColor(language.getFormat());
                             translatedComponents.add(newComponent);
 
+                            language = IngameLanguage.WYNNIC;
                             oldText = new StringBuilder();
                             newText = new StringBuilder();
                         }
@@ -424,13 +424,14 @@ public class ChatManager {
                         newText.append(englishVersion);
 
                     } else if (StringUtils.isGavellian(character)) {
-                        if (previousTranslated && language == IngameLanguage.GAVELLIAN) {
+                        if (previousTranslated) {
                             newText.append(currentNonTranslated);
                             oldText.append(currentNonTranslated);
                             currentNonTranslated = "";
-                        } else {
+                        }
+
+                        if (!previousTranslated || language != IngameLanguage.GAVELLIAN) {
                             previousTranslated = true;
-                            language = IngameLanguage.GAVELLIAN;
 
                             ITextComponent oldComponent = new TextComponentString(oldText.toString());
                             oldComponent.setStyle(component.getStyle().createDeepCopy());
@@ -438,11 +439,14 @@ public class ChatManager {
 
                             ITextComponent newComponent = new TextComponentString(newText.toString());
                             newComponent.setStyle(component.getStyle().createDeepCopy());
+                            if (language.getFormat() != null) newComponent.getStyle().setColor(language.getFormat());
                             translatedComponents.add(newComponent);
 
+                            language = IngameLanguage.GAVELLIAN;
                             oldText = new StringBuilder();
                             newText = new StringBuilder();
                         }
+
                         String englishVersion = StringUtils.translateCharacterFromGavellian(character);
                         if (capital && englishVersion.matches("[a-z]")) {
                             englishVersion = Character.toString(Character.toUpperCase(englishVersion.charAt(0)));
@@ -471,6 +475,7 @@ public class ChatManager {
 
                             ITextComponent newComponent = new TextComponentString(newText.toString());
                             newComponent.setStyle(component.getStyle().createDeepCopy());
+                            if (language.getFormat() != null) newComponent.getStyle().setColor(language.getFormat());
                             translatedComponents.add(newComponent);
 
                             oldText = new StringBuilder(currentNonTranslated);
@@ -504,11 +509,11 @@ public class ChatManager {
 
             ITextComponent oldComponent = new TextComponentString(oldText.toString());
             oldComponent.setStyle(component.getStyle().createDeepCopy());
+            untranslatedComponents.add(oldComponent);
 
             ITextComponent newComponent = new TextComponentString(newText.toString());
             newComponent.setStyle(component.getStyle().createDeepCopy());
-
-            untranslatedComponents.add(oldComponent);
+            if (language.getFormat() != null) newComponent.getStyle().setColor(language.getFormat());
             translatedComponents.add(newComponent);
 
             //if found, capitalize
@@ -981,9 +986,19 @@ public class ChatManager {
     }
 
     private enum IngameLanguage {
-        NORMAL,
-        WYNNIC,
-        GAVELLIAN;
+        NORMAL(null),
+        WYNNIC(TextFormatting.GREEN),
+        GAVELLIAN(TextFormatting.DARK_PURPLE);
+
+        private final TextFormatting format;
+
+        IngameLanguage(TextFormatting format) {
+            this.format = format;
+        }
+
+        public TextFormatting getFormat() {
+            return format;
+        }
     }
 
 }
