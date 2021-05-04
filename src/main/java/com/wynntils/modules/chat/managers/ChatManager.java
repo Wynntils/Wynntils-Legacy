@@ -26,10 +26,7 @@ import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.*;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
-import net.minecraftforge.event.ForgeEventFactory;
-import org.apache.logging.log4j.Level;
 
-import javax.xml.soap.Text;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
