@@ -41,7 +41,6 @@ public class ItemSpecificationOverlay implements Listener {
             if (stack.isEmpty() || !stack.hasDisplayName()) continue; // display name also checks for tag compound
 
             List<String> lore = ItemUtils.getLore(stack);
-            if (lore.isEmpty()) continue;
             String name = StringUtils.normalizeBadString(stack.getDisplayName());
 
             // name and lore fixing
@@ -91,40 +90,48 @@ public class ItemSpecificationOverlay implements Listener {
 
             if (UtilitiesConfig.Items.INSTANCE.keySpecification) {
                 Pattern dungeonKey = Pattern.compile("§6(.*) Key");
-                Matcher m3 = dungeonKey.matcher(name);
-                if (m3.find() && lore.get(0).equals("§7Grants access to the")) {
-                    destinationName = m3.group(1).substring(0, 1);
+                Matcher m = dungeonKey.matcher(name);
+                if (m.find() && lore.get(0).equals("§7Grants access to the")) {
+                    destinationName = m.group(1).substring(0, 1);
                     color = MinecraftChatColors.GOLD;
                 }
 
-                Pattern corruptedDungeonKey = Pattern.compile("§4(?:Broken )?Corrupted (.*) Key");
-                Matcher m5 = corruptedDungeonKey.matcher(name);
-                if (m5.find() && (lore.get(0).equals("§7Grants access to the") || lore.get(0).equals("§7Use this item at the"))) {
-                    destinationName = m5.group(1).substring(0, 1);
+                Pattern brokenDungeonKey = Pattern.compile("Broken (.*) Key");
+                Matcher m2 = brokenDungeonKey.matcher(name);
+                if (m2.find()) {
+                    destinationName = m2.group(1).substring(0, 1);
+                    color = MinecraftChatColors.DARK_RED;
+                }
+
+                // I'm not sure if this happens anymore, but keep it for now
+                Pattern corruptedDungeonKey = Pattern.compile("§4(?:Broken )?(?:Corrupted )?(.*) Key");
+                Matcher m3 = corruptedDungeonKey.matcher(name);
+                if (m3.find()) {
+                    destinationName = m3.group(1).substring(0, 1);
                     color = MinecraftChatColors.DARK_RED;
                 }
             }
 
             if (UtilitiesConfig.Items.INSTANCE.transportationSpecification) {
                 Pattern boatPass = Pattern.compile("§b(.*) (?:Boat )?Pass");
-                Matcher m4 = boatPass.matcher(name);
-                if (m4.find() && lore.get(0).equals("§7Use this at the §fV.S.S. Seaskipper")) {
-                    destinationName = m4.group(1).substring(0, 1);
+                Matcher m = boatPass.matcher(name);
+                if (m.find() && lore.get(0).equals("§7Use this at the §fV.S.S. Seaskipper")) {
+                    destinationName = m.group(1).substring(0, 1);
                     color = MinecraftChatColors.BLUE;
                 }
 
                 Pattern cityTeleport = Pattern.compile("^§b(.*) Teleport Scroll$");
-                Matcher m = cityTeleport.matcher(name);
-                if (m.find()) {
-                    destinationName = m.group(1);
+                Matcher m2 = cityTeleport.matcher(name);
+                if (m2.find()) {
+                    destinationName = m2.group(1);
                     if (destinationName.equals("Dungeon")) {
                         color = MinecraftChatColors.GOLD;
                         for (String loreLine : lore) {
                             Pattern dungeonTeleport = Pattern.compile("§3- §7Teleports to: §f(.*)");
-                            Matcher m2 = dungeonTeleport.matcher(StringUtils.normalizeBadString(loreLine));
-                            if (m2.find()) {
+                            Matcher m3 = dungeonTeleport.matcher(StringUtils.normalizeBadString(loreLine));
+                            if (m3.find()) {
                                 // Make sure we print "F" for "the Forgery"
-                                destinationName = m2.group(1).replace("the ", "");
+                                destinationName = m3.group(1).replace("the ", "");
                                 break;
                             }
                         }
