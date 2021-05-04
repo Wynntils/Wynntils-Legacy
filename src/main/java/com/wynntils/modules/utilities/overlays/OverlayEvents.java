@@ -38,6 +38,8 @@ import java.util.EnumMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
+
 import static net.minecraft.util.text.TextFormatting.*;
 
 public class OverlayEvents implements Listener {
@@ -331,9 +333,9 @@ public class OverlayEvents implements Listener {
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectOther) {
-            if (messageText.matches("You still have \\d+ unused skill points! Click with your compass to use them!")) {
+            if (messageText.matches("You have \\d+ unused Skill Points! Right-Click while holding your compass to use them!")) {
                 String[] res = messageText.split(" ");
-                GameUpdateOverlay.queueMessage(YELLOW + res[3] + GOLD + " skill points available.");
+                GameUpdateOverlay.queueMessage(YELLOW + res[2] + GOLD + " skill points available.");
                 e.setCanceled(true);
                 return;
             } else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} is now level \\d+")) {
@@ -523,32 +525,31 @@ public class OverlayEvents implements Listener {
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectLoginFriend) {
-            // Not sure on the nether server format -Bedo
-            if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has logged into server (WC|HB|WAR|N)\\d+ as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter|Shaman|Skyseer)À?") && formattedText.startsWith(GREEN.toString())) {
-                String[] res = messageText.split(" ");
-                if (res.length == 9) {
-                    if (res[8].equals("ArcherÀ")) res[8] = "Shaman";
-                    GameUpdateOverlay.queueMessage(GREEN + "→ " + DARK_GREEN + res[0] + " [" + GREEN + res[5] + DARK_GREEN + "/" + GREEN + res[8] + DARK_GREEN + "]");
-                } else if (res.length == 10) {
-                    GameUpdateOverlay.queueMessage(GREEN + "→ " + DARK_GREEN + res[0] + " [" + GREEN + res[5] + DARK_GREEN + "/" + GREEN + res[8] + " " + res[9] + DARK_GREEN + "]");
-                }
+            Pattern login = Pattern.compile("([a-zA-Z0-9_ ]{1,19}) has logged into server ((?:WC|HB|WAR|N)\\d+) as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter|Shaman|Skyseer)À?");
+            Matcher loginMatcher = login.matcher(messageText);
+            if (loginMatcher.matches() && formattedText.startsWith(GREEN.toString())) {
+                String userName = loginMatcher.group(1);
+                String userWorld = loginMatcher.group(2);
+                String userClass = loginMatcher.group(3);
+                if (userClass.equals("ArcherÀ")) userClass = "Shaman";
+                GameUpdateOverlay.queueMessage(GREEN + "→ " + DARK_GREEN + userName + " [" + GREEN + userWorld + DARK_GREEN + "/" + GREEN + userClass + DARK_GREEN + "]");
                 e.setCanceled(true);
                 return;
             } else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} left the game\\.")) {
-                GameUpdateOverlay.queueMessage(DARK_RED + "← " + DARK_GREEN + messageText.split(" ")[0]);
+                GameUpdateOverlay.queueMessage(DARK_RED + "← " + DARK_GREEN + StringUtils.substringBefore(messageText, " left the game"));
                 e.setCanceled(true);
                 return;
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectLoginGuild) {
-            if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has logged into server (WC|HB|WAR)\\d+ as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter|Shaman|Skyseer)À?") && formattedText.startsWith(AQUA.toString())) { // À temp for Shaman
-                String[] res = messageText.split(" ");
-                if (res.length == 9) {
-                    if (res[8].equals("ArcherÀ")) res[8] = "Shaman";  // Temp replace for Shaman (Same changes as above)
-                    GameUpdateOverlay.queueMessage(GREEN + "→ " + DARK_AQUA + res[0] + " [" + AQUA + res[5] + DARK_AQUA + "/" + AQUA + res[8] + DARK_AQUA + "]");
-                } else if (res.length == 10) {
-                    GameUpdateOverlay.queueMessage(GREEN + "→ " + DARK_AQUA + res[0] + " [" + AQUA + res[5] + DARK_AQUA + "/" + AQUA + res[8] + " " + res[9] + DARK_AQUA + "]");
-                }
+            Pattern login = Pattern.compile("([a-zA-Z0-9_ ]{1,19}) has logged into server ((?:WC|HB|WAR|N)\\d+) as an? (Warrior|Knight|Mage|Dark Wizard|Assassin|Ninja|Archer|Hunter|Shaman|Skyseer)À?");
+            Matcher loginMatcher = login.matcher(messageText);
+            if (loginMatcher.matches() && formattedText.startsWith(AQUA.toString())) {
+                String userName = loginMatcher.group(1);
+                String userWorld = loginMatcher.group(2);
+                String userClass = loginMatcher.group(3);
+                if (userClass.equals("ArcherÀ")) userClass = "Shaman";
+                GameUpdateOverlay.queueMessage(GREEN + "→ " + DARK_AQUA + userName + " [" + AQUA + userWorld + DARK_AQUA + "/" + AQUA + userClass + DARK_AQUA + "]");
                 e.setCanceled(true);
                 return;
             }

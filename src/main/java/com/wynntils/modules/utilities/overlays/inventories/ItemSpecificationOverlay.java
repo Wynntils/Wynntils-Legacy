@@ -54,6 +54,8 @@ public class ItemSpecificationOverlay implements Listener {
 
             String destinationName = null;
             CustomColor color = null;
+            int xOffset = 2;
+            float scale = 1f;
 
             if (UtilitiesConfig.Items.INSTANCE.unidentifiedSpecification) {
                 Pattern unidentifiedItem = Pattern.compile("^§.Unidentified (.*)");
@@ -91,14 +93,14 @@ public class ItemSpecificationOverlay implements Listener {
                 Pattern dungeonKey = Pattern.compile("§6(.*) Key");
                 Matcher m3 = dungeonKey.matcher(name);
                 if (m3.find() && lore.get(0).equals("§7Grants access to the")) {
-                    destinationName = m3.group(1);
+                    destinationName = m3.group(1).substring(0, 1);
                     color = MinecraftChatColors.GOLD;
                 }
 
                 Pattern corruptedDungeonKey = Pattern.compile("§4(?:Broken )?Corrupted (.*) Key");
                 Matcher m5 = corruptedDungeonKey.matcher(name);
                 if (m5.find() && (lore.get(0).equals("§7Grants access to the") || lore.get(0).equals("§7Use this item at the"))) {
-                    destinationName = m5.group(1);
+                    destinationName = m5.group(1).substring(0, 1);
                     color = MinecraftChatColors.DARK_RED;
                 }
             }
@@ -107,7 +109,7 @@ public class ItemSpecificationOverlay implements Listener {
                 Pattern boatPass = Pattern.compile("§b(.*) (?:Boat )?Pass");
                 Matcher m4 = boatPass.matcher(name);
                 if (m4.find() && lore.get(0).equals("§7Use this at the §fV.S.S. Seaskipper")) {
-                    destinationName = m4.group(1);
+                    destinationName = m4.group(1).substring(0, 1);
                     color = MinecraftChatColors.BLUE;
                 }
 
@@ -129,18 +131,31 @@ public class ItemSpecificationOverlay implements Listener {
                     } else {
                         color = MinecraftChatColors.AQUA;
                     }
+                    destinationName = destinationName.substring(0, 1);
+                }
+            }
+
+            if (UtilitiesConfig.Items.INSTANCE.amplifierSpecification) {
+                Pattern amp = Pattern.compile("^§bCorkian Amplifier (I{1,3})$");
+                Matcher m = amp.matcher(name);
+                if (m.matches()) {
+                    destinationName = m.group(1);
+                    color = MinecraftChatColors.AQUA;
+                    xOffset = -1;
+                    scale = 0.8f;
                 }
             }
 
             if (destinationName != null) {
-                ScreenRenderer.beginGL(gui.getGuiLeft(), gui.getGuiTop());
+                ScreenRenderer.beginGL((int) (gui.getGuiLeft()/scale), (int) (gui.getGuiTop()/scale));
                 GlStateManager.translate(0, 0, 260);
                 ScreenRenderer r = new ScreenRenderer();
+                GlStateManager.scale(scale, scale, 1);
                 RenderHelper.disableStandardItemLighting();
                 // Make a modifiable copy
                 color = new CustomColor(color);
                 color.setA(0.8f);
-                r.drawString(destinationName.substring(0, 1), s.xPos + 2, s.yPos + 1, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
+                r.drawString(destinationName, (s.xPos + xOffset)/scale, (s.yPos + 1)/scale, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
                 ScreenRenderer.endGL();
             }
         }

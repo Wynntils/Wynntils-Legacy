@@ -17,7 +17,7 @@ public enum SpellType {
 
     BASH(ClassType.WARRIOR, 1, "Bash", "Holy Blast", 6, 0),
     CHARGE(ClassType.WARRIOR, 2, "Charge", "Leap", 4, 0),
-    UPPERCUT(ClassType.WARRIOR, 3, "Uppercut", "Heaven Jolt", 8, 0),
+    UPPERCUT(ClassType.WARRIOR, 3, "Uppercut", "Heaven Jolt", 9, 0),
     WAR_SCREAM(ClassType.WARRIOR, 4, "War Scream", "Cry of the Gods", 7, -1),
 
     HEAL(ClassType.MAGE, 1, "Heal", "Remedy", 8, -1),
