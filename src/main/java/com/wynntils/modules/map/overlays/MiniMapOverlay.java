@@ -250,10 +250,14 @@ public class MiniMapOverlay extends Overlay {
 
                         GlStateManager.popMatrix();
 
-                        if (MapConfig.INSTANCE.showCompassDistance)
+                        if (MapConfig.INSTANCE.compassDistanceType == MapConfig.DistanceMarkerType.ALWAYS ||
+                                MapConfig.INSTANCE.compassDistanceType == MapConfig.DistanceMarkerType.OFF_MAP)
                             drawTextOverlay(this, dx, dz, StringUtils.integerToShortString(Math.round((float)Math.sqrt(distanceSq) / scaleFactor)) + "m");
                     } else if (rendering) {
                         compassIcon.renderAt(this, dx + halfMapSize, dz + halfMapSize, sizeMultiplier, scaleFactor);
+
+                        if (MapConfig.INSTANCE.compassDistanceType == MapConfig.DistanceMarkerType.ALWAYS)
+                            drawTextOverlay(this, dx + halfMapSize, dz + halfMapSize, StringUtils.integerToShortString(Math.round((float)Math.sqrt(distanceSq) / scaleFactor)) + "m");
                     }
                 }
             }
