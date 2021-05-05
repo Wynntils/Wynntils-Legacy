@@ -15,6 +15,7 @@ import com.wynntils.modules.chat.managers.ChatManager;
 import com.wynntils.modules.chat.managers.HeldItemChatManager;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
+import com.wynntils.modules.questbook.events.custom.QuestBookUpdateEvent;
 import com.wynntils.webapi.services.TranslationManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
@@ -114,6 +115,12 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void onLeaveWorld(WynnWorldEvent.Leave e) {
         ChatManager.onLeave();
+        ChatManager.setDiscoveriesLoaded(false);
+    }
+
+    @SubscribeEvent
+    public void onAnalyzeDiscoveries(QuestBookUpdateEvent.Full e) {
+        ChatManager.setDiscoveriesLoaded(true);
     }
 
 }

@@ -5,7 +5,10 @@
 package com.wynntils.modules.chat.managers;
 
 import com.wynntils.ModCore;
+import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.PowderManualChapter;
+import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.helpers.TextAction;
 import com.wynntils.core.utils.objects.Pair;
@@ -72,6 +75,8 @@ public class ChatManager {
     private static final Pattern tradeReg = Pattern.compile("[\\w ]+ would like to trade! Type /trade [\\w ]+ to accept\\.");
     private static final Pattern duelReg = Pattern.compile("[\\w ]+ \\[Lv\\. \\d+] would like to duel! Type /duel [\\w ]+ to accept\\.");
     private static final Pattern coordinateReg = Pattern.compile("(-?\\d{1,5}[ ,]{1,2})(\\d{1,3}[ ,]{1,2})?(-?\\d{1,5})");
+
+    private static boolean discoveriesLoaded = false;
 
     public static ITextComponent processRealMessage(ITextComponent in) {
         if (in == null) return in;
@@ -148,7 +153,27 @@ public class ChatManager {
                         condition = true;
                         break;
                     case discovery:
-                        if (QuestManager.getCurrentDiscoveries().isEmpty()) QuestManager.updateAnalysis(EnumSet.of(AnalysePosition.DISCOVERIES, AnalysePosition.SECRET_DISCOVERIES), true, true);
+                        if (!PlayerInfo.get(CharacterData.class).isLoaded()) {
+                            condition = true;
+                            break;
+                        }
+
+                        if (QuestManager.getCurrentDiscoveries().isEmpty() && !discoveriesLoaded) {
+                            QuestManager.updateAnalysis(EnumSet.of(AnalysePosition.DISCOVERIES, AnalysePosition.SECRET_DISCOVERIES), true, true);
+
+                            Reference.LOGGER.info("Discoveries not loaded, loading them right now just for you!");
+
+                            //wait for the updateAnaylsis to run
+                            long time = Minecraft.getSystemTime();
+                            long timeout = 50000L;
+
+
+                            while (!discoveriesLoaded && Minecraft.getSystemTime() - time < timeout) {
+                                try {
+                                    Thread.sleep(1000);
+                                } catch (Exception ignored) { }
+                            }
+                        }
 
                         if (StringUtils.hasWynnic(untranslated.getUnformattedText())) {
                             condition = QuestManager.getCurrentDiscoveries().stream()
@@ -162,6 +187,11 @@ public class ChatManager {
 
                         break;
                     case book:
+                        if (!PlayerInfo.get(CharacterData.class).isLoaded()) {
+                            condition = true;
+                            break;
+                        }
+
                         if (StringUtils.hasWynnic(untranslated.getUnformattedText())) {
                             for (Slot slot : ModCore.mc().player.inventoryContainer.inventorySlots) {
                                 condition = TextFormatting.getTextWithoutFormattingCodes(slot.getStack().getDisplayName()).equals("Ancient Wynnic Transcriber") && slot.getStack().getItem() == Items.ENCHANTED_BOOK;
@@ -946,6 +976,10 @@ public class ChatManager {
 
         ChatOverlay.getChat().deleteChatLine(WYNN_DIALOGUE_NEW_MESSAGES_ID);
         ChatOverlay.getChat().deleteChatLine(ChatOverlay.WYNN_DIALOGUE_ID);
+    }
+
+    public static void setDiscoveriesLoaded(boolean discoveriesLoaded) {
+        ChatManager.discoveriesLoaded = discoveriesLoaded;
     }
 
     private static class ChapterReader implements Runnable {
