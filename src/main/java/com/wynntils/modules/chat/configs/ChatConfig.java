@@ -80,6 +80,9 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Wynnic/Gavellian Translations", description = "Should Ingame languages such as Wynnic be directly replaced with English translations in chat?\n\n§8If this option is disabled, translation tooltips will appear when hovering over messages with Wynnic/Gavellian.")
     public boolean translateIntoChat = false;
 
+    @Setting(displayName = "Wynnic/Gavellian Colors", description = "Should Wynnic be colored green and Gavellian purple?")
+    public boolean coloredTranslation = false;
+
     @Setting(displayName = "Use brackets for translation", description = "Should text be translated to Wynnic and Gavellian using a button or curly brackets for Wynnic and angle brackets for gavellian?")
     public boolean useBrackets = false;
 

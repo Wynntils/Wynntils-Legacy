@@ -13,6 +13,7 @@ import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.helpers.TextAction;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.chat.configs.ChatConfig;
+import com.wynntils.modules.chat.language.WynncraftLanguage;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.instances.DiscoveryInfo;
@@ -366,7 +367,7 @@ public class ChatManager {
 
         ArrayList<ITextComponent> untranslatedComponents = new ArrayList<>();
         ArrayList<ITextComponent> translatedComponents = new ArrayList<>();
-        IngameLanguage language = IngameLanguage.NORMAL;
+        WynncraftLanguage language = WynncraftLanguage.NORMAL;
 
         if (foundEndTimestamp && !in.getSiblings().get(ChatConfig.INSTANCE.addTimestampsToChat ? 3 : 0).getUnformattedText().contains("/") && !isGuildOrParty) {
             foundStart = true;
@@ -392,7 +393,7 @@ public class ChatManager {
                         currentNonTranslated = "";
                     }
 
-                    if (!previousTranslated || language != IngameLanguage.WYNNIC) {
+                    if (!previousTranslated || language != WynncraftLanguage.WYNNIC) {
                         previousTranslated = true;
 
                         ITextComponent oldComponent = new TextComponentString(oldText.toString());
@@ -404,7 +405,7 @@ public class ChatManager {
                         if (language.getFormat() != null) newComponent.getStyle().setColor(language.getFormat());
                         translatedComponents.add(newComponent);
 
-                        language = IngameLanguage.WYNNIC;
+                        language = WynncraftLanguage.WYNNIC;
                         oldText = new StringBuilder();
                         newText = new StringBuilder();
                     }
@@ -424,7 +425,7 @@ public class ChatManager {
                             currentNonTranslated = "";
                         }
 
-                        if (!previousTranslated || language != IngameLanguage.WYNNIC) {
+                        if (!previousTranslated || language != WynncraftLanguage.WYNNIC) {
                             previousTranslated = true;
 
                             ITextComponent oldComponent = new TextComponentString(oldText.toString());
@@ -436,7 +437,7 @@ public class ChatManager {
                             if (language.getFormat() != null) newComponent.getStyle().setColor(language.getFormat());
                             translatedComponents.add(newComponent);
 
-                            language = IngameLanguage.WYNNIC;
+                            language = WynncraftLanguage.WYNNIC;
                             oldText = new StringBuilder();
                             newText = new StringBuilder();
                         }
@@ -458,7 +459,7 @@ public class ChatManager {
                             currentNonTranslated = "";
                         }
 
-                        if (!previousTranslated || language != IngameLanguage.GAVELLIAN) {
+                        if (!previousTranslated || language != WynncraftLanguage.GAVELLIAN) {
                             previousTranslated = true;
 
                             ITextComponent oldComponent = new TextComponentString(oldText.toString());
@@ -470,7 +471,7 @@ public class ChatManager {
                             if (language.getFormat() != null) newComponent.getStyle().setColor(language.getFormat());
                             translatedComponents.add(newComponent);
 
-                            language = IngameLanguage.GAVELLIAN;
+                            language = WynncraftLanguage.GAVELLIAN;
                             oldText = new StringBuilder();
                             newText = new StringBuilder();
                         }
@@ -514,7 +515,7 @@ public class ChatManager {
                         oldText.append(character);
                         newText.append(character);
 
-                        language = IngameLanguage.NORMAL;
+                        language = WynncraftLanguage.NORMAL;
 
                         if (character != ' ') {
                             capital = false;
@@ -525,7 +526,7 @@ public class ChatManager {
             if (!number.toString().isEmpty() && previousTranslated) {
                 oldText.append(number);
                 newText.append(StringUtils.translateNumberFromWynnic(number.toString()));
-                language = IngameLanguage.WYNNIC;
+                language = WynncraftLanguage.WYNNIC;
 
             }
             if (!currentNonTranslated.isEmpty()) {
@@ -698,25 +699,25 @@ public class ChatManager {
         if (ChatConfig.INSTANCE.useBrackets) {
             if (message.contains("{") || message.contains("<")) {
                 StringBuilder newString = new StringBuilder();
-                IngameLanguage language = IngameLanguage.NORMAL;
+                WynncraftLanguage language = WynncraftLanguage.NORMAL;
                 boolean isNumber = false;
                 boolean invalidNumber = false;
                 int number = 0;
                 StringBuilder oldNumber = new StringBuilder();
                 for (char character : message.toCharArray()) {
                     if (character == '{') {
-                        language = IngameLanguage.WYNNIC;
+                        language = WynncraftLanguage.WYNNIC;
                         isNumber = false;
                         number = 0;
                         oldNumber = new StringBuilder();
                     } else if (character == '<') {
-                        language = IngameLanguage.GAVELLIAN;
+                        language = WynncraftLanguage.GAVELLIAN;
                         isNumber = false;
                         number = 0;
                         oldNumber = new StringBuilder();
-                    } else if ((language == IngameLanguage.WYNNIC && character == '}') || (language == IngameLanguage.GAVELLIAN && character == '>')) {
-                        language = IngameLanguage.NORMAL;
-                    } else if (language == IngameLanguage.WYNNIC) {
+                    } else if ((language == WynncraftLanguage.WYNNIC && character == '}') || (language == WynncraftLanguage.GAVELLIAN && character == '>')) {
+                        language = WynncraftLanguage.NORMAL;
+                    } else if (language == WynncraftLanguage.WYNNIC) {
                         if (Character.isDigit(character) && !invalidNumber) {
                             if (oldNumber.toString().endsWith(".")) {
                                 invalidNumber = true;
@@ -818,7 +819,7 @@ public class ChatManager {
                                 newString.append(character);
                             }
                         }
-                    } else if (language == IngameLanguage.GAVELLIAN) {
+                    } else if (language == WynncraftLanguage.GAVELLIAN) {
                         if ('a' <= character && character <= 'z') {
                             newString.append((char) (character + 9327));
                         } else if ('A' <= character && character <= 'Z') {
@@ -1011,21 +1012,4 @@ public class ChatManager {
         }
 
     }
-
-    private enum IngameLanguage {
-        NORMAL(null),
-        WYNNIC(TextFormatting.GREEN),
-        GAVELLIAN(TextFormatting.DARK_PURPLE);
-
-        private final TextFormatting format;
-
-        IngameLanguage(TextFormatting format) {
-            this.format = format;
-        }
-
-        public TextFormatting getFormat() {
-            return format;
-        }
-    }
-
 }
