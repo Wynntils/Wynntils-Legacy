@@ -63,7 +63,7 @@ public class ChatConfig extends SettingsClass {
     public Presets preset = Presets.vanilla;
 
     @Setting(displayName = "Wynnic/Gavellian Translation Condition", description = "What is the condition for translating Wynnic and Gavellian be translated?\n\n§8Discovery - The discovery for the transcriber has been discovered\n\n§8Book - The transcriber is in the player's inventory", order = 12)
-    public TranslateConditions translateCondition = TranslateConditions.always;//12
+    public TranslateConditions translateCondition = TranslateConditions.always;
 
     @Setting(displayName = "Wynnic/Gavellian Translations", description = "Should Ingame languages such as Wynnic be directly replaced with English translations in chat?\n\n§8If this option is disabled, translation tooltips will appear when hovering over messages with Wynnic/Gavellian.", order = 13)
     public boolean translateIntoChat = false;

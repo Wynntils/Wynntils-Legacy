@@ -18,7 +18,6 @@ import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.events.custom.QuestBookUpdateEvent;
-import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.webapi.services.TranslationManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
@@ -129,8 +128,6 @@ public class ClientEvents implements Listener {
     public void onAnalyzeDiscoveries(QuestBookUpdateEvent.Partial e) {
         if (e.getAnalysed() == AnalysePosition.DISCOVERIES && !ChatManager.getDiscoveriesLoaded()) {
             ChatManager.setDiscoveriesLoaded(true);
-            Reference.LOGGER.info("Discoveries loaded, updating lines");
-            System.out.println("Discoveries loaded, updating lines");
             ChatOverlay.getChat().updateLines(ChatManager.getQueue());
             ChatManager.clearQueue();
         }
