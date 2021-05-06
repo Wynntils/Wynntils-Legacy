@@ -5,7 +5,6 @@
 package com.wynntils.modules.chat.managers;
 
 import com.wynntils.ModCore;
-import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.PowderManualChapter;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
@@ -38,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.List;
+import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -78,6 +78,7 @@ public class ChatManager {
     private static final Pattern coordinateReg = Pattern.compile("(-?\\d{1,5}[ ,]{1,2})(\\d{1,3}[ ,]{1,2})?(-?\\d{1,5})");
 
     private static boolean discoveriesLoaded = false;
+    private static final List<Pair<ITextComponent, Function<ITextComponent, ITextComponent>>> queue = new ArrayList<>();
 
     public static ITextComponent processRealMessage(ITextComponent in) {
         if (in == null) return in;
@@ -161,19 +162,9 @@ public class ChatManager {
 
                         if (QuestManager.getCurrentDiscoveries().isEmpty() && !discoveriesLoaded) {
                             QuestManager.updateAnalysis(EnumSet.of(AnalysePosition.DISCOVERIES, AnalysePosition.SECRET_DISCOVERIES), true, true);
+                            queue.add(new Pair<>(original, ChatManager::processRealMessage));
 
-                            Reference.LOGGER.info("Discoveries not loaded, loading them right now just for you!");
-
-                            //wait for the updateAnaylsis to run
-                            long time = Minecraft.getSystemTime();
-                            long timeout = 50000L;
-
-
-                            while (!discoveriesLoaded && Minecraft.getSystemTime() - time < timeout) {
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (Exception ignored) { }
-                            }
+                            return original;
                         }
 
                         if (StringUtils.hasWynnic(untranslated.getUnformattedText())) {
@@ -982,6 +973,19 @@ public class ChatManager {
     public static void setDiscoveriesLoaded(boolean discoveriesLoaded) {
         ChatManager.discoveriesLoaded = discoveriesLoaded;
     }
+
+    public static boolean getDiscoveriesLoaded() {
+        return ChatManager.discoveriesLoaded;
+    }
+
+    public static List<Pair<ITextComponent, Function<ITextComponent, ITextComponent>>> getQueue() {
+        return queue;
+    }
+
+    public static void clearQueue() {
+        queue.clear();
+    }
+
 
     private static class ChapterReader implements Runnable {
 

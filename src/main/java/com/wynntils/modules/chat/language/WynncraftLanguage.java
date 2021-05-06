@@ -201,7 +201,7 @@ public interface WynncraftLanguage {
 
         @Override
         public TextFormatting getFormat() {
-            return ChatConfig.INSTANCE.coloredTranslation ?  null : TextFormatting.GREEN;
+            return ChatConfig.INSTANCE.coloredTranslation ? TextFormatting.GREEN : null;
         }
     };
 
@@ -218,7 +218,7 @@ public interface WynncraftLanguage {
 
         @Override
         public TextFormatting getFormat() {
-            return ChatConfig.INSTANCE.coloredTranslation ?  null : TextFormatting.DARK_PURPLE;
+            return ChatConfig.INSTANCE.coloredTranslation ? TextFormatting.DARK_PURPLE : null;
         }
     };
 

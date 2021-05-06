@@ -29,6 +29,7 @@ import javax.annotation.Nullable;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class ChatOverlay extends GuiNewChat {
@@ -176,13 +177,13 @@ public class ChatOverlay extends GuiNewChat {
         }
 
         if (chatLineId != 0) {
-            this.updateLine(this.getCurrentTab(), chatComponent, updateCounter, displayOnly, chatLineId, noEvent);
+            this.addLine(this.getCurrentTab(), chatComponent, updateCounter, displayOnly, chatLineId, noEvent);
         } else {
             boolean found = false;
             for (ChatTab tab : TabManager.getAvailableTabs()) {
                 if (tab.isLowPriority() || !tab.regexMatches(chatComponent)) continue;
 
-                updateLine(tab, chatComponent, updateCounter, displayOnly, chatLineId, noEvent);
+                addLine(tab, chatComponent, updateCounter, displayOnly, chatLineId, noEvent);
                 found = true;
             }
 
@@ -190,7 +191,7 @@ public class ChatOverlay extends GuiNewChat {
                 for (ChatTab tab : TabManager.getAvailableTabs()) {
                     if (!tab.isLowPriority() || !tab.regexMatches(chatComponent))
                         continue;
-                    updateLine(tab, chatComponent, updateCounter, displayOnly, chatLineId, noEvent);
+                    addLine(tab, chatComponent, updateCounter, displayOnly, chatLineId, noEvent);
                 }
             }
         }
@@ -198,7 +199,7 @@ public class ChatOverlay extends GuiNewChat {
         if (!noEvent) FrameworkManager.getEventBus().post(new ChatEvent.Post(chatComponent, chatLineId));
     }
 
-    private void updateLine(ChatTab tab, ITextComponent chatComponent, int updateCounter, boolean displayOnly, int chatLineId, boolean noProcessing) {
+    private void addLine(ChatTab tab, ITextComponent chatComponent, int updateCounter, boolean displayOnly, int chatLineId, boolean noProcessing) {
         ITextComponent originalMessage = chatComponent.createCopy();
 
         // message processor
@@ -275,6 +276,48 @@ public class ChatOverlay extends GuiNewChat {
         while (tab.getCurrentMessages().size() > ChatConfig.INSTANCE.chatHistorySize) {
             tab.getCurrentMessages().remove(tab.getCurrentMessages().size() - 1);
         }
+    }
+
+    public void updateLines(List<Pair<ITextComponent, Function<ITextComponent, ITextComponent>>> queue) {
+        //rather unstable function - checks based on string
+        if (queue == null || queue.isEmpty()) return;
+
+        int queueIndex = 0;
+        int messageIndex = 0;
+
+        synchronized (ChatTab.class) {
+            for (ChatTab tab : TabManager.getAvailableTabs()) {
+                List<ChatLine> lines = tab.getCurrentMessages();
+
+                for (int i = 0; messageIndex < lines.size() && queueIndex < queue.size(); i++) {
+                    ChatLine line = lines.get(i);
+
+                    String original = TextFormatting.getTextWithoutFormattingCodes(line.getChatComponent().getUnformattedText());
+                    String check = TextFormatting.getTextWithoutFormattingCodes(queue.get(queueIndex).a.getUnformattedText());
+                    if (original.equals(check)) {
+                        ITextComponent newMessage = queue.get(queueIndex).b.apply(line.getChatComponent());
+                        lines.set(i, new ChatLine(line.getUpdatedCounter(), newMessage, line.getChatLineID()));
+
+                        queueIndex++;
+                        messageIndex = i + 1;
+                    } else if (i == lines.size() - 1) {
+                        //queued message not found
+                        queueIndex++;
+                        i = messageIndex;
+                    }
+                }
+
+
+                queueIndex = 0;
+                messageIndex = 0;
+            }
+        }
+
+
+    }
+
+    public void updateLine(Pair<ITextComponent, Function<ITextComponent, ITextComponent>> line) {
+        updateLines(Collections.singletonList(line));
     }
 
     public void refreshChat() {
