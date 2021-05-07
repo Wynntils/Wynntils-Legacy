@@ -279,7 +279,7 @@ public class ChatOverlay extends GuiNewChat {
     }
 
     public void updateLines(List<Pair<ITextComponent, Function<ITextComponent, ITextComponent>>> queue) {
-        //rather unstable function - checks based on string
+        //rather unstable function - checks based on component, but no unique id to use
         if (queue == null || queue.isEmpty()) return;
 
         int queueIndex = 0;

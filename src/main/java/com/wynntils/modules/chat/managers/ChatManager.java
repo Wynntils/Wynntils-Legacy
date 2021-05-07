@@ -5,6 +5,7 @@
 package com.wynntils.modules.chat.managers;
 
 import com.wynntils.ModCore;
+import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.PowderManualChapter;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
@@ -144,76 +145,106 @@ public class ChatManager {
 
             in = new TextComponentString("");
 
+            boolean translateWynnic = false;
+            boolean translateGavellian = false;
+
+            switch (ChatConfig.INSTANCE.translateCondition) {
+                case always:
+                    translateWynnic = true;
+                    translateGavellian = true;
+                    break;
+                case discovery:
+                    if (!PlayerInfo.get(CharacterData.class).isLoaded()) {
+                        translateWynnic = true;
+                        translateGavellian = true;
+                        break;
+                    }
+
+                    if (QuestManager.getCurrentDiscoveries().isEmpty() && !discoveriesLoaded) {
+                        QuestManager.updateAnalysis(EnumSet.of(AnalysePosition.DISCOVERIES, AnalysePosition.SECRET_DISCOVERIES), true, true);
+                        queue.add(new Pair<>(original, ChatManager::processRealMessage));
+
+                        return original;
+                    }
+
+                    translateWynnic = QuestManager.getCurrentDiscoveries().stream()
+                            .map(DiscoveryInfo::getName).map(TextFormatting::getTextWithoutFormattingCodes)
+                            .collect(Collectors.toList()).contains("Wynn Plains Monument");
+                    translateGavellian = QuestManager.getCurrentDiscoveries().stream()
+                            .map(DiscoveryInfo::getName).map(TextFormatting::getTextWithoutFormattingCodes)
+                            .collect(Collectors.toList()).contains("Ne du Valeos du Ellach");
+
+                    break;
+                case book:
+                    if (!PlayerInfo.get(CharacterData.class).isLoaded()) {
+                        translateWynnic = true;
+                        translateGavellian = true;
+                        break;
+                    }
+
+                    for (Slot slot : ModCore.mc().player.inventoryContainer.inventorySlots) {
+                        if (slot.getStack().getItem() == Items.ENCHANTED_BOOK) {
+                            if (!translateWynnic) {
+                                translateWynnic = TextFormatting.getTextWithoutFormattingCodes(slot.getStack().getDisplayName()).equals("Ancient Wynnic Transcriber");
+                            }
+
+                            if (!translateGavellian) {
+                                translateGavellian = TextFormatting.getTextWithoutFormattingCodes(slot.getStack().getDisplayName()).equals("High Gavellian Transcriber");
+                            }
+                        }
+
+                        if (translateWynnic && translateGavellian) {
+                            break;
+                        }
+                    }
+
+                    break;
+                case never:
+                    translateWynnic = false;
+                    translateGavellian = false;
+                    break;
+            }
+
+            WynncraftLanguage language;
+
             for (int i = 0; i < untranslatedComponents.size(); i++) {
+
                 ITextComponent untranslated = untranslatedComponents.get(i);
                 ITextComponent translated = translatedComponents.get(i);
 
-                boolean condition = false;
+                if (translateWynnic && StringUtils.hasWynnic(untranslated.getUnformattedText())) {
+                    language = WynncraftLanguage.WYNNIC;
 
-                switch (ChatConfig.INSTANCE.translateCondition) {
-                    case always:
-                        condition = true;
-                        break;
-                    case discovery:
-                        if (!PlayerInfo.get(CharacterData.class).isLoaded()) {
-                            condition = true;
-                            break;
-                        }
-
-                        if (QuestManager.getCurrentDiscoveries().isEmpty() && !discoveriesLoaded) {
-                            QuestManager.updateAnalysis(EnumSet.of(AnalysePosition.DISCOVERIES, AnalysePosition.SECRET_DISCOVERIES), true, true);
-                            queue.add(new Pair<>(original, ChatManager::processRealMessage));
-
-                            return original;
-                        }
-
-                        if (StringUtils.hasWynnic(untranslated.getUnformattedText())) {
-                            condition = QuestManager.getCurrentDiscoveries().stream()
-                                    .map(DiscoveryInfo::getName).map(TextFormatting::getTextWithoutFormattingCodes)
-                                    .collect(Collectors.toList()).contains("Wynn Plains Monument");
-                        } else if (StringUtils.hasGavellian(untranslated.getUnformattedText())) {
-                            condition = QuestManager.getCurrentDiscoveries().stream()
-                                    .map(DiscoveryInfo::getName).map(TextFormatting::getTextWithoutFormattingCodes)
-                                    .collect(Collectors.toList()).contains("Ne du Valeos du Ellach");
-                        }
-
-                        break;
-                    case book:
-                        if (!PlayerInfo.get(CharacterData.class).isLoaded()) {
-                            condition = true;
-                            break;
-                        }
-
-                        if (StringUtils.hasWynnic(untranslated.getUnformattedText())) {
-                            for (Slot slot : ModCore.mc().player.inventoryContainer.inventorySlots) {
-                                condition = TextFormatting.getTextWithoutFormattingCodes(slot.getStack().getDisplayName()).equals("Ancient Wynnic Transcriber") && slot.getStack().getItem() == Items.ENCHANTED_BOOK;
-
-                                if (condition) {
-                                    break;
-                                }
-                            }
-                        } else if (StringUtils.hasGavellian(untranslated.getUnformattedText())) {
-                            for (Slot slot : ModCore.mc().player.inventoryContainer.inventorySlots) {
-                                condition = TextFormatting.getTextWithoutFormattingCodes(slot.getStack().getDisplayName()).equals("High Gavellian Transcriber") && slot.getStack().getItem() == Items.ENCHANTED_BOOK;
-
-                                if (condition) {
-                                    break;
-                                }
-                            }
-                        }
-
-                        break;
-                    case never:
-                        condition = false;
-                        break;
+                } else if (translateGavellian && StringUtils.hasGavellian(untranslated.getUnformattedText())) {
+                    language = WynncraftLanguage.GAVELLIAN;
+                }
+                else {
+                    language = WynncraftLanguage.NORMAL;
                 }
 
-                if (condition) {
+                if (language != WynncraftLanguage.NORMAL) {
                     if (ChatConfig.INSTANCE.translateIntoChat) {
                         translated.getSiblings().clear();
                         in.appendSibling(translated);
                     } else {
                         untranslated.getSiblings().clear();
+
+                        //join the next component
+                        while (language != WynncraftLanguage.NORMAL && i + 1 < untranslatedComponents.size() - 1) {
+                            ITextComponent toAdd = untranslatedComponents.get(i + 1);
+                            ITextComponent toHover = translatedComponents.get(i + 1);
+
+                            if ((translateWynnic && StringUtils.hasWynnic(toAdd.getUnformattedText())) || (translateGavellian && StringUtils.hasGavellian(toAdd.getUnformattedText()))) {
+                                toAdd.getSiblings().clear();
+                                toHover.getSiblings().clear();
+                                untranslated.appendSibling(toAdd);
+                                translated.appendSibling(toHover);
+                                i++;
+                            } else {
+                                language = WynncraftLanguage.NORMAL;
+                            }
+                        }
+
                         if (!translated.getUnformattedText().equals(untranslated.getUnformattedText())) {
                             untranslated.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, translated));
                         }
