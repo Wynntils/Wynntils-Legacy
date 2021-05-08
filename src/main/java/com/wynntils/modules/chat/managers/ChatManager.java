@@ -5,7 +5,6 @@
 package com.wynntils.modules.chat.managers;
 
 import com.wynntils.ModCore;
-import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.PowderManualChapter;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
@@ -34,11 +33,9 @@ import net.minecraftforge.event.ForgeEventFactory;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.EnumSet;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -79,10 +76,9 @@ public class ChatManager {
     private static final Pattern coordinateReg = Pattern.compile("(-?\\d{1,5}[ ,]{1,2})(\\d{1,3}[ ,]{1,2})?(-?\\d{1,5})");
 
     private static boolean discoveriesLoaded = false;
-    private static final List<Pair<ITextComponent, Function<ITextComponent, ITextComponent>>> queue = new ArrayList<>();
 
-    public static ITextComponent processRealMessage(ITextComponent in) {
-        if (in == null) return in;
+    public static Pair<ITextComponent, Pair<Supplier<Boolean>, Function<ITextComponent, ITextComponent>>> processRealMessage(ITextComponent in) {
+        if (in == null) return new Pair<>(in, null);
         ITextComponent original = in.createCopy();
 
         // Reorganizing
@@ -99,7 +95,7 @@ public class ChatManager {
         // language translation
         if (TranslationConfig.INSTANCE.enableTextTranslation) {
             boolean wasTranslated = translateMessage(in);
-            if (wasTranslated && !TranslationConfig.INSTANCE.keepOriginal) return null;
+            if (wasTranslated && !TranslationConfig.INSTANCE.keepOriginal) return new Pair<>(null, null);
         }
 
         // timestamps
@@ -162,9 +158,9 @@ public class ChatManager {
 
                     if (QuestManager.getCurrentDiscoveries().isEmpty() && !discoveriesLoaded) {
                         QuestManager.updateAnalysis(EnumSet.of(AnalysePosition.DISCOVERIES, AnalysePosition.SECRET_DISCOVERIES), true, true);
-                        queue.add(new Pair<>(original, ChatManager::processRealMessage));
+                        //queue.add(new Pair<>(original, ChatManager::processRealMessage));
 
-                        return original;
+                        return new Pair<>(original, new Pair<>(ChatManager::getDiscoveriesLoaded, s -> ChatManager.processRealMessage(s).a));
                     }
 
                     translateWynnic = QuestManager.getCurrentDiscoveries().stream()
@@ -230,7 +226,7 @@ public class ChatManager {
                         untranslated.getSiblings().clear();
 
                         //join the next component
-                        while (language != WynncraftLanguage.NORMAL && i + 1 < untranslatedComponents.size() - 1) {
+                        while (language != WynncraftLanguage.NORMAL && i + 1 < untranslatedComponents.size()) {
                             ITextComponent toAdd = untranslatedComponents.get(i + 1);
                             ITextComponent toHover = translatedComponents.get(i + 1);
 
@@ -376,7 +372,7 @@ public class ChatManager {
 
         }
 
-        return in;
+        return new Pair<>(in, null);
     }
 
     //returns a list of untranslated components and translated components
@@ -1008,15 +1004,6 @@ public class ChatManager {
     public static boolean getDiscoveriesLoaded() {
         return ChatManager.discoveriesLoaded;
     }
-
-    public static List<Pair<ITextComponent, Function<ITextComponent, ITextComponent>>> getQueue() {
-        return queue;
-    }
-
-    public static void clearQueue() {
-        queue.clear();
-    }
-
 
     private static class ChapterReader implements Runnable {
 

@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 public class ChatTab implements Comparable<ChatTab> {
@@ -34,6 +36,9 @@ public class ChatTab implements Comparable<ChatTab> {
     transient ITextComponent lastMessage = null;
     transient int lastAmount = 2;
     transient int groupId = 0;
+
+    //queue
+    transient HashMap<Integer, Pair<Supplier<Boolean>, Function<ITextComponent, ITextComponent>>> queue = new HashMap<>();
 
     @SuppressWarnings("unused")
     private ChatTab() {}
@@ -95,6 +100,10 @@ public class ChatTab implements Comparable<ChatTab> {
 
     public int getOrderNb() {
         return orderNb;
+    }
+
+    public HashMap<Integer, Pair<Supplier<Boolean>, Function<ITextComponent, ITextComponent>>> getQueue() {
+        return queue;
     }
 
     public void updateLastMessageAndAmount(ITextComponent lastMessage, int lastAmount) {

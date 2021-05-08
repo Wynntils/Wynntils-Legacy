@@ -128,8 +128,7 @@ public class ClientEvents implements Listener {
     public void onAnalyzeDiscoveries(QuestBookUpdateEvent.Partial e) {
         if (e.getAnalysed() == AnalysePosition.DISCOVERIES && !ChatManager.getDiscoveriesLoaded()) {
             ChatManager.setDiscoveriesLoaded(true);
-            ChatOverlay.getChat().updateLines(ChatManager.getQueue());
-            ChatManager.clearQueue();
+            ChatOverlay.getChat().processQueues();
         }
     }
 

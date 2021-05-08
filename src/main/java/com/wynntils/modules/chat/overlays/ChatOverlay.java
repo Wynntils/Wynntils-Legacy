@@ -28,8 +28,10 @@ import org.apache.logging.log4j.Logger;
 import javax.annotation.Nullable;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class ChatOverlay extends GuiNewChat {
@@ -203,8 +205,20 @@ public class ChatOverlay extends GuiNewChat {
         ITextComponent originalMessage = chatComponent.createCopy();
 
         // message processor
-        ITextComponent displayedMessage = noProcessing ? originalMessage : ChatManager.processRealMessage(originalMessage.createCopy());
+        ITextComponent displayedMessage;
+        Pair<Supplier<Boolean>, Function<ITextComponent, ITextComponent>> queueInfo = null;
+        if (noProcessing) {
+            displayedMessage = originalMessage;
+        }
+        else {
+            Pair<ITextComponent, Pair<Supplier<Boolean>, Function<ITextComponent, ITextComponent>>> result = ChatManager.processRealMessage(originalMessage.createCopy());
+
+            displayedMessage =  result.a;
+            queueInfo = result.b;
+        }
+
         if (displayedMessage == null) return;
+
 
         // spam filter
         if (!noProcessing && tab.getLastMessage() != null) {
@@ -245,6 +259,8 @@ public class ChatOverlay extends GuiNewChat {
                         }
                         tab.updateLastMessageAndAmount(originalMessage, tab.getLastAmount() + 1);
                         refreshChat();
+
+                        if (queueInfo != null) tab.getQueue().put(thisGroupId, new Pair<>(queueInfo.a, queueInfo.b));
                         return;
                     }
                 } catch (Exception ex) { ex.printStackTrace(); }
@@ -273,51 +289,112 @@ public class ChatOverlay extends GuiNewChat {
             tab.addMessage(noProcessing ? new ChatLine(updateCounter, itextcomponent, chatLineId) : new GroupedChatLine(updateCounter, itextcomponent, chatLineId, thisGroupId));
         }
 
+        if (queueInfo != null) tab.getQueue().put(thisGroupId, new Pair<>(queueInfo.a, queueInfo.b));
+
         while (tab.getCurrentMessages().size() > ChatConfig.INSTANCE.chatHistorySize) {
             tab.getCurrentMessages().remove(tab.getCurrentMessages().size() - 1);
         }
     }
 
-    public void updateLines(List<Pair<ITextComponent, Function<ITextComponent, ITextComponent>>> queue) {
-        //rather unstable function - checks based on component, but no unique id to use
+    public void processQueue(ChatTab tab) {
+        updateLines(tab, tab.getQueue());
+    }
+
+    public void processQueues() {
+        for (ChatTab tab : TabManager.getAvailableTabs()) {
+            processQueue(tab);
+        }
+    }
+
+    public void updateLines(ChatTab tab, HashMap<Integer, Pair<Supplier<Boolean>, Function<ITextComponent, ITextComponent>>> queue) {
         if (queue == null || queue.isEmpty()) return;
 
         int queueIndex = 0;
-        int messageIndex = 0;
 
-        synchronized (ChatTab.class) {
-            for (ChatTab tab : TabManager.getAvailableTabs()) {
-                List<ChatLine> lines = tab.getCurrentMessages();
+        //remove unwanted ones
+        List<Integer> keys = queue.keySet().stream()
+                .filter(s -> queue.get(s).a.get())
+                .sorted()
+                .collect(Collectors.toList());
 
-                for (int i = 0; messageIndex < lines.size() && queueIndex < queue.size(); i++) {
-                    ChatLine line = lines.get(i);
+        boolean found = false;
+        ITextComponent combined = null;
 
-                    String original = TextFormatting.getTextWithoutFormattingCodes(line.getChatComponent().getUnformattedText());
-                    String check = TextFormatting.getTextWithoutFormattingCodes(queue.get(queueIndex).a.getUnformattedText());
-                    if (original.equals(check)) {
-                        ITextComponent newMessage = queue.get(queueIndex).b.apply(line.getChatComponent());
-                        lines.set(i, new ChatLine(line.getUpdatedCounter(), newMessage, line.getChatLineID()));
+        List<ChatLine> lines = tab.getCurrentMessages();
 
-                        queueIndex++;
-                        messageIndex = i + 1;
-                    } else if (i == lines.size() - 1) {
-                        //queued message not found
-                        queueIndex++;
-                        i = messageIndex;
+        for (int i = lines.size() - 1; i > -1 && queueIndex < queue.size(); i--) {
+            if (!(lines.get(i) instanceof GroupedChatLine)) continue;
+            GroupedChatLine line = (GroupedChatLine) lines.get(i);
+
+            int original = line.getGroupId();
+            int check = keys.get(queueIndex);
+
+            if (original > check) {
+                if (found) {
+                    //Add the line formed from combining the groups
+                    ITextComponent newMessage = queue.get(check).b.apply(combined);
+
+                    int chatWidth = MathHelper.floor((float) getChatWidth() / getChatScale());
+                    List<ITextComponent> list = GuiUtilRenderComponents.splitText(newMessage, chatWidth, mc.fontRenderer, false, false);
+                    boolean flag = tab == getCurrentTab() && getChatOpen();
+                    for (ITextComponent itextcomponent : list) {
+                        if (flag && scrollPos > 0) {
+                            isScrolled = true;
+                            scroll(1);
+                        }
+                        lines.add(i, new GroupedChatLine(line.getUpdatedCounter(), itextcomponent, line.getChatLineID(), check));
                     }
+
+                    combined = null;
+                    found = false;
                 }
 
+                while (original > check && queueIndex < queue.size() - 1) {
+                    check = keys.get(++queueIndex);
+                }
+            }
 
-                queueIndex = 0;
-                messageIndex = 0;
+            if (original == check) {
+                if (found) {
+                    combined.appendSibling(line.getChatComponent());
+                } else {
+                    combined = line.getChatComponent();
+                    found = true;
+                }
+
+                //remove line so it can be re-added later
+                lines.remove(i);
+            }
+
+            //run at the very end of the for loop - add the line
+            if (found && (queueIndex == queue.size() - 1 || i == 0)) {
+                System.out.println(combined);
+                ITextComponent newMessage = queue.get(check).b.apply(combined);
+                int chatWidth = MathHelper.floor((float) getChatWidth() / getChatScale());
+                List<ITextComponent> list = GuiUtilRenderComponents.splitText(newMessage, chatWidth, mc.fontRenderer, false, false);
+                boolean flag = tab == getCurrentTab() && getChatOpen();
+                for (ITextComponent itextcomponent : list) {
+                    if (flag && scrollPos > 0) {
+                        isScrolled = true;
+                        scroll(1);
+                    }
+                    lines.add(i, new GroupedChatLine(line.getUpdatedCounter(), itextcomponent, line.getChatLineID(), check));
+                }
+
+                combined = null;
+                found = false;
             }
         }
 
-
+        for (int key : keys) {
+            queue.remove(key);
+        }
     }
 
-    public void updateLine(Pair<ITextComponent, Function<ITextComponent, ITextComponent>> line) {
-        updateLines(Collections.singletonList(line));
+
+    public void updateLine(ChatTab tab, int id, Function<ITextComponent, ITextComponent> change) {
+        updateLines(tab, new HashMap<Integer, Pair<Supplier<Boolean>, Function<ITextComponent, ITextComponent>>>()
+            {{ put(id, new Pair<>(() -> true, change)); }});
     }
 
     public void refreshChat() {
