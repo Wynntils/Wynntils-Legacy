@@ -40,9 +40,12 @@ import net.minecraft.client.gui.inventory.GuiChest;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.gui.inventory.GuiScreenHorseInventory;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.client.CPacketClientSettings;
 import net.minecraft.network.play.client.CPacketHeldItemChange;
@@ -125,93 +128,136 @@ public class ClientEvents implements Listener {
     private GatheringBake bakeStatus = null;
 
     @SubscribeEvent
-    public void gatherAndDamageDetection(PacketEvent<SPacketEntityMetadata> e) {
+    public void findLabels(PacketEvent<SPacketEntityMetadata> e) {
         // makes this method always be called in main thread
         if (!Minecraft.getMinecraft().isCallingFromMinecraftThread()) {
-            Minecraft.getMinecraft().addScheduledTask(() -> gatherAndDamageDetection(e));
+            Minecraft.getMinecraft().addScheduledTask(() -> findLabels(e));
             return;
         }
 
         if (e.getPacket().getDataManagerEntries() == null || e.getPacket().getDataManagerEntries().isEmpty()) return;
         Entity i = Minecraft.getMinecraft().world.getEntityByID(e.getPacket().getEntityId());
-        if (!(i instanceof EntityArmorStand) || !i.hasCustomName()) return;
+        if (i == null) return;
 
-        for (EntityDataManager.DataEntry<?> next : e.getPacket().getDataManagerEntries()) {
-            if (!(next.getValue() instanceof String)) continue;
-
-            String value = (String) next.getValue();
-            if (value == null || value.isEmpty() || value.contains("Combat") || value.contains("Guild")) continue;
-            value = TextFormatting.getTextWithoutFormattingCodes(value);
-
-            Matcher m = GATHERING_STATUS.matcher(value);
-            if (m.matches()) { // first, gathering status
-                if (bakeStatus == null || bakeStatus.isInvalid()) bakeStatus = new GatheringBake();
-
-                bakeStatus.setXpAmount(Double.parseDouble(m.group(1)));
-                bakeStatus.setType(ProfessionType.valueOf(m.group(2).toUpperCase()));
-                bakeStatus.setXpPercentage(Double.parseDouble(m.group(3)));
-            } else if ((m = GATHERING_RESOURCE.matcher(value)).matches()) { // second, gathering resource
-                if (bakeStatus == null || bakeStatus.isInvalid()) bakeStatus = new GatheringBake();
-
-                String resourceType = m.group(2).contains(" ") ? m.group(2).split(" ")[0] : m.group(2);
-
-                bakeStatus.setMaterialAmount(Integer.parseInt(m.group(1)));
-                bakeStatus.setMaterial(GatheringMaterial.valueOf(resourceType.toUpperCase()));
-            } else { // third, damage detection
-                Map<DamageType, Integer> damageList = new HashMap<>();
-
-                m = MOB_DAMAGE.matcher(value);
-                while (m.find()) {
-                    damageList.put(DamageType.fromSymbol(m.group(2)), Integer.valueOf(m.group(1)));
+        if (i instanceof EntityItemFrame) {
+            // We can't access the proper index so loop through all entries
+            for (EntityDataManager.DataEntry<?> next : e.getPacket().getDataManagerEntries()) {
+                if ((next.getValue() instanceof ItemStack)) {
+                    ItemStack item = (ItemStack)next.getValue();
+                    if (item.hasDisplayName()) {
+                        FrameworkManager.getEventBus().post(new LocationEvent.LabelFoundEvent(item.getDisplayName(), new Location(i), i));
+                    }
+                    return;
                 }
+            }
+            return;
+        } else if (i instanceof EntityLiving) {
+            // We can't access the proper index so loop through all entries
+            for (EntityDataManager.DataEntry<?> next : e.getPacket().getDataManagerEntries()) {
+                if (!(next.getValue() instanceof String)) continue;
 
-                if (damageList.isEmpty()) return;
+                String value = (String) next.getValue();
+                if (value == null || value.isEmpty()) return;
 
-                FrameworkManager.getEventBus().post(new GameEvent.DamageEntity(damageList, i));
+                FrameworkManager.getEventBus().post(new LocationEvent.EntityLabelFoundEvent(value, new Location(i), (EntityLiving) i));
                 return;
             }
 
-            if (bakeStatus == null || !bakeStatus.isReady()) return;
+            return;
+        } else if (i instanceof EntityArmorStand) {
+            // We can't access the proper index so loop through all entries
+            for (EntityDataManager.DataEntry<?> next : e.getPacket().getDataManagerEntries()) {
+                if (!(next.getValue() instanceof String)) continue;
 
-            Location loc = new Location(i);
+                String value = (String) next.getValue();
+                if (value == null || value.isEmpty()) return;
 
-            // this tries to find a valid barrier that is the center of the three
-            // below the center block there's a barrier, which is what we are looking for
-            // it ALWAYS have 4 blocks at it sides that we use to detect it
-            if (bakeStatus.getType() == ProfessionType.WOODCUTTING) {
-               Iterable<BlockPos> positions = BlockPos.getAllInBox(
-                        i.getPosition().subtract(new Vec3i(-5, -3, -5)),
-                        i.getPosition().subtract(new Vec3i(+5, +3, +5)));
-
-               for (BlockPos position : positions) {
-                   if (i.world.isAirBlock(position)) continue;
-
-                   IBlockState b = i.world.getBlockState(position);
-                   if (b.getMaterial() == Material.AIR || b.getMaterial() != Material.BARRIER) continue;
-
-                   // checks if the barrier have blocks around itself
-                   BlockPos north = position.north();
-                   if (i.world.isAirBlock(position.north())
-                           || i.world.isAirBlock(position.south())
-                           || i.world.isAirBlock(position.east())
-                           || i.world.isAirBlock(position.west())) continue;
-
-                   loc = new Location(position);
-                   break;
-               }
+                FrameworkManager.getEventBus().post(new LocationEvent.LabelFoundEvent(value, new Location(i), i));
+                return;
             }
-
-            FrameworkManager.getEventBus().post(
-                    new GameEvent.ResourceGather(bakeStatus.getType(), bakeStatus.getMaterial(),
-                            bakeStatus.getMaterialAmount(), bakeStatus.getXpAmount(), bakeStatus.getXpPercentage(), loc)
-            );
-
-            bakeStatus = null;
-            break;
         }
     }
 
-    long lastPosRequest;
+    @SubscribeEvent
+    public void checkGatherLabelFound(LocationEvent.LabelFoundEvent event) {
+        String value = event.getLabel();
+        Location loc = event.getLocation();
+        Entity i = event.getEntity();
+
+        if (value.contains("Combat") || value.contains("Guild")) return;
+        value = TextFormatting.getTextWithoutFormattingCodes(value);
+
+        Matcher m = GATHERING_STATUS.matcher(value);
+        if (m.matches()) { // first, gathering status
+            if (bakeStatus == null || bakeStatus.isInvalid()) bakeStatus = new GatheringBake();
+
+            bakeStatus.setXpAmount(Double.parseDouble(m.group(1)));
+            bakeStatus.setType(ProfessionType.valueOf(m.group(2).toUpperCase()));
+            bakeStatus.setXpPercentage(Double.parseDouble(m.group(3)));
+        } else if ((m = GATHERING_RESOURCE.matcher(value)).matches()) { // second, gathering resource
+            if (bakeStatus == null || bakeStatus.isInvalid()) bakeStatus = new GatheringBake();
+
+            String resourceType = m.group(2).contains(" ") ? m.group(2).split(" ")[0] : m.group(2);
+
+            bakeStatus.setMaterialAmount(Integer.parseInt(m.group(1)));
+            bakeStatus.setMaterial(GatheringMaterial.valueOf(resourceType.toUpperCase()));
+        } else {
+            return;
+        }
+
+        if (bakeStatus == null || !bakeStatus.isReady()) return;
+
+        // this tries to find a valid barrier that is the center of the three
+        // below the center block there's a barrier, which is what we are looking for
+        // it ALWAYS have 4 blocks at it sides that we use to detect it
+        if (bakeStatus.getType() == ProfessionType.WOODCUTTING) {
+            Iterable<BlockPos> positions = BlockPos.getAllInBox(
+                    i.getPosition().subtract(new Vec3i(-5, -3, -5)),
+                    i.getPosition().subtract(new Vec3i(+5, +3, +5)));
+
+            for (BlockPos position : positions) {
+                if (i.world.isAirBlock(position)) continue;
+
+                IBlockState b = i.world.getBlockState(position);
+                if (b.getMaterial() == Material.AIR || b.getMaterial() != Material.BARRIER) continue;
+
+                // checks if the barrier have blocks around itself
+                BlockPos north = position.north();
+                if (i.world.isAirBlock(position.north())
+                        || i.world.isAirBlock(position.south())
+                        || i.world.isAirBlock(position.east())
+                        || i.world.isAirBlock(position.west())) continue;
+
+                loc = new Location(position);
+                break;
+            }
+        }
+
+        FrameworkManager.getEventBus().post(
+                new GameEvent.ResourceGather(bakeStatus.getType(), bakeStatus.getMaterial(),
+                        bakeStatus.getMaterialAmount(), bakeStatus.getXpAmount(), bakeStatus.getXpPercentage(), loc)
+        );
+
+        bakeStatus = null;
+    }
+
+    @SubscribeEvent
+    public void checkDamageLabelFound(LocationEvent.LabelFoundEvent event) {
+        String value = TextFormatting.getTextWithoutFormattingCodes(event.getLabel());
+        Entity i = event.getEntity();
+        Map<DamageType, Integer> damageList = new HashMap<>();
+
+        if (value.contains("Combat") || value.contains("Guild")) return;
+
+        Matcher m = MOB_DAMAGE.matcher(value);
+        while (m.find()) {
+            damageList.put(DamageType.fromSymbol(m.group(2)), Integer.valueOf(m.group(1)));
+        }
+
+        if (damageList.isEmpty()) return;
+
+        FrameworkManager.getEventBus().post(new GameEvent.DamageEntity(damageList, i));
+    }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void updateActionBar(PacketEvent<SPacketChat> e) {
