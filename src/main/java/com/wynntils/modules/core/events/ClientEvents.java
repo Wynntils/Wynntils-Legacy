@@ -129,7 +129,7 @@ public class ClientEvents implements Listener {
     private GatheringBake bakeStatus = null;
 
     @SubscribeEvent
-    public boolean cancelSomeVelocity(PacketEvent<SPacketEntityVelocity> e) {
+    public void cancelSomeVelocity(PacketEvent<SPacketEntityVelocity> e) {
         // I'm not sure what this does, but the code has been here a long time,
         // just moving it here. /magicus, 2021
         SPacketEntityVelocity velocity = e.getPacket();
@@ -137,24 +137,20 @@ public class ClientEvents implements Listener {
             Entity entity = mc.world.getEntityByID(velocity.getEntityID());
             Entity vehicle = mc.player.getLowestRidingEntity();
             if ((entity == vehicle) && (vehicle != mc.player) && (vehicle.canPassengerSteer())) {
-                return true;
+                e.setCanceled(true);
             }
         }
-
-        return false;
     }
 
     @SubscribeEvent
-    public boolean cancelSomeMovements(PacketEvent<SPacketMoveVehicle> e) {
+    public void cancelSomeMovements(PacketEvent<SPacketMoveVehicle> e) {
         // I'm not sure what this does, but the code has been here a long time,
         // just moving it here. /magicus, 2021
         SPacketMoveVehicle moveVehicle = e.getPacket();
         Entity vehicle = mc.player.getLowestRidingEntity();
         if ((vehicle == mc.player) || (!vehicle.canPassengerSteer()) || (vehicle.getDistance(moveVehicle.getX(), moveVehicle.getY(), moveVehicle.getZ()) <= 25D)) {
-            return true;
+            e.setCanceled(true);
         }
-
-        return false;
     }
 
     @SubscribeEvent
