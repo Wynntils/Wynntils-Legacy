@@ -72,7 +72,8 @@ import java.util.regex.Pattern;
 import static com.wynntils.core.framework.instances.PlayerInfo.get;
 
 public class ClientEvents implements Listener {
-    TotemTracker totemTracker = new TotemTracker();
+    private final TotemTracker totemTracker = new TotemTracker();
+    private final static Minecraft mc = Minecraft.getMinecraft();
 
     /**
      * This replace these GUIS into a "provided" format to make it more modular
@@ -126,6 +127,35 @@ public class ClientEvents implements Listener {
 
     // bake status
     private GatheringBake bakeStatus = null;
+
+    @SubscribeEvent
+    public boolean cancelSomeVelocity(PacketEvent<SPacketEntityVelocity> e) {
+        // I'm not sure what this does, but the code has been here a long time,
+        // just moving it here. /magicus, 2021
+        SPacketEntityVelocity velocity = e.getPacket();
+        if (mc.world != null) {
+            Entity entity = mc.world.getEntityByID(velocity.getEntityID());
+            Entity vehicle = mc.player.getLowestRidingEntity();
+            if ((entity == vehicle) && (vehicle != mc.player) && (vehicle.canPassengerSteer())) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    @SubscribeEvent
+    public boolean cancelSomeMovements(PacketEvent<SPacketMoveVehicle> e) {
+        // I'm not sure what this does, but the code has been here a long time,
+        // just moving it here. /magicus, 2021
+        SPacketMoveVehicle moveVehicle = e.getPacket();
+        Entity vehicle = mc.player.getLowestRidingEntity();
+        if ((vehicle == mc.player) || (!vehicle.canPassengerSteer()) || (vehicle.getDistance(moveVehicle.getX(), moveVehicle.getY(), moveVehicle.getZ()) <= 25D)) {
+            return true;
+        }
+
+        return false;
+    }
 
     @SubscribeEvent
     public void findLabels(PacketEvent<SPacketEntityMetadata> e) {
