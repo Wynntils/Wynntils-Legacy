@@ -50,6 +50,8 @@ import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.client.CPacketClientSettings;
 import net.minecraft.network.play.client.CPacketHeldItemChange;
 import net.minecraft.network.play.server.*;
+import net.minecraft.scoreboard.ScorePlayerTeam;
+import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.ChatType;
@@ -127,6 +129,20 @@ public class ClientEvents implements Listener {
 
     // bake status
     private GatheringBake bakeStatus = null;
+
+    @SubscribeEvent
+    public void workAroundWynncraftNPEBug(PacketEvent<SPacketTeams> e) {
+        if (e.getPacket().getAction() == 1) {
+            ScorePlayerTeam scoreplayerteam;
+
+            Scoreboard scoreboard = mc.world.getScoreboard();
+            scoreplayerteam = scoreboard.getTeam(e.getPacket().getName());
+            if (scoreplayerteam == null) {
+                // This would cause an NPE so cancel it
+                e.setCanceled(true);
+            }
+        }
+    }
 
     @SubscribeEvent
     public void cancelSomeVelocity(PacketEvent<SPacketEntityVelocity> e) {
