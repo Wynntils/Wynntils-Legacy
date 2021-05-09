@@ -21,6 +21,7 @@ import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.instances.GatheringBake;
+import com.wynntils.modules.core.instances.LabelBake;
 import com.wynntils.modules.core.instances.MainMenuButtons;
 import com.wynntils.modules.core.instances.TotemTracker;
 import com.wynntils.modules.core.managers.*;
@@ -44,6 +45,7 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.passive.AbstractHorse;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -75,7 +77,6 @@ import static com.wynntils.core.framework.instances.PlayerInfo.get;
 
 public class ClientEvents implements Listener {
     private final TotemTracker totemTracker = new TotemTracker();
-    private final static Minecraft mc = Minecraft.getMinecraft();
 
     /**
      * This replace these GUIS into a "provided" format to make it more modular
@@ -127,6 +128,12 @@ public class ClientEvents implements Listener {
     private static final Pattern GATHERING_RESOURCE = Pattern.compile("\\[\\+([0-9]+) (.+)\\]");
     private static final Pattern MOB_DAMAGE = DamageType.compileDamagePattern();
 
+    private static final Pattern MOB_LABEL = Pattern.compile(".*\\[Lv. [0-9]+\\]$");
+    private static final Pattern HEALTH_LABEL = Pattern.compile("^\\[\\|+[0-9]+\\|+\\]$");
+    private static final Pattern TOTEM_LABEL = Pattern.compile("^[0-9]+s|\\+[0-9]+❤/s$");
+    private static final Pattern GATHERING_LABEL = Pattern.compile("^. [ⒸⒷⒿⓀ] .* Lv. Min: [0-9]+$");
+    private static final Pattern RESOURCE_LABEL = Pattern.compile("^(?:Right|Left)-Click for .*$");
+
     // bake status
     private GatheringBake bakeStatus = null;
 
@@ -135,7 +142,7 @@ public class ClientEvents implements Listener {
         if (e.getPacket().getAction() == 1) {
             ScorePlayerTeam scoreplayerteam;
 
-            Scoreboard scoreboard = mc.world.getScoreboard();
+            Scoreboard scoreboard = Minecraft.getMinecraft().world.getScoreboard();
             scoreplayerteam = scoreboard.getTeam(e.getPacket().getName());
             if (scoreplayerteam == null) {
                 // This would cause an NPE so cancel it
@@ -149,10 +156,10 @@ public class ClientEvents implements Listener {
         // I'm not sure what this does, but the code has been here a long time,
         // just moving it here. /magicus, 2021
         SPacketEntityVelocity velocity = e.getPacket();
-        if (mc.world != null) {
-            Entity entity = mc.world.getEntityByID(velocity.getEntityID());
-            Entity vehicle = mc.player.getLowestRidingEntity();
-            if ((entity == vehicle) && (vehicle != mc.player) && (vehicle.canPassengerSteer())) {
+        if (Minecraft.getMinecraft().world != null) {
+            Entity entity = Minecraft.getMinecraft().world.getEntityByID(velocity.getEntityID());
+            Entity vehicle = Minecraft.getMinecraft().player.getLowestRidingEntity();
+            if ((entity == vehicle) && (vehicle != Minecraft.getMinecraft().player) && (vehicle.canPassengerSteer())) {
                 e.setCanceled(true);
             }
         }
@@ -163,8 +170,8 @@ public class ClientEvents implements Listener {
         // I'm not sure what this does, but the code has been here a long time,
         // just moving it here. /magicus, 2021
         SPacketMoveVehicle moveVehicle = e.getPacket();
-        Entity vehicle = mc.player.getLowestRidingEntity();
-        if ((vehicle == mc.player) || (!vehicle.canPassengerSteer()) || (vehicle.getDistance(moveVehicle.getX(), moveVehicle.getY(), moveVehicle.getZ()) <= 25D)) {
+        Entity vehicle = Minecraft.getMinecraft().player.getLowestRidingEntity();
+        if ((vehicle == Minecraft.getMinecraft().player) || (!vehicle.canPassengerSteer()) || (vehicle.getDistance(moveVehicle.getX(), moveVehicle.getY(), moveVehicle.getZ()) <= 25D)) {
             e.setCanceled(true);
         }
     }
@@ -218,6 +225,55 @@ public class ClientEvents implements Listener {
                 return;
             }
         }
+    }
+
+    @SubscribeEvent
+    public void onTestLabelFound(LocationEvent.LabelFoundEvent event) {
+        String label = TextFormatting.getTextWithoutFormattingCodes(event.getLabel());
+        Location location = event.getLocation();
+
+        Matcher m = MOB_LABEL.matcher(label);
+        if (m.find()) return;
+
+        Matcher m2 = HEALTH_LABEL.matcher(label);
+        if (m2.find()) return;
+
+        Matcher m3 = MOB_DAMAGE.matcher(label);
+        if (m3.find()) return;
+
+        Matcher m4 = GATHERING_STATUS.matcher(label);
+        if (m4.find()) return;
+
+        Matcher m5 = GATHERING_RESOURCE.matcher(label);
+        if (m5.find()) return;
+
+        Matcher m6 = TOTEM_LABEL.matcher(label);
+        if (m6.find()) return;
+
+        Matcher m7 = GATHERING_LABEL.matcher(label);
+        if (m7.find()) return;
+
+        Matcher m8 = RESOURCE_LABEL.matcher(label);
+        if (m8.find()) return;
+
+        LabelBake.handleLabel(label, location);
+    }
+
+    @SubscribeEvent
+    public void onTestEntityLabelFound(LocationEvent.EntityLabelFoundEvent event) {
+        String name = TextFormatting.getTextWithoutFormattingCodes(event.getLabel());
+        Location location = event.getLocation();
+        Entity entity = event.getEntity();
+
+        Matcher m = MOB_LABEL.matcher(name);
+        if (m.find()) return;
+
+        Matcher m2 = HEALTH_LABEL.matcher(name);
+        if (m2.find()) return;
+
+        if (!(entity instanceof EntityVillager)) return;
+
+        LabelBake.handleNpc(name, location);
     }
 
     @SubscribeEvent
