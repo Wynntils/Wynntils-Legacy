@@ -128,11 +128,13 @@ public class ClientEvents implements Listener {
     private static final Pattern GATHERING_RESOURCE = Pattern.compile("\\[\\+([0-9]+) (.+)\\]");
     private static final Pattern MOB_DAMAGE = DamageType.compileDamagePattern();
 
-    private static final Pattern MOB_LABEL = Pattern.compile(".*\\[Lv. [0-9]+\\]$");
+    private static final Pattern MOB_LABEL = Pattern.compile("^.*\\[Lv. [0-9]+\\]$");
     private static final Pattern HEALTH_LABEL = Pattern.compile("^\\[\\|+[0-9]+\\|+\\]$");
     private static final Pattern TOTEM_LABEL = Pattern.compile("^[0-9]+s|\\+[0-9]+❤/s$");
     private static final Pattern GATHERING_LABEL = Pattern.compile("^. [ⒸⒷⒿⓀ] .* Lv. Min: [0-9]+$");
     private static final Pattern RESOURCE_LABEL = Pattern.compile("^(?:Right|Left)-Click for .*$");
+    private static final Pattern WYBEL_OWNER = Pattern.compile("^\\[.*\\]$");
+    private static final Pattern WYBEL_LEVEL = Pattern.compile("^Lv. [0-9]+.*$");
 
     // bake status
     private GatheringBake bakeStatus = null;
@@ -255,6 +257,12 @@ public class ClientEvents implements Listener {
 
         Matcher m8 = RESOURCE_LABEL.matcher(label);
         if (m8.find()) return;
+
+        Matcher m9 = WYBEL_OWNER.matcher(label);
+        if (m9.find()) return;
+
+        Matcher m10 = WYBEL_LEVEL.matcher(label);
+        if (m10.find()) return;
 
         LabelBake.handleLabel(label, location);
     }
