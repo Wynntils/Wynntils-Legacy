@@ -21,7 +21,6 @@ import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.instances.GatheringBake;
-import com.wynntils.modules.core.instances.LabelBake;
 import com.wynntils.modules.core.instances.MainMenuButtons;
 import com.wynntils.modules.core.instances.TotemTracker;
 import com.wynntils.modules.core.managers.*;
@@ -45,7 +44,6 @@ import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.passive.AbstractHorse;
-import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.datasync.EntityDataManager;
@@ -124,17 +122,9 @@ public class ClientEvents implements Listener {
         }
     }
 
-    private static final Pattern GATHERING_STATUS = Pattern.compile("\\[\\+([0-9]*) [ⒸⒷⒿⓀ] (.*?) XP\\] \\[([0-9]*)%\\]");
-    private static final Pattern GATHERING_RESOURCE = Pattern.compile("\\[\\+([0-9]+) (.+)\\]");
-    private static final Pattern MOB_DAMAGE = DamageType.compileDamagePattern();
-
-    private static final Pattern MOB_LABEL = Pattern.compile("^.*\\[Lv. [0-9]+\\]$");
-    private static final Pattern HEALTH_LABEL = Pattern.compile("^\\[\\|+[0-9]+\\|+\\]$");
-    private static final Pattern TOTEM_LABEL = Pattern.compile("^[0-9]+s|\\+[0-9]+❤/s$");
-    private static final Pattern GATHERING_LABEL = Pattern.compile("^. [ⒸⒷⒿⓀ] .* Lv. Min: [0-9]+$");
-    private static final Pattern RESOURCE_LABEL = Pattern.compile("^(?:Right|Left)-Click for .*$");
-    private static final Pattern WYBEL_OWNER = Pattern.compile("^\\[.*\\]$");
-    private static final Pattern WYBEL_LEVEL = Pattern.compile("^Lv. [0-9]+.*$");
+    public static final Pattern GATHERING_STATUS = Pattern.compile("\\[\\+([0-9]*) [ⒸⒷⒿⓀ] (.*?) XP\\] \\[([0-9]*)%\\]");
+    public static final Pattern GATHERING_RESOURCE = Pattern.compile("\\[\\+([0-9]+) (.+)\\]");
+    public static final Pattern MOB_DAMAGE = DamageType.compileDamagePattern();
 
     // bake status
     private GatheringBake bakeStatus = null;
@@ -227,61 +217,6 @@ public class ClientEvents implements Listener {
                 return;
             }
         }
-    }
-
-    @SubscribeEvent
-    public void onTestLabelFound(LocationEvent.LabelFoundEvent event) {
-        String label = TextFormatting.getTextWithoutFormattingCodes(event.getLabel());
-        Location location = event.getLocation();
-
-        Matcher m = MOB_LABEL.matcher(label);
-        if (m.find()) return;
-
-        Matcher m2 = HEALTH_LABEL.matcher(label);
-        if (m2.find()) return;
-
-        Matcher m3 = MOB_DAMAGE.matcher(label);
-        if (m3.find()) return;
-
-        Matcher m4 = GATHERING_STATUS.matcher(label);
-        if (m4.find()) return;
-
-        Matcher m5 = GATHERING_RESOURCE.matcher(label);
-        if (m5.find()) return;
-
-        Matcher m6 = TOTEM_LABEL.matcher(label);
-        if (m6.find()) return;
-
-        Matcher m7 = GATHERING_LABEL.matcher(label);
-        if (m7.find()) return;
-
-        Matcher m8 = RESOURCE_LABEL.matcher(label);
-        if (m8.find()) return;
-
-        Matcher m9 = WYBEL_OWNER.matcher(label);
-        if (m9.find()) return;
-
-        Matcher m10 = WYBEL_LEVEL.matcher(label);
-        if (m10.find()) return;
-
-        LabelBake.handleLabel(label, location);
-    }
-
-    @SubscribeEvent
-    public void onTestEntityLabelFound(LocationEvent.EntityLabelFoundEvent event) {
-        String name = TextFormatting.getTextWithoutFormattingCodes(event.getLabel());
-        Location location = event.getLocation();
-        Entity entity = event.getEntity();
-
-        Matcher m = MOB_LABEL.matcher(name);
-        if (m.find()) return;
-
-        Matcher m2 = HEALTH_LABEL.matcher(name);
-        if (m2.find()) return;
-
-        if (!(entity instanceof EntityVillager)) return;
-
-        LabelBake.handleNpc(name, location);
     }
 
     @SubscribeEvent

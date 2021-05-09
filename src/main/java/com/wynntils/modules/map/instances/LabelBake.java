@@ -2,7 +2,7 @@
  *  * Copyright © Wynntils - 2021.
  */
 
-package com.wynntils.modules.core.instances;
+package com.wynntils.modules.map.instances;
 
 import com.wynntils.core.utils.objects.Location;
 
