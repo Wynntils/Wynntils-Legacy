@@ -141,9 +141,10 @@ public class ClientEvents implements Listener {
         GuildResourceManager.processAdvancements(event.getPacket());
     }
 
-
     @SubscribeEvent
-    public void onTestLabelFound(LocationEvent.LabelFoundEvent event) {
+    public void labelDetection(LocationEvent.LabelFoundEvent event) {
+        if (!MapConfig.Telemetry.INSTANCE.enableLocationDetection) return;
+
         String label = TextFormatting.getTextWithoutFormattingCodes(event.getLabel());
         Location location = event.getLocation();
 
@@ -181,7 +182,9 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void onTestEntityLabelFound(LocationEvent.EntityLabelFoundEvent event) {
+    public void labelDetectEntity(LocationEvent.EntityLabelFoundEvent event) {
+        if (!MapConfig.Telemetry.INSTANCE.enableLocationDetection) return;
+
         String name = TextFormatting.getTextWithoutFormattingCodes(event.getLabel());
         Location location = event.getLocation();
         Entity entity = event.getEntity();
@@ -196,5 +199,4 @@ public class ClientEvents implements Listener {
 
         LabelBake.handleNpc(name, location);
     }
-
 }
