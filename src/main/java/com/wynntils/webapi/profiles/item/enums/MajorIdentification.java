@@ -27,7 +27,7 @@ public enum MajorIdentification {
     RALLY("Rally", "Charge heals you by 10% and nearby allies by 15% on impact, but becomes harmless"),
     CHERRY_BOMBS("Cherry Bombs", "Your Smoke Bombs explode instantly on contact, dealing 110% damage each"),
     PEACEFUL_EFFIGY("Peaceful Effigy", "Your Totem will last twice as long"),
-    FURIOUS_EFFIGY("Furious Effigy", "Totem effects are twice as fast, but duration is halved");
+    FURIOUS_EFFIGY("Furious Effigy", "Totem effects are twice as fast, but duration is halved"),
     FLASHFREEZE("Flash Freeze", "Ice Snake is instant but has a reduced range");
 
     String name, description;
