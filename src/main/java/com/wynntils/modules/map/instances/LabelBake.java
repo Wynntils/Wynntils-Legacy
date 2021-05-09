@@ -53,24 +53,8 @@ public class LabelBake {
     );
 
     private static final NpcBaker npcBaker = new NpcBaker();
-    private static final Map<Location, String> detectedNpcs = new HashMap<>();
-    private static final Map<Location, String> detectedServices = new HashMap<>();
-
-    public static void dumpDetectedLocations(String filename) {
-        for (Location key : detectedNpcs.keySet()) {
-            String name = detectedNpcs.get(key);
-            printInstance("NPC", name, key);
-        }
-
-        for (Location key : detectedServices.keySet()) {
-            String name = detectedServices.get(key);
-            printInstance("Service", name, key);
-        }
-    }
-
-    private static void printInstance(String type, String name, Location key) {
-        System.out.println(type + ": " + name + ": " + key);
-    }
+    public static final Map<Location, String> detectedNpcs = new HashMap<>();
+    public static final Map<Location, String> detectedServices = new HashMap<>();
 
     public static void handleLabel(String label, Location location) {
         if (MARKERS.stream().anyMatch(l -> l.equals(label))) {

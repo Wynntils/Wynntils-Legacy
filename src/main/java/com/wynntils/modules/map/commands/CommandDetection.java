@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.commands;
 
+import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.map.instances.LabelBake;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.LocationProfile;
@@ -12,8 +13,11 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.IClientCommand;
 
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.*;
 
 public class CommandDetection extends CommandBase implements IClientCommand {
@@ -71,7 +75,32 @@ public class CommandDetection extends CommandBase implements IClientCommand {
         }
 
         String filename = args[0];
-        LabelBake.dumpDetectedLocations(filename);
+
+        try (PrintStream ps = new PrintStream(filename)) {
+            int npcCount = 0;
+            for (Location key : LabelBake.detectedNpcs.keySet()) {
+                String name = LabelBake.detectedNpcs.get(key);
+                printInstance(ps, "NPC", name, key);
+                npcCount++;
+            }
+
+            int serviceCount = 0;
+            for (Location key : LabelBake.detectedServices.keySet()) {
+                String name = LabelBake.detectedServices.get(key);
+                printInstance(ps, "Service", name, key);
+                serviceCount++;
+            }
+
+            sender.sendMessage(new TextComponentString("Wrote " + npcCount + " NPCs and " + serviceCount + " services to " + filename));
+        } catch (FileNotFoundException e) {
+            sender.sendMessage(new TextComponentString("Invalid filename"));
+            e.printStackTrace();
+        }
+    }
+
+    private void printInstance(PrintStream ps, String type, String name, Location key) {
+        // Write a CSV line
+        ps.println(type + ", " + name + ", " + (int) Math.round(key.x) + ", " + (int) Math.round(key.y) + ", " + (int) Math.round(key.z));
     }
 
 }
