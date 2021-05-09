@@ -340,6 +340,7 @@ public class ChatOverlay extends GuiNewChat {
 
                     int chatWidth = MathHelper.floor((float) getChatWidth() / getChatScale());
                     List<ITextComponent> list = GuiUtilRenderComponents.splitText(newMessage, chatWidth, mc.fontRenderer, false, false);
+                    Collections.reverse(list);
                     boolean flag = tab == getCurrentTab() && getChatOpen();
                     for (ITextComponent itextcomponent : list) {
                         if (flag && scrollPos > 0) {
@@ -377,6 +378,7 @@ public class ChatOverlay extends GuiNewChat {
                 ITextComponent newMessage = queue.get(check).b.apply(combined.getChatComponent());
                 int chatWidth = MathHelper.floor((float) getChatWidth() / getChatScale());
                 List<ITextComponent> list = GuiUtilRenderComponents.splitText(newMessage, chatWidth, mc.fontRenderer, false, false);
+                Collections.reverse(list);
                 boolean flag = tab == getCurrentTab() && getChatOpen();
                 for (ITextComponent itextcomponent : list) {
                     if (flag && scrollPos > 0) {
