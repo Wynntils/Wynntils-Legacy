@@ -52,13 +52,12 @@ public class LabelBake {
             "Left-Click to set up booth"
     );
 
-    private static final NpcBaker npcBaker = new NpcBaker();
+    public static final NpcBaker npcBaker = new NpcBaker();
     public static final Map<Location, String> detectedNpcs = new HashMap<>();
     public static final Map<Location, String> detectedServices = new HashMap<>();
 
     public static void handleLabel(String label, Location location) {
         if (MARKERS.stream().anyMatch(l -> l.equals(label))) {
-            System.out.println("MARKER: " + label + ", " + location);
             detectedServices.put(location, label);
             return;
         }
@@ -84,7 +83,7 @@ public class LabelBake {
     }
 
     public static class NpcBaker {
-        private final Map<LabelLocation, String> nameMap = new HashMap<>();
+        public final Map<LabelLocation, String> nameMap = new HashMap<>();
         private final Map<LabelLocation, Location> locationMap = new HashMap<>();
 
         public void registerNpcLocation(Location location) {
@@ -108,7 +107,6 @@ public class LabelBake {
         }
 
         private void finalizeNpc(Location location, String name) {
-            System.out.println("NPC: " + name + ", " + location);
             detectedNpcs.put(location, name);
         }
     }

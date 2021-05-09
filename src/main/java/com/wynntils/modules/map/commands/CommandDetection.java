@@ -91,7 +91,14 @@ public class CommandDetection extends CommandBase implements IClientCommand {
                 serviceCount++;
             }
 
-            sender.sendMessage(new TextComponentString("Wrote " + npcCount + " NPCs and " + serviceCount + " services to " + filename));
+            int otherCount = 0;
+            for (LabelBake.LabelLocation key : LabelBake.npcBaker.nameMap.keySet()) {
+                String name = LabelBake.npcBaker.nameMap.get(key);
+                printInstance(ps, "Other", name, new Location(key.getX(), 0, key.getZ()));
+                otherCount++;
+            }
+
+            sender.sendMessage(new TextComponentString("Wrote " + npcCount + " NPCs, " + serviceCount + " services and " + otherCount + " other to " + filename));
         } catch (FileNotFoundException e) {
             sender.sendMessage(new TextComponentString("Invalid filename"));
             e.printStackTrace();
