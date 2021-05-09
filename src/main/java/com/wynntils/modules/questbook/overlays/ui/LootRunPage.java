@@ -38,7 +38,7 @@ import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class LootRunPage extends QuestBookPage {
 
-    private final int MESSAGE_ID = 103002;
+    private final int MESSAGE_ID = "wynntils-lootrun-page".hashCode();
 
     private List<String> names;
     private String selectedName;
@@ -361,7 +361,11 @@ public class LootRunPage extends QuestBookPage {
                     if (result) {
                         try {
                             Location start = LootRunManager.getActivePath().getPoints().get(0);
-                            String startingPointMsg = "Loot run " + LootRunManager.getActivePathName() + " starts at [" + (int) start.getX() + ", " + (int) start.getZ() + "]";
+                            String message = TextFormatting.GREEN + "Loaded loot run " + LootRunManager.getActivePathName() + " successfully! " + TextFormatting.GRAY + "(" + LootRunManager.getActivePath().getChests().size() + " chests)";
+
+                            Minecraft.getMinecraft().player.sendMessage(new TextComponentString(message));
+
+                            String startingPointMsg = "Loot run starts at [" + (int) start.getX() + ", " + (int) start.getZ() + "]";
 
                             Minecraft.getMinecraft().addScheduledTask(() ->
                                     ChatOverlay.getChat().printChatMessageWithOptionalDeletion(new TextComponentString(startingPointMsg), MESSAGE_ID)

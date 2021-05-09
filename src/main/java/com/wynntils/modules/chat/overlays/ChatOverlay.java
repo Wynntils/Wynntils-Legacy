@@ -309,30 +309,34 @@ public class ChatOverlay extends GuiNewChat {
     public void updateLines(ChatTab tab, HashMap<Integer, Pair<Supplier<Boolean>, Function<ITextComponent, ITextComponent>>> queue) {
         if (queue == null || queue.isEmpty()) return;
 
-        int queueIndex = 0;
-
         //remove unwanted ones
         List<Integer> keys = queue.keySet().stream()
                 .filter(s -> queue.get(s).a.get())
                 .sorted()
                 .collect(Collectors.toList());
 
+        if (keys.size() == 0) return;
+
+        int queueIndex = keys.size() - 1;
+
         boolean found = false;
-        ITextComponent combined = null;
+        ChatLine combined = null;
 
         List<ChatLine> lines = tab.getCurrentMessages();
 
-        for (int i = lines.size() - 1; i > -1 && queueIndex < queue.size(); i--) {
+        System.out.println(keys);
+
+        for (int i = 0; i < lines.size(); i++) {
             if (!(lines.get(i) instanceof GroupedChatLine)) continue;
             GroupedChatLine line = (GroupedChatLine) lines.get(i);
 
             int original = line.getGroupId();
             int check = keys.get(queueIndex);
 
-            if (original > check) {
+            if (original < check) {
                 if (found) {
                     //Add the line formed from combining the groups
-                    ITextComponent newMessage = queue.get(check).b.apply(combined);
+                    ITextComponent newMessage = queue.get(check).b.apply(combined.getChatComponent());
 
                     int chatWidth = MathHelper.floor((float) getChatWidth() / getChatScale());
                     List<ITextComponent> list = GuiUtilRenderComponents.splitText(newMessage, chatWidth, mc.fontRenderer, false, false);
@@ -342,34 +346,35 @@ public class ChatOverlay extends GuiNewChat {
                             isScrolled = true;
                             scroll(1);
                         }
-                        lines.add(i, new GroupedChatLine(line.getUpdatedCounter(), itextcomponent, line.getChatLineID(), check));
+                        lines.add(i, new GroupedChatLine(combined.getUpdatedCounter(), itextcomponent, combined.getChatLineID(), check));
                     }
 
                     combined = null;
                     found = false;
                 }
 
-                while (original > check && queueIndex < queue.size() - 1) {
-                    check = keys.get(++queueIndex);
+                while (original < check && queueIndex > 0) {
+                    queue.remove(queueIndex);
+                    check = keys.get(--queueIndex);
                 }
             }
 
             if (original == check) {
                 if (found) {
-                    combined.appendSibling(line.getChatComponent());
+                    combined.getChatComponent().appendSibling(line.getChatComponent());
                 } else {
-                    combined = line.getChatComponent();
+                    combined = line;
                     found = true;
                 }
 
                 //remove line so it can be re-added later
                 lines.remove(i);
+                i--;
             }
 
             //run at the very end of the for loop - add the line
-            if (found && (queueIndex == queue.size() - 1 || i == 0)) {
-                System.out.println(combined);
-                ITextComponent newMessage = queue.get(check).b.apply(combined);
+            if (found && (queueIndex == 0 || i == lines.size() - 1)) {
+                ITextComponent newMessage = queue.get(check).b.apply(combined.getChatComponent());
                 int chatWidth = MathHelper.floor((float) getChatWidth() / getChatScale());
                 List<ITextComponent> list = GuiUtilRenderComponents.splitText(newMessage, chatWidth, mc.fontRenderer, false, false);
                 boolean flag = tab == getCurrentTab() && getChatOpen();
@@ -378,16 +383,11 @@ public class ChatOverlay extends GuiNewChat {
                         isScrolled = true;
                         scroll(1);
                     }
-                    lines.add(i, new GroupedChatLine(line.getUpdatedCounter(), itextcomponent, line.getChatLineID(), check));
+                    lines.add(i, new GroupedChatLine(combined.getUpdatedCounter(), itextcomponent, combined.getChatLineID(), check));
                 }
 
-                combined = null;
-                found = false;
+                break;
             }
-        }
-
-        for (int key : keys) {
-            queue.remove(key);
         }
     }
 

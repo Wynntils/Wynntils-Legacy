@@ -158,8 +158,6 @@ public class ChatManager {
 
                     if (QuestManager.getCurrentDiscoveries().isEmpty() && !discoveriesLoaded) {
                         QuestManager.updateAnalysis(EnumSet.of(AnalysePosition.DISCOVERIES, AnalysePosition.SECRET_DISCOVERIES), true, true);
-                        //queue.add(new Pair<>(original, ChatManager::processRealMessage));
-
                         return new Pair<>(original, new Pair<>(ChatManager::getDiscoveriesLoaded, s -> ChatManager.processRealMessage(s).a));
                     }
 
