@@ -80,21 +80,23 @@ public class CommandDetection extends CommandBase implements IClientCommand {
             int npcCount = 0;
             for (Location key : LabelBake.detectedNpcs.keySet()) {
                 String name = LabelBake.detectedNpcs.get(key);
-                printInstance(ps, "NPC", name, key);
+                printInstance(ps, "NPC", name, "...", key);
                 npcCount++;
             }
 
             int serviceCount = 0;
             for (Location key : LabelBake.detectedServices.keySet()) {
                 String name = LabelBake.detectedServices.get(key);
-                printInstance(ps, "Service", name, key);
+                printInstance(ps, "Service", name, "...", key);
                 serviceCount++;
             }
 
             int otherCount = 0;
             for (LabelBake.LabelLocation key : LabelBake.npcBaker.nameMap.keySet()) {
                 String name = LabelBake.npcBaker.nameMap.get(key);
-                printInstance(ps, "Other", name, new Location(key.getX(), 0, key.getZ()));
+                String formattedName = LabelBake.npcBaker.formattedNameMap.get(key);
+                Location location = LabelBake.npcBaker.otherLocMap.get(key);
+                printInstance(ps, "Other", name, formattedName, location);
                 otherCount++;
             }
 
@@ -105,9 +107,9 @@ public class CommandDetection extends CommandBase implements IClientCommand {
         }
     }
 
-    private void printInstance(PrintStream ps, String type, String name, Location key) {
+    private void printInstance(PrintStream ps, String type, String name, String formattedName, Location key) {
         // Write a CSV line
-        ps.println(type + ", " + name + ", " + (int) Math.round(key.x) + ", " + (int) Math.round(key.y) + ", " + (int) Math.round(key.z));
+        ps.println(type + ", " + name + ", " + formattedName + ", " + (int) Math.round(key.x) + ", " + (int) Math.round(key.y) + ", " + (int) Math.round(key.z));
     }
 
 }

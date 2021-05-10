@@ -4,6 +4,8 @@
 
 package com.wynntils.modules.map.instances;
 
+import com.wynntils.core.events.custom.WynnClassChangeEvent;
+import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.utils.objects.Location;
 
 import java.util.*;
@@ -56,7 +58,7 @@ public class LabelBake {
     public static final Map<Location, String> detectedNpcs = new HashMap<>();
     public static final Map<Location, String> detectedServices = new HashMap<>();
 
-    public static void handleLabel(String label, Location location) {
+    public static void handleLabel(String label, String formattedLabel, Location location) {
         if (MARKERS.stream().anyMatch(l -> l.equals(label))) {
             detectedServices.put(location, label);
             return;
@@ -64,45 +66,64 @@ public class LabelBake {
 
         if (IGNORE.stream().anyMatch(l -> l.equals(label))) return;
 
-        // Ignore shops
-        if (label.endsWith("'s Shop")) return;
-
         if (label.equals("NPC")) {
             npcBaker.registerNpcLocation(location);
             return;
         }
 
         // It might be an NPC name
-        npcBaker.registerName(label, location);
+        npcBaker.registerName(label, formattedLabel, location);
+        String frm = formattedLabel.replace("§", "%");
+        System.out.println("LABEL: " + label + " " + location + " " + frm + "==" + formattedLabel);
     }
 
-    public static void handleNpc(String label, Location location) {
+    public static void handleNpc(String label, String formattedLabel, Location location) {
         if (!(label.equals("Sell, scrap and repair items") || label.equals("NPC"))) return;
 
+        System.out.println("formatted NPC: " + formattedLabel);
         npcBaker.registerNpcLocation(location);
+    }
+
+    public static void onWorldJoin(WynnWorldEvent.Join e) {
+        // Remove data from the lobby when joining a world
+        npcBaker.nameMap.clear();
+        npcBaker.formattedNameMap.clear();
+        npcBaker.locationMap.clear();
+        detectedNpcs.clear();
+        detectedServices.clear();
     }
 
     public static class NpcBaker {
         public final Map<LabelLocation, String> nameMap = new HashMap<>();
+        public final Map<LabelLocation, String> formattedNameMap = new HashMap<>();
         private final Map<LabelLocation, Location> locationMap = new HashMap<>();
+        public final Map<LabelLocation, Location> otherLocMap = new HashMap<>();
 
         public void registerNpcLocation(Location location) {
             LabelLocation l = new LabelLocation(location);
             String name = nameMap.get(l);
             if (name != null) {
+                String formattedName = formattedNameMap.get(l);
+                System.out.println("NPC: " + name + " as " + formattedName);
                 finalizeNpc(location, name);
+                nameMap.remove(l);
+                formattedNameMap.remove(l);
+                otherLocMap.remove(l);
             } else {
                 locationMap.put(l, location);
             }
         }
 
-        public void registerName(String name, Location location) {
+        public void registerName(String name, String formattedLabel, Location location) {
             LabelLocation l = new LabelLocation(location);
             Location orgLoc = locationMap.get(l);
             if (orgLoc != null) {
                 finalizeNpc(orgLoc, name);
+                locationMap.remove(l);
             } else {
                 nameMap.put(l, name);
+                formattedNameMap.put(l, formattedLabel);
+                otherLocMap.put(l, location);
             }
         }
 

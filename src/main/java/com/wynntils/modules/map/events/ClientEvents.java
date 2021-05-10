@@ -5,10 +5,7 @@
 package com.wynntils.modules.map.events;
 
 import com.wynntils.Reference;
-import com.wynntils.core.events.custom.GameEvent;
-import com.wynntils.core.events.custom.GuiOverlapEvent;
-import com.wynntils.core.events.custom.LocationEvent;
-import com.wynntils.core.events.custom.PacketEvent;
+import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.utils.objects.Location;
@@ -46,11 +43,11 @@ import static com.wynntils.modules.core.events.ClientEvents.*;
 public class ClientEvents implements Listener {
     private static final Pattern MOB_LABEL = Pattern.compile("^.*\\[Lv. [0-9]+\\]$");
     private static final Pattern HEALTH_LABEL = Pattern.compile("^\\[\\|+[0-9]+\\|+\\]$");
-    private static final Pattern TOTEM_LABEL = Pattern.compile("^[0-9]+s|\\+[0-9]+❤/s$");
+    private static final Pattern TOTEM_LABEL = Pattern.compile("^§c[0-9]+s|\\+[0-9]+❤/s$");
     private static final Pattern GATHERING_LABEL = Pattern.compile("^. [ⒸⒷⒿⓀ] .* Lv. Min: [0-9]+$");
     private static final Pattern RESOURCE_LABEL = Pattern.compile("^(?:Right|Left)-Click for .*$");
-    private static final Pattern WYBEL_OWNER = Pattern.compile("^\\[.*\\]$");
-    private static final Pattern WYBEL_LEVEL = Pattern.compile("^Lv. [0-9]+.*$");
+    private static final Pattern WYBEL_OWNER = Pattern.compile("^§7\\[.*\\]$");
+    private static final Pattern WYBEL_LEVEL = Pattern.compile("^§2Lv. §a[0-9]+.*$");
 
     BlockPos lastLocation = null;
 
@@ -145,7 +142,8 @@ public class ClientEvents implements Listener {
     public void labelDetection(LocationEvent.LabelFoundEvent event) {
         if (!MapConfig.Telemetry.INSTANCE.enableLocationDetection) return;
 
-        String label = TextFormatting.getTextWithoutFormattingCodes(event.getLabel());
+        String formattedLabel = event.getLabel();
+        String label = TextFormatting.getTextWithoutFormattingCodes(formattedLabel);
         Location location = event.getLocation();
 
         Matcher m = MOB_LABEL.matcher(label);
@@ -163,8 +161,11 @@ public class ClientEvents implements Listener {
         Matcher m5 = GATHERING_RESOURCE.matcher(label);
         if (m5.find()) return;
 
-        Matcher m6 = TOTEM_LABEL.matcher(label);
-        if (m6.find()) return;
+        Matcher m6 = TOTEM_LABEL.matcher(formattedLabel);
+        if (m6.find()) {
+            System.out.println("Matching totem: " + formattedLabel);
+            return;
+        }
 
         Matcher m7 = GATHERING_LABEL.matcher(label);
         if (m7.find()) return;
@@ -172,13 +173,20 @@ public class ClientEvents implements Listener {
         Matcher m8 = RESOURCE_LABEL.matcher(label);
         if (m8.find()) return;
 
-        Matcher m9 = WYBEL_OWNER.matcher(label);
-        if (m9.find()) return;
+        Matcher m9 = WYBEL_OWNER.matcher(formattedLabel);
+        if (m9.find()) {
+            System.out.println("Matching owner: " + formattedLabel);
+            return;
+        }
 
-        Matcher m10 = WYBEL_LEVEL.matcher(label);
-        if (m10.find()) return;
+        Matcher m10 = WYBEL_LEVEL.matcher(formattedLabel);
+        if (m10.find()) {
+            System.out.println("Matching wybel: " + formattedLabel);
+            return;
+        }
 
-        LabelBake.handleLabel(label, location);
+
+        LabelBake.handleLabel(label, event.getLabel(), location);
     }
 
     @SubscribeEvent
@@ -197,6 +205,12 @@ public class ClientEvents implements Listener {
 
         if (!(entity instanceof EntityVillager)) return;
 
-        LabelBake.handleNpc(name, location);
+        LabelBake.handleNpc(name, event.getLabel(), location);
     }
+
+    @SubscribeEvent
+    public void onWorldJoin(WynnWorldEvent.Join e) {
+        LabelBake.onWorldJoin(e);
+    }
+
 }
