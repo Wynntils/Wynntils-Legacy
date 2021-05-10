@@ -47,8 +47,9 @@ import java.util.regex.Pattern;
 
 public class Utils {
 
-    @SuppressWarnings("unchecked")
     private static final DataParameter<String> NAME_KEY = ReflectionFields.Entity_CUSTOM_NAME.getValue(Entity.class);
+    private static final DataParameter<Boolean> NAME_VISIBLE_KEY = ReflectionFields.Entity_CUSTOM_NAME_VISIBLE.getValue(Entity.class);
+    private static final DataParameter<Boolean> ITEM_KEY = ReflectionFields.EntityItemFrame_ITEM.getValue(Entity.class);
     public static final Pattern CHAR_INFO_PAGE_TITLE = Pattern.compile("§c([0-9]+)§4 skill points? remaining");
     public static final Pattern SERVER_SELECTOR_TITLE = Pattern.compile("Wynncraft Servers(: Page \\d+)?");
 
@@ -396,6 +397,31 @@ public class Utils {
             }
         }
         return null;
+    }
+
+    public static boolean isNameVisibleFromMetadata(List <EntityDataManager.DataEntry<?>> dataManagerEntries) {
+        assert NAME_VISIBLE_KEY != null;
+        if (dataManagerEntries != null) {
+            for (EntityDataManager.DataEntry<?> entry : dataManagerEntries) {
+                if (NAME_VISIBLE_KEY.equals(entry.getKey())) {
+                    return (Boolean) entry.getValue();
+                }
+            }
+        }
+        // assume false if not specified
+        return false;
+    }
+
+    public static ItemStack getItemFromMetadata(List <EntityDataManager.DataEntry<?>> dataManagerEntries) {
+        assert ITEM_KEY != null;
+        if (dataManagerEntries != null) {
+            for (EntityDataManager.DataEntry<?> entry : dataManagerEntries) {
+                if (ITEM_KEY.equals(entry.getKey())) {
+                    return (ItemStack) entry.getValue();
+                }
+            }
+        }
+        return ItemStack.EMPTY;
     }
 
     // Alias if using already imported org.apache.commons.lang3.StringUtils

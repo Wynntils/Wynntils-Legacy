@@ -18,6 +18,7 @@ import com.wynntils.core.framework.instances.data.ActionBarData;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.instances.GatheringBake;
@@ -75,7 +76,6 @@ import static com.wynntils.core.framework.instances.PlayerInfo.get;
 
 public class ClientEvents implements Listener {
     private final TotemTracker totemTracker = new TotemTracker();
-    private final static Minecraft mc = Minecraft.getMinecraft();
 
     /**
      * This replace these GUIS into a "provided" format to make it more modular
@@ -123,9 +123,9 @@ public class ClientEvents implements Listener {
         }
     }
 
-    private static final Pattern GATHERING_STATUS = Pattern.compile("\\[\\+([0-9]*) [ⒸⒷⒿⓀ] (.*?) XP\\] \\[([0-9]*)%\\]");
-    private static final Pattern GATHERING_RESOURCE = Pattern.compile("\\[\\+([0-9]+) (.+)\\]");
-    private static final Pattern MOB_DAMAGE = DamageType.compileDamagePattern();
+    public static final Pattern GATHERING_STATUS = Pattern.compile("\\[\\+([0-9]*) [ⒸⒷⒿⓀ] (.*?) XP\\] \\[([0-9]*)%\\]");
+    public static final Pattern GATHERING_RESOURCE = Pattern.compile("\\[\\+([0-9]+) (.+)\\]");
+    public static final Pattern MOB_DAMAGE = DamageType.compileDamagePattern();
 
     // bake status
     private GatheringBake bakeStatus = null;
@@ -135,7 +135,7 @@ public class ClientEvents implements Listener {
         if (e.getPacket().getAction() == 1) {
             ScorePlayerTeam scoreplayerteam;
 
-            Scoreboard scoreboard = mc.world.getScoreboard();
+            Scoreboard scoreboard = Minecraft.getMinecraft().world.getScoreboard();
             scoreplayerteam = scoreboard.getTeam(e.getPacket().getName());
             if (scoreplayerteam == null) {
                 // This would cause an NPE so cancel it
@@ -149,10 +149,10 @@ public class ClientEvents implements Listener {
         // I'm not sure what this does, but the code has been here a long time,
         // just moving it here. /magicus, 2021
         SPacketEntityVelocity velocity = e.getPacket();
-        if (mc.world != null) {
-            Entity entity = mc.world.getEntityByID(velocity.getEntityID());
-            Entity vehicle = mc.player.getLowestRidingEntity();
-            if ((entity == vehicle) && (vehicle != mc.player) && (vehicle.canPassengerSteer())) {
+        if (Minecraft.getMinecraft().world != null) {
+            Entity entity = Minecraft.getMinecraft().world.getEntityByID(velocity.getEntityID());
+            Entity vehicle = Minecraft.getMinecraft().player.getLowestRidingEntity();
+            if ((entity == vehicle) && (vehicle != Minecraft.getMinecraft().player) && (vehicle.canPassengerSteer())) {
                 e.setCanceled(true);
             }
         }
@@ -163,8 +163,8 @@ public class ClientEvents implements Listener {
         // I'm not sure what this does, but the code has been here a long time,
         // just moving it here. /magicus, 2021
         SPacketMoveVehicle moveVehicle = e.getPacket();
-        Entity vehicle = mc.player.getLowestRidingEntity();
-        if ((vehicle == mc.player) || (!vehicle.canPassengerSteer()) || (vehicle.getDistance(moveVehicle.getX(), moveVehicle.getY(), moveVehicle.getZ()) <= 25D)) {
+        Entity vehicle = Minecraft.getMinecraft().player.getLowestRidingEntity();
+        if ((vehicle == Minecraft.getMinecraft().player) || (!vehicle.canPassengerSteer()) || (vehicle.getDistance(moveVehicle.getX(), moveVehicle.getY(), moveVehicle.getZ()) <= 25D)) {
             e.setCanceled(true);
         }
     }
@@ -182,41 +182,26 @@ public class ClientEvents implements Listener {
         if (i == null) return;
 
         if (i instanceof EntityItemFrame) {
-            // We can't access the proper index so loop through all entries
-            for (EntityDataManager.DataEntry<?> next : e.getPacket().getDataManagerEntries()) {
-                if ((next.getValue() instanceof ItemStack)) {
-                    ItemStack item = (ItemStack)next.getValue();
-                    if (item.hasDisplayName()) {
-                        FrameworkManager.getEventBus().post(new LocationEvent.LabelFoundEvent(item.getDisplayName(), new Location(i), i));
-                    }
-                    return;
-                }
+            ItemStack item = Utils.getItemFromMetadata(e.getPacket().getDataManagerEntries());
+            if (item.hasDisplayName()) {
+                FrameworkManager.getEventBus().post(new LocationEvent.LabelFoundEvent(item.getDisplayName(), new Location(i), i));
             }
-            return;
         } else if (i instanceof EntityLiving) {
-            // We can't access the proper index so loop through all entries
-            for (EntityDataManager.DataEntry<?> next : e.getPacket().getDataManagerEntries()) {
-                if (!(next.getValue() instanceof String)) continue;
+            boolean visible = Utils.isNameVisibleFromMetadata(e.getPacket().getDataManagerEntries());
+            if (!visible) return;
 
-                String value = (String) next.getValue();
-                if (value == null || value.isEmpty()) return;
+            String value = Utils.getNameFromMetadata(e.getPacket().getDataManagerEntries());
+            if (value == null || value.isEmpty()) return;
 
-                FrameworkManager.getEventBus().post(new LocationEvent.EntityLabelFoundEvent(value, new Location(i), (EntityLiving) i));
-                return;
-            }
-
-            return;
+            FrameworkManager.getEventBus().post(new LocationEvent.EntityLabelFoundEvent(value, new Location(i), (EntityLiving) i));
         } else if (i instanceof EntityArmorStand) {
-            // We can't access the proper index so loop through all entries
-            for (EntityDataManager.DataEntry<?> next : e.getPacket().getDataManagerEntries()) {
-                if (!(next.getValue() instanceof String)) continue;
+            boolean visible = Utils.isNameVisibleFromMetadata(e.getPacket().getDataManagerEntries());
+            if (!visible) return;
 
-                String value = (String) next.getValue();
-                if (value == null || value.isEmpty()) return;
+            String value = Utils.getNameFromMetadata(e.getPacket().getDataManagerEntries());
+            if (value == null || value.isEmpty()) return;
 
-                FrameworkManager.getEventBus().post(new LocationEvent.LabelFoundEvent(value, new Location(i), i));
-                return;
-            }
+            FrameworkManager.getEventBus().post(new LocationEvent.LabelFoundEvent(value, new Location(i), i));
         }
     }
 
