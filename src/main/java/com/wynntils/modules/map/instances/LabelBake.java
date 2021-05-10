@@ -86,7 +86,6 @@ public class LabelBake {
         // It might be an NPC name
         locationBaker.registerName(label, formattedLabel, location);
         String frm = formattedLabel.replace("§", "%");
-        System.out.println("LABEL: " + label + " " + location + " " + frm + "==" + formattedLabel);
     }
 
     public static void handleNpc(String label, String formattedLabel, Location location) {
@@ -137,8 +136,6 @@ public class LabelBake {
             LabelLocation l = new LabelLocation(location);
             String name = nameMap.get(l);
             if (name != null) {
-                String formattedName = formattedNameMap.get(l);
-                System.out.println(type + "(g): " + name + " as " + formattedName);
                 finalizeType(type, location, name);
                 nameMap.remove(l);
                 formattedNameMap.remove(l);

@@ -162,10 +162,7 @@ public class ClientEvents implements Listener {
         if (m5.find()) return;
 
         Matcher m6 = TOTEM_LABEL.matcher(formattedLabel);
-        if (m6.find()) {
-            System.out.println("Matching totem: " + formattedLabel);
-            return;
-        }
+        if (m6.find()) return;
 
         Matcher m7 = GATHERING_LABEL.matcher(label);
         if (m7.find()) return;
@@ -174,16 +171,10 @@ public class ClientEvents implements Listener {
         if (m8.find()) return;
 
         Matcher m9 = WYBEL_OWNER.matcher(formattedLabel);
-        if (m9.find()) {
-            System.out.println("Matching owner: " + formattedLabel);
-            return;
-        }
+        if (m9.find()) return;
 
         Matcher m10 = WYBEL_LEVEL.matcher(formattedLabel);
-        if (m10.find()) {
-            System.out.println("Matching wybel: " + formattedLabel);
-            return;
-        }
+        if (m10.find()) return;
 
 
         LabelBake.handleLabel(label, event.getLabel(), location);
