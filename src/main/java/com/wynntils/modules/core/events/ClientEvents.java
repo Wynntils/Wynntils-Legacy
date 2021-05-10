@@ -18,6 +18,7 @@ import com.wynntils.core.framework.instances.data.ActionBarData;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.instances.GatheringBake;
@@ -181,41 +182,26 @@ public class ClientEvents implements Listener {
         if (i == null) return;
 
         if (i instanceof EntityItemFrame) {
-            // We can't access the proper index so loop through all entries
-            for (EntityDataManager.DataEntry<?> next : e.getPacket().getDataManagerEntries()) {
-                if ((next.getValue() instanceof ItemStack)) {
-                    ItemStack item = (ItemStack)next.getValue();
-                    if (item.hasDisplayName()) {
-                        FrameworkManager.getEventBus().post(new LocationEvent.LabelFoundEvent(item.getDisplayName(), new Location(i), i));
-                    }
-                    return;
-                }
+            ItemStack item = Utils.getItemFromMetadata(e.getPacket().getDataManagerEntries());
+            if (item.hasDisplayName()) {
+                FrameworkManager.getEventBus().post(new LocationEvent.LabelFoundEvent(item.getDisplayName(), new Location(i), i));
             }
-            return;
         } else if (i instanceof EntityLiving) {
-            // We can't access the proper index so loop through all entries
-            for (EntityDataManager.DataEntry<?> next : e.getPacket().getDataManagerEntries()) {
-                if (!(next.getValue() instanceof String)) continue;
+            boolean visible = Utils.isNameVisibleFromMetadata(e.getPacket().getDataManagerEntries());
+            if (!visible) return;
 
-                String value = (String) next.getValue();
-                if (value == null || value.isEmpty()) return;
+            String value = Utils.getNameFromMetadata(e.getPacket().getDataManagerEntries());
+            if (value == null || value.isEmpty()) return;
 
-                FrameworkManager.getEventBus().post(new LocationEvent.EntityLabelFoundEvent(value, new Location(i), (EntityLiving) i));
-                return;
-            }
-
-            return;
+            FrameworkManager.getEventBus().post(new LocationEvent.EntityLabelFoundEvent(value, new Location(i), (EntityLiving) i));
         } else if (i instanceof EntityArmorStand) {
-            // We can't access the proper index so loop through all entries
-            for (EntityDataManager.DataEntry<?> next : e.getPacket().getDataManagerEntries()) {
-                if (!(next.getValue() instanceof String)) continue;
+            boolean visible = Utils.isNameVisibleFromMetadata(e.getPacket().getDataManagerEntries());
+            if (!visible) return;
 
-                String value = (String) next.getValue();
-                if (value == null || value.isEmpty()) return;
+            String value = Utils.getNameFromMetadata(e.getPacket().getDataManagerEntries());
+            if (value == null || value.isEmpty()) return;
 
-                FrameworkManager.getEventBus().post(new LocationEvent.LabelFoundEvent(value, new Location(i), i));
-                return;
-            }
+            FrameworkManager.getEventBus().post(new LocationEvent.LabelFoundEvent(value, new Location(i), i));
         }
     }
 
