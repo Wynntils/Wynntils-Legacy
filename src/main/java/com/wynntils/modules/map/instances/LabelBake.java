@@ -4,7 +4,6 @@
 
 package com.wynntils.modules.map.instances;
 
-import com.wynntils.core.events.custom.WynnClassChangeEvent;
 import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.utils.objects.Location;
 
@@ -12,7 +11,7 @@ import java.util.*;
 
 public class LabelBake {
 
-    private static final List<String> MARKERS = Arrays.asList(
+    private static final List<String> SERVICES = Arrays.asList(
             "Armour Merchant",
             "Blacksmith",
             "Click to go to your housing plot",
@@ -43,7 +42,6 @@ public class LabelBake {
             "Accessories",
             "Boots and Pants",
             "Bows",
-            "Click for Options",
             "Crafting Station",
             "Food",
             "Helmets and Chestplates",
@@ -54,12 +52,14 @@ public class LabelBake {
             "Left-Click to set up booth"
     );
 
-    public static final NpcBaker npcBaker = new NpcBaker();
+    public static final LocationBaker locationBaker = new LocationBaker();
     public static final Map<Location, String> detectedNpcs = new HashMap<>();
+    public static final Map<Location, String> detectedDungeons = new HashMap<>();
+    public static final Map<Location, String> detectedTerritories = new HashMap<>();
     public static final Map<Location, String> detectedServices = new HashMap<>();
 
     public static void handleLabel(String label, String formattedLabel, Location location) {
-        if (MARKERS.stream().anyMatch(l -> l.equals(label))) {
+        if (SERVICES.stream().anyMatch(l -> l.equals(label))) {
             detectedServices.put(location, label);
             return;
         }
@@ -67,12 +67,22 @@ public class LabelBake {
         if (IGNORE.stream().anyMatch(l -> l.equals(label))) return;
 
         if (label.equals("NPC")) {
-            npcBaker.registerNpcLocation(location);
+            locationBaker.registerNpcLocation(location);
+            return;
+        }
+
+        if (label.equals("Click for Options")) {
+            locationBaker.registerTerritoryLocation(location);
+            return;
+        }
+
+        if (formattedLabel.equals("§6Dungeon")) {
+            locationBaker.registerDungeonLocation(location);
             return;
         }
 
         // It might be an NPC name
-        npcBaker.registerName(label, formattedLabel, location);
+        locationBaker.registerName(label, formattedLabel, location);
         String frm = formattedLabel.replace("§", "%");
         System.out.println("LABEL: " + label + " " + location + " " + frm + "==" + formattedLabel);
     }
@@ -81,22 +91,24 @@ public class LabelBake {
         if (!(label.equals("Sell, scrap and repair items") || label.equals("NPC"))) return;
 
         System.out.println("formatted NPC: " + formattedLabel);
-        npcBaker.registerNpcLocation(location);
+        locationBaker.registerNpcLocation(location);
     }
 
     public static void onWorldJoin(WynnWorldEvent.Join e) {
         // Remove data from the lobby when joining a world
-        npcBaker.nameMap.clear();
-        npcBaker.formattedNameMap.clear();
-        npcBaker.locationMap.clear();
+        locationBaker.nameMap.clear();
+        locationBaker.formattedNameMap.clear();
+        locationBaker.npcLocationMap.clear();
         detectedNpcs.clear();
         detectedServices.clear();
     }
 
-    public static class NpcBaker {
+    public static class LocationBaker {
         public final Map<LabelLocation, String> nameMap = new HashMap<>();
         public final Map<LabelLocation, String> formattedNameMap = new HashMap<>();
-        private final Map<LabelLocation, Location> locationMap = new HashMap<>();
+        private final Map<LabelLocation, Location> npcLocationMap = new HashMap<>();
+        private final Map<LabelLocation, Location> dungeonLocationMap = new HashMap<>();
+        private final Map<LabelLocation, Location> territoryLocationMap = new HashMap<>();
         public final Map<LabelLocation, Location> otherLocMap = new HashMap<>();
 
         public void registerNpcLocation(Location location) {
@@ -110,17 +122,51 @@ public class LabelBake {
                 formattedNameMap.remove(l);
                 otherLocMap.remove(l);
             } else {
-                locationMap.put(l, location);
+                npcLocationMap.put(l, location);
+            }
+        }
+
+        public void registerDungeonLocation(Location location) {
+            LabelLocation l = new LabelLocation(location);
+            String name = nameMap.get(l);
+            if (name != null) {
+                String formattedName = formattedNameMap.get(l);
+                System.out.println("DUNGEON: " + name + " as " + formattedName);
+                finalizeDungeon(location, name);
+                nameMap.remove(l);
+                formattedNameMap.remove(l);
+                otherLocMap.remove(l);
+            } else {
+                dungeonLocationMap.put(l, location);
+            }
+        }
+
+        public void registerTerritoryLocation(Location location) {
+            LabelLocation l = new LabelLocation(location);
+            String name = nameMap.get(l);
+            if (name != null) {
+                String formattedName = formattedNameMap.get(l);
+                System.out.println("TERRITORY: " + name + " as " + formattedName);
+                finalizeTerritory(location, name);
+                nameMap.remove(l);
+                formattedNameMap.remove(l);
+                otherLocMap.remove(l);
+            } else {
+                territoryLocationMap.put(l, location);
             }
         }
 
         public void registerName(String name, String formattedLabel, Location location) {
             LabelLocation l = new LabelLocation(location);
-            Location orgLoc = locationMap.get(l);
-            if (orgLoc != null) {
-                finalizeNpc(orgLoc, name);
-                locationMap.remove(l);
-            } else {
+            Location npcLoc = npcLocationMap.get(l);
+            Location dungeonLoc = dungeonLocationMap.get(l);
+            if (npcLoc != null) {
+                finalizeNpc(npcLoc, name);
+                npcLocationMap.remove(l);
+            } else if (dungeonLoc != null) {
+                finalizeDungeon(dungeonLoc, name);
+                dungeonLocationMap.remove(l);
+            } else{
                 nameMap.put(l, name);
                 formattedNameMap.put(l, formattedLabel);
                 otherLocMap.put(l, location);
@@ -129,6 +175,14 @@ public class LabelBake {
 
         private void finalizeNpc(Location location, String name) {
             detectedNpcs.put(location, name);
+        }
+
+        private void finalizeDungeon(Location location, String name) {
+            detectedDungeons.put(location, name);
+        }
+
+        private void finalizeTerritory(Location location, String name) {
+            detectedTerritories.put(location, name);
         }
     }
 

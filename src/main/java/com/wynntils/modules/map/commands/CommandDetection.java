@@ -91,16 +91,23 @@ public class CommandDetection extends CommandBase implements IClientCommand {
                 serviceCount++;
             }
 
+            int dungeonCount = 0;
+            for (Location key : LabelBake.detectedDungeons.keySet()) {
+                String name = LabelBake.detectedDungeons.get(key);
+                printInstance(ps, "Dungeon", name, "...", key);
+                dungeonCount++;
+            }
+
             int otherCount = 0;
-            for (LabelBake.LabelLocation key : LabelBake.npcBaker.nameMap.keySet()) {
-                String name = LabelBake.npcBaker.nameMap.get(key);
-                String formattedName = LabelBake.npcBaker.formattedNameMap.get(key);
-                Location location = LabelBake.npcBaker.otherLocMap.get(key);
+            for (LabelBake.LabelLocation key : LabelBake.locationBaker.nameMap.keySet()) {
+                String name = LabelBake.locationBaker.nameMap.get(key);
+                String formattedName = LabelBake.locationBaker.formattedNameMap.get(key);
+                Location location = LabelBake.locationBaker.otherLocMap.get(key);
                 printInstance(ps, "Other", name, formattedName, location);
                 otherCount++;
             }
 
-            sender.sendMessage(new TextComponentString("Wrote " + npcCount + " NPCs, " + serviceCount + " services and " + otherCount + " other to " + filename));
+            sender.sendMessage(new TextComponentString("Wrote " + npcCount + " NPCs, " + serviceCount + " services, " + dungeonCount + " dungeons and " + otherCount + " other to " + filename));
         } catch (FileNotFoundException e) {
             sender.sendMessage(new TextComponentString("Invalid filename"));
             e.printStackTrace();
