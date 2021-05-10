@@ -53,9 +53,6 @@ public class LabelBake {
     );
 
     public static final LocationBaker locationBaker = new LocationBaker();
-    public static final Map<Location, String> detectedNpcs = new HashMap<>();
-    public static final Map<Location, String> detectedDungeons = new HashMap<>();
-    public static final Map<Location, String> detectedTerritories = new HashMap<>();
     public static final Map<Location, String> detectedServices = new HashMap<>();
 
     public static void handleLabel(String label, String formattedLabel, Location location) {
@@ -67,17 +64,22 @@ public class LabelBake {
         if (IGNORE.stream().anyMatch(l -> l.equals(label))) return;
 
         if (label.equals("NPC")) {
-            locationBaker.registerNpcLocation(location);
+            locationBaker.registerTypeLocation(BakerType.NPC, location);
             return;
         }
 
         if (label.equals("Click for Options")) {
-            locationBaker.registerTerritoryLocation(location);
+            locationBaker.registerTypeLocation(BakerType.TERRITORY, location);
             return;
         }
 
         if (formattedLabel.equals("§6Dungeon")) {
-            locationBaker.registerDungeonLocation(location);
+            locationBaker.registerTypeLocation(BakerType.DUNGEON, location);
+            return;
+        }
+
+        if (formattedLabel.matches("^§b.*'s §7Shop$")) {
+            locationBaker.registerTypeLocation(BakerType.BOOTH, location);
             return;
         }
 
@@ -90,99 +92,85 @@ public class LabelBake {
     public static void handleNpc(String label, String formattedLabel, Location location) {
         if (!(label.equals("Sell, scrap and repair items") || label.equals("NPC"))) return;
 
-        System.out.println("formatted NPC: " + formattedLabel);
-        locationBaker.registerNpcLocation(location);
+        locationBaker.registerTypeLocation(BakerType.NPC, location);
     }
 
     public static void onWorldJoin(WynnWorldEvent.Join e) {
         // Remove data from the lobby when joining a world
-        locationBaker.nameMap.clear();
-        locationBaker.formattedNameMap.clear();
-        locationBaker.npcLocationMap.clear();
-        detectedNpcs.clear();
+        locationBaker.clearAll();
         detectedServices.clear();
     }
 
+    public enum BakerType {
+        NPC,
+        DUNGEON,
+        TERRITORY,
+        BOOTH
+    }
     public static class LocationBaker {
         public final Map<LabelLocation, String> nameMap = new HashMap<>();
         public final Map<LabelLocation, String> formattedNameMap = new HashMap<>();
+        private final Map<BakerType, Map<LabelLocation, Location>> typeMaps = new HashMap<>();
         private final Map<LabelLocation, Location> npcLocationMap = new HashMap<>();
-        private final Map<LabelLocation, Location> dungeonLocationMap = new HashMap<>();
-        private final Map<LabelLocation, Location> territoryLocationMap = new HashMap<>();
         public final Map<LabelLocation, Location> otherLocMap = new HashMap<>();
 
-        public void registerNpcLocation(Location location) {
-            LabelLocation l = new LabelLocation(location);
-            String name = nameMap.get(l);
-            if (name != null) {
-                String formattedName = formattedNameMap.get(l);
-                System.out.println("NPC: " + name + " as " + formattedName);
-                finalizeNpc(location, name);
-                nameMap.remove(l);
-                formattedNameMap.remove(l);
-                otherLocMap.remove(l);
-            } else {
-                npcLocationMap.put(l, location);
+        public final Map<BakerType, Map<Location, String>> detectedTypes = new HashMap<>();
+
+        public LocationBaker() {
+            for (BakerType type : BakerType.values()) {
+                typeMaps.put(type, new HashMap<>());
+                detectedTypes.put(type, new HashMap<>());
             }
         }
 
-        public void registerDungeonLocation(Location location) {
-            LabelLocation l = new LabelLocation(location);
-            String name = nameMap.get(l);
-            if (name != null) {
-                String formattedName = formattedNameMap.get(l);
-                System.out.println("DUNGEON: " + name + " as " + formattedName);
-                finalizeDungeon(location, name);
-                nameMap.remove(l);
-                formattedNameMap.remove(l);
-                otherLocMap.remove(l);
-            } else {
-                dungeonLocationMap.put(l, location);
+        public void clearAll() {
+            for (BakerType type : BakerType.values()) {
+                typeMaps.get(type).clear();
+                detectedTypes.get(type).clear();
             }
+            nameMap.clear();
+            formattedNameMap.clear();
+            npcLocationMap.clear();
         }
 
-        public void registerTerritoryLocation(Location location) {
+        public void registerTypeLocation(BakerType type, Location location) {
             LabelLocation l = new LabelLocation(location);
             String name = nameMap.get(l);
             if (name != null) {
                 String formattedName = formattedNameMap.get(l);
-                System.out.println("TERRITORY: " + name + " as " + formattedName);
-                finalizeTerritory(location, name);
+                System.out.println(type + "(g): " + name + " as " + formattedName);
+                finalizeType(type, location, name);
                 nameMap.remove(l);
                 formattedNameMap.remove(l);
                 otherLocMap.remove(l);
             } else {
-                territoryLocationMap.put(l, location);
+                Map<LabelLocation, Location> typeMap = typeMaps.get(type);
+                typeMap.put(l, location);
             }
         }
 
         public void registerName(String name, String formattedLabel, Location location) {
             LabelLocation l = new LabelLocation(location);
-            Location npcLoc = npcLocationMap.get(l);
-            Location dungeonLoc = dungeonLocationMap.get(l);
-            if (npcLoc != null) {
-                finalizeNpc(npcLoc, name);
-                npcLocationMap.remove(l);
-            } else if (dungeonLoc != null) {
-                finalizeDungeon(dungeonLoc, name);
-                dungeonLocationMap.remove(l);
-            } else{
-                nameMap.put(l, name);
-                formattedNameMap.put(l, formattedLabel);
-                otherLocMap.put(l, location);
+
+            for (BakerType type : BakerType.values()) {
+                Map<LabelLocation, Location> typeMap = typeMaps.get(type);
+                Location typeLoc = typeMap.get(l);
+                if (typeLoc != null) {
+                    finalizeType(type, typeLoc, name);
+                    typeMap.remove(l);
+                    return;
+                }
             }
+
+            // If we had no matching type, just store it as a known name
+            nameMap.put(l, name);
+            formattedNameMap.put(l, formattedLabel);
+            otherLocMap.put(l, location);
         }
 
-        private void finalizeNpc(Location location, String name) {
-            detectedNpcs.put(location, name);
-        }
-
-        private void finalizeDungeon(Location location, String name) {
-            detectedDungeons.put(location, name);
-        }
-
-        private void finalizeTerritory(Location location, String name) {
-            detectedTerritories.put(location, name);
+        private void finalizeType(BakerType type, Location location, String name) {
+            Map<Location, String> detectedTypeMap = detectedTypes.get(type);
+            detectedTypeMap.put(location, name);
         }
     }
 

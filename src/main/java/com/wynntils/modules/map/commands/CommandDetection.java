@@ -77,11 +77,18 @@ public class CommandDetection extends CommandBase implements IClientCommand {
         String filename = args[0];
 
         try (PrintStream ps = new PrintStream(filename)) {
-            int npcCount = 0;
-            for (Location key : LabelBake.detectedNpcs.keySet()) {
-                String name = LabelBake.detectedNpcs.get(key);
-                printInstance(ps, "NPC", name, "...", key);
-                npcCount++;
+
+            int bakedCount = 0;
+            for (LabelBake.BakerType type : LabelBake.BakerType.values()) {
+                Map<Location, String> m = LabelBake.locationBaker.detectedTypes.get(type);
+                for (Location key : m.keySet()) {
+                    String name = m.get(key);
+                    if (type == LabelBake.BakerType.BOOTH) {
+                        name = "Booth Shop"; // hide current owner
+                    }
+                    printInstance(ps, type.name(), name, "...", key);
+                    bakedCount++;
+                }
             }
 
             int serviceCount = 0;
@@ -89,13 +96,6 @@ public class CommandDetection extends CommandBase implements IClientCommand {
                 String name = LabelBake.detectedServices.get(key);
                 printInstance(ps, "Service", name, "...", key);
                 serviceCount++;
-            }
-
-            int dungeonCount = 0;
-            for (Location key : LabelBake.detectedDungeons.keySet()) {
-                String name = LabelBake.detectedDungeons.get(key);
-                printInstance(ps, "Dungeon", name, "...", key);
-                dungeonCount++;
             }
 
             int otherCount = 0;
@@ -107,7 +107,7 @@ public class CommandDetection extends CommandBase implements IClientCommand {
                 otherCount++;
             }
 
-            sender.sendMessage(new TextComponentString("Wrote " + npcCount + " NPCs, " + serviceCount + " services, " + dungeonCount + " dungeons and " + otherCount + " other to " + filename));
+            sender.sendMessage(new TextComponentString("Wrote " + bakedCount + " baked types, " + serviceCount + " services and " + otherCount + " other to " + filename));
         } catch (FileNotFoundException e) {
             sender.sendMessage(new TextComponentString("Invalid filename"));
             e.printStackTrace();

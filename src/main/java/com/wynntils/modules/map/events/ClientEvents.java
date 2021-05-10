@@ -43,7 +43,7 @@ import static com.wynntils.modules.core.events.ClientEvents.*;
 public class ClientEvents implements Listener {
     private static final Pattern MOB_LABEL = Pattern.compile("^.*\\[Lv. [0-9]+\\]$");
     private static final Pattern HEALTH_LABEL = Pattern.compile("^\\[\\|+[0-9]+\\|+\\]$");
-    private static final Pattern TOTEM_LABEL = Pattern.compile("^§c[0-9]+s|\\+[0-9]+❤/s$");
+    private static final Pattern TOTEM_LABEL = Pattern.compile("^§c[0-9]+s|\\§c+[0-9]+❤/§7s$");
     private static final Pattern GATHERING_LABEL = Pattern.compile("^. [ⒸⒷⒿⓀ] .* Lv. Min: [0-9]+$");
     private static final Pattern RESOURCE_LABEL = Pattern.compile("^(?:Right|Left)-Click for .*$");
     private static final Pattern WYBEL_OWNER = Pattern.compile("^§7\\[.*\\]$");
