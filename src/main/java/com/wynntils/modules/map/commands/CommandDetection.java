@@ -116,7 +116,7 @@ public class CommandDetection extends CommandBase implements IClientCommand {
 
     private void printInstance(PrintStream ps, String type, String name, String formattedName, Location key) {
         // Write a CSV line
-        ps.println(type + ", " + name + ", " + formattedName + ", " + (int) Math.round(key.x) + ", " + (int) Math.round(key.y) + ", " + (int) Math.round(key.z));
+        ps.println(type + ", " + name + ", " + formattedName + ", " + (int) Math.floor(key.x) + ", " + (int) Math.floor(key.y) + ", " + (int) Math.floor(key.z));
     }
 
 }
