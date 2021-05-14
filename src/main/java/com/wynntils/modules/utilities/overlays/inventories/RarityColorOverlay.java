@@ -4,7 +4,7 @@
 
 package com.wynntils.modules.utilities.overlays.inventories;
 
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
@@ -81,7 +81,7 @@ public class RarityColorOverlay implements Listener {
         int playerInvSlotNumber = 0;
 
         for (Slot s : guiContainer.inventorySlots.inventorySlots) {
-            if (s.inventory.getDisplayName().equals(ModCore.mc().player.inventory.getDisplayName())) {
+            if (s.inventory.getDisplayName().equals(McIf.mc().player.inventory.getDisplayName())) {
                 playerInvSlotNumber++;
                 if (playerInvSlotNumber <= 4 && playerInvSlotNumber >= 1 && !UtilitiesConfig.Items.INSTANCE.accesoryHighlight)
                     continue;

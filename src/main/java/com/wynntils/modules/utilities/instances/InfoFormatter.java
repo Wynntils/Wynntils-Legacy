@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.instances;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.containers.UnprocessedAmount;
@@ -31,8 +32,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class InfoFormatter {
-
-    private Minecraft mc = McIf.mc();
 
     public Map<String, String> cache = new HashMap<>();
     public Map<String, InfoModule> formatters = new HashMap<>();
@@ -66,22 +65,22 @@ public class InfoFormatter {
 
         // X coordinate
         registerFormatter((input) ->
-                Integer.toString((int) mc.player.posX),
+                Integer.toString((int) McIf.mc().player.posX),
                 "x");
 
         // Y coordinate
         registerFormatter((input) ->
-                Integer.toString((int) mc.player.posY),
+                Integer.toString((int) McIf.mc().player.posY),
                 "y");
 
         // Z coordinate
         registerFormatter((input) ->
-                Integer.toString((int) mc.player.posZ),
+                Integer.toString((int) McIf.mc().player.posZ),
                 "z");
 
         // The facing cardinal direction
         registerFormatter((input) ->
-                Utils.getPlayerDirection(mc.player.rotationYaw),
+                Utils.getPlayerDirection(McIf.mc().player.rotationYaw),
                 "dir");
 
         // Frames per second

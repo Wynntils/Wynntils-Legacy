@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.chat.overlays.gui;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -53,7 +54,7 @@ public class ChatGUI extends GuiChat {
         for (Map.Entry<ChatTab, ChatButton> tabButton : tabButtons.entrySet()) {
             if (tabButton.getValue().isMouseOver()) {
                 if (mouseButton == 1) {
-                    mc.displayGuiScreen(new TabGUI(TabManager.getAvailableTabs().indexOf(tabButton.getKey())));
+                    McIf.mc().displayGuiScreen(new TabGUI(TabManager.getAvailableTabs().indexOf(tabButton.getKey())));
                 } else {
                     ChatOverlay.getChat().setCurrentTab(TabManager.getAvailableTabs().indexOf(tabButton.getKey()));
                     tabButtons.values().stream().forEach(ChatButton::unselect);
@@ -69,7 +70,7 @@ public class ChatGUI extends GuiChat {
     @Override
     protected void actionPerformed(GuiButton button) throws IOException {
         if (button == addTab) {
-            mc.displayGuiScreen(new TabGUI(-2));
+            McIf.mc().displayGuiScreen(new TabGUI(-2));
         } else if (button instanceof ChatButton) {
             ChatButton chatButton = (ChatButton) button;
             if (chatButton.getLanguage() != null) {
@@ -133,14 +134,14 @@ public class ChatGUI extends GuiChat {
         if (!ChatConfig.INSTANCE.useBrackets) {
             drawRect(2, this.height - 14, this.inputField.width + 2, this.height - 2, Integer.MIN_VALUE);
             this.inputField.drawTextBox();
-            ITextComponent itextcomponent = this.mc.ingameGUI.getChatGUI().getChatComponent(Mouse.getX(), Mouse.getY());
+            ITextComponent itextcomponent = McIf.mc().ingameGUI.getChatGUI().getChatComponent(Mouse.getX(), Mouse.getY());
 
             for (int i = 0; i < this.buttonList.size(); ++i) {
-                ((GuiButton) this.buttonList.get(i)).drawButton(this.mc, mouseX, mouseY, partialTicks);
+                ((GuiButton) this.buttonList.get(i)).drawButton(McIf.mc(), mouseX, mouseY, partialTicks);
             }
 
             for (int j = 0; j < this.labelList.size(); ++j) {
-                ((GuiLabel) this.labelList.get(j)).drawLabel(this.mc, mouseX, mouseY);
+                ((GuiLabel) this.labelList.get(j)).drawLabel(McIf.mc(), mouseX, mouseY);
             }
 
             if (itextcomponent != null && itextcomponent.getStyle().getHoverEvent() != null) {
@@ -194,7 +195,7 @@ public class ChatGUI extends GuiChat {
         }
 
         @Override
-        public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+        public void drawButton(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
             if (this.visible) {
                 this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
                 ScreenRenderer.beginGL(this.x, this.y);

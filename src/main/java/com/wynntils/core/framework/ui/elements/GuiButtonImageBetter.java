@@ -71,7 +71,7 @@ public class GuiButtonImageBetter extends GuiButtonImage {
     }
 
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+    public void drawButton(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         setColour(this.highlight && mouseX >= scaledStartX && mouseY >= scaledStartY && mouseX < scaledEndX && mouseY < scaledEndY, this.enabled);
 
         if (scaleFactor != 1f) {
@@ -80,7 +80,7 @@ public class GuiButtonImageBetter extends GuiButtonImage {
             GlStateManager.scale(scaleFactor, scaleFactor, 1);
             GlStateManager.translate(scaleFromX, scaleFromY, 0);
         }
-        super.drawButton(mc, mouseX, mouseY, partialTicks);
+        super.drawButton(minecraft, mouseX, mouseY, partialTicks);
         if (scaleFactor != 1f) {
             GlStateManager.popMatrix();
         }

@@ -5,7 +5,6 @@
 package com.wynntils.modules.utilities.overlays.hud;
 
 import com.wynntils.McIf;
-import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.WarStageEvent;
@@ -162,7 +161,7 @@ public class WarTimerOverlay extends Overlay {
                 changeWarStage(WarStage.WAITING_FOR_MOB_TIMER);
                 time = -1;
                 if (territory == null) {
-                    EntityPlayerSP pl = ModCore.mc().player;
+                    EntityPlayerSP pl = McIf.mc().player;
                     for (TerritoryProfile pf : WebManager.getTerritories().values()) {
                         if (pf.insideArea((int)pl.posX, (int)pl.posZ)) {
                             territory = pf.getFriendlyName();

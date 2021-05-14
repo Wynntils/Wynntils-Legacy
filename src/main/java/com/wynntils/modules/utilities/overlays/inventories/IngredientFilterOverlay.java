@@ -4,7 +4,7 @@
 
 package com.wynntils.modules.utilities.overlays.inventories;
 
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
@@ -60,7 +60,7 @@ public class IngredientFilterOverlay implements Listener {
                     RarityColorOverlay.setProfessionFilter("-");
                     gb.displayString = "-";
                 }
-                gb.playPressSound(ModCore.mc().getSoundHandler());
+                gb.playPressSound(McIf.mc().getSoundHandler());
             }
         });
     }

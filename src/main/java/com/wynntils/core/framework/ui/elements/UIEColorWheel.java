@@ -12,7 +12,6 @@ import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.framework.ui.UI;
 import com.wynntils.modules.core.config.CoreDBConfig;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiPageButtonList;
@@ -112,7 +111,7 @@ public class UIEColorWheel extends UIEClickZone {
     public void click(int mouseX, int mouseY, MouseButton button, UI ui) {
         textBox.click(mouseX, mouseY, button, ui);
 
-        if (hovering) mc.displayGuiScreen(new ColorPickerGUI());
+        if (hovering) McIf.mc().displayGuiScreen(new ColorPickerGUI());
     }
 
     public void keyTyped(char c, int i, UI ui) {
@@ -157,7 +156,7 @@ public class UIEColorWheel extends UIEClickZone {
             if (button == applyButton) {
                 color = toChange;
 
-                mc.displayGuiScreen(backGui);
+                McIf.mc().displayGuiScreen(backGui);
                 McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(clickSound, 1f));
                 onAccept.accept(color);
                 if (colorText == null) {
@@ -166,7 +165,7 @@ public class UIEColorWheel extends UIEClickZone {
                     textBox.setText(colorText);
                 }
             } else if (button == cancelButton) {
-                mc.displayGuiScreen(backGui);
+                McIf.mc().displayGuiScreen(backGui);
                 McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(clickSound, 1f));
             }
         }
@@ -329,7 +328,7 @@ public class UIEColorWheel extends UIEClickZone {
             drawRectF(CommonColors.BLACK, (width/2f)-11, (height/2f)+94, (width/2f)+11, (height/2f)+116);  // current color back
             drawRectF(toChange, (width/2f)-10, (height/2f)+95, (width/2f)+10, (height/2f)+115);  // current color
 
-            drawCenteredString(mc.fontRenderer, "Click to pick a color!", (width/2), (height/2)-110, 0xFFFFFF);
+            drawCenteredString(McIf.mc().fontRenderer, "Click to pick a color!", (width/2), (height/2)-110, 0xFFFFFF);
 
             for (int i = 0; i < 16; ++i) {
                 int col = i / 8;

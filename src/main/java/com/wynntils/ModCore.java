@@ -112,8 +112,4 @@ public class ModCore {
         FrameworkManager.getEventBus().post(new ClientEvent.Ready());
     }
 
-    public static Minecraft mc() {
-        return McIf.mc();
-    }
-
 }

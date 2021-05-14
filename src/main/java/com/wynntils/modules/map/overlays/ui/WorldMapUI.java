@@ -5,6 +5,7 @@
 package com.wynntils.modules.map.overlays.ui;
 
 import com.google.common.collect.Iterables;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.GuiMovementScreen;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
@@ -86,8 +87,6 @@ public class WorldMapUI extends GuiMovementScreen {
     }
 
     protected WorldMapUI(float startX, float startZ) {
-        mc = McIf.mc();
-
         // HeyZeer0: Handles the territories
         for (TerritoryProfile territory : WebManager.getTerritories().values()) {
             territories.put(territory.getFriendlyName(), new MapTerritory(territory).setRenderer(renderer));
@@ -179,8 +178,8 @@ public class WorldMapUI extends GuiMovementScreen {
     }
 
     protected void updateCenterPositionWithPlayerPosition() {
-        float newX = (float) mc.player.posX;
-        float newZ = (float) mc.player.posZ;
+        float newX = (float) McIf.mc().player.posX;
+        float newZ = (float) McIf.mc().player.posZ;
         if (newX == centerPositionX && newZ == centerPositionZ) return;
         updateCenterPosition(newX, newZ);
     }
@@ -313,8 +312,8 @@ public class WorldMapUI extends GuiMovementScreen {
 
         if (needToReset[0]) resetAllIcons();
 
-        float playerPositionX = (map.getTextureXPosition(mc.player.posX) - minX) / (maxX - minX);
-        float playerPositionZ = (map.getTextureZPosition(mc.player.posZ) - minZ) / (maxZ - minZ);
+        float playerPositionX = (map.getTextureXPosition(McIf.mc().player.posX) - minX) / (maxX - minX);
+        float playerPositionZ = (map.getTextureZPosition(McIf.mc().player.posZ) - minZ) / (maxZ - minZ);
 
         if (playerPositionX > 0 && playerPositionX < 1 && playerPositionZ > 0 && playerPositionZ < 1) {  // <--- player position
             playerPositionX = width * playerPositionX;
@@ -324,7 +323,7 @@ public class WorldMapUI extends GuiMovementScreen {
 
             pushMatrix();
             translate(drawingOrigin.x + playerPositionX, drawingOrigin.y + playerPositionZ, 0);
-            rotate(180 + MathHelper.fastFloor(mc.player.rotationYaw), 0, 0, 1);
+            rotate(180 + MathHelper.fastFloor(McIf.mc().player.rotationYaw), 0, 0, 1);
             translate(-drawingOrigin.x - playerPositionX, -drawingOrigin.y - playerPositionZ, 0);
 
             MapConfig.PointerType type = MapConfig.Textures.INSTANCE.pointerStyle;

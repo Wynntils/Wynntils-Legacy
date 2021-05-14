@@ -1,6 +1,6 @@
 package com.wynntils.modules.map.instances;
 
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
@@ -42,11 +42,10 @@ public class LootRunNote {
     }
 
     public void drawNote(CustomColor color) {
-        RenderManager render = ModCore.mc().getRenderManager();
+        RenderManager render = McIf.mc().getRenderManager();
         FontRenderer fr = render.getFontRenderer();
-        EntityPlayerSP player = ModCore.mc().player;
 
-        if (player.getDistanceSq(location.x, location.y, location.z) > 4096f)
+        if (McIf.mc().player.getDistanceSq(location.x, location.y, location.z) > 4096f)
             return; // only draw nametag when close
 
         String[] lines = StringUtils.wrapTextBySize(note, 200);

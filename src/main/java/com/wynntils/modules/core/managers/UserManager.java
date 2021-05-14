@@ -74,11 +74,9 @@ public class UserManager {
     }
 
     public static void clearRegistry() {
-        Minecraft mc = McIf.mc();
-
         // needs to be run inside the client thread
         // otherwise some weird corrupting issues WILL happen
-        mc.addScheduledTask(() -> {
+        McIf.mc().addScheduledTask(() -> {
             Iterator<Map.Entry<UUID, WynntilsUser>> it = users.entrySet().iterator();
             while (it.hasNext()) {
                 Map.Entry<UUID, WynntilsUser> next = it.next();
@@ -87,7 +85,7 @@ public class UserManager {
                 }
 
                 // removes the texture from the texture registry as well
-                mc.getTextureManager().deleteTexture(next.getValue().getCosmetics().getLocation());
+                McIf.mc().getTextureManager().deleteTexture(next.getValue().getCosmetics().getLocation());
 
                 it.remove();
             }

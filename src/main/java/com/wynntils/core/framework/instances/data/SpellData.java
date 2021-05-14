@@ -4,6 +4,7 @@
 
 package com.wynntils.core.framework.instances.data;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.instances.containers.PlayerData;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import net.minecraft.util.text.TextFormatting;
@@ -67,7 +68,7 @@ public class SpellData extends PlayerData {
 
         int level = get(CharacterData.class).getLevel();
         if (level <= 11) {
-            String subtitle = ReflectionFields.GuiIngame_displayedSubTitle.getValue(getMinecraft().ingameGUI);
+            String subtitle = ReflectionFields.GuiIngame_displayedSubTitle.getValue(McIf.mc().ingameGUI);
             return parseSpellFromTitle(subtitle);
         }
 

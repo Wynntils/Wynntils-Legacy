@@ -5,7 +5,6 @@
 package com.wynntils.modules.richpresence.events;
 
 import com.wynntils.McIf;
-import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.enums.ClassType;
@@ -44,7 +43,7 @@ public class ServerEvents implements Listener {
 
     @SubscribeEvent
     public void onServerJoin(WynncraftServerEvent.Login e) {
-        if (!ModCore.mc().isSingleplayer() && ModCore.mc().getCurrentServerData() != null && Objects.requireNonNull(ModCore.mc().getCurrentServerData()).serverIP.contains("wynncraft") && RichPresenceConfig.INSTANCE.enableRichPresence) {
+        if (!McIf.mc().isSingleplayer() && McIf.mc().getCurrentServerData() != null && Objects.requireNonNull(McIf.mc().getCurrentServerData()).serverIP.contains("wynncraft") && RichPresenceConfig.INSTANCE.enableRichPresence) {
             String state = "In Lobby";
             RichPresenceModule.getModule().getRichPresence().updateRichPresence(state, null, null, OffsetDateTime.now());
         }
@@ -167,8 +166,7 @@ public class ServerEvents implements Listener {
      * @return RichPresence largeImageText
      */
     public static String getPlayerInfo() {
-        Minecraft mc = McIf.mc();
-        return RichPresenceConfig.INSTANCE.showUserInformation ? mc.player.getName() + " | Level " + mc.player.experienceLevel + " " + PlayerInfo.get(CharacterData.class).getCurrentClass().toString() : null;
+        return RichPresenceConfig.INSTANCE.showUserInformation ? McIf.mc().player.getName() + " | Level " + McIf.mc().player.experienceLevel + " " + PlayerInfo.get(CharacterData.class).getCurrentClass().toString() : null;
     }
 
 }

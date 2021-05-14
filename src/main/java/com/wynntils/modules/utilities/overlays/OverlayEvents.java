@@ -5,7 +5,6 @@
 package com.wynntils.modules.utilities.overlays;
 
 import com.wynntils.McIf;
-import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
@@ -755,7 +754,7 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
-        ModCore.mc().addScheduledTask(GameUpdateOverlay::resetMessages);
+        McIf.mc().addScheduledTask(GameUpdateOverlay::resetMessages);
         // WynnCraft seem to be off with its timer with around 10 seconds
         loginTime = Minecraft.getSystemTime() + 10000;
         msgcounter = 0;

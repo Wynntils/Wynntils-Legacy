@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.chat.managers;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.instances.data.InventoryData;
@@ -46,29 +47,28 @@ public class HeldItemChatManager {
     }
 
     private static ITextComponent getMessage() {
-        Minecraft mc = McIf.mc();
         if (
             !ChatConfig.INSTANCE.heldItemChat ||
-            mc.player == null || mc.world == null ||
-            mc.player.inventory.mainInventory.get(6).getItem() != Items.COMPASS ||
-            mc.player.inventory.mainInventory.get(7).getItem() != Items.WRITTEN_BOOK ||
-            mc.player.inventory.mainInventory.get(8).getItem() != Items.NETHER_STAR &&
-            mc.player.inventory.mainInventory.get(8).getItem() != Item.getItemFromBlock(Blocks.SNOW_LAYER) ||
+            McIf.mc().player == null || McIf.mc().world == null ||
+            McIf.mc().player.inventory.mainInventory.get(6).getItem() != Items.COMPASS ||
+            McIf.mc().player.inventory.mainInventory.get(7).getItem() != Items.WRITTEN_BOOK ||
+            McIf.mc().player.inventory.mainInventory.get(8).getItem() != Items.NETHER_STAR &&
+            McIf.mc().player.inventory.mainInventory.get(8).getItem() != Item.getItemFromBlock(Blocks.SNOW_LAYER) ||
             !PlayerInfo.get(CharacterData.class).isLoaded()
         ) {
             reset();
             return null;
         }
 
-        if (lastHolding != mc.player.inventory.currentItem) {
-            lastHolding = mc.player.inventory.currentItem;
+        if (lastHolding != McIf.mc().player.inventory.currentItem) {
+            lastHolding = McIf.mc().player.inventory.currentItem;
             startedHolding = System.currentTimeMillis();
             return null;
         }
 
         if (System.currentTimeMillis() < startedHolding + DISPLAY_TIME) return null;
 
-        switch (mc.player.inventory.currentItem) {
+        switch (McIf.mc().player.inventory.currentItem) {
             case 6: return getCompassMessage();
             // case 7: return getQuestBookMessage();
             case 8: return getSoulPointsMessage();

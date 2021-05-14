@@ -5,7 +5,6 @@
 package com.wynntils.modules.chat.managers;
 
 import com.wynntils.McIf;
-import com.wynntils.ModCore;
 import com.wynntils.core.framework.enums.PowderManualChapter;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.helpers.TextAction;
@@ -16,7 +15,6 @@ import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.utilities.configs.TranslationConfig;
 import com.wynntils.webapi.services.TranslationManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
@@ -123,7 +121,7 @@ public class ChatManager {
 
         // popup sound
         if (McIf.getUnformattedText(in).contains(" requires your ") && McIf.getUnformattedText(in).contains(" skill to be at least "))
-            ModCore.mc().player.playSound(popOffSound, 1f, 1f);
+            McIf.mc().player.playSound(popOffSound, 1f, 1f);
 
         // wynnic and gavellian translator
         if (StringUtils.hasWynnic(McIf.getUnformattedText(in)) || StringUtils.hasGavellian(McIf.getUnformattedText(in))) {
@@ -496,7 +494,7 @@ public class ChatManager {
 
     public static boolean processUserMention(ITextComponent in, ITextComponent original) {
         if (ChatConfig.INSTANCE.allowChatMentions && in != null && McIf.mc().player != null) {
-            String match = "\\b(" + ModCore.mc().player.getName() + (ChatConfig.INSTANCE.mentionNames.length() > 0 ? "|" + ChatConfig.INSTANCE.mentionNames.replace(",", "|") : "") + ")\\b";
+            String match = "\\b(" + McIf.mc().player.getName() + (ChatConfig.INSTANCE.mentionNames.length() > 0 ? "|" + ChatConfig.INSTANCE.mentionNames.replace(",", "|") : "") + ")\\b";
             Pattern pattern = Pattern.compile(match, Pattern.CASE_INSENSITIVE);
 
             Matcher looseMatcher = pattern.matcher(McIf.getUnformattedText(in));
@@ -558,7 +556,7 @@ public class ChatManager {
                     components.add(afterComponent);
                 }
                 if (hasMention) {
-                    ModCore.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1.0F));
+                    McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1.0F));
                     in.getSiblings().clear();
                     in.getSiblings().addAll(components);
 

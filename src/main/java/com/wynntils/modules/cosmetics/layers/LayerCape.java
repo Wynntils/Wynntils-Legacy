@@ -4,12 +4,11 @@
 
 package com.wynntils.modules.cosmetics.layers;
 
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.instances.account.WynntilsUser;
 import com.wynntils.modules.core.managers.UserManager;
 import com.wynntils.modules.cosmetics.configs.CosmeticsConfig;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -51,7 +50,7 @@ public class LayerCape implements LayerRenderer<AbstractClientPlayer> {
     public void doRenderLayer(AbstractClientPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         if (!CosmeticsConfig.INSTANCE.forceCapes
                 && !McIf.mc().gameSettings.getModelParts().toString().contains("CAPE")
-                && player.getUniqueID() == ModCore.mc().player.getUniqueID()) return;
+                && player.getUniqueID() == McIf.mc().player.getUniqueID()) return;
 
         WynntilsUser info = UserManager.getUser(player.getUniqueID());
         if (info == null || !info.getCosmetics().hasCape()) return;

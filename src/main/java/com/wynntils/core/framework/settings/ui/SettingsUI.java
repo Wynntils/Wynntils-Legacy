@@ -114,8 +114,8 @@ public class SettingsUI extends UI {
     public void onClose() {
         Keyboard.enableRepeatEvents(false);
 
-        mc.currentScreen = null;
-        mc.displayGuiScreen(parentScreen);
+        McIf.mc().currentScreen = null;
+        McIf.mc().displayGuiScreen(parentScreen);
     }
 
     @Override

@@ -5,7 +5,6 @@
 package com.wynntils.modules.core.instances;
 
 import com.wynntils.McIf;
-import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.SpellEvent;
@@ -13,7 +12,6 @@ import com.wynntils.core.events.custom.WynnClassChangeEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.network.play.client.CPacketHeldItemChange;
@@ -66,15 +64,15 @@ public class TotemTracker {
     }
 
     private void postEvent(Event event) {
-        ModCore.mc().addScheduledTask(() -> FrameworkManager.getEventBus().post(event));
+        McIf.mc().addScheduledTask(() -> FrameworkManager.getEventBus().post(event));
     }
 
     private Entity getBufferedEntity(int entityId) {
-        Entity entity = ModCore.mc().world.getEntityByID(entityId);
+        Entity entity = McIf.mc().world.getEntityByID(entityId);
         if (entity != null) return entity;
 
         if (entityId == bufferedId) {
-            return new EntityArmorStand(ModCore.mc().world, bufferedX, bufferedY, bufferedZ);
+            return new EntityArmorStand(McIf.mc().world, bufferedX, bufferedY, bufferedZ);
         }
 
         return null;

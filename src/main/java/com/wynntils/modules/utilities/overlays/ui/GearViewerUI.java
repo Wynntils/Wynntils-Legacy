@@ -8,7 +8,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonSyntaxException;
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.enums.SpellType;
@@ -26,7 +26,6 @@ import com.wynntils.webapi.profiles.item.ItemProfile;
 import com.wynntils.webapi.profiles.item.enums.MajorIdentification;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 import com.wynntils.webapi.profiles.item.objects.ItemRequirementsContainer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
@@ -58,7 +57,7 @@ public class GearViewerUI extends FakeGuiContainer {
     private EntityPlayer player;
 
     public GearViewerUI(InventoryBasic inventory, EntityPlayer player) {
-        super(new ContainerGearViewer(inventory, ModCore.mc().player));
+        super(new ContainerGearViewer(inventory, McIf.mc().player));
         this.inventory = inventory;
 
         // create copy of given player and inventory to keep items and models separate
@@ -118,7 +117,7 @@ public class GearViewerUI extends FakeGuiContainer {
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(INVENTORY_GUI_TEXTURE);
+        McIf.mc().getTextureManager().bindTexture(INVENTORY_GUI_TEXTURE);
         int i = (this.width - this.xSize) / 2;
         int j = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(i, j, 0, 0, 96, 83);
@@ -348,13 +347,13 @@ public class GearViewerUI extends FakeGuiContainer {
     public static void openGearViewer() {
         if (!Reference.onWorld) return;
 
-        if (ModCore.mc().objectMouseOver == null) return;
-        Entity e = ModCore.mc().objectMouseOver.entityHit;
+        if (McIf.mc().objectMouseOver == null) return;
+        Entity e = McIf.mc().objectMouseOver.entityHit;
         if (!(e instanceof EntityPlayer)) return;
         EntityPlayer ep = (EntityPlayer) e;
         if (ep.getTeam() == null) return; // player model npc
 
-        ModCore.mc().displayGuiScreen(new GearViewerUI(new InventoryBasic("", false, 5), ep));
+        McIf.mc().displayGuiScreen(new GearViewerUI(new InventoryBasic("", false, 5), ep));
     }
 
 }

@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.overlays.ui;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
@@ -130,14 +131,14 @@ public class WorldMapSettingsUI extends GuiScreen {
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         if (mouseButton == 0 || mouseButton == 1) {
             for (Button btn : settingButtons) {
-                if (btn.mousePressed(mc, mouseX, mouseY)) {
+                if (btn.mousePressed(McIf.mc(), mouseX, mouseY)) {
                     btn.toggle(mouseX, mouseY, mouseButton == 1);
                     selectedButton = btn;
                     return;
                 }
             }
 
-            if (textureButton.mousePressed(mc, mouseX, mouseY)) {
+            if (textureButton.mousePressed(McIf.mc(), mouseX, mouseY)) {
                 selectedButton = textureButton;
                 int delta = mouseButton == 0 ? 1 : IconTexture.values().length - 1;
                 IconTexture newTexture = IconTexture.values()[(IconTexture.valueOf(textureButton.displayString).ordinal() + delta) % IconTexture.values().length];
@@ -287,7 +288,7 @@ public class WorldMapSettingsUI extends GuiScreen {
         }
 
         @Override
-        public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+        public void drawButton(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
             if (!visible) {
                 this.hovered = false;
                 return;
@@ -304,7 +305,7 @@ public class WorldMapSettingsUI extends GuiScreen {
             icon.renderAt(renderer, x + height + (height * 0.375f), y + (height / 2f), miniScale, 1);
             CommonColors.WHITE.applyColor();
 
-            this.drawString(mc.fontRenderer, displayString, this.x + (int) (height * 1.75f) + 2, this.y + (this.height - mc.fontRenderer.FONT_HEIGHT) / 2, 0xFFFFFFFF);
+            this.drawString(minecraft.fontRenderer, displayString, this.x + (int) (height * 1.75f) + 2, this.y + (this.height - minecraft.fontRenderer.FONT_HEIGHT) / 2, 0xFFFFFFFF);
         }
 
     }

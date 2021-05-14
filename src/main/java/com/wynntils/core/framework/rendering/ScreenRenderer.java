@@ -9,7 +9,6 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Texture;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.core.config.CoreDBConfig;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -31,7 +30,6 @@ import static org.lwjgl.opengl.GL11.*;
 public class ScreenRenderer {
 
     public static SmartFontRenderer fontRenderer = null;
-    public static Minecraft mc;
     public static ScaledResolution screen = null;
     private static boolean rendering = false;
     private static float scale = 1.0f;
@@ -56,11 +54,10 @@ public class ScreenRenderer {
      * except {@link com.wynntils.core.events.ClientEvents#onTick(TickEvent.ClientTickEvent)} !
      */
     public static void refresh() {
-        mc = McIf.mc();
-        screen = new ScaledResolution(mc);
+        screen = new ScaledResolution(McIf.mc());
         if (fontRenderer == null) {
             fontRenderer = new SmartFontRenderer();
-            fontRenderer.onResourceManagerReload(mc.getResourceManager());
+            fontRenderer.onResourceManagerReload(McIf.mc().getResourceManager());
         }
         fontRenderer.setUnicodeFlag(CoreDBConfig.INSTANCE.useUnicode);
         if (itemRenderer == null)
@@ -340,7 +337,7 @@ public class ScreenRenderer {
 
         // Scissor test is in screen coordinates, so y is inverted and scale needs to be manually applied
         int scale = screen.getScaleFactor();
-        glScissor((x + drawingOrigin.x) * scale, mc.displayHeight - (y + drawingOrigin.y + height) * scale, width * scale, height * scale);
+        glScissor((x + drawingOrigin.x) * scale, McIf.mc().displayHeight - (y + drawingOrigin.y + height) * scale, width * scale, height * scale);
     }
 
     /**
@@ -359,7 +356,7 @@ public class ScreenRenderer {
 
         enableScissorTest();
         int scale = screen.getScaleFactor();
-        glScissor((x + drawingOrigin.x) * scale, 0, width * scale, mc.displayHeight);
+        glScissor((x + drawingOrigin.x) * scale, 0, width * scale, McIf.mc().displayHeight);
     }
 
     /**
@@ -371,7 +368,7 @@ public class ScreenRenderer {
 
         enableScissorTest();
         int scale = screen.getScaleFactor();
-        glScissor(0, mc.displayHeight - (y + drawingOrigin.y + height) * scale, mc.displayWidth, height * scale);
+        glScissor(0, McIf.mc().displayHeight - (y + drawingOrigin.y + height) * scale, McIf.mc().displayWidth, height * scale);
     }
 
     /**

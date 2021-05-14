@@ -4,6 +4,7 @@
 
 package com.wynntils.core.framework.instances;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.wynntils.WynntilsConflictContext;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.KeyBinding;
@@ -30,7 +31,7 @@ public class GuiMovementScreen extends GuiScreen {
         if (Keyboard.isCreated()) {
             while (Keyboard.next()) {
 
-                for (KeyBinding key : mc.gameSettings.keyBindings) {
+                for (KeyBinding key : McIf.mc().gameSettings.keyBindings) {
                     if (key.getKeyCode() != Keyboard.getEventKey() || key.getKeyConflictContext() != WynntilsConflictContext.ALLOW_MOVEMENTS) continue;
 
                     KeyBinding.setKeyBindState(Keyboard.getEventKey(), Keyboard.getEventKeyState());

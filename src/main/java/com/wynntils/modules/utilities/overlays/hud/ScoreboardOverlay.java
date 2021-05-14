@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -32,9 +33,9 @@ public class ScoreboardOverlay extends Overlay {
                 event.getType() != RenderGameOverlayEvent.ElementType.ALL) return;
 
         // vanilla fontrenderer
-        FontRenderer fontRenderer = mc.fontRenderer;
+        FontRenderer fontRenderer = McIf.mc().fontRenderer;
 
-        ScoreObjective objective = mc.world.getScoreboard().getObjectiveInDisplaySlot(1); // sidebar objective
+        ScoreObjective objective = McIf.mc().world.getScoreboard().getObjectiveInDisplaySlot(1); // sidebar objective
         if (objective == null) return;
 
         // get the 15 highest scores

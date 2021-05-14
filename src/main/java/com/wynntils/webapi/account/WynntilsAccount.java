@@ -6,7 +6,7 @@ package com.wynntils.webapi.account;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.JsonObject;
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.professions.GatheringMaterial;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
@@ -44,7 +44,7 @@ public class WynntilsAccount {
     public String getToken() {
         return token;
     }
-    
+
     public boolean isConnected() {
         return ready;
     }
@@ -83,7 +83,7 @@ public class WynntilsAccount {
         // response
 
         JsonObject authParams = new JsonObject();
-        authParams.addProperty("username", ModCore.mc().getSession().getUsername());
+        authParams.addProperty("username", McIf.mc().getSession().getUsername());
         authParams.addProperty("key", secretKey[0]);
         authParams.addProperty("version", Reference.VERSION + "_" + Reference.BUILD_NUMBER);
 
@@ -169,8 +169,7 @@ public class WynntilsAccount {
 
             String s1 = (new BigInteger(CryptManager.getServerIdHash("", publicKey, secretkey))).toString(16);
 
-            Minecraft mc = ModCore.mc();
-            mc.getSessionService().joinServer(mc.getSession().getProfile(), mc.getSession().getToken(), s1.toLowerCase());
+            McIf.mc().getSessionService().joinServer(McIf.mc().getSession().getProfile(), McIf.mc().getSession().getToken(), s1.toLowerCase());
 
             byte[] secretKeyEncrypted = CryptManager.encryptData(publicKey, secretkey.getEncoded());
 

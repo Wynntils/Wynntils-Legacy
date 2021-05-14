@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.core.overlays;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -47,7 +48,7 @@ public class DownloadOverlay extends Overlay {
                     timeToRestart = System.currentTimeMillis() + 10000;
                 }
                 if (timeToRestart - System.currentTimeMillis() <= 0) {
-                    mc.shutdown();
+                    McIf.mc().shutdown();
                     return;
                 }
 

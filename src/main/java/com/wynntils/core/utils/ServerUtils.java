@@ -62,30 +62,28 @@ public class ServerUtils {
      * @param unloadServerPack if false, disconnect without refreshing resources by unloading the server resource pack
      */
     public static void disconnect(boolean switchGui, boolean unloadServerPack) {
-        Minecraft mc = McIf.mc();
-
-        WorldClient world = mc.world;
+        WorldClient world = McIf.mc().world;
         if (world == null) return;
 
-        boolean singlePlayer = mc.isIntegratedServerRunning();
-        boolean realms = !singlePlayer && mc.isConnectedToRealms();
+        boolean singlePlayer = McIf.mc().isIntegratedServerRunning();
+        boolean realms = !singlePlayer && McIf.mc().isConnectedToRealms();
 
         world.sendQuittingDisconnectingPacket();
         if (unloadServerPack) {
-            mc.loadWorld(null);
+            McIf.mc().loadWorld(null);
         } else {
             loadWorldWithoutUnloadingServerResourcePack(null);
         }
 
         if (!switchGui) return;
         if (singlePlayer) {
-            mc.displayGuiScreen(new GuiMainMenu());
+            McIf.mc().displayGuiScreen(new GuiMainMenu());
         } else if (realms) {
             // Should not be possible because Wynntils will
             // never be running on the latest version of Minecraft
             new RealmsBridge().switchToRealms(new GuiMainMenu());
         } else {
-            mc.displayGuiScreen(new GuiMultiplayer(new GuiMainMenu()));
+            McIf.mc().displayGuiScreen(new GuiMultiplayer(new GuiMainMenu()));
         }
     }
 

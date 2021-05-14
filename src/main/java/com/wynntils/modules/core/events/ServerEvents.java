@@ -7,7 +7,6 @@ package com.wynntils.modules.core.events;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.wynntils.McIf;
-import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.FrameworkManager;
@@ -35,7 +34,6 @@ import com.wynntils.modules.core.overlays.ui.PlayerInfoReplacer;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.network.play.server.SPacketSpawnPosition;
@@ -327,7 +325,7 @@ public class ServerEvents implements Listener {
      */
     private static void startUpdateRegionName() {
         updateTimer = executor.scheduleAtFixedRate(() -> {
-            EntityPlayerSP pl = ModCore.mc().player;
+            EntityPlayerSP pl = McIf.mc().player;
 
             FrameworkManager.getEventBus().post(new SchedulerEvent.RegionUpdate());
 

@@ -33,13 +33,13 @@ public class PlayerInfoOverlay extends Overlay {
     @Override
     public void render(RenderGameOverlayEvent.Post event) {
         if (!Reference.onWorld || !OverlayConfig.PlayerInfo.INSTANCE.replaceVanilla) return;
-        if (!mc.gameSettings.keyBindPlayerList.isKeyDown() && animationProgress <= 0.0) return;
+        if (!McIf.mc().gameSettings.keyBindPlayerList.isKeyDown() && animationProgress <= 0.0) return;
 
         double animation = 1;
         if (OverlayConfig.PlayerInfo.INSTANCE.openingDuration > 0) { // Animation Detection
             if (lastTime == -1) lastTime += Minecraft.getSystemTime();
 
-            if (mc.gameSettings.keyBindPlayerList.isKeyDown()) {
+            if (McIf.mc().gameSettings.keyBindPlayerList.isKeyDown()) {
                 animationProgress += (Minecraft.getSystemTime() - lastTime) / OverlayConfig.PlayerInfo.INSTANCE.openingDuration;
                 animationProgress = Math.min(1, animationProgress);
             } else if (animationProgress > 0.0) {

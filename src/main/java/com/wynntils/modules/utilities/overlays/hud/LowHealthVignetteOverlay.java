@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.overlays.hud;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
@@ -67,7 +68,7 @@ public class LowHealthVignetteOverlay extends Overlay {
 
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
-        currentHealth = ScreenRenderer.mc.player.getHealth() / ScreenRenderer.mc.player.getMaxHealth();
+        currentHealth = McIf.mc().player.getHealth() / McIf.mc().player.getMaxHealth();
         threshold = (float) OverlayConfig.Health.INSTANCE.lowHealthThreshold / 100;
         if (currentHealth > threshold) return;
 

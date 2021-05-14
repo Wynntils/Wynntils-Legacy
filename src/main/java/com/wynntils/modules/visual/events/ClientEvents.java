@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.visual.events;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GameEvent;
 import com.wynntils.core.events.custom.PacketEvent;
@@ -33,13 +34,12 @@ public class ClientEvents implements Listener {
     public void cacheChunks(PacketEvent<SPacketChunkData> event) {
         if (!Reference.onWorld || !VisualConfig.CachedChunks.INSTANCE.enabled) return;
 
-        Minecraft mc = McIf.mc();
         SPacketChunkData packet = event.getPacket();
 
         // Requests the chunk to be unloaded if loaded before loading (???)
         // this fixes some weird ass issue with optifine, don't ask too much
-        if (packet.isFullChunk() && mc.world.getChunk(packet.getChunkX(), packet.getChunkZ()).isLoaded()) {
-            mc.addScheduledTask(() -> mc.world.getChunkProvider().unloadChunk(packet.getChunkX(), packet.getChunkZ()));
+        if (packet.isFullChunk() && McIf.mc().world.getChunk(packet.getChunkX(), packet.getChunkZ()).isLoaded()) {
+            McIf.mc().addScheduledTask(() -> McIf.mc().world.getChunkProvider().unloadChunk(packet.getChunkX(), packet.getChunkZ()));
         }
 
         CachedChunkManager.asyncCacheChunk(packet);

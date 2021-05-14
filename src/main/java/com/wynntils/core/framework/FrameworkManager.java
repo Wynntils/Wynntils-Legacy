@@ -5,7 +5,6 @@
 package com.wynntils.core.framework;
 
 import com.wynntils.McIf;
-import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.entities.EntityManager;
@@ -24,7 +23,6 @@ import com.wynntils.core.framework.settings.instances.SettingsHolder;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.reflections.ReflectionFields;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -96,12 +94,9 @@ public class FrameworkManager {
         if (info == null)
             return;
 
-        ModuleContainer mc = availableModules.get(info.name());
-
-        overlay.module = mc;
-
-        mc.registerSettings("overlay" + overlay.displayName, overlay);
-
+        ModuleContainer container = availableModules.get(info.name());
+        overlay.module = container;
+        container.registerSettings("overlay" + overlay.displayName, overlay);
         registeredOverlays.get(priority).add(overlay);
     }
 
@@ -146,7 +141,7 @@ public class FrameworkManager {
     }
 
     public static void triggerPreHud(RenderGameOverlayEvent.Pre e) {
-        if (Reference.onServer && !ModCore.mc().playerController.isSpectator()) {
+        if (Reference.onServer && !McIf.mc().playerController.isSpectator()) {
             if (e.getType() == RenderGameOverlayEvent.ElementType.AIR ||  // move it to somewhere else if you want, it seems pretty core to wynncraft tho..
                e.getType() == RenderGameOverlayEvent.ElementType.ARMOR) {
                 e.setCanceled(true);
@@ -187,7 +182,7 @@ public class FrameworkManager {
     }
 
     public static void triggerPostHud(RenderGameOverlayEvent.Post e) {
-        if (Reference.onServer && !ModCore.mc().playerController.isSpectator()) {
+        if (Reference.onServer && !McIf.mc().playerController.isSpectator()) {
             McIf.mc().profiler.startSection("posRenOverlay");
             for (List<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {

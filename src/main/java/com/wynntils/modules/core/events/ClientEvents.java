@@ -5,7 +5,6 @@
 package com.wynntils.modules.core.events;
 
 import com.wynntils.McIf;
-import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.FrameworkManager;
@@ -34,7 +33,6 @@ import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
@@ -102,19 +100,19 @@ public class ClientEvents implements Listener {
         if (e.getGui() instanceof GuiInventory) {
             if (e.getGui() instanceof InventoryReplacer) return;
 
-            e.setGui(new InventoryReplacer(ModCore.mc().player));
+            e.setGui(new InventoryReplacer(McIf.mc().player));
             return;
         }
         if (e.getGui() instanceof GuiChest) {
             if (e.getGui() instanceof ChestReplacer) return;
 
-            e.setGui(new ChestReplacer(ModCore.mc().player.inventory, ReflectionFields.GuiChest_lowerChestInventory.getValue(e.getGui())));
+            e.setGui(new ChestReplacer(McIf.mc().player.inventory, ReflectionFields.GuiChest_lowerChestInventory.getValue(e.getGui())));
             return;
         }
         if (e.getGui() instanceof GuiScreenHorseInventory) {
             if (e.getGui() instanceof HorseReplacer) return;
 
-            e.setGui(new HorseReplacer(ModCore.mc().player.inventory, ReflectionFields.GuiScreenHorseInventory_horseInventory.getValue(e.getGui()), (AbstractHorse) ReflectionFields.GuiScreenHorseInventory_horseEntity.getValue(e.getGui())));
+            e.setGui(new HorseReplacer(McIf.mc().player.inventory, ReflectionFields.GuiScreenHorseInventory_horseInventory.getValue(e.getGui()), (AbstractHorse) ReflectionFields.GuiScreenHorseInventory_horseEntity.getValue(e.getGui())));
         }
         if (e.getGui() instanceof GuiIngameMenu) {
             if (e.getGui() instanceof IngameMenuReplacer) return;
@@ -350,7 +348,7 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void mainMenuActionPerformed(GuiScreenEvent.ActionPerformedEvent.Post e) {
         GuiScreen gui = e.getGui();
-        if (gui != gui.mc.currentScreen || !(gui instanceof GuiMainMenu)) return;
+        if (gui != McIf.mc().currentScreen || !(gui instanceof GuiMainMenu)) return;
 
         MainMenuButtons.actionPerformed((GuiMainMenu) gui, e.getButton(), e.getButtonList());
     }

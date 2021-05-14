@@ -4,8 +4,8 @@
 
 package com.wynntils.modules.utilities.overlays.hud;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.overlays.Overlay;
-import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
@@ -23,7 +23,7 @@ public class GammaOverlay extends Overlay {
             return;
         }
 
-        if (ScreenRenderer.mc.gameSettings.gammaSetting >= 1000) {
+        if (McIf.mc().gameSettings.gammaSetting >= 1000) {
             drawString("GammaBright", 0, 0, CommonColors.ORANGE, SmartFontRenderer.TextAlignment.RIGHT_LEFT, OverlayConfig.INSTANCE.textShadow);
         }
     }

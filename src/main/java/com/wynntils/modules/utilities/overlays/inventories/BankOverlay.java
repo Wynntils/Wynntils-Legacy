@@ -13,7 +13,6 @@ import java.util.regex.Pattern;
 import com.wynntils.McIf;
 import org.lwjgl.input.Keyboard;
 
-import com.wynntils.ModCore;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
@@ -27,7 +26,6 @@ import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.ITextureObject;
@@ -129,7 +127,7 @@ public class BankOverlay implements Listener {
             Slot s = e.getGui().inventorySlots.getSlot(QA_SLOTS[i]);
 
             s.putStack(new ItemStack(Blocks.SNOW_LAYER));
-            ModCore.mc().getTextureManager().bindTexture(COLUMN_ARROW);
+            McIf.mc().getTextureManager().bindTexture(COLUMN_ARROW);
 
             GlStateManager.pushMatrix();
             {
@@ -316,7 +314,7 @@ public class BankOverlay implements Listener {
             } else {
                 searchField.textboxKeyTyped(e.getTypedChar(), e.getKeyCode());
             }
-        } else if (e.getKeyCode() == Keyboard.KEY_ESCAPE || e.getKeyCode() == ModCore.mc().gameSettings.keyBindInventory.getKeyCode()) { // bank was closed by player
+        } else if (e.getKeyCode() == Keyboard.KEY_ESCAPE || e.getKeyCode() == McIf.mc().gameSettings.keyBindInventory.getKeyCode()) { // bank was closed by player
             destinationPage = 0;
             searchField = null;
             searching = 0;
@@ -339,7 +337,7 @@ public class BankOverlay implements Listener {
     private void updateName(IInventory bankGui) {
         String name = (UtilitiesConfig.Bank.INSTANCE.pageNames.containsKey(page))
                 ? UtilitiesConfig.Bank.INSTANCE.pageNames.get(page) : TextFormatting.DARK_GRAY
-                        + ModCore.mc().player.getName() + "'s" + TextFormatting.BLACK + " Bank";
+                        + McIf.mc().player.getName() + "'s" + TextFormatting.BLACK + " Bank";
 
         ((InventoryBasic) bankGui).setCustomName(TextFormatting.BLACK + "[Pg. " + page + "] " + name);
     }
@@ -368,7 +366,7 @@ public class BankOverlay implements Listener {
                     return;
                 }
                 packet = new CPacketClickWindow(bankGui.inventorySlots.windowId, PAGE_FORWARD, 0, ClickType.PICKUP, is,
-                                bankGui.inventorySlots.getNextTransactionID(ModCore.mc().player.inventory));
+                                bankGui.inventorySlots.getNextTransactionID(McIf.mc().player.inventory));
             } else {
                 ItemStack is = bankGui.inventorySlots.getSlot(PAGE_BACK).getStack();
 
@@ -379,15 +377,15 @@ public class BankOverlay implements Listener {
                     return;
                 }
                 packet = new CPacketClickWindow(bankGui.inventorySlots.windowId, PAGE_BACK, 0, ClickType.PICKUP, is,
-                                bankGui.inventorySlots.getNextTransactionID(ModCore.mc().player.inventory));
+                                bankGui.inventorySlots.getNextTransactionID(McIf.mc().player.inventory));
             }
         } else { // attempt to hop using default quick access buttons
             int slotId = QA_SLOTS[(hop / 4)];
             packet = new CPacketClickWindow(bankGui.inventorySlots.windowId, slotId, 0, ClickType.PICKUP, bankGui.inventorySlots.getSlot(slotId).getStack(),
-                            bankGui.inventorySlots.getNextTransactionID(ModCore.mc().player.inventory));
+                            bankGui.inventorySlots.getNextTransactionID(McIf.mc().player.inventory));
         }
 
-        ModCore.mc().getConnection().sendPacket(packet);
+        McIf.mc().getConnection().sendPacket(packet);
     }
 
     private void searchPageForItems(ChestReplacer bankGui) {
@@ -419,9 +417,9 @@ public class BankOverlay implements Listener {
     }
 
     private boolean isTextureLoaded(ResourceLocation resourceLocation) {
-        ITextureObject texture = ModCore.mc().getTextureManager().getTexture(resourceLocation);
+        ITextureObject texture = McIf.mc().getTextureManager().getTexture(resourceLocation);
         if (texture == null) {
-            return ModCore.mc().getTextureManager().loadTexture(resourceLocation, new SimpleTexture(resourceLocation));
+            return McIf.mc().getTextureManager().loadTexture(resourceLocation, new SimpleTexture(resourceLocation));
         }
         return (!texture.equals(TextureUtil.MISSING_TEXTURE));
     }

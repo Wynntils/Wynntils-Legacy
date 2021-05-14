@@ -5,7 +5,6 @@
 package com.wynntils.modules.utilities.events;
 
 import com.wynntils.McIf;
-import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
@@ -32,7 +31,6 @@ import com.wynntils.modules.utilities.overlays.ui.FakeGuiContainer;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.enums.ItemType;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
@@ -149,7 +147,7 @@ public class ClientEvents implements Listener {
         if (Reference.onServer) WindowIconManager.update();
         if (!Reference.onWorld) return;
 
-        DailyReminderManager.checkDailyReminder(ModCore.mc().player);
+        DailyReminderManager.checkDailyReminder(McIf.mc().player);
 
         if (!UtilitiesConfig.AfkProtection.INSTANCE.afkProtection) return;
 
@@ -321,19 +319,19 @@ public class ClientEvents implements Listener {
         if (!Reference.onServer || !Reference.onWorld) return;
 
         int thisId = e.getPacket().getEntityId();
-        if (thisId == lastHorseId || ModCore.mc().world == null) return;
-        Entity entity = ModCore.mc().world.getEntityByID(thisId);
+        if (thisId == lastHorseId || McIf.mc().world == null) return;
+        Entity entity = McIf.mc().world.getEntityByID(thisId);
 
         if (!(entity instanceof AbstractHorse) || e.getPacket().getDataManagerEntries().isEmpty()) {
             return;
         }
 
-        if (entity == ModCore.mc().player.getRidingEntity()) {
+        if (entity == McIf.mc().player.getRidingEntity()) {
             lastHorseId = thisId;
             return;
         }
 
-        EntityPlayerSP player = ModCore.mc().player;
+        EntityPlayerSP player = McIf.mc().player;
         String entityName = Utils.getNameFromMetadata(e.getPacket().getDataManagerEntries());
         if (entityName == null ||  entityName.isEmpty() ||
                 !MountHorseManager.isPlayersHorse(entityName, player.getName())) return;
@@ -491,7 +489,7 @@ public class ClientEvents implements Listener {
         if (!Reference.onWorld) return;
 
         if (UtilitiesConfig.INSTANCE.preventMythicChestClose) {
-            if (e.getKeyCode() == 1 || e.getKeyCode() == ModCore.mc().gameSettings.keyBindInventory.getKeyCode()) {
+            if (e.getKeyCode() == 1 || e.getKeyCode() == McIf.mc().gameSettings.keyBindInventory.getKeyCode()) {
                 IInventory inv = e.getGui().getLowerInv();
                 if (McIf.getUnformattedText(inv.getDisplayName()).contains("Loot Chest") ||
                         McIf.getUnformattedText(inv.getDisplayName()).contains("Daily Rewards") ||
@@ -572,7 +570,7 @@ public class ClientEvents implements Listener {
             }
         }
 
-        if (UtilitiesConfig.INSTANCE.shiftClickAccessories && e.getGui().isShiftKeyDown() && e.getGui().getSlotUnderMouse() != null && ModCore.mc().player.inventory.getItemStack().isEmpty() && e.getGui().getSlotUnderMouse().inventory == ModCore.mc().player.inventory) {
+        if (UtilitiesConfig.INSTANCE.shiftClickAccessories && e.getGui().isShiftKeyDown() && e.getGui().getSlotUnderMouse() != null && McIf.mc().player.inventory.getItemStack().isEmpty() && e.getGui().getSlotUnderMouse().inventory == McIf.mc().player.inventory) {
             if (e.getSlotId() >= 9 && e.getSlotId() <= 12) { // taking off accessory
                 // check if hotbar has open slot; if so, no action required
                 for (int i = 36; i < 45; i++) {
@@ -625,8 +623,8 @@ public class ClientEvents implements Listener {
             }
 
             // pick up accessory
-            CPacketClickWindow packet = new CPacketClickWindow(e.getGui().inventorySlots.windowId, e.getSlotId(), 0, ClickType.PICKUP, e.getSlotIn().getStack(), e.getGui().inventorySlots.getNextTransactionID(ModCore.mc().player.inventory));
-            ModCore.mc().getConnection().sendPacket(packet);
+            CPacketClickWindow packet = new CPacketClickWindow(e.getGui().inventorySlots.windowId, e.getSlotId(), 0, ClickType.PICKUP, e.getSlotIn().getStack(), e.getGui().inventorySlots.getNextTransactionID(McIf.mc().player.inventory));
+            McIf.mc().getConnection().sendPacket(packet);
         }
     }
 
@@ -636,14 +634,14 @@ public class ClientEvents implements Listener {
         if (!Reference.onWorld || accessoryDestinationSlot == -1) return;
 
         // inventory was closed
-        if (!(ModCore.mc().currentScreen instanceof InventoryReplacer)) {
+        if (!(McIf.mc().currentScreen instanceof InventoryReplacer)) {
             accessoryDestinationSlot = -1;
             return;
         }
-        InventoryReplacer gui = (InventoryReplacer) ModCore.mc().currentScreen;
+        InventoryReplacer gui = (InventoryReplacer) McIf.mc().currentScreen;
 
         // no item picked up
-        if (ModCore.mc().player.inventory.getItemStack().isEmpty()) return;
+        if (McIf.mc().player.inventory.getItemStack().isEmpty()) return;
 
         // destination slot was filled in the meantime
         if (gui.inventorySlots.getSlot(accessoryDestinationSlot).getHasStack() &&
@@ -700,11 +698,11 @@ public class ClientEvents implements Listener {
                     String itemName = item.getDisplayName();
                     String pageNumber = itemName.substring(9, itemName.indexOf(TextFormatting.RED + " >"));
                     ChestReplacer gui = e.getGui();
-                    CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), item, e.getGui().inventorySlots.getNextTransactionID(ModCore.mc().player.inventory));
-                    ModCore.mc().displayGuiScreen(new GuiYesNo((result, parentButtonID) -> {
-                        ModCore.mc().displayGuiScreen(gui);
+                    CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), item, e.getGui().inventorySlots.getNextTransactionID(McIf.mc().player.inventory));
+                    McIf.mc().displayGuiScreen(new GuiYesNo((result, parentButtonID) -> {
+                        McIf.mc().displayGuiScreen(gui);
                         if (result) {
-                            ModCore.mc().getConnection().sendPacket(packet);
+                            McIf.mc().getConnection().sendPacket(packet);
                             bankPageConfirmed = true;
                         }
                     }, "Are you sure you want to purchase another bank page?", "Page number: " + pageNumber + "\nCost: " + priceDisplay, 0));
@@ -718,8 +716,8 @@ public class ClientEvents implements Listener {
     public void onSetSlot(PacketEvent<SPacketSetSlot> event) {
         if (bankPageConfirmed && event.getPacket().getSlot() == 8) {
             bankPageConfirmed = false;
-            CPacketClickWindow packet = new CPacketClickWindow(ModCore.mc().player.openContainer.windowId, 8, 0, ClickType.PICKUP, event.getPacket().getStack(), ModCore.mc().player.openContainer.getNextTransactionID(ModCore.mc().player.inventory));
-            ModCore.mc().getConnection().sendPacket(packet);
+            CPacketClickWindow packet = new CPacketClickWindow(McIf.mc().player.openContainer.windowId, 8, 0, ClickType.PICKUP, event.getPacket().getStack(), McIf.mc().player.openContainer.getNextTransactionID(McIf.mc().player.inventory));
+            McIf.mc().getConnection().sendPacket(packet);
         }
     }
 
@@ -871,7 +869,7 @@ public class ClientEvents implements Listener {
     public void onShiftClickPlayer(PacketEvent<CPacketUseEntity> e) {
         if (!UtilitiesConfig.INSTANCE.preventTradesDuels) return;
 
-        EntityPlayerSP player = ModCore.mc().player;
+        EntityPlayerSP player = McIf.mc().player;
         if (!player.isSneaking()) return;
 
         Entity clicked = e.getPacket().getEntityFromWorld(player.world);

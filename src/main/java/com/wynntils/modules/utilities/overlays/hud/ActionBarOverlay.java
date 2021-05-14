@@ -14,7 +14,6 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.BlockPos;
@@ -53,11 +52,11 @@ public class ActionBarOverlay extends Overlay {
         int padding = 3;
         int y = 0;
 
-        BlockPos blockPos = new BlockPos(ScreenRenderer.mc.player);
+        BlockPos blockPos = new BlockPos(McIf.mc().player);
         String lCoord = TextFormatting.GRAY.toString() + blockPos.getX();
         String middleCoord;
         if (!OverlayConfig.INSTANCE.replaceDirection) {
-            middleCoord = TextFormatting.GREEN + Utils.getPlayerDirection(ScreenRenderer.mc.player.rotationYaw);
+            middleCoord = TextFormatting.GREEN + Utils.getPlayerDirection(McIf.mc().player.rotationYaw);
         } else {
             middleCoord = TextFormatting.GRAY.toString() + blockPos.getY();
         }
@@ -80,7 +79,7 @@ public class ActionBarOverlay extends Overlay {
             String[] spaces = lastActionBar.split(" ");
             middle = spaces[5].replace(TextFormatting.UNDERLINE.toString(), "").replace(TextFormatting.RESET.toString(), "");
             preference = true;
-        } else if (TextFormatting.getTextWithoutFormattingCodes(lastActionBar).contains("Sprint") && ScreenRenderer.mc.player.isSprinting()) {
+        } else if (TextFormatting.getTextWithoutFormattingCodes(lastActionBar).contains("Sprint") && McIf.mc().player.isSprinting()) {
             String[] spaces = lastActionBar.split(" ");
             middle = spaces[5];
         } else if (OverlayConfig.INSTANCE.actionBarCoordinates && !OverlayConfig.INSTANCE.splitCoordinates) {
@@ -122,10 +121,10 @@ public class ActionBarOverlay extends Overlay {
                 s = TextFormatting.ITALIC + s;
             }
 
-            int i = ((int) (position.anchorX * ScreenRenderer.screen.getScaledWidth()) - ScreenRenderer.mc.fontRenderer.getStringWidth(s) / 2) + position.offsetX;
+            int i = ((int) (position.anchorX * ScreenRenderer.screen.getScaledWidth()) - McIf.mc().fontRenderer.getStringWidth(s) / 2) + position.offsetX;
             int j = (int) (position.anchorY * ScreenRenderer.screen.getScaledHeight()) + position.offsetY + (OverlayConfig.INSTANCE.splitCoordinates ? -11 : 0);
 
-            if (!ScreenRenderer.mc.playerController.shouldDrawHUD()) {
+            if (!McIf.mc().playerController.shouldDrawHUD()) {
                 j += 14;
             }
 
@@ -140,7 +139,7 @@ public class ActionBarOverlay extends Overlay {
                 GlStateManager.pushMatrix();
                 GlStateManager.enableBlend();
                 GlStateManager.tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-                ScreenRenderer.mc.fontRenderer.drawStringWithShadow(s, (float) i, (float) j, 16777215 + (k << 24));
+                McIf.mc().fontRenderer.drawStringWithShadow(s, (float) i, (float) j, 16777215 + (k << 24));
                 GlStateManager.disableBlend();
                 GlStateManager.popMatrix();
                 return true;

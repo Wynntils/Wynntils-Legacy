@@ -140,10 +140,6 @@ public abstract class Module {
         ClientCommandHandler.instance.registerCommand(command);
     }
 
-    public Minecraft getMinecraft() {
-        return McIf.mc();
-    }
-
     public Logger getLogger() {
         return logger;
     }

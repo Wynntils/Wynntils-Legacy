@@ -177,9 +177,9 @@ public class SoundTrackManager {
 
         for (MusicProfile mp : availableMusics.values()) {
             if (!mp.getName().contains("(") || !mp.getName().contains(")")) continue;
-            Matcher mc = TERRITORY_NAME_REGEX.matcher(mp.getName());
-            while (mc.find()) {
-                String value = mc.group(1).replace("(", "").replace(")", "");
+            Matcher matcher = TERRITORY_NAME_REGEX.matcher(mp.getName());
+            while (matcher.find()) {
+                String value = matcher.group(1).replace("(", "").replace(")", "");
                 String toSearch = territoryName.contains(" ") ? territoryName.split(" ")[0] : territoryName;
 
                 if (value.equalsIgnoreCase(territoryName)) {  // perfect match

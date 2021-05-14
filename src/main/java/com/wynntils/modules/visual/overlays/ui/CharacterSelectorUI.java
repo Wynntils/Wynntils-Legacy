@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.visual.overlays.ui;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.CharacterGameMode;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -99,7 +100,7 @@ public class CharacterSelectorUI extends GuiScreen {
         hoveredButton = -1;
         hoveredText = null;
 
-        mc.player.setInvisible(false); // removes invisibility from character selection
+        McIf.mc().player.setInvisible(false); // removes invisibility from character selection
         updateItems(); // tries to get the inventory items
 
         float animationPercentage = Math.max((animationEnd - System.currentTimeMillis()) / 100f, 0f);
@@ -191,7 +192,7 @@ public class CharacterSelectorUI extends GuiScreen {
         lastClick = System.currentTimeMillis();
         lastButton = hoveredButton;
 
-        mc.getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+        McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1.0F));
 
         // character picking
         if (hoveredButton <= 50) {
@@ -553,11 +554,11 @@ public class CharacterSelectorUI extends GuiScreen {
     }
 
     @Override
-    public void setWorldAndResolution(Minecraft mc, int width, int height) {
+    public void setWorldAndResolution(Minecraft minecraft, int width, int height) {
         scaledWidth = (int)(width / scale);
         scaledHeight = (int)(height / scale);
 
-        super.setWorldAndResolution(mc, width, height);
+        super.setWorldAndResolution(minecraft, width, height);
     }
 
 }

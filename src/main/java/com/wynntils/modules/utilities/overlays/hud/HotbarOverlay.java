@@ -4,7 +4,7 @@
 
 package com.wynntils.modules.utilities.overlays.hud;
 
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.AssetsTexture;
@@ -31,7 +31,7 @@ public class HotbarOverlay extends Overlay {
     public void render(RenderGameOverlayEvent.Pre event) {
         if (!WIDGETS_TEXTURE.loaded) WIDGETS_TEXTURE.load();
 
-        EntityPlayerSP player = ModCore.mc().player;
+        EntityPlayerSP player = McIf.mc().player;
         int textureY = 0;
 
         if (OverlayConfig.Hotbar.INSTANCE.hotbarTexture == OverlayConfig.Hotbar.HotbarTextures.Resource_Pack) {

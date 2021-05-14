@@ -4,7 +4,7 @@
 
 package com.wynntils.modules.utilities.managers;
 
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.HorseData;
@@ -21,9 +21,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.TextFormatting;
 
-import java.sql.Ref;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class MountHorseManager {
 
@@ -48,10 +46,10 @@ public class MountHorseManager {
         return defaultName.equals(horseName) || horseName.endsWith(customSuffix);
     }
 
-    private static Entity findHorseInRadius(Minecraft mc) {
-        EntityPlayerSP player = mc.player;
+    private static Entity findHorseInRadius() {
+        EntityPlayerSP player = McIf.mc().player;
 
-        List<Entity> horses = mc.world.getEntitiesWithinAABB(AbstractHorse.class, new AxisAlignedBB(
+        List<Entity> horses = McIf.mc().world.getEntitiesWithinAABB(AbstractHorse.class, new AxisAlignedBB(
                 player.posX - searchRadius, player.posY - searchRadius, player.posZ - searchRadius,
                 player.posX + searchRadius, player.posY + searchRadius, player.posZ + searchRadius
         ));
@@ -66,7 +64,7 @@ public class MountHorseManager {
         return null;
     }
 
-    private static void tryDelayedSpawnMount(Minecraft mc, HorseData horse, int attempts) {
+    private static void tryDelayedSpawnMount(HorseData horse, int attempts) {
         if (ingamePrevention) {
             ingamePrevention = false;
             return;
@@ -79,17 +77,17 @@ public class MountHorseManager {
             return;
         }
 
-        int prev = mc.player.inventory.currentItem;
+        int prev = McIf.mc().player.inventory.currentItem;
         new Delay(() -> {
-            mc.player.inventory.currentItem = horse.getInventorySlot();
-            mc.playerController.processRightClick(mc.player, mc.player.world, EnumHand.MAIN_HAND);
-            mc.player.inventory.currentItem = prev;
+            McIf.mc().player.inventory.currentItem = horse.getInventorySlot();
+            McIf.mc().playerController.processRightClick(McIf.mc().player, McIf.mc().player.world, EnumHand.MAIN_HAND);
+            McIf.mc().player.inventory.currentItem = prev;
 
-            if (findHorseInRadius(mc) != null) {
+            if (findHorseInRadius() != null) {
                 ClientEvents.isAwaitingHorseMount = true;
                 return;
             }
-            tryDelayedSpawnMount(mc, horse, attempts - 1);
+            tryDelayedSpawnMount(horse, attempts - 1);
         }, remountTickDelay);
     }
 
@@ -98,9 +96,8 @@ public class MountHorseManager {
     }
 
     public static MountHorseStatus mountHorse(boolean allowRetry) {
-        Minecraft mc = ModCore.mc();
-        EntityPlayerSP player = mc.player;
-        PlayerControllerMP playerController = mc.playerController;
+        EntityPlayerSP player = McIf.mc().player;
+        PlayerControllerMP playerController = McIf.mc().playerController;
 
         HorseData horse = PlayerInfo.get(HorseData.class);
 
@@ -112,7 +109,7 @@ public class MountHorseManager {
             return MountHorseStatus.ALREADY_RIDING;
         }
 
-        Entity playersHorse = findHorseInRadius(mc);
+        Entity playersHorse = findHorseInRadius();
 
         int prev = player.inventory.currentItem;
         boolean far = false;
@@ -130,7 +127,7 @@ public class MountHorseManager {
             playerController.processRightClick(player, player.world, EnumHand.MAIN_HAND);
             player.inventory.currentItem = prev;
             if (far) {
-                tryDelayedSpawnMount(mc, horse, spawnAttempts);
+                tryDelayedSpawnMount(horse, spawnAttempts);
                 return MountHorseStatus.SPAWNING;
             }
             if (ingamePrevention) {
@@ -151,7 +148,7 @@ public class MountHorseManager {
     public static String getMountHorseErrorMessage(MountHorseStatus status) {
         switch (status) {
             case ALREADY_RIDING:
-                Entity ridingEntity = ModCore.mc().player.getRidingEntity();
+                Entity ridingEntity = McIf.mc().player.getRidingEntity();
                 String ridingEntityType;
                 if (ridingEntity == null) {
                     ridingEntityType = "nothing?";

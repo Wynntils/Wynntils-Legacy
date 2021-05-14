@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.overlays.ui;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
@@ -80,10 +81,10 @@ public class WaypointCreationMenu extends UI {
     @Override public void onWindowUpdate() {
         buttonList.clear();
 
-        nameField = new GuiTextField(0, mc.fontRenderer, this.width/2 - 80, this.height/2 - 70, 160, 20);
-        xCoordField = new GuiTextField(1, mc.fontRenderer, this.width/2 - 65, this.height/2 - 30, 40, 20);
-        zCoordField = new GuiTextField(2, mc.fontRenderer, this.width/2 - 5, this.height/2 - 30, 40, 20);
-        yCoordField = new GuiTextField(3, mc.fontRenderer, this.width/2 + 55, this.height/2 - 30, 25, 20);
+        nameField = new GuiTextField(0, McIf.mc().fontRenderer, this.width/2 - 80, this.height/2 - 70, 160, 20);
+        xCoordField = new GuiTextField(1, McIf.mc().fontRenderer, this.width/2 - 65, this.height/2 - 30, 40, 20);
+        zCoordField = new GuiTextField(2, McIf.mc().fontRenderer, this.width/2 - 5, this.height/2 - 30, 40, 20);
+        yCoordField = new GuiTextField(3, McIf.mc().fontRenderer, this.width/2 + 55, this.height/2 - 30, 25, 20);
         buttonList.add(waypointTypeNext = new GuiButton(97, this.width/2 - 40, this.height/2 + 10, 18, 18, ">"));
         buttonList.add(waypointTypeBack = new GuiButton(98, this.width/2 - 80, this.height/2 + 10, 18, 18, "<"));
 
@@ -102,15 +103,15 @@ public class WaypointCreationMenu extends UI {
         zCoordField.setText(Integer.toString(initialZ));
         yCoordField.setText(Integer.toString(McIf.mc().player.getPosition().getY()));
 
-        nameFieldLabel = new GuiLabel(mc.fontRenderer, 0, this.width/2 - 80, this.height/2 - 81, 40, 10, 0xFFFFFF);
+        nameFieldLabel = new GuiLabel(McIf.mc().fontRenderer, 0, this.width/2 - 80, this.height/2 - 81, 40, 10, 0xFFFFFF);
         nameFieldLabel.addLine("Waypoint Name:");
-        xCoordFieldLabel = new GuiLabel(mc.fontRenderer, 1, this.width/2 - 75, this.height/2 - 24, 40, 10, 0xFFFFFF);
+        xCoordFieldLabel = new GuiLabel(McIf.mc().fontRenderer, 1, this.width/2 - 75, this.height/2 - 24, 40, 10, 0xFFFFFF);
         xCoordFieldLabel.addLine("X");
-        yCoordFieldLabel = new GuiLabel(mc.fontRenderer, 2, this.width/2 + 45, this.height/2 - 24, 40, 10, 0xFFFFFF);
+        yCoordFieldLabel = new GuiLabel(McIf.mc().fontRenderer, 2, this.width/2 + 45, this.height/2 - 24, 40, 10, 0xFFFFFF);
         yCoordFieldLabel.addLine("Y");
-        zCoordFieldLabel = new GuiLabel(mc.fontRenderer, 3, this.width/2 - 15, this.height/2 - 24, 40, 10, 0xFFFFFF);
+        zCoordFieldLabel = new GuiLabel(McIf.mc().fontRenderer, 3, this.width/2 - 15, this.height/2 - 24, 40, 10, 0xFFFFFF);
         zCoordFieldLabel.addLine("Z");
-        coordinatesLabel = new GuiLabel(mc.fontRenderer, 3, this.width/2 - 80, this.height/2 - 41, 40, 10, 0xFFFFFF);
+        coordinatesLabel = new GuiLabel(McIf.mc().fontRenderer, 3, this.width/2 - 80, this.height/2 - 41, 40, 10, 0xFFFFFF);
         coordinatesLabel.addLine("Coordinates:");
 
         boolean returning = state != null;  // true if reusing gui (i.e., returning from another gui)
@@ -217,11 +218,11 @@ public class WaypointCreationMenu extends UI {
         if (yCoordField != null) yCoordField.drawTextBox();
         if (zCoordField != null) zCoordField.drawTextBox();
 
-        nameFieldLabel.drawLabel(mc, mouseX, mouseY);
-        xCoordFieldLabel.drawLabel(mc, mouseX, mouseY);
-        yCoordFieldLabel.drawLabel(mc, mouseX, mouseY);
-        zCoordFieldLabel.drawLabel(mc, mouseX, mouseY);
-        coordinatesLabel.drawLabel(mc, mouseX, mouseY);
+        nameFieldLabel.drawLabel(McIf.mc(), mouseX, mouseY);
+        xCoordFieldLabel.drawLabel(McIf.mc(), mouseX, mouseY);
+        yCoordFieldLabel.drawLabel(McIf.mc(), mouseX, mouseY);
+        zCoordFieldLabel.drawLabel(McIf.mc(), mouseX, mouseY);
+        coordinatesLabel.drawLabel(McIf.mc(), mouseX, mouseY);
 
         fontRenderer.drawString("Icon:", this.width / 2.0f - 80, this.height / 2.0f, 0xFFFFFF, true);
         fontRenderer.drawString("Colour:", this.width / 2.0f, this.height / 2.0f, 0xFFFFFF, true);

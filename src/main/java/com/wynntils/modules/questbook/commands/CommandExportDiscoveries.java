@@ -4,7 +4,7 @@
 
 package com.wynntils.modules.questbook.commands;
 
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.instances.PlayerInfo;
@@ -125,7 +125,7 @@ public class CommandExportDiscoveries extends CommandBase implements IClientComm
             fileText.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, exportFile.getCanonicalPath()));
             fileText.getStyle().setUnderlined(true);
             text.appendSibling(fileText);
-            ModCore.mc().addScheduledTask(() -> ModCore.mc().player.sendMessage(text));
+            McIf.mc().addScheduledTask(() -> McIf.mc().player.sendMessage(text));
         } catch (IOException ex) {
             ex.printStackTrace();
         } finally {

@@ -59,8 +59,6 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
 
         RichPresenceModule.getModule().getRichPresence().setJoinSecret(lastSecret);
 
-        Minecraft mc = McIf.mc();
-
         if (!Reference.onServer) {
             ServerData serverData = ServerUtils.getWynncraftServerData(true);
             ServerUtils.connect(serverData);
@@ -70,11 +68,11 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
         if (Reference.onWorld) {
             if (Reference.getUserWorld().replace("WC", "").replace("HB", "").equals(Integer.toString(lastSecret.getWorld())) && Reference.getUserWorld().replaceAll("\\d+", "").equals(lastSecret.getWorldType())) {
                 sentInvite = true;
-                mc.player.sendChatMessage("/msg " + lastSecret.getOwner() + " " + lastSecret.getRandomHash());
+                McIf.mc().player.sendChatMessage("/msg " + lastSecret.getOwner() + " " + lastSecret.getRandomHash());
                 return;
             }
 
-            mc.player.sendChatMessage("/hub");
+            McIf.mc().player.sendChatMessage("/hub");
             waitingLobby = true;
             return;
         }

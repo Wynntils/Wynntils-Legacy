@@ -6,19 +6,14 @@ package com.wynntils.core.framework.instances.containers;
 
 import com.wynntils.McIf;
 import com.wynntils.core.framework.instances.PlayerInfo;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 
 public class PlayerData {
 
     public PlayerData() { }
 
-    public Minecraft getMinecraft() {
-        return McIf.mc();
-    }
-
     public EntityPlayerSP getPlayer() {
-        return getMinecraft().player;
+        return McIf.mc().player;
     }
 
     public <T extends PlayerData> T get(Class<T> clazz) {
