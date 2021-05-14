@@ -33,7 +33,7 @@ public class MapConfig extends SettingsClass {
     public boolean showCompass = true;
 
     @Setting(displayName = "Show Compass Distance", description = "Should the distance to the compass position be displayed on the minimap?", order = 2)
-    public boolean showCompassDistance = true;
+    public DistanceMarkerType compassDistanceType = DistanceMarkerType.OFF_MAP;
 
     @Setting(displayName = "Enable Minimap", description = "Should a minimap be displayed?", order = 3)
     public boolean enabled = true;
@@ -212,7 +212,7 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Rainbow Path Transitioning", description = "How many blocks should loot run paths be shown in a colour before transitioning to a different colour?", order = 5)
         @Setting.Limitations.IntLimit(min = 1, max = 500)
         public int cycleDistance = 20;
-      
+
         @Setting(displayName = "Show Loot Run Path on Map", description = "Should the active loot run path be shown on the map?", order = 6)
         public boolean displayLootrunOnMap = true;
 
@@ -246,6 +246,10 @@ public class MapConfig extends SettingsClass {
 
     public enum MapFormat {
         SQUARE, CIRCLE
+    }
+
+    public enum DistanceMarkerType {
+        ALWAYS, OFF_MAP, NEVER
     }
 
     public enum TextureType {

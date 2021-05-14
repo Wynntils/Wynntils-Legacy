@@ -6,7 +6,6 @@ package com.wynntils.modules.utilities.overlays.inventories;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -18,9 +17,11 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
+import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import com.wynntils.webapi.profiles.item.enums.ItemType;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -40,7 +41,6 @@ public class ItemSpecificationOverlay implements Listener {
             if (stack.isEmpty() || !stack.hasDisplayName()) continue; // display name also checks for tag compound
 
             List<String> lore = ItemUtils.getLore(stack);
-            if (lore.isEmpty()) continue;
             String name = StringUtils.normalizeBadString(stack.getDisplayName());
 
             // name and lore fixing
@@ -53,16 +53,26 @@ public class ItemSpecificationOverlay implements Listener {
 
             String destinationName = null;
             CustomColor color = null;
+            int xOffset = 2;
+            float scale = 1f;
 
             if (UtilitiesConfig.Items.INSTANCE.unidentifiedSpecification) {
                 Pattern unidentifiedItem = Pattern.compile("^§.Unidentified (.*)");
                 Matcher m = unidentifiedItem.matcher(name);
                 if (m.find()) {
-                    try {
-                        ItemTypeMapper type = ItemTypeMapper.valueOf(m.group(1).toUpperCase(Locale.ROOT));
-                        destinationName = type.name();
-                        color = MinecraftChatColors.BLUE;
-                    } catch (IllegalArgumentException e) {
+                    ItemType type = ItemType.from(m.group(1));
+                    if (type != null) {
+                        // Draw an icon representing the type on top
+                        ScreenRenderer.beginGL(0, 0);
+                        GlStateManager.translate(0, 0, 270);
+
+                        ScreenRenderer r = new ScreenRenderer();
+                        RenderHelper.disableStandardItemLighting();
+                        float scaleFactor = 0.75f;
+                        ScreenRenderer.scale(scaleFactor);
+                        r.drawRect(Textures.UIs.hud_overlays, (int)((gui.getGuiLeft() + s.xPos) / scaleFactor) + 3, (int)((gui.getGuiTop() + s.yPos) / scaleFactor) + 3 , type.getTextureX(), type.getTextureY(), 16, 16);
+                        ScreenRenderer.endGL();
+                    } else {
                         // This is an un-id:ed but named item
                         destinationName = "?";
                         color = MinecraftChatColors.GRAY;
@@ -80,58 +90,79 @@ public class ItemSpecificationOverlay implements Listener {
 
             if (UtilitiesConfig.Items.INSTANCE.keySpecification) {
                 Pattern dungeonKey = Pattern.compile("§6(.*) Key");
-                Matcher m3 = dungeonKey.matcher(name);
-                if (m3.find() && lore.get(0).equals("§7Grants access to the")) {
-                    destinationName = m3.group(1);
+                Matcher m = dungeonKey.matcher(name);
+                if (m.find() && lore.get(0).equals("§7Grants access to the")) {
+                    destinationName = m.group(1).substring(0, 1);
                     color = MinecraftChatColors.GOLD;
                 }
 
-                Pattern corruptedDungeonKey = Pattern.compile("§4(?:Broken )?Corrupted (.*) Key");
-                Matcher m5 = corruptedDungeonKey.matcher(name);
-                if (m5.find() && (lore.get(0).equals("§7Grants access to the") || lore.get(0).equals("§7Use this item at the"))) {
-                    destinationName = m5.group(1);
+                Pattern brokenDungeonKey = Pattern.compile("Broken (.*) Key");
+                Matcher m2 = brokenDungeonKey.matcher(name);
+                if (m2.find()) {
+                    destinationName = m2.group(1).substring(0, 1);
+                    color = MinecraftChatColors.DARK_RED;
+                }
+
+                // I'm not sure if this happens anymore, but keep it for now
+                Pattern corruptedDungeonKey = Pattern.compile("§4(?:Broken )?(?:Corrupted )?(.*) Key");
+                Matcher m3 = corruptedDungeonKey.matcher(name);
+                if (m3.find()) {
+                    destinationName = m3.group(1).substring(0, 1);
                     color = MinecraftChatColors.DARK_RED;
                 }
             }
 
             if (UtilitiesConfig.Items.INSTANCE.transportationSpecification) {
                 Pattern boatPass = Pattern.compile("§b(.*) (?:Boat )?Pass");
-                Matcher m4 = boatPass.matcher(name);
-                if (m4.find() && lore.get(0).equals("§7Use this at the §fV.S.S. Seaskipper")) {
-                    destinationName = m4.group(1);
+                Matcher m = boatPass.matcher(name);
+                if (m.find() && lore.get(0).equals("§7Use this at the §fV.S.S. Seaskipper")) {
+                    destinationName = m.group(1).substring(0, 1);
                     color = MinecraftChatColors.BLUE;
                 }
 
                 Pattern cityTeleport = Pattern.compile("^§b(.*) Teleport Scroll$");
-                Matcher m = cityTeleport.matcher(name);
-                if (m.find()) {
-                    destinationName = m.group(1);
+                Matcher m2 = cityTeleport.matcher(name);
+                if (m2.find()) {
+                    destinationName = m2.group(1);
                     if (destinationName.equals("Dungeon")) {
                         color = MinecraftChatColors.GOLD;
                         for (String loreLine : lore) {
                             Pattern dungeonTeleport = Pattern.compile("§3- §7Teleports to: §f(.*)");
-                            Matcher m2 = dungeonTeleport.matcher(StringUtils.normalizeBadString(loreLine));
-                            if (m2.find()) {
+                            Matcher m3 = dungeonTeleport.matcher(StringUtils.normalizeBadString(loreLine));
+                            if (m3.find()) {
                                 // Make sure we print "F" for "the Forgery"
-                                destinationName = m2.group(1).replace("the ", "");
+                                destinationName = m3.group(1).replace("the ", "");
                                 break;
                             }
                         }
                     } else {
                         color = MinecraftChatColors.AQUA;
                     }
+                    destinationName = destinationName.substring(0, 1);
+                }
+            }
+
+            if (UtilitiesConfig.Items.INSTANCE.amplifierSpecification) {
+                Pattern amp = Pattern.compile("^§bCorkian Amplifier (I{1,3})$");
+                Matcher m = amp.matcher(name);
+                if (m.matches()) {
+                    destinationName = m.group(1);
+                    color = MinecraftChatColors.AQUA;
+                    xOffset = -1;
+                    scale = 0.8f;
                 }
             }
 
             if (destinationName != null) {
-                ScreenRenderer.beginGL(gui.getGuiLeft(), gui.getGuiTop());
+                ScreenRenderer.beginGL((int) (gui.getGuiLeft()/scale), (int) (gui.getGuiTop()/scale));
                 GlStateManager.translate(0, 0, 260);
                 ScreenRenderer r = new ScreenRenderer();
+                GlStateManager.scale(scale, scale, 1);
                 RenderHelper.disableStandardItemLighting();
                 // Make a modifiable copy
                 color = new CustomColor(color);
                 color.setA(0.8f);
-                r.drawString(destinationName.substring(0, 1), s.xPos + 2, s.yPos + 1, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
+                r.drawString(destinationName, (s.xPos + xOffset)/scale, (s.yPos + 1)/scale, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
                 ScreenRenderer.endGL();
             }
         }
@@ -150,20 +181,5 @@ public class ItemSpecificationOverlay implements Listener {
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onHorseGui(GuiOverlapEvent.HorseOverlap.HoveredToolTip.Pre e) {
         renderOverlay(e.getGui());
-    }
-
-    public enum ItemTypeMapper {
-        HELMET,
-        CHESTPLATE,
-        LEGGINGS,
-        BOOTS,
-        RING,
-        BRACELET,
-        NECKLACE,
-        SPEAR,
-        DAGGER,
-        BOW,
-        WAND,
-        RELIK
     }
 }

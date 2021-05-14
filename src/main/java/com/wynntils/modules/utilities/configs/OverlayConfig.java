@@ -627,7 +627,7 @@ public class OverlayConfig extends SettingsClass {
             PARTY_OWNER("Owner of the current party"),
             UNPROCESSED("Current amount of unprocessed materials"),
             UNPROCESSED_MAX("Max amount of unprocessed materials"),
-            AREA_DPS("Current area damage per second");
+            ADPS("Current area damage per second");
 
             public final String displayName;
             public final String value;
