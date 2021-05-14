@@ -16,11 +16,11 @@ import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.request.PostRequest;
 import com.wynntils.webapi.request.Request;
 import com.wynntils.webapi.request.RequestHandler;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.CryptManager;
+import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.SecretKey;
-import javax.xml.bind.DatatypeConverter;
+
 import java.io.File;
 import java.math.BigInteger;
 import java.security.PublicKey;
@@ -161,7 +161,7 @@ public class WynntilsAccount {
 
     private String parseAndJoinPublicKey(String key) {
         try {
-            byte[] publicKeyBy = DatatypeConverter.parseHexBinary(key);
+            byte[] publicKeyBy = Hex.decodeHex(key.toCharArray());
 
             SecretKey secretkey = CryptManager.createNewSharedKey();
 
@@ -173,7 +173,7 @@ public class WynntilsAccount {
 
             byte[] secretKeyEncrypted = CryptManager.encryptData(publicKey, secretkey.getEncoded());
 
-            return DatatypeConverter.printHexBinary(secretKeyEncrypted);
+            return Hex.encodeHexString(secretKeyEncrypted);
         } catch (Exception ex) {
             ex.printStackTrace();
             return "";
