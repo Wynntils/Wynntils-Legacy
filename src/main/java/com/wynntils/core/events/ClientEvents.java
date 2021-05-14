@@ -5,6 +5,7 @@
 package com.wynntils.core.events;
 
 import com.mojang.authlib.GameProfile;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.FrameworkManager;
@@ -93,7 +94,7 @@ public class ClientEvents {
     public void triggerGameEvents(ClientChatReceivedEvent e) {
         if (e.getType() == ChatType.GAME_INFO) return;
 
-        String message = e.getMessage().getUnformattedText();
+        String message = McIf.getUnformattedText(e.getMessage());
 
         if (message.contains("\u27a4")) return;  // Whisper from a player
 
@@ -180,7 +181,7 @@ public class ClientEvents {
                 if (e.getPacket().getAction() == Action.UPDATE_DISPLAY_NAME) {
                     ITextComponent nameComponent = (ITextComponent) ReflectionMethods.SPacketPlayerListItem$AddPlayerData_getDisplayName.invoke(player);
                     if (nameComponent == null) continue;
-                    String name = nameComponent.getUnformattedText();
+                    String name = McIf.getUnformattedText(nameComponent);
                     String world = name.substring(name.indexOf("[") + 1, name.indexOf("]"));
 
                     if (world.equalsIgnoreCase(lastWorld)) continue;

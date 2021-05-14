@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.overlays.hud;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -131,7 +132,7 @@ public class PlayerInfoOverlay extends Overlay {
 
         lastPlayers = players.stream()
                 .filter(c -> c.getDisplayName() != null)
-                .map(c -> wrapText(c.getDisplayName().getUnformattedText().replace("§7", "§0"), 73))
+                .map(c -> wrapText(McIf.getUnformattedText(c.getDisplayName()).replace("§7", "§0"), 73))
                 .collect(Collectors.toList());
 
         return lastPlayers;

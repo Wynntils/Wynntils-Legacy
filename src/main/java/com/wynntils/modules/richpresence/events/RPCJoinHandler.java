@@ -5,6 +5,7 @@
 package com.wynntils.modules.richpresence.events;
 
 import com.sun.jna.Pointer;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.framework.FrameworkManager;
@@ -104,7 +105,7 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
         if (e.getType() != ChatType.CHAT && e.getType() != ChatType.SYSTEM) return;
 
         // handles the invitation
-        if (lastSecret != null && e.getMessage().getUnformattedText().startsWith("You have been invited to join " + lastSecret.getOwner())) {
+        if (lastSecret != null && McIf.getUnformattedText(e.getMessage()).startsWith("You have been invited to join " + lastSecret.getOwner())) {
             Minecraft.getMinecraft().player.sendChatMessage("/party join " + lastSecret.getOwner());
 
             lastSecret = null;
@@ -112,7 +113,7 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
         }
 
         // handles the user join
-        if (sentInvite && e.getMessage().getUnformattedText().startsWith("[" + Minecraft.getMinecraft().player.getName())) {
+        if (sentInvite && McIf.getUnformattedText(e.getMessage()).startsWith("[" + Minecraft.getMinecraft().player.getName())) {
             sentInvite = false;
             e.setCanceled(true);
             return;
@@ -138,7 +139,7 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
 
     @SubscribeEvent
     public void onTitle(ClientChatReceivedEvent e) {
-        String text = e.getMessage().getUnformattedText();
+        String text = McIf.getUnformattedText(e.getMessage());
         if ((text.equals("You are already connected to this server!") || text.equals("You're rejoining too quickly! Give us a moment to save your data.")) && waitingInvite) {
             waitingLobby = true;
             waitingInvite = false;

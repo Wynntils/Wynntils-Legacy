@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.events;
 
+import com.wynntils.McIf;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
@@ -256,20 +257,20 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onPostChatEvent(ChatEvent.Post e) {
-        if (e.getMessage().getUnformattedText().matches("Type the price in emeralds or type 'cancel' to cancel:")) {
+        if (McIf.getUnformattedText(e.getMessage()).matches("Type the price in emeralds or type 'cancel' to cancel:")) {
             priceInput = true;
             if (UtilitiesConfig.Market.INSTANCE.openChatMarket)
                 scheduledGuiScreen = new ChatGUI();
         }
 
         if (UtilitiesConfig.Market.INSTANCE.openChatMarket) {
-            if (e.getMessage().getUnformattedText().matches("Type the (item name|amount you wish to (buy|sell)) or type 'cancel' to cancel:")) {
+            if (McIf.getUnformattedText(e.getMessage()).matches("Type the (item name|amount you wish to (buy|sell)) or type 'cancel' to cancel:")) {
                 scheduledGuiScreen = new ChatGUI();
             }
         }
 
         if (UtilitiesConfig.Bank.INSTANCE.openChatBankSearch) {
-            if (e.getMessage().getUnformattedText().matches("Please type an item name in chat!")) {
+            if (McIf.getUnformattedText(e.getMessage()).matches("Please type an item name in chat!")) {
                 scheduledGuiScreen = new ChatGUI();
             }
         }
@@ -297,7 +298,7 @@ public class ClientEvents implements Listener {
     public void chatHandler(ClientChatReceivedEvent e) {
         if (e.isCanceled() || e.getType() == ChatType.GAME_INFO) return;
 
-        String msg = e.getMessage().getUnformattedText();
+        String msg = McIf.getUnformattedText(e.getMessage());
         if (msg.startsWith("[Daily Rewards:")) {
             DailyReminderManager.openedDaily();
         }
@@ -309,7 +310,7 @@ public class ClientEvents implements Listener {
 
         SPacketTitle packet = e.getPacket();
         if (packet.getType() != SPacketTitle.Type.SUBTITLE) return;
-        if (!packet.getMessage().getUnformattedText().matches("^§a\\+\\d+ §7.+§a to pouch$")) return;
+        if (!McIf.getUnformattedText(packet.getMessage()).matches("^§a\\+\\d+ §7.+§a to pouch$")) return;
 
         e.setCanceled(true);
         GameUpdateOverlay.queueMessage(packet.getMessage().getFormattedText());
@@ -492,9 +493,9 @@ public class ClientEvents implements Listener {
         if (UtilitiesConfig.INSTANCE.preventMythicChestClose) {
             if (e.getKeyCode() == 1 || e.getKeyCode() == ModCore.mc().gameSettings.keyBindInventory.getKeyCode()) {
                 IInventory inv = e.getGui().getLowerInv();
-                if (inv.getDisplayName().getUnformattedText().contains("Loot Chest") ||
-                        inv.getDisplayName().getUnformattedText().contains("Daily Rewards") ||
-                        inv.getDisplayName().getUnformattedText().contains("Objective Rewards")) {
+                if (McIf.getUnformattedText(inv.getDisplayName()).contains("Loot Chest") ||
+                        McIf.getUnformattedText(inv.getDisplayName()).contains("Daily Rewards") ||
+                        McIf.getUnformattedText(inv.getDisplayName()).contains("Objective Rewards")) {
                     for (int i = 0; i < inv.getSizeInventory(); i++) {
                         ItemStack stack = inv.getStackInSlot(i);
                         if (!stack.hasDisplayName() ||
@@ -670,7 +671,7 @@ public class ClientEvents implements Listener {
 
         if (UtilitiesConfig.Bank.INSTANCE.addBankConfirmation && e.getSlotIn() != null) {
             IInventory inventory = e.getSlotIn().inventory;
-            if (inventory.getDisplayName().getUnformattedText().contains("Bank") && e.getSlotIn().getHasStack()) {
+            if (McIf.getUnformattedText(inventory.getDisplayName()).contains("Bank") && e.getSlotIn().getHasStack()) {
                 ItemStack item = e.getSlotIn().getStack();
                 if (item.getDisplayName().contains(">" + TextFormatting.DARK_RED + ">" + TextFormatting.RED + ">" + TextFormatting.DARK_RED + ">" + TextFormatting.RED + ">")) {
                     String lore = TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(item));

@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.chat.events;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
@@ -42,7 +43,7 @@ public class ClientEvents implements Listener {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChatReceived(ClientChatReceivedEvent e) {
         ITextComponent msg = e.getMessage();
-        if (msg.getUnformattedText().startsWith("[Info] ") && ChatConfig.INSTANCE.filterWynncraftInfo) {
+        if (McIf.getUnformattedText(msg).startsWith("[Info] ") && ChatConfig.INSTANCE.filterWynncraftInfo) {
             e.setCanceled(true);
         } else if (msg.getFormattedText().startsWith("\n                       " + TextFormatting.GOLD + TextFormatting.BOLD + "Welcome to Wynncraft!") &&
                 !msg.getFormattedText().contains("n the Trade Market") && ChatConfig.INSTANCE.filterWynncraftInfo) {

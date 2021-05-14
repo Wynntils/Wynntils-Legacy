@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.core.instances.inventory;
 
+import com.wynntils.McIf;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.utils.objects.Pair;
@@ -203,7 +204,7 @@ public class FakeInventory {
             return;
         }
 
-        if (!expectedWindowTitle.matcher(TextFormatting.getTextWithoutFormattingCodes(e.getPacket().getWindowTitle().getUnformattedText())).matches()) {
+        if (!expectedWindowTitle.matcher(TextFormatting.getTextWithoutFormattingCodes(McIf.getUnformattedText(e.getPacket().getWindowTitle()))).matches()) {
             close(InventoryResult.CLOSED_OVERLAP);
             return;
         }
@@ -213,7 +214,7 @@ public class FakeInventory {
         lastAction = Minecraft.getSystemTime();
 
         windowId = e.getPacket().getWindowId();
-        windowTitle = e.getPacket().getWindowTitle().getUnformattedText();
+        windowTitle = McIf.getUnformattedText(e.getPacket().getWindowTitle());
         inventory = NonNullList.create();
 
         e.setCanceled(true);

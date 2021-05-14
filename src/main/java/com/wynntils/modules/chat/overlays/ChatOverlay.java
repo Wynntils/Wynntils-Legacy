@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.chat.overlays;
 
+import com.wynntils.McIf;
 import com.wynntils.core.events.custom.ChatEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.utils.objects.Pair;
@@ -140,7 +141,7 @@ public class ChatOverlay extends GuiNewChat {
 
     public void printChatMessageWithOptionalDeletion(ITextComponent chatComponent, int chatLineId) {
         setChatLine(chatComponent, chatLineId, mc.ingameGUI.getUpdateCounter(), false, false);
-        LOGGER.info("[CHAT] " + chatComponent.getUnformattedText().replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n"));
+        LOGGER.info("[CHAT] " + McIf.getUnformattedText(chatComponent).replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n"));
     }
 
     public void printUnloggedChatMessage(ITextComponent chatComponent) {

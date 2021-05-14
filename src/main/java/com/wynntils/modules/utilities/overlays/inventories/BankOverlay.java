@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.wynntils.McIf;
 import org.lwjgl.input.Keyboard;
 
 import com.wynntils.ModCore;
@@ -97,7 +98,7 @@ public class BankOverlay implements Listener {
         if (destinationPage == page) destinationPage = 0; // if we've already arrived, reset destination
 
         if (searchField == null && UtilitiesConfig.Bank.INSTANCE.showBankSearchBar) {
-            int nameWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(e.getGui().getUpperInv().getDisplayName().getUnformattedText());
+            int nameWidth = Minecraft.getMinecraft().fontRenderer.getStringWidth(McIf.getUnformattedText(e.getGui().getUpperInv().getDisplayName()));
             searchField = new GuiTextFieldWynn(201, Minecraft.getMinecraft().fontRenderer, nameWidth + 13, 128, 157 - nameWidth, 10);
             searchField.setText("Search...");
         }

@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.overlays;
 
+import com.wynntils.McIf;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
@@ -155,7 +156,7 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onScrollUsed(ChatEvent.Post e) {
-        String messageText = e.getMessage().getUnformattedText();
+        String messageText = McIf.getUnformattedText(e.getMessage());
         if (messageText.matches(".*? for [0-9]* seconds\\]")) { //consumable message
             //10 tick delay, since chat event occurs before default consumable event
             new Delay(() -> ConsumableTimerOverlay.addExternalScroll(messageText), 10);
@@ -169,8 +170,8 @@ public class OverlayEvents implements Listener {
             return;
         }
 
-        if (!Reference.onWorld || e.getMessage().getUnformattedText().equals(" ")) return;
-        String messageText = e.getMessage().getUnformattedText();
+        if (!Reference.onWorld || McIf.getUnformattedText(e.getMessage()).equals(" ")) return;
+        String messageText = McIf.getUnformattedText(e.getMessage());
         String formattedText = e.getMessage().getFormattedText();
         if (messageText.split(" ")[0].matches("\\[\\d+:\\d+\\]")) {
             if (!wynnExpTimestampNotified) {

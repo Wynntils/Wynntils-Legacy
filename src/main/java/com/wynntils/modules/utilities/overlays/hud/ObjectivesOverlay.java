@@ -7,6 +7,7 @@ package com.wynntils.modules.utilities.overlays.hud;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.overlays.Overlay;
@@ -167,7 +168,7 @@ public class ObjectivesOverlay extends Overlay {
     public static void checkObjectiveReached(ClientChatReceivedEvent e) {
         if (e.getType() != ChatType.CHAT) return;
 
-        String msg = e.getMessage().getUnformattedText();
+        String msg = McIf.getUnformattedText(e.getMessage());
         if (msg.contains("Click here to claim your rewards")) {
             objectives[0] = new Objective("Claim your reward with /daily");
         }

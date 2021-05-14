@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.core.events;
 
+import com.wynntils.McIf;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
@@ -47,7 +48,6 @@ import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.client.CPacketClientSettings;
 import net.minecraft.network.play.client.CPacketHeldItemChange;
 import net.minecraft.network.play.server.*;
@@ -290,7 +290,7 @@ public class ClientEvents implements Listener {
     public void updateActionBar(PacketEvent<SPacketChat> e) {
         if (!Reference.onServer || e.getPacket().getType() != ChatType.GAME_INFO) return;
 
-        PlayerInfo.get(ActionBarData.class).updateActionBar(e.getPacket().getChatComponent().getUnformattedText());
+        PlayerInfo.get(ActionBarData.class).updateActionBar(McIf.getUnformattedText(e.getPacket().getChatComponent()));
         if (UtilitiesModule.getModule().getActionBarOverlay().active) e.setCanceled(true); // only disable when the wynntils action bar is enabled
     }
 

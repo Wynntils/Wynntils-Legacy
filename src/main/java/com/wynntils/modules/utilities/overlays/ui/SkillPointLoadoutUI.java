@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.overlays.ui;
 
+import com.wynntils.McIf;
 import com.wynntils.ModCore;
 import com.wynntils.core.framework.enums.SkillPoint;
 import com.wynntils.core.framework.instances.PlayerInfo;
@@ -145,7 +146,7 @@ public class SkillPointLoadoutUI extends FakeGuiContainer {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        this.fontRenderer.drawString(this.inventory.getDisplayName().getUnformattedText(), 8, 6, 4210752);
+        this.fontRenderer.drawString(McIf.getUnformattedText(this.inventory.getDisplayName()), 8, 6, 4210752);
     }
 
     @Override

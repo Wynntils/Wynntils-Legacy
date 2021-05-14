@@ -6,6 +6,7 @@ package com.wynntils.modules.core.events;
 
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.wynntils.McIf;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
@@ -143,7 +144,7 @@ public class ServerEvents implements Listener {
         }
         PartyManager.handleMessages(e.getMessage());  // party messages here
 
-        String messageText = e.getMessage().getUnformattedText();
+        String messageText = McIf.getUnformattedText(e.getMessage());
         String formatted = e.getMessage().getFormattedText();
         Matcher m = FRIENDS_LIST.matcher(formatted);
         if (m.find() && m.group(1).equals(Minecraft.getMinecraft().player.getName())) {
