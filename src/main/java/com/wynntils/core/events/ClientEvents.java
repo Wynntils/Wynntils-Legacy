@@ -104,7 +104,7 @@ public class ClientEvents {
             isNextQuestCompleted = false;
 
             String questName = message.trim().replace("À", "");
-            if (e.getMessage().getFormattedText().contains(TextFormatting.GREEN.toString()))
+            if (McIf.getFormattedText(e.getMessage()).contains(TextFormatting.GREEN.toString()))
                 toDispatch = new GameEvent.QuestCompleted.MiniQuest(questName);
             else
                 toDispatch = new GameEvent.QuestCompleted(questName);

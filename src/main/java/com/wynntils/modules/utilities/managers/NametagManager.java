@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.managers;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
 import com.wynntils.core.framework.instances.PlayerInfo;
@@ -102,7 +103,7 @@ public class NametagManager {
         if (distance > range) return true;
 
         alphaFunc(516, 0.1F);
-        drawLabels(entity, entity.getDisplayName().getFormattedText(), e.getX(), e.getY(), e.getZ(), e.getRenderer().getRenderManager(), customLabels);
+        drawLabels(entity, McIf.getFormattedText(entity.getDisplayName()), e.getX(), e.getY(), e.getZ(), e.getRenderer().getRenderManager(), customLabels);
 
         return true;
     }

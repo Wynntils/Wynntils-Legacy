@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.music.events;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.enums.ClassType;
@@ -73,7 +74,7 @@ public class ClientEvents implements Listener {
     public void dungeonTracks(PacketEvent<SPacketTitle> e) {
         if (!MusicConfig.INSTANCE.replaceJukebox || e.getPacket().getType() != SPacketTitle.Type.TITLE) return;
 
-        String title = TextFormatting.getTextWithoutFormattingCodes(e.getPacket().getMessage().getFormattedText());
+        String title = TextFormatting.getTextWithoutFormattingCodes(McIf.getFormattedText(e.getPacket().getMessage()));
         String songName = WebManager.getMusicLocations().getDungeonTrack(title);
         if (songName == null) return;
 

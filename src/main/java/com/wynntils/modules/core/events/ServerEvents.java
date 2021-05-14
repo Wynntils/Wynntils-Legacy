@@ -145,7 +145,7 @@ public class ServerEvents implements Listener {
         PartyManager.handleMessages(e.getMessage());  // party messages here
 
         String messageText = McIf.getUnformattedText(e.getMessage());
-        String formatted = e.getMessage().getFormattedText();
+        String formatted = McIf.getFormattedText(e.getMessage());
         Matcher m = FRIENDS_LIST.matcher(formatted);
         if (m.find() && m.group(1).equals(Minecraft.getMinecraft().player.getName())) {
             String[] friends = m.group(2).split(", ");

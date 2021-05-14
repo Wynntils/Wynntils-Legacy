@@ -172,7 +172,7 @@ public class OverlayEvents implements Listener {
 
         if (!Reference.onWorld || McIf.getUnformattedText(e.getMessage()).equals(" ")) return;
         String messageText = McIf.getUnformattedText(e.getMessage());
-        String formattedText = e.getMessage().getFormattedText();
+        String formattedText = McIf.getFormattedText(e.getMessage());
         if (messageText.split(" ")[0].matches("\\[\\d+:\\d+\\]")) {
             if (!wynnExpTimestampNotified) {
                 TextComponentString text = new TextComponentString("[" + Reference.NAME + "] WynnExpansion's chat timestamps detected, please use " + Reference.NAME + "' chat timestamps for full compatibility.");

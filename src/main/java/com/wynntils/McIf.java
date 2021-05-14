@@ -6,4 +6,8 @@ public class McIf {
     public static String getUnformattedText(ITextComponent msg) {
         return msg.getUnformattedText();
     }
+
+    public static String getFormattedText(ITextComponent msg) {
+        return msg.getFormattedText();
+    }
 }

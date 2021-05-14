@@ -129,7 +129,7 @@ public class ChatManager {
         if (StringUtils.hasWynnic(McIf.getUnformattedText(in)) || StringUtils.hasGavellian(McIf.getUnformattedText(in))) {
             List<ITextComponent> newTextComponents = new ArrayList<>();
             boolean capital = false;
-            boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find();
+            boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(McIf.getFormattedText(original)).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(McIf.getFormattedText(original)).find();
             boolean foundStart = false;
             boolean foundEndTimestamp = !ChatConfig.INSTANCE.addTimestampsToChat;
             boolean previousTranslated = false;
@@ -331,7 +331,7 @@ public class ChatManager {
         }
 
         // clickable party invites
-        if (ChatConfig.INSTANCE.clickablePartyInvites && inviteReg.matcher(in.getFormattedText()).find()) {
+        if (ChatConfig.INSTANCE.clickablePartyInvites && inviteReg.matcher(McIf.getFormattedText(in)).find()) {
             for (ITextComponent textComponent : in.getSiblings()) {
                 if (textComponent.getUnformattedComponentText().startsWith("/")) {
                     String command = textComponent.getUnformattedComponentText();
@@ -449,7 +449,7 @@ public class ChatManager {
 
     private static boolean translateMessage(ITextComponent in) {
         if (!McIf.getUnformattedText(in).startsWith(TranslationManager.TRANSLATED_PREFIX)) {
-            String formatted = in.getFormattedText();
+            String formatted = McIf.getFormattedText(in);
             Matcher chatMatcher = translationPatternChat.matcher(formatted);
             if (chatMatcher.find()) {
                 if (!TranslationConfig.INSTANCE.translatePlayerChat) return false;
@@ -504,7 +504,7 @@ public class ChatManager {
             if (looseMatcher.find()) {
                 boolean hasMention = false;
 
-                boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find();
+                boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(McIf.getFormattedText(original)).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(McIf.getFormattedText(original)).find();
                 boolean foundStart = false;
                 boolean foundEndTimestamp = !ChatConfig.INSTANCE.addTimestampsToChat;
 

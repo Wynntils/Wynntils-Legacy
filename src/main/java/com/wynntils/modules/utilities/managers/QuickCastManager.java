@@ -107,7 +107,7 @@ public class QuickCastManager {
             SPacketTitle title = (SPacketTitle) input;
             if (title.getType() != SPacketTitle.Type.SUBTITLE) return false;
 
-            spell = data.parseSpellFromTitle(title.getMessage().getFormattedText());
+            spell = data.parseSpellFromTitle(McIf.getFormattedText(title.getMessage()));
         } else {
             SPacketChat title = (SPacketChat) input;
             if (title.getType() != ChatType.GAME_INFO) return false;

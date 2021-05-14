@@ -121,7 +121,7 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
 
         // handles the party owner
         if (PlayerInfo.get(SocialData.class).getPlayerParty().isPartying()) {
-            String text = e.getMessage().getFormattedText();
+            String text = McIf.getFormattedText(e.getMessage());
             Matcher m = dmRegex.matcher(text);
 
             if (!m.matches()) return;

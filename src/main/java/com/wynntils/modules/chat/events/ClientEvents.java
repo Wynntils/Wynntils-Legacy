@@ -45,12 +45,12 @@ public class ClientEvents implements Listener {
         ITextComponent msg = e.getMessage();
         if (McIf.getUnformattedText(msg).startsWith("[Info] ") && ChatConfig.INSTANCE.filterWynncraftInfo) {
             e.setCanceled(true);
-        } else if (msg.getFormattedText().startsWith("\n                       " + TextFormatting.GOLD + TextFormatting.BOLD + "Welcome to Wynncraft!") &&
-                !msg.getFormattedText().contains("n the Trade Market") && ChatConfig.INSTANCE.filterWynncraftInfo) {
+        } else if (McIf.getFormattedText(msg).startsWith("\n                       " + TextFormatting.GOLD + TextFormatting.BOLD + "Welcome to Wynncraft!") &&
+                !McIf.getFormattedText(msg).contains("n the Trade Market") && ChatConfig.INSTANCE.filterWynncraftInfo) {
             e.setCanceled(true);
-        } else if (msg.getFormattedText().startsWith(TextFormatting.GRAY + "[You are now entering") && ChatConfig.INSTANCE.filterTerritoryEnter) {
+        } else if (McIf.getFormattedText(msg).startsWith(TextFormatting.GRAY + "[You are now entering") && ChatConfig.INSTANCE.filterTerritoryEnter) {
             e.setCanceled(true);
-        } else if (msg.getFormattedText().startsWith(TextFormatting.GRAY + "[You are now leaving") && ChatConfig.INSTANCE.filterTerritoryEnter) {
+        } else if (McIf.getFormattedText(msg).startsWith(TextFormatting.GRAY + "[You are now leaving") && ChatConfig.INSTANCE.filterTerritoryEnter) {
             e.setCanceled(true);
         }
     }

@@ -313,7 +313,7 @@ public class ClientEvents implements Listener {
         if (!McIf.getUnformattedText(packet.getMessage()).matches("^§a\\+\\d+ §7.+§a to pouch$")) return;
 
         e.setCanceled(true);
-        GameUpdateOverlay.queueMessage(packet.getMessage().getFormattedText());
+        GameUpdateOverlay.queueMessage(McIf.getFormattedText(packet.getMessage()));
     }
 
     @SubscribeEvent

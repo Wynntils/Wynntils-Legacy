@@ -98,7 +98,7 @@ public class ChatOverlay extends GuiNewChat {
                             if (!ChatConfig.INSTANCE.transparent) {
                                 drawRect(-2, j2 - 9, extraY, j2, l1 / 2 << 24);
                             }
-                            String s = ChatManager.renderMessage(chatline.getChatComponent()).getFormattedText();
+                            String s = McIf.getFormattedText(ChatManager.renderMessage(chatline.getChatComponent()));
                             GlStateManager.enableBlend();
                             mc.fontRenderer.drawStringWithShadow(s, 0.0F, (float)(j2 - 8), 16777215 + (l1 << 24));
                             GlStateManager.disableAlpha();
@@ -208,7 +208,7 @@ public class ChatOverlay extends GuiNewChat {
 
         // spam filter
         if (!noProcessing && tab.getLastMessage() != null) {
-            if (ChatConfig.INSTANCE.blockChatSpamFilter && tab.getLastMessage().getFormattedText().equals(originalMessage.getFormattedText()) && chatLineId == 0) {
+            if (ChatConfig.INSTANCE.blockChatSpamFilter && McIf.getFormattedText(tab.getLastMessage()).equals(McIf.getFormattedText(originalMessage)) && chatLineId == 0) {
                 try {
                     List<ChatLine> lines = tab.getCurrentMessages();
                     if (lines != null && lines.size() > 0) {

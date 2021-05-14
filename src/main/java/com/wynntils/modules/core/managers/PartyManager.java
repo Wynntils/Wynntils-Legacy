@@ -26,9 +26,9 @@ public class PartyManager {
 
         PartyContainer partyContainer = PlayerInfo.get(SocialData.class).getPlayerParty();
         for (ITextComponent components : text.getSiblings()) {
-            if (components.getFormattedText().startsWith("§e")) continue;
+            if (McIf.getFormattedText(components).startsWith("§e")) continue;
 
-            boolean owner = components.getFormattedText().startsWith("§b");
+            boolean owner = McIf.getFormattedText(components).startsWith("§b");
             String member = McIf.getUnformattedText(components).contains(",") ? McIf.getUnformattedText(components).split(",")[0] : McIf.getUnformattedText(components);
 
             if (owner) partyContainer.setOwner(member);
@@ -59,14 +59,14 @@ public class PartyManager {
             partyContainer.addMember(Minecraft.getMinecraft().player.getName());
             return;
         }
-        if (component.getFormattedText().startsWith("§e") && McIf.getUnformattedText(component).contains("has joined the party.")) {
+        if (McIf.getFormattedText(component).startsWith("§e") && McIf.getUnformattedText(component).contains("has joined the party.")) {
             PartyContainer partyContainer = PlayerInfo.get(SocialData.class).getPlayerParty();
 
             String member = McIf.getUnformattedText(component).split(" has joined the party.")[0];
             partyContainer.addMember(member);
             return;
         }
-        if (component.getFormattedText().startsWith("§e") && McIf.getUnformattedText(component).contains("has left the party.")) {
+        if (McIf.getFormattedText(component).startsWith("§e") && McIf.getUnformattedText(component).contains("has left the party.")) {
             handlePartyList();
             PartyContainer partyContainer = PlayerInfo.get(SocialData.class).getPlayerParty();
 
