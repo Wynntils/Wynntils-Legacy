@@ -26,7 +26,7 @@ public class GuildAndFriendManager {
 
     public static void tryResolveNames() {
         // Try to resolve names from the connection map
-        EntityPlayerSP player = McIf.mc().player;
+        EntityPlayerSP player = McIf.player();
         if (player == null) return;
         NetHandlerPlayClient conn = player.connection;
         if (conn == null) return;

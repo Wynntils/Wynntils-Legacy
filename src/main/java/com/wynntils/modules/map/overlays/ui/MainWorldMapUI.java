@@ -233,8 +233,8 @@ public class MainWorldMapUI extends WorldMapUI {
             z = (int) location.getZ();
         } else {
             type = "location";
-            x = (int) McIf.mc().player.posX;
-            z = (int) McIf.mc().player.posZ;
+            x = (int) McIf.player().posX;
+            z = (int) McIf.player().posZ;
         }
 
         if (leftClick)

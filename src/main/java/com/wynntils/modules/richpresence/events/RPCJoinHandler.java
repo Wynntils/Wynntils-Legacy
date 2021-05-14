@@ -68,11 +68,11 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
         if (Reference.onWorld) {
             if (Reference.getUserWorld().replace("WC", "").replace("HB", "").equals(Integer.toString(lastSecret.getWorld())) && Reference.getUserWorld().replaceAll("\\d+", "").equals(lastSecret.getWorldType())) {
                 sentInvite = true;
-                McIf.mc().player.sendChatMessage("/msg " + lastSecret.getOwner() + " " + lastSecret.getRandomHash());
+                McIf.player().sendChatMessage("/msg " + lastSecret.getOwner() + " " + lastSecret.getRandomHash());
                 return;
             }
 
-            McIf.mc().player.sendChatMessage("/hub");
+            McIf.player().sendChatMessage("/hub");
             waitingLobby = true;
             return;
         }
@@ -95,7 +95,7 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
         if (!waitingInvite) return;
         sentInvite = true;
         waitingInvite = false;
-        McIf.mc().player.sendChatMessage("/msg " + lastSecret.getOwner() + " " + lastSecret.getRandomHash());
+        McIf.player().sendChatMessage("/msg " + lastSecret.getOwner() + " " + lastSecret.getRandomHash());
     }
 
     @SubscribeEvent
@@ -104,14 +104,14 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
 
         // handles the invitation
         if (lastSecret != null && McIf.getUnformattedText(e.getMessage()).startsWith("You have been invited to join " + lastSecret.getOwner())) {
-            McIf.mc().player.sendChatMessage("/party join " + lastSecret.getOwner());
+            McIf.player().sendChatMessage("/party join " + lastSecret.getOwner());
 
             lastSecret = null;
             return;
         }
 
         // handles the user join
-        if (sentInvite && McIf.getUnformattedText(e.getMessage()).startsWith("[" + McIf.mc().player.getName())) {
+        if (sentInvite && McIf.getUnformattedText(e.getMessage()).startsWith("[" + McIf.player().getName())) {
             sentInvite = false;
             e.setCanceled(true);
             return;
@@ -131,7 +131,7 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
                 return;
 
             e.setCanceled(true);
-            McIf.mc().player.sendChatMessage("/party invite " + user);
+            McIf.player().sendChatMessage("/party invite " + user);
         }
     }
 

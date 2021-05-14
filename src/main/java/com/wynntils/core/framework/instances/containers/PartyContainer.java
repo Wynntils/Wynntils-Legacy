@@ -61,7 +61,7 @@ public class PartyContainer {
     public void removeMember(String userName) {
         FrameworkManager.getEventBus().post(new WynnSocialEvent.Party.Leave(userName));
 
-        if (userName.equalsIgnoreCase(McIf.mc().player.getName())) {
+        if (userName.equalsIgnoreCase(McIf.player().getName())) {
             partyMembers.clear();
             owner = "";
             return;
@@ -78,7 +78,7 @@ public class PartyContainer {
     public void removeMembers(List<String> members) {
         members.forEach(userName -> FrameworkManager.getEventBus().post(new WynnSocialEvent.Party.Leave(userName)));
 
-        if (members.contains(McIf.mc().player.getName())) {
+        if (members.contains(McIf.player().getName())) {
             partyMembers.clear();
             owner = "";
             return;

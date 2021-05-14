@@ -90,7 +90,7 @@ public class QuickCastManager {
         }
 
         if (PlayerInfo.get(CharacterData.class).getLevel() < spellUnlock[spell - 1]) {
-            McIf.mc().player.sendMessage(new TextComponentString(
+            McIf.player().sendMessage(new TextComponentString(
                     TextFormatting.GRAY + "You have not yet unlocked this spell! You need to be level " + spellUnlock[spell - 1]
             ));
             return false;

@@ -202,8 +202,8 @@ public class CommandCompass extends CommandBase implements IClientCommand {
 
             if (args.length >= 2 && args[1].equalsIgnoreCase("location")) {
                 // Use current location instead of compass
-                x = McIf.mc().player.posX;
-                z = McIf.mc().player.posZ;
+                x = McIf.player().posX;
+                z = McIf.player().posZ;
                 type = "location";
                 recipientIndex = 2;
             } else {
@@ -249,8 +249,8 @@ public class CommandCompass extends CommandBase implements IClientCommand {
             }
 
             try {
-                int x = getSingleCoordinate(xStr, (int) McIf.mc().player.posX);
-                int z = getSingleCoordinate(zStr, (int) McIf.mc().player.posZ);
+                int x = getSingleCoordinate(xStr, (int) McIf.player().posX);
+                int z = getSingleCoordinate(zStr, (int) McIf.player().posZ);
 
                 CompassManager.setCompassLocation(new Location(x, 0, z));
 
@@ -283,11 +283,11 @@ public class CommandCompass extends CommandBase implements IClientCommand {
     public static void shareCoordinates(String recipientUser, String type, int x, int z) {
         String location = "[" + x + ", " + z + "]";
         if (recipientUser == null) {
-            McIf.mc().player.sendChatMessage("/p " + " My " + type + " is at " + location);
+            McIf.player().sendChatMessage("/p " + " My " + type + " is at " + location);
         }else if (recipientUser.equalsIgnoreCase("guild")) {
-            McIf.mc().player.sendChatMessage("/g " + " My " + type + " is at " + location);
+            McIf.player().sendChatMessage("/g " + " My " + type + " is at " + location);
         } else {
-            McIf.mc().player.sendChatMessage("/msg " + recipientUser + " My " + type + " is at " + location);
+            McIf.player().sendChatMessage("/msg " + recipientUser + " My " + type + " is at " + location);
         }
     }
 

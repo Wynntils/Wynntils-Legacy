@@ -59,7 +59,7 @@ public class EntityManager {
             RenderManager renderManager = McIf.mc().getRenderManager();
             if (renderManager == null || renderManager.options == null) return;
 
-            EntityPlayerSP player = McIf.mc().player;
+            EntityPlayerSP player = McIf.player();
             // ticks each entity
             it = entityList.iterator();
             while (it.hasNext()) {
@@ -103,7 +103,7 @@ public class EntityManager {
             RenderManager renderManager = McIf.mc().getRenderManager();
             if (renderManager == null || renderManager.options == null) return;
 
-            EntityPlayerSP player = McIf.mc().player;
+            EntityPlayerSP player = McIf.player();
             // ticks each entity
             it = entityList.iterator();
             while (it.hasNext()) {

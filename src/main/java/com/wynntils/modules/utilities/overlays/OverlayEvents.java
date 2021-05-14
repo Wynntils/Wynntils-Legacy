@@ -119,7 +119,7 @@ public class OverlayEvents implements Listener {
             /*Inventory full message*/
             if (OverlayConfig.GameUpdate.GameUpdateInventoryMessages.INSTANCE.enabled) {
                 if (tickcounter % (int) (OverlayConfig.GameUpdate.GameUpdateInventoryMessages.INSTANCE.inventoryUpdateRate * 20f) == 0) {
-                    IInventory inv = McIf.mc().player.inventory;
+                    IInventory inv = McIf.player().inventory;
                     int itemCounter = 0;
                     for (int i = 0; i < inv.getSizeInventory(); i++) {
                         if (!inv.getStackInSlot(i).isEmpty()) {
@@ -176,7 +176,7 @@ public class OverlayEvents implements Listener {
             if (!wynnExpTimestampNotified) {
                 TextComponentString text = new TextComponentString("[" + Reference.NAME + "] WynnExpansion's chat timestamps detected, please use " + Reference.NAME + "' chat timestamps for full compatibility.");
                 text.getStyle().setColor(DARK_RED);
-                McIf.mc().player.sendMessage(text);
+                McIf.player().sendMessage(text);
                 wynnExpTimestampNotified = true;
             }
         }
@@ -770,7 +770,7 @@ public class OverlayEvents implements Listener {
         if (!Reference.onWorld || !OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) return;
 
         SPacketEntityEffect effect = e.getPacket();
-        if (effect.getEntityId() != McIf.mc().player.getEntityId()) return;
+        if (effect.getEntityId() != McIf.player().getEntityId()) return;
 
         Potion potion = Potion.getPotionById(effect.getEffectId());
 
@@ -817,7 +817,7 @@ public class OverlayEvents implements Listener {
         if (!Reference.onWorld || !OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) return;
 
         SPacketRemoveEntityEffect effect = e.getPacket();
-        if (effect.getEntity(McIf.world()) != McIf.mc().player) return;
+        if (effect.getEntity(McIf.world()) != McIf.player()) return;
 
         McIf.mc().addScheduledTask(() -> {
             Potion potion = effect.getPotion();

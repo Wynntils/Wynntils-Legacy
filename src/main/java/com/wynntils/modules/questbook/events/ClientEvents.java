@@ -106,7 +106,7 @@ public class ClientEvents implements Listener {
     public void clickOnQuestBookItem(PacketEvent<CPacketPlayerTryUseItem> e) {
         if (!QuestBookConfig.INSTANCE.allowCustomQuestbook
                 || !Reference.onWorld || Reference.onNether || Reference.onWars
-                || McIf.mc().player.inventory.currentItem != 7) return;
+                || McIf.player().inventory.currentItem != 7) return;
 
         openQuestBook = true;
         e.setCanceled(true);
@@ -116,7 +116,7 @@ public class ClientEvents implements Listener {
     public void clickOnQuestBookItemOnBlock(PacketEvent<CPacketPlayerTryUseItemOnBlock> e) {
         if (!QuestBookConfig.INSTANCE.allowCustomQuestbook
                 || !Reference.onWorld || Reference.onNether || Reference.onWars
-                || McIf.mc().player.inventory.currentItem != 7) return;
+                || McIf.player().inventory.currentItem != 7) return;
 
         openQuestBook = true;
         e.setCanceled(true);
@@ -126,7 +126,7 @@ public class ClientEvents implements Listener {
     public void clickOnQuestBookEntity(PacketEvent<CPacketUseEntity> e) {
         if (!QuestBookConfig.INSTANCE.allowCustomQuestbook
                 || !Reference.onWorld || Reference.onNether || Reference.onWars
-                || McIf.mc().player.inventory.currentItem != 7) return;
+                || McIf.player().inventory.currentItem != 7) return;
 
         openQuestBook = true;
         e.setCanceled(true);
@@ -134,8 +134,8 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void updateQuestBook(TickEvent.ClientTickEvent e) {
-        if (e.phase == TickEvent.Phase.START || !Reference.onWorld || Reference.onNether || Reference.onWars || McIf.mc().player.inventory == null) return;
-        if (McIf.mc().player.inventory.getStackInSlot(7).isEmpty() || McIf.mc().player.inventory.getStackInSlot(7).getItem() != Items.WRITTEN_BOOK) return;
+        if (e.phase == TickEvent.Phase.START || !Reference.onWorld || Reference.onNether || Reference.onWars || McIf.player().inventory == null) return;
+        if (McIf.player().inventory.getStackInSlot(7).isEmpty() || McIf.player().inventory.getStackInSlot(7).getItem() != Items.WRITTEN_BOOK) return;
 
         if (!openQuestBook) return;
         openQuestBook = false;

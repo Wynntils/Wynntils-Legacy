@@ -31,7 +31,7 @@ public class WynnSocialEvent extends Event {
     }
 
     public boolean isYou() {
-        return member.equalsIgnoreCase(McIf.mc().player.getName());
+        return member.equalsIgnoreCase(McIf.player().getName());
     }
 
     public static class Party extends WynnSocialEvent {

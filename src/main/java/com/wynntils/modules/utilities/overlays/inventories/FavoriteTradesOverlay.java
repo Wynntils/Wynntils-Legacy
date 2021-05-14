@@ -34,7 +34,7 @@ public class FavoriteTradesOverlay implements Listener {
         if (!Reference.onWorld || !McIf.getFormattedText(e.getGui().getLowerInv().getDisplayName()).contains("Marketplace")) return;
         if (e.getKeyCode() != KeyManager.getFavoriteTradeKey().getKeyBinding().getKeyCode()) return;
 
-        if (e.getGui().getSlotUnderMouse() != null && McIf.mc().player.inventory != e.getGui().getSlotUnderMouse().inventory) {
+        if (e.getGui().getSlotUnderMouse() != null && McIf.player().inventory != e.getGui().getSlotUnderMouse().inventory) {
             toggleLockState(e.getGui().getSlotUnderMouse().getStack());
         }
     }

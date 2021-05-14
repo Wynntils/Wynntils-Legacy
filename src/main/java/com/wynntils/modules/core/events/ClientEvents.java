@@ -100,19 +100,19 @@ public class ClientEvents implements Listener {
         if (e.getGui() instanceof GuiInventory) {
             if (e.getGui() instanceof InventoryReplacer) return;
 
-            e.setGui(new InventoryReplacer(McIf.mc().player));
+            e.setGui(new InventoryReplacer(McIf.player()));
             return;
         }
         if (e.getGui() instanceof GuiChest) {
             if (e.getGui() instanceof ChestReplacer) return;
 
-            e.setGui(new ChestReplacer(McIf.mc().player.inventory, ReflectionFields.GuiChest_lowerChestInventory.getValue(e.getGui())));
+            e.setGui(new ChestReplacer(McIf.player().inventory, ReflectionFields.GuiChest_lowerChestInventory.getValue(e.getGui())));
             return;
         }
         if (e.getGui() instanceof GuiScreenHorseInventory) {
             if (e.getGui() instanceof HorseReplacer) return;
 
-            e.setGui(new HorseReplacer(McIf.mc().player.inventory, ReflectionFields.GuiScreenHorseInventory_horseInventory.getValue(e.getGui()), (AbstractHorse) ReflectionFields.GuiScreenHorseInventory_horseEntity.getValue(e.getGui())));
+            e.setGui(new HorseReplacer(McIf.player().inventory, ReflectionFields.GuiScreenHorseInventory_horseInventory.getValue(e.getGui()), (AbstractHorse) ReflectionFields.GuiScreenHorseInventory_horseEntity.getValue(e.getGui())));
         }
         if (e.getGui() instanceof GuiIngameMenu) {
             if (e.getGui() instanceof IngameMenuReplacer) return;
@@ -149,8 +149,8 @@ public class ClientEvents implements Listener {
         SPacketEntityVelocity velocity = e.getPacket();
         if (McIf.world() != null) {
             Entity entity = McIf.world().getEntityByID(velocity.getEntityID());
-            Entity vehicle = McIf.mc().player.getLowestRidingEntity();
-            if ((entity == vehicle) && (vehicle != McIf.mc().player) && (vehicle.canPassengerSteer())) {
+            Entity vehicle = McIf.player().getLowestRidingEntity();
+            if ((entity == vehicle) && (vehicle != McIf.player()) && (vehicle.canPassengerSteer())) {
                 e.setCanceled(true);
             }
         }
@@ -161,8 +161,8 @@ public class ClientEvents implements Listener {
         // I'm not sure what this does, but the code has been here a long time,
         // just moving it here. /magicus, 2021
         SPacketMoveVehicle moveVehicle = e.getPacket();
-        Entity vehicle = McIf.mc().player.getLowestRidingEntity();
-        if ((vehicle == McIf.mc().player) || (!vehicle.canPassengerSteer()) || (vehicle.getDistance(moveVehicle.getX(), moveVehicle.getY(), moveVehicle.getZ()) <= 25D)) {
+        Entity vehicle = McIf.player().getLowestRidingEntity();
+        if ((vehicle == McIf.player()) || (!vehicle.canPassengerSteer()) || (vehicle.getDistance(moveVehicle.getX(), moveVehicle.getY(), moveVehicle.getZ()) <= 25D)) {
             e.setCanceled(true);
         }
     }

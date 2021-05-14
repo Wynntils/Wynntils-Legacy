@@ -42,8 +42,8 @@ public class PointRenderer {
         int renderDistance = McIf.mc().gameSettings.renderDistanceChunks;
         for (int x = -renderDistance; x <= renderDistance; x++) {
             for (int z = -renderDistance; z <= renderDistance; z++) {
-                int playerChunkX = McIf.mc().player.chunkCoordX;
-                int playerChunkZ = McIf.mc().player.chunkCoordZ;
+                int playerChunkX = McIf.player().chunkCoordX;
+                int playerChunkZ = McIf.player().chunkCoordZ;
                 ChunkPos chunk = new ChunkPos(x + playerChunkX, z + playerChunkZ);
                 chunks.add(chunk);
             }
@@ -254,8 +254,8 @@ public class PointRenderer {
         int renderDistance = McIf.mc().gameSettings.renderDistanceChunks;
         for (int x = -renderDistance; x <= renderDistance; x++) {
             for (int z = -renderDistance; z <= renderDistance; z++) {
-                int playerChunkX = McIf.mc().player.chunkCoordX;
-                int playerChunkZ = McIf.mc().player.chunkCoordZ;
+                int playerChunkX = McIf.player().chunkCoordX;
+                int playerChunkZ = McIf.player().chunkCoordZ;
                 ChunkPos chunk = new ChunkPos(x + playerChunkX, z + playerChunkZ);
                 chunks.add(chunk);
             }

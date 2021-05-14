@@ -126,7 +126,7 @@ public class PlayerInfoOverlay extends Overlay {
         nextExecution = Minecraft.getSystemTime() + 250;
 
         List<NetworkPlayerInfo> players = TabManager.getEntryOrdering()
-                .sortedCopy(McIf.mc().player.connection.getPlayerInfoMap());
+                .sortedCopy(McIf.player().connection.getPlayerInfoMap());
 
         if (players.isEmpty()) return lastPlayers;
 

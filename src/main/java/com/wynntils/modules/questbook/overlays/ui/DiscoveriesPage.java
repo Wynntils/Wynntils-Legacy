@@ -518,7 +518,7 @@ public class DiscoveriesPage extends QuestBookPage {
 
         handler.addAndDispatch(query.handleJsonObject(jsonOutput -> {
             if (jsonOutput.has("error")) { // Returns error if page does not exist
-                McIf.mc().player.sendMessage(new TextComponentString(TextFormatting.RED + "Unable to find discovery coordinates. (Wiki page not found)"));
+                McIf.player().sendMessage(new TextComponentString(TextFormatting.RED + "Unable to find discovery coordinates. (Wiki page not found)"));
                 return true;
             }
 
@@ -537,12 +537,12 @@ public class DiscoveriesPage extends QuestBookPage {
                 x = Integer.parseInt(xlocation.substring(12, xend));
                 z = Integer.parseInt(zlocation.substring(12, zend));
             } catch (NumberFormatException e) {
-                McIf.mc().player.sendMessage(new TextComponentString(TextFormatting.RED + "Unable to find discovery coordinates. (Wiki template not located)"));
+                McIf.player().sendMessage(new TextComponentString(TextFormatting.RED + "Unable to find discovery coordinates. (Wiki template not located)"));
                 return true;
             }
 
             if (x == 0 && z == 0) {
-                McIf.mc().player.sendMessage(new TextComponentString(TextFormatting.RED + "Unable to find discovery coordinates. (Wiki coordinates not located)"));
+                McIf.player().sendMessage(new TextComponentString(TextFormatting.RED + "Unable to find discovery coordinates. (Wiki coordinates not located)"));
                 return true;
             }
 

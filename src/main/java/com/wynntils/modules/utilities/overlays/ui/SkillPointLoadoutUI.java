@@ -43,7 +43,7 @@ public class SkillPointLoadoutUI extends FakeGuiContainer {
     private final int inventoryRows;
 
     public SkillPointLoadoutUI(SkillPointOverlay parent, GuiScreen spMenu, InventoryBasic inventory) {
-        super(new ContainerBuilds(inventory, McIf.mc().player));
+        super(new ContainerBuilds(inventory, McIf.player()));
         this.parent = parent;
         this.spMenu = spMenu;
         this.inventory = inventory;

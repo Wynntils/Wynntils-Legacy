@@ -44,7 +44,7 @@ public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClie
     public void doRenderLayer(AbstractClientPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) {
         if (!CosmeticsConfig.INSTANCE.forceCapes
                 && !McIf.mc().gameSettings.getModelParts().toString().contains("CAPE")
-                && player.getUniqueID() == McIf.mc().player.getUniqueID()) return;
+                && player.getUniqueID() == McIf.player().getUniqueID()) return;
 
         WynntilsUser info = UserManager.getUser(player.getUniqueID());
         if (info == null || !info.getCosmetics().hasElytra()) return;

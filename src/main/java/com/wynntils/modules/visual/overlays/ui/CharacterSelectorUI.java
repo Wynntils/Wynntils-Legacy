@@ -100,7 +100,7 @@ public class CharacterSelectorUI extends GuiScreen {
         hoveredButton = -1;
         hoveredText = null;
 
-        McIf.mc().player.setInvisible(false); // removes invisibility from character selection
+        McIf.player().setInvisible(false); // removes invisibility from character selection
         updateItems(); // tries to get the inventory items
 
         float animationPercentage = Math.max((animationEnd - System.currentTimeMillis()) / 100f, 0f);
@@ -433,7 +433,7 @@ public class CharacterSelectorUI extends GuiScreen {
             enableBlend();
         }
 
-        GuiInventory.drawEntityOnScreen(middleX, 210, 60, 0, 0, McIf.mc().player);
+        GuiInventory.drawEntityOnScreen(middleX, 210, 60, 0, 0, McIf.player());
     }
 
     private void drawCharacterBadge(int posX, int posY, ItemStack item, String name, String level, String deletion, float xp, boolean selected, int id) {

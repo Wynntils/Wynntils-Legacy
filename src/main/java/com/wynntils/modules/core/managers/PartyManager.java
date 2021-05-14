@@ -20,7 +20,7 @@ public class PartyManager {
     private static final CommandResponse listExecutor = new CommandResponse("/party list", (matcher, text) -> {
         String entire = matcher.group(0);
         if (entire.contains("You must be in")) {  // clears the party
-            PlayerInfo.get(SocialData.class).getPlayerParty().removeMember(McIf.mc().player.getName());
+            PlayerInfo.get(SocialData.class).getPlayerParty().removeMember(McIf.player().getName());
             return;
         }
 
@@ -50,13 +50,13 @@ public class PartyManager {
                 || McIf.getUnformattedText(component).startsWith("Your party has been disbanded since you were the only member remaining.")
                 || McIf.getUnformattedText(component).startsWith("Your party has been disbanded.")) {
             PartyContainer partyContainer = PlayerInfo.get(SocialData.class).getPlayerParty();
-            partyContainer.removeMember(McIf.mc().player.getName());
+            partyContainer.removeMember(McIf.player().getName());
             return;
         }
         if (McIf.getUnformattedText(component).startsWith("You have successfully created a party.")) {
             PartyContainer partyContainer = PlayerInfo.get(SocialData.class).getPlayerParty();
-            partyContainer.setOwner(McIf.mc().player.getName());
-            partyContainer.addMember(McIf.mc().player.getName());
+            partyContainer.setOwner(McIf.player().getName());
+            partyContainer.addMember(McIf.player().getName());
             return;
         }
         if (McIf.getFormattedText(component).startsWith("§e") && McIf.getUnformattedText(component).contains("has joined the party.")) {

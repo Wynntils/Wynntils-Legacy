@@ -28,13 +28,13 @@ public class InventoryOpenByItem implements IInventoryOpenAction {
     @Override
     public void onOpen(FakeInventory inv, Runnable onDrop) {
         PacketQueue.queueComplexPacket(rightClick, SPacketOpenWindow.class).setSender((conn, pack) -> {
-            if (McIf.mc().player.inventory.currentItem != inputSlot) {
+            if (McIf.player().inventory.currentItem != inputSlot) {
                 conn.sendPacket(new CPacketHeldItemChange(inputSlot));
             }
 
             conn.sendPacket(pack);
-            if (McIf.mc().player.inventory.currentItem != inputSlot) {
-                conn.sendPacket(new CPacketHeldItemChange(McIf.mc().player.inventory.currentItem));
+            if (McIf.player().inventory.currentItem != inputSlot) {
+                conn.sendPacket(new CPacketHeldItemChange(McIf.player().inventory.currentItem));
             }
         }).onDrop(onDrop);
     }

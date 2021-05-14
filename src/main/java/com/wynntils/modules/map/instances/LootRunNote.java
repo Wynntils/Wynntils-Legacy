@@ -45,7 +45,7 @@ public class LootRunNote {
         RenderManager render = McIf.mc().getRenderManager();
         FontRenderer fr = render.getFontRenderer();
 
-        if (McIf.mc().player.getDistanceSq(location.x, location.y, location.z) > 4096f)
+        if (McIf.player().getDistanceSq(location.x, location.y, location.z) > 4096f)
             return; // only draw nametag when close
 
         String[] lines = StringUtils.wrapTextBySize(note, 200);

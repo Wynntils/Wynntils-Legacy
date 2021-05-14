@@ -53,7 +53,7 @@ public class ItemScreenshotManager {
         ItemStack stack = slot.getStack();
         if (!stack.hasDisplayName()) return;
 
-        List<String> tooltip = stack.getTooltip(McIf.mc().player, ITooltipFlag.TooltipFlags.NORMAL);
+        List<String> tooltip = stack.getTooltip(McIf.player(), ITooltipFlag.TooltipFlags.NORMAL);
         removeItemLore(tooltip);
 
         FontRenderer fr = McIf.mc().fontRenderer;
@@ -104,7 +104,7 @@ public class ItemScreenshotManager {
         ClipboardImage ci = new ClipboardImage(bi);
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ci, null);
 
-        McIf.mc().player.sendMessage(new TextComponentString(TextFormatting.GREEN + "Copied " + stack.getDisplayName() + TextFormatting.GREEN + " to the clipboard!"));
+        McIf.player().sendMessage(new TextComponentString(TextFormatting.GREEN + "Copied " + stack.getDisplayName() + TextFormatting.GREEN + " to the clipboard!"));
     }
 
     private static void removeItemLore(List<String> tooltip) {

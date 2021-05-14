@@ -15,7 +15,7 @@ public class CompassManager {
     private static Location compassLocation = null;
 
     public static Location getCompassLocation() {
-        if (compassLocation != null) compassLocation.setY(McIf.mc().player.posY);
+        if (compassLocation != null) compassLocation.setY(McIf.player().posY);
         return compassLocation;
     }
 

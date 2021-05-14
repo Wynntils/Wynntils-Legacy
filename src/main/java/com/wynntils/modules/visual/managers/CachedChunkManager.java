@@ -139,7 +139,7 @@ public class CachedChunkManager {
             } catch (Exception ignored) { }
 
             int renderDistance = McIf.mc().gameSettings.renderDistanceChunks;
-            ChunkPos player = new ChunkPos(McIf.mc().player.chunkCoordX, McIf.mc().player.chunkCoordZ);
+            ChunkPos player = new ChunkPos(McIf.player().chunkCoordX, McIf.player().chunkCoordZ);
 
             // Start by removing chunks that are not in the render distance
             Iterator<ChunkPos> it = loadedChunks.iterator();

@@ -31,7 +31,7 @@ public class HotbarOverlay extends Overlay {
     public void render(RenderGameOverlayEvent.Pre event) {
         if (!WIDGETS_TEXTURE.loaded) WIDGETS_TEXTURE.load();
 
-        EntityPlayerSP player = McIf.mc().player;
+        EntityPlayerSP player = McIf.player();
         int textureY = 0;
 
         if (OverlayConfig.Hotbar.INSTANCE.hotbarTexture == OverlayConfig.Hotbar.HotbarTextures.Resource_Pack) {

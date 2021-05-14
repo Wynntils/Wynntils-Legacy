@@ -109,7 +109,7 @@ public class OtherPlayerProfile {
 
         hasHat = e.isWearing(EnumPlayerModelParts.HAT);
 
-        if (e.isDead || e.getDistance(McIf.mc().player) >= 30) return false;
+        if (e.isDead || e.getDistance(McIf.player()) >= 30) return false;
         x = (int) e.posX;
         y = (int) e.posY;
         z = (int) e.posZ;

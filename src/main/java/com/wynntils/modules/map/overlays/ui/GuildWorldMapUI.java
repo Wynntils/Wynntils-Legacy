@@ -44,7 +44,7 @@ public class GuildWorldMapUI extends WorldMapUI {
     private boolean showTradeRoutes = true;
 
     public GuildWorldMapUI() {
-        super((float) McIf.mc().player.posX, (float) McIf.mc().player.posZ);
+        super((float) McIf.player().posX, (float) McIf.player().posZ);
     }
 
     @Override
@@ -117,8 +117,8 @@ public class GuildWorldMapUI extends WorldMapUI {
 
         float scale = getScaleFactor();
 
-        float playerPositionX = (map.getTextureXPosition(McIf.mc().player.posX) - minX) / (maxX - minX);
-        float playerPositionZ = (map.getTextureZPosition(McIf.mc().player.posZ) - minZ) / (maxZ - minZ);
+        float playerPositionX = (map.getTextureXPosition(McIf.player().posX) - minX) / (maxX - minX);
+        float playerPositionZ = (map.getTextureZPosition(McIf.player().posZ) - minZ) / (maxZ - minZ);
 
         if (playerPositionX > 0 && playerPositionX < 1 && playerPositionZ > 0 && playerPositionZ < 1) {  // <--- player position
             playerPositionX = width * playerPositionX;
@@ -128,7 +128,7 @@ public class GuildWorldMapUI extends WorldMapUI {
 
             GlStateManager.pushMatrix();
             GlStateManager.translate(drawingOrigin.x + playerPositionX, drawingOrigin.y + playerPositionZ, 0);
-            GlStateManager.rotate(180 + MathHelper.fastFloor(McIf.mc().player.rotationYaw), 0, 0, 1);
+            GlStateManager.rotate(180 + MathHelper.fastFloor(McIf.player().rotationYaw), 0, 0, 1);
             GlStateManager.translate(-drawingOrigin.x - playerPositionX, -drawingOrigin.y - playerPositionZ, 0);
 
             MapConfig.PointerType type = MapConfig.Textures.INSTANCE.pointerStyle;

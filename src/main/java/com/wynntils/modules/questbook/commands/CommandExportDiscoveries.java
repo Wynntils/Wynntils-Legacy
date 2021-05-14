@@ -125,7 +125,7 @@ public class CommandExportDiscoveries extends CommandBase implements IClientComm
             fileText.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, exportFile.getCanonicalPath()));
             fileText.getStyle().setUnderlined(true);
             text.appendSibling(fileText);
-            McIf.mc().addScheduledTask(() -> McIf.mc().player.sendMessage(text));
+            McIf.mc().addScheduledTask(() -> McIf.player().sendMessage(text));
         } catch (IOException ex) {
             ex.printStackTrace();
         } finally {

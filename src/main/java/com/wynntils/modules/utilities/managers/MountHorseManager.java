@@ -47,7 +47,7 @@ public class MountHorseManager {
     }
 
     private static Entity findHorseInRadius() {
-        EntityPlayerSP player = McIf.mc().player;
+        EntityPlayerSP player = McIf.player();
 
         List<Entity> horses = McIf.world().getEntitiesWithinAABB(AbstractHorse.class, new AxisAlignedBB(
                 player.posX - searchRadius, player.posY - searchRadius, player.posZ - searchRadius,
@@ -77,11 +77,11 @@ public class MountHorseManager {
             return;
         }
 
-        int prev = McIf.mc().player.inventory.currentItem;
+        int prev = McIf.player().inventory.currentItem;
         new Delay(() -> {
-            McIf.mc().player.inventory.currentItem = horse.getInventorySlot();
-            McIf.mc().playerController.processRightClick(McIf.mc().player, McIf.mc().player.world, EnumHand.MAIN_HAND);
-            McIf.mc().player.inventory.currentItem = prev;
+            McIf.player().inventory.currentItem = horse.getInventorySlot();
+            McIf.mc().playerController.processRightClick(McIf.player(), McIf.player().world, EnumHand.MAIN_HAND);
+            McIf.player().inventory.currentItem = prev;
 
             if (findHorseInRadius() != null) {
                 ClientEvents.isAwaitingHorseMount = true;
@@ -96,7 +96,7 @@ public class MountHorseManager {
     }
 
     public static MountHorseStatus mountHorse(boolean allowRetry) {
-        EntityPlayerSP player = McIf.mc().player;
+        EntityPlayerSP player = McIf.player();
         PlayerControllerMP playerController = McIf.mc().playerController;
 
         HorseData horse = PlayerInfo.get(HorseData.class);
@@ -148,7 +148,7 @@ public class MountHorseManager {
     public static String getMountHorseErrorMessage(MountHorseStatus status) {
         switch (status) {
             case ALREADY_RIDING:
-                Entity ridingEntity = McIf.mc().player.getRidingEntity();
+                Entity ridingEntity = McIf.player().getRidingEntity();
                 String ridingEntityType;
                 if (ridingEntity == null) {
                     ridingEntityType = "nothing?";

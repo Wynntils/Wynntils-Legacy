@@ -52,11 +52,11 @@ public class ActionBarOverlay extends Overlay {
         int padding = 3;
         int y = 0;
 
-        BlockPos blockPos = new BlockPos(McIf.mc().player);
+        BlockPos blockPos = new BlockPos(McIf.player());
         String lCoord = TextFormatting.GRAY.toString() + blockPos.getX();
         String middleCoord;
         if (!OverlayConfig.INSTANCE.replaceDirection) {
-            middleCoord = TextFormatting.GREEN + Utils.getPlayerDirection(McIf.mc().player.rotationYaw);
+            middleCoord = TextFormatting.GREEN + Utils.getPlayerDirection(McIf.player().rotationYaw);
         } else {
             middleCoord = TextFormatting.GRAY.toString() + blockPos.getY();
         }
@@ -79,7 +79,7 @@ public class ActionBarOverlay extends Overlay {
             String[] spaces = lastActionBar.split(" ");
             middle = spaces[5].replace(TextFormatting.UNDERLINE.toString(), "").replace(TextFormatting.RESET.toString(), "");
             preference = true;
-        } else if (TextFormatting.getTextWithoutFormattingCodes(lastActionBar).contains("Sprint") && McIf.mc().player.isSprinting()) {
+        } else if (TextFormatting.getTextWithoutFormattingCodes(lastActionBar).contains("Sprint") && McIf.player().isSprinting()) {
             String[] spaces = lastActionBar.split(" ");
             middle = spaces[5];
         } else if (OverlayConfig.INSTANCE.actionBarCoordinates && !OverlayConfig.INSTANCE.splitCoordinates) {

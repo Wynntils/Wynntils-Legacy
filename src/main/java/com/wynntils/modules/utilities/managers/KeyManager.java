@@ -69,13 +69,13 @@ public class KeyManager {
         CoreModule.getModule().registerKeyBinding("Mob Totem Menu", Keyboard.KEY_J, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
             if (!Reference.onWorld) return;
 
-            McIf.mc().player.sendChatMessage("/totem");
+            McIf.player().sendChatMessage("/totem");
         });
 
         CoreModule.getModule().registerKeyBinding("Open Ingredient Pouch", Keyboard.KEY_O, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
             if (!Reference.onWorld) return;
 
-            EntityPlayerSP player = McIf.mc().player;
+            EntityPlayerSP player = McIf.player();
             player.connection.sendPacket(new CPacketClickWindow(
                     player.inventoryContainer.windowId,
                     13, 0, ClickType.PICKUP, player.inventory.getStackInSlot(13),

@@ -81,7 +81,7 @@ public class RarityColorOverlay implements Listener {
         int playerInvSlotNumber = 0;
 
         for (Slot s : guiContainer.inventorySlots.inventorySlots) {
-            if (s.inventory.getDisplayName().equals(McIf.mc().player.inventory.getDisplayName())) {
+            if (s.inventory.getDisplayName().equals(McIf.player().inventory.getDisplayName())) {
                 playerInvSlotNumber++;
                 if (playerInvSlotNumber <= 4 && playerInvSlotNumber >= 1 && !UtilitiesConfig.Items.INSTANCE.accesoryHighlight)
                     continue;

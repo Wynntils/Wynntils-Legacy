@@ -96,10 +96,10 @@ public class MenuButtonsOverlay implements Listener {
         int id = e.getButton().id;
         switch (id) {
             case 753:
-                McIf.mc().player.sendChatMessage("/class");
+                McIf.player().sendChatMessage("/class");
                 break;
             case 754:
-                McIf.mc().player.sendChatMessage("/hub");
+                McIf.player().sendChatMessage("/hub");
                 break;
             case 755:
                 McIf.mc().displayGuiScreen(SettingsUI.getInstance(McIf.mc().currentScreen));

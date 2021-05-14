@@ -5,6 +5,7 @@
 package com.wynntils;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.util.text.ITextComponent;
 
@@ -29,6 +30,10 @@ public class McIf {
 
     public static WorldClient world() {
         return mc().world;
+    }
+
+    public static EntityPlayerSP player() {
+        return mc().player;
     }
 
 }

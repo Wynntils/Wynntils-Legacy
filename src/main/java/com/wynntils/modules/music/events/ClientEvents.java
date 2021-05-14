@@ -96,7 +96,7 @@ public class ClientEvents implements Listener {
         McIf.mc().addScheduledTask(BossTrackManager::update);
 
         if (BossTrackManager.isAlive()) return;
-        AreaTrackManager.update(new Location(McIf.mc().player));
+        AreaTrackManager.update(new Location(McIf.player()));
     }
 
     // mythic found sfx

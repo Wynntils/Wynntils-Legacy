@@ -115,7 +115,7 @@ public class NametagManager {
         if (entity.isBeingRidden()) return false;
         if (!(entity instanceof EntityPlayer)) return entity.getAlwaysRenderNameTagForRender() && entity.hasCustomName();
 
-        EntityPlayerSP player = McIf.mc().player;
+        EntityPlayerSP player = McIf.player();
         boolean isVisible = !entity.isInvisibleToPlayer(player);
 
         // we also need to consider the teams

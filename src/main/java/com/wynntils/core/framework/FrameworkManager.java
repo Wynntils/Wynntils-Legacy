@@ -222,7 +222,7 @@ public class FrameworkManager {
         Random r = Utils.getRandom();
         if (r.nextBoolean()) return; // reduce spawn chances by half
 
-        EntityPlayerSP player = McIf.mc().player;
+        EntityPlayerSP player = McIf.player();
         for (double x = -10; x < 10; x++) {
             for (double y = -1; y < 6; y++) {
                 for (double z = -10; z < 10; z++) {

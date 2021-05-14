@@ -79,7 +79,7 @@ public class QuestManager {
     public static void readQuestBook() {
         if (!Reference.onWorld) return;
 
-        if (McIf.mc().player.openContainer != null && !(McIf.mc().player.openContainer instanceof ContainerPlayer)) {
+        if (McIf.player().openContainer != null && !(McIf.player().openContainer instanceof ContainerPlayer)) {
             interrupt();
             return;
         }

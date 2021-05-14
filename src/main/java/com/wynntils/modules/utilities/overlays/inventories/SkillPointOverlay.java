@@ -351,7 +351,7 @@ public class SkillPointOverlay implements Listener {
             TextComponentString text = new TextComponentString("Not enough free skill points!");
             text.getStyle().setColor(TextFormatting.RED);
 
-            McIf.mc().player.sendMessage(text);
+            McIf.player().sendMessage(text);
             McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
             return;
         }
@@ -378,7 +378,7 @@ public class SkillPointOverlay implements Listener {
 
             CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, 9 + i, button,
                     ClickType.PICKUP, gui.inventorySlots.getSlot(9 + i).getStack(),
-                    gui.inventorySlots.getNextTransactionID(McIf.mc().player.inventory));
+                    gui.inventorySlots.getNextTransactionID(McIf.player().inventory));
 
             McIf.mc().getSoundHandler().playSound(
                     PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_ITEM_PICKUP, 0.3f + (1.2f * buildPercentage)));

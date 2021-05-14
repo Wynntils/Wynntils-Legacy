@@ -173,7 +173,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                     return;
                 }
 
-                Entity lowest = McIf.mc().player.getLowestRidingEntity();
+                Entity lowest = McIf.player().getLowestRidingEntity();
                 String message;
                 if (LootRunManager.undoMovement(lowest.posX, lowest.posY, lowest.posZ)) {
                     message = GREEN + "Undid your most recent movements!";
@@ -229,7 +229,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
 
                 String text = String.join(" ", args);
                 text = text.substring(text.indexOf(" ")).trim();
-                EntityPlayerSP player = McIf.mc().player;
+                EntityPlayerSP player = McIf.player();
                 LootRunNote note = new LootRunNote(new Location(player.posX, player.posY, player.posZ), text);
 
                 ITextComponent message;
@@ -263,7 +263,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 String command = args[0].toLowerCase(Locale.ROOT);
                 BlockPos pos;
                 if (args.length < 4) {
-                    pos = new BlockPos((int) McIf.mc().player.posX, (int) McIf.mc().player.posY, (int) McIf.mc().player.posZ - 1);
+                    pos = new BlockPos((int) McIf.player().posX, (int) McIf.player().posY, (int) McIf.player().posZ - 1);
                 } else {
                     int x = 0, y = 0, z = 0;
                     try {

@@ -65,22 +65,22 @@ public class InfoFormatter {
 
         // X coordinate
         registerFormatter((input) ->
-                Integer.toString((int) McIf.mc().player.posX),
+                Integer.toString((int) McIf.player().posX),
                 "x");
 
         // Y coordinate
         registerFormatter((input) ->
-                Integer.toString((int) McIf.mc().player.posY),
+                Integer.toString((int) McIf.player().posY),
                 "y");
 
         // Z coordinate
         registerFormatter((input) ->
-                Integer.toString((int) McIf.mc().player.posZ),
+                Integer.toString((int) McIf.player().posZ),
                 "z");
 
         // The facing cardinal direction
         registerFormatter((input) ->
-                Utils.getPlayerDirection(McIf.mc().player.rotationYaw),
+                Utils.getPlayerDirection(McIf.player().rotationYaw),
                 "dir");
 
         // Frames per second
@@ -243,7 +243,7 @@ public class InfoFormatter {
         // Distance from compass beacon
         registerFormatter((input) ->{
             Location compass = CompassManager.getCompassLocation();
-            Location playerPos = new Location(McIf.mc().player);
+            Location playerPos = new Location(McIf.player());
 
             if (compass == null) return "";
             return String.valueOf((int) compass.distance(playerPos));

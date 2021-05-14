@@ -104,7 +104,7 @@ public class ServerEvents implements Listener {
         if (!RichPresenceConfig.INSTANCE.enableRichPresence || !Reference.onWorld
                 || !PlayerInfo.get(CharacterData.class).isLoaded()) return;
 
-        if (e.getPacket().getLevel() != McIf.mc().player.experienceLevel) {
+        if (e.getPacket().getLevel() != McIf.player().experienceLevel) {
             forceUpdate = true;
         }
     }
@@ -166,7 +166,7 @@ public class ServerEvents implements Listener {
      * @return RichPresence largeImageText
      */
     public static String getPlayerInfo() {
-        return RichPresenceConfig.INSTANCE.showUserInformation ? McIf.mc().player.getName() + " | Level " + McIf.mc().player.experienceLevel + " " + PlayerInfo.get(CharacterData.class).getCurrentClass().toString() : null;
+        return RichPresenceConfig.INSTANCE.showUserInformation ? McIf.player().getName() + " | Level " + McIf.player().experienceLevel + " " + PlayerInfo.get(CharacterData.class).getCurrentClass().toString() : null;
     }
 
 }

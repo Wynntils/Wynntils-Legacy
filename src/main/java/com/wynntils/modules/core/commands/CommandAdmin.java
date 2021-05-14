@@ -36,7 +36,7 @@ public class CommandAdmin extends CommandBase implements IClientCommand {
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
-        if (!UserManager.isAccountType(McIf.mc().player.getUniqueID(), AccountType.MODERATOR)) return;
+        if (!UserManager.isAccountType(McIf.player().getUniqueID(), AccountType.MODERATOR)) return;
 
         TextComponentString output;
 

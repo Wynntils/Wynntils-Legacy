@@ -337,7 +337,7 @@ public class BankOverlay implements Listener {
     private void updateName(IInventory bankGui) {
         String name = (UtilitiesConfig.Bank.INSTANCE.pageNames.containsKey(page))
                 ? UtilitiesConfig.Bank.INSTANCE.pageNames.get(page) : TextFormatting.DARK_GRAY
-                        + McIf.mc().player.getName() + "'s" + TextFormatting.BLACK + " Bank";
+                        + McIf.player().getName() + "'s" + TextFormatting.BLACK + " Bank";
 
         ((InventoryBasic) bankGui).setCustomName(TextFormatting.BLACK + "[Pg. " + page + "] " + name);
     }
@@ -366,7 +366,7 @@ public class BankOverlay implements Listener {
                     return;
                 }
                 packet = new CPacketClickWindow(bankGui.inventorySlots.windowId, PAGE_FORWARD, 0, ClickType.PICKUP, is,
-                                bankGui.inventorySlots.getNextTransactionID(McIf.mc().player.inventory));
+                                bankGui.inventorySlots.getNextTransactionID(McIf.player().inventory));
             } else {
                 ItemStack is = bankGui.inventorySlots.getSlot(PAGE_BACK).getStack();
 
@@ -377,12 +377,12 @@ public class BankOverlay implements Listener {
                     return;
                 }
                 packet = new CPacketClickWindow(bankGui.inventorySlots.windowId, PAGE_BACK, 0, ClickType.PICKUP, is,
-                                bankGui.inventorySlots.getNextTransactionID(McIf.mc().player.inventory));
+                                bankGui.inventorySlots.getNextTransactionID(McIf.player().inventory));
             }
         } else { // attempt to hop using default quick access buttons
             int slotId = QA_SLOTS[(hop / 4)];
             packet = new CPacketClickWindow(bankGui.inventorySlots.windowId, slotId, 0, ClickType.PICKUP, bankGui.inventorySlots.getSlot(slotId).getStack(),
-                            bankGui.inventorySlots.getNextTransactionID(McIf.mc().player.inventory));
+                            bankGui.inventorySlots.getNextTransactionID(McIf.player().inventory));
         }
 
         McIf.mc().getConnection().sendPacket(packet);

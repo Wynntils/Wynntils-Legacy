@@ -382,7 +382,7 @@ public class QuestsPage extends QuestBookPage {
                 "Sort by Level", // Replace with translation keys during l10n
                 "Lowest level quests first")),
         DISTANCE(Comparator.comparing(QuestInfo::getStatus).thenComparingLong(q -> {
-            EntityPlayerSP player = McIf.mc().player;
+            EntityPlayerSP player = McIf.player();
             if (player == null || !q.hasTargetLocation()) {
                 return 0;
             }

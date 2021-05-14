@@ -168,7 +168,7 @@ public class Utils {
         Scoreboard scoreboard = McIf.world().getScoreboard();
         if (scoreboard.getTeam(name) != null) return scoreboard.getTeam(name);
 
-        String player = McIf.mc().player.getName();
+        String player = McIf.player().getName();
         if (scoreboard.getPlayersTeam(player) != null) previousTeam = scoreboard.getPlayersTeam(player).getName();
 
         ScorePlayerTeam team = scoreboard.createTeam(name);
@@ -188,7 +188,7 @@ public class Utils {
         if (scoreboard.getTeam(name) == null) return;
 
         scoreboard.removeTeam(scoreboard.getTeam(name));
-        if (previousTeam != null) scoreboard.addPlayerToTeam(McIf.mc().player.getName(), previousTeam);
+        if (previousTeam != null) scoreboard.addPlayerToTeam(McIf.player().getName(), previousTeam);
     }
 
     /**
@@ -318,7 +318,7 @@ public class Utils {
         urlComponent.getStyle().setUnderlined(true);
         text.appendSibling(urlComponent);
 
-        McIf.mc().player.sendMessage(text);
+        McIf.player().sendMessage(text);
     }
 
     public static String encodeUrl(String url) {

@@ -36,7 +36,7 @@ public class BossTrackManager {
 
         // check if the boss is still alive
         Entity in = McIf.world().getEntityByID(bossEntityId);
-        if (in != null && Math.abs(McIf.mc().player.posY - in.posY) <= 15) return;
+        if (in != null && Math.abs(McIf.player().posY - in.posY) <= 15) return;
 
         // grace period for bosses that have multiple phases (somewhat a transition)
         if (gracePeriod == -1) gracePeriod = System.currentTimeMillis() + 3000;
@@ -59,7 +59,7 @@ public class BossTrackManager {
 
     private static boolean checkEntity(Entity entity, String name) {
         String soundTrack = WebManager.getMusicLocations().getBossTrack(name);
-        if (soundTrack == null || Math.abs(McIf.mc().player.posY - entity.posY) >= 15) return false;
+        if (soundTrack == null || Math.abs(McIf.player().posY - entity.posY) >= 15) return false;
 
         bossEntityId = entity.getEntityId();
         gracePeriod = -1;

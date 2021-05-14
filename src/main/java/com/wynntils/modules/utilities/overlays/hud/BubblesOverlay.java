@@ -41,9 +41,9 @@ public class BubblesOverlay extends Overlay {
 
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
-        if (!(visible = (McIf.mc().player.getAir() != 300 && !Reference.onLobby))) return;
+        if (!(visible = (McIf.player().getAir() != 300 && !Reference.onLobby))) return;
         if (OverlayConfig.Bubbles.INSTANCE.animated > 0.0f && OverlayConfig.Bubbles.INSTANCE.animated < 10.0f && !(amount >= 300))
-            amount -= (OverlayConfig.Bubbles.INSTANCE.animated * 0.1f) * (amount - McIf.mc().player.getAir());
+            amount -= (OverlayConfig.Bubbles.INSTANCE.animated * 0.1f) * (amount - McIf.player().getAir());
         else amount = PlayerInfo.get(CharacterData.class).getCurrentHealth();
 
         if (amount <= 0) amount = 0;
@@ -77,7 +77,7 @@ public class BubblesOverlay extends Overlay {
 
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2) {
         drawProgressBar(Textures.Overlays.bars_bubbles, -91, y1, 91, y2, 0, ty1, 182, ty2, (flip ? -amount : amount) / 300);
-        drawString(Integer.toString(Math.max(McIf.mc().player.getAir() / 3, 0)), textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Exp.INSTANCE.textShadow);
+        drawString(Integer.toString(Math.max(McIf.player().getAir() / 3, 0)), textPositionOffset.a, textPositionOffset.b, textColor, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Exp.INSTANCE.textShadow);
     }
 
 }

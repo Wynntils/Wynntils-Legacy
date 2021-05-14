@@ -55,7 +55,7 @@ public class CommandResponse {
     public void executeCommand() {
         FrameworkManager.getEventBus().register(this);
 
-        McIf.mc().player.sendChatMessage(command);
+        McIf.player().sendChatMessage(command);
     }
 
     @SubscribeEvent

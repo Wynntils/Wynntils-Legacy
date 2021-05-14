@@ -99,7 +99,7 @@ public class ServerEvents implements Listener {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void joinWorldEvent(WynnWorldEvent.Join e) {
         if (PlayerInfo.get(CharacterData.class).getClassId() == -1 || CoreDBConfig.INSTANCE.lastClass == ClassType.NONE)
-            McIf.mc().player.sendChatMessage("/class");
+            McIf.player().sendChatMessage("/class");
 
         // This codeblock will only be executed if the Wynncraft AUTOJOIN setting is enabled
         // Reason: When you join a world with autojoin enabled, your current class is NONE,
@@ -114,12 +114,12 @@ public class ServerEvents implements Listener {
         // guild members
         if (WebManager.getPlayerProfile() != null && WebManager.getPlayerProfile().getGuildName() != null) {
             waitingForGuildList = true;
-            McIf.mc().player.sendChatMessage("/guild list");
+            McIf.player().sendChatMessage("/guild list");
         }
 
         // friends
         waitingForFriendList = true;
-        McIf.mc().player.sendChatMessage("/friends list");
+        McIf.player().sendChatMessage("/friends list");
 
         // party members
         PartyManager.handlePartyList();  // party list here
@@ -145,7 +145,7 @@ public class ServerEvents implements Listener {
         String messageText = McIf.getUnformattedText(e.getMessage());
         String formatted = McIf.getFormattedText(e.getMessage());
         Matcher m = FRIENDS_LIST.matcher(formatted);
-        if (m.find() && m.group(1).equals(McIf.mc().player.getName())) {
+        if (m.find() && m.group(1).equals(McIf.player().getName())) {
             String[] friends = m.group(2).split(", ");
 
             Set<String> friendsList = PlayerInfo.get(SocialData.class).getFriendList();
@@ -243,7 +243,7 @@ public class ServerEvents implements Listener {
         TextComponentString msg = new TextComponentString("The Wynntils servers are currently down! You can still use Wynntils, but some features may not work. Our servers should be back soon.");
         msg.getStyle().setColor(TextFormatting.RED);
         msg.getStyle().setBold(true);
-        new Delay(() -> McIf.mc().player.sendMessage(msg), 30); // delay so the player actually loads in
+        new Delay(() -> McIf.player().sendMessage(msg), 30); // delay so the player actually loads in
     }
 
     private static boolean triedToShowChangelog = false;
@@ -286,7 +286,7 @@ public class ServerEvents implements Listener {
     @SubscribeEvent
     public void onCompassChange(PacketEvent<SPacketSpawnPosition> e) {
         currentSpawn = e.getPacket().getSpawnPos();
-        if (McIf.mc().player == null) {
+        if (McIf.player() == null) {
             CompassManager.reset();
             return;
         }
@@ -325,7 +325,7 @@ public class ServerEvents implements Listener {
      */
     private static void startUpdateRegionName() {
         updateTimer = executor.scheduleAtFixedRate(() -> {
-            EntityPlayerSP pl = McIf.mc().player;
+            EntityPlayerSP pl = McIf.player();
 
             FrameworkManager.getEventBus().post(new SchedulerEvent.RegionUpdate());
 

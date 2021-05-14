@@ -68,7 +68,7 @@ public class LowHealthVignetteOverlay extends Overlay {
 
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
-        currentHealth = McIf.mc().player.getHealth() / McIf.mc().player.getMaxHealth();
+        currentHealth = McIf.player().getHealth() / McIf.player().getMaxHealth();
         threshold = (float) OverlayConfig.Health.INSTANCE.lowHealthThreshold / 100;
         if (currentHealth > threshold) return;
 

@@ -83,7 +83,7 @@ public class WorldMapUI extends GuiMovementScreen {
     protected float outsideTextOpacity = 0f;
 
     protected WorldMapUI() {
-        this((float) McIf.mc().player.posX, (float) McIf.mc().player.posZ);
+        this((float) McIf.player().posX, (float) McIf.player().posZ);
     }
 
     protected WorldMapUI(float startX, float startZ) {
@@ -178,8 +178,8 @@ public class WorldMapUI extends GuiMovementScreen {
     }
 
     protected void updateCenterPositionWithPlayerPosition() {
-        float newX = (float) McIf.mc().player.posX;
-        float newZ = (float) McIf.mc().player.posZ;
+        float newX = (float) McIf.player().posX;
+        float newZ = (float) McIf.player().posZ;
         if (newX == centerPositionX && newZ == centerPositionZ) return;
         updateCenterPosition(newX, newZ);
     }
@@ -312,8 +312,8 @@ public class WorldMapUI extends GuiMovementScreen {
 
         if (needToReset[0]) resetAllIcons();
 
-        float playerPositionX = (map.getTextureXPosition(McIf.mc().player.posX) - minX) / (maxX - minX);
-        float playerPositionZ = (map.getTextureZPosition(McIf.mc().player.posZ) - minZ) / (maxZ - minZ);
+        float playerPositionX = (map.getTextureXPosition(McIf.player().posX) - minX) / (maxX - minX);
+        float playerPositionZ = (map.getTextureZPosition(McIf.player().posZ) - minZ) / (maxZ - minZ);
 
         if (playerPositionX > 0 && playerPositionX < 1 && playerPositionZ > 0 && playerPositionZ < 1) {  // <--- player position
             playerPositionX = width * playerPositionX;
@@ -323,7 +323,7 @@ public class WorldMapUI extends GuiMovementScreen {
 
             pushMatrix();
             translate(drawingOrigin.x + playerPositionX, drawingOrigin.y + playerPositionZ, 0);
-            rotate(180 + MathHelper.fastFloor(McIf.mc().player.rotationYaw), 0, 0, 1);
+            rotate(180 + MathHelper.fastFloor(McIf.player().rotationYaw), 0, 0, 1);
             translate(-drawingOrigin.x - playerPositionX, -drawingOrigin.y - playerPositionZ, 0);
 
             MapConfig.PointerType type = MapConfig.Textures.INSTANCE.pointerStyle;

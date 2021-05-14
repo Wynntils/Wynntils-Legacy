@@ -117,7 +117,7 @@ public class ClientEvents implements Listener {
     public void recordLootRun(TickEvent.ClientTickEvent e) {
         if (!Reference.onWorld || e.phase != TickEvent.Phase.END || !LootRunManager.isRecording()) return;
 
-        EntityPlayerSP player = McIf.mc().player;
+        EntityPlayerSP player = McIf.player();
         if (player == null) return;
 
         Entity lowestEntity = player.getLowestRidingEntity();

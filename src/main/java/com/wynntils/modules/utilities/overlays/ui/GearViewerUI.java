@@ -57,7 +57,7 @@ public class GearViewerUI extends FakeGuiContainer {
     private EntityPlayer player;
 
     public GearViewerUI(InventoryBasic inventory, EntityPlayer player) {
-        super(new ContainerGearViewer(inventory, McIf.mc().player));
+        super(new ContainerGearViewer(inventory, McIf.player()));
         this.inventory = inventory;
 
         // create copy of given player and inventory to keep items and models separate

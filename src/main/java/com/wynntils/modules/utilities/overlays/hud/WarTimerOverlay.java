@@ -161,7 +161,7 @@ public class WarTimerOverlay extends Overlay {
                 changeWarStage(WarStage.WAITING_FOR_MOB_TIMER);
                 time = -1;
                 if (territory == null) {
-                    EntityPlayerSP pl = McIf.mc().player;
+                    EntityPlayerSP pl = McIf.player();
                     for (TerritoryProfile pf : WebManager.getTerritories().values()) {
                         if (pf.insideArea((int)pl.posX, (int)pl.posZ)) {
                             territory = pf.getFriendlyName();

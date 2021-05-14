@@ -49,26 +49,26 @@ public class HeldItemChatManager {
     private static ITextComponent getMessage() {
         if (
             !ChatConfig.INSTANCE.heldItemChat ||
-            McIf.mc().player == null || McIf.world() == null ||
-            McIf.mc().player.inventory.mainInventory.get(6).getItem() != Items.COMPASS ||
-            McIf.mc().player.inventory.mainInventory.get(7).getItem() != Items.WRITTEN_BOOK ||
-            McIf.mc().player.inventory.mainInventory.get(8).getItem() != Items.NETHER_STAR &&
-            McIf.mc().player.inventory.mainInventory.get(8).getItem() != Item.getItemFromBlock(Blocks.SNOW_LAYER) ||
+            McIf.player() == null || McIf.world() == null ||
+            McIf.player().inventory.mainInventory.get(6).getItem() != Items.COMPASS ||
+            McIf.player().inventory.mainInventory.get(7).getItem() != Items.WRITTEN_BOOK ||
+            McIf.player().inventory.mainInventory.get(8).getItem() != Items.NETHER_STAR &&
+            McIf.player().inventory.mainInventory.get(8).getItem() != Item.getItemFromBlock(Blocks.SNOW_LAYER) ||
             !PlayerInfo.get(CharacterData.class).isLoaded()
         ) {
             reset();
             return null;
         }
 
-        if (lastHolding != McIf.mc().player.inventory.currentItem) {
-            lastHolding = McIf.mc().player.inventory.currentItem;
+        if (lastHolding != McIf.player().inventory.currentItem) {
+            lastHolding = McIf.player().inventory.currentItem;
             startedHolding = System.currentTimeMillis();
             return null;
         }
 
         if (System.currentTimeMillis() < startedHolding + DISPLAY_TIME) return null;
 
-        switch (McIf.mc().player.inventory.currentItem) {
+        switch (McIf.player().inventory.currentItem) {
             case 6: return getCompassMessage();
             // case 7: return getQuestBookMessage();
             case 8: return getSoulPointsMessage();
@@ -124,8 +124,8 @@ public class HeldItemChatManager {
 
         double compassX = compass.getX();
         double compassZ = compass.getZ();
-        double playerX = McIf.mc().player.posX;
-        double playerZ = McIf.mc().player.posZ;
+        double playerX = McIf.player().posX;
+        double playerZ = McIf.player().posZ;
 
         int distance = MathHelper.floor(MathHelper.sqrt((compassX - playerX) * (compassX - playerX) + (compassZ - playerZ) * (compassZ - playerZ)));
 
@@ -193,7 +193,7 @@ public class HeldItemChatManager {
             ChatConfig.INSTANCE.saveSettings(ChatModule.getModule());
 
             ITextComponent message = new TextComponentString("Enable §bMod options > Chat > Held Item Chat Messages§r to undo (or click this)");
-            McIf.mc().player.sendMessage(TextAction.withStaticEvent(message, OnUnhideClick.class));
+            McIf.player().sendMessage(TextAction.withStaticEvent(message, OnUnhideClick.class));
         }
     }
 

@@ -13,7 +13,7 @@ public class PlayerData {
     public PlayerData() { }
 
     public EntityPlayerSP getPlayer() {
-        return McIf.mc().player;
+        return McIf.player();
     }
 
     public <T extends PlayerData> T get(Class<T> clazz) {

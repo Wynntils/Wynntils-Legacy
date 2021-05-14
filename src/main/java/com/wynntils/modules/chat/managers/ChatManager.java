@@ -121,7 +121,7 @@ public class ChatManager {
 
         // popup sound
         if (McIf.getUnformattedText(in).contains(" requires your ") && McIf.getUnformattedText(in).contains(" skill to be at least "))
-            McIf.mc().player.playSound(popOffSound, 1f, 1f);
+            McIf.player().playSound(popOffSound, 1f, 1f);
 
         // wynnic and gavellian translator
         if (StringUtils.hasWynnic(McIf.getUnformattedText(in)) || StringUtils.hasGavellian(McIf.getUnformattedText(in))) {
@@ -493,8 +493,8 @@ public class ChatManager {
     }
 
     public static boolean processUserMention(ITextComponent in, ITextComponent original) {
-        if (ChatConfig.INSTANCE.allowChatMentions && in != null && McIf.mc().player != null) {
-            String match = "\\b(" + McIf.mc().player.getName() + (ChatConfig.INSTANCE.mentionNames.length() > 0 ? "|" + ChatConfig.INSTANCE.mentionNames.replace(",", "|") : "") + ")\\b";
+        if (ChatConfig.INSTANCE.allowChatMentions && in != null && McIf.player() != null) {
+            String match = "\\b(" + McIf.player().getName() + (ChatConfig.INSTANCE.mentionNames.length() > 0 ? "|" + ChatConfig.INSTANCE.mentionNames.replace(",", "|") : "") + ")\\b";
             Pattern pattern = Pattern.compile(match, Pattern.CASE_INSENSITIVE);
 
             Matcher looseMatcher = pattern.matcher(McIf.getUnformattedText(in));
@@ -885,7 +885,7 @@ public class ChatManager {
 
         @Override
         public void run() {
-            McIf.mc().player.sendMessage(chapterText);
+            McIf.player().sendMessage(chapterText);
         }
 
     }

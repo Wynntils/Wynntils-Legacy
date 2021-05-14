@@ -223,7 +223,7 @@ public class ClientEvents {
         if (e.phase != TickEvent.Phase.END) return;
 
         ScreenRenderer.refresh();
-        if (!Reference.onServer || McIf.mc().player == null) return;
+        if (!Reference.onServer || McIf.player() == null) return;
 
         FrameworkManager.triggerHudTick(e);
         FrameworkManager.triggerKeyPress();

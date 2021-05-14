@@ -11,7 +11,7 @@ import net.minecraft.util.math.MathHelper;
 public class SpeedometerManager {
 
     public static double getCurrentSpeed() {
-        EntityPlayerSP player = McIf.mc().player;
+        EntityPlayerSP player = McIf.player();
 
         double distX = player.posX - player.prevPosX;
         double distZ = player.posZ - player.prevPosZ;
