@@ -817,7 +817,7 @@ public class OverlayEvents implements Listener {
         if (!Reference.onWorld || !OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) return;
 
         SPacketRemoveEntityEffect effect = e.getPacket();
-        if (effect.getEntity(McIf.mc().world) != McIf.mc().player) return;
+        if (effect.getEntity(McIf.world()) != McIf.mc().player) return;
 
         McIf.mc().addScheduledTask(() -> {
             Potion potion = effect.getPotion();

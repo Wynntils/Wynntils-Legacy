@@ -49,7 +49,7 @@ public class HeldItemChatManager {
     private static ITextComponent getMessage() {
         if (
             !ChatConfig.INSTANCE.heldItemChat ||
-            McIf.mc().player == null || McIf.mc().world == null ||
+            McIf.mc().player == null || McIf.world() == null ||
             McIf.mc().player.inventory.mainInventory.get(6).getItem() != Items.COMPASS ||
             McIf.mc().player.inventory.mainInventory.get(7).getItem() != Items.WRITTEN_BOOK ||
             McIf.mc().player.inventory.mainInventory.get(8).getItem() != Items.NETHER_STAR &&

@@ -255,7 +255,7 @@ public class ServerEvents implements Listener {
     @SubscribeEvent
     public void onJoinLobby(WynnClassChangeEvent e) {
         if (!Reference.onServer || !CoreDBConfig.INSTANCE.enableChangelogOnUpdate || !CoreDBConfig.INSTANCE.showChangelogs) return;
-        if (UpdateOverlay.isDownloading() || DownloaderManager.isRestartOnQueueFinish() || McIf.mc().world == null) return;
+        if (UpdateOverlay.isDownloading() || DownloaderManager.isRestartOnQueueFinish() || McIf.world() == null) return;
         if (e.getNewClass() == ClassType.NONE) return;
 
         synchronized (this) {

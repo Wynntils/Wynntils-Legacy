@@ -22,14 +22,14 @@ public class CompassManager {
     public static void setCompassLocation(Location compassLocation) {
         CompassManager.compassLocation = compassLocation;
 
-        McIf.mc().world.setSpawnPoint(compassLocation.toBlockPos());
+        McIf.world().setSpawnPoint(compassLocation.toBlockPos());
     }
 
     public static void reset() {
         compassLocation = null;
 
-        if (McIf.mc().world != null) {
-            McIf.mc().world.setSpawnPoint(ServerEvents.getCurrentSpawnPosition());
+        if (McIf.world() != null) {
+            McIf.world().setSpawnPoint(ServerEvents.getCurrentSpawnPosition());
         }
     }
 

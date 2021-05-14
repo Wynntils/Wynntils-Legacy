@@ -167,7 +167,7 @@ public class CachedChunkManager {
                     ChunkPos pos = new ChunkPos(player.x + x, player.z + z);
 
                     if (loadedChunks.contains(pos)) continue;
-                    if (McIf.mc().world.getChunk(pos.x, pos.z).isLoaded()) continue;
+                    if (McIf.world().getChunk(pos.x, pos.z).isLoaded()) continue;
 
                     toLoad.add(pos);
                 }

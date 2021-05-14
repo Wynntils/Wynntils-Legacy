@@ -62,7 +62,7 @@ public class ServerUtils {
      * @param unloadServerPack if false, disconnect without refreshing resources by unloading the server resource pack
      */
     public static void disconnect(boolean switchGui, boolean unloadServerPack) {
-        WorldClient world = McIf.mc().world;
+        WorldClient world = McIf.world();
         if (world == null) return;
 
         boolean singlePlayer = McIf.mc().isIntegratedServerRunning();

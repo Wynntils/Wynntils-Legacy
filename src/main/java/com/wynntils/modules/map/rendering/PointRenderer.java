@@ -56,7 +56,7 @@ public class PointRenderer {
         texture.bind();
 
         for (ChunkPos chunk : chunks) {
-            if (!McIf.mc().world.isChunkGeneratedAt(chunk.x, chunk.z)) {
+            if (!McIf.world().isChunkGeneratedAt(chunk.x, chunk.z)) {
                 continue;
             }
             List<List<LootRunPath.LootRunPathLocation>> pointsInChunk = points.get(ChunkPos.asLong(chunk.x, chunk.z));
@@ -69,7 +69,7 @@ public class PointRenderer {
                     List<Pair<LootRunPath.LootRunPathLocation, Vector3d>> toRender = new ArrayList<>();
                     for (int k = 0; k < pointsInRoute.size(); ++k) {
                         Point3d start = new Point3d(pointsInRoute.get(k).getLocation());
-                        World world = McIf.mc().world;
+                        World world = McIf.world();
                         BlockPos minPos = new BlockPos(start.x - 0.3D, start.y - 1D, start.z - 0.3D);
                         BlockPos maxPos = new BlockPos(start.x + 0.3D, start.y - 1D, start.z + 0.3D);
                         Iterable<BlockPos> blocks = BlockPos.getAllInBox(minPos, maxPos);
@@ -277,7 +277,7 @@ public class PointRenderer {
 
         {
             for (ChunkPos chunkPos : chunks) {
-                if (!McIf.mc().world.isChunkGeneratedAt(chunkPos.x, chunkPos.z)) {
+                if (!McIf.world().isChunkGeneratedAt(chunkPos.x, chunkPos.z)) {
                     continue;
                 }
                 List<List<LootRunPath.LootRunPathLocation>> locationsInChunk = locations.get(ChunkPos.asLong(chunkPos.x, chunkPos.z));
@@ -292,7 +292,7 @@ public class PointRenderer {
                             boolean pauseDraw = false;
                             BlockPos blockPos = loc.getLocation().toBlockPos();
 
-                            World world = McIf.mc().world;
+                            World world = McIf.world();
 
                             if (!blockPos.equals(lastBlockPos)) {
                                 BlockPos minPos = new BlockPos(loc.getLocation().x - 0.3D, loc.getLocation().y - 1D, loc.getLocation().z - 0.3D);
@@ -375,7 +375,7 @@ public class PointRenderer {
     }
 
     public static void drawCube(BlockPos point, CustomColor color) {
-        if (!McIf.mc().world.isBlockLoaded(point, false)) return;
+        if (!McIf.world().isBlockLoaded(point, false)) return;
 
         RenderManager renderManager = McIf.mc().getRenderManager();
 

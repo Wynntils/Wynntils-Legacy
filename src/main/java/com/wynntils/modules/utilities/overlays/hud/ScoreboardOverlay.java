@@ -35,7 +35,7 @@ public class ScoreboardOverlay extends Overlay {
         // vanilla fontrenderer
         FontRenderer fontRenderer = McIf.mc().fontRenderer;
 
-        ScoreObjective objective = McIf.mc().world.getScoreboard().getObjectiveInDisplaySlot(1); // sidebar objective
+        ScoreObjective objective = McIf.world().getScoreboard().getObjectiveInDisplaySlot(1); // sidebar objective
         if (objective == null) return;
 
         // get the 15 highest scores

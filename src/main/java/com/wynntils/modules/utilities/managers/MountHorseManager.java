@@ -49,7 +49,7 @@ public class MountHorseManager {
     private static Entity findHorseInRadius() {
         EntityPlayerSP player = McIf.mc().player;
 
-        List<Entity> horses = McIf.mc().world.getEntitiesWithinAABB(AbstractHorse.class, new AxisAlignedBB(
+        List<Entity> horses = McIf.world().getEntitiesWithinAABB(AbstractHorse.class, new AxisAlignedBB(
                 player.posX - searchRadius, player.posY - searchRadius, player.posZ - searchRadius,
                 player.posX + searchRadius, player.posY + searchRadius, player.posZ + searchRadius
         ));

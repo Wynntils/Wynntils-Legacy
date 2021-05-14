@@ -165,7 +165,7 @@ public class Utils {
      * @return the Scoreboard Team
      */
     public static ScorePlayerTeam createFakeScoreboard(String name, Team.CollisionRule rule) {
-        Scoreboard scoreboard = McIf.mc().world.getScoreboard();
+        Scoreboard scoreboard = McIf.world().getScoreboard();
         if (scoreboard.getTeam(name) != null) return scoreboard.getTeam(name);
 
         String player = McIf.mc().player.getName();
@@ -184,7 +184,7 @@ public class Utils {
      * @param name the scoreboard name
      */
     public static void removeFakeScoreboard(String name) {
-        Scoreboard scoreboard = McIf.mc().world.getScoreboard();
+        Scoreboard scoreboard = McIf.world().getScoreboard();
         if (scoreboard.getTeam(name) == null) return;
 
         scoreboard.removeTeam(scoreboard.getTeam(name));

@@ -133,7 +133,7 @@ public class ClientEvents implements Listener {
         if (e.getPacket().getAction() == 1) {
             ScorePlayerTeam scoreplayerteam;
 
-            Scoreboard scoreboard = McIf.mc().world.getScoreboard();
+            Scoreboard scoreboard = McIf.world().getScoreboard();
             scoreplayerteam = scoreboard.getTeam(e.getPacket().getName());
             if (scoreplayerteam == null) {
                 // This would cause an NPE so cancel it
@@ -147,8 +147,8 @@ public class ClientEvents implements Listener {
         // I'm not sure what this does, but the code has been here a long time,
         // just moving it here. /magicus, 2021
         SPacketEntityVelocity velocity = e.getPacket();
-        if (McIf.mc().world != null) {
-            Entity entity = McIf.mc().world.getEntityByID(velocity.getEntityID());
+        if (McIf.world() != null) {
+            Entity entity = McIf.world().getEntityByID(velocity.getEntityID());
             Entity vehicle = McIf.mc().player.getLowestRidingEntity();
             if ((entity == vehicle) && (vehicle != McIf.mc().player) && (vehicle.canPassengerSteer())) {
                 e.setCanceled(true);
@@ -176,7 +176,7 @@ public class ClientEvents implements Listener {
         }
 
         if (e.getPacket().getDataManagerEntries() == null || e.getPacket().getDataManagerEntries().isEmpty()) return;
-        Entity i = McIf.mc().world.getEntityByID(e.getPacket().getEntityId());
+        Entity i = McIf.world().getEntityByID(e.getPacket().getEntityId());
         if (i == null) return;
 
         if (i instanceof EntityItemFrame) {

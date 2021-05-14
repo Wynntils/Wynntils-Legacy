@@ -68,11 +68,11 @@ public class TotemTracker {
     }
 
     private Entity getBufferedEntity(int entityId) {
-        Entity entity = McIf.mc().world.getEntityByID(entityId);
+        Entity entity = McIf.world().getEntityByID(entityId);
         if (entity != null) return entity;
 
         if (entityId == bufferedId) {
-            return new EntityArmorStand(McIf.mc().world, bufferedX, bufferedY, bufferedZ);
+            return new EntityArmorStand(McIf.world(), bufferedX, bufferedY, bufferedZ);
         }
 
         return null;

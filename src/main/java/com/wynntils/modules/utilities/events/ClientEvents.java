@@ -319,8 +319,8 @@ public class ClientEvents implements Listener {
         if (!Reference.onServer || !Reference.onWorld) return;
 
         int thisId = e.getPacket().getEntityId();
-        if (thisId == lastHorseId || McIf.mc().world == null) return;
-        Entity entity = McIf.mc().world.getEntityByID(thisId);
+        if (thisId == lastHorseId || McIf.world() == null) return;
+        Entity entity = McIf.world().getEntityByID(thisId);
 
         if (!(entity instanceof AbstractHorse) || e.getPacket().getDataManagerEntries().isEmpty()) {
             return;
