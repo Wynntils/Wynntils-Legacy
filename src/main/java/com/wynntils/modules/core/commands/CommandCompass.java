@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.core.commands;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.utils.objects.Location;

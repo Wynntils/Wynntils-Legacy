@@ -4,6 +4,7 @@
 
 package com.wynntils.core.framework.rendering;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.math.MatrixMath;
@@ -32,7 +33,7 @@ public class SpecialRendering {
     };
 
     public static void renderGodRays(int x, int y, int z, double size, int rays, CustomColor color) {
-        float time = Minecraft.getSystemTime() / 50f;
+        float time = McIf.getSystemTime() / 50f;
         Random rand = new Random(142L);
 
         boolean isRainbow = color == CommonColors.RAINBOW;

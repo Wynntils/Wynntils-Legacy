@@ -579,7 +579,7 @@ public class OverlayEvents implements Listener {
             }
 
             if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
-                long timeNow = Minecraft.getSystemTime();
+                long timeNow = McIf.getSystemTime();
                 int timeLeft = seconds - (int)(timeNow - loginTime)/1000;
                 if (timeLeft > 0) {
                     ConsumableTimerOverlay.addBasicTimer("Gather cooldown", timeLeft, false);
@@ -756,7 +756,7 @@ public class OverlayEvents implements Listener {
     public void onClassChange(WynnClassChangeEvent e) {
         McIf.mc().addScheduledTask(GameUpdateOverlay::resetMessages);
         // WynnCraft seem to be off with its timer with around 10 seconds
-        loginTime = Minecraft.getSystemTime() + 10000;
+        loginTime = McIf.getSystemTime() + 10000;
         msgcounter = 0;
     }
 

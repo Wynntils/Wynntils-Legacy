@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.overlays.hud;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -88,13 +89,13 @@ public class ToastOverlay extends Overlay {
                 }
                 // Animation
                 if (OverlayConfig.ToastsSettings.INSTANCE.flipToast) {
-                    if ((Minecraft.getSystemTime() - displayedToast[j].getCreationTime()) > 5000L) {
+                    if ((McIf.getSystemTime() - displayedToast[j].getCreationTime()) > 5000L) {
                         displayedToast[j].setAnimated(displayedToast[j].getAnimated() - .3f);
                     } else if (displayedToast[j].getAnimated() < 0) {
                         displayedToast[j].setAnimated(Math.min(displayedToast[j].getAnimated() + .3f, 0));
                     }
                 } else {
-                    if ((Minecraft.getSystemTime() - displayedToast[j].getCreationTime()) > 5000L) {
+                    if ((McIf.getSystemTime() - displayedToast[j].getCreationTime()) > 5000L) {
                         displayedToast[j].setAnimated(displayedToast[j].getAnimated() + .3f);
                     } else if (displayedToast[j].getAnimated() > 0) {
                         displayedToast[j].setAnimated(Math.max(displayedToast[j].getAnimated() - .3f, 0));
@@ -134,7 +135,7 @@ public class ToastOverlay extends Overlay {
                     toastList.remove(0);
                 }
                 if (displayedToast[j] == null) continue;
-                if ((displayedToast[j].getAnimated() > 160 || displayedToast[j].getAnimated() < -160) && (Minecraft.getSystemTime() - displayedToast[j].getCreationTime()) > 5000L)
+                if ((displayedToast[j].getAnimated() > 160 || displayedToast[j].getAnimated() < -160) && (McIf.getSystemTime() - displayedToast[j].getCreationTime()) > 5000L)
                     toBeRemoved.add(j);
             }
             // Removes expired toasts

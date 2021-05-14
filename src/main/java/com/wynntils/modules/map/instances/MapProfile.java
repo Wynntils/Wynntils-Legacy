@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.instances;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.utils.helpers.MD5Verification;
 import com.wynntils.webapi.WebManager;

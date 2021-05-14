@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.events;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.interfaces.Listener;

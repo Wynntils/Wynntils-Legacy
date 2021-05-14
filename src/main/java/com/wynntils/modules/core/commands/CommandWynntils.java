@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.core.commands;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.helpers.Delay;

@@ -37,18 +37,18 @@ public class PlayerInfoOverlay extends Overlay {
 
         double animation = 1;
         if (OverlayConfig.PlayerInfo.INSTANCE.openingDuration > 0) { // Animation Detection
-            if (lastTime == -1) lastTime += Minecraft.getSystemTime();
+            if (lastTime == -1) lastTime += McIf.getSystemTime();
 
             if (McIf.mc().gameSettings.keyBindPlayerList.isKeyDown()) {
-                animationProgress += (Minecraft.getSystemTime() - lastTime) / OverlayConfig.PlayerInfo.INSTANCE.openingDuration;
+                animationProgress += (McIf.getSystemTime() - lastTime) / OverlayConfig.PlayerInfo.INSTANCE.openingDuration;
                 animationProgress = Math.min(1, animationProgress);
             } else if (animationProgress > 0.0) {
-                animationProgress -= (Minecraft.getSystemTime() - lastTime) / OverlayConfig.PlayerInfo.INSTANCE.openingDuration;
+                animationProgress -= (McIf.getSystemTime() - lastTime) / OverlayConfig.PlayerInfo.INSTANCE.openingDuration;
                 animationProgress = Math.max(0, animationProgress);
             }
             animation = MathHelper.sin((float) (animationProgress * 1f / 2f * Math.PI));
 
-            lastTime = animationProgress <= 0.0 ? -1 : Minecraft.getSystemTime();
+            lastTime = animationProgress <= 0.0 ? -1 : McIf.getSystemTime();
 
             if (OverlayConfig.PlayerInfo.INSTANCE.openingDuration == 0 && animationProgress <= 0.0) return;
         }
@@ -121,9 +121,9 @@ public class PlayerInfoOverlay extends Overlay {
     transient long nextExecution = 0;
 
     private List<String> getAvailablePlayers() {
-        if (Minecraft.getSystemTime() < nextExecution && !lastPlayers.isEmpty()) return lastPlayers;
+        if (McIf.getSystemTime() < nextExecution && !lastPlayers.isEmpty()) return lastPlayers;
 
-        nextExecution = Minecraft.getSystemTime() + 250;
+        nextExecution = McIf.getSystemTime() + 250;
 
         List<NetworkPlayerInfo> players = TabManager.getEntryOrdering()
                 .sortedCopy(McIf.player().connection.getPlayerInfoMap());

@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.managers;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.utils.objects.Location;
 import net.minecraft.client.Minecraft;
@@ -59,7 +60,7 @@ public class BeaconManager {
             glTexParameteri(3553, 10242, 10497);
 
             // beacon light animation
-            float time = Minecraft.getSystemTime() / 50F;
+            float time = McIf.getSystemTime() / 50F;
             float offset = -(-time * 0.2F - MathHelper.fastFloor(-time * 0.1F)) * 0.6F;
 
             // positions

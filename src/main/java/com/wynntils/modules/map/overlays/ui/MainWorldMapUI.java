@@ -5,6 +5,7 @@
 package com.wynntils.modules.map.overlays.ui;
 
 import com.google.common.collect.Lists;
+import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
@@ -191,7 +192,7 @@ public class MainWorldMapUI extends WorldMapUI {
 
         if (mouseButton == 0) {
             if (compassIcon.mouseOver(mouseX, mouseY)) {
-                long currentTime = Minecraft.getSystemTime();
+                long currentTime = McIf.getSystemTime();
                 if (currentTime - lastClickTime < doubleClickTime) {
                     Location location = CompassManager.getCompassLocation();
                     McIf.mc().displayGuiScreen(new WaypointCreationMenu(null, (int) location.getX(), (int) location.getZ()));

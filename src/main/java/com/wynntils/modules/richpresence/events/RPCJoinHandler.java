@@ -141,7 +141,7 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
         if ((text.equals("You are already connected to this server!") || text.equals("You're rejoining too quickly! Give us a moment to save your data.")) && waitingInvite) {
             waitingLobby = true;
             waitingInvite = false;
-            delayTime = Minecraft.getSystemTime() + 2000;
+            delayTime = McIf.getSystemTime() + 2000;
         }
     }
 

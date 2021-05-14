@@ -63,7 +63,7 @@ public class CharacterSelectorUI extends GuiScreen {
 
     // scroll bar
     float scrollPosition = 0f;
-    long scrollDelay = Minecraft.getSystemTime();
+    long scrollDelay = McIf.getSystemTime();
 
     // scaled positions
     int mouseX, mouseY;
@@ -268,16 +268,16 @@ public class CharacterSelectorUI extends GuiScreen {
 
         float jump = availableCharacters.size() <= 7 ? 0 : 32 / (availableCharacters.size() - 7) * 32;
 
-        if (mDWheel <= -1 && (Minecraft.getSystemTime() - scrollDelay >= 15)) {
+        if (mDWheel <= -1 && (McIf.getSystemTime() - scrollDelay >= 15)) {
             if (scrollPosition >= 1f || availableCharacters.size() <= 7) return;
 
-            scrollDelay = Minecraft.getSystemTime();
+            scrollDelay = McIf.getSystemTime();
             if (scrollPosition + jump >= 1f) scrollPosition = 1f;
             else scrollPosition += jump;
-        } else if (mDWheel >= 1 && (Minecraft.getSystemTime() - scrollDelay >= 15)) {
+        } else if (mDWheel >= 1 && (McIf.getSystemTime() - scrollDelay >= 15)) {
             if (scrollPosition <= 0f || availableCharacters.size() <= 7) return;
 
-            scrollDelay = Minecraft.getSystemTime();
+            scrollDelay = McIf.getSystemTime();
             if (scrollPosition - jump <= 0f) scrollPosition = 0f;
             else scrollPosition -= jump;
         }

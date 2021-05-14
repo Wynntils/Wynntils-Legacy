@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.questbook.instances;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
@@ -54,7 +55,7 @@ public class QuestBookPage extends GuiScreen {
     protected long lastTick;
     protected boolean animationCompleted;
 
-    private long delay = Minecraft.getSystemTime();
+    private long delay = McIf.getSystemTime();
 
     // Colours
     protected static final CustomColor background_1 = CustomColor.fromInt(0x000000, 0.3f);
@@ -96,8 +97,8 @@ public class QuestBookPage extends GuiScreen {
         selected = 0;
         searchUpdate("");
         refreshAccepts();
-        time = Minecraft.getSystemTime();
-        lastTick = Minecraft.getSystemTime();
+        time = McIf.getSystemTime();
+        lastTick = McIf.getSystemTime();
 
         if (showSearchBar) {
             textField = new GuiTextField(0, McIf.mc().fontRenderer, width / 2 + 32, height / 2 - 97, 113, 23);
@@ -138,7 +139,7 @@ public class QuestBookPage extends GuiScreen {
         ScreenRenderer.beginGL(0, 0);
         {
             if (showAnimation) {
-                float animationTick = Easing.BACK_IN.ease((Minecraft.getSystemTime() - time) + 1000, 1f, 1f, 600f);
+                float animationTick = Easing.BACK_IN.ease((McIf.getSystemTime() - time) + 1000, 1f, 1f, 600f);
                 animationTick /= 10f;
 
                 if (animationTick <= 1) {
@@ -200,14 +201,14 @@ public class QuestBookPage extends GuiScreen {
     public void handleMouseInput() throws IOException {
         int mDWheel = Mouse.getEventDWheel() * CoreDBConfig.INSTANCE.scrollDirection.getScrollDirection();
 
-        if (mDWheel <= -1 && (Minecraft.getSystemTime() - delay >= 15)) {
+        if (mDWheel <= -1 && (McIf.getSystemTime() - delay >= 15)) {
             if (acceptNext) {
-                delay = Minecraft.getSystemTime();
+                delay = McIf.getSystemTime();
                 goForward();
             }
-        } else if (mDWheel >= 1 && (Minecraft.getSystemTime() - delay >= 15)) {
+        } else if (mDWheel >= 1 && (McIf.getSystemTime() - delay >= 15)) {
             if (acceptBack) {
-                delay = Minecraft.getSystemTime();
+                delay = McIf.getSystemTime();
                 goBack();
             }
         }

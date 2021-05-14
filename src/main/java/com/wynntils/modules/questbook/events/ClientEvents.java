@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.questbook.events;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GameEvent;
 import com.wynntils.core.events.custom.PacketEvent;

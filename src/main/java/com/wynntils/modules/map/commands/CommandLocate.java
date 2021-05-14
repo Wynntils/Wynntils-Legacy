@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.commands;
 
+import com.wynntils.McIf;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.LocationProfile;

@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.instances;
 
+import com.wynntils.McIf;
 import com.wynntils.core.utils.StringUtils;
 import net.minecraft.client.Minecraft;
 
@@ -20,7 +21,7 @@ public class Toast {
         this.title = title;
         this.subtitle = StringUtils.wrapText(subTitle, 24);
 
-        this.creationTime = Minecraft.getSystemTime();
+        this.creationTime = McIf.getSystemTime();
         this.animated = 160;
     }
 

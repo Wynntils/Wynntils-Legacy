@@ -86,7 +86,7 @@ public class FakeInventory {
     public void open() {
         if (isOpen) return;
 
-        lastAction = Minecraft.getSystemTime();
+        lastAction = McIf.getSystemTime();
         expectingResponse = true;
 
         FrameworkManager.getEventBus().register(this);
@@ -117,7 +117,7 @@ public class FakeInventory {
     public void clickItem(int slot, int mouseButton, ClickType type) {
         if (!isOpen) return;
 
-        lastAction = Minecraft.getSystemTime();
+        lastAction = McIf.getSystemTime();
         expectingResponse = true;
 
         transaction++;
@@ -189,7 +189,7 @@ public class FakeInventory {
     public void onTick(TickEvent.ClientTickEvent e) {
         if (!isOpen || e.phase != TickEvent.Phase.END) return;
         if (!expectingResponse) return;
-        if (Minecraft.getSystemTime() - lastAction < limitTime) return;
+        if (McIf.getSystemTime() - lastAction < limitTime) return;
 
         close(InventoryResult.CLOSED_PREMATURELY);
     }
@@ -209,7 +209,7 @@ public class FakeInventory {
 
         isOpen = true;
         expectingResponse = false;
-        lastAction = Minecraft.getSystemTime();
+        lastAction = McIf.getSystemTime();
 
         windowId = e.getPacket().getWindowId();
         windowTitle = McIf.getUnformattedText(e.getPacket().getWindowTitle());
@@ -230,7 +230,7 @@ public class FakeInventory {
         inventory.addAll(e.getPacket().getItemStacks());
 
         expectingResponse = false;
-        lastAction = Minecraft.getSystemTime();
+        lastAction = McIf.getSystemTime();
 
         if (onReceiveItems != null) McIf.mc().addScheduledTask(() -> onReceiveItems.accept(this));
 

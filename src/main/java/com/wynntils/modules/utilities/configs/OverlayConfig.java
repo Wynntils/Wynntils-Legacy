@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.configs;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer.TextAlignment;
 import com.wynntils.core.framework.rendering.colors.CommonColors;

@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.rendering;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Texture;

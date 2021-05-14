@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.questbook.instances;
 
+import com.wynntils.McIf;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Location;
@@ -102,7 +103,7 @@ public class QuestInfo {
 
         // location
         Matcher m = coordinatePattern.matcher(description);
-        if(m.find()) {
+        if (m.find()) {
             targetLocation = new Location(0, 0, 0);
 
             if(m.group(1) != null) targetLocation.setX(Integer.parseInt(m.group(1)));

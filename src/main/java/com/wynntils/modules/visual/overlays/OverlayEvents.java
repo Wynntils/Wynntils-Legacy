@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.visual.overlays;
 
+import com.wynntils.McIf;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.instances.WindowedResolution;

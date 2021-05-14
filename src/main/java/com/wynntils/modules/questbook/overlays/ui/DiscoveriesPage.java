@@ -192,14 +192,14 @@ public class DiscoveriesPage extends QuestBookPage {
 
                     if (posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY && !showAnimation) {
                         if (lastTick == 0 && !animationCompleted) {
-                            lastTick = Minecraft.getSystemTime();
+                            lastTick = McIf.getSystemTime();
                         }
 
                         this.selected = i;
 
                         int animationTick;
                         if (!animationCompleted) {
-                            animationTick = (int) (Minecraft.getSystemTime() - lastTick) / 2;
+                            animationTick = (int) (McIf.getSystemTime() - lastTick) / 2;
                             if (animationTick >= 133) {
                                 animationCompleted = true;
                                 animationTick = 133;

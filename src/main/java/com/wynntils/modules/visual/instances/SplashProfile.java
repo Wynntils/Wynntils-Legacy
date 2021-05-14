@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.visual.instances;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import com.wynntils.webapi.downloader.enums.DownloadAction;

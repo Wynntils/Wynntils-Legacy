@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.cosmetics;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import com.wynntils.modules.cosmetics.configs.CosmeticsConfig;

@@ -106,13 +106,13 @@ public class QuestsPage extends QuestBookPage {
                     int animationTick = -1;
                     if (posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY && !showAnimation) {
                         if (lastTick == 0 && !animationCompleted) {
-                            lastTick = Minecraft.getSystemTime();
+                            lastTick = McIf.getSystemTime();
                         }
 
                         this.selected = i;
 
                         if (!animationCompleted) {
-                            animationTick = (int) (Minecraft.getSystemTime() - lastTick) / 2;
+                            animationTick = (int) (McIf.getSystemTime() - lastTick) / 2;
                             if (animationTick >= 133 && selected.getFriendlyName().equals(selected.getName())) {
                                 animationCompleted = true;
                                 animationTick = 133;
@@ -120,7 +120,7 @@ public class QuestsPage extends QuestBookPage {
                         } else {
                             if (!selected.getFriendlyName().equals(selected.getName())) {
                                 animationCompleted = false;
-                                lastTick = Minecraft.getSystemTime() - 133 * 2;
+                                lastTick = McIf.getSystemTime() - 133 * 2;
                             }
 
                             animationTick = 133;

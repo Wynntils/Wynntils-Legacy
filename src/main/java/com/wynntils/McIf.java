@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.util.text.ITextComponent;
+import org.lwjgl.Sys;
 
 /**
  * The Wynntils Minecraft Interface (MC IF).
@@ -36,4 +37,8 @@ public class McIf {
         return mc().player;
     }
 
+    public static long getSystemTime()
+    {
+        return Minecraft.getSystemTime();
+    }
 }

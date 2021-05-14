@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.core.commands;
 
+import com.wynntils.McIf;
 import com.wynntils.modules.core.enums.AccountType;
 import com.wynntils.modules.core.managers.UserManager;
 import net.minecraft.client.Minecraft;

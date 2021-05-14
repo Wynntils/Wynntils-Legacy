@@ -201,14 +201,14 @@ public class LootRunPage extends QuestBookPage {
                     int animationTick = -1;
                     if (hovered && !showAnimation) {
                         if (lastTick == 0 && !animationCompleted) {
-                            lastTick = Minecraft.getSystemTime();
+                            lastTick = McIf.getSystemTime();
                         }
 
                         selected = i;
                         selectedName = currentName;
 
                         if (!animationCompleted) {
-                            animationTick = (int) (Minecraft.getSystemTime() - lastTick) / 2;
+                            animationTick = (int) (McIf.getSystemTime() - lastTick) / 2;
                             if (animationTick >= 133 && !toCrop) {
                                 animationCompleted = true;
                                 animationTick = 133;
@@ -217,7 +217,7 @@ public class LootRunPage extends QuestBookPage {
                             //reset animation to wait for scroll
                             if (toCrop) {
                                 animationCompleted = false;
-                                lastTick = Minecraft.getSystemTime() - 133 * 2;
+                                lastTick = McIf.getSystemTime() - 133 * 2;
                             }
 
                             animationTick = 133;
