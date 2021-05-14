@@ -4,6 +4,7 @@
 
 package com.wynntils.core.framework.ui.elements;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.MouseButton;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
@@ -157,7 +158,7 @@ public class UIEColorWheel extends UIEClickZone {
                 color = toChange;
 
                 mc.displayGuiScreen(backGui);
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(clickSound, 1f));
+                McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(clickSound, 1f));
                 onAccept.accept(color);
                 if (colorText == null) {
                     textBox.setText(formatColourName(color));
@@ -166,7 +167,7 @@ public class UIEColorWheel extends UIEClickZone {
                 }
             } else if (button == cancelButton) {
                 mc.displayGuiScreen(backGui);
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(clickSound, 1f));
+                McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(clickSound, 1f));
             }
         }
 

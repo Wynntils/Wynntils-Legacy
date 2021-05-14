@@ -59,7 +59,7 @@ public class ChatGUI extends GuiChat {
                     tabButtons.values().stream().forEach(ChatButton::unselect);
                     tabButton.getValue().setSelected(true);
                 }
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             }
         }
 
@@ -142,7 +142,7 @@ public class ChatGUI extends GuiChat {
             for (int j = 0; j < this.labelList.size(); ++j) {
                 ((GuiLabel) this.labelList.get(j)).drawLabel(this.mc, mouseX, mouseY);
             }
-            
+
             if (itextcomponent != null && itextcomponent.getStyle().getHoverEvent() != null) {
                 this.handleComponentHover(itextcomponent, mouseX, mouseY);
             }

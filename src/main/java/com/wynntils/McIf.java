@@ -4,6 +4,7 @@
 
 package com.wynntils;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ITextComponent;
 
 /**
@@ -20,4 +21,9 @@ public class McIf {
     public static String getFormattedText(ITextComponent msg) {
         return msg.getFormattedText();
     }
+
+    public static Minecraft mc() {
+        return Minecraft.getMinecraft();
+    }
+
 }

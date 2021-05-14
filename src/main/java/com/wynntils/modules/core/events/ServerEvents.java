@@ -77,8 +77,8 @@ public class ServerEvents implements Listener {
         e.getManager().channel().pipeline().addBefore("fml:packet_handler", Reference.MOD_ID + ":packet_filter", new PacketIncomingFilter());
         e.getManager().channel().pipeline().addBefore("fml:packet_handler", Reference.MOD_ID + ":outgoingFilter", new PacketOutgoingFilter());
 
-        GuiIngame ingameGui = Minecraft.getMinecraft().ingameGUI;
-        ReflectionFields.GuiIngame_overlayPlayerList.setValue(ingameGui, new PlayerInfoReplacer(Minecraft.getMinecraft(), ingameGui));
+        GuiIngame ingameGui = McIf.mc().ingameGUI;
+        ReflectionFields.GuiIngame_overlayPlayerList.setValue(ingameGui, new PlayerInfoReplacer(McIf.mc(), ingameGui));
 
         WebManager.tryReloadApiUrls(true);
         WebManager.checkForUpdatesOnJoin();
@@ -101,7 +101,7 @@ public class ServerEvents implements Listener {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void joinWorldEvent(WynnWorldEvent.Join e) {
         if (PlayerInfo.get(CharacterData.class).getClassId() == -1 || CoreDBConfig.INSTANCE.lastClass == ClassType.NONE)
-            Minecraft.getMinecraft().player.sendChatMessage("/class");
+            McIf.mc().player.sendChatMessage("/class");
 
         // This codeblock will only be executed if the Wynncraft AUTOJOIN setting is enabled
         // Reason: When you join a world with autojoin enabled, your current class is NONE,
@@ -116,12 +116,12 @@ public class ServerEvents implements Listener {
         // guild members
         if (WebManager.getPlayerProfile() != null && WebManager.getPlayerProfile().getGuildName() != null) {
             waitingForGuildList = true;
-            Minecraft.getMinecraft().player.sendChatMessage("/guild list");
+            McIf.mc().player.sendChatMessage("/guild list");
         }
 
         // friends
         waitingForFriendList = true;
-        Minecraft.getMinecraft().player.sendChatMessage("/friends list");
+        McIf.mc().player.sendChatMessage("/friends list");
 
         // party members
         PartyManager.handlePartyList();  // party list here
@@ -147,7 +147,7 @@ public class ServerEvents implements Listener {
         String messageText = McIf.getUnformattedText(e.getMessage());
         String formatted = McIf.getFormattedText(e.getMessage());
         Matcher m = FRIENDS_LIST.matcher(formatted);
-        if (m.find() && m.group(1).equals(Minecraft.getMinecraft().player.getName())) {
+        if (m.find() && m.group(1).equals(McIf.mc().player.getName())) {
             String[] friends = m.group(2).split(", ");
 
             Set<String> friendsList = PlayerInfo.get(SocialData.class).getFriendList();
@@ -245,7 +245,7 @@ public class ServerEvents implements Listener {
         TextComponentString msg = new TextComponentString("The Wynntils servers are currently down! You can still use Wynntils, but some features may not work. Our servers should be back soon.");
         msg.getStyle().setColor(TextFormatting.RED);
         msg.getStyle().setBold(true);
-        new Delay(() -> Minecraft.getMinecraft().player.sendMessage(msg), 30); // delay so the player actually loads in
+        new Delay(() -> McIf.mc().player.sendMessage(msg), 30); // delay so the player actually loads in
     }
 
     private static boolean triedToShowChangelog = false;
@@ -257,7 +257,7 @@ public class ServerEvents implements Listener {
     @SubscribeEvent
     public void onJoinLobby(WynnClassChangeEvent e) {
         if (!Reference.onServer || !CoreDBConfig.INSTANCE.enableChangelogOnUpdate || !CoreDBConfig.INSTANCE.showChangelogs) return;
-        if (UpdateOverlay.isDownloading() || DownloaderManager.isRestartOnQueueFinish() || Minecraft.getMinecraft().world == null) return;
+        if (UpdateOverlay.isDownloading() || DownloaderManager.isRestartOnQueueFinish() || McIf.mc().world == null) return;
         if (e.getNewClass() == ClassType.NONE) return;
 
         synchronized (this) {
@@ -270,8 +270,8 @@ public class ServerEvents implements Listener {
             List<String> changelog = WebManager.getChangelog(major, false);
             if (changelog == null) return;
 
-            Minecraft.getMinecraft().addScheduledTask(() -> {
-                Minecraft.getMinecraft().displayGuiScreen(new ChangelogUI(changelog, major));
+            McIf.mc().addScheduledTask(() -> {
+                McIf.mc().displayGuiScreen(new ChangelogUI(changelog, major));
 
                 // Showed changelog; Don't show next time.
                 CoreDBConfig.INSTANCE.showChangelogs = false;
@@ -288,7 +288,7 @@ public class ServerEvents implements Listener {
     @SubscribeEvent
     public void onCompassChange(PacketEvent<SPacketSpawnPosition> e) {
         currentSpawn = e.getPacket().getSpawnPos();
-        if (Minecraft.getMinecraft().player == null) {
+        if (McIf.mc().player == null) {
             CompassManager.reset();
             return;
         }

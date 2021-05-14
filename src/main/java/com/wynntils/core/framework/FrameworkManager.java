@@ -4,6 +4,7 @@
 
 package com.wynntils.core.framework;
 
+import com.wynntils.McIf;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
@@ -152,7 +153,7 @@ public class FrameworkManager {
                 return;
             }
 
-            Minecraft.getMinecraft().profiler.startSection("preRenOverlay");
+            McIf.mc().profiler.startSection("preRenOverlay");
             for (List<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
                     if (!overlay.active) continue;
@@ -171,39 +172,39 @@ public class FrameworkManager {
                             continue;
                     }
                     if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.visible && overlay.active) {
-                        Minecraft.getMinecraft().profiler.startSection(overlay.displayName);
+                        McIf.mc().profiler.startSection(overlay.displayName);
                         ScreenRenderer.beginGL(overlay.position.getDrawingX(), overlay.position.getDrawingY());
                         overlay.render(e);
                         ScreenRenderer.endGL();
-                        Minecraft.getMinecraft().profiler.endSection();
+                        McIf.mc().profiler.endSection();
                     }
                 }
             }
-            Minecraft.getMinecraft().profiler.endSection();
+            McIf.mc().profiler.endSection();
 
-            Minecraft.getMinecraft().getTextureManager().bindTexture(ICONS);
+            McIf.mc().getTextureManager().bindTexture(ICONS);
         }
     }
 
     public static void triggerPostHud(RenderGameOverlayEvent.Post e) {
         if (Reference.onServer && !ModCore.mc().playerController.isSpectator()) {
-            Minecraft.getMinecraft().profiler.startSection("posRenOverlay");
+            McIf.mc().profiler.startSection("posRenOverlay");
             for (List<Overlay> overlays : registeredOverlays.values()) {
                 for (Overlay overlay : overlays) {
                     if (!overlay.active) continue;
 
                     if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.visible && overlay.active) {
-                        Minecraft.getMinecraft().profiler.startSection(overlay.displayName);
+                        McIf.mc().profiler.startSection(overlay.displayName);
 
                         ScreenRenderer.beginGL(overlay.position.getDrawingX(), overlay.position.getDrawingY());
                         overlay.render(e);
                         ScreenRenderer.endGL();
 
-                        Minecraft.getMinecraft().profiler.endSection();
+                        McIf.mc().profiler.endSection();
                     }
                 }
             }
-            Minecraft.getMinecraft().profiler.endSection();
+            McIf.mc().profiler.endSection();
         }
     }
 
@@ -226,7 +227,7 @@ public class FrameworkManager {
         Random r = Utils.getRandom();
         if (r.nextBoolean()) return; // reduce spawn chances by half
 
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        EntityPlayerSP player = McIf.mc().player;
         for (double x = -10; x < 10; x++) {
             for (double y = -1; y < 6; y++) {
                 for (double z = -10; z < 10; z++) {

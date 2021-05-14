@@ -191,7 +191,7 @@ public class SkillPointOverlay implements Listener {
         if (!Reference.onWorld || !Utils.isCharacterInfoPage(e.getGui())) return;
 
         if (e.getSlotId() == SAVE_SLOT) {
-            nameField = new GuiTextFieldWynn(200, Minecraft.getMinecraft().fontRenderer, 8, 5, 130, 10);
+            nameField = new GuiTextFieldWynn(200, McIf.mc().fontRenderer, 8, 5, 130, 10);
             nameField.setFocused(true);
             nameField.setText("Enter build name");
             Keyboard.enableRepeatEvents(true);
@@ -381,14 +381,14 @@ public class SkillPointOverlay implements Listener {
                     ClickType.PICKUP, gui.inventorySlots.getSlot(9 + i).getStack(),
                     gui.inventorySlots.getNextTransactionID(ModCore.mc().player.inventory));
 
-            Minecraft.getMinecraft().getSoundHandler().playSound(
+            McIf.mc().getSoundHandler().playSound(
                     PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_ITEM_PICKUP, 0.3f + (1.2f * buildPercentage)));
 
             ModCore.mc().getConnection().sendPacket(packet);
             return; // can only click once at a time
         }
 
-        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_PLAYER_LEVELUP, 1f));
+        McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_PLAYER_LEVELUP, 1f));
         loadedBuild = null; // we've fully loaded the build if we reach this point
         buildPercentage = 0.0f;
     }

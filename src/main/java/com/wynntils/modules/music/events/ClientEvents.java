@@ -93,20 +93,20 @@ public class ClientEvents implements Listener {
     public void areaTracks(SchedulerEvent.RegionUpdate e) {
         if (!MusicConfig.INSTANCE.replaceJukebox) return;
 
-        Minecraft.getMinecraft().addScheduledTask(BossTrackManager::update);
+        McIf.mc().addScheduledTask(BossTrackManager::update);
 
         if (BossTrackManager.isAlive()) return;
-        AreaTrackManager.update(new Location(Minecraft.getMinecraft().player));
+        AreaTrackManager.update(new Location(McIf.mc().player));
     }
 
     // mythic found sfx
     @SubscribeEvent
     public void onMythicFound(PacketEvent<SPacketWindowItems> e) {
         if (!MusicConfig.SoundEffects.INSTANCE.mythicFound) return;
-        if (Minecraft.getMinecraft().currentScreen == null) return;
-        if (!(Minecraft.getMinecraft().currentScreen instanceof ChestReplacer)) return;
+        if (McIf.mc().currentScreen == null) return;
+        if (!(McIf.mc().currentScreen instanceof ChestReplacer)) return;
 
-        ChestReplacer chest = (ChestReplacer) Minecraft.getMinecraft().currentScreen;
+        ChestReplacer chest = (ChestReplacer) McIf.mc().currentScreen;
         if (!chest.getLowerInv().getName().contains("Loot Chest") &&
                 !chest.getLowerInv().getName().contains("Daily Rewards") &&
                 !chest.getLowerInv().getName().contains("Objective Rewards")) return;

@@ -5,6 +5,7 @@
 package com.wynntils.core.utils;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.wynntils.McIf;
 import com.wynntils.ModCore;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import net.minecraft.client.Minecraft;
@@ -165,10 +166,10 @@ public class Utils {
      * @return the Scoreboard Team
      */
     public static ScorePlayerTeam createFakeScoreboard(String name, Team.CollisionRule rule) {
-        Scoreboard mc = Minecraft.getMinecraft().world.getScoreboard();
+        Scoreboard mc = McIf.mc().world.getScoreboard();
         if (mc.getTeam(name) != null) return mc.getTeam(name);
 
-        String player = Minecraft.getMinecraft().player.getName();
+        String player = McIf.mc().player.getName();
         if (mc.getPlayersTeam(player) != null) previousTeam = mc.getPlayersTeam(player).getName();
 
         ScorePlayerTeam team = mc.createTeam(name);
@@ -184,11 +185,11 @@ public class Utils {
      * @param name the scoreboard name
      */
     public static void removeFakeScoreboard(String name) {
-        Scoreboard mc = Minecraft.getMinecraft().world.getScoreboard();
+        Scoreboard mc = McIf.mc().world.getScoreboard();
         if (mc.getTeam(name) == null) return;
 
         mc.removeTeam(mc.getTeam(name));
-        if (previousTeam != null) mc.addPlayerToTeam(Minecraft.getMinecraft().player.getName(), previousTeam);
+        if (previousTeam != null) mc.addPlayerToTeam(McIf.mc().player.getName(), previousTeam);
     }
 
     /**
@@ -197,7 +198,7 @@ public class Utils {
      * @param screen the provided screen
      */
     public static void displayGuiScreen(GuiScreen screen) {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = McIf.mc();
 
         GuiScreen oldScreen = mc.currentScreen;
 
@@ -213,7 +214,7 @@ public class Utils {
         mc.currentScreen = screen;
 
         if (screen != null) {
-            Minecraft.getMinecraft().setIngameNotInFocus();
+            McIf.mc().setIngameNotInFocus();
 
             ScaledResolution scaledresolution = new ScaledResolution(mc);
             int i = scaledresolution.getScaledWidth();

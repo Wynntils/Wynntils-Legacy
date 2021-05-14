@@ -81,7 +81,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onWynnLogin(WynncraftServerEvent.Login e) {
-        ReflectionFields.GuiIngame_persistantChatGUI.setValue(Minecraft.getMinecraft().ingameGUI, new ChatOverlay());
+        ReflectionFields.GuiIngame_persistantChatGUI.setValue(McIf.mc().ingameGUI, new ChatOverlay());
         TranslationManager.init();
     }
 

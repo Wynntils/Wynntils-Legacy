@@ -95,8 +95,8 @@ public class QuestInfo {
 
         // friendly name
         friendlyName = this.name.replace("Mini-Quest - ", "");
-        if (Minecraft.getMinecraft().fontRenderer.getStringWidth(friendlyName) > 120) friendlyName += "...";
-        while (Minecraft.getMinecraft().fontRenderer.getStringWidth(friendlyName) > 120) {
+        if (McIf.mc().fontRenderer.getStringWidth(friendlyName) > 120) friendlyName += "...";
+        while (McIf.mc().fontRenderer.getStringWidth(friendlyName) > 120) {
             friendlyName = friendlyName.substring(0, friendlyName.length() - 4).trim() + "...";
         }
 

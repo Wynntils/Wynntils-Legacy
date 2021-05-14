@@ -120,7 +120,7 @@ public class OverlayEvents implements Listener {
             /*Inventory full message*/
             if (OverlayConfig.GameUpdate.GameUpdateInventoryMessages.INSTANCE.enabled) {
                 if (tickcounter % (int) (OverlayConfig.GameUpdate.GameUpdateInventoryMessages.INSTANCE.inventoryUpdateRate * 20f) == 0) {
-                    IInventory inv = Minecraft.getMinecraft().player.inventory;
+                    IInventory inv = McIf.mc().player.inventory;
                     int itemCounter = 0;
                     for (int i = 0; i < inv.getSizeInventory(); i++) {
                         if (!inv.getStackInSlot(i).isEmpty()) {
@@ -177,7 +177,7 @@ public class OverlayEvents implements Listener {
             if (!wynnExpTimestampNotified) {
                 TextComponentString text = new TextComponentString("[" + Reference.NAME + "] WynnExpansion's chat timestamps detected, please use " + Reference.NAME + "' chat timestamps for full compatibility.");
                 text.getStyle().setColor(DARK_RED);
-                Minecraft.getMinecraft().player.sendMessage(text);
+                McIf.mc().player.sendMessage(text);
                 wynnExpTimestampNotified = true;
             }
         }
@@ -771,7 +771,7 @@ public class OverlayEvents implements Listener {
         if (!Reference.onWorld || !OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) return;
 
         SPacketEntityEffect effect = e.getPacket();
-        if (effect.getEntityId() != Minecraft.getMinecraft().player.getEntityId()) return;
+        if (effect.getEntityId() != McIf.mc().player.getEntityId()) return;
 
         Potion potion = Potion.getPotionById(effect.getEffectId());
 
@@ -809,7 +809,7 @@ public class OverlayEvents implements Listener {
         }
 
         // create timer with name and duration (duration in ticks)/20 -> seconds
-        Minecraft.getMinecraft().addScheduledTask(() ->
+        McIf.mc().addScheduledTask(() ->
                 ConsumableTimerOverlay.addBasicTimer(timerName, effect.getDuration() / 20));
     }
 
@@ -818,9 +818,9 @@ public class OverlayEvents implements Listener {
         if (!Reference.onWorld || !OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) return;
 
         SPacketRemoveEntityEffect effect = e.getPacket();
-        if (effect.getEntity(Minecraft.getMinecraft().world) != Minecraft.getMinecraft().player) return;
+        if (effect.getEntity(McIf.mc().world) != McIf.mc().player) return;
 
-        Minecraft.getMinecraft().addScheduledTask(() -> {
+        McIf.mc().addScheduledTask(() -> {
             Potion potion = effect.getPotion();
 
             // When removing speed boost from (archer)

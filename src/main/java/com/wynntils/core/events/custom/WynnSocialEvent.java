@@ -4,6 +4,7 @@
 
 package com.wynntils.core.events.custom;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.containers.PartyContainer;
 import com.wynntils.core.framework.instances.data.SocialData;
@@ -30,7 +31,7 @@ public class WynnSocialEvent extends Event {
     }
 
     public boolean isYou() {
-        return member.equalsIgnoreCase(Minecraft.getMinecraft().player.getName());
+        return member.equalsIgnoreCase(McIf.mc().player.getName());
     }
 
     public static class Party extends WynnSocialEvent {

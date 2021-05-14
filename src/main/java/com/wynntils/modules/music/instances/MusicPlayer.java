@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.music.instances;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.MusicPlayerEvent;
 import com.wynntils.core.framework.FrameworkManager;
@@ -92,7 +93,7 @@ public class MusicPlayer {
         }
 
         // update the volume
-        float baseVolume = -36 + (36 * Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.RECORDS));
+        float baseVolume = -36 + (36 * McIf.mc().gameSettings.getSoundLevel(SoundCategory.RECORDS));
         float expectedGain = (Display.isActive() && !STATUS.isCurrentQuiet()) ? baseVolume : Math.max(-30, baseVolume + MusicConfig.INSTANCE.focusOffset);
 
         if (STATUS.getCurrentGain() > expectedGain) {
@@ -150,7 +151,7 @@ public class MusicPlayer {
                 BufferedInputStream bis = new BufferedInputStream(fis);
 
                 // updating the volume
-                float baseVolume = -32 + (32 * Minecraft.getMinecraft().gameSettings.getSoundLevel(SoundCategory.RECORDS));
+                float baseVolume = -32 + (32 * McIf.mc().gameSettings.getSoundLevel(SoundCategory.RECORDS));
                 STATUS.setCurrentGain(STATUS.getCurrentSong().isFadeIn() ? -30f : baseVolume);
 
                 player = new AdvancedPlayer(bis, STATUS.getCurrentGain());

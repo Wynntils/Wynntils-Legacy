@@ -4,6 +4,7 @@
 
 package com.wynntils.core.framework.ui.elements;
 
+import com.wynntils.McIf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiButtonImage;
@@ -90,10 +91,10 @@ public class GuiButtonImageBetter extends GuiButtonImage {
     public static void setColour(boolean hovering, boolean enabled) {
         if (hovering) {
             highlightFixHovering.enabled = enabled;
-            highlightFixHovering.drawButton(Minecraft.getMinecraft(), Integer.MIN_VALUE, Integer.MIN_VALUE, 0);
+            highlightFixHovering.drawButton(McIf.mc(), Integer.MIN_VALUE, Integer.MIN_VALUE, 0);
         } else {
             highlightFixNoHovering.enabled = enabled;
-            highlightFixNoHovering.drawButton(Minecraft.getMinecraft(), 0, 0, 0);
+            highlightFixNoHovering.drawButton(McIf.mc(), 0, 0, 0);
         }
     }
 }

@@ -44,8 +44,8 @@ public class SplashProfile {
 
     private void setReadyToUse() {
         // make sure this is being called from the main thread
-        if (!Minecraft.getMinecraft().isCallingFromMinecraftThread()) {
-            Minecraft.getMinecraft().addScheduledTask(this::setReadyToUse);
+        if (!McIf.mc().isCallingFromMinecraftThread()) {
+            McIf.mc().addScheduledTask(this::setReadyToUse);
             return;
         }
         readyToUse = true;

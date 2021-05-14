@@ -267,14 +267,14 @@ public class QuestsPage extends QuestBookPage {
 
                 if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(overQuest.getName())) {
                     QuestManager.setTrackedQuest(null);
-                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
+                    McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
                     return;
                 }
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
+                McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
                 QuestManager.setTrackedQuest(overQuest);
                 return;
             } else if (mouseButton == 1) { // right click
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
 
                 final String baseUrl = "https://wynncraft.gamepedia.com/";
 
@@ -312,17 +312,17 @@ public class QuestsPage extends QuestBookPage {
         checkForwardAndBackButtons(posX, posY);
 
         if (posX >= 71 && posX <= 87 && posY >= 84 && posY <= 100) { // Mini-Quest Switcher
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             showingMiniQuests = !showingMiniQuests;
             textField.setText("");
             updateSearch();
             return;
         } else if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) { // Update Data
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             QuestManager.updateAllAnalyses(true);
             return;
         } else if (-11 <= posX && posX <= -1 && 89 <= posY && posY <= 99 && (mouseButton == 0 || mouseButton == 1)) { // Change Sort Method
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             sort = SortMethod.values()[(sort.ordinal() + (mouseButton == 0 ? 1 : SortMethod.values().length - 1)) % SortMethod.values().length];
             updateSearch();
             return;
@@ -381,7 +381,7 @@ public class QuestsPage extends QuestBookPage {
                 "Sort by Level", // Replace with translation keys during l10n
                 "Lowest level quests first")),
         DISTANCE(Comparator.comparing(QuestInfo::getStatus).thenComparingLong(q -> {
-            EntityPlayerSP player = Minecraft.getMinecraft().player;
+            EntityPlayerSP player = McIf.mc().player;
             if (player == null || !q.hasTargetLocation()) {
                 return 0;
             }

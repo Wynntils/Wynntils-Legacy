@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.core.instances;
 
+import com.wynntils.McIf;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.PacketEvent;
@@ -138,9 +139,9 @@ public class TotemTracker {
             }
 
             // Is it created close to us? Then it's a potential new totem
-            if (isClose(e.getPacket().getX(), Minecraft.getMinecraft().player.posX) &&
-                    isClose(e.getPacket().getY(), Minecraft.getMinecraft().player.posY + 1.0) &&
-                    isClose(e.getPacket().getZ(), Minecraft.getMinecraft().player.posZ)) {
+            if (isClose(e.getPacket().getX(), McIf.mc().player.posX) &&
+                    isClose(e.getPacket().getY(), McIf.mc().player.posY + 1.0) &&
+                    isClose(e.getPacket().getZ(), McIf.mc().player.posZ)) {
                 potentialId = e.getPacket().getEntityID();
                 potentialX = e.getPacket().getX();
                 potentialY = e.getPacket().getY();
@@ -154,7 +155,7 @@ public class TotemTracker {
     public void onTotemSpellCast(SpellEvent.Cast e) {
         if (e.getSpell().equals("Totem") || e.getSpell().equals("Sky Emblem")) {
             totemCastTimestamp = System.currentTimeMillis();
-            heldWeaponSlot =  Minecraft.getMinecraft().player.inventory.currentItem;
+            heldWeaponSlot =  McIf.mc().player.inventory.currentItem;
             checkTotemSummoned();
         } else if (e.getSpell().equals("Uproot") || e.getSpell().equals("Gale Funnel")) {
             totemCastTimestamp = System.currentTimeMillis();

@@ -33,7 +33,7 @@ public class ClientEvents implements Listener {
     public void cacheChunks(PacketEvent<SPacketChunkData> event) {
         if (!Reference.onWorld || !VisualConfig.CachedChunks.INSTANCE.enabled) return;
 
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = McIf.mc();
         SPacketChunkData packet = event.getPacket();
 
         // Requests the chunk to be unloaded if loaded before loading (???)

@@ -319,11 +319,11 @@ public class LootRunPage extends QuestBookPage {
     }
 
     public String getFriendlyName(String str, int width) {
-        if (!(Minecraft.getMinecraft().fontRenderer.getStringWidth(str) > width)) return str;
+        if (!(McIf.mc().fontRenderer.getStringWidth(str) > width)) return str;
 
         str += "...";
 
-        while (Minecraft.getMinecraft().fontRenderer.getStringWidth(str) > width) {
+        while (McIf.mc().fontRenderer.getStringWidth(str) > width) {
             str = str.substring(0, str.length() - 4).trim() + "...";
         }
 
@@ -363,11 +363,11 @@ public class LootRunPage extends QuestBookPage {
                             Location start = LootRunManager.getActivePath().getPoints().get(0);
                             String startingPointMsg = "Loot run " + LootRunManager.getActivePathName() + " starts at [" + (int) start.getX() + ", " + (int) start.getZ() + "]";
 
-                            Minecraft.getMinecraft().addScheduledTask(() ->
+                            McIf.mc().addScheduledTask(() ->
                                     ChatOverlay.getChat().printChatMessageWithOptionalDeletion(new TextComponentString(startingPointMsg), MESSAGE_ID)
                             );
 
-                            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
+                            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -380,7 +380,7 @@ public class LootRunPage extends QuestBookPage {
                 if (result) {
                     names.remove(selected);
                     updateSelected();
-                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
+                    McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
                 }
 
                 return;

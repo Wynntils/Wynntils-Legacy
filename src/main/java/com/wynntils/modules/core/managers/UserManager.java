@@ -5,6 +5,7 @@
 package com.wynntils.modules.core.managers;
 
 import com.google.gson.JsonObject;
+import com.wynntils.McIf;
 import com.wynntils.modules.core.enums.AccountType;
 import com.wynntils.modules.core.instances.account.CosmeticInfo;
 import com.wynntils.modules.core.instances.account.WynntilsUser;
@@ -51,8 +52,8 @@ public class UserManager {
 
                     // loading needs to occur inside the client thread
                     // otherwise some weird texture corruption WILL happen
-                    Minecraft.getMinecraft().addScheduledTask(() -> {
-                        TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
+                    McIf.mc().addScheduledTask(() -> {
+                        TextureManager textureManager = McIf.mc().getTextureManager();
                         textureManager.loadTexture(rl, info);
 
                         users.put(uuid, new WynntilsUser(AccountType.valueOf(user.get("accountType").getAsString()), info));
@@ -73,7 +74,7 @@ public class UserManager {
     }
 
     public static void clearRegistry() {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = McIf.mc();
 
         // needs to be run inside the client thread
         // otherwise some weird corrupting issues WILL happen

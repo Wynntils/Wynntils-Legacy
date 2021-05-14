@@ -107,7 +107,7 @@ public class MapPlayerIcon extends MapIcon {
                     (centreZ) + sizeZ + .5f
             );
 
-            Minecraft.getMinecraft().getTextureManager().bindTexture(res);
+            McIf.mc().getTextureManager().bindTexture(res);
 
             drawScaledCustomSizeModalRect(
                     ((centreX + ScreenRenderer.drawingOrigin().x) -sizeX),

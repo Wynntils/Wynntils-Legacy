@@ -39,7 +39,7 @@ public class ChatOverlay extends GuiNewChat {
     private static ChatOverlay chat;
 
     private static final Logger LOGGER = LogManager.getFormatterLogger("chat");
-    private final Minecraft mc = Minecraft.getMinecraft();
+    private final Minecraft mc = McIf.mc();
 
     private int scrollPos;
     private boolean isScrolled;
@@ -293,7 +293,7 @@ public class ChatOverlay extends GuiNewChat {
     public void switchTabs(int amount) {
         currentTab = Math.floorMod(currentTab + amount, TabManager.getAvailableTabs().size());
 
-        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+        McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
     }
 
     public void resetScroll() {

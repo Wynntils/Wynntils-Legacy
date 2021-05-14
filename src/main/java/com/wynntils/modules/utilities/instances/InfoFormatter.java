@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 
 public class InfoFormatter {
 
-    private Minecraft mc = Minecraft.getMinecraft();
+    private Minecraft mc = McIf.mc();
 
     public Map<String, String> cache = new HashMap<>();
     public Map<String, InfoModule> formatters = new HashMap<>();
@@ -244,7 +244,7 @@ public class InfoFormatter {
         // Distance from compass beacon
         registerFormatter((input) ->{
             Location compass = CompassManager.getCompassLocation();
-            Location playerPos = new Location(Minecraft.getMinecraft().player);
+            Location playerPos = new Location(McIf.mc().player);
 
             if (compass == null) return "";
             return String.valueOf((int) compass.distance(playerPos));

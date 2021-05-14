@@ -88,15 +88,15 @@ public class ServerSelectorOverlay implements Listener {
         if (nbt.hasKey("wynntilsBlock")) {
             TextComponentString text = new TextComponentString("Your version of Wynntils is currently blocked from joining the Hero Beta due to instability. Trying changing update stream to cutting edge, or removing Wynntils while on the Hero Beta until support is added.");
             text.getStyle().setColor(TextFormatting.RED);
-            Minecraft.getMinecraft().player.sendMessage(text);
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_BASS, 1f));
+            McIf.mc().player.sendMessage(text);
+            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_BASS, 1f));
 
             e.setCanceled(true);
         } else if (nbt.hasKey("wynntilsWarn")) {
             TextComponentString text = new TextComponentString("Your version of Wynntils is currently unstable on the Hero Beta. Expect frequent crashes and bugs!");
             text.getStyle().setColor(TextFormatting.RED);
             text.getStyle().setBold(true);
-            Minecraft.getMinecraft().player.sendMessage(text);
+            McIf.mc().player.sendMessage(text);
 
             text = new TextComponentString("Please report any issues you do experience on the Wynntils discord ");
             text.getStyle().setColor(TextFormatting.GREEN);
@@ -107,9 +107,9 @@ public class ServerSelectorOverlay implements Listener {
                 linkText.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, discordInvite));
                 text.appendSibling(linkText);
             }
-            Minecraft.getMinecraft().player.sendMessage(text);
+            McIf.mc().player.sendMessage(text);
 
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_BASS, 1f));
+            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_BASS, 1f));
         }
     }
 }

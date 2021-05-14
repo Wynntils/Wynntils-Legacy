@@ -22,9 +22,9 @@ public class CosmeticsModule extends Module {
     }
 
     public void postEnable() {
-        Minecraft.getMinecraft().gameSettings.setModelPartEnabled(EnumPlayerModelParts.CAPE, true);
+        McIf.mc().gameSettings.setModelPartEnabled(EnumPlayerModelParts.CAPE, true);
 
-        for (RenderPlayer render : Minecraft.getMinecraft().getRenderManager().getSkinMap().values()) {
+        for (RenderPlayer render : McIf.mc().getRenderManager().getSkinMap().values()) {
             render.addLayer(new LayerCape(render));
             render.addLayer(new LayerElytra(render));
             render.addLayer(new LayerFoxEars(render));

@@ -432,7 +432,7 @@ public class CharacterSelectorUI extends GuiScreen {
             enableBlend();
         }
 
-        GuiInventory.drawEntityOnScreen(middleX, 210, 60, 0, 0, Minecraft.getMinecraft().player);
+        GuiInventory.drawEntityOnScreen(middleX, 210, 60, 0, 0, McIf.mc().player);
     }
 
     private void drawCharacterBadge(int posX, int posY, ItemStack item, String name, String level, String deletion, float xp, boolean selected, int id) {

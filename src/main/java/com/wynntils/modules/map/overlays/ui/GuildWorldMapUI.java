@@ -43,7 +43,7 @@ public class GuildWorldMapUI extends WorldMapUI {
     private boolean showTradeRoutes = true;
 
     public GuildWorldMapUI() {
-        super((float) Minecraft.getMinecraft().player.posX, (float) Minecraft.getMinecraft().player.posZ);
+        super((float) McIf.mc().player.posX, (float) McIf.mc().player.posZ);
     }
 
     @Override
@@ -85,7 +85,7 @@ public class GuildWorldMapUI extends WorldMapUI {
 
         // HeyZeer0: This close the map if the user was pressing the map key and after a moment dropped it
         if (holdingMapKey && !isHoldingMapKey()) {
-            Minecraft.getMinecraft().displayGuiScreen(null);
+            McIf.mc().displayGuiScreen(null);
             return;
         }
 
@@ -212,7 +212,7 @@ public class GuildWorldMapUI extends WorldMapUI {
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if (!holdingMapKey && keyCode == MapModule.getModule().getGuildMapKey().getKeyBinding().getKeyCode()) {
-            Minecraft.getMinecraft().displayGuiScreen(null);
+            McIf.mc().displayGuiScreen(null);
             return;
         }
 

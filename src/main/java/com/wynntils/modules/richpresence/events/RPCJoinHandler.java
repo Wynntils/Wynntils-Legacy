@@ -59,7 +59,7 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
 
         RichPresenceModule.getModule().getRichPresence().setJoinSecret(lastSecret);
 
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = McIf.mc();
 
         if (!Reference.onServer) {
             ServerData serverData = ServerUtils.getWynncraftServerData(true);
@@ -97,7 +97,7 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
         if (!waitingInvite) return;
         sentInvite = true;
         waitingInvite = false;
-        Minecraft.getMinecraft().player.sendChatMessage("/msg " + lastSecret.getOwner() + " " + lastSecret.getRandomHash());
+        McIf.mc().player.sendChatMessage("/msg " + lastSecret.getOwner() + " " + lastSecret.getRandomHash());
     }
 
     @SubscribeEvent
@@ -106,14 +106,14 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
 
         // handles the invitation
         if (lastSecret != null && McIf.getUnformattedText(e.getMessage()).startsWith("You have been invited to join " + lastSecret.getOwner())) {
-            Minecraft.getMinecraft().player.sendChatMessage("/party join " + lastSecret.getOwner());
+            McIf.mc().player.sendChatMessage("/party join " + lastSecret.getOwner());
 
             lastSecret = null;
             return;
         }
 
         // handles the user join
-        if (sentInvite && McIf.getUnformattedText(e.getMessage()).startsWith("[" + Minecraft.getMinecraft().player.getName())) {
+        if (sentInvite && McIf.getUnformattedText(e.getMessage()).startsWith("[" + McIf.mc().player.getName())) {
             sentInvite = false;
             e.setCanceled(true);
             return;
@@ -133,7 +133,7 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
                 return;
 
             e.setCanceled(true);
-            Minecraft.getMinecraft().player.sendChatMessage("/party invite " + user);
+            McIf.mc().player.sendChatMessage("/party invite " + user);
         }
     }
 

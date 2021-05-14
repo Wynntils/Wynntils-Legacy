@@ -331,7 +331,7 @@ public class GearViewerUI extends FakeGuiContainer {
 
         // item lore
         if (item.getLore() != null && !item.getLore().isEmpty()) {
-            itemLore.addAll(Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(DARK_GRAY + item.getLore(), 150));
+            itemLore.addAll(McIf.mc().fontRenderer.listFormattedStringToWidth(DARK_GRAY + item.getLore(), 150));
         }
 
         ItemUtils.replaceLore(stack, itemLore);

@@ -24,7 +24,7 @@ public class OverlayEvents implements Listener {
 
         WindowedResolution res = new WindowedResolution(480, 254);
         fakeCharacterSelector = new CharacterSelectorUI(null, e.getGui(), res.getScaleFactor());
-        fakeCharacterSelector.setWorldAndResolution(Minecraft.getMinecraft(), e.getGui().width, e.getGui().height);
+        fakeCharacterSelector.setWorldAndResolution(McIf.mc(), e.getGui().width, e.getGui().height);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

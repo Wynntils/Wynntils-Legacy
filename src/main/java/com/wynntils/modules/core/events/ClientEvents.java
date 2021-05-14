@@ -135,7 +135,7 @@ public class ClientEvents implements Listener {
         if (e.getPacket().getAction() == 1) {
             ScorePlayerTeam scoreplayerteam;
 
-            Scoreboard scoreboard = Minecraft.getMinecraft().world.getScoreboard();
+            Scoreboard scoreboard = McIf.mc().world.getScoreboard();
             scoreplayerteam = scoreboard.getTeam(e.getPacket().getName());
             if (scoreplayerteam == null) {
                 // This would cause an NPE so cancel it
@@ -149,10 +149,10 @@ public class ClientEvents implements Listener {
         // I'm not sure what this does, but the code has been here a long time,
         // just moving it here. /magicus, 2021
         SPacketEntityVelocity velocity = e.getPacket();
-        if (Minecraft.getMinecraft().world != null) {
-            Entity entity = Minecraft.getMinecraft().world.getEntityByID(velocity.getEntityID());
-            Entity vehicle = Minecraft.getMinecraft().player.getLowestRidingEntity();
-            if ((entity == vehicle) && (vehicle != Minecraft.getMinecraft().player) && (vehicle.canPassengerSteer())) {
+        if (McIf.mc().world != null) {
+            Entity entity = McIf.mc().world.getEntityByID(velocity.getEntityID());
+            Entity vehicle = McIf.mc().player.getLowestRidingEntity();
+            if ((entity == vehicle) && (vehicle != McIf.mc().player) && (vehicle.canPassengerSteer())) {
                 e.setCanceled(true);
             }
         }
@@ -163,8 +163,8 @@ public class ClientEvents implements Listener {
         // I'm not sure what this does, but the code has been here a long time,
         // just moving it here. /magicus, 2021
         SPacketMoveVehicle moveVehicle = e.getPacket();
-        Entity vehicle = Minecraft.getMinecraft().player.getLowestRidingEntity();
-        if ((vehicle == Minecraft.getMinecraft().player) || (!vehicle.canPassengerSteer()) || (vehicle.getDistance(moveVehicle.getX(), moveVehicle.getY(), moveVehicle.getZ()) <= 25D)) {
+        Entity vehicle = McIf.mc().player.getLowestRidingEntity();
+        if ((vehicle == McIf.mc().player) || (!vehicle.canPassengerSteer()) || (vehicle.getDistance(moveVehicle.getX(), moveVehicle.getY(), moveVehicle.getZ()) <= 25D)) {
             e.setCanceled(true);
         }
     }
@@ -172,13 +172,13 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void findLabels(PacketEvent<SPacketEntityMetadata> e) {
         // makes this method always be called in main thread
-        if (!Minecraft.getMinecraft().isCallingFromMinecraftThread()) {
-            Minecraft.getMinecraft().addScheduledTask(() -> findLabels(e));
+        if (!McIf.mc().isCallingFromMinecraftThread()) {
+            McIf.mc().addScheduledTask(() -> findLabels(e));
             return;
         }
 
         if (e.getPacket().getDataManagerEntries() == null || e.getPacket().getDataManagerEntries().isEmpty()) return;
-        Entity i = Minecraft.getMinecraft().world.getEntityByID(e.getPacket().getEntityId());
+        Entity i = McIf.mc().world.getEntityByID(e.getPacket().getEntityId());
         if (i == null) return;
 
         if (i instanceof EntityItemFrame) {

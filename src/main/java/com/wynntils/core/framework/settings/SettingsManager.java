@@ -6,6 +6,7 @@ package com.wynntils.core.framework.settings;
 
 import com.google.gson.*;
 import com.google.gson.stream.JsonReader;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.containers.ModuleContainer;
 import com.wynntils.core.framework.overlays.Overlay;
@@ -44,7 +45,7 @@ public class SettingsManager {
             if (!(obj instanceof Overlay))
                 return;
 
-        File f = new File(configFolder, Minecraft.getMinecraft().getSession().getPlayerID());
+        File f = new File(configFolder, McIf.mc().getSession().getPlayerID());
         if (!f.exists()) f.mkdirs();  // check if the users folder exists
 
         f = new File(f, m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase(Locale.ROOT).replace(' ', '_') : info.name()) + ".config");
@@ -65,7 +66,7 @@ public class SettingsManager {
             if (!(obj instanceof Overlay))
                 return obj;
 
-        File f = new File(configFolder, Minecraft.getMinecraft().getSession().getPlayerID());
+        File f = new File(configFolder, McIf.mc().getSession().getPlayerID());
         if (!f.exists()) f.mkdirs();  // check if the users folder exists
 
         String configFile = m.getInfo().name() + "-" + (obj instanceof Overlay ? "overlay_" + ((Overlay)obj).displayName.toLowerCase(Locale.ROOT).replace(' ', '_') : info.name()) + ".config";

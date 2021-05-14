@@ -163,7 +163,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                 if (!Reference.developmentEnvironment) {
                     ITextComponent message = new TextComponentString(TextFormatting.RED + "You can't use this command outside a development environment");
 
-                    Minecraft.getMinecraft().player.sendMessage(message);
+                    McIf.mc().player.sendMessage(message);
                     return;
                 }
 

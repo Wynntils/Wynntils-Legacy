@@ -465,7 +465,7 @@ public class QuestManager {
 
     private static void sendMessage(String msg) {
         // Can be called from nio thread by FakeInventory
-        Minecraft.getMinecraft().addScheduledTask(() ->
+        McIf.mc().addScheduledTask(() ->
             ChatOverlay.getChat().printChatMessageWithOptionalDeletion(new TextComponentString(msg), MESSAGE_ID)
         );
     }

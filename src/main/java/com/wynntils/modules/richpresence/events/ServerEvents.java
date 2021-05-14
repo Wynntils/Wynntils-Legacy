@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.richpresence.events;
 
+import com.wynntils.McIf;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
@@ -104,7 +105,7 @@ public class ServerEvents implements Listener {
         if (!RichPresenceConfig.INSTANCE.enableRichPresence || !Reference.onWorld
                 || !PlayerInfo.get(CharacterData.class).isLoaded()) return;
 
-        if (e.getPacket().getLevel() != Minecraft.getMinecraft().player.experienceLevel) {
+        if (e.getPacket().getLevel() != McIf.mc().player.experienceLevel) {
             forceUpdate = true;
         }
     }
@@ -166,7 +167,7 @@ public class ServerEvents implements Listener {
      * @return RichPresence largeImageText
      */
     public static String getPlayerInfo() {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = McIf.mc();
         return RichPresenceConfig.INSTANCE.showUserInformation ? mc.player.getName() + " | Level " + mc.player.experienceLevel + " " + PlayerInfo.get(CharacterData.class).getCurrentClass().toString() : null;
     }
 

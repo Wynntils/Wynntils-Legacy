@@ -65,7 +65,7 @@ public class ClientEvents {
     public void onScreenDraw(GuiScreenEvent.DrawScreenEvent.Post e) {
         if (!(e.getGui() instanceof GuiConnecting)) return;
 
-        e.getGui().drawCenteredString(Minecraft.getMinecraft().fontRenderer, statusMsg, e.getGui().width / 2, e.getGui().height / 2 - 20, 16777215);
+        e.getGui().drawCenteredString(McIf.mc().fontRenderer, statusMsg, e.getGui().width / 2, e.getGui().height / 2 - 20, 16777215);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -223,7 +223,7 @@ public class ClientEvents {
         if (e.phase != TickEvent.Phase.END) return;
 
         ScreenRenderer.refresh();
-        if (!Reference.onServer || Minecraft.getMinecraft().player == null) return;
+        if (!Reference.onServer || McIf.mc().player == null) return;
 
         FrameworkManager.triggerHudTick(e);
         FrameworkManager.triggerKeyPress();
@@ -246,8 +246,8 @@ public class ClientEvents {
     public void checkSpellCast(TickEvent.ClientTickEvent e) {
         if (!Reference.onWorld) return;
 
-        int remainingHighlightTicks = ReflectionFields.GuiIngame_remainingHighlightTicks.getValue(Minecraft.getMinecraft().ingameGUI);
-        ItemStack highlightingItemStack = ReflectionFields.GuiIngame_highlightingItemStack.getValue(Minecraft.getMinecraft().ingameGUI);
+        int remainingHighlightTicks = ReflectionFields.GuiIngame_remainingHighlightTicks.getValue(McIf.mc().ingameGUI);
+        ItemStack highlightingItemStack = ReflectionFields.GuiIngame_highlightingItemStack.getValue(McIf.mc().ingameGUI);
 
         if (remainingHighlightTicks == 0 || highlightingItemStack.isEmpty()) {
             heldItem = "";

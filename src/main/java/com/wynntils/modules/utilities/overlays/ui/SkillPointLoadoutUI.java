@@ -117,14 +117,14 @@ public class SkillPointLoadoutUI extends FakeGuiContainer {
         if (mouseButton == 1) { // right click <-> delete
             List<String> lore = ItemUtils.getLore(slotIn.getStack());
             if (lore.get(lore.size() - 1).contains("confirm")) { // confirm deletion
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
+                McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
 
                 removeLoadout(name);
                 this.initGui();
                 return;
             }
 
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_LAND, 1f));
+            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_LAND, 1f));
             lore.set(lore.size() -1, TextFormatting.DARK_RED + "> Right-click to confirm deletion");
             ItemUtils.replaceLore(slotIn.getStack(), lore);
         }

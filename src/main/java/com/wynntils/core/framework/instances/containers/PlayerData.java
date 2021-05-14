@@ -4,6 +4,7 @@
 
 package com.wynntils.core.framework.instances.containers;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -13,7 +14,7 @@ public class PlayerData {
     public PlayerData() { }
 
     public Minecraft getMinecraft() {
-        return Minecraft.getMinecraft();
+        return McIf.mc();
     }
 
     public EntityPlayerSP getPlayer() {

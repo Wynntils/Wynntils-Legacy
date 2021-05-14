@@ -106,7 +106,7 @@ public class ToastOverlay extends Overlay {
 
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
-        if (Minecraft.getMinecraft().currentScreen != null) return;  // HeyZeer0: This will avoid toasts being processed when the user can't view them
+        if (McIf.mc().currentScreen != null) return;  // HeyZeer0: This will avoid toasts being processed when the user can't view them
 
         if (OverlayConfig.ToastsSettings.INSTANCE.enableToast) {
             // Flip coordinates:

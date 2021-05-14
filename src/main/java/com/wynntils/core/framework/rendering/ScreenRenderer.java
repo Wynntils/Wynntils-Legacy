@@ -4,6 +4,7 @@
 
 package com.wynntils.core.framework.rendering;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Texture;
 import com.wynntils.core.utils.StringUtils;
@@ -55,7 +56,7 @@ public class ScreenRenderer {
      * except {@link com.wynntils.core.events.ClientEvents#onTick(TickEvent.ClientTickEvent)} !
      */
     public static void refresh() {
-        mc = Minecraft.getMinecraft();
+        mc = McIf.mc();
         screen = new ScaledResolution(mc);
         if (fontRenderer == null) {
             fontRenderer = new SmartFontRenderer();
@@ -63,7 +64,7 @@ public class ScreenRenderer {
         }
         fontRenderer.setUnicodeFlag(CoreDBConfig.INSTANCE.useUnicode);
         if (itemRenderer == null)
-            itemRenderer = Minecraft.getMinecraft().getRenderItem();
+            itemRenderer = McIf.mc().getRenderItem();
     }
 
     /** void beginGL

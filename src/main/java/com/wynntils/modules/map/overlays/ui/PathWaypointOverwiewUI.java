@@ -94,13 +94,13 @@ public class PathWaypointOverwiewUI extends GuiScreen {
         } else if (b == exitBtn) {
             Utils.displayGuiScreen(new MainWorldMapUI());
         } else if (b.id % 10 == 3) {
-            Minecraft.getMinecraft().displayGuiScreen(new PathWaypointCreationUI(paths.get(b.id / 10 + page * pageHeight)));
+            McIf.mc().displayGuiScreen(new PathWaypointCreationUI(paths.get(b.id / 10 + page * pageHeight)));
         } else if (b.id %10 == 5) {
             MapConfig.Waypoints.INSTANCE.pathWaypoints.remove(paths.get(b.id / 10 + page * pageHeight));
             MapConfig.Waypoints.INSTANCE.saveSettings(MapModule.getModule());
-            Minecraft.getMinecraft().displayGuiScreen(new PathWaypointOverwiewUI());
+            McIf.mc().displayGuiScreen(new PathWaypointOverwiewUI());
         } else if (b == newBtn) {
-            Minecraft.getMinecraft().displayGuiScreen(new PathWaypointCreationUI());
+            McIf.mc().displayGuiScreen(new PathWaypointCreationUI());
         }
     }
 

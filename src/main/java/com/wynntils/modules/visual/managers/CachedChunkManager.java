@@ -131,7 +131,7 @@ public class CachedChunkManager {
      * This method is thread safe
      */
     private static void startChunkLoader() {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = McIf.mc();
         while (Reference.onWorld && VisualConfig.CachedChunks.INSTANCE.enabled) {
             // Sleep the thread for 1 second, we don't care about precision for this
             try {

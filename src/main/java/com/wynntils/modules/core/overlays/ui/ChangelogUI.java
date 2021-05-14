@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.core.overlays.ui;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -75,7 +76,7 @@ public class ChangelogUI extends GuiScreen {
      * @param forceLatest {@link WebManager#getChangelog(boolean, boolean)}'s second argument (Latest or current changelog?)
      */
     public static void loadChangelogAndShow(GuiScreen previousGui, boolean major, boolean forceLatest) {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = McIf.mc();
 
         GuiScreen loadingScreen = new ChangelogUI(previousGui, Collections.singletonList("Loading..."), major);
         mc.displayGuiScreen(loadingScreen);
@@ -129,7 +130,7 @@ public class ChangelogUI extends GuiScreen {
 
         float scrollPositionOffset = scrollbarSize == 118 ? 0 : (((changelogContent.size() / 15.0f) * 159) * scrollPercent);
         for (String changelogLine : changelogContent) {
-            renderer.drawString(changelogLine.replace("%user%", Minecraft.getMinecraft().getSession().getUsername()), textX, baseY - scrollPositionOffset, CommonColors.BROWN, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            renderer.drawString(changelogLine.replace("%user%", McIf.mc().getSession().getUsername()), textX, baseY - scrollPositionOffset, CommonColors.BROWN, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
             baseY += 10;
         }
@@ -166,8 +167,8 @@ public class ChangelogUI extends GuiScreen {
     @Override
     protected void keyTyped(char charType, int keyCode) throws IOException {
         if (keyCode == 1) {  // ESC
-            Minecraft.getMinecraft().displayGuiScreen(previousGui);
-            if (Minecraft.getMinecraft().currentScreen == null) mc.setIngameFocus();
+            McIf.mc().displayGuiScreen(previousGui);
+            if (McIf.mc().currentScreen == null) mc.setIngameFocus();
         }
     }
 

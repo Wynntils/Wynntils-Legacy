@@ -4,6 +4,7 @@
 
 package com.wynntils.core.utils;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import net.minecraft.client.Minecraft;
@@ -61,7 +62,7 @@ public class ServerUtils {
      * @param unloadServerPack if false, disconnect without refreshing resources by unloading the server resource pack
      */
     public static void disconnect(boolean switchGui, boolean unloadServerPack) {
-        Minecraft mc = Minecraft.getMinecraft();
+        Minecraft mc = McIf.mc();
 
         WorldClient world = mc.world;
         if (world == null) return;
@@ -94,7 +95,7 @@ public class ServerUtils {
 
     private static class FakeResourcePackRepositoryHolder {
         // Will only be created by classloader when used
-        static final ResourcePackRepository instance = new ResourcePackRepository(Minecraft.getMinecraft().getResourcePackRepository().getDirResourcepacks(), null, null, null, Minecraft.getMinecraft().gameSettings) {
+        static final ResourcePackRepository instance = new ResourcePackRepository(McIf.mc().getResourcePackRepository().getDirResourcepacks(), null, null, null, McIf.mc().gameSettings) {
             @Override
             public void clearResourcePack() {
                 // Don't
@@ -103,11 +104,11 @@ public class ServerUtils {
     }
 
     public static synchronized void loadWorldWithoutUnloadingServerResourcePack(WorldClient world, String loadingMessage) {
-        ResourcePackRepository original = Minecraft.getMinecraft().getResourcePackRepository();
+        ResourcePackRepository original = McIf.mc().getResourcePackRepository();
 
-        ReflectionFields.Minecraft_resourcePackRepository.setValue(Minecraft.getMinecraft(), FakeResourcePackRepositoryHolder.instance);
-        Minecraft.getMinecraft().loadWorld(world, loadingMessage);
-        ReflectionFields.Minecraft_resourcePackRepository.setValue(Minecraft.getMinecraft(), original);
+        ReflectionFields.Minecraft_resourcePackRepository.setValue(McIf.mc(), FakeResourcePackRepositoryHolder.instance);
+        McIf.mc().loadWorld(world, loadingMessage);
+        ReflectionFields.Minecraft_resourcePackRepository.setValue(McIf.mc(), original);
     }
 
     public static ServerData getWynncraftServerData(boolean addNew) {

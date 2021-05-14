@@ -266,7 +266,7 @@ public class WaypointOverviewUI extends GuiScreen {
                 onWaypointChange();
             }
         } else if (b.id % 10 == 3) {
-            Minecraft.getMinecraft().displayGuiScreen(new WaypointCreationMenu(getWaypoints().get(b.id / 10 + page * pageHeight), this));
+            McIf.mc().displayGuiScreen(new WaypointCreationMenu(getWaypoints().get(b.id / 10 + page * pageHeight), this));
         } else if (b.id % 10 == 5) {
             MapConfig.Waypoints.INSTANCE.waypoints.remove(getWaypoints().get(b.id / 10 + page * pageHeight));
             onWaypointChange();

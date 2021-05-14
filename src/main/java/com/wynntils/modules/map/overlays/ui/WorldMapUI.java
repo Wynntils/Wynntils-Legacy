@@ -82,11 +82,11 @@ public class WorldMapUI extends GuiMovementScreen {
     protected float outsideTextOpacity = 0f;
 
     protected WorldMapUI() {
-        this((float) Minecraft.getMinecraft().player.posX, (float) Minecraft.getMinecraft().player.posZ);
+        this((float) McIf.mc().player.posX, (float) McIf.mc().player.posZ);
     }
 
     protected WorldMapUI(float startX, float startZ) {
-        mc = Minecraft.getMinecraft();
+        mc = McIf.mc();
 
         // HeyZeer0: Handles the territories
         for (TerritoryProfile territory : WebManager.getTerritories().values()) {
@@ -105,7 +105,7 @@ public class WorldMapUI extends GuiMovementScreen {
         this.animationEnd = System.currentTimeMillis() + MapConfig.WorldMap.INSTANCE.animationLength;
 
         // Opening SFX
-        Minecraft.getMinecraft().getSoundHandler().playSound(
+        McIf.mc().getSoundHandler().playSound(
                 PositionedSoundRecord.getMasterRecord(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 1f)
         );
     }

@@ -54,21 +54,21 @@ public class MainWorldMapUI extends WorldMapUI {
             DARK_GREEN + "[>] Create a new Waypoint",
             GRAY + "Click here to create",
             GRAY + "a new waypoint."
-        ), (v) -> true, (i, btn) -> Minecraft.getMinecraft().displayGuiScreen(new WaypointCreationMenu(null)));
+        ), (v) -> true, (i, btn) -> McIf.mc().displayGuiScreen(new WaypointCreationMenu(null)));
 
         addButton(MapButtonType.PENCIL, 0, Arrays.asList(
             GOLD + "[>] Manage Paths",
             GRAY + "List, Delete or Create",
             GRAY + "drawed lines that help you",
             GRAY + "to navigate around the world!"
-        ), (v) -> true, (i, btn) -> Minecraft.getMinecraft().displayGuiScreen(new PathWaypointOverwiewUI()));
+        ), (v) -> true, (i, btn) -> McIf.mc().displayGuiScreen(new PathWaypointOverwiewUI()));
 
         addButton(MapButtonType.PIN, 1, Arrays.asList(
                 RED + "[>] Manage Waypoints",
                 GRAY + "List, Delete or Create",
                 GRAY + "all your preview set",
                 GRAY + "waypoints!"
-        ), (v) -> true, (i, btn) -> Minecraft.getMinecraft().displayGuiScreen(new WaypointOverviewUI()));
+        ), (v) -> true, (i, btn) -> McIf.mc().displayGuiScreen(new WaypointOverviewUI()));
 
         addButton(MapButtonType.SEARCH, 2, Arrays.asList(
                 LIGHT_PURPLE + "[>] Search",
@@ -79,7 +79,7 @@ public class MainWorldMapUI extends WorldMapUI {
                 AQUA + "[>] Configure Markers",
                 GRAY + "Enable or disable each",
                 GRAY + "map marker available."
-        ), (v) -> true, (i, btn) -> Minecraft.getMinecraft().displayGuiScreen(new WorldMapSettingsUI()));
+        ), (v) -> true, (i, btn) -> McIf.mc().displayGuiScreen(new WorldMapSettingsUI()));
 
         addButton(MapButtonType.SHARE, 4, Arrays.asList(
                 BLUE + "[>] Share Location",
@@ -138,7 +138,7 @@ public class MainWorldMapUI extends WorldMapUI {
 
         // HeyZeer0: This close the map if the user was pressing the map key and after a moment dropped it
         if (holdingMapKey && !isHoldingMapKey()) {
-            Minecraft.getMinecraft().displayGuiScreen(null);
+            McIf.mc().displayGuiScreen(null);
             return;
         }
 
@@ -194,7 +194,7 @@ public class MainWorldMapUI extends WorldMapUI {
                 long currentTime = Minecraft.getSystemTime();
                 if (currentTime - lastClickTime < doubleClickTime) {
                     Location location = CompassManager.getCompassLocation();
-                    Minecraft.getMinecraft().displayGuiScreen(new WaypointCreationMenu(null, (int) location.getX(), (int) location.getZ()));
+                    McIf.mc().displayGuiScreen(new WaypointCreationMenu(null, (int) location.getX(), (int) location.getZ()));
                 } else {
                     lastClickTime = currentTime;
                 }
@@ -203,7 +203,7 @@ public class MainWorldMapUI extends WorldMapUI {
 
             forEachIcon(c -> {
                 if (c.mouseOver(mouseX, mouseY)) {
-                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1f));
+                    McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1f));
 
                     CompassManager.setCompassLocation(new Location(c.getInfo().getPosX(), 0, c.getInfo().getPosZ()));
                     resetCompassMapIcon();
@@ -215,7 +215,7 @@ public class MainWorldMapUI extends WorldMapUI {
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
         if (!holdingMapKey && keyCode == MapModule.getModule().getMapKey().getKeyBinding().getKeyCode()) {
-            Minecraft.getMinecraft().displayGuiScreen(null);
+            McIf.mc().displayGuiScreen(null);
             return;
         }
 
@@ -233,8 +233,8 @@ public class MainWorldMapUI extends WorldMapUI {
             z = (int) location.getZ();
         } else {
             type = "location";
-            x = (int) Minecraft.getMinecraft().player.posX;
-            z = (int) Minecraft.getMinecraft().player.posZ;
+            x = (int) McIf.mc().player.posX;
+            z = (int) McIf.mc().player.posZ;
         }
 
         if (leftClick)

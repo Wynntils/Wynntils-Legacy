@@ -4,6 +4,7 @@
 
 package com.wynntils.core.framework.settings.ui;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.MouseButton;
@@ -358,7 +359,7 @@ public class SettingsUI extends UI {
             hovering = mouseX >= position.getDrawingX() && mouseX <= position.getDrawingX()+width && mouseY >= position.getDrawingY() && mouseY <= position.getDrawingY()+height;
             if (visible && active && hovering) {
                 if (clickSound != null)
-                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(clickSound, 1f));
+                    McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(clickSound, 1f));
                 setCurrentSettingsPath(path);
             }
         }

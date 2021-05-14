@@ -311,7 +311,7 @@ public class ItemIdentificationOverlay implements Listener {
         if (item.getLore() != null && !item.getLore().isEmpty()) {
             if (wynntils.hasKey("purchaseInfo")) newLore.add(" ");
 
-            newLore.addAll(Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(DARK_GRAY + item.getLore(), 150));
+            newLore.addAll(McIf.mc().fontRenderer.listFormattedStringToWidth(DARK_GRAY + item.getLore(), 150));
         }
 
         // Special displayname

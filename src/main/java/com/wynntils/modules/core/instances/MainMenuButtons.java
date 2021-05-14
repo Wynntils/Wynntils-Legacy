@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.core.instances;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ServerUtils;
@@ -32,7 +33,7 @@ public class MainMenuButtons {
     private static final int WYNNCRAFT_BUTTON_ID = 3790627;
 
     private static WynncraftButton lastButton = null;
-    
+
     private static boolean alreadyLoaded = false;
 
     public static void addButtons(GuiMainMenu to, List<GuiButton> buttonList, boolean resize) {
@@ -50,7 +51,7 @@ public class MainMenuButtons {
 
             // little pling when finished loading
             if (!alreadyLoaded) {
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1f));
+                McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1f));
                 alreadyLoaded = true;
             }
             return;
@@ -141,7 +142,7 @@ public class MainMenuButtons {
         }
 
         private static void doAction() {
-            clickedWynncraftButton(Minecraft.getMinecraft(), getWynncraftServerData(Minecraft.getMinecraft()), null);
+            clickedWynncraftButton(McIf.mc(), getWynncraftServerData(Minecraft.getMinecraft()), null);
         }
     }
 

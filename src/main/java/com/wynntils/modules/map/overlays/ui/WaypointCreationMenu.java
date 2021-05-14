@@ -57,8 +57,8 @@ public class WaypointCreationMenu extends UI {
     public WaypointCreationMenu(GuiScreen previousGui) {
         this.previousGui = previousGui;
 
-        initialX = Minecraft.getMinecraft().player.getPosition().getX();
-        initialZ = Minecraft.getMinecraft().player.getPosition().getZ();
+        initialX = McIf.mc().player.getPosition().getX();
+        initialZ = McIf.mc().player.getPosition().getZ();
     }
 
     // Create a waypoint at a position other than the current player's position
@@ -100,7 +100,7 @@ public class WaypointCreationMenu extends UI {
 
         xCoordField.setText(Integer.toString(initialX));
         zCoordField.setText(Integer.toString(initialZ));
-        yCoordField.setText(Integer.toString(Minecraft.getMinecraft().player.getPosition().getY()));
+        yCoordField.setText(Integer.toString(McIf.mc().player.getPosition().getY()));
 
         nameFieldLabel = new GuiLabel(mc.fontRenderer, 0, this.width/2 - 80, this.height/2 - 81, 40, 10, 0xFFFFFF);
         nameFieldLabel.addLine("Waypoint Name:");
