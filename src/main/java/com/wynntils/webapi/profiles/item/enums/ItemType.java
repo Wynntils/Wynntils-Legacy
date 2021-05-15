@@ -25,8 +25,8 @@ public enum ItemType {
     BOOTS(Items.LEATHER_BOOTS, 0, null, 69+17*3, 0),
 
     RING(Items.FLINT_AND_STEEL, 2, ItemUtils.UNBREAKABLE, 69+17*0, 17),
-    NECKLACE(Items.FLINT_AND_STEEL, 19, ItemUtils.UNBREAKABLE, 69+17*1, 17),
-    BRACELET(Items.FLINT_AND_STEEL, 36, ItemUtils.UNBREAKABLE, 69+17*2, 17);
+    NECKLACE(Items.FLINT_AND_STEEL, 19, ItemUtils.UNBREAKABLE, 69+17*2, 17),
+    BRACELET(Items.FLINT_AND_STEEL, 36, ItemUtils.UNBREAKABLE, 69+17*1, 17);
 
     Item defaultItem;
     int meta;

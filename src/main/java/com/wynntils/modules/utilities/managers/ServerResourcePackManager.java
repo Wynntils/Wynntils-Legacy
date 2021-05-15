@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.managers;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
@@ -24,8 +25,8 @@ public class ServerResourcePackManager {
     public static void applyOnServerJoin() {
         if (!Reference.onServer) return;
 
-        if (Minecraft.getMinecraft().getResourcePackRepository().getServerResourcePack() == null && UtilitiesConfig.INSTANCE.autoResource && !UtilitiesConfig.INSTANCE.lastServerResourcePack.isEmpty()) {
-            if (Minecraft.getMinecraft().getCurrentServerData().getResourceMode() != ServerData.ServerResourceMode.ENABLED) {
+        if (McIf.mc().getResourcePackRepository().getServerResourcePack() == null && UtilitiesConfig.INSTANCE.autoResource && !UtilitiesConfig.INSTANCE.lastServerResourcePack.isEmpty()) {
+            if (McIf.mc().getCurrentServerData().getResourceMode() != ServerData.ServerResourceMode.ENABLED) {
                 Reference.LOGGER.warn("Did not auto apply Wynncraft server resource pack because resource packs have not been enabled");
                 return;
             }
@@ -57,10 +58,10 @@ public class ServerResourcePackManager {
             UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
         }
 
-        IResourcePack current = Minecraft.getMinecraft().getResourcePackRepository().getServerResourcePack();
+        IResourcePack current = McIf.mc().getResourcePackRepository().getServerResourcePack();
         if (current != null && current.getPackName().equals(fileName)) {
             boolean hashMatches = false;
-            try (InputStream is = new FileInputStream(new File(new File(Minecraft.getMinecraft().gameDir, "server-resource-packs"), fileName))) {
+            try (InputStream is = new FileInputStream(new File(new File(McIf.mc().gameDir, "server-resource-packs"), fileName))) {
                 hashMatches = DigestUtils.sha1Hex(is).equalsIgnoreCase(hash);
             } catch (IOException err) {
                 err.printStackTrace();
@@ -75,7 +76,7 @@ public class ServerResourcePackManager {
     public static boolean isLoaded() {
         if (UtilitiesConfig.INSTANCE.lastServerResourcePack.isEmpty()) return false;
 
-        IResourcePack current = Minecraft.getMinecraft().getResourcePackRepository().getServerResourcePack();
+        IResourcePack current = McIf.mc().getResourcePackRepository().getServerResourcePack();
         if (current == null) return false;
 
         String resourcePack = UtilitiesConfig.INSTANCE.lastServerResourcePack;
@@ -83,7 +84,7 @@ public class ServerResourcePackManager {
         String fileName = DigestUtils.sha1Hex(resourcePack);
         if (!current.getPackName().equals(fileName)) return false;
 
-        try (InputStream is = new FileInputStream(new File(new File(Minecraft.getMinecraft().gameDir, "server-resource-packs"), fileName))) {
+        try (InputStream is = new FileInputStream(new File(new File(McIf.mc().gameDir, "server-resource-packs"), fileName))) {
             return DigestUtils.sha1Hex(is).equalsIgnoreCase(hash);
         } catch (IOException err) {
             err.printStackTrace();
@@ -95,7 +96,7 @@ public class ServerResourcePackManager {
     public static void loadServerResourcePack() {
         // Does not download if not found / invalid
         if (UtilitiesConfig.INSTANCE.lastServerResourcePack.isEmpty()) return;
-        IResourcePack current = Minecraft.getMinecraft().getResourcePackRepository().getServerResourcePack();
+        IResourcePack current = McIf.mc().getResourcePackRepository().getServerResourcePack();
 
         String resourcePack = UtilitiesConfig.INSTANCE.lastServerResourcePack;
         String hash = UtilitiesConfig.INSTANCE.lastServerResourcePackHash;
@@ -105,7 +106,7 @@ public class ServerResourcePackManager {
             return; // Already applied
         }
 
-        File f = new File(new File(Minecraft.getMinecraft().gameDir, "server-resource-packs"), fileName);
+        File f = new File(new File(McIf.mc().gameDir, "server-resource-packs"), fileName);
 
         boolean valid = false;
         try (InputStream is = new FileInputStream(f)) {
@@ -116,7 +117,7 @@ public class ServerResourcePackManager {
 
         if (!valid) return;
 
-        Minecraft.getMinecraft().getResourcePackRepository().setServerResourcePack(f);
+        McIf.mc().getResourcePackRepository().setServerResourcePack(f);
     }
 
     public static void downloadServerResourcePack() {
@@ -124,7 +125,7 @@ public class ServerResourcePackManager {
 
         if (UtilitiesConfig.INSTANCE.lastServerResourcePack.isEmpty()) return;
         try {
-            Minecraft.getMinecraft().getResourcePackRepository().downloadResourcePack(UtilitiesConfig.INSTANCE.lastServerResourcePack, UtilitiesConfig.INSTANCE.lastServerResourcePackHash).get();
+            McIf.mc().getResourcePackRepository().downloadResourcePack(UtilitiesConfig.INSTANCE.lastServerResourcePack, UtilitiesConfig.INSTANCE.lastServerResourcePackHash).get();
         } catch (InterruptedException ignored) {
         } catch (ExecutionException e) {
             Reference.LOGGER.error("Could not load server resource pack");

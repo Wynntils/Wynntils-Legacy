@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.managers;
 
+import com.wynntils.McIf;
 import com.wynntils.modules.map.instances.GuildResourceContainer;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.FrameType;
@@ -26,7 +27,7 @@ public class GuildResourceManager {
         for (Advancement.Builder advancement : info.getAdvancementsToAdd().values()) {
             Advancement built = advancement.build(null);
 
-            String territoryName = built.getDisplayText().getUnformattedText().replace("[", "")
+            String territoryName = McIf.getUnformattedText(built.getDisplayText()).replace("[", "")
                     .replace("]", "");
             // the territory name has a shit ton of spaces at the end to make the advancement box bigger
             while (territoryName.endsWith(" ")) {
@@ -42,7 +43,7 @@ public class GuildResourceManager {
             // description is literaly a raw string with \n so we have to split
             // the text component also didn't parse the colors corrently so we can't use the unformatted text
             // no clue why although.
-            String description = built.getDisplay().getDescription().getUnformattedText();
+            String description = McIf.getUnformattedText(built.getDisplay().getDescription());
             String[] colored = description.split("\n");
             String[] raw = StringUtils.stripControlCodes(description).split("\n");
 

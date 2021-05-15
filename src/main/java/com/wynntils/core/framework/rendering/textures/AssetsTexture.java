@@ -4,6 +4,7 @@
 
 package com.wynntils.core.framework.rendering.textures;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.ActionResult;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
@@ -27,8 +28,8 @@ public class AssetsTexture extends Texture {
         if (loaded) return ActionResult.ISSUE;
 
         try {
-            Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);
-            BufferedImage img = ImageIO.read(Minecraft.getMinecraft().getResourceManager().getResource(resourceLocation).getInputStream());
+            McIf.mc().getTextureManager().bindTexture(resourceLocation);
+            BufferedImage img = ImageIO.read(McIf.mc().getResourceManager().getResource(resourceLocation).getInputStream());
             width = img.getWidth();
             height = img.getHeight();
             loaded = true;
@@ -45,7 +46,7 @@ public class AssetsTexture extends Texture {
     public ActionResult unload() {
         if (!loaded) return ActionResult.ISSUE;
 
-        Minecraft.getMinecraft().getTextureManager().deleteTexture(resourceLocation);
+        McIf.mc().getTextureManager().deleteTexture(resourceLocation);
         loaded = false;
         return ActionResult.SUCCESS;
     }
@@ -54,7 +55,7 @@ public class AssetsTexture extends Texture {
     public ActionResult bind() {
         if (!loaded) return ActionResult.ERROR;
 
-        Minecraft.getMinecraft().getTextureManager().bindTexture(resourceLocation);
+        McIf.mc().getTextureManager().bindTexture(resourceLocation);
         return ActionResult.SUCCESS;
     }
 

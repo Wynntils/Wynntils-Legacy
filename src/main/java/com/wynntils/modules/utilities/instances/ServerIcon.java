@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.instances;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
@@ -49,7 +50,7 @@ public class ServerIcon {
         this.allowStale = allowStale;
 
         serverIcon = new ResourceLocation("servers/" + server.serverIP + "/icon");
-        icon = (DynamicTexture) Minecraft.getMinecraft().getTextureManager().getTexture(serverIcon);
+        icon = (DynamicTexture) McIf.mc().getTextureManager().getTexture(serverIcon);
 
         synchronized (ServerIcon.class) {
             instances.add(new WeakReference<>(this));
@@ -140,7 +141,7 @@ public class ServerIcon {
         lastIcon = currentIcon;
 
         if (currentIcon == null) {
-            Minecraft.getMinecraft().getTextureManager().deleteTexture(serverIcon);
+            McIf.mc().getTextureManager().deleteTexture(serverIcon);
             icon = null;
             onDone();
             return null;
@@ -158,7 +159,7 @@ public class ServerIcon {
 
         if (icon == null) {
             icon = new DynamicTexture(bufferedimage.getWidth(), bufferedimage.getHeight());
-            Minecraft.getMinecraft().getTextureManager().loadTexture(serverIcon, icon);
+            McIf.mc().getTextureManager().loadTexture(serverIcon, icon);
         }
 
         bufferedimage.getRGB(0, 0, bufferedimage.getWidth(), bufferedimage.getHeight(), icon.getTextureData(), 0, bufferedimage.getWidth());

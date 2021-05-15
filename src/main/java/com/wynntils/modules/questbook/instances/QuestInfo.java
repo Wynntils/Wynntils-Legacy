@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.questbook.instances;
 
+import com.wynntils.McIf;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Location;
@@ -95,14 +96,14 @@ public class QuestInfo {
 
         // friendly name
         friendlyName = this.name.replace("Mini-Quest - ", "");
-        if (Minecraft.getMinecraft().fontRenderer.getStringWidth(friendlyName) > 120) friendlyName += "...";
-        while (Minecraft.getMinecraft().fontRenderer.getStringWidth(friendlyName) > 120) {
+        if (McIf.mc().fontRenderer.getStringWidth(friendlyName) > 120) friendlyName += "...";
+        while (McIf.mc().fontRenderer.getStringWidth(friendlyName) > 120) {
             friendlyName = friendlyName.substring(0, friendlyName.length() - 4).trim() + "...";
         }
 
         // location
         Matcher m = coordinatePattern.matcher(description);
-        if(m.find()) {
+        if (m.find()) {
             targetLocation = new Location(0, 0, 0);
 
             if(m.group(1) != null) targetLocation.setX(Integer.parseInt(m.group(1)));

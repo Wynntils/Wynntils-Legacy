@@ -242,6 +242,8 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Contribute Gathering Spots", description = "Should the mod send data about your collected gathering spots?\n\n§8Wynntils uses this data in order to place gathering spots on the map. Allowing the mod to send data is completely optional, and your contributions are always appreciated. Disabling this will still allow you to see gathering spots.", order = 1)
         public boolean allowGatheringSpot = true;
 
+        @Setting(displayName = "Enable Location Detection (Experimental)", description = "Should NPC/service detection be activated?", order = 8)
+        public boolean enableLocationDetection = false;
     }
 
     public enum MapFormat {

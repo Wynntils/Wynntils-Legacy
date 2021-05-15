@@ -4,7 +4,7 @@
 
 package com.wynntils.core.framework.instances.data;
 
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.core.events.custom.WynnTerritoryChangeEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.instances.containers.PlayerData;
@@ -27,7 +27,7 @@ public class LocationData extends PlayerData {
      * @param location the target location
      */
     public void setLocation(String location) {
-        ModCore.mc().addScheduledTask(() -> {
+        McIf.mc().addScheduledTask(() -> {
             FrameworkManager.getEventBus().post(new WynnTerritoryChangeEvent(this.location, location));
         });
 

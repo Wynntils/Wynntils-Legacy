@@ -4,6 +4,7 @@
 
 package com.wynntils.core.framework.instances;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.entities.interfaces.EntitySpawnCodition;
 import com.wynntils.core.framework.enums.Priority;
@@ -137,10 +138,6 @@ public abstract class Module {
      */
     public void registerCommand(ICommand command) {
         ClientCommandHandler.instance.registerCommand(command);
-    }
-
-    public Minecraft getMinecraft() {
-        return Minecraft.getMinecraft();
     }
 
     public Logger getLogger() {

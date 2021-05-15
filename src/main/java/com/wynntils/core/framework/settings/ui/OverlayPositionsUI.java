@@ -4,6 +4,7 @@
 
 package com.wynntils.core.framework.settings.ui;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.MouseButton;
 import com.wynntils.core.framework.instances.containers.ModuleContainer;
@@ -109,8 +110,8 @@ public class OverlayPositionsUI extends UI {
 
     @Override
     public void onClose() {
-        mc.currentScreen = null;
-        mc.displayGuiScreen(parentScreen);
+        McIf.mc().currentScreen = null;
+        McIf.mc().displayGuiScreen(parentScreen);
     }
 
     @Override

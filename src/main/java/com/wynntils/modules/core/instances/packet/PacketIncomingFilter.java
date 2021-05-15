@@ -4,7 +4,7 @@
 
 package com.wynntils.modules.core.instances.packet;
 
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.core.events.custom.PacketEvent;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -28,7 +28,7 @@ public class PacketIncomingFilter extends ChannelInboundHandlerAdapter {
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         if (msg == null) return;
 
-        PacketEvent.Incoming<? extends Packet<?>> event = new PacketEvent.Incoming<>((Packet<?>) msg, ModCore.mc().getConnection(), this, ctx);
+        PacketEvent.Incoming<? extends Packet<?>> event = new PacketEvent.Incoming<>((Packet<?>) msg, McIf.mc().getConnection(), this, ctx);
         boolean cancel = MinecraftForge.EVENT_BUS.post(event);
         if (cancel) return;
 

@@ -4,7 +4,7 @@
 
 package com.wynntils.modules.utilities.overlays.hud;
 
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.overlays.Overlay;
@@ -47,13 +47,13 @@ public class ExpBarOverlay extends Overlay {
 
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
-        if (!(visible = (get(CharacterData.class).getExperiencePercentage() != -1 && !Reference.onLobby && mc.player.getAir() == 300))) return;
+        if (!(visible = (get(CharacterData.class).getExperiencePercentage() != -1 && !Reference.onLobby && McIf.player().getAir() == 300))) return;
         if (OverlayConfig.Exp.INSTANCE.animated > 0.0f && OverlayConfig.Exp.INSTANCE.animated < 10.0f)
             exp -= (OverlayConfig.Exp.INSTANCE.animated * 0.1f) * (exp - get(CharacterData.class).getExperiencePercentage());
         else
             exp = get(CharacterData.class).getExperiencePercentage();
 
-        if (ModCore.mc().player.getHorseJumpPower() > 0) exp = ModCore.mc().player.getHorseJumpPower();
+        if (McIf.player().getHorseJumpPower() > 0) exp = McIf.player().getHorseJumpPower();
     }
 
     @Override

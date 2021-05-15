@@ -4,6 +4,7 @@
 
 package com.wynntils.core.framework.ui.elements;
 
+import com.wynntils.McIf;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiButtonImage;
@@ -70,7 +71,7 @@ public class GuiButtonImageBetter extends GuiButtonImage {
     }
 
     @Override
-    public void drawButton(Minecraft mc, int mouseX, int mouseY, float partialTicks) {
+    public void drawButton(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
         setColour(this.highlight && mouseX >= scaledStartX && mouseY >= scaledStartY && mouseX < scaledEndX && mouseY < scaledEndY, this.enabled);
 
         if (scaleFactor != 1f) {
@@ -79,7 +80,7 @@ public class GuiButtonImageBetter extends GuiButtonImage {
             GlStateManager.scale(scaleFactor, scaleFactor, 1);
             GlStateManager.translate(scaleFromX, scaleFromY, 0);
         }
-        super.drawButton(mc, mouseX, mouseY, partialTicks);
+        super.drawButton(minecraft, mouseX, mouseY, partialTicks);
         if (scaleFactor != 1f) {
             GlStateManager.popMatrix();
         }
@@ -90,10 +91,10 @@ public class GuiButtonImageBetter extends GuiButtonImage {
     public static void setColour(boolean hovering, boolean enabled) {
         if (hovering) {
             highlightFixHovering.enabled = enabled;
-            highlightFixHovering.drawButton(Minecraft.getMinecraft(), Integer.MIN_VALUE, Integer.MIN_VALUE, 0);
+            highlightFixHovering.drawButton(McIf.mc(), Integer.MIN_VALUE, Integer.MIN_VALUE, 0);
         } else {
             highlightFixNoHovering.enabled = enabled;
-            highlightFixNoHovering.drawButton(Minecraft.getMinecraft(), 0, 0, 0);
+            highlightFixNoHovering.drawButton(McIf.mc(), 0, 0, 0);
         }
     }
 }

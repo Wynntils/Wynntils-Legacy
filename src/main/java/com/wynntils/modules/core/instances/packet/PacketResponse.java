@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.core.instances.packet;
 
+import com.wynntils.McIf;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.managers.PingManager;
 import net.minecraft.client.Minecraft;
@@ -73,7 +74,7 @@ public class PacketResponse {
         if (skipping || !shouldSend()) return;
 
         Utils.runAsync(() -> {
-            NetHandlerPlayClient conn = Minecraft.getMinecraft().getConnection();
+            NetHandlerPlayClient conn = McIf.mc().getConnection();
             if (this.sender != null) {
                 this.sender.accept(conn, input);
             } else {

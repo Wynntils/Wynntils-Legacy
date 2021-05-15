@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.questbook.overlays.ui;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -105,13 +106,13 @@ public class QuestsPage extends QuestBookPage {
                     int animationTick = -1;
                     if (posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY && !showAnimation) {
                         if (lastTick == 0 && !animationCompleted) {
-                            lastTick = Minecraft.getSystemTime();
+                            lastTick = McIf.getSystemTime();
                         }
 
                         this.selected = i;
 
                         if (!animationCompleted) {
-                            animationTick = (int) (Minecraft.getSystemTime() - lastTick) / 2;
+                            animationTick = (int) (McIf.getSystemTime() - lastTick) / 2;
                             if (animationTick >= 133 && selected.getFriendlyName().equals(selected.getName())) {
                                 animationCompleted = true;
                                 animationTick = 133;
@@ -119,7 +120,7 @@ public class QuestsPage extends QuestBookPage {
                         } else {
                             if (!selected.getFriendlyName().equals(selected.getName())) {
                                 animationCompleted = false;
-                                lastTick = Minecraft.getSystemTime() - 133 * 2;
+                                lastTick = McIf.getSystemTime() - 133 * 2;
                             }
 
                             animationTick = 133;
@@ -255,7 +256,7 @@ public class QuestsPage extends QuestBookPage {
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        ScaledResolution res = new ScaledResolution(mc);
+        ScaledResolution res = new ScaledResolution(McIf.mc());
         int posX = ((res.getScaledWidth() / 2) - mouseX);
         int posY = ((res.getScaledHeight() / 2) - mouseY);
 
@@ -267,14 +268,14 @@ public class QuestsPage extends QuestBookPage {
 
                 if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(overQuest.getName())) {
                     QuestManager.setTrackedQuest(null);
-                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
+                    McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
                     return;
                 }
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
+                McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
                 QuestManager.setTrackedQuest(overQuest);
                 return;
             } else if (mouseButton == 1) { // right click
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
 
                 final String baseUrl = "https://wynncraft.gamepedia.com/";
 
@@ -312,17 +313,17 @@ public class QuestsPage extends QuestBookPage {
         checkForwardAndBackButtons(posX, posY);
 
         if (posX >= 71 && posX <= 87 && posY >= 84 && posY <= 100) { // Mini-Quest Switcher
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             showingMiniQuests = !showingMiniQuests;
             textField.setText("");
             updateSearch();
             return;
         } else if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) { // Update Data
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             QuestManager.updateAllAnalyses(true);
             return;
         } else if (-11 <= posX && posX <= -1 && 89 <= posY && posY <= 99 && (mouseButton == 0 || mouseButton == 1)) { // Change Sort Method
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             sort = SortMethod.values()[(sort.ordinal() + (mouseButton == 0 ? 1 : SortMethod.values().length - 1)) % SortMethod.values().length];
             updateSearch();
             return;
@@ -381,7 +382,7 @@ public class QuestsPage extends QuestBookPage {
                 "Sort by Level", // Replace with translation keys during l10n
                 "Lowest level quests first")),
         DISTANCE(Comparator.comparing(QuestInfo::getStatus).thenComparingLong(q -> {
-            EntityPlayerSP player = Minecraft.getMinecraft().player;
+            EntityPlayerSP player = McIf.player();
             if (player == null || !q.hasTargetLocation()) {
                 return 0;
             }

@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.managers;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.utils.objects.Location;
 import net.minecraft.client.Minecraft;
@@ -23,7 +24,7 @@ public class BeaconManager {
     private static final ResourceLocation beamResource = new ResourceLocation("textures/entity/beacon_beam.png");
 
     public static void drawBeam(Location loc, CustomColor color, float partialTicks) {
-        RenderManager renderManager = Minecraft.getMinecraft().getRenderManager();
+        RenderManager renderManager = McIf.mc().getRenderManager();
         if (renderManager.renderViewEntity == null) return;
 
         float alpha = 1f;
@@ -39,7 +40,7 @@ public class BeaconManager {
 
         alpha *= color.a;
 
-        double maxDistance = Minecraft.getMinecraft().gameSettings.renderDistanceChunks * 16d;
+        double maxDistance = McIf.mc().gameSettings.renderDistanceChunks * 16d;
         if (distance > maxDistance) {  // this will drag the beam to the visible area if outside of it
             // partial ticks aren't factored into player pos, so if we're going to use it for rendering, we need to recalculate to account for partial ticks
             Vec3d prevPosVec = new Vec3d(renderManager.renderViewEntity.prevPosX, renderManager.renderViewEntity.prevPosY, renderManager.renderViewEntity.prevPosZ);
@@ -55,11 +56,11 @@ public class BeaconManager {
     private static void drawBeam(double x, double y, double z, float alpha, CustomColor color) {
         pushAttrib();
         {
-            Minecraft.getMinecraft().renderEngine.bindTexture(beamResource);  // binds the texture
+            McIf.mc().renderEngine.bindTexture(beamResource);  // binds the texture
             glTexParameteri(3553, 10242, 10497);
 
             // beacon light animation
-            float time = Minecraft.getSystemTime() / 50F;
+            float time = McIf.getSystemTime() / 50F;
             float offset = -(-time * 0.2F - MathHelper.fastFloor(-time * 0.1F)) * 0.6F;
 
             // positions

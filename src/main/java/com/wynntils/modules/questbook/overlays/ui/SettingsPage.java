@@ -4,7 +4,7 @@
 
 package com.wynntils.modules.questbook.overlays.ui;
 
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.core.framework.settings.ui.SettingsUI;
 import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookPage;
@@ -20,7 +20,7 @@ public class SettingsPage extends QuestBookPage {
 
     @Override
     public void open(boolean showAnimation) {
-        ModCore.mc().displayGuiScreen(SettingsUI.getInstance(ModCore.mc().currentScreen));
+        McIf.mc().displayGuiScreen(SettingsUI.getInstance(McIf.mc().currentScreen));
     }
 
     @Override

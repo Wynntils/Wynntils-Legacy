@@ -4,7 +4,7 @@
 
 package com.wynntils.modules.chat.managers;
 
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.PowderManualChapter;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
@@ -19,7 +19,6 @@ import com.wynntils.modules.questbook.instances.DiscoveryInfo;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.utilities.configs.TranslationConfig;
 import com.wynntils.webapi.services.TranslationManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
@@ -129,11 +128,12 @@ public class ChatManager {
         }
 
         // popup sound
-        if (in.getUnformattedText().contains(" requires your ") && in.getUnformattedText().contains(" skill to be at least "))
-            ModCore.mc().player.playSound(popOffSound, 1f, 1f);
+        if (McIf.getUnformattedText(in).contains(" requires your ") && McIf.getUnformattedText(in).contains(" skill to be at least "))
+            McIf.player().playSound(popOffSound, 1f, 1f);
 
         // wynnic and gavellian translator
         if (StringUtils.hasWynnic(in.getUnformattedText()) || StringUtils.hasGavellian(in.getUnformattedText())) {
+
 
             Pair<ArrayList<ITextComponent>, ArrayList<ITextComponent>> result = translateWynnicMessage(in.createCopy(), original);
             ArrayList<ITextComponent> untranslatedComponents = result.a;
@@ -176,7 +176,7 @@ public class ChatManager {
                         break;
                     }
 
-                    for (Slot slot : ModCore.mc().player.inventoryContainer.inventorySlots) {
+                    for (Slot slot : McIf.player().inventoryContainer.inventorySlots) {
                         if (slot.getStack().getItem() == Items.ENCHANTED_BOOK) {
                             if (!translateWynnic) {
                                 translateWynnic = TextFormatting.getTextWithoutFormattingCodes(slot.getStack().getDisplayName()).equals("Ancient Wynnic Transcriber");
@@ -257,7 +257,7 @@ public class ChatManager {
         }
 
         // clickable party invites
-        if (ChatConfig.INSTANCE.clickablePartyInvites && inviteReg.matcher(in.getFormattedText()).find()) {
+        if (ChatConfig.INSTANCE.clickablePartyInvites && inviteReg.matcher(McIf.getFormattedText(in)).find()) {
             for (ITextComponent textComponent : in.getSiblings()) {
                 if (textComponent.getUnformattedComponentText().startsWith("/")) {
                     String command = textComponent.getUnformattedComponentText();
@@ -270,7 +270,7 @@ public class ChatManager {
         }
 
         // clickable trade messages
-        if (ChatConfig.INSTANCE.clickableTradeMessage && tradeReg.matcher(in.getUnformattedText()).find()) {
+        if (ChatConfig.INSTANCE.clickableTradeMessage && tradeReg.matcher(McIf.getUnformattedText(in)).find()) {
             for (ITextComponent textComponent : in.getSiblings()) {
                 if (textComponent.getUnformattedComponentText().startsWith("/")) {
                     String command = textComponent.getUnformattedComponentText();
@@ -283,7 +283,7 @@ public class ChatManager {
         }
 
         // clickable duel messages
-        if (ChatConfig.INSTANCE.clickableDuelMessage && duelReg.matcher(in.getUnformattedText()).find()) {
+        if (ChatConfig.INSTANCE.clickableDuelMessage && duelReg.matcher(McIf.getUnformattedText(in)).find()) {
             for (ITextComponent textComponent : in.getSiblings()) {
                 if (textComponent.getUnformattedComponentText().startsWith("/")) {
                     String command = textComponent.getUnformattedComponentText();
@@ -296,7 +296,7 @@ public class ChatManager {
         }
 
         // clickable coordinates
-        if (ChatConfig.INSTANCE.clickableCoordinates && coordinateReg.matcher(in.getUnformattedText()).find()) {
+        if (ChatConfig.INSTANCE.clickableCoordinates && coordinateReg.matcher(McIf.getUnformattedText(in)).find()) {
 
             ITextComponent temp = new TextComponentString("");
             for (ITextComponent texts : in) {
@@ -310,9 +310,9 @@ public class ChatManager {
 
                 // Most likely only needed during the Wynnter Fair for the message with how many more players are required to join.
                 // As far as i could find all other messages from the Wynnter Fair use text components properly.
-                if (m.start() > 0 && texts.getUnformattedText().charAt(m.start() - 1) == '§') continue;
+                if (m.start() > 0 && McIf.getUnformattedText(texts).charAt(m.start() - 1) == '§') continue;
 
-                String crdText = texts.getUnformattedText();
+                String crdText = McIf.getUnformattedText(texts);
                 Style style = texts.getStyle();
                 String command = "/compass ";
                 List<ITextComponent> crdMsg = new ArrayList<>();
@@ -345,7 +345,7 @@ public class ChatManager {
         }
 
         //powder manual
-        if (ChatConfig.INSTANCE.customPowderManual && in.getUnformattedText().equals("                         Powder Manual")) {
+        if (ChatConfig.INSTANCE.customPowderManual && McIf.getUnformattedText(in).equals("                         Powder Manual")) {
             List<ITextComponent> chapterSelect = new ArrayList<>();
 
             ITextComponent offset = new TextComponentString("\n               "); //to center chapter select
@@ -376,7 +376,7 @@ public class ChatManager {
     //returns a list of untranslated components and translated components
     private static Pair<ArrayList<ITextComponent>, ArrayList<ITextComponent>> translateWynnicMessage(ITextComponent in, ITextComponent original) {
         boolean capital = false;
-        boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find();
+        boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(McIf.getFormattedText(original)).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find();
         boolean foundStart = false;
         boolean foundEndTimestamp = !ChatConfig.INSTANCE.addTimestampsToChat;
         boolean previousTranslated = false;
@@ -385,7 +385,7 @@ public class ChatManager {
         ArrayList<ITextComponent> translatedComponents = new ArrayList<>();
         WynncraftLanguage language = WynncraftLanguage.NORMAL;
 
-        if (foundEndTimestamp && !in.getSiblings().get(ChatConfig.INSTANCE.addTimestampsToChat ? 3 : 0).getUnformattedText().contains("/") && !isGuildOrParty) {
+        if (foundEndTimestamp && !McIf.getUnformattedText(in.getSiblings().get(ChatConfig.INSTANCE.addTimestampsToChat ? 3 : 0)).contains("/") && !isGuildOrParty) {
             foundStart = true;
         }
 
@@ -400,7 +400,7 @@ public class ChatManager {
             StringBuilder newText = new StringBuilder();
             StringBuilder number = new StringBuilder();
 
-            for (char character : component.getUnformattedText().toCharArray()) {
+            for (char character : McIf.getUnformattedText(component).toCharArray()) {
                 if (StringUtils.isWynnicNumber(character)) {
 
                     if (previousTranslated) {
@@ -564,14 +564,14 @@ public class ChatManager {
             //if found, capitalize
             if (!foundStart) {
                 if (foundEndTimestamp) {
-                    if (in.getSiblings().get(ChatConfig.INSTANCE.addTimestampsToChat ? 3 : 0).getUnformattedText().contains("/")) {
-                        foundStart = component.getUnformattedText().contains(":");
+                    if (McIf.getUnformattedText(in.getSiblings().get(ChatConfig.INSTANCE.addTimestampsToChat ? 3 : 0)).contains("/")) {
+                        foundStart = McIf.getUnformattedText(component).contains(":");
                     } else if (isGuildOrParty) {
-                        foundStart = component.getUnformattedText().contains("]");
+                        foundStart = McIf.getUnformattedText(component).contains("]");
                     }
                 } else if (component.getUnformattedComponentText().contains("] ")) {
                     foundEndTimestamp = true;
-                    if (!in.getSiblings().get(ChatConfig.INSTANCE.addTimestampsToChat ? 3 : 0).getUnformattedText().contains("/") && !isGuildOrParty) {
+                    if (!McIf.getUnformattedText(in.getSiblings().get(ChatConfig.INSTANCE.addTimestampsToChat ? 3 : 0)).contains("/") && !isGuildOrParty) {
                         foundStart = true;
                     }
                 }
@@ -586,8 +586,8 @@ public class ChatManager {
     }
 
     private static boolean translateMessage(ITextComponent in) {
-        if (!in.getUnformattedText().startsWith(TranslationManager.TRANSLATED_PREFIX)) {
-            String formatted = in.getFormattedText();
+        if (!McIf.getUnformattedText(in).startsWith(TranslationManager.TRANSLATED_PREFIX)) {
+            String formatted = McIf.getFormattedText(in);
             Matcher chatMatcher = translationPatternChat.matcher(formatted);
             if (chatMatcher.find()) {
                 if (!TranslationConfig.INSTANCE.translatePlayerChat) return false;
@@ -623,7 +623,7 @@ public class ChatManager {
             } catch (InterruptedException e) {
                 // ignore
             }
-            Minecraft.getMinecraft().addScheduledTask(() ->
+            McIf.mc().addScheduledTask(() ->
                     ChatOverlay.getChat().printChatMessage(new TextComponentString(TranslationManager.TRANSLATED_PREFIX + prefix + translatedMsg + suffix)));
         });
     }
@@ -633,16 +633,16 @@ public class ChatManager {
     }
 
     public static boolean processUserMention(ITextComponent in, ITextComponent original) {
-        if (ChatConfig.INSTANCE.allowChatMentions && in != null && Minecraft.getMinecraft().player != null) {
-            String match = "\\b(" + ModCore.mc().player.getName() + (ChatConfig.INSTANCE.mentionNames.length() > 0 ? "|" + ChatConfig.INSTANCE.mentionNames.replace(",", "|") : "") + ")\\b";
+        if (ChatConfig.INSTANCE.allowChatMentions && in != null && McIf.player() != null) {
+            String match = "\\b(" + McIf.player().getName() + (ChatConfig.INSTANCE.mentionNames.length() > 0 ? "|" + ChatConfig.INSTANCE.mentionNames.replace(",", "|") : "") + ")\\b";
             Pattern pattern = Pattern.compile(match, Pattern.CASE_INSENSITIVE);
 
-            Matcher looseMatcher = pattern.matcher(in.getUnformattedText());
+            Matcher looseMatcher = pattern.matcher(McIf.getUnformattedText(in));
 
             if (looseMatcher.find()) {
                 boolean hasMention = false;
 
-                boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find();
+                boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(McIf.getFormattedText(original)).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(McIf.getFormattedText(original)).find();
                 boolean foundStart = false;
                 boolean foundEndTimestamp = !ChatConfig.INSTANCE.addTimestampsToChat;
 
@@ -696,7 +696,7 @@ public class ChatManager {
                     components.add(afterComponent);
                 }
                 if (hasMention) {
-                    ModCore.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1.0F));
+                    McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1.0F));
                     in.getSiblings().clear();
                     in.getSiblings().addAll(components);
 
@@ -910,7 +910,7 @@ public class ChatManager {
     public static Pair<Boolean, ITextComponent> applyToDialogue(ITextComponent component) {
         List<ITextComponent> siblings = component.getSiblings();
         List<ITextComponent> dialogue = new ArrayList<>();
-        if (inDialogue && component.getUnformattedText().equals(lastChat)) {
+        if (inDialogue && McIf.getUnformattedText(component).equals(lastChat)) {
             inDialogue = false;
             int max = Math.max(0, siblings.size() - newMessageCount);
             for (int i = max; i < siblings.size(); i++) {
@@ -937,25 +937,25 @@ public class ChatManager {
 
         // Very very long string of À's get sent in place of dialogue initially
         String chat = "";
-        if (component.getUnformattedText().contains("ÀÀÀÀ")) {
+        if (McIf.getUnformattedText(component).contains("ÀÀÀÀ")) {
             inDialogue = true;
             lineCount = 0;
             for (int componentIndex = siblings.size() - 1; componentIndex >= 0; componentIndex--) {
                 ITextComponent componentSibling = siblings.get(componentIndex);
-                if (componentSibling.getUnformattedText().matches("À*\n")) {
+                if (McIf.getUnformattedText(componentSibling).matches("À*\n")) {
                     dialogue.add(0, componentSibling);
                     lineCount++;
                 } else {
                     break;
                 }
             }
-            chat = siblings.subList(0, siblings.size() - lineCount).stream().map(ITextComponent::getUnformattedText).collect(Collectors.joining());
+            chat = siblings.subList(0, siblings.size() - lineCount).stream().map(McIf::getUnformattedText).collect(Collectors.joining());
             chat = chat.substring(0, chat.length() - 1);
         } else if (inDialogue) {
             if (siblings.size() < lineCount) {
                 return new Pair<>(false, component);
             }
-            chat = siblings.subList(0, siblings.size() - lineCount).stream().map(ITextComponent::getUnformattedText).collect(Collectors.joining());
+            chat = siblings.subList(0, siblings.size() - lineCount).stream().map(McIf::getUnformattedText).collect(Collectors.joining());
             chat = chat.substring(0, chat.length() - 1);
             dialogue = new ArrayList<>(siblings.subList(siblings.size() - lineCount, siblings.size()));
             if (!chat.equals(lastChat) && !dialogue.equals(last)) {
@@ -1028,7 +1028,7 @@ public class ChatManager {
 
         @Override
         public void run() {
-            Minecraft.getMinecraft().player.sendMessage(chapterText);
+            McIf.player().sendMessage(chapterText);
         }
 
     }

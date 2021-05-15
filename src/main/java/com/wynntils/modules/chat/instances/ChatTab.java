@@ -4,12 +4,12 @@
 
 package com.wynntils.modules.chat.instances;
 
+import com.wynntils.McIf;
 import com.wynntils.core.utils.objects.Pair;
 import net.minecraft.client.gui.ChatLine;
 import net.minecraft.util.text.ITextComponent;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -143,7 +143,7 @@ public class ChatTab implements Comparable<ChatTab> {
     }
 
     public boolean regexMatches(ITextComponent msg) {
-        return regexFinder.matcher(msg.getFormattedText()).find();
+        return regexFinder.matcher(McIf.getFormattedText(msg)).find();
     }
 
     public Pair<Integer, Integer> getCurrentXAxis() {

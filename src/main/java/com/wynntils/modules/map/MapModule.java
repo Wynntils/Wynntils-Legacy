@@ -4,12 +4,14 @@
 
 package com.wynntils.modules.map;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.Priority;
 import com.wynntils.core.framework.instances.KeyHolder;
 import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.map.commands.CommandDetection;
 import com.wynntils.modules.map.commands.CommandLocate;
 import com.wynntils.modules.map.commands.CommandLootRun;
 import com.wynntils.modules.map.configs.MapConfig;
@@ -58,10 +60,11 @@ public class MapModule extends Module {
 
         registerCommand(new CommandLootRun());
         registerCommand(new CommandLocate());
+        registerCommand(new CommandDetection());
 
         registerKeyBinding("New Waypoint", Keyboard.KEY_B, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
             if (Reference.onWorld)
-                Minecraft.getMinecraft().displayGuiScreen(new WaypointCreationMenu(null));
+                McIf.mc().displayGuiScreen(new WaypointCreationMenu(null));
         });
 
         mapKey = registerKeyBinding("Open Map", Keyboard.KEY_M, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {

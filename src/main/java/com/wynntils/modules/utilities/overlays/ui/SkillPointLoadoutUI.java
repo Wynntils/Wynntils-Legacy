@@ -4,7 +4,7 @@
 
 package com.wynntils.modules.utilities.overlays.ui;
 
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.SkillPoint;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
@@ -14,7 +14,6 @@ import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.instances.ContainerBuilds;
 import com.wynntils.modules.utilities.instances.SkillPointAllocation;
 import com.wynntils.modules.utilities.overlays.inventories.SkillPointOverlay;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
@@ -44,7 +43,7 @@ public class SkillPointLoadoutUI extends FakeGuiContainer {
     private final int inventoryRows;
 
     public SkillPointLoadoutUI(SkillPointOverlay parent, GuiScreen spMenu, InventoryBasic inventory) {
-        super(new ContainerBuilds(inventory, ModCore.mc().player));
+        super(new ContainerBuilds(inventory, McIf.player()));
         this.parent = parent;
         this.spMenu = spMenu;
         this.inventory = inventory;
@@ -109,21 +108,21 @@ public class SkillPointLoadoutUI extends FakeGuiContainer {
 
             parent.loadBuild(aloc); // sends the allocated loadout into
 
-            ModCore.mc().displayGuiScreen(spMenu);
+            McIf.mc().displayGuiScreen(spMenu);
             return;
         }
 
         if (mouseButton == 1) { // right click <-> delete
             List<String> lore = ItemUtils.getLore(slotIn.getStack());
             if (lore.get(lore.size() - 1).contains("confirm")) { // confirm deletion
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
+                McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
 
                 removeLoadout(name);
                 this.initGui();
                 return;
             }
 
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_LAND, 1f));
+            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_LAND, 1f));
             lore.set(lore.size() -1, TextFormatting.DARK_RED + "> Right-click to confirm deletion");
             ItemUtils.replaceLore(slotIn.getStack(), lore);
         }
@@ -131,8 +130,8 @@ public class SkillPointLoadoutUI extends FakeGuiContainer {
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) {
-        if (keyCode == Keyboard.KEY_ESCAPE || keyCode == ModCore.mc().gameSettings.keyBindInventory.getKeyCode()) {
-            ModCore.mc().displayGuiScreen(spMenu);
+        if (keyCode == Keyboard.KEY_ESCAPE || keyCode == McIf.mc().gameSettings.keyBindInventory.getKeyCode()) {
+            McIf.mc().displayGuiScreen(spMenu);
         }
     }
 
@@ -145,13 +144,13 @@ public class SkillPointLoadoutUI extends FakeGuiContainer {
 
     @Override
     protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) {
-        this.fontRenderer.drawString(this.inventory.getDisplayName().getUnformattedText(), 8, 6, 4210752);
+        this.fontRenderer.drawString(McIf.getUnformattedText(this.inventory.getDisplayName()), 8, 6, 4210752);
     }
 
     @Override
     protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY) {
         GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
-        this.mc.getTextureManager().bindTexture(CHEST_GUI_TEXTURE);
+        McIf.mc().getTextureManager().bindTexture(CHEST_GUI_TEXTURE);
         int i = (this.width - this.xSize) / 2;
         int j = (this.height - this.ySize) / 2;
         this.drawTexturedModalRect(i, j, 0, 0, this.xSize, this.inventoryRows * 18 + 17);

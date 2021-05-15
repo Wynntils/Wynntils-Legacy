@@ -4,6 +4,7 @@
 
 package com.wynntils.core.utils.helpers;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.FrameworkManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ChatType;
@@ -54,14 +55,14 @@ public class CommandResponse {
     public void executeCommand() {
         FrameworkManager.getEventBus().register(this);
 
-        Minecraft.getMinecraft().player.sendChatMessage(command);
+        McIf.player().sendChatMessage(command);
     }
 
     @SubscribeEvent
     public void onMessageReceive(ClientChatReceivedEvent e) {
         if (e.getType() != chatType) return;
 
-        String message = formattedText ? e.getMessage().getFormattedText() : e.getMessage().getUnformattedText();
+        String message = formattedText ? McIf.getFormattedText(e.getMessage()) : McIf.getUnformattedText(e.getMessage());
         Matcher matcher = regex.matcher(message);
 
         if (!matcher.find()) return;

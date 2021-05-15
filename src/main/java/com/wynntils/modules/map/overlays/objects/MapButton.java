@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.overlays.objects;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.map.overlays.enums.MapButtonType;
@@ -65,7 +66,7 @@ public class MapButton {
     }
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) {
-        Minecraft.getMinecraft().getSoundHandler().playSound(
+        McIf.mc().getSoundHandler().playSound(
                 PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f)
         );
 

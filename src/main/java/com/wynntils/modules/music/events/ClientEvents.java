@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.music.events;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.enums.ClassType;
@@ -73,7 +74,7 @@ public class ClientEvents implements Listener {
     public void dungeonTracks(PacketEvent<SPacketTitle> e) {
         if (!MusicConfig.INSTANCE.replaceJukebox || e.getPacket().getType() != SPacketTitle.Type.TITLE) return;
 
-        String title = TextFormatting.getTextWithoutFormattingCodes(e.getPacket().getMessage().getFormattedText());
+        String title = TextFormatting.getTextWithoutFormattingCodes(McIf.getFormattedText(e.getPacket().getMessage()));
         String songName = WebManager.getMusicLocations().getDungeonTrack(title);
         if (songName == null) return;
 
@@ -92,20 +93,20 @@ public class ClientEvents implements Listener {
     public void areaTracks(SchedulerEvent.RegionUpdate e) {
         if (!MusicConfig.INSTANCE.replaceJukebox) return;
 
-        Minecraft.getMinecraft().addScheduledTask(BossTrackManager::update);
+        McIf.mc().addScheduledTask(BossTrackManager::update);
 
         if (BossTrackManager.isAlive()) return;
-        AreaTrackManager.update(new Location(Minecraft.getMinecraft().player));
+        AreaTrackManager.update(new Location(McIf.player()));
     }
 
     // mythic found sfx
     @SubscribeEvent
     public void onMythicFound(PacketEvent<SPacketWindowItems> e) {
         if (!MusicConfig.SoundEffects.INSTANCE.mythicFound) return;
-        if (Minecraft.getMinecraft().currentScreen == null) return;
-        if (!(Minecraft.getMinecraft().currentScreen instanceof ChestReplacer)) return;
+        if (McIf.mc().currentScreen == null) return;
+        if (!(McIf.mc().currentScreen instanceof ChestReplacer)) return;
 
-        ChestReplacer chest = (ChestReplacer) Minecraft.getMinecraft().currentScreen;
+        ChestReplacer chest = (ChestReplacer) McIf.mc().currentScreen;
         if (!chest.getLowerInv().getName().contains("Loot Chest") &&
                 !chest.getLowerInv().getName().contains("Daily Rewards") &&
                 !chest.getLowerInv().getName().contains("Objective Rewards")) return;

@@ -6,6 +6,7 @@ package com.wynntils.core.framework.rendering.textures;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
@@ -32,7 +33,7 @@ public class Mappings {
                     if (!f.getType().isAssignableFrom(JsonObject.class)) continue;
 
                     ResourceLocation rc = new ResourceLocation(mainPath + f.getName() + ".json");
-                    f.set(null, new JsonParser().parse(IOUtils.toString(Minecraft.getMinecraft().getResourceManager().getResource(rc).getInputStream(), StandardCharsets.UTF_8)));
+                    f.set(null, new JsonParser().parse(IOUtils.toString(McIf.mc().getResourceManager().getResource(rc).getInputStream(), StandardCharsets.UTF_8)));
 
                 } catch (Exception ex) {
                     ex.printStackTrace();

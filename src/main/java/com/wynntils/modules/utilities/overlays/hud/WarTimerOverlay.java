@@ -4,7 +4,7 @@
 
 package com.wynntils.modules.utilities.overlays.hud;
 
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.WarStageEvent;
@@ -100,7 +100,7 @@ public class WarTimerOverlay extends Overlay {
     public static void warMessage(ClientChatReceivedEvent event) {
         if (!Reference.onWorld || Reference.onNether) return;
 
-        String message = event.getMessage().getUnformattedText();
+        String message = McIf.getUnformattedText(event.getMessage());
         if (message.startsWith("[WAR] ")) {
             message = message.replaceFirst("\\[WAR\\] ", "");
         }
@@ -161,7 +161,7 @@ public class WarTimerOverlay extends Overlay {
                 changeWarStage(WarStage.WAITING_FOR_MOB_TIMER);
                 time = -1;
                 if (territory == null) {
-                    EntityPlayerSP pl = ModCore.mc().player;
+                    EntityPlayerSP pl = McIf.player();
                     for (TerritoryProfile pf : WebManager.getTerritories().values()) {
                         if (pf.insideArea((int)pl.posX, (int)pl.posZ)) {
                             territory = pf.getFriendlyName();
@@ -182,7 +182,7 @@ public class WarTimerOverlay extends Overlay {
     }
 
     public static void onTitle(PacketEvent<SPacketTitle> event) {
-        if (event.getPacket().getType() == Type.SUBTITLE && event.getPacket().getMessage().getUnformattedText().equals(TextFormatting.GOLD + "0 Mobs Left")) {
+        if (event.getPacket().getType() == Type.SUBTITLE && McIf.getUnformattedText(event.getPacket().getMessage()).equals(TextFormatting.GOLD + "0 Mobs Left")) {
             lastTimePassed = System.currentTimeMillis() - time;
             lastTerritory = territory;
             resetTimer();

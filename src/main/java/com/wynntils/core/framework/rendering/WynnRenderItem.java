@@ -4,6 +4,7 @@
 
 package com.wynntils.core.framework.rendering;
 
+import com.wynntils.McIf;
 import com.wynntils.core.events.custom.RenderEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.utils.reflections.ReflectionFields;
@@ -21,11 +22,10 @@ public class WynnRenderItem extends RenderItem {
 
     public static void inject() {
         if (instance != null) throw new IllegalStateException("Wynntils item renderer has already been installed!");
-        Minecraft mc = Minecraft.getMinecraft();
-        instance = new WynnRenderItem(mc.getRenderItem(), mc.renderEngine, mc.getItemColors());
+        instance = new WynnRenderItem(McIf.mc().getRenderItem(), McIf.mc().renderEngine, McIf.mc().getItemColors());
         // the resource manager reload listener for the item renderer merely invalidates the cache of the held item model mesher
         // since we're inheriting the one from the original item renderer and also not unregistering it as a reload listener, we don't need to register our own renderer as a listener
-        ReflectionFields.Minecraft_renderItem.setValue(mc, instance);
+        ReflectionFields.Minecraft_renderItem.setValue(McIf.mc(), instance);
     }
 
     public static WynnRenderItem getInstance() {

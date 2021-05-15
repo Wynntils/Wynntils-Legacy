@@ -6,7 +6,7 @@ package com.wynntils.webapi.account;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.JsonObject;
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.professions.GatheringMaterial;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
@@ -16,11 +16,11 @@ import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.request.PostRequest;
 import com.wynntils.webapi.request.Request;
 import com.wynntils.webapi.request.RequestHandler;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.CryptManager;
+import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.SecretKey;
-import javax.xml.bind.DatatypeConverter;
+
 import java.io.File;
 import java.math.BigInteger;
 import java.security.PublicKey;
@@ -44,7 +44,7 @@ public class WynntilsAccount {
     public String getToken() {
         return token;
     }
-    
+
     public boolean isConnected() {
         return ready;
     }
@@ -83,7 +83,7 @@ public class WynntilsAccount {
         // response
 
         JsonObject authParams = new JsonObject();
-        authParams.addProperty("username", ModCore.mc().getSession().getUsername());
+        authParams.addProperty("username", McIf.mc().getSession().getUsername());
         authParams.addProperty("key", secretKey[0]);
         authParams.addProperty("version", Reference.VERSION + "_" + Reference.BUILD_NUMBER);
 
@@ -161,7 +161,7 @@ public class WynntilsAccount {
 
     private String parseAndJoinPublicKey(String key) {
         try {
-            byte[] publicKeyBy = DatatypeConverter.parseHexBinary(key);
+            byte[] publicKeyBy = Hex.decodeHex(key.toCharArray());
 
             SecretKey secretkey = CryptManager.createNewSharedKey();
 
@@ -169,12 +169,11 @@ public class WynntilsAccount {
 
             String s1 = (new BigInteger(CryptManager.getServerIdHash("", publicKey, secretkey))).toString(16);
 
-            Minecraft mc = ModCore.mc();
-            mc.getSessionService().joinServer(mc.getSession().getProfile(), mc.getSession().getToken(), s1.toLowerCase());
+            McIf.mc().getSessionService().joinServer(McIf.mc().getSession().getProfile(), McIf.mc().getSession().getToken(), s1.toLowerCase());
 
             byte[] secretKeyEncrypted = CryptManager.encryptData(publicKey, secretkey.getEncoded());
 
-            return DatatypeConverter.printHexBinary(secretKeyEncrypted);
+            return Hex.encodeHexString(secretKeyEncrypted);
         } catch (Exception ex) {
             ex.printStackTrace();
             return "";

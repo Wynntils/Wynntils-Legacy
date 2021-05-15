@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.overlays.objects;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.modules.core.instances.OtherPlayerProfile;
@@ -107,7 +108,7 @@ public class MapPlayerIcon extends MapIcon {
                     (centreZ) + sizeZ + .5f
             );
 
-            Minecraft.getMinecraft().getTextureManager().bindTexture(res);
+            McIf.mc().getTextureManager().bindTexture(res);
 
             drawScaledCustomSizeModalRect(
                     ((centreX + ScreenRenderer.drawingOrigin().x) -sizeX),

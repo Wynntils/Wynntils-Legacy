@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.managers;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
@@ -39,7 +40,7 @@ public class WarManager {
     public static boolean allowClick(PacketEvent<CPacketUseEntity> e) {
         if (!UtilitiesConfig.Wars.INSTANCE.blockWorkstations || !Reference.onWars) return false;
 
-        Entity in = e.getPacket().getEntityFromWorld(Minecraft.getMinecraft().world);
+        Entity in = e.getPacket().getEntityFromWorld(McIf.world());
         return in instanceof EntityArmorStand || in instanceof EntitySlime;
     }
 

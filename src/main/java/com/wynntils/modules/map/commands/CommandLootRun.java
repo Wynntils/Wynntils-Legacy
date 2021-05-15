@@ -4,14 +4,13 @@
 
 package com.wynntils.modules.map.commands;
 
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.map.instances.LootRunNote;
 import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
-import com.wynntils.modules.questbook.instances.QuestBookPage;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -26,7 +25,6 @@ import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.IClientCommand;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.*;
 
@@ -175,7 +173,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                     return;
                 }
 
-                Entity lowest = ModCore.mc().player.getLowestRidingEntity();
+                Entity lowest = McIf.player().getLowestRidingEntity();
                 String message;
                 if (LootRunManager.undoMovement(lowest.posX, lowest.posY, lowest.posZ)) {
                     message = GREEN + "Undid your most recent movements!";
@@ -231,7 +229,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
 
                 String text = String.join(" ", args);
                 text = text.substring(text.indexOf(" ")).trim();
-                EntityPlayerSP player = ModCore.mc().player;
+                EntityPlayerSP player = McIf.player();
                 LootRunNote note = new LootRunNote(new Location(player.posX, player.posY, player.posZ), text);
 
                 ITextComponent message;
@@ -265,7 +263,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 String command = args[0].toLowerCase(Locale.ROOT);
                 BlockPos pos;
                 if (args.length < 4) {
-                    pos = new BlockPos((int) ModCore.mc().player.posX, (int) ModCore.mc().player.posY, (int) ModCore.mc().player.posZ - 1);
+                    pos = new BlockPos((int) McIf.player().posX, (int) McIf.player().posY, (int) McIf.player().posZ - 1);
                 } else {
                     int x = 0, y = 0, z = 0;
                     try {

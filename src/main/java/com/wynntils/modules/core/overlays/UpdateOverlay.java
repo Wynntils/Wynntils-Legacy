@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.core.overlays;
 
+import com.wynntils.McIf;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.overlays.Overlay;
@@ -132,7 +133,7 @@ public class UpdateOverlay extends Overlay {
                             String message = TextFormatting.DARK_AQUA + "An update to Wynntils (";
                             message += CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE ? "Version " + jarName.split("_")[0].split("-")[1] : "Build " + jarName.split("_")[1].replace(".jar", "");
                             message += ") has been downloaded, and will be applied when the game is restarted.";
-                            ModCore.mc().player.sendMessage(new TextComponentString(message));
+                            McIf.player().sendMessage(new TextComponentString(message));
                             scheduleCopyUpdateAtShutdown(jarName);
                         } catch (Exception ex) {
                             ex.printStackTrace();

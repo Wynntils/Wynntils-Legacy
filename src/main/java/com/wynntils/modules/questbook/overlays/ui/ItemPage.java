@@ -5,6 +5,7 @@
 package com.wynntils.modules.questbook.overlays.ui;
 
 import com.google.common.collect.ImmutableList;
+import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.SortDirection;
 import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
@@ -205,7 +206,7 @@ public class ItemPage extends QuestBookPage {
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        ScaledResolution res = new ScaledResolution(mc);
+        ScaledResolution res = new ScaledResolution(McIf.mc());
         int posX = ((res.getScaledWidth() / 2) - mouseX);
         int posY = ((res.getScaledHeight() / 2) - mouseY);
 
@@ -213,7 +214,7 @@ public class ItemPage extends QuestBookPage {
         checkForwardAndBackButtons(posX, posY);
 
         if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) { // search mode toggle button
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             if (QuestBookConfig.INSTANCE.advancedItemSearch) {
                 QuestBookConfig.INSTANCE.advancedItemSearch = false;
                 initBasicSearch();
@@ -411,19 +412,19 @@ public class ItemPage extends QuestBookPage {
             switch (selected) { // is one of the sorting buttons hovered?
                 case 1:
                     if (sortFunction != SortFunction.ALPHABETICAL) {
-                        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                        McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                         sortFunction = SortFunction.ALPHABETICAL;
                     }
                     return true;
                 case 2:
                     if (sortFunction != SortFunction.BY_LEVEL) {
-                        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                        McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                         sortFunction = SortFunction.BY_LEVEL;
                     }
                     return true;
                 case 3:
                     if (sortFunction != SortFunction.BY_RARITY) {
-                        Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                        McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                         sortFunction = SortFunction.BY_RARITY;
                     }
                     return true;
@@ -444,7 +445,7 @@ public class ItemPage extends QuestBookPage {
             } else {
                 allowedTypes.add(selectedType);
             }
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
 
             return true;
         }

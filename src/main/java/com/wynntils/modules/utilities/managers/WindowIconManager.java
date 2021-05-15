@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.managers;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.utils.reflections.ReflectionMethods;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
@@ -22,14 +23,14 @@ public class WindowIconManager {
     private static boolean serverIconInvalid = false;
 
     private static void deleteIcon() {
-        Minecraft.getMinecraft().addScheduledTask(() -> ReflectionMethods.Minecraft$setWindowIcon.invoke(Minecraft.getMinecraft()));
+        McIf.mc().addScheduledTask(() -> ReflectionMethods.Minecraft$setWindowIcon.invoke(Minecraft.getMinecraft()));
         setToServerIcon = false;
         serverIconInvalid = false;
     }
 
     private static void setIcon() {
         BufferedImage bufferedimage;
-        ServerData server = Minecraft.getMinecraft().getCurrentServerData();
+        ServerData server = McIf.mc().getCurrentServerData();
         String base64;
         if (server == null || (base64 = server.getBase64EncodedIconData()) == null) {
             serverIconInvalid = true;
@@ -88,7 +89,7 @@ public class WindowIconManager {
         bytebuffer32.flip();
         bytebuffer16.flip();
 
-        Minecraft.getMinecraft().addScheduledTask(() -> Display.setIcon(new ByteBuffer[]{ bytebuffer128, bytebuffer64, bytebuffer32, bytebuffer16 }));
+        McIf.mc().addScheduledTask(() -> Display.setIcon(new ByteBuffer[]{ bytebuffer128, bytebuffer64, bytebuffer32, bytebuffer16 }));
         setToServerIcon = true;
         serverIconInvalid = false;
     }

@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.managers;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
 import com.wynntils.core.framework.instances.PlayerInfo;
@@ -102,7 +103,7 @@ public class NametagManager {
         if (distance > range) return true;
 
         alphaFunc(516, 0.1F);
-        drawLabels(entity, entity.getDisplayName().getFormattedText(), e.getX(), e.getY(), e.getZ(), e.getRenderer().getRenderManager(), customLabels);
+        drawLabels(entity, McIf.getFormattedText(entity.getDisplayName()), e.getX(), e.getY(), e.getZ(), e.getRenderer().getRenderManager(), customLabels);
 
         return true;
     }
@@ -114,7 +115,7 @@ public class NametagManager {
         if (entity.isBeingRidden()) return false;
         if (!(entity instanceof EntityPlayer)) return entity.getAlwaysRenderNameTagForRender() && entity.hasCustomName();
 
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        EntityPlayerSP player = McIf.player();
         boolean isVisible = !entity.isInvisibleToPlayer(player);
 
         // we also need to consider the teams
@@ -226,7 +227,7 @@ public class NametagManager {
      * Draws the nametag, don't call this, use checkForNametags to add more nametags
      */
     private static void drawNametag(String input, CustomColor color, float x, float y, float z, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal, boolean isSneaking, float scale) {
-        FontRenderer fontRenderer = Minecraft.getMinecraft().fontRenderer;  // since our fontrender ignores bold or italic texts we need to use the mc one
+        FontRenderer fontRenderer = McIf.mc().fontRenderer;  // since our fontrender ignores bold or italic texts we need to use the mc one
 
         pushMatrix();
         {
@@ -315,7 +316,7 @@ public class NametagManager {
         List<NametagLabel> labels = new ArrayList<>();
 
         // detects if the user is looking into the player
-        if (Minecraft.getMinecraft().objectMouseOver == null || Minecraft.getMinecraft().objectMouseOver.entityHit == null || Minecraft.getMinecraft().objectMouseOver.entityHit != player) return labels;
+        if (McIf.mc().objectMouseOver == null || McIf.mc().objectMouseOver.entityHit == null || McIf.mc().objectMouseOver.entityHit != player) return labels;
 
         for (ItemStack is : player.getEquipmentAndArmor()) {
             if (!is.hasDisplayName()) continue;

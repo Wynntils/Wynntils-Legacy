@@ -4,7 +4,7 @@
 
 package com.wynntils.modules.core.instances.packet;
 
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.modules.core.instances.inventory.InventoryOpenByItem;
@@ -36,7 +36,7 @@ public class PacketOutgoingFilter extends ChannelOutboundHandlerAdapter {
         }
 
         PacketEvent.Outgoing<? extends Packet<?>> event = noEvent ? null :
-            new PacketEvent.Outgoing<>(packet, ModCore.mc().getConnection(), this, ctx);
+            new PacketEvent.Outgoing<>(packet, McIf.mc().getConnection(), this, ctx);
         if (!noEvent && FrameworkManager.getEventBus().post(event)) return;
 
         super.write(ctx, msg, promise);

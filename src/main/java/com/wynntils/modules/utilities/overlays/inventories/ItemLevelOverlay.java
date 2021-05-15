@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.overlays.inventories;
 
+import com.wynntils.McIf;
 import com.wynntils.core.events.custom.RenderEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
@@ -26,7 +27,7 @@ public class ItemLevelOverlay implements Listener {
 
     @SubscribeEvent
     public void onItemOverlay(RenderEvent.DrawItemOverlay event) {
-        if (!UtilitiesConfig.Items.INSTANCE.itemLevelOverlayOutsideGui && Minecraft.getMinecraft().currentScreen == null) return;
+        if (!UtilitiesConfig.Items.INSTANCE.itemLevelOverlayOutsideGui && McIf.mc().currentScreen == null) return;
         if (!KeyManager.getShowLevelOverlayKey().isKeyDown()) return;
 
         ItemStack stack = event.getStack();

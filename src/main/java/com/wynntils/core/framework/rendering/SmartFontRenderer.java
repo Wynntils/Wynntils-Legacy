@@ -4,6 +4,7 @@
 
 package com.wynntils.core.framework.rendering;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
@@ -32,7 +33,7 @@ public class SmartFontRenderer extends FontRenderer {
     }
 
     public SmartFontRenderer() {
-        super(Minecraft.getMinecraft().gameSettings, new ResourceLocation("textures/font/ascii.png"), Minecraft.getMinecraft().getTextureManager(), false);
+        super(McIf.mc().gameSettings, new ResourceLocation("textures/font/ascii.png"), McIf.mc().getTextureManager(), false);
     }
 
     public float drawString(String text, float x, float y, CustomColor customColor, TextAlignment alignment, TextShadow shadow) {

@@ -5,7 +5,7 @@
 package com.wynntils.core.utils;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -47,8 +47,9 @@ import java.util.regex.Pattern;
 
 public class Utils {
 
-    @SuppressWarnings("unchecked")
     private static final DataParameter<String> NAME_KEY = ReflectionFields.Entity_CUSTOM_NAME.getValue(Entity.class);
+    private static final DataParameter<Boolean> NAME_VISIBLE_KEY = ReflectionFields.Entity_CUSTOM_NAME_VISIBLE.getValue(Entity.class);
+    private static final DataParameter<Boolean> ITEM_KEY = ReflectionFields.EntityItemFrame_ITEM.getValue(Entity.class);
     public static final Pattern CHAR_INFO_PAGE_TITLE = Pattern.compile("§c([0-9]+)§4 skill points? remaining");
     public static final Pattern SERVER_SELECTOR_TITLE = Pattern.compile("Wynncraft Servers(: Page \\d+)?");
 
@@ -164,16 +165,16 @@ public class Utils {
      * @return the Scoreboard Team
      */
     public static ScorePlayerTeam createFakeScoreboard(String name, Team.CollisionRule rule) {
-        Scoreboard mc = Minecraft.getMinecraft().world.getScoreboard();
-        if (mc.getTeam(name) != null) return mc.getTeam(name);
+        Scoreboard scoreboard = McIf.world().getScoreboard();
+        if (scoreboard.getTeam(name) != null) return scoreboard.getTeam(name);
 
-        String player = Minecraft.getMinecraft().player.getName();
-        if (mc.getPlayersTeam(player) != null) previousTeam = mc.getPlayersTeam(player).getName();
+        String player = McIf.player().getName();
+        if (scoreboard.getPlayersTeam(player) != null) previousTeam = scoreboard.getPlayersTeam(player).getName();
 
-        ScorePlayerTeam team = mc.createTeam(name);
+        ScorePlayerTeam team = scoreboard.createTeam(name);
         team.setCollisionRule(rule);
 
-        mc.addPlayerToTeam(player, name);
+        scoreboard.addPlayerToTeam(player, name);
         return team;
     }
 
@@ -183,11 +184,11 @@ public class Utils {
      * @param name the scoreboard name
      */
     public static void removeFakeScoreboard(String name) {
-        Scoreboard mc = Minecraft.getMinecraft().world.getScoreboard();
-        if (mc.getTeam(name) == null) return;
+        Scoreboard scoreboard = McIf.world().getScoreboard();
+        if (scoreboard.getTeam(name) == null) return;
 
-        mc.removeTeam(mc.getTeam(name));
-        if (previousTeam != null) mc.addPlayerToTeam(Minecraft.getMinecraft().player.getName(), previousTeam);
+        scoreboard.removeTeam(scoreboard.getTeam(name));
+        if (previousTeam != null) scoreboard.addPlayerToTeam(McIf.player().getName(), previousTeam);
     }
 
     /**
@@ -196,9 +197,7 @@ public class Utils {
      * @param screen the provided screen
      */
     public static void displayGuiScreen(GuiScreen screen) {
-        Minecraft mc = Minecraft.getMinecraft();
-
-        GuiScreen oldScreen = mc.currentScreen;
+        GuiScreen oldScreen = McIf.mc().currentScreen;
 
         GuiOpenEvent event = new GuiOpenEvent(screen);
         if (MinecraftForge.EVENT_BUS.post(event)) return;
@@ -209,19 +208,19 @@ public class Utils {
             oldScreen.onGuiClosed();
         }
 
-        mc.currentScreen = screen;
+        McIf.mc().currentScreen = screen;
 
         if (screen != null) {
-            Minecraft.getMinecraft().setIngameNotInFocus();
+            McIf.mc().setIngameNotInFocus();
 
-            ScaledResolution scaledresolution = new ScaledResolution(mc);
+            ScaledResolution scaledresolution = new ScaledResolution(McIf.mc());
             int i = scaledresolution.getScaledWidth();
             int j = scaledresolution.getScaledHeight();
-            screen.setWorldAndResolution(mc, i, j);
-            mc.skipRenderWorld = false;
+            screen.setWorldAndResolution(McIf.mc(), i, j);
+            McIf.mc().skipRenderWorld = false;
         } else {
-            mc.getSoundHandler().resumeSounds();
-            mc.setIngameFocus();
+            McIf.mc().getSoundHandler().resumeSounds();
+            McIf.mc().setIngameFocus();
         }
     }
 
@@ -319,7 +318,7 @@ public class Utils {
         urlComponent.getStyle().setUnderlined(true);
         text.appendSibling(urlComponent);
 
-        ModCore.mc().player.sendMessage(text);
+        McIf.player().sendMessage(text);
     }
 
     public static String encodeUrl(String url) {
@@ -396,6 +395,31 @@ public class Utils {
             }
         }
         return null;
+    }
+
+    public static boolean isNameVisibleFromMetadata(List <EntityDataManager.DataEntry<?>> dataManagerEntries) {
+        assert NAME_VISIBLE_KEY != null;
+        if (dataManagerEntries != null) {
+            for (EntityDataManager.DataEntry<?> entry : dataManagerEntries) {
+                if (NAME_VISIBLE_KEY.equals(entry.getKey())) {
+                    return (Boolean) entry.getValue();
+                }
+            }
+        }
+        // assume false if not specified
+        return false;
+    }
+
+    public static ItemStack getItemFromMetadata(List <EntityDataManager.DataEntry<?>> dataManagerEntries) {
+        assert ITEM_KEY != null;
+        if (dataManagerEntries != null) {
+            for (EntityDataManager.DataEntry<?> entry : dataManagerEntries) {
+                if (ITEM_KEY.equals(entry.getKey())) {
+                    return (ItemStack) entry.getValue();
+                }
+            }
+        }
+        return ItemStack.EMPTY;
     }
 
     // Alias if using already imported org.apache.commons.lang3.StringUtils
