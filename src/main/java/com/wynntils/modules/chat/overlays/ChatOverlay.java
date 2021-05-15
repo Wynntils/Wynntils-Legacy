@@ -339,7 +339,7 @@ public class ChatOverlay extends GuiNewChat {
                     ITextComponent newMessage = queue.get(check).b.apply(combined.getChatComponent());
 
                     int chatWidth = MathHelper.floor((float) getChatWidth() / getChatScale());
-                    List<ITextComponent> list = GuiUtilRenderComponents.splitText(newMessage, chatWidth, mc.fontRenderer, false, false);
+                    List<ITextComponent> list = GuiUtilRenderComponents.splitText(newMessage, chatWidth, McIf.mc().fontRenderer, false, false);
                     Collections.reverse(list);
                     boolean flag = tab == getCurrentTab() && getChatOpen();
                     for (ITextComponent itextcomponent : list) {
@@ -377,7 +377,7 @@ public class ChatOverlay extends GuiNewChat {
             if (found && (queueIndex == 0 || i == lines.size() - 1)) {
                 ITextComponent newMessage = queue.get(check).b.apply(combined.getChatComponent());
                 int chatWidth = MathHelper.floor((float) getChatWidth() / getChatScale());
-                List<ITextComponent> list = GuiUtilRenderComponents.splitText(newMessage, chatWidth, mc.fontRenderer, false, false);
+                List<ITextComponent> list = GuiUtilRenderComponents.splitText(newMessage, chatWidth, McIf.mc().fontRenderer, false, false);
                 Collections.reverse(list);
                 boolean flag = tab == getCurrentTab() && getChatOpen();
                 for (ITextComponent itextcomponent : list) {

@@ -133,8 +133,6 @@ public class ChatManager {
 
         // wynnic and gavellian translator
         if (StringUtils.hasWynnic(in.getUnformattedText()) || StringUtils.hasGavellian(in.getUnformattedText())) {
-
-
             Pair<ArrayList<ITextComponent>, ArrayList<ITextComponent>> result = translateWynnicMessage(in.createCopy(), original);
             ArrayList<ITextComponent> untranslatedComponents = result.a;
             ArrayList<ITextComponent> translatedComponents = result.b;
