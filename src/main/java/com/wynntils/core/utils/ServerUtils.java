@@ -4,6 +4,7 @@
 
 package com.wynntils.core.utils;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import net.minecraft.client.Minecraft;
@@ -61,30 +62,28 @@ public class ServerUtils {
      * @param unloadServerPack if false, disconnect without refreshing resources by unloading the server resource pack
      */
     public static void disconnect(boolean switchGui, boolean unloadServerPack) {
-        Minecraft mc = Minecraft.getMinecraft();
-
-        WorldClient world = mc.world;
+        WorldClient world = McIf.world();
         if (world == null) return;
 
-        boolean singlePlayer = mc.isIntegratedServerRunning();
-        boolean realms = !singlePlayer && mc.isConnectedToRealms();
+        boolean singlePlayer = McIf.mc().isIntegratedServerRunning();
+        boolean realms = !singlePlayer && McIf.mc().isConnectedToRealms();
 
         world.sendQuittingDisconnectingPacket();
         if (unloadServerPack) {
-            mc.loadWorld(null);
+            McIf.mc().loadWorld(null);
         } else {
             loadWorldWithoutUnloadingServerResourcePack(null);
         }
 
         if (!switchGui) return;
         if (singlePlayer) {
-            mc.displayGuiScreen(new GuiMainMenu());
+            McIf.mc().displayGuiScreen(new GuiMainMenu());
         } else if (realms) {
             // Should not be possible because Wynntils will
             // never be running on the latest version of Minecraft
             new RealmsBridge().switchToRealms(new GuiMainMenu());
         } else {
-            mc.displayGuiScreen(new GuiMultiplayer(new GuiMainMenu()));
+            McIf.mc().displayGuiScreen(new GuiMultiplayer(new GuiMainMenu()));
         }
     }
 
@@ -94,7 +93,7 @@ public class ServerUtils {
 
     private static class FakeResourcePackRepositoryHolder {
         // Will only be created by classloader when used
-        static final ResourcePackRepository instance = new ResourcePackRepository(Minecraft.getMinecraft().getResourcePackRepository().getDirResourcepacks(), null, null, null, Minecraft.getMinecraft().gameSettings) {
+        static final ResourcePackRepository instance = new ResourcePackRepository(McIf.mc().getResourcePackRepository().getDirResourcepacks(), null, null, null, McIf.mc().gameSettings) {
             @Override
             public void clearResourcePack() {
                 // Don't
@@ -103,11 +102,11 @@ public class ServerUtils {
     }
 
     public static synchronized void loadWorldWithoutUnloadingServerResourcePack(WorldClient world, String loadingMessage) {
-        ResourcePackRepository original = Minecraft.getMinecraft().getResourcePackRepository();
+        ResourcePackRepository original = McIf.mc().getResourcePackRepository();
 
-        ReflectionFields.Minecraft_resourcePackRepository.setValue(Minecraft.getMinecraft(), FakeResourcePackRepositoryHolder.instance);
-        Minecraft.getMinecraft().loadWorld(world, loadingMessage);
-        ReflectionFields.Minecraft_resourcePackRepository.setValue(Minecraft.getMinecraft(), original);
+        ReflectionFields.Minecraft_resourcePackRepository.setValue(McIf.mc(), FakeResourcePackRepositoryHolder.instance);
+        McIf.mc().loadWorld(world, loadingMessage);
+        ReflectionFields.Minecraft_resourcePackRepository.setValue(McIf.mc(), original);
     }
 
     public static ServerData getWynncraftServerData(boolean addNew) {

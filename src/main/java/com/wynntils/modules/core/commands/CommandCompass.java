@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.core.commands;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.utils.objects.Location;
@@ -202,8 +203,8 @@ public class CommandCompass extends CommandBase implements IClientCommand {
 
             if (args.length >= 2 && args[1].equalsIgnoreCase("location")) {
                 // Use current location instead of compass
-                x = Minecraft.getMinecraft().player.posX;
-                z = Minecraft.getMinecraft().player.posZ;
+                x = McIf.player().posX;
+                z = McIf.player().posZ;
                 type = "location";
                 recipientIndex = 2;
             } else {
@@ -249,8 +250,8 @@ public class CommandCompass extends CommandBase implements IClientCommand {
             }
 
             try {
-                int x = getSingleCoordinate(xStr, (int) Minecraft.getMinecraft().player.posX);
-                int z = getSingleCoordinate(zStr, (int) Minecraft.getMinecraft().player.posZ);
+                int x = getSingleCoordinate(xStr, (int) McIf.player().posX);
+                int z = getSingleCoordinate(zStr, (int) McIf.player().posZ);
 
                 CompassManager.setCompassLocation(new Location(x, 0, z));
 
@@ -283,11 +284,11 @@ public class CommandCompass extends CommandBase implements IClientCommand {
     public static void shareCoordinates(String recipientUser, String type, int x, int z) {
         String location = "[" + x + ", " + z + "]";
         if (recipientUser == null) {
-            Minecraft.getMinecraft().player.sendChatMessage("/p " + " My " + type + " is at " + location);
+            McIf.player().sendChatMessage("/p " + " My " + type + " is at " + location);
         }else if (recipientUser.equalsIgnoreCase("guild")) {
-            Minecraft.getMinecraft().player.sendChatMessage("/g " + " My " + type + " is at " + location);
+            McIf.player().sendChatMessage("/g " + " My " + type + " is at " + location);
         } else {
-            Minecraft.getMinecraft().player.sendChatMessage("/msg " + recipientUser + " My " + type + " is at " + location);
+            McIf.player().sendChatMessage("/msg " + recipientUser + " My " + type + " is at " + location);
         }
     }
 

@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.core.commands;
 
+import com.wynntils.McIf;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.webapi.WebManager;
@@ -44,7 +45,7 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
         if (args.length <= 0) {
-            Minecraft.getMinecraft().player.playSound(SoundEvents.BLOCK_ANVIL_PLACE, 1.0f, 1.0f);
+            McIf.player().playSound(SoundEvents.BLOCK_ANVIL_PLACE, 1.0f, 1.0f);
 
             throw new WrongUsageException("/territory [name] | Ex: /territory Detlas");
         }
@@ -60,12 +61,12 @@ public class CommandTerritory extends CommandBase implements IClientCommand {
 
         Optional<TerritoryProfile> selectedTerritory = territories.stream().filter(c -> c.getFriendlyName().equalsIgnoreCase(finalTerritoryName)).findFirst();
         if (!selectedTerritory.isPresent()) {
-            Minecraft.getMinecraft().player.playSound(SoundEvents.BLOCK_ANVIL_PLACE, 1.0f, 1.0f);
+            McIf.player().playSound(SoundEvents.BLOCK_ANVIL_PLACE, 1.0f, 1.0f);
 
             throw new CommandException("Invalid territory! Use: /territory [name] | Ex: /territory Detlas");
         }
 
-        Minecraft.getMinecraft().player.playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, 1.0f, 10.0f);
+        McIf.player().playSound(SoundEvents.ENTITY_PLAYER_LEVELUP, 1.0f, 10.0f);
 
         TerritoryProfile tp = selectedTerritory.get();
 

@@ -5,6 +5,7 @@
 package com.wynntils.core.events;
 
 import com.mojang.authlib.GameProfile;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.FrameworkManager;
@@ -64,7 +65,7 @@ public class ClientEvents {
     public void onScreenDraw(GuiScreenEvent.DrawScreenEvent.Post e) {
         if (!(e.getGui() instanceof GuiConnecting)) return;
 
-        e.getGui().drawCenteredString(Minecraft.getMinecraft().fontRenderer, statusMsg, e.getGui().width / 2, e.getGui().height / 2 - 20, 16777215);
+        e.getGui().drawCenteredString(McIf.mc().fontRenderer, statusMsg, e.getGui().width / 2, e.getGui().height / 2 - 20, 16777215);
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
@@ -93,7 +94,7 @@ public class ClientEvents {
     public void triggerGameEvents(ClientChatReceivedEvent e) {
         if (e.getType() == ChatType.GAME_INFO) return;
 
-        String message = e.getMessage().getUnformattedText();
+        String message = McIf.getUnformattedText(e.getMessage());
 
         if (message.contains("\u27a4")) return;  // Whisper from a player
 
@@ -103,7 +104,7 @@ public class ClientEvents {
             isNextQuestCompleted = false;
 
             String questName = message.trim().replace("À", "");
-            if (e.getMessage().getFormattedText().contains(TextFormatting.GREEN.toString()))
+            if (McIf.getFormattedText(e.getMessage()).contains(TextFormatting.GREEN.toString()))
                 toDispatch = new GameEvent.QuestCompleted.MiniQuest(questName);
             else
                 toDispatch = new GameEvent.QuestCompleted(questName);
@@ -180,7 +181,7 @@ public class ClientEvents {
                 if (e.getPacket().getAction() == Action.UPDATE_DISPLAY_NAME) {
                     ITextComponent nameComponent = (ITextComponent) ReflectionMethods.SPacketPlayerListItem$AddPlayerData_getDisplayName.invoke(player);
                     if (nameComponent == null) continue;
-                    String name = nameComponent.getUnformattedText();
+                    String name = McIf.getUnformattedText(nameComponent);
                     String world = name.substring(name.indexOf("[") + 1, name.indexOf("]"));
 
                     if (world.equalsIgnoreCase(lastWorld)) continue;
@@ -222,7 +223,7 @@ public class ClientEvents {
         if (e.phase != TickEvent.Phase.END) return;
 
         ScreenRenderer.refresh();
-        if (!Reference.onServer || Minecraft.getMinecraft().player == null) return;
+        if (!Reference.onServer || McIf.player() == null) return;
 
         FrameworkManager.triggerHudTick(e);
         FrameworkManager.triggerKeyPress();
@@ -245,8 +246,8 @@ public class ClientEvents {
     public void checkSpellCast(TickEvent.ClientTickEvent e) {
         if (!Reference.onWorld) return;
 
-        int remainingHighlightTicks = ReflectionFields.GuiIngame_remainingHighlightTicks.getValue(Minecraft.getMinecraft().ingameGUI);
-        ItemStack highlightingItemStack = ReflectionFields.GuiIngame_highlightingItemStack.getValue(Minecraft.getMinecraft().ingameGUI);
+        int remainingHighlightTicks = ReflectionFields.GuiIngame_remainingHighlightTicks.getValue(McIf.mc().ingameGUI);
+        ItemStack highlightingItemStack = ReflectionFields.GuiIngame_highlightingItemStack.getValue(McIf.mc().ingameGUI);
 
         if (remainingHighlightTicks == 0 || highlightingItemStack.isEmpty()) {
             heldItem = "";

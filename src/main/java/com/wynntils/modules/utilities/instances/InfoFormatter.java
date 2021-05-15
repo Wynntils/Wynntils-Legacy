@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.instances;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.containers.UnprocessedAmount;
@@ -31,8 +32,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class InfoFormatter {
-
-    private Minecraft mc = Minecraft.getMinecraft();
 
     public Map<String, String> cache = new HashMap<>();
     public Map<String, InfoModule> formatters = new HashMap<>();
@@ -66,22 +65,22 @@ public class InfoFormatter {
 
         // X coordinate
         registerFormatter((input) ->
-                Integer.toString((int) mc.player.posX),
+                Integer.toString((int) McIf.player().posX),
                 "x");
 
         // Y coordinate
         registerFormatter((input) ->
-                Integer.toString((int) mc.player.posY),
+                Integer.toString((int) McIf.player().posY),
                 "y");
 
         // Z coordinate
         registerFormatter((input) ->
-                Integer.toString((int) mc.player.posZ),
+                Integer.toString((int) McIf.player().posZ),
                 "z");
 
         // The facing cardinal direction
         registerFormatter((input) ->
-                Utils.getPlayerDirection(mc.player.rotationYaw),
+                Utils.getPlayerDirection(McIf.player().rotationYaw),
                 "dir");
 
         // Frames per second
@@ -244,7 +243,7 @@ public class InfoFormatter {
         // Distance from compass beacon
         registerFormatter((input) ->{
             Location compass = CompassManager.getCompassLocation();
-            Location playerPos = new Location(Minecraft.getMinecraft().player);
+            Location playerPos = new Location(McIf.player());
 
             if (compass == null) return "";
             return String.valueOf((int) compass.distance(playerPos));

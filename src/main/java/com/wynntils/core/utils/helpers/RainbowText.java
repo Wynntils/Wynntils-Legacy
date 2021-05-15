@@ -4,6 +4,7 @@
 
 package com.wynntils.core.utils.helpers;
 
+import com.wynntils.McIf;
 import net.minecraft.client.Minecraft;
 
 public class RainbowText {
@@ -18,7 +19,7 @@ public class RainbowText {
     public static String makeRainbow(String input, boolean bold) {
         StringBuilder sb = new StringBuilder();
 
-        int offset = (int) Math.floor(Minecraft.getSystemTime() / 80.0) % colors.length;
+        int offset = (int) Math.floor(McIf.getSystemTime() / 80.0) % colors.length;
 
         for (int i = 0; i < input.length(); i++) {
             int color = (i + colors.length - offset) % colors.length;

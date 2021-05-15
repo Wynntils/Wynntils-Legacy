@@ -4,7 +4,7 @@
 
 package com.wynntils.modules.questbook.overlays.ui;
 
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.core.framework.settings.ui.OverlayPositionsUI;
 import com.wynntils.core.framework.ui.UI;
 import com.wynntils.modules.questbook.instances.IconContainer;
@@ -21,9 +21,9 @@ public class HUDConfigPage extends QuestBookPage {
 
     @Override
     public void open(boolean showAnimation) {
-        OverlayPositionsUI ui = new OverlayPositionsUI(ModCore.mc().currentScreen);
+        OverlayPositionsUI ui = new OverlayPositionsUI(McIf.mc().currentScreen);
         UI.setupUI(ui);
-        ModCore.mc().displayGuiScreen(ui);
+        McIf.mc().displayGuiScreen(ui);
     }
 
     @Override

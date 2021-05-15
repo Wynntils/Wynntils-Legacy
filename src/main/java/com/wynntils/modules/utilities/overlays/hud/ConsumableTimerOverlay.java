@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.overlays.hud;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.SkillPoint;
 import com.wynntils.core.framework.enums.SpellType;
 import com.wynntils.core.framework.overlays.Overlay;
@@ -82,7 +83,7 @@ public class ConsumableTimerOverlay extends Overlay {
                 Matcher m = DURATION_PATTERN.matcher(line);
                 if (m.matches() && m.group(1) != null) {
                     consumable.setExpirationTime(
-                            Minecraft.getSystemTime() + (Integer.parseInt(m.group(1)) * 1000)
+                            McIf.getSystemTime() + (Integer.parseInt(m.group(1)) * 1000)
                     ); // currentMillis + (seconds * 1000)
                     continue;
                 }
@@ -137,7 +138,7 @@ public class ConsumableTimerOverlay extends Overlay {
             Matcher m = DURATION_PATTERN.matcher(line);
             if (m.matches() && m.group(1) != null) {
                 consumable.setExpirationTime(
-                        Minecraft.getSystemTime() + (Integer.parseInt(m.group(1)) * 1000)
+                        McIf.getSystemTime() + (Integer.parseInt(m.group(1)) * 1000)
                 ); // currentMillis + (seconds * 1000)
                 continue;
             }
@@ -177,7 +178,7 @@ public class ConsumableTimerOverlay extends Overlay {
         Matcher m2 = CHAT_DURATION_PATTERN.matcher(duration);
         if (!m2.matches() || m2.group(1) == null) return;
 
-        long expiration = Minecraft.getSystemTime() + (Integer.parseInt(m2.group(1)) * 1000);
+        long expiration = McIf.getSystemTime() + (Integer.parseInt(m2.group(1)) * 1000);
         int value = Integer.parseInt(m.group("Value"));
         String shortIdName = ItemIdentificationOverlay.toShortIdName(m.group("ID"), m.group("Suffix") == null);
         ConsumableContainer consumable = null;
@@ -271,7 +272,7 @@ public class ConsumableTimerOverlay extends Overlay {
     public static void addBasicTimer(String name, int timeInSeconds, boolean persistent) {
         String formattedName = GRAY + name;
         // setExpirationTime adds an extra 1000 so compensate for that here
-        long expirationTime = Minecraft.getSystemTime() + timeInSeconds*1000 - 1000;
+        long expirationTime = McIf.getSystemTime() + timeInSeconds*1000 - 1000;
 
         for (ConsumableContainer c : activeConsumables) {
             if (c.getName().equals(formattedName)) {
@@ -319,7 +320,7 @@ public class ConsumableTimerOverlay extends Overlay {
                 continue;
             }
 
-            drawString(consumable.getName() + " (" + StringUtils.timeLeft(consumable.getExpirationTime() - Minecraft.getSystemTime() + 1000) + ")"
+            drawString(consumable.getName() + " (" + StringUtils.timeLeft(consumable.getExpirationTime() - McIf.getSystemTime() + 1000) + ")"
                     , 0, extraY, CommonColors.WHITE, OverlayConfig.ConsumableTimer.INSTANCE.textAlignment,
                     OverlayConfig.ConsumableTimer.INSTANCE.textShadow);
 

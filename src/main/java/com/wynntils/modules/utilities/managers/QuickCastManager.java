@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.managers;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
@@ -89,7 +90,7 @@ public class QuickCastManager {
         }
 
         if (PlayerInfo.get(CharacterData.class).getLevel() < spellUnlock[spell - 1]) {
-            Minecraft.getMinecraft().player.sendMessage(new TextComponentString(
+            McIf.player().sendMessage(new TextComponentString(
                     TextFormatting.GRAY + "You have not yet unlocked this spell! You need to be level " + spellUnlock[spell - 1]
             ));
             return false;
@@ -106,12 +107,12 @@ public class QuickCastManager {
             SPacketTitle title = (SPacketTitle) input;
             if (title.getType() != SPacketTitle.Type.SUBTITLE) return false;
 
-            spell = data.parseSpellFromTitle(title.getMessage().getFormattedText());
+            spell = data.parseSpellFromTitle(McIf.getFormattedText(title.getMessage()));
         } else {
             SPacketChat title = (SPacketChat) input;
             if (title.getType() != ChatType.GAME_INFO) return false;
 
-            PlayerInfo.get(ActionBarData.class).updateActionBar(title.getChatComponent().getUnformattedText());
+            PlayerInfo.get(ActionBarData.class).updateActionBar(McIf.getUnformattedText(title.getChatComponent()));
 
             spell = data.getLastSpell();
         }

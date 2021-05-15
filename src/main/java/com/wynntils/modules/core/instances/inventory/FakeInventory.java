@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.core.instances.inventory;
 
+import com.wynntils.McIf;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.utils.objects.Pair;
@@ -59,8 +60,6 @@ public class FakeInventory {
     private boolean expectingResponse = false;
     private long limitTime = 10000;
 
-    private Minecraft mc = Minecraft.getMinecraft();
-
     public FakeInventory(Pattern expectedWindowTitle, IInventoryOpenAction openAction) {
         this.expectedWindowTitle = expectedWindowTitle;
         this.openAction = openAction;
@@ -87,7 +86,7 @@ public class FakeInventory {
     public void open() {
         if (isOpen) return;
 
-        lastAction = Minecraft.getSystemTime();
+        lastAction = McIf.getSystemTime();
         expectingResponse = true;
 
         FrameworkManager.getEventBus().register(this);
@@ -109,20 +108,20 @@ public class FakeInventory {
         FrameworkManager.getEventBus().unregister(this);
         isOpen = false;
 
-        if (windowId != -1) mc.getConnection().sendPacket(new CPacketCloseWindow(windowId));
+        if (windowId != -1) McIf.mc().getConnection().sendPacket(new CPacketCloseWindow(windowId));
         windowId = -1;
 
-        if(onClose != null) mc.addScheduledTask(() -> onClose.accept(this, result));
+        if(onClose != null) McIf.mc().addScheduledTask(() -> onClose.accept(this, result));
     }
 
     public void clickItem(int slot, int mouseButton, ClickType type) {
         if (!isOpen) return;
 
-        lastAction = Minecraft.getSystemTime();
+        lastAction = McIf.getSystemTime();
         expectingResponse = true;
 
         transaction++;
-        mc.getConnection().sendPacket(new CPacketClickWindow(windowId, slot, mouseButton, type, inventory.get(slot), transaction));
+        McIf.mc().getConnection().sendPacket(new CPacketClickWindow(windowId, slot, mouseButton, type, inventory.get(slot), transaction));
     }
 
     public Pair<Integer, ItemStack> findItem(String name, BiPredicate<String, String> filterType) {
@@ -190,7 +189,7 @@ public class FakeInventory {
     public void onTick(TickEvent.ClientTickEvent e) {
         if (!isOpen || e.phase != TickEvent.Phase.END) return;
         if (!expectingResponse) return;
-        if (Minecraft.getSystemTime() - lastAction < limitTime) return;
+        if (McIf.getSystemTime() - lastAction < limitTime) return;
 
         close(InventoryResult.CLOSED_PREMATURELY);
     }
@@ -203,17 +202,17 @@ public class FakeInventory {
             return;
         }
 
-        if (!expectedWindowTitle.matcher(TextFormatting.getTextWithoutFormattingCodes(e.getPacket().getWindowTitle().getUnformattedText())).matches()) {
+        if (!expectedWindowTitle.matcher(TextFormatting.getTextWithoutFormattingCodes(McIf.getUnformattedText(e.getPacket().getWindowTitle()))).matches()) {
             close(InventoryResult.CLOSED_OVERLAP);
             return;
         }
 
         isOpen = true;
         expectingResponse = false;
-        lastAction = Minecraft.getSystemTime();
+        lastAction = McIf.getSystemTime();
 
         windowId = e.getPacket().getWindowId();
-        windowTitle = e.getPacket().getWindowTitle().getUnformattedText();
+        windowTitle = McIf.getUnformattedText(e.getPacket().getWindowTitle());
         inventory = NonNullList.create();
 
         e.setCanceled(true);
@@ -231,9 +230,9 @@ public class FakeInventory {
         inventory.addAll(e.getPacket().getItemStacks());
 
         expectingResponse = false;
-        lastAction = Minecraft.getSystemTime();
+        lastAction = McIf.getSystemTime();
 
-        if (onReceiveItems != null) mc.addScheduledTask(() -> onReceiveItems.accept(this));
+        if (onReceiveItems != null) McIf.mc().addScheduledTask(() -> onReceiveItems.accept(this));
 
         e.setCanceled(true);
     }
@@ -246,7 +245,7 @@ public class FakeInventory {
             return;
         }
 
-        mc.getConnection().sendPacket(new CPacketConfirmTransaction(windowId, e.getPacket().getActionNumber(), true));
+        McIf.mc().getConnection().sendPacket(new CPacketConfirmTransaction(windowId, e.getPacket().getActionNumber(), true));
         e.setCanceled(true);
     }
 

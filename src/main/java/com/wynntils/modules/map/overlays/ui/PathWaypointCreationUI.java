@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.overlays.ui;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.MouseButton;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.ui.elements.UIEColorWheel;
@@ -84,9 +85,9 @@ public class PathWaypointCreationUI extends WorldMapUI {
         boolean returning = nameField != null;
         String name = returning ? nameField.getText() : profile.name;
 
-        nameField = new GuiTextField(0, mc.fontRenderer, this.width - 183, 23, 160, 20);
+        nameField = new GuiTextField(0, McIf.mc().fontRenderer, this.width - 183, 23, 160, 20);
         nameField.setText(name);
-        nameFieldLabel = new GuiLabel(mc.fontRenderer, 0, this.width - 218, 30, 40, 10, 0xFFFFFF);
+        nameFieldLabel = new GuiLabel(McIf.mc().fontRenderer, 0, this.width - 218, 30, 40, 10, 0xFFFFFF);
         nameFieldLabel.addLine("Name");
 
         if (!returning) {
@@ -97,7 +98,7 @@ public class PathWaypointCreationUI extends WorldMapUI {
         buttonList.add(hiddenBox = new GuiCheckBox(5, this.width - 143,  72, "Hidden", hidden));  // TODO: check align
         buttonList.add(circularBox = new GuiCheckBox(6, this.width - 83, 72, "Circular", profile.isCircular));
 
-        helpText = new GuiLabel(mc.fontRenderer, 1, 22, this.height - 36, 120, 10, 0xFFFFFF);
+        helpText = new GuiLabel(McIf.mc().fontRenderer, 1, 22, this.height - 36, 120, 10, 0xFFFFFF);
         helpText.addLine("Shift + drag to pan");
         helpText.addLine("Right click to remove points");
 
@@ -299,8 +300,8 @@ public class PathWaypointCreationUI extends WorldMapUI {
 
         if (nameField != null) nameField.drawTextBox();
 
-        nameFieldLabel.drawLabel(mc, mouseX, mouseY);
-        helpText.drawLabel(mc, mouseX, mouseY);
+        nameFieldLabel.drawLabel(McIf.mc(), mouseX, mouseY);
+        helpText.drawLabel(McIf.mc(), mouseX, mouseY);
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
@@ -317,11 +318,11 @@ public class PathWaypointCreationUI extends WorldMapUI {
                 MapConfig.Waypoints.INSTANCE.pathWaypoints.add(profile);
             }
             MapConfig.Waypoints.INSTANCE.saveSettings(MapModule.getModule());
-            mc.displayGuiScreen(new PathWaypointOverwiewUI());
+            McIf.mc().displayGuiScreen(new PathWaypointOverwiewUI());
         } else if (btn == cancelButton) {
-            mc.displayGuiScreen(new PathWaypointOverwiewUI());
+            McIf.mc().displayGuiScreen(new PathWaypointOverwiewUI());
         } else if (btn == resetButton) {
-            mc.displayGuiScreen(new PathWaypointCreationUI(originalProfile));
+            McIf.mc().displayGuiScreen(new PathWaypointCreationUI(originalProfile));
         } else if (btn == clearButton) {
             int sz;
             while ((sz = profile.size()) != 0) profile.removePoint(sz - 1);

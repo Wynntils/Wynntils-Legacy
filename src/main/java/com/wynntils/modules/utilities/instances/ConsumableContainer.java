@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.instances;
 
+import com.wynntils.McIf;
 import com.wynntils.webapi.profiles.item.enums.IdentificationModifier;
 import net.minecraft.client.Minecraft;
 
@@ -95,7 +96,7 @@ public class ConsumableContainer {
      * @return if the consumable duration has already expired
      */
     public boolean hasExpired() {
-        return Minecraft.getSystemTime() >= expirationTime;
+        return McIf.getSystemTime() >= expirationTime;
     }
 
     public boolean isPersistent() {

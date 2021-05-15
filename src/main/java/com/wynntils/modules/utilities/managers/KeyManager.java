@@ -4,7 +4,7 @@
 
 package com.wynntils.modules.utilities.managers;
 
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.wynntils.WynntilsConflictContext;
 import com.wynntils.core.framework.instances.KeyHolder;
@@ -16,7 +16,6 @@ import com.wynntils.modules.utilities.events.ClientEvents;
 import com.wynntils.modules.utilities.overlays.hud.StopWatchOverlay;
 import com.wynntils.modules.utilities.overlays.ui.GearViewerUI;
 import com.wynntils.webapi.WebManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.network.play.client.CPacketClickWindow;
@@ -38,18 +37,18 @@ public class KeyManager {
 
     public static void registerKeys() {
         UtilitiesModule.getModule().registerKeyBinding("Gammabright", Keyboard.KEY_G, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
-            if (ModCore.mc().gameSettings.gammaSetting < 1000) {
-                lastGamma = ModCore.mc().gameSettings.gammaSetting;
-                ModCore.mc().gameSettings.gammaSetting = 1000;
+            if (McIf.mc().gameSettings.gammaSetting < 1000) {
+                lastGamma = McIf.mc().gameSettings.gammaSetting;
+                McIf.mc().gameSettings.gammaSetting = 1000;
                 return;
             }
 
-            ModCore.mc().gameSettings.gammaSetting = lastGamma;
+            McIf.mc().gameSettings.gammaSetting = lastGamma;
         });
 
         checkForUpdatesKey = CoreModule.getModule().registerKeyBinding("Check for Updates", Keyboard.KEY_L, "Wynntils", true, WebManager::checkForUpdates);
 
-        CoreModule.getModule().registerKeyBinding("Open Settings", Keyboard.KEY_P, "Wynntils", KeyConflictContext.IN_GAME, true, () -> ModCore.mc().displayGuiScreen(SettingsUI.getInstance(ModCore.mc().currentScreen)));
+        CoreModule.getModule().registerKeyBinding("Open Settings", Keyboard.KEY_P, "Wynntils", KeyConflictContext.IN_GAME, true, () -> McIf.mc().displayGuiScreen(SettingsUI.getInstance(McIf.mc().currentScreen)));
 
         lockInventoryKey = UtilitiesModule.getModule().registerKeyBinding("Lock Slot", Keyboard.KEY_H, "Wynntils", KeyConflictContext.GUI, true, () -> {});
         favoriteTradeKey = UtilitiesModule.getModule().registerKeyBinding("Favorite Trade", Keyboard.KEY_F, "Wynntils", KeyConflictContext.GUI, true, () -> {});
@@ -70,13 +69,13 @@ public class KeyManager {
         CoreModule.getModule().registerKeyBinding("Mob Totem Menu", Keyboard.KEY_J, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
             if (!Reference.onWorld) return;
 
-            Minecraft.getMinecraft().player.sendChatMessage("/totem");
+            McIf.player().sendChatMessage("/totem");
         });
 
         CoreModule.getModule().registerKeyBinding("Open Ingredient Pouch", Keyboard.KEY_O, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
             if (!Reference.onWorld) return;
 
-            EntityPlayerSP player = Minecraft.getMinecraft().player;
+            EntityPlayerSP player = McIf.player();
             player.connection.sendPacket(new CPacketClickWindow(
                     player.inventoryContainer.windowId,
                     13, 0, ClickType.PICKUP, player.inventory.getStackInSlot(13),

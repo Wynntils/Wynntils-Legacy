@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.overlays.inventories;
 
+import com.wynntils.McIf;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.enums.SpellType;
@@ -311,7 +312,7 @@ public class ItemIdentificationOverlay implements Listener {
         if (item.getLore() != null && !item.getLore().isEmpty()) {
             if (wynntils.hasKey("purchaseInfo")) newLore.add(" ");
 
-            newLore.addAll(Minecraft.getMinecraft().fontRenderer.listFormattedStringToWidth(DARK_GRAY + item.getLore(), 150));
+            newLore.addAll(McIf.mc().fontRenderer.listFormattedStringToWidth(DARK_GRAY + item.getLore(), 150));
         }
 
         // Special displayname

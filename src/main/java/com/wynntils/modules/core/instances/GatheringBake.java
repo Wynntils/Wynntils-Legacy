@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.core.instances;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.professions.GatheringMaterial;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
 import net.minecraft.client.Minecraft;
@@ -17,7 +18,7 @@ public class GatheringBake {
     double xpAmount = 0;
     double xpPercentage = 0;
 
-    long created = Minecraft.getSystemTime();
+    long created = McIf.getSystemTime();
 
     public GatheringBake() { }
 
@@ -74,7 +75,7 @@ public class GatheringBake {
     }
 
     public boolean isInvalid() {
-        return Minecraft.getSystemTime() - created >= 600;
+        return McIf.getSystemTime() - created >= 600;
     }
 
 }

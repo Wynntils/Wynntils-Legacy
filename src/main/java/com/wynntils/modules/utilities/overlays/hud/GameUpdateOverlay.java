@@ -4,7 +4,7 @@
 
 package com.wynntils.modules.utilities.overlays.hud;
 
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
@@ -100,7 +100,7 @@ public class GameUpdateOverlay extends Overlay {
 
         String processedMessage = message;
         LogManager.getFormatterLogger("GameTicker").info("Message Queued: " + processedMessage);
-        ModCore.mc().addScheduledTask(() -> {
+        McIf.mc().addScheduledTask(() -> {
             messageQueue.add(new MessageContainer(processedMessage));
 
             if (OverlayConfig.GameUpdate.INSTANCE.overrideNewMessages && messageQueue.size() > OverlayConfig.GameUpdate.INSTANCE.messageLimit)
@@ -109,7 +109,7 @@ public class GameUpdateOverlay extends Overlay {
     }
 
     public static void resetMessages() {
-        ModCore.mc().addScheduledTask(() -> messageQueue.clear());
+        McIf.mc().addScheduledTask(() -> messageQueue.clear());
     }
 
 

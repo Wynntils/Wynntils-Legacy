@@ -1,5 +1,6 @@
 package com.wynntils.modules.questbook.overlays.ui;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -200,14 +201,14 @@ public class LootRunPage extends QuestBookPage {
                     int animationTick = -1;
                     if (hovered && !showAnimation) {
                         if (lastTick == 0 && !animationCompleted) {
-                            lastTick = Minecraft.getSystemTime();
+                            lastTick = McIf.getSystemTime();
                         }
 
                         selected = i;
                         selectedName = currentName;
 
                         if (!animationCompleted) {
-                            animationTick = (int) (Minecraft.getSystemTime() - lastTick) / 2;
+                            animationTick = (int) (McIf.getSystemTime() - lastTick) / 2;
                             if (animationTick >= 133 && !toCrop) {
                                 animationCompleted = true;
                                 animationTick = 133;
@@ -216,7 +217,7 @@ public class LootRunPage extends QuestBookPage {
                             //reset animation to wait for scroll
                             if (toCrop) {
                                 animationCompleted = false;
-                                lastTick = Minecraft.getSystemTime() - 133 * 2;
+                                lastTick = McIf.getSystemTime() - 133 * 2;
                             }
 
                             animationTick = 133;
@@ -319,11 +320,11 @@ public class LootRunPage extends QuestBookPage {
     }
 
     public String getFriendlyName(String str, int width) {
-        if (!(Minecraft.getMinecraft().fontRenderer.getStringWidth(str) > width)) return str;
+        if (!(McIf.mc().fontRenderer.getStringWidth(str) > width)) return str;
 
         str += "...";
 
-        while (Minecraft.getMinecraft().fontRenderer.getStringWidth(str) > width) {
+        while (McIf.mc().fontRenderer.getStringWidth(str) > width) {
             str = str.substring(0, str.length() - 4).trim() + "...";
         }
 
@@ -337,7 +338,7 @@ public class LootRunPage extends QuestBookPage {
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        ScaledResolution res = new ScaledResolution(mc);
+        ScaledResolution res = new ScaledResolution(McIf.mc());
         int posX = ((res.getScaledWidth() / 2) - mouseX);
         int posY = ((res.getScaledHeight() / 2) - mouseY);
 
@@ -363,11 +364,11 @@ public class LootRunPage extends QuestBookPage {
                             Location start = LootRunManager.getActivePath().getPoints().get(0);
                             String startingPointMsg = "Loot run " + LootRunManager.getActivePathName() + " starts at [" + (int) start.getX() + ", " + (int) start.getZ() + "]";
 
-                            Minecraft.getMinecraft().addScheduledTask(() ->
+                            McIf.mc().addScheduledTask(() ->
                                     ChatOverlay.getChat().printChatMessageWithOptionalDeletion(new TextComponentString(startingPointMsg), MESSAGE_ID)
                             );
 
-                            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
+                            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -380,7 +381,7 @@ public class LootRunPage extends QuestBookPage {
                 if (result) {
                     names.remove(selected);
                     updateSelected();
-                    Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
+                    McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
                 }
 
                 return;

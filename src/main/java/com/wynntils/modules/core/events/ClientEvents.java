@@ -4,7 +4,7 @@
 
 package com.wynntils.modules.core.events;
 
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.FrameworkManager;
@@ -33,7 +33,6 @@ import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngameMenu;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiScreen;
@@ -47,7 +46,6 @@ import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.network.datasync.EntityDataManager;
 import net.minecraft.network.play.client.CPacketClientSettings;
 import net.minecraft.network.play.client.CPacketHeldItemChange;
 import net.minecraft.network.play.server.*;
@@ -102,19 +100,19 @@ public class ClientEvents implements Listener {
         if (e.getGui() instanceof GuiInventory) {
             if (e.getGui() instanceof InventoryReplacer) return;
 
-            e.setGui(new InventoryReplacer(ModCore.mc().player));
+            e.setGui(new InventoryReplacer(McIf.player()));
             return;
         }
         if (e.getGui() instanceof GuiChest) {
             if (e.getGui() instanceof ChestReplacer) return;
 
-            e.setGui(new ChestReplacer(ModCore.mc().player.inventory, ReflectionFields.GuiChest_lowerChestInventory.getValue(e.getGui())));
+            e.setGui(new ChestReplacer(McIf.player().inventory, ReflectionFields.GuiChest_lowerChestInventory.getValue(e.getGui())));
             return;
         }
         if (e.getGui() instanceof GuiScreenHorseInventory) {
             if (e.getGui() instanceof HorseReplacer) return;
 
-            e.setGui(new HorseReplacer(ModCore.mc().player.inventory, ReflectionFields.GuiScreenHorseInventory_horseInventory.getValue(e.getGui()), (AbstractHorse) ReflectionFields.GuiScreenHorseInventory_horseEntity.getValue(e.getGui())));
+            e.setGui(new HorseReplacer(McIf.player().inventory, ReflectionFields.GuiScreenHorseInventory_horseInventory.getValue(e.getGui()), (AbstractHorse) ReflectionFields.GuiScreenHorseInventory_horseEntity.getValue(e.getGui())));
         }
         if (e.getGui() instanceof GuiIngameMenu) {
             if (e.getGui() instanceof IngameMenuReplacer) return;
@@ -135,7 +133,7 @@ public class ClientEvents implements Listener {
         if (e.getPacket().getAction() == 1) {
             ScorePlayerTeam scoreplayerteam;
 
-            Scoreboard scoreboard = Minecraft.getMinecraft().world.getScoreboard();
+            Scoreboard scoreboard = McIf.world().getScoreboard();
             scoreplayerteam = scoreboard.getTeam(e.getPacket().getName());
             if (scoreplayerteam == null) {
                 // This would cause an NPE so cancel it
@@ -149,10 +147,10 @@ public class ClientEvents implements Listener {
         // I'm not sure what this does, but the code has been here a long time,
         // just moving it here. /magicus, 2021
         SPacketEntityVelocity velocity = e.getPacket();
-        if (Minecraft.getMinecraft().world != null) {
-            Entity entity = Minecraft.getMinecraft().world.getEntityByID(velocity.getEntityID());
-            Entity vehicle = Minecraft.getMinecraft().player.getLowestRidingEntity();
-            if ((entity == vehicle) && (vehicle != Minecraft.getMinecraft().player) && (vehicle.canPassengerSteer())) {
+        if (McIf.world() != null) {
+            Entity entity = McIf.world().getEntityByID(velocity.getEntityID());
+            Entity vehicle = McIf.player().getLowestRidingEntity();
+            if ((entity == vehicle) && (vehicle != McIf.player()) && (vehicle.canPassengerSteer())) {
                 e.setCanceled(true);
             }
         }
@@ -163,8 +161,8 @@ public class ClientEvents implements Listener {
         // I'm not sure what this does, but the code has been here a long time,
         // just moving it here. /magicus, 2021
         SPacketMoveVehicle moveVehicle = e.getPacket();
-        Entity vehicle = Minecraft.getMinecraft().player.getLowestRidingEntity();
-        if ((vehicle == Minecraft.getMinecraft().player) || (!vehicle.canPassengerSteer()) || (vehicle.getDistance(moveVehicle.getX(), moveVehicle.getY(), moveVehicle.getZ()) <= 25D)) {
+        Entity vehicle = McIf.player().getLowestRidingEntity();
+        if ((vehicle == McIf.player()) || (!vehicle.canPassengerSteer()) || (vehicle.getDistance(moveVehicle.getX(), moveVehicle.getY(), moveVehicle.getZ()) <= 25D)) {
             e.setCanceled(true);
         }
     }
@@ -172,13 +170,13 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void findLabels(PacketEvent<SPacketEntityMetadata> e) {
         // makes this method always be called in main thread
-        if (!Minecraft.getMinecraft().isCallingFromMinecraftThread()) {
-            Minecraft.getMinecraft().addScheduledTask(() -> findLabels(e));
+        if (!McIf.mc().isCallingFromMinecraftThread()) {
+            McIf.mc().addScheduledTask(() -> findLabels(e));
             return;
         }
 
         if (e.getPacket().getDataManagerEntries() == null || e.getPacket().getDataManagerEntries().isEmpty()) return;
-        Entity i = Minecraft.getMinecraft().world.getEntityByID(e.getPacket().getEntityId());
+        Entity i = McIf.world().getEntityByID(e.getPacket().getEntityId());
         if (i == null) return;
 
         if (i instanceof EntityItemFrame) {
@@ -290,7 +288,7 @@ public class ClientEvents implements Listener {
     public void updateActionBar(PacketEvent<SPacketChat> e) {
         if (!Reference.onServer || e.getPacket().getType() != ChatType.GAME_INFO) return;
 
-        PlayerInfo.get(ActionBarData.class).updateActionBar(e.getPacket().getChatComponent().getUnformattedText());
+        PlayerInfo.get(ActionBarData.class).updateActionBar(McIf.getUnformattedText(e.getPacket().getChatComponent()));
         if (UtilitiesModule.getModule().getActionBarOverlay().active) e.setCanceled(true); // only disable when the wynntils action bar is enabled
     }
 
@@ -350,7 +348,7 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void mainMenuActionPerformed(GuiScreenEvent.ActionPerformedEvent.Post e) {
         GuiScreen gui = e.getGui();
-        if (gui != gui.mc.currentScreen || !(gui instanceof GuiMainMenu)) return;
+        if (gui != McIf.mc().currentScreen || !(gui instanceof GuiMainMenu)) return;
 
         MainMenuButtons.actionPerformed((GuiMainMenu) gui, e.getButton(), e.getButtonList());
     }

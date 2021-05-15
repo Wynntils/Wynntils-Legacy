@@ -4,6 +4,7 @@
 
 package com.wynntils.core;
 
+import com.wynntils.McIf;
 import com.wynntils.core.events.ClientEvents;
 import com.wynntils.core.framework.enums.wynntils.WynntilsConflictContext;
 import com.wynntils.core.framework.instances.PlayerInfo;
@@ -18,10 +19,10 @@ public class CoreManager {
     public static void preModules() {
         MinecraftForge.EVENT_BUS.register(new ClientEvents());
 
-        Minecraft.getMinecraft().gameSettings.keyBindForward.setKeyConflictContext(WynntilsConflictContext.ALLOW_MOVEMENTS);
-        Minecraft.getMinecraft().gameSettings.keyBindBack.setKeyConflictContext(WynntilsConflictContext.ALLOW_MOVEMENTS);
-        Minecraft.getMinecraft().gameSettings.keyBindRight.setKeyConflictContext(WynntilsConflictContext.ALLOW_MOVEMENTS);
-        Minecraft.getMinecraft().gameSettings.keyBindLeft.setKeyConflictContext(WynntilsConflictContext.ALLOW_MOVEMENTS);
+        McIf.mc().gameSettings.keyBindForward.setKeyConflictContext(WynntilsConflictContext.ALLOW_MOVEMENTS);
+        McIf.mc().gameSettings.keyBindBack.setKeyConflictContext(WynntilsConflictContext.ALLOW_MOVEMENTS);
+        McIf.mc().gameSettings.keyBindRight.setKeyConflictContext(WynntilsConflictContext.ALLOW_MOVEMENTS);
+        McIf.mc().gameSettings.keyBindLeft.setKeyConflictContext(WynntilsConflictContext.ALLOW_MOVEMENTS);
     }
 
     /**

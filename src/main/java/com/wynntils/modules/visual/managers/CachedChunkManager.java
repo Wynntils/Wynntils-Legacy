@@ -5,6 +5,7 @@
 package com.wynntils.modules.visual.managers;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.modules.visual.configs.VisualConfig;
 import io.netty.buffer.ByteBuf;
@@ -131,15 +132,14 @@ public class CachedChunkManager {
      * This method is thread safe
      */
     private static void startChunkLoader() {
-        Minecraft mc = Minecraft.getMinecraft();
         while (Reference.onWorld && VisualConfig.CachedChunks.INSTANCE.enabled) {
             // Sleep the thread for 1 second, we don't care about precision for this
             try {
                 Thread.sleep(1000);
             } catch (Exception ignored) { }
 
-            int renderDistance = mc.gameSettings.renderDistanceChunks;
-            ChunkPos player = new ChunkPos(mc.player.chunkCoordX, mc.player.chunkCoordZ);
+            int renderDistance = McIf.mc().gameSettings.renderDistanceChunks;
+            ChunkPos player = new ChunkPos(McIf.player().chunkCoordX, McIf.player().chunkCoordZ);
 
             // Start by removing chunks that are not in the render distance
             Iterator<ChunkPos> it = loadedChunks.iterator();
@@ -167,7 +167,7 @@ public class CachedChunkManager {
                     ChunkPos pos = new ChunkPos(player.x + x, player.z + z);
 
                     if (loadedChunks.contains(pos)) continue;
-                    if (mc.world.getChunk(pos.x, pos.z).isLoaded()) continue;
+                    if (McIf.world().getChunk(pos.x, pos.z).isLoaded()) continue;
 
                     toLoad.add(pos);
                 }
@@ -220,7 +220,7 @@ public class CachedChunkManager {
                     packet.readPacketData(packetBuffer);
 
                     // Submit the packet to the client handler bypassing the packet sent
-                    mc.addScheduledTask(() -> mc.getConnection().handleChunkData(packet));
+                    McIf.mc().addScheduledTask(() -> McIf.mc().getConnection().handleChunkData(packet));
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

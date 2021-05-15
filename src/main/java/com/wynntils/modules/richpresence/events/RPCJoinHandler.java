@@ -5,6 +5,7 @@
 package com.wynntils.modules.richpresence.events;
 
 import com.sun.jna.Pointer;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.framework.FrameworkManager;
@@ -58,8 +59,6 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
 
         RichPresenceModule.getModule().getRichPresence().setJoinSecret(lastSecret);
 
-        Minecraft mc = Minecraft.getMinecraft();
-
         if (!Reference.onServer) {
             ServerData serverData = ServerUtils.getWynncraftServerData(true);
             ServerUtils.connect(serverData);
@@ -69,11 +68,11 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
         if (Reference.onWorld) {
             if (Reference.getUserWorld().replace("WC", "").replace("HB", "").equals(Integer.toString(lastSecret.getWorld())) && Reference.getUserWorld().replaceAll("\\d+", "").equals(lastSecret.getWorldType())) {
                 sentInvite = true;
-                mc.player.sendChatMessage("/msg " + lastSecret.getOwner() + " " + lastSecret.getRandomHash());
+                McIf.player().sendChatMessage("/msg " + lastSecret.getOwner() + " " + lastSecret.getRandomHash());
                 return;
             }
 
-            mc.player.sendChatMessage("/hub");
+            McIf.player().sendChatMessage("/hub");
             waitingLobby = true;
             return;
         }
@@ -96,7 +95,7 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
         if (!waitingInvite) return;
         sentInvite = true;
         waitingInvite = false;
-        Minecraft.getMinecraft().player.sendChatMessage("/msg " + lastSecret.getOwner() + " " + lastSecret.getRandomHash());
+        McIf.player().sendChatMessage("/msg " + lastSecret.getOwner() + " " + lastSecret.getRandomHash());
     }
 
     @SubscribeEvent
@@ -104,15 +103,15 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
         if (e.getType() != ChatType.CHAT && e.getType() != ChatType.SYSTEM) return;
 
         // handles the invitation
-        if (lastSecret != null && e.getMessage().getUnformattedText().startsWith("You have been invited to join " + lastSecret.getOwner())) {
-            Minecraft.getMinecraft().player.sendChatMessage("/party join " + lastSecret.getOwner());
+        if (lastSecret != null && McIf.getUnformattedText(e.getMessage()).startsWith("You have been invited to join " + lastSecret.getOwner())) {
+            McIf.player().sendChatMessage("/party join " + lastSecret.getOwner());
 
             lastSecret = null;
             return;
         }
 
         // handles the user join
-        if (sentInvite && e.getMessage().getUnformattedText().startsWith("[" + Minecraft.getMinecraft().player.getName())) {
+        if (sentInvite && McIf.getUnformattedText(e.getMessage()).startsWith("[" + McIf.player().getName())) {
             sentInvite = false;
             e.setCanceled(true);
             return;
@@ -120,7 +119,7 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
 
         // handles the party owner
         if (PlayerInfo.get(SocialData.class).getPlayerParty().isPartying()) {
-            String text = e.getMessage().getFormattedText();
+            String text = McIf.getFormattedText(e.getMessage());
             Matcher m = dmRegex.matcher(text);
 
             if (!m.matches()) return;
@@ -132,17 +131,17 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
                 return;
 
             e.setCanceled(true);
-            Minecraft.getMinecraft().player.sendChatMessage("/party invite " + user);
+            McIf.player().sendChatMessage("/party invite " + user);
         }
     }
 
     @SubscribeEvent
     public void onTitle(ClientChatReceivedEvent e) {
-        String text = e.getMessage().getUnformattedText();
+        String text = McIf.getUnformattedText(e.getMessage());
         if ((text.equals("You are already connected to this server!") || text.equals("You're rejoining too quickly! Give us a moment to save your data.")) && waitingInvite) {
             waitingLobby = true;
             waitingInvite = false;
-            delayTime = Minecraft.getSystemTime() + 2000;
+            delayTime = McIf.getSystemTime() + 2000;
         }
     }
 

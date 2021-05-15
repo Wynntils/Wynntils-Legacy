@@ -4,7 +4,7 @@
 
 package com.wynntils.modules.utilities.managers;
 
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.UtilitiesModule;
@@ -43,7 +43,7 @@ public class DailyReminderManager {
             text.appendText("are available to claim!");
 
             p.sendMessage(text);
-            ModCore.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1.0F));
+            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1.0F));
 
             UtilitiesConfig.Data.INSTANCE.dailyReminder = System.currentTimeMillis() + 1800000;
             UtilitiesConfig.Data.INSTANCE.saveSettings(UtilitiesModule.getModule());

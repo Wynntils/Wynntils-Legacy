@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.core.enums;
 
+import com.wynntils.McIf;
 import com.wynntils.core.utils.helpers.CommandResponse;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextComponentBase;
@@ -46,7 +47,7 @@ public enum ToggleSetting {
         String inverseMatcher = value ? disabledMatcher : enabledMatcher;
 
         CommandResponse response = new CommandResponse("/toggle " + name, (m, t) -> {
-            String message = t.getUnformattedText();
+            String message = McIf.getUnformattedText(t);
             // Try again if the current value was already the expected result
             if (!message.contains(matcher)) {
                 // Make sure it's the right toggle in case we're running multiple
@@ -59,7 +60,7 @@ public enum ToggleSetting {
             // show message is false when the option was already on the value status
             if (!showMessage) return;
 
-            Minecraft.getMinecraft().player.sendMessage(getToggleText(value));
+            McIf.player().sendMessage(getToggleText(value));
         }, TOGGLE_MESSAGE_PATTERN);
 
         response.setCancel(true);

@@ -4,6 +4,7 @@
 
 package com.wynntils.core.framework.ui.elements;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.MouseButton;
 import com.wynntils.core.framework.ui.UI;
 import com.wynntils.core.framework.ui.UIElement;
@@ -44,7 +45,7 @@ public class UIEClickZone extends UIElement {
     public void click(boolean hovering, MouseButton button, UI ui) {
         if (active && hovering) {
             if (clickSound != null)
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(clickSound, 1f));
+                McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(clickSound, 1f));
             if (onClick != null)
                 onClick.accept(ui, button);
         }
@@ -53,7 +54,7 @@ public class UIEClickZone extends UIElement {
         hovering = mouseX >= position.getDrawingX() && mouseX <= position.getDrawingX()+width && mouseY >= position.getDrawingY() && mouseY <= position.getDrawingY()+height;
         if (active && hovering) {
             if (clickSound != null)
-                Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(clickSound, 1f));
+                McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(clickSound, 1f));
             if (onClick != null)
                 onClick.accept(ui, button);
         }

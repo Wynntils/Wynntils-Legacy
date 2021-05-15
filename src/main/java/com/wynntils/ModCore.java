@@ -85,7 +85,7 @@ public class ModCore {
 
         // HeyZeer0: This will reload our cache if a texture or similar is applied
         // This also immediately loads it
-        ((SimpleReloadableResourceManager)Minecraft.getMinecraft().getResourceManager()).registerReloadListener(resourceManager -> {
+        ((SimpleReloadableResourceManager)McIf.mc().getResourceManager()).registerReloadListener(resourceManager -> {
             Textures.loadTextures();
             Mappings.loadMappings();
             MapApiIcon.resetApiMarkers();
@@ -110,10 +110,6 @@ public class ModCore {
         });
 
         FrameworkManager.getEventBus().post(new ClientEvent.Ready());
-    }
-
-    public static Minecraft mc() {
-        return Minecraft.getMinecraft();
     }
 
 }

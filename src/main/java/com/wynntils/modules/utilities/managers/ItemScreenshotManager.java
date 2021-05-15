@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 import org.lwjgl.BufferUtils;
 import org.lwjgl.opengl.GL11;
 
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 
 import net.minecraft.client.gui.FontRenderer;
@@ -40,36 +40,36 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
 public class ItemScreenshotManager {
-    
+
     private static Pattern ITEM_PATTERN = Pattern.compile("(Normal|Set|Unique|Rare|Legendary|Fabled|Mythic) Item.*");
-    
+
     public static void takeScreenshot() {
         if (!Reference.onWorld) return;
-        GuiScreen gui = ModCore.mc().currentScreen;
+        GuiScreen gui = McIf.mc().currentScreen;
         if (!(gui instanceof GuiContainer)) return;
-        
+
         Slot slot = ((GuiContainer) gui).getSlotUnderMouse();
         if (slot == null || !slot.getHasStack()) return;
         ItemStack stack = slot.getStack();
         if (!stack.hasDisplayName()) return;
-        
-        List<String> tooltip = stack.getTooltip(ModCore.mc().player, ITooltipFlag.TooltipFlags.NORMAL);
+
+        List<String> tooltip = stack.getTooltip(McIf.player(), ITooltipFlag.TooltipFlags.NORMAL);
         removeItemLore(tooltip);
-        
-        FontRenderer fr = ModCore.mc().fontRenderer;
+
+        FontRenderer fr = McIf.mc().fontRenderer;
         int width = 0;
         int height = 16;
-        
+
         // calculate width of tooltip
         for (String s : tooltip) {
             int w = fr.getStringWidth(s);
             if (w > width) width = w;
         }
         width += 8;
-        
+
         // calculate height of tooltip
         if (tooltip.size() > 1) height += 2 + (tooltip.size() - 1) * 10;
-        
+
         // account for text wrapping
         if (width > gui.width/2 + 8) {
             int wrappedWidth = 0;
@@ -85,11 +85,11 @@ public class ItemScreenshotManager {
             width = wrappedWidth + 8;
             height = 16 + (2 + (wrappedLines - 1) * 10);
         }
-        
+
         // calculate scale of tooltip to fit it to the framebuffer
         float scaleh = (float) gui.height/height;
         float scalew = (float) gui.width/width;
-        
+
         // draw tooltip to framebuffer, create image from it
         GlStateManager.pushMatrix();
         Framebuffer fb = new Framebuffer((int) (gui.width*(1/scalew)*2), (int) (gui.height*(1/scaleh)*2), true);
@@ -99,14 +99,14 @@ public class ItemScreenshotManager {
         BufferedImage bi = createScreenshot(width*2, height*2);
         fb.unbindFramebuffer();
         GlStateManager.popMatrix();
-        
+
         // copy to clipboard
         ClipboardImage ci = new ClipboardImage(bi);
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ci, null);
-        
-        ModCore.mc().player.sendMessage(new TextComponentString(TextFormatting.GREEN + "Copied " + stack.getDisplayName() + TextFormatting.GREEN + " to the clipboard!"));
+
+        McIf.player().sendMessage(new TextComponentString(TextFormatting.GREEN + "Copied " + stack.getDisplayName() + TextFormatting.GREEN + " to the clipboard!"));
     }
-    
+
     private static void removeItemLore(List<String> tooltip) {
         // iterate through each line of the tooltip and remove item lore
         List<String> temp = new ArrayList<>();
@@ -115,12 +115,12 @@ public class ItemScreenshotManager {
             // only remove text after the item type indicator
             Matcher m = ITEM_PATTERN.matcher(TextFormatting.getTextWithoutFormattingCodes(s));
             if (!lore && m.matches()) lore = true;
-            
+
             if (lore && s.contains("" + TextFormatting.DARK_GRAY)) temp.add(s);
         }
         tooltip.removeAll(temp);
     }
-    
+
     private static void drawTooltip(List<String> textLines, int maxTextWidth, FontRenderer font) {
         GlStateManager.disableRescaleNormal();
         RenderHelper.disableStandardItemLighting();
@@ -152,14 +152,14 @@ public class ItemScreenshotManager {
             for (int i = 0; i < textLines.size(); i++) {
                 String textLine = textLines.get(i);
                 List<String> wrappedLine = font.listFormattedStringToWidth(textLine, tooltipTextWidth);
-                if (i == 0) 
+                if (i == 0)
                     titleLinesCount = wrappedLine.size();
 
                 for (String line : wrappedLine) {
                     int lineWidth = font.getStringWidth(line);
                     if (lineWidth > wrappedTooltipWidth)
                         wrappedTooltipWidth = lineWidth;
-                    
+
                     wrappedTextLines.add(line);
                 }
             }
@@ -170,7 +170,7 @@ public class ItemScreenshotManager {
         int tooltipHeight = 8;
         if (textLines.size() > 1) {
             tooltipHeight += (textLines.size() - 1) * 10;
-            if (textLines.size() > titleLinesCount) 
+            if (textLines.size() > titleLinesCount)
                 tooltipHeight += 2; // gap between title lines and next lines
         }
 
@@ -205,7 +205,7 @@ public class ItemScreenshotManager {
         RenderHelper.enableStandardItemLighting();
         GlStateManager.enableRescaleNormal();
     }
-    
+
     private static void drawGradientRect(int zLevel, int left, int top, int right, int bottom, int startColor, int endColor) {
         float startAlpha = (float)(startColor >> 24 & 255) / 255.0F;
         float startRed   = (float)(startColor >> 16 & 255) / 255.0F;
@@ -236,7 +236,7 @@ public class ItemScreenshotManager {
         GlStateManager.enableAlpha();
         GlStateManager.enableTexture2D();
     }
-    
+
     private static BufferedImage createScreenshot(int width, int height) {
         // create pixel arrays
         int i = width * height;
@@ -255,11 +255,11 @@ public class ItemScreenshotManager {
         bufferedimage.setRGB(0, 0, width, height, pixelValues, 0, width);
         return bufferedimage;
     }
-    
+
     private static class ClipboardImage implements Transferable {
-        
+
         Image image;
-        
+
         public ClipboardImage(Image image) {
             this.image = image;
         }
@@ -279,7 +279,7 @@ public class ItemScreenshotManager {
             if (!DataFlavor.imageFlavor.equals(flavor)) throw new UnsupportedFlavorException(flavor);
             return this.image;
         }
-        
+
     }
 
 }

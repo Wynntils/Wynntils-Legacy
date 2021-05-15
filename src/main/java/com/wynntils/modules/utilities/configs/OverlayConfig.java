@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.configs;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer.TextAlignment;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -504,19 +505,19 @@ public class OverlayConfig extends SettingsClass {
             backgroundColor.setA(opacity / 100f);
 
             if (name.contentEquals("preset")) {
-                if (!(Minecraft.getMinecraft().currentScreen instanceof SettingsUI)) {
+                if (!(McIf.mc().currentScreen instanceof SettingsUI)) {
                     preset = Presets.CLICK_ME;
                 } else if (preset.value != null) {
                     Utils.copyToClipboard(preset.value);
                 }
             } else if (name.contentEquals("variables")) {
-                if (!(Minecraft.getMinecraft().currentScreen instanceof SettingsUI)) {
+                if (!(McIf.mc().currentScreen instanceof SettingsUI)) {
                     variables = Variables.CLICK_ME;
                 } else if (variables.value != null) {
                     Utils.copyToClipboard(variables.value);
                 }
             } else if (name.contentEquals("escapedChars")) {
-                if (!(Minecraft.getMinecraft().currentScreen instanceof SettingsUI)) {
+                if (!(McIf.mc().currentScreen instanceof SettingsUI)) {
                     escapedChars = Escaped.CLICK_ME;
                 } else if (escapedChars.value != null) {
                     Utils.copyToClipboard(escapedChars.value);

@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.chat.overlays.gui;
 
+import com.wynntils.McIf;
 import com.wynntils.modules.chat.instances.ChatTab;
 import com.wynntils.modules.chat.managers.TabManager;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
@@ -69,19 +70,19 @@ public class TabGUI extends GuiScreen {
 
         deleteButton.enabled = (id != -2) && TabManager.getAvailableTabs().size() > 1;
 
-        nameTextField = new GuiTextField(3, mc.fontRenderer, x - 110, y - 90, 80, 20);
+        nameTextField = new GuiTextField(3, McIf.mc().fontRenderer, x - 110, y - 90, 80, 20);
         nameTextField.setVisible(true);
         nameTextField.setEnabled(true);
         nameTextField.setEnableBackgroundDrawing(true);
         nameTextField.setMaxStringLength(10);
 
-        autoCommandField = new GuiTextField(3, mc.fontRenderer, x - 12, y - 90, 80, 20);
+        autoCommandField = new GuiTextField(3, McIf.mc().fontRenderer, x - 12, y - 90, 80, 20);
         autoCommandField.setVisible(true);
         autoCommandField.setEnabled(true);
         autoCommandField.setEnableBackgroundDrawing(true);
         autoCommandField.setMaxStringLength(10);
 
-        orderNbField = new GuiTextField(3, mc.fontRenderer, x + 85, y - 90, 25, 20);
+        orderNbField = new GuiTextField(3, McIf.mc().fontRenderer, x + 85, y - 90, 25, 20);
         orderNbField.setVisible(true);
         orderNbField.setEnabled(true);
         orderNbField.setEnableBackgroundDrawing(true);
@@ -90,7 +91,7 @@ public class TabGUI extends GuiScreen {
         buttonList.add(lowPriority = new GuiCheckBox(3, x - 100, y + 22, "Low Priority", true));
 
         // Simple
-        labelList.add(simpleSettings = new GuiLabel(mc.fontRenderer, 4, x - 100, y - 35, 10, 10, 0xFFFFFF));
+        labelList.add(simpleSettings = new GuiLabel(McIf.mc().fontRenderer, 4, x - 100, y - 35, 10, 10, 0xFFFFFF));
         simpleSettings.addLine("Message types " + RED + "*");
 
         simpleRegexSettings.add(allRegex = new GuiCheckBox(10, x - 100, y - 25, "All", false));
@@ -102,7 +103,7 @@ public class TabGUI extends GuiScreen {
         buttonList.addAll(simpleRegexSettings);
         applyRegexSettings();
         // Advanced
-        regexTextField = new GuiTextField(3, mc.fontRenderer, x - 100, y - 20, 200, 20);
+        regexTextField = new GuiTextField(3, McIf.mc().fontRenderer, x - 100, y - 20, 200, 20);
         regexTextField.setVisible(false);
         regexTextField.setEnabled(true);
         regexTextField.setEnableBackgroundDrawing(true);
@@ -117,14 +118,14 @@ public class TabGUI extends GuiScreen {
             checkIfRegexIsValid();
         }
 
-        labelList.add(nameLabel = new GuiLabel(mc.fontRenderer, 0, x - 110, y - 105, 10, 10, 0xFFFFFF));
+        labelList.add(nameLabel = new GuiLabel(McIf.mc().fontRenderer, 0, x - 110, y - 105, 10, 10, 0xFFFFFF));
         nameLabel.addLine("Name " + RED + "*");
-        labelList.add(regexLabel = new GuiLabel(mc.fontRenderer, 1, x - 100, y - 35, 10, 10, 0xFFFFFF));
+        labelList.add(regexLabel = new GuiLabel(McIf.mc().fontRenderer, 1, x - 100, y - 35, 10, 10, 0xFFFFFF));
         regexLabel.addLine("Regex " + RED + "*");
         regexLabel.visible = false;
-        labelList.add(autoCommand = new GuiLabel(mc.fontRenderer, 2, x - 12, y - 105, 10, 10, 0xFFFFFF));
+        labelList.add(autoCommand = new GuiLabel(McIf.mc().fontRenderer, 2, x - 12, y - 105, 10, 10, 0xFFFFFF));
         autoCommand.addLine("Auto Command");
-        labelList.add(orderNb = new GuiLabel(mc.fontRenderer, 3, x + 85, y - 105, 10, 10, 0xFFFFFF));
+        labelList.add(orderNb = new GuiLabel(McIf.mc().fontRenderer, 3, x + 85, y - 105, 10, 10, 0xFFFFFF));
         orderNb.addLine("Order #");
 
         Keyboard.enableRepeatEvents(true);
@@ -139,22 +140,22 @@ public class TabGUI extends GuiScreen {
     protected void actionPerformed(GuiButton button) throws IOException {
         super.actionPerformed(button);
 
-        if (button == closeButton) mc.displayGuiScreen(new ChatGUI());
+        if (button == closeButton) McIf.mc().displayGuiScreen(new ChatGUI());
         else if (button == saveButton) {
             if (id == -2) {
                 TabManager.registerNewTab(new ChatTab(nameTextField.getText(), regexTextField.getText(), regexSettingsCreator(), autoCommandField.getText(), lowPriority.isChecked(), orderNbField.getText().matches("[0-9]+") ? Integer.parseInt(orderNbField.getText()) : 0));
             } else {
                 TabManager.updateTab(id, nameTextField.getText(), regexTextField.getText(), regexSettingsCreator(), autoCommandField.getText(), lowPriority.isChecked(), orderNbField.getText().matches("[0-9]+") ? Integer.parseInt(orderNbField.getText()) : 0);
             }
-            mc.displayGuiScreen(new ChatGUI());
+            McIf.mc().displayGuiScreen(new ChatGUI());
         } else if (button == deleteButton) {
-            mc.displayGuiScreen(new GuiYesNo((result, cc) -> {
+            McIf.mc().displayGuiScreen(new GuiYesNo((result, cc) -> {
                 if (result) {
                     int c = TabManager.deleteTab(id);
                     if (ChatOverlay.getChat().getCurrentTabId() == id) ChatOverlay.getChat().setCurrentTab(c);
-                    mc.displayGuiScreen(new ChatGUI());
+                    McIf.mc().displayGuiScreen(new ChatGUI());
                 } else {
-                    mc.displayGuiScreen(this);
+                    McIf.mc().displayGuiScreen(this);
                 }
             }, WHITE + (BOLD + "Do you really want to delete this chat tab?"), RED + "This action is irreversible!", 0));
         } else if (button == advancedButton) {

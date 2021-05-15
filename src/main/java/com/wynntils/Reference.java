@@ -24,7 +24,7 @@ public class Reference {
     public static final String MINECRAFT_VERSIONS = "1.12,1.12.2";
     public static String VERSION = "";
     public static int BUILD_NUMBER = -1;
-    public static final File MOD_STORAGE_ROOT = new File(ModCore.mc().gameDir, MOD_ID);
+    public static final File MOD_STORAGE_ROOT = new File(McIf.mc().gameDir, MOD_ID);
     public static final File NATIVES_ROOT = new File(Reference.MOD_STORAGE_ROOT, "natives");
     public static final File PLATFORM_NATIVES_ROOT = new File(NATIVES_ROOT, Platform.RESOURCE_PREFIX);
     public static final Logger LOGGER = LogManager.getFormatterLogger(MOD_ID);
@@ -32,9 +32,9 @@ public class Reference {
     private static String userWorld = null;
 
     public static synchronized void setUserWorld(String uw) {
-        ServerData currentServer = ModCore.mc().getCurrentServerData();
+        ServerData currentServer = McIf.mc().getCurrentServerData();
         String lowerIP = currentServer == null || currentServer.serverIP == null ? null : currentServer.serverIP.toLowerCase(Locale.ROOT);
-        onServer = !ModCore.mc().isSingleplayer() && lowerIP != null && !currentServer.isOnLAN() && lowerIP.contains("wynncraft");
+        onServer = !McIf.mc().isSingleplayer() && lowerIP != null && !currentServer.isOnLAN() && lowerIP.contains("wynncraft");
         onServer &= lowerIP != null && !lowerIP.startsWith("beta.") || (!WebManager.blockHeroBetaCuttingEdge() && CoreDBConfig.INSTANCE.updateStream == UpdateStream.CUTTING_EDGE) || (!WebManager.blockHeroBetaStable() && CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE);
         userWorld = uw;
 

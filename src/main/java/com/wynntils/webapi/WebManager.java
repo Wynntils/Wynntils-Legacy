@@ -6,7 +6,7 @@ package com.wynntils.webapi;
 
 import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynnGuildWarEvent;
 import com.wynntils.core.framework.FrameworkManager;
@@ -523,7 +523,7 @@ public class WebManager {
 
     public static void updatePlayerProfile(RequestHandler handler) {
         if (apiUrls == null) return;
-        String url = apiUrls.get("PlayerStatsv2") + ModCore.mc().getSession().getProfile().getId() + "/stats";
+        String url = apiUrls.get("PlayerStatsv2") + McIf.mc().getSession().getProfile().getId() + "/stats";
         handler.addRequest(new Request(url, "player_profile")
             .cacheTo(new File(API_CACHE_ROOT, "player_stats.json"))
             .addHeader("apikey", apiUrls.get("WynnApiKey"))

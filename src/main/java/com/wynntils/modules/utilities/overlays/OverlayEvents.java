@@ -4,7 +4,7 @@
 
 package com.wynntils.modules.utilities.overlays;
 
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
@@ -119,7 +119,7 @@ public class OverlayEvents implements Listener {
             /*Inventory full message*/
             if (OverlayConfig.GameUpdate.GameUpdateInventoryMessages.INSTANCE.enabled) {
                 if (tickcounter % (int) (OverlayConfig.GameUpdate.GameUpdateInventoryMessages.INSTANCE.inventoryUpdateRate * 20f) == 0) {
-                    IInventory inv = Minecraft.getMinecraft().player.inventory;
+                    IInventory inv = McIf.player().inventory;
                     int itemCounter = 0;
                     for (int i = 0; i < inv.getSizeInventory(); i++) {
                         if (!inv.getStackInSlot(i).isEmpty()) {
@@ -155,7 +155,7 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onScrollUsed(ChatEvent.Post e) {
-        String messageText = e.getMessage().getUnformattedText();
+        String messageText = McIf.getUnformattedText(e.getMessage());
         if (messageText.matches(".*? for [0-9]* seconds\\]")) { //consumable message
             //10 tick delay, since chat event occurs before default consumable event
             new Delay(() -> ConsumableTimerOverlay.addExternalScroll(messageText), 10);
@@ -169,14 +169,14 @@ public class OverlayEvents implements Listener {
             return;
         }
 
-        if (!Reference.onWorld || e.getMessage().getUnformattedText().equals(" ")) return;
-        String messageText = e.getMessage().getUnformattedText();
-        String formattedText = e.getMessage().getFormattedText();
+        if (!Reference.onWorld || McIf.getUnformattedText(e.getMessage()).equals(" ")) return;
+        String messageText = McIf.getUnformattedText(e.getMessage());
+        String formattedText = McIf.getFormattedText(e.getMessage());
         if (messageText.split(" ")[0].matches("\\[\\d+:\\d+\\]")) {
             if (!wynnExpTimestampNotified) {
                 TextComponentString text = new TextComponentString("[" + Reference.NAME + "] WynnExpansion's chat timestamps detected, please use " + Reference.NAME + "' chat timestamps for full compatibility.");
                 text.getStyle().setColor(DARK_RED);
-                Minecraft.getMinecraft().player.sendMessage(text);
+                McIf.player().sendMessage(text);
                 wynnExpTimestampNotified = true;
             }
         }
@@ -579,7 +579,7 @@ public class OverlayEvents implements Listener {
             }
 
             if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
-                long timeNow = Minecraft.getSystemTime();
+                long timeNow = McIf.getSystemTime();
                 int timeLeft = seconds - (int)(timeNow - loginTime)/1000;
                 if (timeLeft > 0) {
                     ConsumableTimerOverlay.addBasicTimer("Gather cooldown", timeLeft, false);
@@ -754,9 +754,9 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
-        ModCore.mc().addScheduledTask(GameUpdateOverlay::resetMessages);
+        McIf.mc().addScheduledTask(GameUpdateOverlay::resetMessages);
         // WynnCraft seem to be off with its timer with around 10 seconds
-        loginTime = Minecraft.getSystemTime() + 10000;
+        loginTime = McIf.getSystemTime() + 10000;
         msgcounter = 0;
     }
 
@@ -770,7 +770,7 @@ public class OverlayEvents implements Listener {
         if (!Reference.onWorld || !OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) return;
 
         SPacketEntityEffect effect = e.getPacket();
-        if (effect.getEntityId() != Minecraft.getMinecraft().player.getEntityId()) return;
+        if (effect.getEntityId() != McIf.player().getEntityId()) return;
 
         Potion potion = Potion.getPotionById(effect.getEffectId());
 
@@ -808,7 +808,7 @@ public class OverlayEvents implements Listener {
         }
 
         // create timer with name and duration (duration in ticks)/20 -> seconds
-        Minecraft.getMinecraft().addScheduledTask(() ->
+        McIf.mc().addScheduledTask(() ->
                 ConsumableTimerOverlay.addBasicTimer(timerName, effect.getDuration() / 20));
     }
 
@@ -817,9 +817,9 @@ public class OverlayEvents implements Listener {
         if (!Reference.onWorld || !OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) return;
 
         SPacketRemoveEntityEffect effect = e.getPacket();
-        if (effect.getEntity(Minecraft.getMinecraft().world) != Minecraft.getMinecraft().player) return;
+        if (effect.getEntity(McIf.world()) != McIf.player()) return;
 
-        Minecraft.getMinecraft().addScheduledTask(() -> {
+        McIf.mc().addScheduledTask(() -> {
             Potion potion = effect.getPotion();
 
             // When removing speed boost from (archer)

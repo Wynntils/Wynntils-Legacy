@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.events;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.interfaces.Listener;
@@ -117,7 +118,7 @@ public class ClientEvents implements Listener {
     public void recordLootRun(TickEvent.ClientTickEvent e) {
         if (!Reference.onWorld || e.phase != TickEvent.Phase.END || !LootRunManager.isRecording()) return;
 
-        EntityPlayerSP player = Minecraft.getMinecraft().player;
+        EntityPlayerSP player = McIf.player();
         if (player == null) return;
 
         Entity lowestEntity = player.getLowestRidingEntity();

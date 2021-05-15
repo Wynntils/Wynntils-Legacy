@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.instances;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.utils.helpers.MD5Verification;
 import com.wynntils.webapi.WebManager;
@@ -73,8 +74,8 @@ public class MapProfile {
 
     private void setReadyToUse() {
         // make sure this is being called from the main thread
-        if (!Minecraft.getMinecraft().isCallingFromMinecraftThread()) {
-            Minecraft.getMinecraft().addScheduledTask(this::setReadyToUse);
+        if (!McIf.mc().isCallingFromMinecraftThread()) {
+            McIf.mc().addScheduledTask(this::setReadyToUse);
             return;
         }
         readyToUse = true;

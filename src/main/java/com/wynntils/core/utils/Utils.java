@@ -5,7 +5,7 @@
 package com.wynntils.core.utils;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
@@ -165,16 +165,16 @@ public class Utils {
      * @return the Scoreboard Team
      */
     public static ScorePlayerTeam createFakeScoreboard(String name, Team.CollisionRule rule) {
-        Scoreboard mc = Minecraft.getMinecraft().world.getScoreboard();
-        if (mc.getTeam(name) != null) return mc.getTeam(name);
+        Scoreboard scoreboard = McIf.world().getScoreboard();
+        if (scoreboard.getTeam(name) != null) return scoreboard.getTeam(name);
 
-        String player = Minecraft.getMinecraft().player.getName();
-        if (mc.getPlayersTeam(player) != null) previousTeam = mc.getPlayersTeam(player).getName();
+        String player = McIf.player().getName();
+        if (scoreboard.getPlayersTeam(player) != null) previousTeam = scoreboard.getPlayersTeam(player).getName();
 
-        ScorePlayerTeam team = mc.createTeam(name);
+        ScorePlayerTeam team = scoreboard.createTeam(name);
         team.setCollisionRule(rule);
 
-        mc.addPlayerToTeam(player, name);
+        scoreboard.addPlayerToTeam(player, name);
         return team;
     }
 
@@ -184,11 +184,11 @@ public class Utils {
      * @param name the scoreboard name
      */
     public static void removeFakeScoreboard(String name) {
-        Scoreboard mc = Minecraft.getMinecraft().world.getScoreboard();
-        if (mc.getTeam(name) == null) return;
+        Scoreboard scoreboard = McIf.world().getScoreboard();
+        if (scoreboard.getTeam(name) == null) return;
 
-        mc.removeTeam(mc.getTeam(name));
-        if (previousTeam != null) mc.addPlayerToTeam(Minecraft.getMinecraft().player.getName(), previousTeam);
+        scoreboard.removeTeam(scoreboard.getTeam(name));
+        if (previousTeam != null) scoreboard.addPlayerToTeam(McIf.player().getName(), previousTeam);
     }
 
     /**
@@ -197,9 +197,7 @@ public class Utils {
      * @param screen the provided screen
      */
     public static void displayGuiScreen(GuiScreen screen) {
-        Minecraft mc = Minecraft.getMinecraft();
-
-        GuiScreen oldScreen = mc.currentScreen;
+        GuiScreen oldScreen = McIf.mc().currentScreen;
 
         GuiOpenEvent event = new GuiOpenEvent(screen);
         if (MinecraftForge.EVENT_BUS.post(event)) return;
@@ -210,19 +208,19 @@ public class Utils {
             oldScreen.onGuiClosed();
         }
 
-        mc.currentScreen = screen;
+        McIf.mc().currentScreen = screen;
 
         if (screen != null) {
-            Minecraft.getMinecraft().setIngameNotInFocus();
+            McIf.mc().setIngameNotInFocus();
 
-            ScaledResolution scaledresolution = new ScaledResolution(mc);
+            ScaledResolution scaledresolution = new ScaledResolution(McIf.mc());
             int i = scaledresolution.getScaledWidth();
             int j = scaledresolution.getScaledHeight();
-            screen.setWorldAndResolution(mc, i, j);
-            mc.skipRenderWorld = false;
+            screen.setWorldAndResolution(McIf.mc(), i, j);
+            McIf.mc().skipRenderWorld = false;
         } else {
-            mc.getSoundHandler().resumeSounds();
-            mc.setIngameFocus();
+            McIf.mc().getSoundHandler().resumeSounds();
+            McIf.mc().setIngameFocus();
         }
     }
 
@@ -320,7 +318,7 @@ public class Utils {
         urlComponent.getStyle().setUnderlined(true);
         text.appendSibling(urlComponent);
 
-        ModCore.mc().player.sendMessage(text);
+        McIf.player().sendMessage(text);
     }
 
     public static String encodeUrl(String url) {

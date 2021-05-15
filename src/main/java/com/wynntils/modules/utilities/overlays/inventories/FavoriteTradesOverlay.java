@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.overlays.inventories;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
@@ -30,10 +31,10 @@ public class FavoriteTradesOverlay implements Listener {
 
     @SubscribeEvent
     public void onKeyPress(GuiOverlapEvent.ChestOverlap.KeyTyped e) {
-        if (!Reference.onWorld || !e.getGui().getLowerInv().getDisplayName().getFormattedText().contains("Marketplace")) return;
+        if (!Reference.onWorld || !McIf.getFormattedText(e.getGui().getLowerInv().getDisplayName()).contains("Marketplace")) return;
         if (e.getKeyCode() != KeyManager.getFavoriteTradeKey().getKeyBinding().getKeyCode()) return;
 
-        if (e.getGui().getSlotUnderMouse() != null && Minecraft.getMinecraft().player.inventory != e.getGui().getSlotUnderMouse().inventory) {
+        if (e.getGui().getSlotUnderMouse() != null && McIf.player().inventory != e.getGui().getSlotUnderMouse().inventory) {
             toggleLockState(e.getGui().getSlotUnderMouse().getStack());
         }
     }
@@ -41,7 +42,7 @@ public class FavoriteTradesOverlay implements Listener {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void onChestGui(GuiOverlapEvent.ChestOverlap.HoveredToolTip.Pre e) {
         if (!Reference.onWorld) return;
-        if (!e.getGui().getLowerInv().getDisplayName().getFormattedText().contains("Marketplace")) {
+        if (!McIf.getFormattedText(e.getGui().getLowerInv().getDisplayName()).contains("Marketplace")) {
             if (!favorites_trade_items_lore.isEmpty())
                 favorites_trade_items_lore.clear();
             return;

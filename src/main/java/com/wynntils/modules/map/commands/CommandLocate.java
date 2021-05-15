@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.commands;
 
+import com.wynntils.McIf;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.LocationProfile;
@@ -88,7 +89,7 @@ public class CommandLocate extends CommandBase implements IClientCommand {
         }
 
         Map<Double, LocationProfile> distanceToLocations = new TreeMap<>();
-        Location currentLocation = new Location(Minecraft.getMinecraft().player);
+        Location currentLocation = new Location(McIf.player());
 
         for (LocationProfile locationProfile : knownProfiles) {
             Location location = new Location(locationProfile.getX(), currentLocation.getY(), locationProfile.getZ());

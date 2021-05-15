@@ -9,7 +9,7 @@ import com.sun.jna.Native;
 import com.sun.jna.Platform;
 import com.sun.jna.Pointer;
 import com.sun.jna.ptr.IntByReference;
-import com.wynntils.ModCore;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.SocialData;
@@ -86,7 +86,7 @@ public class RichProfile {
                             return;
                         }
 
-                        ModCore.mc().addScheduledTask(() -> setup(id));
+                        McIf.mc().addScheduledTask(() -> setup(id));
                     });
                     return true;
                 }));
@@ -111,15 +111,15 @@ public class RichProfile {
             IDiscordOverlayEvents.ByReference overlayEvents = new IDiscordOverlayEvents.ByReference();
             overlayEvents.on_toggle = (callbackData, closedAsByte) -> {
                 boolean opened = closedAsByte == 0;
-                if (opened && ModCore.mc().currentScreen == null) {
-                    ModCore.mc().displayGuiScreen(new GuiScreen() {
+                if (opened && McIf.mc().currentScreen == null) {
+                    McIf.mc().displayGuiScreen(new GuiScreen() {
                         public void onGuiClosed() {
                             isBlankGuiOpen = false;
                         }
                     });
                     isBlankGuiOpen = true;
                 } else if (!opened && isBlankGuiOpen) {
-                    ModCore.mc().displayGuiScreen(null);
+                    McIf.mc().displayGuiScreen(null);
                 }
             };
 

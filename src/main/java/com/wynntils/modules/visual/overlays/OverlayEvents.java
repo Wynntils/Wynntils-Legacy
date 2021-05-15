@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.visual.overlays;
 
+import com.wynntils.McIf;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.instances.WindowedResolution;
@@ -24,7 +25,7 @@ public class OverlayEvents implements Listener {
 
         WindowedResolution res = new WindowedResolution(480, 254);
         fakeCharacterSelector = new CharacterSelectorUI(null, e.getGui(), res.getScaleFactor());
-        fakeCharacterSelector.setWorldAndResolution(Minecraft.getMinecraft(), e.getGui().width, e.getGui().height);
+        fakeCharacterSelector.setWorldAndResolution(McIf.mc(), e.getGui().width, e.getGui().height);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
