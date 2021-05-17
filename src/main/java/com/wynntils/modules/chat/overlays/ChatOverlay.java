@@ -29,7 +29,10 @@ import org.apache.logging.log4j.Logger;
 import javax.annotation.Nullable;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class ChatOverlay extends GuiNewChat {
@@ -176,13 +179,13 @@ public class ChatOverlay extends GuiNewChat {
         }
 
         if (chatLineId != 0) {
-            this.updateLine(this.getCurrentTab(), chatComponent, updateCounter, displayOnly, chatLineId, noEvent);
+            this.addLine(this.getCurrentTab(), chatComponent, updateCounter, displayOnly, chatLineId, noEvent);
         } else {
             boolean found = false;
             for (ChatTab tab : TabManager.getAvailableTabs()) {
                 if (tab.isLowPriority() || !tab.regexMatches(chatComponent)) continue;
 
-                updateLine(tab, chatComponent, updateCounter, displayOnly, chatLineId, noEvent);
+                addLine(tab, chatComponent, updateCounter, displayOnly, chatLineId, noEvent);
                 found = true;
             }
 
@@ -190,7 +193,7 @@ public class ChatOverlay extends GuiNewChat {
                 for (ChatTab tab : TabManager.getAvailableTabs()) {
                     if (!tab.isLowPriority() || !tab.regexMatches(chatComponent))
                         continue;
-                    updateLine(tab, chatComponent, updateCounter, displayOnly, chatLineId, noEvent);
+                    addLine(tab, chatComponent, updateCounter, displayOnly, chatLineId, noEvent);
                 }
             }
         }
@@ -198,12 +201,24 @@ public class ChatOverlay extends GuiNewChat {
         if (!noEvent) FrameworkManager.getEventBus().post(new ChatEvent.Post(chatComponent, chatLineId));
     }
 
-    private void updateLine(ChatTab tab, ITextComponent chatComponent, int updateCounter, boolean displayOnly, int chatLineId, boolean noProcessing) {
+    private void addLine(ChatTab tab, ITextComponent chatComponent, int updateCounter, boolean displayOnly, int chatLineId, boolean noProcessing) {
         ITextComponent originalMessage = chatComponent.createCopy();
 
         // message processor
-        ITextComponent displayedMessage = noProcessing ? originalMessage : ChatManager.processRealMessage(originalMessage.createCopy());
+        ITextComponent displayedMessage;
+        Pair<Supplier<Boolean>, Function<ITextComponent, ITextComponent>> queueInfo = null;
+        if (noProcessing) {
+            displayedMessage = originalMessage;
+        }
+        else {
+            Pair<ITextComponent, Pair<Supplier<Boolean>, Function<ITextComponent, ITextComponent>>> result = ChatManager.processRealMessage(originalMessage.createCopy());
+
+            displayedMessage =  result.a;
+            queueInfo = result.b;
+        }
+
         if (displayedMessage == null) return;
+
 
         // spam filter
         if (!noProcessing && tab.getLastMessage() != null) {
@@ -244,6 +259,8 @@ public class ChatOverlay extends GuiNewChat {
                         }
                         tab.updateLastMessageAndAmount(originalMessage, tab.getLastAmount() + 1);
                         refreshChat();
+
+                        if (queueInfo != null) tab.getQueue().put(thisGroupId, new Pair<>(queueInfo.a, queueInfo.b));
                         return;
                     }
                 } catch (Exception ex) { ex.printStackTrace(); }
@@ -272,9 +289,114 @@ public class ChatOverlay extends GuiNewChat {
             tab.addMessage(noProcessing ? new ChatLine(updateCounter, itextcomponent, chatLineId) : new GroupedChatLine(updateCounter, itextcomponent, chatLineId, thisGroupId));
         }
 
+        if (queueInfo != null) tab.getQueue().put(thisGroupId, new Pair<>(queueInfo.a, queueInfo.b));
+
         while (tab.getCurrentMessages().size() > ChatConfig.INSTANCE.chatHistorySize) {
             tab.getCurrentMessages().remove(tab.getCurrentMessages().size() - 1);
         }
+    }
+
+    public void processQueue(ChatTab tab) {
+        updateLines(tab, tab.getQueue());
+    }
+
+    public void processQueues() {
+        for (ChatTab tab : TabManager.getAvailableTabs()) {
+            processQueue(tab);
+        }
+    }
+
+    public void updateLines(ChatTab tab, HashMap<Integer, Pair<Supplier<Boolean>, Function<ITextComponent, ITextComponent>>> queue) {
+        if (queue == null || queue.isEmpty()) return;
+
+        //remove unwanted ones
+        List<Integer> keys = queue.keySet().stream()
+                .filter(s -> queue.get(s).a.get())
+                .sorted()
+                .collect(Collectors.toList());
+
+        if (keys.size() == 0) return;
+
+        int queueIndex = keys.size() - 1;
+
+        boolean found = false;
+        ChatLine combined = null;
+
+        List<ChatLine> lines = tab.getCurrentMessages();
+
+        System.out.println(keys);
+
+        for (int i = 0; i < lines.size(); i++) {
+            if (!(lines.get(i) instanceof GroupedChatLine)) continue;
+            GroupedChatLine line = (GroupedChatLine) lines.get(i);
+
+            int original = line.getGroupId();
+            int check = keys.get(queueIndex);
+
+            if (original < check) {
+                if (found) {
+                    //Add the line formed from combining the groups
+                    ITextComponent newMessage = queue.get(check).b.apply(combined.getChatComponent());
+
+                    int chatWidth = MathHelper.floor((float) getChatWidth() / getChatScale());
+                    List<ITextComponent> list = GuiUtilRenderComponents.splitText(newMessage, chatWidth, McIf.mc().fontRenderer, false, false);
+                    Collections.reverse(list);
+                    boolean flag = tab == getCurrentTab() && getChatOpen();
+                    for (ITextComponent itextcomponent : list) {
+                        if (flag && scrollPos > 0) {
+                            isScrolled = true;
+                            scroll(1);
+                        }
+                        lines.add(i, new GroupedChatLine(combined.getUpdatedCounter(), itextcomponent, combined.getChatLineID(), check));
+                    }
+
+                    combined = null;
+                    found = false;
+                }
+
+                while (original < check && queueIndex > 0) {
+                    queue.remove(queueIndex);
+                    check = keys.get(--queueIndex);
+                }
+            }
+
+            if (original == check) {
+                if (found) {
+                    combined.getChatComponent().appendSibling(line.getChatComponent());
+                } else {
+                    combined = line;
+                    found = true;
+                }
+
+                //remove line so it can be re-added later
+                lines.remove(i);
+                i--;
+            }
+
+            //run at the very end of the for loop - add the line
+            if (found && (queueIndex == 0 || i == lines.size() - 1)) {
+                ITextComponent newMessage = queue.get(check).b.apply(combined.getChatComponent());
+                int chatWidth = MathHelper.floor((float) getChatWidth() / getChatScale());
+                List<ITextComponent> list = GuiUtilRenderComponents.splitText(newMessage, chatWidth, McIf.mc().fontRenderer, false, false);
+                Collections.reverse(list);
+                boolean flag = tab == getCurrentTab() && getChatOpen();
+                for (ITextComponent itextcomponent : list) {
+                    if (flag && scrollPos > 0) {
+                        isScrolled = true;
+                        scroll(1);
+                    }
+                    lines.add(i, new GroupedChatLine(combined.getUpdatedCounter(), itextcomponent, combined.getChatLineID(), check));
+                }
+
+                break;
+            }
+        }
+    }
+
+
+    public void updateLine(ChatTab tab, int id, Function<ITextComponent, ITextComponent> change) {
+        updateLines(tab, new HashMap<Integer, Pair<Supplier<Boolean>, Function<ITextComponent, ITextComponent>>>()
+            {{ put(id, new Pair<>(() -> true, change)); }});
     }
 
     public void refreshChat() {

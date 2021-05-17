@@ -6,17 +6,23 @@ package com.wynntils.modules.chat.managers;
 
 import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.PowderManualChapter;
+import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.helpers.TextAction;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.chat.configs.ChatConfig;
+import com.wynntils.modules.chat.language.WynncraftLanguage;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.questbook.enums.AnalysePosition;
+import com.wynntils.modules.questbook.instances.DiscoveryInfo;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.utilities.configs.TranslationConfig;
 import com.wynntils.webapi.services.TranslationManager;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.Slot;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.*;
@@ -26,9 +32,9 @@ import net.minecraftforge.event.ForgeEventFactory;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -68,8 +74,10 @@ public class ChatManager {
     private static final Pattern duelReg = Pattern.compile("[\\w ]+ \\[Lv\\. \\d+] would like to duel! Type /duel [\\w ]+ to accept\\.");
     private static final Pattern coordinateReg = Pattern.compile("(-?\\d{1,5}[ ,]{1,2})(\\d{1,3}[ ,]{1,2})?(-?\\d{1,5})");
 
-    public static ITextComponent processRealMessage(ITextComponent in) {
-        if (in == null) return in;
+    private static boolean discoveriesLoaded = false;
+
+    public static Pair<ITextComponent, Pair<Supplier<Boolean>, Function<ITextComponent, ITextComponent>>> processRealMessage(ITextComponent in) {
+        if (in == null) return new Pair<>(in, null);
         ITextComponent original = in.createCopy();
 
         // Reorganizing
@@ -86,7 +94,7 @@ public class ChatManager {
         // language translation
         if (TranslationConfig.INSTANCE.enableTextTranslation) {
             boolean wasTranslated = translateMessage(in);
-            if (wasTranslated && !TranslationConfig.INSTANCE.keepOriginal) return null;
+            if (wasTranslated && !TranslationConfig.INSTANCE.keepOriginal) return new Pair<>(null, null);
         }
 
         // timestamps
@@ -124,207 +132,125 @@ public class ChatManager {
             McIf.player().playSound(popOffSound, 1f, 1f);
 
         // wynnic and gavellian translator
-        if (StringUtils.hasWynnic(McIf.getUnformattedText(in)) || StringUtils.hasGavellian(McIf.getUnformattedText(in))) {
-            List<ITextComponent> newTextComponents = new ArrayList<>();
-            boolean capital = false;
-            boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(McIf.getFormattedText(original)).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(McIf.getFormattedText(original)).find();
-            boolean foundStart = false;
-            boolean foundEndTimestamp = !ChatConfig.INSTANCE.addTimestampsToChat;
-            boolean previousTranslated = false;
-            boolean translateIntoHover = !ChatConfig.INSTANCE.translateIntoChat;
-            ITextComponent currentTranslatedComponents = new TextComponentString("");
-            List<ITextComponent> currentOldComponents = new ArrayList<>();
-            if (foundEndTimestamp && !McIf.getUnformattedText(in.getSiblings().get(ChatConfig.INSTANCE.addTimestampsToChat ? 3 : 0)).contains("/") && !isGuildOrParty) {
-                foundStart = true;
-            }
-            for (ITextComponent component : in) {
-                component = component.createCopy();
-                component.getSiblings().clear();
-                String toAdd = "";
-                String currentNonTranslated = "";
-                StringBuilder oldText = new StringBuilder();
-                StringBuilder number = new StringBuilder();
-                for (char character : McIf.getUnformattedText(component).toCharArray()) {
-                    if (StringUtils.isWynnicNumber(character)) {
-                        if (previousTranslated) {
-                            toAdd += currentNonTranslated;
-                            oldText.append(currentNonTranslated);
-                        } else {
-                            if (translateIntoHover) {
-                                ITextComponent newComponent = new TextComponentString(oldText.toString());
-                                newComponent.setStyle(component.getStyle().createDeepCopy());
-                                newTextComponents.add(newComponent);
-                                oldText = new StringBuilder();
-                                toAdd = "";
-                            }
-                            previousTranslated = true;
-                        }
-                        currentNonTranslated = "";
-                        number.append(character);
-                        if (translateIntoHover) {
-                            oldText.append(character);
-                        }
-                    } else {
-                        if (!number.toString().isEmpty()) {
-                            toAdd += StringUtils.translateNumberFromWynnic(number.toString());
-                            if (!translateIntoHover) {
-                                oldText.append(StringUtils.translateNumberFromWynnic(number.toString()));
-                            }
-                            number = new StringBuilder();
-                        }
-
-                        if (StringUtils.isWynnic(character)) {
-                            if (previousTranslated) {
-                                toAdd += currentNonTranslated;
-                                oldText.append(currentNonTranslated);
-                                currentNonTranslated = "";
-                            } else {
-                                if (translateIntoHover) {
-                                    ITextComponent newComponent = new TextComponentString(oldText.toString());
-                                    newComponent.setStyle(component.getStyle().createDeepCopy());
-                                    newTextComponents.add(newComponent);
-                                    oldText = new StringBuilder();
-                                    toAdd = "";
-                                }
-                                previousTranslated = true;
-                            }
-                            String englishVersion = StringUtils.translateCharacterFromWynnic(character);
-                            if (capital && englishVersion.matches("[a-z]")) {
-                                englishVersion = Character.toString(Character.toUpperCase(englishVersion.charAt(0)));
-                            }
-
-                            if (".?!".contains(englishVersion)) {
-                                capital = true;
-                            } else {
-                                capital = false;
-                            }
-                            toAdd += englishVersion;
-                            if (translateIntoHover) {
-                                oldText.append(character);
-                            } else {
-                                oldText.append(englishVersion);
-                            }
-                        } else if (StringUtils.isGavellian(character)) {
-                            if (previousTranslated) {
-                                toAdd += currentNonTranslated;
-                                oldText.append(currentNonTranslated);
-                                currentNonTranslated = "";
-                            } else {
-                                if (translateIntoHover) {
-                                    ITextComponent newComponent = new TextComponentString(oldText.toString());
-                                    newComponent.setStyle(component.getStyle().createDeepCopy());
-                                    newTextComponents.add(newComponent);
-                                    oldText = new StringBuilder();
-                                    toAdd = "";
-                                }
-                                previousTranslated = true;
-                            }
-                            String englishVersion = StringUtils.translateCharacterFromGavellian(character);
-                            if (capital && englishVersion.matches("[a-z]")) {
-                                englishVersion = Character.toString(Character.toUpperCase(englishVersion.charAt(0)));
-                                capital = false;
-                            }
-                            toAdd += englishVersion;
-                            if (translateIntoHover) {
-                                oldText.append(character);
-                            } else {
-                                oldText.append(englishVersion);
-                            }
-                        } else if (Character.toString(character).matches(nonTranslatable) || Character.toString(character).matches(optionalTranslatable)) {
-                            if (previousTranslated) {
-                                currentNonTranslated += character;
-                            } else {
-                                oldText.append(character);
-                            }
-
-                            if (".?!".contains(Character.toString(character))) {
-                                capital = true;
-                            } else if (character != ' ') {
-                                capital = false;
-                            }
-                        } else {
-                            if (previousTranslated) {
-                                previousTranslated = false;
-                                if (translateIntoHover) {
-                                    ITextComponent oldComponent = new TextComponentString(oldText.toString());
-                                    oldComponent.setStyle(component.getStyle().createDeepCopy());
-                                    ITextComponent newComponent = new TextComponentString(toAdd);
-                                    newComponent.setStyle(component.getStyle().createDeepCopy());
-
-                                    newTextComponents.add(oldComponent);
-                                    currentTranslatedComponents.appendSibling(newComponent);
-                                    currentOldComponents.add(oldComponent);
-                                    for (ITextComponent currentOldComponent : currentOldComponents) {
-                                        currentOldComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, currentTranslatedComponents));
-                                    }
-
-                                    currentOldComponents.clear();
-                                    currentTranslatedComponents = new TextComponentString("");
-
-                                    oldText = new StringBuilder(currentNonTranslated);
-                                } else {
-                                    oldText.append(currentNonTranslated);
-                                }
-                                currentNonTranslated = "";
-                            }
-                            oldText.append(character);
-
-                            if (character != ' ') {
-                                capital = false;
-                            }
-                        }
-                    }
-                }
-                if (!number.toString().isEmpty() && previousTranslated) {
-                    toAdd += StringUtils.translateNumberFromWynnic(number.toString());
-                }
-                if (!currentNonTranslated.isEmpty()) {
-                    oldText.append(currentNonTranslated);
-                    if (previousTranslated) {
-                        toAdd += currentNonTranslated;
-                    }
-                }
-
-                ITextComponent oldComponent = new TextComponentString(oldText.toString());
-                oldComponent.setStyle(component.getStyle().createDeepCopy());
-                newTextComponents.add(oldComponent);
-                if (previousTranslated && translateIntoHover) {
-                    ITextComponent newComponent = new TextComponentString(toAdd);
-                    newComponent.setStyle(component.getStyle().createDeepCopy());
-
-                    currentTranslatedComponents.appendSibling(newComponent);
-                    currentOldComponents.add(oldComponent);
-                }
-                if (!foundStart) {
-                    if (foundEndTimestamp) {
-                        if (McIf.getUnformattedText(in.getSiblings().get(ChatConfig.INSTANCE.addTimestampsToChat ? 3 : 0)).contains("/")) {
-                            foundStart = McIf.getUnformattedText(component).contains(":");
-                        } else if (isGuildOrParty) {
-                            foundStart = McIf.getUnformattedText(component).contains("]");
-                        }
-                    } else if (component.getUnformattedComponentText().contains("] ")) {
-                        foundEndTimestamp = true;
-                        if (!McIf.getUnformattedText(in.getSiblings().get(ChatConfig.INSTANCE.addTimestampsToChat ? 3 : 0)).contains("/") && !isGuildOrParty) {
-                            foundStart = true;
-                        }
-                    }
-
-                    if (foundStart) {
-                        capital = true;
-                    }
-                }
-            }
-
-            if (translateIntoHover) {
-                for (ITextComponent component : currentOldComponents) {
-                    component.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, currentTranslatedComponents));
-                }
-            }
+        if (StringUtils.hasWynnic(in.getUnformattedText()) || StringUtils.hasGavellian(in.getUnformattedText())) {
+            Pair<ArrayList<ITextComponent>, ArrayList<ITextComponent>> result = translateWynnicMessage(in.createCopy(), original);
+            ArrayList<ITextComponent> untranslatedComponents = result.a;
+            ArrayList<ITextComponent> translatedComponents = result.b;
 
             in = new TextComponentString("");
-            for (ITextComponent component : newTextComponents) {
-                component.getSiblings().clear();
-                in.appendSibling(component);
+
+            boolean translateWynnic = false;
+            boolean translateGavellian = false;
+
+            switch (ChatConfig.INSTANCE.translateCondition) {
+                case always:
+                    translateWynnic = true;
+                    translateGavellian = true;
+                    break;
+                case discovery:
+                    if (!PlayerInfo.get(CharacterData.class).isLoaded()) {
+                        translateWynnic = true;
+                        translateGavellian = true;
+                        break;
+                    }
+
+                    if (QuestManager.getCurrentDiscoveries().isEmpty() && !discoveriesLoaded) {
+                        QuestManager.updateAnalysis(EnumSet.of(AnalysePosition.DISCOVERIES, AnalysePosition.SECRET_DISCOVERIES), true, true);
+                        return new Pair<>(original, new Pair<>(ChatManager::getDiscoveriesLoaded, s -> ChatManager.processRealMessage(s).a));
+                    }
+
+                    translateWynnic = QuestManager.getCurrentDiscoveries().stream()
+                            .map(DiscoveryInfo::getName).map(TextFormatting::getTextWithoutFormattingCodes)
+                            .collect(Collectors.toList()).contains("Wynn Plains Monument");
+                    translateGavellian = QuestManager.getCurrentDiscoveries().stream()
+                            .map(DiscoveryInfo::getName).map(TextFormatting::getTextWithoutFormattingCodes)
+                            .collect(Collectors.toList()).contains("Ne du Valeos du Ellach");
+
+                    break;
+                case book:
+                    if (!PlayerInfo.get(CharacterData.class).isLoaded()) {
+                        translateWynnic = true;
+                        translateGavellian = true;
+                        break;
+                    }
+
+                    for (Slot slot : McIf.player().inventoryContainer.inventorySlots) {
+                        if (slot.getStack().getItem() == Items.ENCHANTED_BOOK) {
+                            if (!translateWynnic) {
+                                translateWynnic = TextFormatting.getTextWithoutFormattingCodes(slot.getStack().getDisplayName()).equals("Ancient Wynnic Transcriber");
+                            }
+
+                            if (!translateGavellian) {
+                                translateGavellian = TextFormatting.getTextWithoutFormattingCodes(slot.getStack().getDisplayName()).equals("High Gavellian Transcriber");
+                            }
+                        }
+
+                        if (translateWynnic && translateGavellian) {
+                            break;
+                        }
+                    }
+
+                    break;
+                case never:
+                    translateWynnic = false;
+                    translateGavellian = false;
+                    break;
+            }
+
+            WynncraftLanguage language;
+
+            for (int i = 0; i < untranslatedComponents.size(); i++) {
+
+                ITextComponent untranslated = untranslatedComponents.get(i);
+                ITextComponent translated = translatedComponents.get(i);
+
+                if (translateWynnic && StringUtils.hasWynnic(untranslated.getUnformattedText())) {
+                    language = WynncraftLanguage.WYNNIC;
+
+                } else if (translateGavellian && StringUtils.hasGavellian(untranslated.getUnformattedText())) {
+                    language = WynncraftLanguage.GAVELLIAN;
+                }
+                else {
+                    language = WynncraftLanguage.NORMAL;
+                }
+
+                if (language != WynncraftLanguage.NORMAL) {
+                    if (ChatConfig.INSTANCE.translateIntoChat) {
+                        translated.getSiblings().clear();
+                        in.appendSibling(translated);
+                    } else {
+                        untranslated.getSiblings().clear();
+
+                        //join the next component
+                        while (language != WynncraftLanguage.NORMAL && i + 1 < untranslatedComponents.size()) {
+                            ITextComponent toAdd = untranslatedComponents.get(i + 1);
+                            ITextComponent toHover = translatedComponents.get(i + 1);
+
+                            if ((translateWynnic && StringUtils.hasWynnic(toAdd.getUnformattedText())) || (translateGavellian && StringUtils.hasGavellian(toAdd.getUnformattedText()))) {
+                                toAdd.getSiblings().clear();
+                                toHover.getSiblings().clear();
+                                untranslated.appendSibling(toAdd);
+                                translated.appendSibling(toHover);
+                                i++;
+                            } else {
+                                language = WynncraftLanguage.NORMAL;
+                            }
+                        }
+
+                        if (!translated.getUnformattedText().equals(untranslated.getUnformattedText())) {
+                            untranslated.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, translated));
+                        }
+
+                        in.appendSibling(untranslated);
+                    }
+                } else {
+                    untranslated.getSiblings().clear();
+                    if (!translated.getUnformattedText().equals(untranslated.getUnformattedText())) {
+                        untranslated.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,  new TextComponentString(TextFormatting.GRAY + "You don't know this language!")));
+                    }
+
+                    in.appendSibling(untranslated);
+                }
             }
         }
 
@@ -418,7 +344,7 @@ public class ChatManager {
 
         //powder manual
         if (ChatConfig.INSTANCE.customPowderManual && McIf.getUnformattedText(in).equals("                         Powder Manual")) {
-            List<ITextComponent> chapterSelect = new ArrayList<ITextComponent>();
+            List<ITextComponent> chapterSelect = new ArrayList<>();
 
             ITextComponent offset = new TextComponentString("\n               "); //to center chapter select
             ITextComponent spacer = new TextComponentString("   "); //space between chapters
@@ -442,7 +368,219 @@ public class ChatManager {
 
         }
 
-        return in;
+        return new Pair<>(in, null);
+    }
+
+    //returns a list of untranslated components and translated components
+    private static Pair<ArrayList<ITextComponent>, ArrayList<ITextComponent>> translateWynnicMessage(ITextComponent in, ITextComponent original) {
+        boolean capital = false;
+        boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(McIf.getFormattedText(original)).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find();
+        boolean foundStart = false;
+        boolean foundEndTimestamp = !ChatConfig.INSTANCE.addTimestampsToChat;
+        boolean previousTranslated = false;
+
+        ArrayList<ITextComponent> untranslatedComponents = new ArrayList<>();
+        ArrayList<ITextComponent> translatedComponents = new ArrayList<>();
+        WynncraftLanguage language = WynncraftLanguage.NORMAL;
+
+        if (foundEndTimestamp && !McIf.getUnformattedText(in.getSiblings().get(ChatConfig.INSTANCE.addTimestampsToChat ? 3 : 0)).contains("/") && !isGuildOrParty) {
+            foundStart = true;
+        }
+
+        for (ITextComponent component : in) {
+            component = component.createCopy();
+            component.getSiblings().clear();
+
+            String currentNonTranslated = "";
+            //oldText is the untranslated component that is being built
+            //newText is the translated component that is being built
+            StringBuilder oldText = new StringBuilder();
+            StringBuilder newText = new StringBuilder();
+            StringBuilder number = new StringBuilder();
+
+            for (char character : McIf.getUnformattedText(component).toCharArray()) {
+                if (StringUtils.isWynnicNumber(character)) {
+
+                    if (previousTranslated) {
+                        oldText.append(currentNonTranslated);
+                        newText.append(currentNonTranslated);
+                        currentNonTranslated = "";
+                    }
+
+                    if (!previousTranslated || language != WynncraftLanguage.WYNNIC) {
+                        previousTranslated = true;
+
+                        ITextComponent oldComponent = new TextComponentString(oldText.toString());
+                        oldComponent.setStyle(component.getStyle().createDeepCopy());
+                        untranslatedComponents.add(oldComponent);
+
+                        ITextComponent newComponent = new TextComponentString(newText.toString());
+                        newComponent.setStyle(component.getStyle().createDeepCopy());
+                        if (language.getFormat() != null) newComponent.getStyle().setColor(language.getFormat());
+                        translatedComponents.add(newComponent);
+
+                        language = WynncraftLanguage.WYNNIC;
+                        oldText = new StringBuilder();
+                        newText = new StringBuilder();
+                    }
+
+                    number.append(character);
+                } else {
+                    if (!number.toString().isEmpty()) {
+                        oldText.append(number.toString());
+                        newText.append(StringUtils.translateNumberFromWynnic(number.toString()));
+                        number = new StringBuilder();
+                    }
+
+                    if (StringUtils.isWynnic(character)) {
+                        if (previousTranslated) {
+                            newText.append(currentNonTranslated);
+                            oldText.append(currentNonTranslated);
+                            currentNonTranslated = "";
+                        }
+
+                        if (!previousTranslated || language != WynncraftLanguage.WYNNIC) {
+                            previousTranslated = true;
+
+                            ITextComponent oldComponent = new TextComponentString(oldText.toString());
+                            oldComponent.setStyle(component.getStyle().createDeepCopy());
+                            untranslatedComponents.add(oldComponent);
+
+                            ITextComponent newComponent = new TextComponentString(newText.toString());
+                            newComponent.setStyle(component.getStyle().createDeepCopy());
+                            if (language.getFormat() != null) newComponent.getStyle().setColor(language.getFormat());
+                            translatedComponents.add(newComponent);
+
+                            language = WynncraftLanguage.WYNNIC;
+                            oldText = new StringBuilder();
+                            newText = new StringBuilder();
+                        }
+
+                        String englishVersion = StringUtils.translateCharacterFromWynnic(character);
+                        if (capital && englishVersion.matches("[a-z]")) {
+                            englishVersion = Character.toString(Character.toUpperCase(englishVersion.charAt(0)));
+                        }
+
+                        capital = ".?!".contains(englishVersion);
+
+                        oldText.append(character);
+                        newText.append(englishVersion);
+
+                    } else if (StringUtils.isGavellian(character)) {
+                        if (previousTranslated) {
+                            newText.append(currentNonTranslated);
+                            oldText.append(currentNonTranslated);
+                            currentNonTranslated = "";
+                        }
+
+                        if (!previousTranslated || language != WynncraftLanguage.GAVELLIAN) {
+                            previousTranslated = true;
+
+                            ITextComponent oldComponent = new TextComponentString(oldText.toString());
+                            oldComponent.setStyle(component.getStyle().createDeepCopy());
+                            untranslatedComponents.add(oldComponent);
+
+                            ITextComponent newComponent = new TextComponentString(newText.toString());
+                            newComponent.setStyle(component.getStyle().createDeepCopy());
+                            if (language.getFormat() != null) newComponent.getStyle().setColor(language.getFormat());
+                            translatedComponents.add(newComponent);
+
+                            language = WynncraftLanguage.GAVELLIAN;
+                            oldText = new StringBuilder();
+                            newText = new StringBuilder();
+                        }
+
+                        String englishVersion = StringUtils.translateCharacterFromGavellian(character);
+                        if (capital && englishVersion.matches("[a-z]")) {
+                            englishVersion = Character.toString(Character.toUpperCase(englishVersion.charAt(0)));
+                            capital = false;
+                        }
+
+                        newText.append(englishVersion);
+                        oldText.append(character);
+
+                    } else if (Character.toString(character).matches(nonTranslatable) || Character.toString(character).matches(optionalTranslatable)) {
+                        if (previousTranslated) {
+                            currentNonTranslated += character;
+                        } else {
+                            oldText.append(character);
+                            newText.append(character);
+                        }
+
+                        capital = ".?!".contains(Character.toString(character));
+                    } else {
+                        if (previousTranslated) {
+                            previousTranslated = false;
+
+                            ITextComponent oldComponent = new TextComponentString(oldText.toString());
+                            oldComponent.setStyle(component.getStyle().createDeepCopy());
+                            untranslatedComponents.add(oldComponent);
+
+                            ITextComponent newComponent = new TextComponentString(newText.toString());
+                            newComponent.setStyle(component.getStyle().createDeepCopy());
+                            if (language.getFormat() != null) newComponent.getStyle().setColor(language.getFormat());
+                            translatedComponents.add(newComponent);
+
+                            oldText = new StringBuilder(currentNonTranslated);
+                            newText = new StringBuilder(currentNonTranslated);
+
+                            currentNonTranslated = "";
+                        }
+                        oldText.append(character);
+                        newText.append(character);
+
+                        language = WynncraftLanguage.NORMAL;
+
+                        if (character != ' ') {
+                            capital = false;
+                        }
+                    }
+                }
+            }
+            if (!number.toString().isEmpty() && previousTranslated) {
+                oldText.append(number);
+                newText.append(StringUtils.translateNumberFromWynnic(number.toString()));
+                language = WynncraftLanguage.WYNNIC;
+
+            }
+            if (!currentNonTranslated.isEmpty()) {
+                oldText.append(currentNonTranslated);
+                if (previousTranslated) {
+                    newText.append(currentNonTranslated);
+                }
+            }
+
+            ITextComponent oldComponent = new TextComponentString(oldText.toString());
+            oldComponent.setStyle(component.getStyle().createDeepCopy());
+            untranslatedComponents.add(oldComponent);
+
+            ITextComponent newComponent = new TextComponentString(newText.toString());
+            newComponent.setStyle(component.getStyle().createDeepCopy());
+            if (language.getFormat() != null) newComponent.getStyle().setColor(language.getFormat());
+            translatedComponents.add(newComponent);
+
+            //if found, capitalize
+            if (!foundStart) {
+                if (foundEndTimestamp) {
+                    if (McIf.getUnformattedText(in.getSiblings().get(ChatConfig.INSTANCE.addTimestampsToChat ? 3 : 0)).contains("/")) {
+                        foundStart = McIf.getUnformattedText(component).contains(":");
+                    } else if (isGuildOrParty) {
+                        foundStart = McIf.getUnformattedText(component).contains("]");
+                    }
+                } else if (component.getUnformattedComponentText().contains("] ")) {
+                    foundEndTimestamp = true;
+                    if (!McIf.getUnformattedText(in.getSiblings().get(ChatConfig.INSTANCE.addTimestampsToChat ? 3 : 0)).contains("/") && !isGuildOrParty) {
+                        foundStart = true;
+                    }
+                }
+
+                if (foundStart) {
+                    capital = true;
+                }
+            }
+        }
+
+        return new Pair<>(untranslatedComponents, translatedComponents);
     }
 
     private static boolean translateMessage(ITextComponent in) {
@@ -575,30 +713,25 @@ public class ChatManager {
         if (ChatConfig.INSTANCE.useBrackets) {
             if (message.contains("{") || message.contains("<")) {
                 StringBuilder newString = new StringBuilder();
-                boolean isWynnic = false;
+                WynncraftLanguage language = WynncraftLanguage.NORMAL;
                 boolean isNumber = false;
                 boolean invalidNumber = false;
-                boolean isGavellian = false;
                 int number = 0;
                 StringBuilder oldNumber = new StringBuilder();
                 for (char character : message.toCharArray()) {
                     if (character == '{') {
-                        isGavellian = false;
-                        isWynnic = true;
+                        language = WynncraftLanguage.WYNNIC;
                         isNumber = false;
                         number = 0;
                         oldNumber = new StringBuilder();
                     } else if (character == '<') {
-                        isGavellian = true;
-                        isWynnic = false;
+                        language = WynncraftLanguage.GAVELLIAN;
                         isNumber = false;
                         number = 0;
                         oldNumber = new StringBuilder();
-                    } else if (isWynnic && character == '}') {
-                        isWynnic = false;
-                    } else if (isGavellian && character == '>') {
-                        isGavellian = false;
-                    } else if (isWynnic) {
+                    } else if ((language == WynncraftLanguage.WYNNIC && character == '}') || (language == WynncraftLanguage.GAVELLIAN && character == '>')) {
+                        language = WynncraftLanguage.NORMAL;
+                    } else if (language == WynncraftLanguage.WYNNIC) {
                         if (Character.isDigit(character) && !invalidNumber) {
                             if (oldNumber.toString().endsWith(".")) {
                                 invalidNumber = true;
@@ -700,7 +833,7 @@ public class ChatManager {
                                 newString.append(character);
                             }
                         }
-                    } else if (isGavellian) {
+                    } else if (language == WynncraftLanguage.GAVELLIAN) {
                         if ('a' <= character && character <= 'z') {
                             newString.append((char) (character + 9327));
                         } else if ('A' <= character && character <= 'Z') {
@@ -860,6 +993,14 @@ public class ChatManager {
         ChatOverlay.getChat().deleteChatLine(ChatOverlay.WYNN_DIALOGUE_ID);
     }
 
+    public static void setDiscoveriesLoaded(boolean discoveriesLoaded) {
+        ChatManager.discoveriesLoaded = discoveriesLoaded;
+    }
+
+    public static boolean getDiscoveriesLoaded() {
+        return ChatManager.discoveriesLoaded;
+    }
+
     private static class ChapterReader implements Runnable {
 
         ITextComponent chapterText;
@@ -889,5 +1030,4 @@ public class ChatManager {
         }
 
     }
-
 }
