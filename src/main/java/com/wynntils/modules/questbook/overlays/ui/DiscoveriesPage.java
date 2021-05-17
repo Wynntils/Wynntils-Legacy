@@ -328,7 +328,7 @@ public class DiscoveriesPage extends QuestBookPage {
                         }
                     break;
                     case 2: //Middle Click
-                        String wikiUrl = "https://wynncraft.gamepedia.com/" + Utils.encodeForWikiTitle(name);
+                        String wikiUrl = "https://wynncraft.fandom.com/wiki/" + Utils.encodeForWikiTitle(name);
                         Utils.openUrl(wikiUrl);
                         McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                     break;

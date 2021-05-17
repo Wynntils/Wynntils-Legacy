@@ -26,8 +26,10 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 
 import java.util.*;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static net.minecraft.util.text.TextFormatting.*;
@@ -36,11 +38,13 @@ public class QuestManager {
 
     private static final Pattern QUEST_BOOK_WINDOW_TITLE_PATTERN = Pattern.compile("\\[Pg\\. \\d+] [a-zA-Z0-9_ ]+'s? (?:Discoveries|(?:Mini-)?Quests)");
     private static final int MESSAGE_ID = 423375494;
+    private static final Pattern DIALOGUE_PAGE_PATTERN = Pattern.compile(TextFormatting.GRAY + "Page \\[(\\d+)/(\\d+)\\]");
 
     private static FakeInventory lastInventory = null;
     private static Map<String, QuestInfo> currentQuests = new LinkedHashMap<>();
     private static Map<String, QuestInfo> currentMiniQuests = new LinkedHashMap<>();
     private static Map<String, DiscoveryInfo> currentDiscoveries = new LinkedHashMap<>();
+    private static List<List<String>> currentDialogue = new ArrayList<>();
     private static String trackedQuest = null;
 
     private static List<String> questsLore = new ArrayList<>();
@@ -103,11 +107,13 @@ public class QuestManager {
         List<ItemStack> gatheredQuests = new ArrayList<>();
         List<ItemStack> gatheredMiniQuests = new ArrayList<>();
         List<ItemStack> gatheredDiscoveries = new ArrayList<>();
+        List<List<String>> gatheredDialogue = new ArrayList<>();
 
         FakeInventory inv = new FakeInventory(QUEST_BOOK_WINDOW_TITLE_PATTERN, new InventoryOpenByItem(7));
         inv.setLimitTime(15000); // 15 seconds
 
         inv.onReceiveItems((i) -> {
+            int mouseButton = 1;
             Pair<Integer, ItemStack> nextClick = null;
 
             // lores
@@ -115,7 +121,7 @@ public class QuestManager {
 
             boolean fullRead;
             synchronized (QuestManager.class) {
-                fullRead = QuestManager.fullRead;  // get synchronised copy
+                fullRead = QuestManager.fullRead; // get synchronised copy
 
                 // Get next queued position if not currently on a position
                 if (currentPosition == null) {
@@ -133,28 +139,62 @@ public class QuestManager {
 
             // page scanning
             if (currentPosition == AnalysePosition.QUESTS) {
-                nextClick = i.findItem(">>>>>", FilterType.CONTAINS); // next page item
+                nextClick = i.findItem("Dialogue History", FilterType.CONTAINS);
+                mouseButton = 0;
+                List<String> dialogueLore = ItemUtils.getLore(nextClick.b);
 
-                for (ItemStack stack : i.getInventory()) {
-                    if (!stack.hasDisplayName()) continue; // also checks for nbt
-
-                    List<String> lore = ItemUtils.getUnformattedLore(stack);
-                    // uppercase on beta
-                    if (lore.isEmpty() || (!lore.contains("Right click to track") && !lore.contains("RIGHT-CLICK TO TRACK") && !lore.contains("Right click to stop tracking"))) continue; // not a valid quest
-
-                    if (fullRead) {
-                        gatheredQuests.add(stack);
-                        continue;
-                    }
-
-                    String displayName = StringUtils.normalizeBadString(getTextWithoutFormattingCodes(stack.getDisplayName()));
-                    if (currentQuests.containsKey(displayName) && currentQuests.get(displayName).equals(stack)) {
-                        continue;
-                    }
-
-                    gatheredQuests.add(stack);
+                if (dialogueLore.contains(TextFormatting.GRAY + "There's nothing here yet")) {
                     nextClick = null;
-                    break;
+                    mouseButton = 1;
+                } else {
+                    int remove = 3;
+                    String page = dialogueLore.get(dialogueLore.size() - 3);
+                    Matcher matcher = DIALOGUE_PAGE_PATTERN.matcher(page);
+                    if (!matcher.matches()) {
+                        remove = 1;
+                        page = dialogueLore.get(dialogueLore.size() - 1);
+                        matcher = DIALOGUE_PAGE_PATTERN.matcher(page);
+                    }
+                    if (matcher.matches()) {
+                        int currentPage = Integer.parseInt(matcher.group(1));
+                        int maxPage = Integer.parseInt(matcher.group(2));
+                        if (gatheredDialogue.size() < currentPage) {
+                            gatheredDialogue.add(new ArrayList<>(dialogueLore.subList(1, dialogueLore.size() - remove - 1)));
+                        }
+                        if (currentPage >= maxPage || gatheredDialogue.size() >= maxPage) {
+                            nextClick = null;
+                            mouseButton = 1;
+                        }
+                    } else {
+                        nextClick = null;
+                        mouseButton = 1;
+                    }
+                }
+
+                if (nextClick == null) {
+                    nextClick = i.findItem(">>>>>", FilterType.CONTAINS); // next page item
+
+                    for (ItemStack stack : i.getInventory()) {
+                        if (!stack.hasDisplayName()) continue; // also checks for nbt
+
+                        List<String> lore = ItemUtils.getUnformattedLore(stack);
+                        // uppercase on beta
+                        if (lore.isEmpty() || (!lore.contains("Right click to track") && !lore.contains("RIGHT-CLICK TO TRACK") && !lore.contains("Right click to stop tracking"))) continue; // not a valid quest
+
+                        if (fullRead) {
+                            gatheredQuests.add(stack);
+                            continue;
+                        }
+
+                        String displayName = StringUtils.normalizeBadString(getTextWithoutFormattingCodes(stack.getDisplayName()));
+                        if (currentQuests.containsKey(displayName) && currentQuests.get(displayName).equals(stack)) {
+                            continue;
+                        }
+
+                        gatheredQuests.add(stack);
+                        nextClick = null;
+                        break;
+                    }
                 }
             }
 
@@ -222,6 +262,10 @@ public class QuestManager {
                     parseDiscoveries(gatheredDiscoveries);
                     gatheredDiscoveries.clear();
                 }
+                if (!gatheredDialogue.isEmpty()) {
+                    parseDialogue(gatheredDialogue);
+                    gatheredDialogue.clear();
+                }
 
                 AnalysePosition previousPosition = currentPosition;
 
@@ -248,11 +292,11 @@ public class QuestManager {
                     return;
                 }
 
-                i.clickItem(nextClick.a, 1, ClickType.PICKUP);
+                i.clickItem(nextClick.a, mouseButton, ClickType.PICKUP);
                 return;
             }
 
-            i.clickItem(nextClick.a, 1, ClickType.PICKUP); // 1 because otherwise wynn sends the inventory twice
+            i.clickItem(nextClick.a, mouseButton, ClickType.PICKUP); // 1 because otherwise wynn sends the inventory twice
         });
 
         inv.onClose((i, result) -> {
@@ -344,6 +388,45 @@ public class QuestManager {
         }
     }
 
+    private static void parseDialogue(List<List<String>> dialogue) {
+        currentDialogue.clear();
+        List<String> currentList = new ArrayList<>();
+        for (List<String> page : dialogue) {
+            boolean previousStart = true;
+            StringBuilder currentLine = new StringBuilder();
+            for (String line : page) {
+                if (line.equals(TextFormatting.DARK_GRAY + "• Dialogue Start")) {
+                    currentList = new ArrayList<>();
+                    currentList.add(line);
+                    previousStart = true;
+                } else if (line.equals(TextFormatting.DARK_GRAY + "• Dialogue End")) {
+                    if (currentLine.length() != 0) {
+                        currentList.add(currentLine.toString());
+                        currentLine = new StringBuilder();
+                    }
+                    currentList.add(line);
+                    currentDialogue.add(currentList);
+                    previousStart = false;
+                } else {
+                    if (!previousStart) {
+                        int lastColorCode = currentLine.lastIndexOf("§");
+                        if (lastColorCode > -1 && !line.startsWith("§" + currentLine.charAt(lastColorCode + 1))) {
+                            currentList.add(currentLine.toString());
+                            currentLine = new StringBuilder();
+                        } else {
+                            currentLine.append(' ');
+                        }
+                    }
+                    currentLine.append(line);
+                    previousStart = false;
+                }
+            }
+            if (currentLine.length() != 0) {
+                currentList.add(currentLine.toString());
+            }
+        }
+    }
+
     public static Collection<QuestInfo> getCurrentQuests() {
         return currentQuests.values();
     }
@@ -366,6 +449,10 @@ public class QuestManager {
 
     public static DiscoveryInfo getDiscovery(String name) {
         return currentDiscoveries.getOrDefault(name, null);
+    }
+
+    public static List<List<String>> getCurrentDialogue() {
+        return currentDialogue;
     }
 
     public static List<String> getQuestsLore() {
@@ -413,6 +500,7 @@ public class QuestManager {
         currentQuests.clear();
         currentMiniQuests.clear();
         currentDiscoveries.clear();
+        currentDialogue.clear();
 
         questsLore.clear();
         miniQuestsLore.clear();

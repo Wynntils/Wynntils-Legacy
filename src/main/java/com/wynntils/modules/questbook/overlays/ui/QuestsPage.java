@@ -277,7 +277,7 @@ public class QuestsPage extends QuestBookPage {
             } else if (mouseButton == 1) { // right click
                 McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
 
-                final String baseUrl = "https://wynncraft.gamepedia.com/";
+                final String baseUrl = "https://wynncraft.fandom.com/wiki/";
 
                 if (overQuest.isMiniQuest()) {
                     String type = overQuest.getFriendlyName().split(" ")[0];

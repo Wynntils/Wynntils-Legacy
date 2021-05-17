@@ -63,7 +63,7 @@ public class IDiscordCore extends Structure implements DiscordGameSDKOptions {
     };
 
     public interface set_log_hook_callback extends Callback, DiscordGameSDKOptions {
-        void apply(IDiscordCore core, EDiscordLogLevel min_level, Pointer hook_data, IDiscordCore.set_log_hook_callback_hook_callback hook);
+        void apply(IDiscordCore core, int min_level, Pointer hook_data, IDiscordCore.set_log_hook_callback_hook_callback hook);
     };
 
     public interface get_application_manager_callback extends Callback, DiscordGameSDKOptions {

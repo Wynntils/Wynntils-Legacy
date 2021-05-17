@@ -10,12 +10,12 @@ import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.core.enums.InventoryResult;
 import com.wynntils.modules.core.interfaces.IInventoryOpenAction;
-import net.minecraft.client.Minecraft;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketClickWindow;
 import net.minecraft.network.play.client.CPacketCloseWindow;
 import net.minecraft.network.play.client.CPacketConfirmTransaction;
+import net.minecraft.network.play.server.SPacketCloseWindow;
 import net.minecraft.network.play.server.SPacketConfirmTransaction;
 import net.minecraft.network.play.server.SPacketOpenWindow;
 import net.minecraft.network.play.server.SPacketWindowItems;
@@ -247,6 +247,11 @@ public class FakeInventory {
 
         McIf.mc().getConnection().sendPacket(new CPacketConfirmTransaction(windowId, e.getPacket().getActionNumber(), true));
         e.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public void close(PacketEvent.Incoming<SPacketCloseWindow> e) {
+        close(InventoryResult.CLOSED_PREMATURELY);
     }
 
     // interrupt if execute command

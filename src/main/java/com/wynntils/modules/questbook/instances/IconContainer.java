@@ -11,7 +11,8 @@ public enum IconContainer {
     itemGuideIcon(307, 325, 221, 261, true),
     hudConfigIcon(262, 283, 261, 303, true),
     discoveriesIcon(0, 16, 255, 287, true),
-    lootrunIcon(16, 32, 287, 319, true);
+    lootrunIcon(16, 32, 287, 319, true),
+    dialogueIcon(222, 236, 306, 317, false);
 
     private int x1, x2, y1, y2;
     private boolean highlightVariant;
