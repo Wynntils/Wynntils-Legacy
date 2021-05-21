@@ -394,7 +394,7 @@ public class QuestsPage extends QuestBookPage {
                 return 1;
             }
         }),
-            174, 281, 196, 303, Arrays.asList(
+            173, 281, 195, 303, Arrays.asList(
                 "Sort by Distance",
                 "Closest quests first"));
 
