@@ -132,7 +132,7 @@ public class ChatManager {
             McIf.player().playSound(popOffSound, 1f, 1f);
 
         // wynnic and gavellian translator
-        if (StringUtils.hasWynnic(in.getUnformattedText()) || StringUtils.hasGavellian(in.getUnformattedText())) {
+        if (StringUtils.hasWynnic(McIf.getUnformattedText(in)) || StringUtils.hasGavellian(McIf.getUnformattedText(in))) {
             Pair<ArrayList<ITextComponent>, ArrayList<ITextComponent>> result = translateWynnicMessage(in.createCopy(), original);
             ArrayList<ITextComponent> untranslatedComponents = result.a;
             ArrayList<ITextComponent> translatedComponents = result.b;
@@ -204,10 +204,10 @@ public class ChatManager {
                 ITextComponent untranslated = untranslatedComponents.get(i);
                 ITextComponent translated = translatedComponents.get(i);
 
-                if (translateWynnic && StringUtils.hasWynnic(untranslated.getUnformattedText())) {
+                if (translateWynnic && StringUtils.hasWynnic(McIf.getUnformattedText(untranslated))) {
                     language = WynncraftLanguage.WYNNIC;
 
-                } else if (translateGavellian && StringUtils.hasGavellian(untranslated.getUnformattedText())) {
+                } else if (translateGavellian && StringUtils.hasGavellian(McIf.getUnformattedText(untranslated))) {
                     language = WynncraftLanguage.GAVELLIAN;
                 }
                 else {
@@ -226,7 +226,7 @@ public class ChatManager {
                             ITextComponent toAdd = untranslatedComponents.get(i + 1);
                             ITextComponent toHover = translatedComponents.get(i + 1);
 
-                            if ((translateWynnic && StringUtils.hasWynnic(toAdd.getUnformattedText())) || (translateGavellian && StringUtils.hasGavellian(toAdd.getUnformattedText()))) {
+                            if ((translateWynnic && StringUtils.hasWynnic(McIf.getUnformattedText(toAdd))) || (translateGavellian && StringUtils.hasGavellian(McIf.getUnformattedText(toAdd)))) {
                                 toAdd.getSiblings().clear();
                                 toHover.getSiblings().clear();
                                 untranslated.appendSibling(toAdd);
@@ -236,8 +236,8 @@ public class ChatManager {
                                 language = WynncraftLanguage.NORMAL;
                             }
                         }
-
-                        if (!translated.getUnformattedText().equals(untranslated.getUnformattedText())) {
+                        
+                        if (!McIf.getUnformattedText(translated).equals(McIf.getUnformattedText(translated))) {
                             untranslated.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, translated));
                         }
 
@@ -245,7 +245,7 @@ public class ChatManager {
                     }
                 } else {
                     untranslated.getSiblings().clear();
-                    if (!translated.getUnformattedText().equals(untranslated.getUnformattedText())) {
+                    if (!McIf.getUnformattedText(translated).equals(McIf.getUnformattedText(untranslated))) {
                         untranslated.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,  new TextComponentString(TextFormatting.GRAY + "You don't know this language!")));
                     }
 
@@ -283,7 +283,7 @@ public class ChatManager {
         // clickable duel messages
         if (ChatConfig.INSTANCE.clickableDuelMessage && duelReg.matcher(McIf.getUnformattedText(in)).find()) {
             for (ITextComponent textComponent : in.getSiblings()) {
-                if (textComponent.getUnformattedComponentText().startsWith("/")) {
+                if (McIf.getUnformattedText(textComponent).startsWith("/")) {
                     String command = textComponent.getUnformattedComponentText();
                     textComponent.getStyle()
                             .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
@@ -374,7 +374,7 @@ public class ChatManager {
     //returns a list of untranslated components and translated components
     private static Pair<ArrayList<ITextComponent>, ArrayList<ITextComponent>> translateWynnicMessage(ITextComponent in, ITextComponent original) {
         boolean capital = false;
-        boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(McIf.getFormattedText(original)).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(original.getFormattedText()).find();
+        boolean isGuildOrParty = Pattern.compile(TabManager.DEFAULT_GUILD_REGEX.replace("&", "§")).matcher(McIf.getFormattedText(original)).find() || Pattern.compile(TabManager.DEFAULT_PARTY_REGEX.replace("&", "§")).matcher(McIf.getFormattedText(original)).find();
         boolean foundStart = false;
         boolean foundEndTimestamp = !ChatConfig.INSTANCE.addTimestampsToChat;
         boolean previousTranslated = false;

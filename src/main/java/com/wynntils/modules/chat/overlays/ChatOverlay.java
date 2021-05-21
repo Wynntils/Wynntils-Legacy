@@ -324,8 +324,6 @@ public class ChatOverlay extends GuiNewChat {
 
         List<ChatLine> lines = tab.getCurrentMessages();
 
-        System.out.println(keys);
-
         for (int i = 0; i < lines.size(); i++) {
             if (!(lines.get(i) instanceof GroupedChatLine)) continue;
             GroupedChatLine line = (GroupedChatLine) lines.get(i);
