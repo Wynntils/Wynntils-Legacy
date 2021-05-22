@@ -236,8 +236,8 @@ public class ChatManager {
                                 language = WynncraftLanguage.NORMAL;
                             }
                         }
-                        
-                        if (!McIf.getUnformattedText(translated).equals(McIf.getUnformattedText(translated))) {
+
+                        if (!McIf.getUnformattedText(translated).equals(McIf.getUnformattedText(untranslated))) {
                             untranslated.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, translated));
                         }
 
