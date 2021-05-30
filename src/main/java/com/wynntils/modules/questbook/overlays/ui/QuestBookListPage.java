@@ -1,21 +1,31 @@
 package com.wynntils.modules.questbook.overlays.ui;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookPage;
+import net.minecraft.client.gui.ScaledResolution;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
 
+/**
+ * Extend this class when the QuestBook has a list, contains methods for pages
+ * @param <T>
+ */
 public abstract class QuestBookListPage<T> extends QuestBookPage {
-    private List<T> search = new ArrayList<>();
-    T selectedItem;
-    Comparator<T> sort;
+    //Search is a list of pages, where a page contains 13 or less T
+    protected List<List<T>> search = new ArrayList<>();
+    protected T selectedItem;
 
+    //Instantiated
+    Comparator<T> sort;
+    BiPredicate<String, T> filter;
     /**
      * Base class for all questbook list pages
      *
@@ -23,9 +33,10 @@ public abstract class QuestBookListPage<T> extends QuestBookPage {
      * @param showSearchBar boolean of whether there is a searchbar needed for that page
      * @param icon          the icon that corresponds to the page
      */
-    public QuestBookListPage(String title, boolean showSearchBar, IconContainer icon, Comparator<T> sort) {
+    public QuestBookListPage(String title, boolean showSearchBar, IconContainer icon, Comparator<T> sort, BiPredicate<String, T> filter) {
         super(title, showSearchBar, icon);
         this.sort = sort;
+        this.filter = filter;
     }
 
     @Override
@@ -44,39 +55,39 @@ public abstract class QuestBookListPage<T> extends QuestBookPage {
             render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
             // Draw all Search Results
-            int currentY = 12;
             if (search.size() > 0) {
-                for (int i = ((currentPage - 1) * 13); i < 13 * currentPage; i++) {
-                    if (search.size() <= i) {
-                    break;
-                }
+                List<T> page = search.get(currentPage);
 
-                    T currentItem;
-                    try {
-                        currentItem = search.get(i);
-                    } catch (IndexOutOfBoundsException ex) {
-                        break;
+                if (page.size() > 0) {
+
+                    for (int i = 0; i < page.size(); i++) {
+                        if (search.size() <= i) {
+                            break;
+                        }
+
+                        T currentItem = page.get(i);
+
+                        if (isHovered(i, posX, posY) && !showAnimation) {
+                            //hovered
+                            drawItem(currentItem, i, true);
+
+                            selectedItem = currentItem;
+                            selected = i;
+                            hoveredText = getHoveredText(selectedItem);
+                        } else {
+                            if (this.selected == i) {
+                                selectedItem = null;
+                                selected = -1;
+                            }
+
+                            //not hovered
+                            drawItem(currentItem, i, false);
+                        }
                     }
-
-                    if (posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY && !showAnimation) {
-                        //hovered
-                        drawItem(currentItem, i, true);
-
-                        selectedItem = currentItem;
-                        hoveredText = getHoveredText();
-                    } else {
-                        //not hovered
-                        drawItem(currentItem, i, false);
-                    }
-
-                    //TODO - see if this is necessary
-                    render.color(1, 1, 1, 1);
-                    drawIcon(currentItem, i);
-
-                    currentY += 13;
                 }
             } else {
-                String textToDisplay = getBlankDisplayText();
+                String textToDisplay = getEmptySearchString();
+                int currentY = 12;
 
                 for (String line : textToDisplay.split("\n")) {
                     currentY += render.drawSplitString(line, 120, x + 26, y - 95 + currentY, 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE) * 10 + 2;
@@ -90,31 +101,71 @@ public abstract class QuestBookListPage<T> extends QuestBookPage {
     }
 
     @Override
-    protected void searchUpdate(String currentText) {
-        search = getSearchResults();
-
-        if (currentText != null && !currentText.isEmpty()) {
-            String lowerCase = currentText.toLowerCase();
-            search.removeIf(c -> !doesSearchMatch(getName(c), lowerCase));
-        }
-
-        search.sort(sort);
+    public void searchUpdate(String currentText) {
+        search = getSearchResults(currentText);
 
         pages = search.size() <= 13 ? 1 : (int) Math.ceil(search.size() / 13d);
         currentPage = Math.min(currentPage, pages);
         refreshAccepts();
     }
 
-    protected abstract String getBlankDisplayText();
+    @Override
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
 
-    protected abstract void drawIcon(T item, int index);
+        if (selectedItem != null && search.size() > selected) {
+            handleItemClick(selectedItem, mouseButton);
+        }
 
-    protected abstract String getName(T item);
+    }
 
-    protected abstract List<T> getSearchResults();
+    /**
+     * Trims a string to the width desired and add "..." to the end
+     *
+     * @param str string to trim
+     * @param width width to trim to trim too
+     * @return trimmed string
+     */
 
-    protected abstract void drawItem(T item, int index, boolean hovered);
+    //TODO - implement it when using
+    public static String getTrimmedName(String str, int width) {
+        if (!(McIf.mc().fontRenderer.getStringWidth(str) > width)) return str;
 
-    protected abstract List<String> getHoveredText();
+        str += "...";
 
+        while (McIf.mc().fontRenderer.getStringWidth(str) > width) {
+            str = str.substring(0, str.length() - 4).trim() + "...";
+        }
+
+        return str;
+    }
+
+    /**
+     * Get what to display when search results are empty
+     */
+    protected abstract String getEmptySearchString();
+
+    /**
+     * Returns the search results, should be sorted
+     */
+    protected abstract List<List<T>> getSearchResults(String text);
+
+    /**
+     * Draws an entry in search
+     * @param itemInfo The info for item
+     * @param index The index of the item
+     * @param hovered Whether the item is hovered
+     */
+    protected abstract void drawItem(T itemInfo, int index, boolean hovered);
+
+    protected abstract boolean isHovered(int index, int posX, int posY);
+
+    /**
+     * Gets hovered text
+     */
+    protected abstract List<String> getHoveredText(T itemInfo);
+
+    /**
+     * Handles a mouse input on an item
+     */
+    protected abstract void handleItemClick(T itemInfo, int mouseButton);
 }
