@@ -4,6 +4,7 @@ import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
+import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookPage;
 import net.minecraft.client.gui.ScaledResolution;
@@ -47,7 +48,6 @@ public abstract class QuestBookListPage<T> extends QuestBookPage {
         int y = height / 2;
         int posX = (x - mouseX);
         int posY = (y - mouseY);
-        hoveredText = new ArrayList<>();
 
         ScreenRenderer.beginGL(0, 0);
         {
@@ -56,20 +56,15 @@ public abstract class QuestBookListPage<T> extends QuestBookPage {
 
             // Draw all Search Results
             if (search.size() > 0) {
-                List<T> page = search.get(currentPage);
+                List<T> page = search.get(currentPage - 1);
 
                 if (page.size() > 0) {
-
                     for (int i = 0; i < page.size(); i++) {
-                        if (search.size() <= i) {
-                            break;
-                        }
-
                         T currentItem = page.get(i);
 
                         if (isHovered(i, posX, posY) && !showAnimation) {
                             //hovered
-                            drawItem(currentItem, i, true);
+                            drawItem(currentItem, i, posX, posY, true);
 
                             selectedItem = currentItem;
                             selected = i;
@@ -77,11 +72,10 @@ public abstract class QuestBookListPage<T> extends QuestBookPage {
                         } else {
                             if (this.selected == i) {
                                 selectedItem = null;
-                                selected = -1;
                             }
 
                             //not hovered
-                            drawItem(currentItem, i, false);
+                            drawItem(currentItem, i, posX, posY, false);
                         }
                     }
                 }
@@ -97,25 +91,23 @@ public abstract class QuestBookListPage<T> extends QuestBookPage {
             }
         }
         ScreenRenderer.endGL();
-        renderHoveredText(mouseX, mouseY);
     }
 
     @Override
     public void searchUpdate(String currentText) {
         search = getSearchResults(currentText);
 
-        pages = search.size() <= 13 ? 1 : (int) Math.ceil(search.size() / 13d);
+        pages = search.size();
         currentPage = Math.min(currentPage, pages);
         refreshAccepts();
     }
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-
-        if (selectedItem != null && search.size() > selected) {
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+        if (selectedItem != null && search.get(currentPage - 1).size() > selected) {
             handleItemClick(selectedItem, mouseButton);
         }
-
     }
 
     /**
@@ -155,7 +147,7 @@ public abstract class QuestBookListPage<T> extends QuestBookPage {
      * @param index The index of the item
      * @param hovered Whether the item is hovered
      */
-    protected abstract void drawItem(T itemInfo, int index, boolean hovered);
+    protected abstract void drawItem(T itemInfo, int index, int posX, int posY, boolean hovered);
 
     protected abstract boolean isHovered(int index, int posX, int posY);
 

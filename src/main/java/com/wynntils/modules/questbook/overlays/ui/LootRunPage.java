@@ -18,7 +18,6 @@ import com.wynntils.modules.map.overlays.objects.MapIcon;
 import com.wynntils.modules.map.overlays.ui.MainWorldMapUI;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.instances.IconContainer;
-import com.wynntils.modules.questbook.instances.QuestBookPage;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -37,41 +36,21 @@ import java.util.*;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
-public class LootRunPage extends QuestBookPage {
+public class LootRunPage extends QuestBookListPage<String> {
 
-    private final int MESSAGE_ID = "wynntils-lootrun-page".hashCode();
-
-    private List<String> names;
-    private String selectedName;
     private final static List<String> textLines = Arrays.asList("Here you can see all lootruns", "you have downloaded. You can", "also search for a specific", "quest just by typing its name.", "You can go to the next page", "by clicking on the two buttons", "or by scrolling your mouse.", "", "To add lootruns, access the", "folder for lootruns by", "running /lootrun folder");
 
     public LootRunPage() {
-        super("Your Lootruns", true, IconContainer.lootrunIcon);
+        super("Your Lootruns",
+                true,
+                IconContainer.lootrunIcon,
+                Comparator.comparing(String::toLowerCase),
+                String::contains);
     }
 
     @Override
     public List<String> getHoveredDescription() {
         return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Lootruns", TextFormatting.GRAY + "See all lootruns", TextFormatting.GRAY + "you have", TextFormatting.GRAY + "saved in the game.", "", TextFormatting.GREEN + "Left click to select");
-    }
-
-    @Override
-    public void initGui() {
-        super.initGui();
-        initBasicSearch();
-
-        names = LootRunManager.getStoredLootruns();
-        Collections.sort(names);
-    }
-
-    private void initBasicSearch() {
-        textField.setMaxStringLength(50);
-        initDefaultSearchBar();
-    }
-
-    private void initDefaultSearchBar() {
-        textField.x = width / 2 + 32;
-        textField.y = height / 2 - 97;
-        textField.width = 113;
     }
 
     @Override
@@ -176,165 +155,23 @@ public class LootRunPage extends QuestBookPage {
 
             }
 
-            // back to menu button
+            // buttons
             drawMenuButton(x, y, posX, posY);
-
-            //Page text
-            render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-
             drawForwardAndBackButtons(x, y, posX, posY, currentPage, pages);
 
-            // available lootruns
-            int currentY = 12;
-
-            if (names.size() > 0) {
-                for (int i = ((currentPage - 1) * 13); i < 13 * currentPage; i++) {
-                    if (names.size() <= i) {
-                        break;
-                    }
-
-                    boolean hovered = posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY;
-                    //is string length of selectedName > 120?
-                    String currentName = names.get(i);
-                    boolean toCrop = !getFriendlyName(currentName, 120).equals(currentName);
-
-                    int animationTick = -1;
-                    if (hovered && !showAnimation) {
-                        if (lastTick == 0 && !animationCompleted) {
-                            lastTick = McIf.getSystemTime();
-                        }
-
-                        selected = i;
-                        selectedName = currentName;
-
-                        if (!animationCompleted) {
-                            animationTick = (int) (McIf.getSystemTime() - lastTick) / 2;
-                            if (animationTick >= 133 && !toCrop) {
-                                animationCompleted = true;
-                                animationTick = 133;
-                            }
-                        } else {
-                            //reset animation to wait for scroll
-                            if (toCrop) {
-                                animationCompleted = false;
-                                lastTick = McIf.getSystemTime() - 133 * 2;
-                            }
-
-                            animationTick = 133;
-                        }
-
-                        int width = Math.min(animationTick, 133);
-                        animationTick -= 133 + 200;
-                        if (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(currentName)) {
-                            render.drawRectF(background_3, x + 9, y - 96 + currentY, x + 13 + width, y - 87 + currentY);
-                            render.drawRectF(background_4, x + 9, y - 96 + currentY, x + 146, y - 87 + currentY);
-                        } else {
-                            render.drawRectF(background_1, x + 9, y - 96 + currentY, x + 13 + width, y - 87 + currentY);
-                            render.drawRectF(background_2, x + 9, y - 96 + currentY, x + 146, y - 87 + currentY);
-                        }
-
-                        disableLighting();
-
-                        if (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(currentName)) {
-                            hoveredText = Arrays.asList(TextFormatting.BOLD + names.get(i), TextFormatting.YELLOW + "Loaded", TextFormatting.GOLD + "Middle click to open lootrun in folder",  TextFormatting.GREEN + "Left click to unload this lootrun");
-                        } else {
-                            hoveredText = Arrays.asList(TextFormatting.BOLD + names.get(i), TextFormatting.GREEN + "Left click to load", TextFormatting.GOLD + "Middle click to open lootrun in folder", TextFormatting.RED + "Shift-Right click to delete");
-                        }
-                    } else {
-                        if (selected == i) {
-                            animationCompleted = false;
-
-                            if (!showAnimation) lastTick = 0;
-                        }
-
-                        if (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(names.get(i))) {
-                            render.drawRectF(background_4, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
-                        } else {
-                            render.drawRectF(background_2, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
-                        }
-                    }
-
-                    String friendlyName = getFriendlyName(currentName, 120);
-                    if (selected == i && toCrop && animationTick > 0) {
-                        int maxScroll = fontRenderer.getStringWidth(friendlyName) - (120 - 10);
-                        int scrollAmount = (animationTick / 20) % (maxScroll + 60);
-
-                        if (maxScroll <= scrollAmount && scrollAmount <= maxScroll + 40) {
-                            // Stay on max scroll for 20 * 40 animation ticks after reaching the end
-                            scrollAmount = maxScroll;
-                        } else if (maxScroll <= scrollAmount) {
-                            // And stay on minimum scroll for 20 * 20 animation ticks after looping back to the start
-                            scrollAmount = 0;
-                        }
-
-                        ScreenRenderer.enableScissorTestX(x + 26, 13 + 133 - 2 - 26);
-                        {
-                            render.drawString(selectedName, x + 26 - scrollAmount, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                        }
-                        ScreenRenderer.disableScissorTest();
-                    } else {
-                        render.drawString(friendlyName, x + 26, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                    }
-
-                    currentY += 13;
-                }
-
-                renderHoveredText(mouseX, mouseY);
-            } else {
-                String textToDisplay = "No Lootruns were found!\nTry changing your search.";
-
-                for (String line : textToDisplay.split("\n")) {
-                    currentY += render.drawSplitString(line, 120, x + 26, y - 95 + currentY, 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE) * 10 + 2;
-                }
+            //turtle
+            boolean mapHovered = posX <= 154 && posX >= 154 - mapWidth && posY <= -23 && posY >= -23 - mapHeight;
+            if (mapHovered) {
+                hoveredText = Collections.singletonList(TextFormatting.YELLOW + "Click to open Map!");
             }
+
+            renderHoveredText(mouseX, mouseY);
+
         }
         ScreenRenderer.endGL();
+
     }
 
-    @Override
-    protected void searchUpdate(String currentText) {
-        names = LootRunManager.getStoredLootruns();
-
-        if (currentText != null && !currentText.isEmpty()) {
-            String lowerCase = currentText.toLowerCase();
-            names.removeIf(c -> !doesSearchMatch(c.toLowerCase(Locale.ROOT), lowerCase));
-        }
-
-        Collections.sort(names);
-
-        updateSelected();
-
-        pages = names.size() <= 13 ? 1 : (int) Math.ceil(names.size() / 13d);
-        currentPage = Math.min(currentPage, pages);
-        refreshAccepts();
-    }
-
-    private void updateSelected() {
-        if (selectedName == null) return;
-
-        selected = names.indexOf(selectedName);
-
-        if (selected == -1) {
-            selectedName = null;
-        }
-    }
-
-    public String getFriendlyName(String str, int width) {
-        if (!(McIf.mc().fontRenderer.getStringWidth(str) > width)) return str;
-
-        str += "...";
-
-        while (McIf.mc().fontRenderer.getStringWidth(str) > width) {
-            str = str.substring(0, str.length() - 4).trim() + "...";
-        }
-
-        return str;
-    }
-
-    @Override
-    protected void drawSearchBar(int centerX, int centerY) {
-        super.drawSearchBar(centerX, centerY);
-    }
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
@@ -342,64 +179,12 @@ public class LootRunPage extends QuestBookPage {
         int posX = ((res.getScaledWidth() / 2) - mouseX);
         int posY = ((res.getScaledHeight() / 2) - mouseY);
 
-        checkMenuButton(posX, posY);
-        checkForwardAndBackButtons(posX, posY);
-
-        int currentY = 12 + 13 * (selected % 13);
-
-        boolean hovered = posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY;
-        boolean isTracked = (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(selectedName));
-
-        if (hovered && names.size() > selected) {
-            if (mouseButton == 0) { //left click means either load or unload
-                if (isTracked) {
-                    if (LootRunManager.getActivePath() != null) {
-                        LootRunManager.clear();
-                    }
-                } else {
-                    boolean result = LootRunManager.loadFromFile(selectedName);
-
-                    if (result) {
-                        try {
-                            Location start = LootRunManager.getActivePath().getPoints().get(0);
-                            String message = TextFormatting.GREEN + "Loaded loot run " + LootRunManager.getActivePathName() + " successfully! " + TextFormatting.GRAY + "(" + LootRunManager.getActivePath().getChests().size() + " chests)";
-
-                            Minecraft.getMinecraft().player.sendMessage(new TextComponentString(message));
-
-                            String startingPointMsg = "Loot run starts at [" + (int) start.getX() + ", " + (int) start.getZ() + "]";
-
-                            McIf.mc().addScheduledTask(() ->
-                                    ChatOverlay.getChat().printChatMessageWithOptionalDeletion(new TextComponentString(startingPointMsg), MESSAGE_ID)
-                            );
-
-                            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-
-                return;
-            } else if (mouseButton == 1 && isShiftKeyDown() && !isTracked) { //shift right click means delete
-                boolean result = LootRunManager.delete(selectedName);
-                if (result) {
-                    names.remove(selected);
-                    updateSelected();
-                    McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
-                }
-
-                return;
-            } else if (mouseButton == 2) { //middle click means open up folder
-                File lootrunPath = new File(LootRunManager.STORAGE_FOLDER, selectedName + ".json");
-                String uri = lootrunPath.toURI().toString();
-                Utils.openUrl(uri);
-                return;
-            }
-        }
-
         //open the map when clicked
         int mapWidth = 145;
         int mapHeight = 58;
+
+        checkMenuButton(posX, posY);
+        checkForwardAndBackButtons(posX, posY);
 
         boolean mapHovered = posX <= 154 && posX >= 154 - mapWidth && posY <= -23 && posY >= -23 - mapHeight;
         if (mapHovered && LootRunManager.getActivePathName() != null) {
@@ -414,5 +199,184 @@ public class LootRunPage extends QuestBookPage {
         }
 
         super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    @Override
+    protected String getEmptySearchString() {
+        return  "No Lootruns were found!\nTry changing your search.";
+
+    }
+
+    @Override
+    protected List<List<String>> getSearchResults(String currentText) {
+        List<List<String>> pages = new ArrayList<>();
+        List<String> page = new ArrayList<>();
+        int count = 0;
+
+        List<String> names = LootRunManager.getStoredLootruns();
+        Collections.sort(names);
+
+        if (currentText != null && !currentText.isEmpty()) {
+            String lowerCase = currentText.toLowerCase();
+            names.removeIf(c -> !doesSearchMatch(c.toLowerCase(Locale.ROOT), lowerCase));
+        }
+
+        for (String name : names) {
+            if (count == 13) {
+                pages.add(page);
+                page = new ArrayList<>();
+                count = 0;
+            }
+
+            page.add(name);
+            count++;
+        }
+
+        if (!page.isEmpty()) {
+            pages.add(page);
+        }
+
+        return pages;
+    }
+
+    @Override
+    protected void drawItem(String itemInfo, int index, int posX, int posY, boolean hovered) {
+        int x = width / 2;
+        int y = height / 2;
+        int currentY = 13 + index * 12;
+        boolean toCrop = !getTrimmedName(itemInfo, 120).equals(itemInfo);
+
+        int animationTick = -1;
+        if (hovered && !showAnimation) {
+            if (lastTick == 0 && !animationCompleted) {
+                lastTick = McIf.getSystemTime();
+            }
+
+            if (!animationCompleted) {
+                animationTick = (int) (McIf.getSystemTime() - lastTick) / 2;
+                if (animationTick >= 133 && !toCrop) {
+                    animationCompleted = true;
+                    animationTick = 133;
+                }
+            } else {
+                //reset animation to wait for scroll
+                if (toCrop) {
+                    animationCompleted = false;
+                    lastTick = McIf.getSystemTime() - 133 * 2;
+                }
+
+                animationTick = 133;
+            }
+
+            int width = Math.min(animationTick, 133);
+            animationTick -= 133 + 200;
+            if (selected != -1) {
+                render.drawRectF(background_3, x + 9, y - 96 + currentY, x + 13 + width, y - 87 + currentY);
+                render.drawRectF(background_4, x + 9, y - 96 + currentY, x + 146, y - 87 + currentY);
+            } else {
+                render.drawRectF(background_1, x + 9, y - 96 + currentY, x + 13 + width, y - 87 + currentY);
+                render.drawRectF(background_2, x + 9, y - 96 + currentY, x + 146, y - 87 + currentY);
+            }
+
+            disableLighting();
+
+            if (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(itemInfo)) {
+                hoveredText = Arrays.asList(TextFormatting.BOLD + itemInfo, TextFormatting.YELLOW + "Loaded", TextFormatting.GOLD + "Middle click to open lootrun in folder",  TextFormatting.GREEN + "Left click to unload this lootrun");
+            } else {
+                hoveredText = Arrays.asList(TextFormatting.BOLD + itemInfo, TextFormatting.GREEN + "Left click to load", TextFormatting.GOLD + "Middle click to open lootrun in folder", TextFormatting.RED + "Shift-Right click to delete");
+            }
+        } else {
+            if (selected == index) {
+                animationCompleted = false;
+
+                if (!showAnimation) lastTick = 0;
+            }
+
+            if (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(itemInfo)) {
+                render.drawRectF(background_4, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
+            } else {
+                render.drawRectF(background_2, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
+            }
+        }
+
+        String friendlyName = getTrimmedName(itemInfo, 120);
+        if (selected == index && toCrop && animationTick > 0 && !friendlyName.equals(selectedItem)) {
+            int maxScroll = fontRenderer.getStringWidth(friendlyName) - (120 - 10);
+            int scrollAmount = (animationTick / 20) % (maxScroll + 60);
+
+            if (maxScroll <= scrollAmount && scrollAmount <= maxScroll + 40) {
+                // Stay on max scroll for 20 * 40 animation ticks after reaching the end
+                scrollAmount = maxScroll;
+            } else if (maxScroll <= scrollAmount) {
+                // And stay on minimum scroll for 20 * 20 animation ticks after looping back to the start
+                scrollAmount = 0;
+            }
+
+            ScreenRenderer.enableScissorTestX(x + 26, 13 + 133 - 2 - 26);
+            {
+                render.drawString(selectedItem, x + 26 - scrollAmount, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            }
+            ScreenRenderer.disableScissorTest();
+        } else {
+            render.drawString(friendlyName, x + 26, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+        }
+    }
+
+    @Override
+    protected boolean isHovered(int index, int posX, int posY) {
+        int currentY = 13 + 12 * index;
+
+        return search.get(currentPage - 1).size() > index && posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY;
+    }
+
+    @Override
+    protected List<String> getHoveredText(String itemInfo) {
+        return null;
+    }
+
+    @Override
+    protected void handleItemClick(String itemInfo, int mouseButton) {
+        boolean isTracked = (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(selectedItem));
+
+        if (mouseButton == 0) { //left click means either load or unload
+            if (isTracked) {
+                if (LootRunManager.getActivePath() != null) {
+                    LootRunManager.clear();
+                }
+            } else {
+                boolean result = LootRunManager.loadFromFile(selectedItem);
+
+                if (result) {
+                    try {
+                        Location start = LootRunManager.getActivePath().getPoints().get(0);
+                        String message = TextFormatting.GREEN + "Loaded loot run " + LootRunManager.getActivePathName() + " successfully! " + TextFormatting.GRAY + "(" + LootRunManager.getActivePath().getChests().size() + " chests)";
+
+                        Minecraft.getMinecraft().player.sendMessage(new TextComponentString(message));
+
+                        String startingPointMsg = "Loot run starts at [" + (int) start.getX() + ", " + (int) start.getZ() + "]";
+
+                        McIf.mc().addScheduledTask(() ->
+                                ChatOverlay.getChat().printChatMessage(new TextComponentString(startingPointMsg))
+                        );
+
+                        McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        } else if (mouseButton == 1 && isShiftKeyDown() && !isTracked) { //shift right click means delete
+            boolean result = LootRunManager.delete(selectedItem);
+            if (result) {
+                search.get(currentPage).remove(selectedItem);
+                selected = -1;
+                McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
+            }
+
+        } else if (mouseButton == 2) { //middle click means open up folder
+            File lootrunPath = new File(LootRunManager.STORAGE_FOLDER, selectedItem + ".json");
+            String uri = lootrunPath.toURI().toString();
+            Utils.openUrl(uri);
+        }
     }
 }
