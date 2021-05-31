@@ -1,32 +1,27 @@
-package com.wynntils.modules.questbook.overlays.ui;
+/*
+ *  * Copyright © Wynntils - 2021.
+ */
+
+package com.wynntils.modules.questbook.instances;
 
 import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
-import com.wynntils.modules.map.managers.LootRunManager;
-import com.wynntils.modules.questbook.instances.IconContainer;
-import com.wynntils.modules.questbook.instances.QuestBookPage;
-import net.minecraft.client.gui.ScaledResolution;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.function.BiPredicate;
 
 /**
  * Extend this class when the QuestBook has a list, contains methods for pages
  * @param <T>
  */
 public abstract class QuestBookListPage<T> extends QuestBookPage {
-    //Search is a list of pages, where a page contains 13 or less T
+    //Search is a list of pages, where a page contains the items on that page
     protected List<List<T>> search = new ArrayList<>();
     protected T selectedItem;
 
-    //Instantiated
-    Comparator<T> sort;
-    BiPredicate<String, T> filter;
     /**
      * Base class for all questbook list pages
      *
@@ -34,10 +29,8 @@ public abstract class QuestBookListPage<T> extends QuestBookPage {
      * @param showSearchBar boolean of whether there is a searchbar needed for that page
      * @param icon          the icon that corresponds to the page
      */
-    public QuestBookListPage(String title, boolean showSearchBar, IconContainer icon, Comparator<T> sort, BiPredicate<String, T> filter) {
+    public QuestBookListPage(String title, boolean showSearchBar, IconContainer icon) {
         super(title, showSearchBar, icon);
-        this.sort = sort;
-        this.filter = filter;
     }
 
     @Override
@@ -64,7 +57,7 @@ public abstract class QuestBookListPage<T> extends QuestBookPage {
 
                         if (isHovered(i, posX, posY) && !showAnimation) {
                             //hovered
-                            drawItem(currentItem, i, posX, posY, true);
+                            drawItem(currentItem, i, true);
 
                             selectedItem = currentItem;
                             selected = i;
@@ -75,7 +68,7 @@ public abstract class QuestBookListPage<T> extends QuestBookPage {
                             }
 
                             //not hovered
-                            drawItem(currentItem, i, posX, posY, false);
+                            drawItem(currentItem, i, false);
                         }
                     }
                 }
@@ -97,7 +90,7 @@ public abstract class QuestBookListPage<T> extends QuestBookPage {
     public void searchUpdate(String currentText) {
         search = getSearchResults(currentText);
 
-        pages = search.size();
+        pages = search.size() == 0 ? 1 : search.size();
         currentPage = Math.min(currentPage, pages);
         refreshAccepts();
     }
@@ -108,6 +101,12 @@ public abstract class QuestBookListPage<T> extends QuestBookPage {
         if (selectedItem != null && search.get(currentPage - 1).size() > selected) {
             handleItemClick(selectedItem, mouseButton);
         }
+    }
+
+    @Override
+    public void keyTyped(char typedChar, int keyCode) throws IOException {
+        selectedItem = null;
+        super.keyTyped(typedChar, keyCode);
     }
 
     /**
@@ -143,11 +142,11 @@ public abstract class QuestBookListPage<T> extends QuestBookPage {
 
     /**
      * Draws an entry in search
-     * @param itemInfo The info for item
-     * @param index The index of the item
+     * @param itemInfo The info for the item
+     * @param index The index of the item relative to the page
      * @param hovered Whether the item is hovered
      */
-    protected abstract void drawItem(T itemInfo, int index, int posX, int posY, boolean hovered);
+    protected abstract void drawItem(T itemInfo, int index, boolean hovered);
 
     protected abstract boolean isHovered(int index, int posX, int posY);
 

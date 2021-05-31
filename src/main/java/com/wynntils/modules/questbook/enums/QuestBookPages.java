@@ -12,16 +12,12 @@ import java.util.Arrays;
 public enum QuestBookPages {
 
     MAIN(new MainPage(), 0),
-    //THEN THIS
     QUESTS(new QuestsPage(), 1),
     SETTINGS(new SettingsPage(), 2),
-    //LAST
     ITEMGUIDE(new ItemPage(), 3),
     HUDCONFIG(new HUDConfigPage(), 4),
-    //DO THIS FIRST
     DISCOVERIES(new DiscoveriesPage(), 5),
     LOOTRUNS(new LootRunPage(), 6),
-    //THEN THIS AFTER THAT
     DIALOGUE(new DialoguePage(), 7);
 
     private QuestBookPage questBookPage;

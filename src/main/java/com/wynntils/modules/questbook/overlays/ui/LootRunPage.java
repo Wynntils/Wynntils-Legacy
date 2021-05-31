@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2021.
+ */
+
 package com.wynntils.modules.questbook.overlays.ui;
 
 import com.wynntils.McIf;
@@ -18,6 +22,7 @@ import com.wynntils.modules.map.overlays.objects.MapIcon;
 import com.wynntils.modules.map.overlays.ui.MainWorldMapUI;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.instances.IconContainer;
+import com.wynntils.modules.questbook.instances.QuestBookListPage;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -41,11 +46,7 @@ public class LootRunPage extends QuestBookListPage<String> {
     private final static List<String> textLines = Arrays.asList("Here you can see all lootruns", "you have downloaded. You can", "also search for a specific", "quest just by typing its name.", "You can go to the next page", "by clicking on the two buttons", "or by scrolling your mouse.", "", "To add lootruns, access the", "folder for lootruns by", "running /lootrun folder");
 
     public LootRunPage() {
-        super("Your Lootruns",
-                true,
-                IconContainer.lootrunIcon,
-                Comparator.comparing(String::toLowerCase),
-                String::contains);
+        super("Your Lootruns", true, IconContainer.lootrunIcon);
     }
 
     @Override
@@ -55,7 +56,6 @@ public class LootRunPage extends QuestBookListPage<String> {
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        super.drawScreen(mouseX, mouseY, partialTicks);
         int x = width / 2;
         int y = height / 2;
         int posX = (x - mouseX);
@@ -65,9 +65,11 @@ public class LootRunPage extends QuestBookListPage<String> {
         int mapY = y + 23;
         int mapWidth = 145;
         int mapHeight = 58;
-        hoveredText = new ArrayList<>();
 
+        hoveredText = new ArrayList<>();
         float scale = QuestBookConfig.INSTANCE.scaleOfLootrun;
+
+        super.drawScreen(mouseX, mouseY, partialTicks);
 
         ScreenRenderer.beginGL(0, 0);
         {
@@ -172,7 +174,6 @@ public class LootRunPage extends QuestBookListPage<String> {
 
     }
 
-
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         ScaledResolution res = new ScaledResolution(McIf.mc());
@@ -204,14 +205,12 @@ public class LootRunPage extends QuestBookListPage<String> {
     @Override
     protected String getEmptySearchString() {
         return  "No Lootruns were found!\nTry changing your search.";
-
     }
 
     @Override
     protected List<List<String>> getSearchResults(String currentText) {
         List<List<String>> pages = new ArrayList<>();
         List<String> page = new ArrayList<>();
-        int count = 0;
 
         List<String> names = LootRunManager.getStoredLootruns();
         Collections.sort(names);
@@ -222,14 +221,12 @@ public class LootRunPage extends QuestBookListPage<String> {
         }
 
         for (String name : names) {
-            if (count == 13) {
+            if (page.size() == 13) {
                 pages.add(page);
                 page = new ArrayList<>();
-                count = 0;
             }
 
             page.add(name);
-            count++;
         }
 
         if (!page.isEmpty()) {
@@ -240,7 +237,7 @@ public class LootRunPage extends QuestBookListPage<String> {
     }
 
     @Override
-    protected void drawItem(String itemInfo, int index, int posX, int posY, boolean hovered) {
+    protected void drawItem(String itemInfo, int index, boolean hovered) {
         int x = width / 2;
         int y = height / 2;
         int currentY = 13 + index * 12;
@@ -270,7 +267,7 @@ public class LootRunPage extends QuestBookListPage<String> {
 
             int width = Math.min(animationTick, 133);
             animationTick -= 133 + 200;
-            if (selected != -1) {
+            if (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(itemInfo)) {
                 render.drawRectF(background_3, x + 9, y - 96 + currentY, x + 13 + width, y - 87 + currentY);
                 render.drawRectF(background_4, x + 9, y - 96 + currentY, x + 146, y - 87 + currentY);
             } else {
@@ -279,12 +276,6 @@ public class LootRunPage extends QuestBookListPage<String> {
             }
 
             disableLighting();
-
-            if (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(itemInfo)) {
-                hoveredText = Arrays.asList(TextFormatting.BOLD + itemInfo, TextFormatting.YELLOW + "Loaded", TextFormatting.GOLD + "Middle click to open lootrun in folder",  TextFormatting.GREEN + "Left click to unload this lootrun");
-            } else {
-                hoveredText = Arrays.asList(TextFormatting.BOLD + itemInfo, TextFormatting.GREEN + "Left click to load", TextFormatting.GOLD + "Middle click to open lootrun in folder", TextFormatting.RED + "Shift-Right click to delete");
-            }
         } else {
             if (selected == index) {
                 animationCompleted = false;
@@ -299,9 +290,10 @@ public class LootRunPage extends QuestBookListPage<String> {
             }
         }
 
-        String friendlyName = getTrimmedName(itemInfo, 120);
-        if (selected == index && toCrop && animationTick > 0 && !friendlyName.equals(selectedItem)) {
-            int maxScroll = fontRenderer.getStringWidth(friendlyName) - (120 - 10);
+        String name = getTrimmedName(itemInfo, 120);
+        if (selected == index && toCrop && animationTick > 0 && !name.equals(selectedItem)) {
+            name = itemInfo;
+            int maxScroll = fontRenderer.getStringWidth(name) - (120 - 10);
             int scrollAmount = (animationTick / 20) % (maxScroll + 60);
 
             if (maxScroll <= scrollAmount && scrollAmount <= maxScroll + 40) {
@@ -314,11 +306,11 @@ public class LootRunPage extends QuestBookListPage<String> {
 
             ScreenRenderer.enableScissorTestX(x + 26, 13 + 133 - 2 - 26);
             {
-                render.drawString(selectedItem, x + 26 - scrollAmount, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                render.drawString(name, x + 26 - scrollAmount, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             }
             ScreenRenderer.disableScissorTest();
         } else {
-            render.drawString(friendlyName, x + 26, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            render.drawString(name, x + 26, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
         }
     }
 
@@ -331,7 +323,11 @@ public class LootRunPage extends QuestBookListPage<String> {
 
     @Override
     protected List<String> getHoveredText(String itemInfo) {
-        return null;
+        if (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(itemInfo)) {
+            return Arrays.asList(TextFormatting.BOLD + itemInfo, TextFormatting.YELLOW + "Loaded", TextFormatting.GOLD + "Middle click to open lootrun in folder",  TextFormatting.GREEN + "Left click to unload this lootrun");
+        }
+
+        return Arrays.asList(TextFormatting.BOLD + itemInfo, TextFormatting.GREEN + "Left click to load", TextFormatting.GOLD + "Middle click to open lootrun in folder", TextFormatting.RED + "Shift-Right click to delete");
     }
 
     @Override
@@ -368,8 +364,8 @@ public class LootRunPage extends QuestBookListPage<String> {
         } else if (mouseButton == 1 && isShiftKeyDown() && !isTracked) { //shift right click means delete
             boolean result = LootRunManager.delete(selectedItem);
             if (result) {
-                search.get(currentPage).remove(selectedItem);
-                selected = -1;
+                selectedItem = null;
+                searchUpdate(textField.getText());
                 McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
             }
 
