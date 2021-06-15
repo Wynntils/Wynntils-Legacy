@@ -55,7 +55,7 @@ public class QuestBookPage extends GuiScreen {
     protected long lastTick;
     protected boolean animationCompleted;
 
-    private long delay = McIf.getSystemTime();
+    protected long delay = McIf.getSystemTime();
 
     // Colours
     protected static final CustomColor background_1 = CustomColor.fromInt(0x000000, 0.3f);

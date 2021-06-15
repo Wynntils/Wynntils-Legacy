@@ -8,6 +8,7 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
+import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookListPage;
 import com.wynntils.modules.questbook.managers.QuestManager;
@@ -24,55 +25,11 @@ import java.util.stream.Collectors;
 public class DialoguePage extends QuestBookListPage<String> {
 
     final static List<String> textLines = Arrays.asList("Here you can read your", "last few conversations with", "NPCs on this class");
-    //protected static final CustomColor background = CustomColor.fromInt(0x000000, 0.5f);
+    private static final CustomColor background = CustomColor.fromInt(0x000000, 0.5f);
 
 
     public DialoguePage() {
         super("Dialogue", true, IconContainer.dialogueIcon);
-    }
-
-    @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        int x = width / 2;
-        int y = height / 2;
-        int posX = (x - mouseX);
-        int posY = (y - mouseY);
-        hoveredText = new ArrayList<>();
-
-        super.drawScreen(mouseX, mouseY, partialTicks);
-
-        ScreenRenderer.beginGL(0, 0);
-        {
-            // Explanatory Text
-            drawTextLines(textLines, x - 154, y - 30, 1);
-
-            // Back Button
-            drawMenuButton(x, y, posX, posY);
-
-            // Forward Button
-            drawForwardAndBackButtons(x, y, posX, posY, currentPage, pages);
-
-        }
-        ScreenRenderer.endGL();
-        renderHoveredText(mouseX, mouseY);
-    }
-
-    @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        ScaledResolution res = new ScaledResolution(mc);
-        int posX = ((res.getScaledWidth() / 2) - mouseX);
-        int posY = ((res.getScaledHeight() / 2) - mouseY);
-
-        checkMenuButton(posX, posY);
-        checkForwardAndBackButtons(posX, posY);
-
-        if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) { // Update Data
-            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-            QuestManager.updateAllAnalyses(true);
-            return;
-        }
-
-        super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
@@ -84,9 +41,39 @@ public class DialoguePage extends QuestBookListPage<String> {
     public void open(boolean showAnimation) {
         super.open(showAnimation);
 
-        QuestManager.readQuestBook();
+        QuestManager.updateAnalysis(AnalysePosition.QUESTS, true, true);
     }
 
+    @Override
+    public void preItem(int mouseX, int mouseY, float partialTicks) {
+        int x = width / 2;
+        int y = height / 2;
+        render.drawRectF(background, x + 13, y - 83, x + 146, y - 83 + 12 * search.get(currentPage - 1).size());
+        hoveredText = new ArrayList<>();
+    }
+
+    @Override
+    protected void drawItem(String itemInfo, int index, boolean hovered) {
+        int x = width / 2;
+        int y = height / 2;
+        int currentY = 13 + index * 12;
+
+        render.drawString(itemInfo, x + 26, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+    }
+
+    @Override
+    public void postItem(int mouseX, int mouseY, float partialTicks) {
+        int x = width / 2;
+        int y = height / 2;
+        int posX = (x - mouseX);
+        int posY = (y - mouseY);
+
+        // Explanatory Text
+        drawTextLines(textLines, x - 154, y - 30, 1);
+
+        // Back Button
+        drawMenuButton(x, y, posX, posY);
+    }
 
     @Override
     protected String getEmptySearchString() {
@@ -119,23 +106,8 @@ public class DialoguePage extends QuestBookListPage<String> {
     }
 
     @Override
-    protected void drawItem(String itemInfo, int index, boolean hovered) {
-        int x = width / 2;
-        int y = height / 2;
-        int currentY = 13 + index * 12;
-
-        if (index == 0) {
-            render.drawRectF(CustomColor.fromInt(0x000000, 0.5f), x + 13, y - 83, x + 146, y - 83 + 12 * search.get(currentPage - 1).size());
-        }
-
-        render.drawString(itemInfo, x + 26, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-    }
-
-    @Override
     protected boolean isHovered(int index, int posX, int posY) {
-        int currentY = 13 + 12 * index;
-
-        return search.get(currentPage - 1).size() > index && posX >= -146 && posX <= -13 && posY >= 87 - currentY && posY <= 96 - currentY;
+        return false;
     }
 
     @Override
@@ -144,8 +116,24 @@ public class DialoguePage extends QuestBookListPage<String> {
     }
 
     @Override
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        ScaledResolution res = new ScaledResolution(mc);
+        int posX = ((res.getScaledWidth() / 2) - mouseX);
+        int posY = ((res.getScaledHeight() / 2) - mouseY);
+
+        checkMenuButton(posX, posY);
+
+        if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) { // Update Data
+            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            QuestManager.updateAllAnalyses(true);
+            return;
+        }
+
+        super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    @Override
     protected void handleItemClick(String itemInfo, int mouseButton) {
         //NO-OP
     }
-
 }

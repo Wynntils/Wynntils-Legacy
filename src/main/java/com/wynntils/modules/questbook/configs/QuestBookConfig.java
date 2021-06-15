@@ -36,10 +36,6 @@ public class QuestBookConfig extends SettingsClass {
 
     @Setting(displayName = "Long Advanced Search Bar", description = "Should the large search bar be used when advanced item search mode is enabled?", order = 150)
     public boolean advItemSearchLongBar = true;
-    
-    @Setting.Limitations.FloatLimit(min = 1f, max = 30f)
-    @Setting(displayName = "Scale of the lootrun info map", description = "What should the scale of the map displayed when a lootrun is active be?", order = 300)
-    public float scaleOfLootrun = 1f;
 
     @Setting(upload = false)
     public boolean advancedItemSearch = false;

@@ -94,7 +94,7 @@ public class MainPage extends QuestBookPage {
                 }
             }
 
-            // but next and back button
+            // put next and back button
             if (currentPage == pages) {
                 render.drawRect(Textures.UIs.quest_book, x - 64, y + 24, x - 80, y + 15, 238, 243, 254, 234);
             } else {

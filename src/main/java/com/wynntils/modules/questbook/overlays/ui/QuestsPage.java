@@ -47,87 +47,6 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        int x = width / 2;
-        int y = height / 2;
-        int posX = (x - mouseX);
-        int posY = (y - mouseY);
-        hoveredText = new ArrayList<>();
-
-        super.drawScreen(mouseX, mouseY, partialTicks);
-
-        ScreenRenderer.beginGL(0, 0);
-        {
-            // Explanatory Text
-            drawTextLines(textLines, x - 154, y - 30, 1);
-
-            // Back Button
-            drawMenuButton(x, y, posX, posY);
-
-            // Progress Icon/Mini-Quest Switcher
-            render.drawRect(Textures.UIs.quest_book, x - 87, y - 100, 16, 255 + (showingMiniQuests ? 16 : 0), 16, 16);
-            if ( posX >= 71 && posX <= 87 && posY >= 84 && posY <= 100) {
-                hoveredText = new ArrayList<>(showingMiniQuests ? QuestManager.getMiniQuestsLore() : QuestManager.getQuestsLore());
-
-                if (!hoveredText.isEmpty()) {
-                    hoveredText.set(0, showingMiniQuests ? "Mini-Quests:" : "Quests:");
-                    hoveredText.add(" ");
-                    hoveredText.add(TextFormatting.GREEN + "Click to see " + (showingMiniQuests ? "Quests" : "Mini-Quests"));
-                }
-            }
-
-            // Page Text
-            drawForwardAndBackButtons(x, y, posX, posY, currentPage, pages);
-
-            // Reload Data button
-            if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) {
-                hoveredText = Arrays.asList("Reload Button!", TextFormatting.GRAY + "Reloads all quest data.");
-                render.drawRect(Textures.UIs.quest_book, x + 147, y - 99, x + 158, y - 88, 218, 281, 240, 303);
-            } else {
-                render.drawRect(Textures.UIs.quest_book, x + 147, y - 99, x + 158, y - 88, 240, 281, 262, 303);
-            }
-
-            // Sort method button
-            int dX = 0;
-            if (-11 <= posX && posX <= -1 && 89 <= posY && posY <= 99) {
-                hoveredText = sort.hoverText.stream().map(I18n::format).collect(Collectors.toList());
-                dX = 22;
-            }
-            render.drawRect(Textures.UIs.quest_book, x + 1, y - 99, x + 12, y - 88, sort.tx1 + dX, sort.ty1, sort.tx2 + dX, sort.ty2);
-        }
-        ScreenRenderer.endGL();
-        renderHoveredText(mouseX, mouseY);
-    }
-
-    @Override
-    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        ScaledResolution res = new ScaledResolution(McIf.mc());
-        int posX = ((res.getScaledWidth() / 2) - mouseX);
-        int posY = ((res.getScaledHeight() / 2) - mouseY);
-
-        checkMenuButton(posX, posY);
-        checkForwardAndBackButtons(posX, posY);
-
-        if (posX >= 71 && posX <= 87 && posY >= 84 && posY <= 100) { // Mini-Quest Switcher
-            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-            showingMiniQuests = !showingMiniQuests;
-            textField.setText("");
-            updateSearch();
-            return;
-        } else if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) { // Update Data
-            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-            QuestManager.updateAllAnalyses(true);
-            return;
-        } else if (-11 <= posX && posX <= -1 && 89 <= posY && posY <= 99 && (mouseButton == 0 || mouseButton == 1)) { // Change Sort Method
-            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-            sort = SortMethod.values()[(sort.ordinal() + (mouseButton == 0 ? 1 : SortMethod.values().length - 1)) % SortMethod.values().length];
-            updateSearch();
-            return;
-        }
-        super.mouseClicked(mouseX, mouseY, mouseButton);
-    }
-
-    @Override
     public List<String> getHoveredDescription() {
         return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Quest Book", TextFormatting.GRAY + "See and pin all your", TextFormatting.GRAY + "current available", TextFormatting.GRAY + "quests.", "", TextFormatting.GREEN + "Left click to select");
     }
@@ -140,45 +59,8 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
     }
 
     @Override
-    protected String getEmptySearchString() {
-        if (QuestManager.getCurrentQuests().size() == 0 || textField.getText().equals("") ||
-                (showingMiniQuests && QuestManager.getCurrentQuests().stream().noneMatch(QuestInfo::isMiniQuest))) {
-            return String.format("Loading %s...\nIf nothing appears soon, try pressing the reload button.", showingMiniQuests ? "Mini-Quests" : "Quests");
-        }
-
-        return String.format("No %s found!\nTry searching for something else.", showingMiniQuests ? "mini-quests" : "quests");
-    }
-
-    @Override
-    protected List<List<QuestInfo>> getSearchResults(String text) {
-        List<List<QuestInfo>> pages = new ArrayList<>();
-        List<QuestInfo> page = new ArrayList<>();
-
-        List<QuestInfo> quests;
-        if (showingMiniQuests) quests = new ArrayList<>(QuestManager.getCurrentMiniQuests());
-        else quests = new ArrayList<>(QuestManager.getCurrentQuests());
-
-        if (text != null && !text.isEmpty()) {
-            String lowerCase = text.toLowerCase();
-            quests.removeIf(c -> !doesSearchMatch(c.getName().toLowerCase(), lowerCase));
-        }
-
-        quests.sort(sort.comparator);
-
-        for (QuestInfo quest : quests) {
-            if (page.size() == 13) {
-                pages.add(page);
-                page = new ArrayList<>();
-            }
-
-            page.add(quest);
-        }
-
-        if (!page.isEmpty()) {
-            pages.add(page);
-        }
-
-        return pages;
+    public void preItem(int mouseX, int mouseY, float partialTicks) {
+        hoveredText = new ArrayList<>();
     }
 
     @Override
@@ -275,6 +157,48 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
     }
 
     @Override
+    public void postItem(int mouseX, int mouseY, float partialTicks) {
+        int x = width / 2;
+        int y = height / 2;
+        int posX = (x - mouseX);
+        int posY = (y - mouseY);
+
+        // Explanatory Text
+        drawTextLines(textLines, x - 154, y - 30, 1);
+
+        // Back Button
+        drawMenuButton(x, y, posX, posY);
+
+        // Progress Icon/Mini-Quest Switcher
+        render.drawRect(Textures.UIs.quest_book, x - 87, y - 100, 16, 255 + (showingMiniQuests ? 16 : 0), 16, 16);
+        if ( posX >= 71 && posX <= 87 && posY >= 84 && posY <= 100) {
+            hoveredText = new ArrayList<>(showingMiniQuests ? QuestManager.getMiniQuestsLore() : QuestManager.getQuestsLore());
+
+            if (!hoveredText.isEmpty()) {
+                hoveredText.set(0, showingMiniQuests ? "Mini-Quests:" : "Quests:");
+                hoveredText.add(" ");
+                hoveredText.add(TextFormatting.GREEN + "Click to see " + (showingMiniQuests ? "Quests" : "Mini-Quests"));
+            }
+        }
+
+        // Reload Data button
+        if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) {
+            hoveredText = Arrays.asList("Reload Button!", TextFormatting.GRAY + "Reloads all quest data.");
+            render.drawRect(Textures.UIs.quest_book, x + 147, y - 99, x + 158, y - 88, 218, 281, 240, 303);
+        } else {
+            render.drawRect(Textures.UIs.quest_book, x + 147, y - 99, x + 158, y - 88, 240, 281, 262, 303);
+        }
+
+        // Sort method button
+        int dX = 0;
+        if (-11 <= posX && posX <= -1 && 89 <= posY && posY <= 99) {
+            hoveredText = sort.hoverText.stream().map(I18n::format).collect(Collectors.toList());
+            dX = 22;
+        }
+        render.drawRect(Textures.UIs.quest_book, x + 1, y - 99, x + 12, y - 88, sort.tx1 + dX, sort.ty1, sort.tx2 + dX, sort.ty2);
+    }
+
+    @Override
     protected boolean isHovered(int index, int posX, int posY) {
         int currentY = 13 + 12 * index;
 
@@ -316,6 +240,75 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
         lore.add(TextFormatting.GOLD + (TextFormatting.BOLD + "Right click to open on the wiki!"));
 
         return lore;
+    }
+
+    @Override
+    protected String getEmptySearchString() {
+        if (QuestManager.getCurrentQuests().size() == 0 || textField.getText().equals("") ||
+                (showingMiniQuests && QuestManager.getCurrentQuests().stream().noneMatch(QuestInfo::isMiniQuest))) {
+            return String.format("Loading %s...\nIf nothing appears soon, try pressing the reload button.", showingMiniQuests ? "Mini-Quests" : "Quests");
+        }
+
+        return String.format("No %s found!\nTry searching for something else.", showingMiniQuests ? "mini-quests" : "quests");
+    }
+
+    @Override
+    protected List<List<QuestInfo>> getSearchResults(String text) {
+        List<List<QuestInfo>> pages = new ArrayList<>();
+        List<QuestInfo> page = new ArrayList<>();
+
+        List<QuestInfo> quests;
+        if (showingMiniQuests) quests = new ArrayList<>(QuestManager.getCurrentMiniQuests());
+        else quests = new ArrayList<>(QuestManager.getCurrentQuests());
+
+        if (text != null && !text.isEmpty()) {
+            String lowerCase = text.toLowerCase();
+            quests.removeIf(c -> !doesSearchMatch(c.getName().toLowerCase(), lowerCase));
+        }
+
+        quests.sort(sort.comparator);
+
+        for (QuestInfo quest : quests) {
+            if (page.size() == 13) {
+                pages.add(page);
+                page = new ArrayList<>();
+            }
+
+            page.add(quest);
+        }
+
+        if (!page.isEmpty()) {
+            pages.add(page);
+        }
+
+        return pages;
+    }
+
+    @Override
+    public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        ScaledResolution res = new ScaledResolution(McIf.mc());
+        int posX = ((res.getScaledWidth() / 2) - mouseX);
+        int posY = ((res.getScaledHeight() / 2) - mouseY);
+
+        checkMenuButton(posX, posY);
+
+        if (posX >= 71 && posX <= 87 && posY >= 84 && posY <= 100) { // Mini-Quest Switcher
+            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            showingMiniQuests = !showingMiniQuests;
+            textField.setText("");
+            updateSearch();
+            return;
+        } else if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) { // Update Data
+            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            QuestManager.updateAllAnalyses(true);
+            return;
+        } else if (-11 <= posX && posX <= -1 && 89 <= posY && posY <= 99 && (mouseButton == 0 || mouseButton == 1)) { // Change Sort Method
+            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            sort = SortMethod.values()[(sort.ordinal() + (mouseButton == 0 ? 1 : SortMethod.values().length - 1)) % SortMethod.values().length];
+            updateSearch();
+            return;
+        }
+        super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
