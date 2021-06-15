@@ -116,7 +116,6 @@ public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
                 animationCompleted = false;
 
                 if (!showAnimation) lastTick = 0;
-                selectedItem = null;
             }
 
             if (selectedItem == itemInfo) {

@@ -107,7 +107,6 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
                 animationCompleted = false;
 
                 if (!showAnimation) lastTick = 0;
-                selectedItem = null;
             }
 
             if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equalsIgnoreCase(itemInfo.getName())) {
