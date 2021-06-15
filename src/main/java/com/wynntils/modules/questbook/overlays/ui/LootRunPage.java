@@ -237,14 +237,13 @@ public class LootRunPage extends QuestBookListPage<String> {
                     if (MapConfig.LootRun.INSTANCE.displayLootrunOnMap) {
                         List<MapIcon> icons = LootRunManager.getMapPathWaypoints();
                         for (MapIcon mapIcon : icons) {
-                            mapIcon.renderAt(render, (float) (mapX + mapWidth / 2f - (start.getX() - mapIcon.getPosX())), (float) (mapY + mapHeight / 2f - (start.getZ() - mapIcon.getPosZ())), 1/(float) mapScale, mapScale);
+                            mapIcon.renderAt(render, (float) (mapX + mapWidth / 2f + (mapIcon.getPosX() - start.getX())/(float) mapScale), (float) (mapY + mapHeight / 2f + (mapIcon.getPosZ() - start.getZ())/(float) mapScale), 1/((float) mapScale + 1/4f) + 0.2f, 1/(float) mapScale);
                         }
                     }
 
                     mapHovered = posX <= 154 && posX >= 154 - mapWidth && posY <= -23 && posY >= -23 - mapHeight;
                     if (mapHovered) {
-                        hoveredText = Collections.singletonList(TextFormatting.YELLOW + "Click to open Map!" +
-                                "\n" + TextFormatting.WHITE + "Scroll to change map size!");
+                        hoveredText = Arrays.asList(TextFormatting.YELLOW + "Click to open Map!", TextFormatting.WHITE + "Scroll to change map size!");
                     }
 
                 } catch (Exception ignored) { }

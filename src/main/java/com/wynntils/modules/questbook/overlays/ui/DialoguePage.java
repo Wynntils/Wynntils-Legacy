@@ -48,8 +48,9 @@ public class DialoguePage extends QuestBookListPage<String> {
     public void preItem(int mouseX, int mouseY, float partialTicks) {
         int x = width / 2;
         int y = height / 2;
-        render.drawRectF(background, x + 13, y - 83, x + 146, y - 83 + 12 * search.get(currentPage - 1).size());
         hoveredText = new ArrayList<>();
+        if (search.size() == 0) return;
+        render.drawRectF(background, x + 13, y - 83, x + 146, y - 83 + 12 * search.get(currentPage - 1).size());
     }
 
     @Override
