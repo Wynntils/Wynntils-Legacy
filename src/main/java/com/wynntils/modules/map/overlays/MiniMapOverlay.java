@@ -109,6 +109,7 @@ public class MiniMapOverlay extends Overlay {
             GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, option);
 
             GlStateManager.enableBlend();
+            GlStateManager.enableTexture2D();
             Tessellator tessellator = Tessellator.getInstance();
             BufferBuilder bufferbuilder = tessellator.getBuffer();
             {

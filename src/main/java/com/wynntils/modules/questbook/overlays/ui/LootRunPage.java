@@ -220,6 +220,7 @@ public class LootRunPage extends QuestBookListPage<String> {
                     glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 
                     enableBlend();
+                    enableTexture2D();
                     Tessellator tessellator = Tessellator.getInstance();
                     BufferBuilder bufferbuilder = tessellator.getBuffer();
                     {
