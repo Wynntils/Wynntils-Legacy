@@ -100,7 +100,7 @@ public class WynnBuilderOverlay implements Listener {
                             // Powders each use 5 bits
                             powderHash <<= 5;
                             // Powder ids are the ordinal of the type of powder * 6 + tier of the powder - 1 and adds 1 to each powder
-                            powderHash += 1 + powder.ordinal() * 6;
+                            powderHash += 6 + powder.ordinal() * 6;
                         }
                         urlData.append(fromIntN(powderHash, 5));
                         powders = new ArrayList<>(powders.subList(Math.min(6, powders.size()), powders.size()));
