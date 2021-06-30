@@ -59,11 +59,6 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
     }
 
     @Override
-    public void preEntries(int mouseX, int mouseY, float partialTicks) {
-        hoveredText = new ArrayList<>();
-    }
-
-    @Override
     protected void drawEntry(QuestInfo entryInfo, int index, boolean hovered) {
         int x = width / 2;
         int y = height / 2;
@@ -253,9 +248,6 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
 
     @Override
     protected List<List<QuestInfo>> getSearchResults(String text) {
-        List<List<QuestInfo>> pages = new ArrayList<>();
-        List<QuestInfo> page = new ArrayList<>();
-
         List<QuestInfo> quests;
         if (showingMiniQuests) quests = new ArrayList<>(QuestManager.getCurrentMiniQuests());
         else quests = new ArrayList<>(QuestManager.getCurrentQuests());
@@ -267,20 +259,7 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
 
         quests.sort(sort.comparator);
 
-        for (QuestInfo quest : quests) {
-            if (page.size() == 13) {
-                pages.add(page);
-                page = new ArrayList<>();
-            }
-
-            page.add(quest);
-        }
-
-        if (!page.isEmpty()) {
-            pages.add(page);
-        }
-
-        return pages;
+        return getListSplitIntoParts(quests, 13);
     }
 
     @Override
@@ -307,7 +286,7 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
             updateSearch();
             return;
         }
-        
+
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 

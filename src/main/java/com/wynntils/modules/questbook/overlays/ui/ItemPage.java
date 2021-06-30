@@ -202,9 +202,6 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
 
     @Override
     protected List<List<ItemProfile>> getSearchResults(String currentText) {
-        List<List<ItemProfile>> pages = new ArrayList<>();
-        List<ItemProfile> page = new ArrayList<>();
-
         List<ItemProfile> items;
 
         ItemSearchState newSearchState;
@@ -220,20 +217,7 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
 
         items = WebManager.getDirectItems().stream().filter(searchState).sorted(searchState).collect(Collectors.toList());
 
-        for (ItemProfile item : items) {
-            if (page.size() == 42) {
-                pages.add(page);
-                page = new ArrayList<>();
-            }
-
-            page.add(item);
-        }
-
-        if (!page.isEmpty()) {
-            pages.add(page);
-        }
-
-        return pages;
+        return getListSplitIntoParts(items, 42);
     }
 
     @Override

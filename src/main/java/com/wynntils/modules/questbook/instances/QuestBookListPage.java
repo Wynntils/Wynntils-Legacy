@@ -13,6 +13,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiPredicate;
 
 /**
  * Extend this class when a QuestBookPage has a list, contains methods for pages
@@ -43,6 +44,7 @@ public class QuestBookListPage<T> extends QuestBookPage {
         int y = height / 2;
         int posX = (x - mouseX);
         int posY = (y - mouseY);
+        hoveredText = new ArrayList<>();
 
         ScreenRenderer.beginGL(0, 0);
         {
@@ -143,6 +145,34 @@ public class QuestBookListPage<T> extends QuestBookPage {
         }
 
         return str;
+    }
+
+
+    /**
+     * Splits a list into multiple sub lists based on a BiPredicate
+     *
+     * @param list list to split
+     * @param splitSize size to split at; Each page will have splitSize elements or less
+     * @return list of lists of size splitSize or less
+     */
+    public static <T> List<List<T>> getListSplitIntoParts(List<T> list, int splitSize) {
+        List<List<T>> splitList = new ArrayList<>();
+        List<T> currentList = new ArrayList<>();
+
+        for (T entry : list) {
+            if (currentList.size() == splitSize) {
+                splitList.add(currentList);
+                currentList = new ArrayList<>();
+            }
+
+            currentList.add(entry);
+        }
+
+        if (!currentList.isEmpty()) {
+            splitList.add(currentList);
+        }
+
+        return splitList;
     }
 
     /**

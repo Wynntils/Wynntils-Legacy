@@ -21,6 +21,7 @@ import net.minecraft.util.text.TextFormatting;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class DialoguePage extends QuestBookListPage<String> {
 
@@ -41,11 +42,6 @@ public class DialoguePage extends QuestBookListPage<String> {
         super.open(showAnimation);
 
         QuestManager.updateAnalysis(AnalysePosition.QUESTS, true, true);
-    }
-
-    @Override
-    public void preEntries(int mouseX, int mouseY, float partialTicks) {
-        hoveredText = new ArrayList<>();
     }
 
     @Override
@@ -81,21 +77,21 @@ public class DialoguePage extends QuestBookListPage<String> {
         List<List<String>> pages = new ArrayList<>();
         List<String> page = new ArrayList<>();
 
-        for (List<String> conversation : QuestManager.getCurrentDialogue()) {
-            List<List<String>> conversationWrapped = conversation
-                .stream()
-                .map((original) -> ScreenRenderer.fontRenderer.listFormattedStringToWidth(original, 120))
+        //Takes in current dialogue, a list of dialogues each made of lines
+        //and flattens it into lines, then splits those lines
+        List<List<String>> lines = QuestManager.getCurrentDialogue()
+                .stream() //List of dialogues
+                .flatMap(Collection::stream) //List of lines
+                .map(line -> ScreenRenderer.fontRenderer.listFormattedStringToWidth(line, 120)) //List of split lines
                 .collect(Collectors.toList());
 
-            for (List<String> line : conversationWrapped) {
-                if (page.size() + line.size() > 14) {
-                    pages.add(page);
-                    page = new ArrayList<>();
-                }
-                page.addAll(line);
+        for (List<String> line : lines) {
+            if (page.size() + line.size() > 14) {
+                pages.add(page);
+                page = new ArrayList<>();
             }
 
-            pages.add(page);
+            page.addAll(line);
         }
 
         return pages;

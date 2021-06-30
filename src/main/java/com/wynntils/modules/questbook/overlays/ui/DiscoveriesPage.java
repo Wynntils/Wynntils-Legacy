@@ -67,11 +67,6 @@ public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
     }
 
     @Override
-    public void preEntries(int mouseX, int mouseY, float partialTicks) {
-        hoveredText = new ArrayList<>();
-    }
-
-    @Override
     protected void drawEntry(DiscoveryInfo entryInfo, int index, boolean hovered) {
         int x = width / 2;
         int y = height / 2;
@@ -332,9 +327,6 @@ public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
 
     @Override
     protected List<List<DiscoveryInfo>> getSearchResults(String text) {
-        List<List<DiscoveryInfo>> pages = new ArrayList<>();
-        List<DiscoveryInfo> page = new ArrayList<>();
-
         List<DiscoveryInfo> discoveries = new ArrayList<>(QuestManager.getCurrentDiscoveries());
         boolean isSearching = text != null && !text.isEmpty();
 
@@ -418,23 +410,7 @@ public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
 
         discoveries.sort(Comparator.comparingInt(DiscoveryInfo::getMinLevel));
 
-        int count = 0;
-        for (DiscoveryInfo discovery : discoveries) {
-            if (count == 13) {
-                pages.add(page);
-                page = new ArrayList<>();
-                count = 0;
-            }
-
-            page.add(discovery);
-            count++;
-        }
-
-        if (!page.isEmpty()) {
-            pages.add(page);
-        }
-
-        return pages;
+        return getListSplitIntoParts(discoveries, 13);
     }
 
     @Override

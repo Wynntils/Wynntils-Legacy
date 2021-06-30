@@ -79,11 +79,6 @@ public class LootRunPage extends QuestBookListPage<String> {
     }
 
     @Override
-    protected void preEntries(int mouseX, int mouseY, float partialTicks) {
-        hoveredText = new ArrayList<>();
-    }
-
-    @Override
     protected void drawEntry(String entryInfo, int index, boolean hovered) {
         int x = width / 2;
         int y = height / 2;
@@ -285,9 +280,6 @@ public class LootRunPage extends QuestBookListPage<String> {
 
     @Override
     protected List<List<String>> getSearchResults(String currentText) {
-        List<List<String>> pages = new ArrayList<>();
-        List<String> page = new ArrayList<>();
-
         List<String> names = LootRunManager.getStoredLootruns();
         Collections.sort(names);
 
@@ -296,20 +288,7 @@ public class LootRunPage extends QuestBookListPage<String> {
             names.removeIf(c -> !doesSearchMatch(c.toLowerCase(Locale.ROOT), lowerCase));
         }
 
-        for (String name : names) {
-            if (page.size() == 13) {
-                pages.add(page);
-                page = new ArrayList<>();
-            }
-
-            page.add(name);
-        }
-
-        if (!page.isEmpty()) {
-            pages.add(page);
-        }
-
-        return pages;
+        return getListSplitIntoParts(names, 13);
     }
 
     @Override
