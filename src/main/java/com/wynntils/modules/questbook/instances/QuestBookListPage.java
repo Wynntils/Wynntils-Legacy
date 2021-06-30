@@ -19,10 +19,10 @@ import java.util.List;
  * @param <T>
  */
 public class QuestBookListPage<T> extends QuestBookPage {
-    //Search is a list of pages, where a page contains the items on that page
+    //Search is a list of pages, where a page contains the entries on that page
     protected List<List<T>> search = new ArrayList<>();
-    //Selected Item is the item selected
-    protected T selectedItem;
+    //Selected entry is the entry selected
+    protected T selectedEntry;
 
     /**
      * Base class for all questbook list pages
@@ -46,7 +46,7 @@ public class QuestBookListPage<T> extends QuestBookPage {
 
         ScreenRenderer.beginGL(0, 0);
         {
-            preItem(mouseX, mouseY, partialTicks);
+            preEntries(mouseX, mouseY, partialTicks);
 
             // Page Text
             render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
@@ -64,19 +64,19 @@ public class QuestBookListPage<T> extends QuestBookPage {
 
                         if (isHovered(i, posX, posY) && !showAnimation) {
                             //hovered
-                            drawItem(currentItem, i, true);
+                            drawEntry(currentItem, i, true);
 
-                            selectedItem = currentItem;
+                            selectedEntry = currentItem;
                             //selected is set relative to the page
                             selected = i;
-                            hoveredText = getHoveredText(selectedItem);
+                            hoveredText = getHoveredText(selectedEntry);
                         } else {
                             if (selected == i) {
-                                selectedItem = null;
+                                selectedEntry = null;
                             }
 
                             //not hovered
-                            drawItem(currentItem, i, false);
+                            drawEntry(currentItem, i, false);
                         }
                     }
                 }
@@ -90,7 +90,7 @@ public class QuestBookListPage<T> extends QuestBookPage {
 
                 updateSearch();
             }
-            postItem(mouseX, mouseY, partialTicks);
+            postEntries(mouseX, mouseY, partialTicks);
         }
         ScreenRenderer.endGL();
         renderHoveredText(mouseX, mouseY);
@@ -113,8 +113,8 @@ public class QuestBookListPage<T> extends QuestBookPage {
         int posY = ((res.getScaledHeight() / 2) - mouseY);
 
         super.mouseClicked(mouseX, mouseY, mouseButton);
-        if (selectedItem != null && search.get(currentPage - 1).size() > selected) {
-            handleItemClick(selectedItem, mouseButton);
+        if (selectedEntry != null && search.get(currentPage - 1).size() > selected) {
+            handleEntryClick(selectedEntry, mouseButton);
         }
 
         checkForwardAndBackButtons(posX, posY);
@@ -122,7 +122,7 @@ public class QuestBookListPage<T> extends QuestBookPage {
 
     @Override
     public void keyTyped(char typedChar, int keyCode) throws IOException {
-        selectedItem = null;
+        selectedEntry = null;
         super.keyTyped(typedChar, keyCode);
     }
 
@@ -148,55 +148,54 @@ public class QuestBookListPage<T> extends QuestBookPage {
     /**
      * Called before the item renderering
      */
-    protected void preItem(int mouseX, int mouseY, float partialTicks) {};
+    protected void preEntries(int mouseX, int mouseY, float partialTicks) {}
 
     /**
      * Draws an entry in search
-     * @param itemInfo The info for the item
+     * @param entryInfo The info for the item
      * @param index The index of the item relative to the page
      * @param hovered Whether the item is hovered
      */
-    protected void drawItem(T itemInfo, int index, boolean hovered) {};
+    protected void drawEntry(T entryInfo, int index, boolean hovered) {}
 
     /**
      * Called after the item renderering
      */
-    protected void postItem(int mouseX, int mouseY, float partialTicks) {};
+    protected void postEntries(int mouseX, int mouseY, float partialTicks) {}
 
     /**
      * Determines whether an item is hovered
-     * @param index
      * @param posX mouse X position relative to center
      * @param posY mouse Y position relative to center
      * @return Whether or not it is hovered
      */
     protected boolean isHovered(int index, int posX, int posY) {
         return false;
-    };
+    }
 
     /**
      * Gets hovered text
      */
-    protected List<String> getHoveredText(T itemInfo) {
+    protected List<String> getHoveredText(T entryInfo) {
         return null;
-    };
+    }
 
     /**
      * Get what to display when search results are empty
      */
     protected String getEmptySearchString() {
        return "";
-    };
+    }
 
     /**
      * Returns the search results, should be sorted
      */
     protected List<List<T>> getSearchResults(String text) {
         return null;
-    };
+    }
 
     /**
      * Handles a mouse input on an item
      */
-    protected void handleItemClick(T itemInfo, int mouseButton) {};
+    protected void handleEntryClick(T itemInfo, int mouseButton) {}
 }

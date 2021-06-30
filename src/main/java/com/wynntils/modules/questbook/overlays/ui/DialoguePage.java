@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class DialoguePage extends QuestBookListPage<String> {
 
     final static List<String> textLines = Arrays.asList("Here you can read your", "last few conversations with", "NPCs on this class");
-    private static final CustomColor background = CustomColor.fromInt(0x000000, 0.5f);
+    //private static final CustomColor background = CustomColor.fromInt(0x000000, 0.5f);
 
 
     public DialoguePage() {
@@ -45,25 +45,23 @@ public class DialoguePage extends QuestBookListPage<String> {
     }
 
     @Override
-    public void preItem(int mouseX, int mouseY, float partialTicks) {
-        int x = width / 2;
-        int y = height / 2;
+    public void preEntries(int mouseX, int mouseY, float partialTicks) {
         hoveredText = new ArrayList<>();
-        if (search.size() == 0) return;
-        render.drawRectF(background, x + 13, y - 83, x + 146, y - 83 + 12 * search.get(currentPage - 1).size());
+        //if (search.size() == 0) return;
+        //render.drawRectF(background, x + 13, y - 83, x + 146, y - 83 + 12 * search.get(currentPage - 1).size());
     }
 
     @Override
-    protected void drawItem(String itemInfo, int index, boolean hovered) {
+    protected void drawEntry(String entryInfo, int index, boolean hovered) {
         int x = width / 2;
         int y = height / 2;
         int currentY = 13 + index * 12;
 
-        render.drawString(itemInfo, x + 26, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+        render.drawString(entryInfo, x + 26, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
     }
 
     @Override
-    public void postItem(int mouseX, int mouseY, float partialTicks) {
+    public void postEntries(int mouseX, int mouseY, float partialTicks) {
         int x = width / 2;
         int y = height / 2;
         int posX = (x - mouseX);
@@ -112,7 +110,7 @@ public class DialoguePage extends QuestBookListPage<String> {
     }
 
     @Override
-    protected List<String> getHoveredText(String itemInfo) {
+    protected List<String> getHoveredText(String entryInfo) {
         return new ArrayList<>();
     }
 
@@ -134,7 +132,7 @@ public class DialoguePage extends QuestBookListPage<String> {
     }
 
     @Override
-    protected void handleItemClick(String itemInfo, int mouseButton) {
+    protected void handleEntryClick(String itemInfo, int mouseButton) {
         //NO-OP
     }
 }

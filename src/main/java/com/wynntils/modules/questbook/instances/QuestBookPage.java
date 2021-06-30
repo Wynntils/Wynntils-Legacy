@@ -92,7 +92,6 @@ public class QuestBookPage extends GuiScreen {
             return;
         }
 
-        //TODO - move selected and currentPage/Page to QuestBookListPage
         open = true;
         currentPage = 1;
         selected = -1;

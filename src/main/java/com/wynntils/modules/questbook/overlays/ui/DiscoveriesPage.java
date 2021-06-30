@@ -67,16 +67,16 @@ public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
     }
 
     @Override
-    public void preItem(int mouseX, int mouseY, float partialTicks) {
+    public void preEntries(int mouseX, int mouseY, float partialTicks) {
         hoveredText = new ArrayList<>();
     }
 
     @Override
-    protected void drawItem(DiscoveryInfo itemInfo, int index, boolean hovered) {
+    protected void drawEntry(DiscoveryInfo entryInfo, int index, boolean hovered) {
         int x = width / 2;
         int y = height / 2;
         int currentY = 13 + index * 12;
-        boolean toCrop = !getTrimmedName(itemInfo.getFriendlyName(), 120).equals(itemInfo.getFriendlyName());
+        boolean toCrop = !getTrimmedName(entryInfo.getFriendlyName(), 120).equals(entryInfo.getFriendlyName());
 
         int animationTick = -1;
         if (hovered && !showAnimation) {
@@ -102,7 +102,7 @@ public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
 
             int width = Math.min(animationTick, 133);
             animationTick -= 133 + 200;
-            if (selectedItem == itemInfo) {
+            if (selectedEntry == entryInfo) {
                 render.drawRectF(background_3, x + 9, y - 96 + currentY, x + 13 + width, y - 87 + currentY);
                 render.drawRectF(background_4, x + 9, y - 96 + currentY, x + 146, y - 87 + currentY);
             } else {
@@ -118,17 +118,13 @@ public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
                 if (!showAnimation) lastTick = 0;
             }
 
-            if (selectedItem == itemInfo) {
-                render.drawRectF(background_4, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
-            } else {
-                render.drawRectF(background_2, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
-            }
+            render.drawRectF(background_2, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
         }
 
         render.color(1, 1, 1, 1);
 
-        if (itemInfo.wasDiscovered()) {
-            switch (itemInfo.getType()) {
+        if (entryInfo.wasDiscovered()) {
+            switch (entryInfo.getType()) {
                 case TERRITORY:
                     render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 264, 235, 11, 7);
                     break;
@@ -140,7 +136,7 @@ public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
                     break;
             }
         } else {
-            switch (itemInfo.getType()) {
+            switch (entryInfo.getType()) {
                 case TERRITORY:
                     render.drawRect(Textures.UIs.quest_book, x + 15, y - 95 + currentY, 241, 273, 8, 7);
                     break;
@@ -153,9 +149,9 @@ public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
             }
         }
 
-        String name = getTrimmedName(itemInfo.getFriendlyName(), 120);
-        if (selected == index && toCrop && animationTick > 0 && !name.equals(selectedItem.getName())) {
-            name = itemInfo.getName();
+        String name = getTrimmedName(entryInfo.getFriendlyName(), 120);
+        if (selected == index && toCrop && animationTick > 0 && !name.equals(selectedEntry.getName())) {
+            name = entryInfo.getName();
             int maxScroll = fontRenderer.getStringWidth(name) - (120 - 10);
             int scrollAmount = (animationTick / 20) % (maxScroll + 60);
 
@@ -178,7 +174,7 @@ public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
     }
 
     @Override
-    public void postItem(int mouseX, int mouseY, float partialTicks) {
+    public void postEntries(int mouseX, int mouseY, float partialTicks) {
         int x = width / 2;
         int y = height / 2;
         int posX = (x - mouseX);
@@ -291,11 +287,11 @@ public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
     }
 
     @Override
-    protected List<String> getHoveredText(DiscoveryInfo itemInfo) {
-        List<String> lore = new ArrayList<>(itemInfo.getLore());
+    protected List<String> getHoveredText(DiscoveryInfo entryInfo) {
+        List<String> lore = new ArrayList<>(entryInfo.getLore());
 
         // Guild territory lore actions
-        if (itemInfo.getGuildTerritoryProfile() != null) {
+        if (entryInfo.getGuildTerritoryProfile() != null) {
             if (!lore.get(lore.size() - 1).contentEquals(""))
                 lore.add("");
 
@@ -304,11 +300,11 @@ public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
         }
 
         // Secret Discovery Actions
-        if (itemInfo.getType() == DiscoveryType.SECRET) {
+        if (entryInfo.getType() == DiscoveryType.SECRET) {
             if (!lore.get(lore.size() - 1).contentEquals(""))
                 lore.add("");
 
-            if (QuestBookConfig.INSTANCE.spoilSecretDiscoveries.followsRule(itemInfo.wasDiscovered())) {
+            if (QuestBookConfig.INSTANCE.spoilSecretDiscoveries.followsRule(entryInfo.wasDiscovered())) {
                 lore.add(TextFormatting.GREEN + (TextFormatting.BOLD + "Left click to set compass beacon!"));
                 lore.add(TextFormatting.YELLOW + (TextFormatting.BOLD + "Right click to view on map!"));
             }
@@ -318,7 +314,7 @@ public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
 
         // Removes blank space at the end of lores
         if (lore.get(lore.size() - 1).contentEquals(""))
-            lore.remove(itemInfo.getLore().size() - 1);
+            lore.remove(entryInfo.getLore().size() - 1);
 
         return lore;
     }
@@ -488,19 +484,19 @@ public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
     }
 
     @Override
-    protected void handleItemClick(DiscoveryInfo itemInfo, int mouseButton) {
-        if (selectedItem.getType() == DiscoveryType.SECRET) { // Secret discovery actions
-            String name = TextFormatting.getTextWithoutFormattingCodes(selectedItem.getName());
+    protected void handleEntryClick(DiscoveryInfo itemInfo, int mouseButton) {
+        if (selectedEntry.getType() == DiscoveryType.SECRET) { // Secret discovery actions
+            String name = TextFormatting.getTextWithoutFormattingCodes(selectedEntry.getName());
 
             switch (mouseButton) {
                 case 0: // Left Click
-                    if (QuestBookConfig.INSTANCE.spoilSecretDiscoveries.followsRule(selectedItem.wasDiscovered())) {
+                    if (QuestBookConfig.INSTANCE.spoilSecretDiscoveries.followsRule(selectedEntry.wasDiscovered())) {
                         locateSecretDiscovery(name, "compass");
                         McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
                     }
                     break;
                 case 1: // Right Click
-                    if (QuestBookConfig.INSTANCE.spoilSecretDiscoveries.followsRule(selectedItem.wasDiscovered())) {
+                    if (QuestBookConfig.INSTANCE.spoilSecretDiscoveries.followsRule(selectedEntry.wasDiscovered())) {
                         locateSecretDiscovery(name, "map");
                         McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                     }
@@ -511,8 +507,8 @@ public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
                     McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                     break;
             }
-        } else if (selectedItem.getGuildTerritoryProfile() != null) { // Guild territory actions
-            TerritoryProfile guildTerritory = selectedItem.getGuildTerritoryProfile();
+        } else if (selectedEntry.getGuildTerritoryProfile() != null) { // Guild territory actions
+            TerritoryProfile guildTerritory = selectedEntry.getGuildTerritoryProfile();
 
             int x = (guildTerritory.getStartX() + guildTerritory.getEndX()) / 2;
             int z = (guildTerritory.getStartZ() + guildTerritory.getEndZ()) / 2;

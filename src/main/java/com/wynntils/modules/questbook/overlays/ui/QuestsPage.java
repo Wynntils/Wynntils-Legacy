@@ -59,16 +59,16 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
     }
 
     @Override
-    public void preItem(int mouseX, int mouseY, float partialTicks) {
+    public void preEntries(int mouseX, int mouseY, float partialTicks) {
         hoveredText = new ArrayList<>();
     }
 
     @Override
-    protected void drawItem(QuestInfo itemInfo, int index, boolean hovered) {
+    protected void drawEntry(QuestInfo entryInfo, int index, boolean hovered) {
         int x = width / 2;
         int y = height / 2;
         int currentY = 13 + index * 12;
-        boolean toCrop = !itemInfo.getFriendlyName().equals(itemInfo.getName());
+        boolean toCrop = !entryInfo.getFriendlyName().equals(entryInfo.getName());
 
         int animationTick = -1;
         if (hovered && !showAnimation) {
@@ -93,7 +93,7 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
 
             int width = Math.min(animationTick, 133);
             animationTick -= 133 + 200;
-            if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equalsIgnoreCase(itemInfo.getName())) {
+            if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equalsIgnoreCase(entryInfo.getName())) {
                 render.drawRectF(background_3, x + 9, y - 96 + currentY, x + 13 + width, y - 87 + currentY);
                 render.drawRectF(background_4, x + 9, y - 96 + currentY, x + 146, y - 87 + currentY);
             } else {
@@ -109,7 +109,7 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
                 if (!showAnimation) lastTick = 0;
             }
 
-            if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equalsIgnoreCase(itemInfo.getName())) {
+            if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equalsIgnoreCase(entryInfo.getName())) {
                 render.drawRectF(background_4, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
             } else {
                 render.drawRectF(background_2, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
@@ -117,23 +117,23 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
         }
 
         render.color(1, 1, 1, 1);
-        if (itemInfo.getStatus() == QuestStatus.COMPLETED) {
+        if (entryInfo.getStatus() == QuestStatus.COMPLETED) {
             render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 223, 245, 11, 7);
-        } else if (itemInfo.getStatus() == QuestStatus.CANNOT_START) {
+        } else if (entryInfo.getStatus() == QuestStatus.CANNOT_START) {
             render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 235, 245, 7, 7);
-        } else if (itemInfo.getStatus() == QuestStatus.CAN_START) {
-            if (itemInfo.isMiniQuest()) {
+        } else if (entryInfo.getStatus() == QuestStatus.CAN_START) {
+            if (entryInfo.isMiniQuest()) {
                 render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 272, 245, 11, 7);
             } else {
                 render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 254, 245, 11, 7);
             }
-        } else if (itemInfo.getStatus() == QuestStatus.STARTED) {
+        } else if (entryInfo.getStatus() == QuestStatus.STARTED) {
             render.drawRect(Textures.UIs.quest_book, x + 14, y - 95 + currentY, 245, 245, 8, 7);
         }
 
-        String name = itemInfo.getFriendlyName();
-        if (selected == index && !name.equals(itemInfo.getName()) && animationTick > 0) {
-            name = itemInfo.getName();
+        String name = entryInfo.getFriendlyName();
+        if (selected == index && !name.equals(entryInfo.getName()) && animationTick > 0) {
+            name = entryInfo.getName();
             int maxScroll = fontRenderer.getStringWidth(name) - (120 - 10);
             int scrollAmount = (animationTick / 20) % (maxScroll + 60);
 
@@ -156,7 +156,7 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
     }
 
     @Override
-    public void postItem(int mouseX, int mouseY, float partialTicks) {
+    public void postEntries(int mouseX, int mouseY, float partialTicks) {
         int x = width / 2;
         int y = height / 2;
         int posX = (x - mouseX);
@@ -205,11 +205,11 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
     }
 
     @Override
-    protected List<String> getHoveredText(QuestInfo itemInfo) {
-        List<String> lore = new ArrayList<>(itemInfo.getLore());
+    protected List<String> getHoveredText(QuestInfo entryInfo) {
+        List<String> lore = new ArrayList<>(entryInfo.getLore());
         lore.add("");
 
-        switch (itemInfo.getStatus()) {
+        switch (entryInfo.getStatus()) {
             case COMPLETED:
                 lore.remove(lore.size() - 1);
                 lore.remove(lore.size() - 1);
@@ -224,7 +224,7 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
                 lore.remove(lore.size() - 2);
                 if(!lore.remove(lore.size() - 2).isEmpty()) lore.remove(lore.size() - 2); // quest is tracked, has extra line
 
-                if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(itemInfo.getName())) {
+                if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(entryInfo.getName())) {
                     lore.add(TextFormatting.RED + (TextFormatting.BOLD + "Left click to unpin it!"));
                 } else {
                     lore.add(TextFormatting.GREEN + (TextFormatting.BOLD + "Left click to pin it!"));
@@ -233,7 +233,7 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
 
         }
 
-        if (itemInfo.hasTargetLocation()) {
+        if (entryInfo.hasTargetLocation()) {
             lore.add(TextFormatting.YELLOW + (TextFormatting.BOLD + "Middle click to view on map!"));
         }
         lore.add(TextFormatting.GOLD + (TextFormatting.BOLD + "Right click to open on the wiki!"));
@@ -307,37 +307,38 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
             updateSearch();
             return;
         }
+        
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
-    protected void handleItemClick(QuestInfo itemInfo, int mouseButton) {
+    protected void handleEntryClick(QuestInfo itemInfo, int mouseButton) {
         switch (mouseButton) {
             case 0: // left click
-                if (selectedItem.getStatus() == QuestStatus.COMPLETED || selectedItem.getStatus() == QuestStatus.CANNOT_START)
+                if (selectedEntry.getStatus() == QuestStatus.COMPLETED || selectedEntry.getStatus() == QuestStatus.CANNOT_START)
                     return;
 
-                if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(selectedItem.getName())) {
+                if (QuestManager.getTrackedQuest() != null && QuestManager.getTrackedQuest().getName().equals(selectedEntry.getName())) {
                     QuestManager.setTrackedQuest(null);
                     McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
                     return;
                 }
                 McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
-                QuestManager.setTrackedQuest(selectedItem);
+                QuestManager.setTrackedQuest(selectedEntry);
                 break;
             case 1: // right click
                 McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
 
                 final String baseUrl = "https://wynncraft.fandom.com/wiki/";
 
-                if (selectedItem.isMiniQuest()) {
-                    String type = selectedItem.getFriendlyName().split(" ")[0];
+                if (selectedEntry.isMiniQuest()) {
+                    String type = selectedEntry.getFriendlyName().split(" ")[0];
 
                     String wikiName = "Quests#" + type + "ing_Posts"; // Don't encode #
 
                     Utils.openUrl(baseUrl + wikiName);
                 } else {
-                    String name = selectedItem.getName();
+                    String name = selectedEntry.getName();
                     String wikiQuestPageNameQuery = WebManager.getApiUrl("WikiQuestQuery");
                     String url = wikiQuestPageNameQuery + Utils.encodeForCargoQuery(name);
                     Request req = new Request(url, "WikiQuestQuery");
@@ -352,9 +353,9 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
                 }
                 break;
             case 2: // middle click
-                if (!selectedItem.hasTargetLocation()) return;
+                if (!selectedEntry.hasTargetLocation()) return;
 
-                Location loc = selectedItem.getTargetLocation();
+                Location loc = selectedEntry.getTargetLocation();
                 Utils.displayGuiScreen(new MainWorldMapUI((float) loc.x, (float) loc.z));
                 break;
         }

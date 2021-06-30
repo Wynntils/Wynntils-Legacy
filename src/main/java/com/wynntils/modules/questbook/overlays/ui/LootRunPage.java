@@ -21,7 +21,6 @@ import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.map.overlays.objects.MapIcon;
 import com.wynntils.modules.map.overlays.ui.MainWorldMapUI;
-import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookListPage;
 import com.wynntils.webapi.WebManager;
@@ -80,16 +79,16 @@ public class LootRunPage extends QuestBookListPage<String> {
     }
 
     @Override
-    protected void preItem(int mouseX, int mouseY, float partialTicks) {
+    protected void preEntries(int mouseX, int mouseY, float partialTicks) {
         hoveredText = new ArrayList<>();
     }
 
     @Override
-    protected void drawItem(String itemInfo, int index, boolean hovered) {
+    protected void drawEntry(String entryInfo, int index, boolean hovered) {
         int x = width / 2;
         int y = height / 2;
         int currentY = 13 + index * 12;
-        boolean toCrop = !getTrimmedName(itemInfo, 120).equals(itemInfo);
+        boolean toCrop = !getTrimmedName(entryInfo, 120).equals(entryInfo);
 
         int animationTick = -1;
         if (hovered && !showAnimation) {
@@ -115,7 +114,7 @@ public class LootRunPage extends QuestBookListPage<String> {
 
             int width = Math.min(animationTick, 133);
             animationTick -= 133 + 200;
-            if (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(itemInfo)) {
+            if (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(entryInfo)) {
                 render.drawRectF(background_3, x + 9, y - 96 + currentY, x + 13 + width, y - 87 + currentY);
                 render.drawRectF(background_4, x + 9, y - 96 + currentY, x + 146, y - 87 + currentY);
             } else {
@@ -131,16 +130,16 @@ public class LootRunPage extends QuestBookListPage<String> {
                 if (!showAnimation) lastTick = 0;
             }
 
-            if (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(itemInfo)) {
+            if (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(entryInfo)) {
                 render.drawRectF(background_4, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
             } else {
                 render.drawRectF(background_2, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
             }
         }
 
-        String name = getTrimmedName(itemInfo, 120);
-        if (selected == index && toCrop && animationTick > 0 && !name.equals(selectedItem)) {
-            name = itemInfo;
+        String name = getTrimmedName(entryInfo, 120);
+        if (selected == index && toCrop && animationTick > 0 && !name.equals(selectedEntry)) {
+            name = entryInfo;
             int maxScroll = fontRenderer.getStringWidth(name) - (120 - 10);
             int scrollAmount = (animationTick / 20) % (maxScroll + 60);
 
@@ -163,7 +162,7 @@ public class LootRunPage extends QuestBookListPage<String> {
     }
 
     @Override
-    public void postItem(int mouseX, int mouseY, float partialTicks) {
+    public void postEntries(int mouseX, int mouseY, float partialTicks) {
         int x = width / 2;
         int y = height / 2;
         int posX = (x - mouseX);
@@ -271,12 +270,12 @@ public class LootRunPage extends QuestBookListPage<String> {
     }
 
     @Override
-    protected List<String> getHoveredText(String itemInfo) {
-        if (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(itemInfo)) {
-            return Arrays.asList(TextFormatting.BOLD + itemInfo, TextFormatting.YELLOW + "Loaded", TextFormatting.GOLD + "Middle click to open lootrun in folder",  TextFormatting.GREEN + "Left click to unload this lootrun");
+    protected List<String> getHoveredText(String entryInfo) {
+        if (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(entryInfo)) {
+            return Arrays.asList(TextFormatting.BOLD + entryInfo, TextFormatting.YELLOW + "Loaded", TextFormatting.GOLD + "Middle click to open lootrun in folder",  TextFormatting.GREEN + "Left click to unload this lootrun");
         }
 
-        return Arrays.asList(TextFormatting.BOLD + itemInfo, TextFormatting.GREEN + "Left click to load", TextFormatting.GOLD + "Middle click to open lootrun in folder", TextFormatting.RED + "Shift-Right click to delete");
+        return Arrays.asList(TextFormatting.BOLD + entryInfo, TextFormatting.GREEN + "Left click to load", TextFormatting.GOLD + "Middle click to open lootrun in folder", TextFormatting.RED + "Shift-Right click to delete");
     }
 
     @Override
@@ -336,8 +335,8 @@ public class LootRunPage extends QuestBookListPage<String> {
     }
 
     @Override
-    protected void handleItemClick(String itemInfo, int mouseButton) {
-        boolean isTracked = (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(selectedItem));
+    protected void handleEntryClick(String itemInfo, int mouseButton) {
+        boolean isTracked = (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(selectedEntry));
 
         if (mouseButton == 0) { //left click means either load or unload
             if (isTracked) {
@@ -345,7 +344,7 @@ public class LootRunPage extends QuestBookListPage<String> {
                     LootRunManager.clear();
                 }
             } else {
-                boolean result = LootRunManager.loadFromFile(selectedItem);
+                boolean result = LootRunManager.loadFromFile(selectedEntry);
 
                 if (result) {
                     try {
@@ -367,15 +366,15 @@ public class LootRunPage extends QuestBookListPage<String> {
                 }
             }
         } else if (mouseButton == 1 && isShiftKeyDown() && !isTracked) { //shift right click means delete
-            boolean result = LootRunManager.delete(selectedItem);
+            boolean result = LootRunManager.delete(selectedEntry);
             if (result) {
-                selectedItem = null;
+                selectedEntry = null;
                 searchUpdate(textField.getText());
                 McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_IRONGOLEM_HURT, 1f));
             }
 
         } else if (mouseButton == 2) { //middle click means open up folder
-            File lootrunPath = new File(LootRunManager.STORAGE_FOLDER, selectedItem + ".json");
+            File lootrunPath = new File(LootRunManager.STORAGE_FOLDER, selectedEntry + ".json");
             String uri = lootrunPath.toURI().toString();
             Utils.openUrl(uri);
         }

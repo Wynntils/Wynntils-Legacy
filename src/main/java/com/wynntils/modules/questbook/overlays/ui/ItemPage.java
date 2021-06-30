@@ -111,7 +111,7 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
     }
 
     @Override
-    protected void preItem(int mouseX, int mouseY, float partialTicks) {
+    protected void preEntries(int mouseX, int mouseY, float partialTicks) {
         int x = width / 2;
         int y = height / 2;
         int posX = (x - mouseX);
@@ -123,8 +123,8 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
     }
 
     @Override
-    protected void drawItem(ItemProfile itemInfo, int index, boolean hovered) {
-        CustomColor color = itemInfo.getTier().getCustomizedHighlightColor();
+    protected void drawEntry(ItemProfile entryInfo, int index, boolean hovered) {
+        CustomColor color = entryInfo.getTier().getCustomizedHighlightColor();
 
         int currentX = index % 7;
         int currentY = (index - currentX)/7;
@@ -146,13 +146,13 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
         GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
         GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 
-        if (itemInfo.getGuideStack().isEmpty()) return;
+        if (entryInfo.getGuideStack().isEmpty()) return;
 
-        render.drawItemStack(itemInfo.getGuideStack(), maxX, maxY, false);
+        render.drawItemStack(entryInfo.getGuideStack(), maxX, maxY, false);
     }
 
     @Override
-    protected void postItem(int mouseX, int mouseY, float partialTicks) {
+    protected void postEntries(int mouseX, int mouseY, float partialTicks) {
         int x = width / 2;
         int y = height / 2;
         int posX = (x - mouseX);
@@ -190,10 +190,10 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
     }
 
     @Override
-    protected List<String> getHoveredText(ItemProfile itemInfo) {
+    protected List<String> getHoveredText(ItemProfile entryInfo) {
         List<String> lore = new ArrayList<>();
-        lore.add(itemInfo.getGuideStack().getDisplayName());
-        lore.addAll(ItemUtils.getLore(itemInfo.getGuideStack()));
+        lore.add(entryInfo.getGuideStack().getDisplayName());
+        lore.addAll(ItemUtils.getLore(entryInfo.getGuideStack()));
         lore.add("");
         lore.add(TextFormatting.GOLD + "Shift + Right Click to open WynnData");
 
@@ -270,7 +270,7 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
     }
 
     @Override
-    protected void handleItemClick(ItemProfile itemInfo, int mouseButton) {
+    protected void handleEntryClick(ItemProfile itemInfo, int mouseButton) {
         if (mouseButton != 1 || !(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) return;
 
         if (selected >= search.get(currentPage - 1).size()) return;
@@ -389,7 +389,7 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
 
                     selected = -10 -(i + 1);
                 } else {
-                    if (selected == -10 -(i + 1)) selected = 0;
+                    if (selected == -10 -(i + 1)) selected = -1;
                     render.drawRect(allowedTypes.contains(itemTypeArray.get(i)) ? selected_cube_2 : unselected_cube, maxX, maxY, minX, minY);
                 }
 
