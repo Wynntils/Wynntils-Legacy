@@ -18,7 +18,6 @@ import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiPageButtonList;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
@@ -39,12 +38,12 @@ public class QuestBookPage extends GuiScreen {
     private boolean open = false;
 
     // Page specific information
-    private String title;
-    private IconContainer icon;
+    private final String title;
+    private final IconContainer icon;
     protected boolean showAnimation;
     protected List<String> hoveredText = new ArrayList<>();
 
-    private boolean showSearchBar;
+    private final boolean showSearchBar;
     protected int currentPage;
     protected boolean acceptNext, acceptBack;
     protected int pages = 1;

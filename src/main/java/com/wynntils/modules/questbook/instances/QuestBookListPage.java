@@ -13,7 +13,6 @@ import net.minecraft.client.gui.ScaledResolution;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiPredicate;
 
 /**
  * Extend this class when a QuestBookPage has a list, contains methods for pages
