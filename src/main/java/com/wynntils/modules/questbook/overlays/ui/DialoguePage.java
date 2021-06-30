@@ -25,7 +25,6 @@ import java.util.stream.Collectors;
 public class DialoguePage extends QuestBookListPage<String> {
 
     final static List<String> textLines = Arrays.asList("Here you can read your", "last few conversations with", "NPCs on this class");
-    //private static final CustomColor background = CustomColor.fromInt(0x000000, 0.5f);
 
 
     public DialoguePage() {
@@ -47,8 +46,6 @@ public class DialoguePage extends QuestBookListPage<String> {
     @Override
     public void preEntries(int mouseX, int mouseY, float partialTicks) {
         hoveredText = new ArrayList<>();
-        //if (search.size() == 0) return;
-        //render.drawRectF(background, x + 13, y - 83, x + 146, y - 83 + 12 * search.get(currentPage - 1).size());
     }
 
     @Override
