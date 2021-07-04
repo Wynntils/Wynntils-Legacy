@@ -60,10 +60,6 @@ public class DiscoveryInfo {
         description = descriptionBuilder.toString();
 
         friendlyName = name.substring(4);
-        if (friendlyName.length() > 22) {
-            friendlyName = friendlyName.substring(0, 19);
-            friendlyName += "...";
-        }
 
         // Guild territory profile
         if (type == DiscoveryType.TERRITORY || type == DiscoveryType.WORLD) {
@@ -82,10 +78,6 @@ public class DiscoveryInfo {
     public DiscoveryInfo(String name, DiscoveryType type, int minLevel, boolean discovered) {
         this.name = name;
         this.friendlyName = name;
-        if (friendlyName.length() > 22) {
-            friendlyName = friendlyName.substring(0, 19);
-            friendlyName += "...";
-        }
 
         this.lore = new ArrayList<>();
         lore.add(type.getColour() + "" + TextFormatting.BOLD + this.name);

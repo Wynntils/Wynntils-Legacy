@@ -7,7 +7,6 @@ package com.wynntils.modules.questbook.overlays.ui;
 import com.google.common.collect.ImmutableList;
 import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.SortDirection;
-import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -20,13 +19,11 @@ import com.wynntils.core.utils.helpers.ItemFilter.ByStat;
 import com.wynntils.core.utils.helpers.ItemSearchState;
 import com.wynntils.modules.questbook.QuestBookModule;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
-import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.instances.IconContainer;
-import com.wynntils.modules.questbook.instances.QuestBookPage;
+import com.wynntils.modules.questbook.instances.QuestBookListPage;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 import com.wynntils.webapi.profiles.item.enums.ItemType;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
@@ -45,16 +42,20 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ItemPage extends QuestBookPage {
+public class ItemPage extends QuestBookListPage<ItemProfile> {
 
     private static final int ADV_SEARCH_MAX_LEN = 512;
 
     private ItemSearchState searchState;
     private String searchError;
-    private List<ItemProfile> itemSearch;
 
     public ItemPage() {
         super("Item Guide", true, IconContainer.itemGuideIcon);
+    }
+
+    @Override
+    public List<String> getHoveredDescription() {
+        return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Item Guide", TextFormatting.GRAY + "See all items", TextFormatting.GRAY + "currently available", TextFormatting.GRAY + "in the game.", "", TextFormatting.GREEN + "Left click to select");
     }
 
     private SearchHandler getSearchHandler() {
@@ -99,101 +100,6 @@ public class ItemPage extends QuestBookPage {
     }
 
     @Override
-    public void drawScreen(int mouseX, int mouseY, float partialTicks) {
-        super.drawScreen(mouseX, mouseY, partialTicks);
-        int x = width / 2;
-        int y = height / 2;
-        int posX = (x - mouseX);
-        int posY = (y - mouseY);
-        selected = 0;
-        hoveredText = new ArrayList<>();
-
-        ScreenRenderer.beginGL(0, 0);
-        {
-            // render search UI
-            hoveredText = getSearchHandler().drawScreenElements(this, render, mouseX, mouseY, x, y, posX, posY, selected);
-
-            // search mode toggle button
-            if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) {
-                hoveredText = Arrays.asList("Switch Search Mode", TextFormatting.GRAY + "Toggles between the basic and", TextFormatting.GRAY + "advanced item search modes.");
-                render.drawRect(Textures.UIs.quest_book, x + 147, y - 99, x + 158, y - 88, 218, 281, 240, 303);
-            } else {
-                render.drawRect(Textures.UIs.quest_book, x + 147, y - 99, x + 158, y - 88, 240, 281, 262, 303);
-            }
-
-            // back to menu button
-            drawMenuButton(x, y, posX, posY);
-
-            // title text (or search error text, if any)
-            if (searchError != null) {
-                render.drawString(searchError, x + 80, y - 78, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-            } else {
-                render.drawString("Available Items", x + 80, y - 78, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-            }
-
-            render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-
-            drawForwardAndBackButtons(x, y, posX, posY, currentPage, pages);
-
-            // available items
-            int placedCubes = 0;
-            int currentY = 0;
-            for (int i = ((currentPage - 1) * 42); i < 42 * currentPage; i++) {
-                if (itemSearch.size() <= i) break;
-
-                if (placedCubes + 1 >= 7) {
-                    placedCubes = 0;
-                    currentY += 1;
-                }
-
-                int maxX = x + 22 + (placedCubes * 20);
-                int maxY = y - 66 + (currentY * 20);
-                int minX = x + 38 + (placedCubes * 20);
-                int minY = y - 50 + (currentY * 20);
-
-                ItemProfile pf = itemSearch.get(i);
-
-                CustomColor color = pf.getTier().getCustomizedHighlightColor();
-
-                if (mouseX >= maxX && mouseX <= minX && mouseY >= maxY && mouseY <= minY) {
-                    GlStateManager.color(color.r, color.g, color.b, 0.5f);
-                    GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
-                    render.drawRect(Textures.UIs.rarity, maxX - 1, maxY - 1, 0, 0, 18, 18);
-                    GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
-                    GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-
-                    if (pf.getGuideStack().isEmpty()) continue;
-
-                    render.drawItemStack(pf.getGuideStack(), maxX, maxY, false);
-
-                    List<String> lore = new ArrayList<>();
-                    lore.add(pf.getGuideStack().getDisplayName());
-                    lore.addAll(ItemUtils.getLore(pf.getGuideStack()));
-                    lore.add("");
-                    lore.add(TextFormatting.GOLD + "Shift + Right Click to open WynnData");
-
-                    hoveredText = lore;
-                    selected = -1 - i;
-                } else {
-                    GlStateManager.color(color.r, color.g, color.b, 1.0f);
-                    GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
-                    render.drawRect(Textures.UIs.rarity, maxX - 1, maxY - 1, 0, 0, 18, 18);
-                    GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
-                    GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
-
-                    if (pf.getGuideStack().isEmpty()) continue;
-
-                    render.drawItemStack(pf.getGuideStack(), maxX, maxY, false);
-                }
-
-                placedCubes++;
-            }
-        }
-        ScreenRenderer.endGL();
-        renderHoveredText(mouseX, mouseY);
-    }
-
-    @Override
     protected void drawSearchBar(int centerX, int centerY) {
         if (!QuestBookConfig.INSTANCE.advancedItemSearch || !QuestBookConfig.INSTANCE.advItemSearchLongBar) {
             super.drawSearchBar(centerX, centerY);
@@ -205,13 +111,122 @@ public class ItemPage extends QuestBookPage {
     }
 
     @Override
+    protected void preEntries(int mouseX, int mouseY, float partialTicks) {
+        int x = width / 2;
+        int y = height / 2;
+        int posX = (x - mouseX);
+        int posY = (y - mouseY);
+        selected = -1;
+
+        // render search UI
+        hoveredText = getSearchHandler().drawScreenElements(this, render, mouseX, mouseY, x, y, posX, posY, selected);
+    }
+
+    @Override
+    protected void drawEntry(ItemProfile entryInfo, int index, boolean hovered) {
+        CustomColor color = entryInfo.getTier().getCustomizedHighlightColor();
+
+        int currentX = index % 7;
+        int currentY = (index - currentX)/7;
+
+        int x = width / 2;
+        int y = height / 2;
+
+        int maxX = x + 22 + (currentX * 20);
+        int maxY = y - 66 + (currentY * 20);
+
+        if (hovered) {
+            GlStateManager.color(color.r, color.g, color.b, 0.5f);
+        } else {
+            GlStateManager.color(color.r, color.g, color.b, 1.0f);
+        }
+
+        GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
+        render.drawRect(Textures.UIs.rarity, maxX - 1, maxY - 1, 0, 0, 18, 18);
+        GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
+        GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+
+        if (entryInfo.getGuideStack().isEmpty()) return;
+
+        render.drawItemStack(entryInfo.getGuideStack(), maxX, maxY, false);
+    }
+
+    @Override
+    protected void postEntries(int mouseX, int mouseY, float partialTicks) {
+        int x = width / 2;
+        int y = height / 2;
+        int posX = (x - mouseX);
+        int posY = (y - mouseY);
+        // search mode toggle button
+        if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) {
+            hoveredText = Arrays.asList("Switch Search Mode", TextFormatting.GRAY + "Toggles between the basic and", TextFormatting.GRAY + "advanced item search modes.");
+            render.drawRect(Textures.UIs.quest_book, x + 147, y - 99, x + 158, y - 88, 218, 281, 240, 303);
+        } else {
+            render.drawRect(Textures.UIs.quest_book, x + 147, y - 99, x + 158, y - 88, 240, 281, 262, 303);
+        }
+
+        // back to menu button
+        drawMenuButton(x, y, posX, posY);
+
+        // title text (or search error text, if any)
+        if (searchError != null) {
+            render.drawString(searchError, x + 80, y - 78, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+        } else {
+            render.drawString("Available Items", x + 80, y - 78, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+        }
+    }
+
+    @Override
+    protected boolean isHovered(int index, int posX, int posY) {
+        int currentX = index % 7;
+        int currentY = (index - currentX)/7;
+
+        int maxX = -22 - (currentX * 20);
+        int maxY = 66 - (currentY * 20);
+        int minX = -38 - (currentX * 20);
+        int minY = 50 - (currentY * 20);
+
+        return maxX >= posX && minX <= posX && maxY >= posY && minY <= posY;
+    }
+
+    @Override
+    protected List<String> getHoveredText(ItemProfile entryInfo) {
+        List<String> lore = new ArrayList<>();
+        lore.add(entryInfo.getGuideStack().getDisplayName());
+        lore.addAll(ItemUtils.getLore(entryInfo.getGuideStack()));
+        lore.add("");
+        lore.add(TextFormatting.GOLD + "Shift + Right Click to open WynnData");
+
+        return lore;
+    }
+
+    @Override
+    protected List<List<ItemProfile>> getSearchResults(String currentText) {
+        List<ItemProfile> items;
+
+        ItemSearchState newSearchState;
+        try {
+            newSearchState = getSearchHandler().generateSearchState(currentText);
+        } catch (ItemFilter.FilteringException e) {
+            searchError = e.getMessage();
+            return search;
+        }
+
+        searchState = newSearchState;
+        searchError = null;
+
+        items = WebManager.getDirectItems().stream().filter(searchState).sorted(searchState).collect(Collectors.toList());
+
+        return getListSplitIntoParts(items, 42);
+    }
+
+    @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         ScaledResolution res = new ScaledResolution(McIf.mc());
         int posX = ((res.getScaledWidth() / 2) - mouseX);
         int posY = ((res.getScaledHeight() / 2) - mouseY);
 
         checkMenuButton(posX, posY);
-        checkForwardAndBackButtons(posX, posY);
 
         if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) { // search mode toggle button
             McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
@@ -235,40 +250,15 @@ public class ItemPage extends QuestBookPage {
             return;
         }
 
-        if (selected < 0) { // an item in the guide is hovered
-            if (mouseButton != 1 || !(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) return;
-
-            int selectedIndex = -(selected + 1);
-            if (selectedIndex >= itemSearch.size()) return;
-            Utils.openUrl("https://www.wynndata.tk/i/" + Utils.encodeUrl(itemSearch.get(selectedIndex).getDisplayName()));
-            return;
-        }
-
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
     @Override
-    protected void searchUpdate(String currentText) {
-        ItemSearchState newSearchState;
-        try {
-            newSearchState = getSearchHandler().generateSearchState(currentText);
-        } catch (ItemFilter.FilteringException e) {
-            searchError = e.getMessage();
-            if (itemSearch == null) itemSearch = new ArrayList<>(WebManager.getDirectItems());
-            return;
-        }
+    protected void handleEntryClick(ItemProfile itemInfo, int mouseButton) {
+        if (mouseButton != 1 || !(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) return;
 
-        searchState = newSearchState;
-        searchError = null;
-        itemSearch = WebManager.getDirectItems().stream().filter(searchState).sorted(searchState).collect(Collectors.toList());
-        pages = itemSearch.size() <= 42 ? 1 : (int) Math.ceil(itemSearch.size() / 42d);
-        currentPage = Math.min(currentPage, pages);
-        refreshAccepts();
-    }
-
-    @Override
-    public List<String> getHoveredDescription() {
-        return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Item Guide", TextFormatting.GRAY + "See all items", TextFormatting.GRAY + "currently available", TextFormatting.GRAY + "in the game.", "", TextFormatting.GREEN + "Left click to select");
+        if (selected >= search.get(currentPage - 1).size()) return;
+        Utils.openUrl("https://www.wynndata.tk/i/" + Utils.encodeUrl(search.get(currentPage - 1).get(selected).getDisplayName()));
     }
 
     private interface SearchHandler {
@@ -323,10 +313,10 @@ public class ItemPage extends QuestBookPage {
             render.drawString("Alphabetical Order (A-Z)", x - 140, y - 15, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
             if (posX >= 144 && posX <= 150 && posY >= 8 && posY <= 15) {
-                selected = 1;
+                selected = -2;
                 render.drawRect(Textures.UIs.quest_book, x - 150, y - 15, 246, 259, 7, 7);
             } else {
-                if (selected == 1) selected = 0;
+                if (selected == -2) selected = -1;
                 if (sortFunction == SortFunction.ALPHABETICAL) {
                     render.drawRect(Textures.UIs.quest_book, x - 150, y - 15, 246, 259, 7, 7);
                 } else {
@@ -337,10 +327,10 @@ public class ItemPage extends QuestBookPage {
             render.drawString("Level Order (100-0)", x - 140, y - 5, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
             if (posX >= 144 && posX <= 150 && posY >= -2 && posY <= 5) {
-                selected = 2;
+                selected = -3;
                 render.drawRect(Textures.UIs.quest_book, x - 150, y - 5, 246, 259, 7, 7);
             } else {
-                if (selected == 2) selected = 0;
+                if (selected == -3) selected = -1;
                 if (sortFunction == SortFunction.BY_LEVEL) {
                     render.drawRect(Textures.UIs.quest_book, x - 150, y - 5, 246, 259, 7, 7);
                 } else {
@@ -351,10 +341,10 @@ public class ItemPage extends QuestBookPage {
             render.drawString("Rarity Order (MYTH-NORM)", x - 140, y + 5, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
             if (posX >= 144 && posX <= 150 && posY >= -12 && posY <= -5) {
-                selected = 3;
+                selected = -4;
                 render.drawRect(Textures.UIs.quest_book, x - 150, y + 5, 246, 259, 7, 7);
             } else {
-                if (selected == 3) selected = 0;
+                if (selected == -4) selected = -1;
                 if (sortFunction == SortFunction.BY_RARITY) {
                     render.drawRect(Textures.UIs.quest_book, x - 150, y + 5, 246, 259, 7, 7);
                 } else {
@@ -381,9 +371,9 @@ public class ItemPage extends QuestBookPage {
                 if (mouseX >= maxX && mouseX <= minX && mouseY >= minY && mouseY <= maxY) {
                     render.drawRect(selected_cube, maxX, maxY, minX, minY);
 
-                    selected = (i + 1) * 10;
+                    selected = -10 -(i + 1);
                 } else {
-                    if (selected == (i + 1) * 10) selected = 0;
+                    if (selected == -10 -(i + 1)) selected = -1;
                     render.drawRect(allowedTypes.contains(itemTypeArray.get(i)) ? selected_cube_2 : unselected_cube, maxX, maxY, minX, minY);
                 }
 
@@ -407,22 +397,28 @@ public class ItemPage extends QuestBookPage {
             return null;
         }
 
+
+        //selected
+        //0 to infinity - item hovered
+        //-1 - nothing is hovered
+        //-2 to -4 - sort function
+        //-11 onward - item types
         @Override
         public boolean handleClick(int mouseX, int mouseY, int mouseButton, int selected) {
             switch (selected) { // is one of the sorting buttons hovered?
-                case 1:
+                case -2:
                     if (sortFunction != SortFunction.ALPHABETICAL) {
                         McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                         sortFunction = SortFunction.ALPHABETICAL;
                     }
                     return true;
-                case 2:
+                case -3:
                     if (sortFunction != SortFunction.BY_LEVEL) {
                         McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                         sortFunction = SortFunction.BY_LEVEL;
                     }
                     return true;
-                case 3:
+                case -4:
                     if (sortFunction != SortFunction.BY_RARITY) {
                         McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                         sortFunction = SortFunction.BY_RARITY;
@@ -430,9 +426,9 @@ public class ItemPage extends QuestBookPage {
                     return true;
             }
 
-            if (selected < 10) return false; // selected >= 10 means one of the item filter buttons is hovered
+            if (selected > -10) return false; // selected > -10 means one of the item filter buttons is hovered
 
-            ItemType selectedType = itemTypeArray.get(selected / 10 - 1);
+            ItemType selectedType = itemTypeArray.get(-selected - 11);
             if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
                 if (allowedTypes.size() == 1 && allowedTypes.contains(selectedType)) {
                     allowedTypes.addAll(itemTypeArray);
