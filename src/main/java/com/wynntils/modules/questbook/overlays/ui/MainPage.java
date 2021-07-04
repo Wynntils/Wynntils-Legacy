@@ -65,54 +65,27 @@ public class MainPage extends QuestBookPage {
             render.drawString("In Development", x + 80, y + 50, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
             render.drawString(WebManager.getCurrentSplash(), x + 82, y + 70, CommonColors.RAINBOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
-            int boxTop = y - 18;
-            int boxBottom = y + 12;
             selected = 0;
             for (QuestBookPages val: QuestBookPages.values()) {
                 QuestBookPage qbp = val.getPage();
-                if (qbp.getIcon() == null || !(val.getSlotNb() > (currentPage - 1) * 4 && val.getSlotNb() <= (currentPage) * 4)) continue;
+                if (qbp.getIcon() == null) continue;
 
-                boolean hovering = posX >= (120 - 35 * ((val.getSlotNb() - 1) % 4)) && posX <= (150 - 35 * ((val.getSlotNb() - 1) % 4)) && posY >= -10 && posY <= 20;
                 int leftX = x - 150 + 35 * ((val.getSlotNb() - 1) % 4);
+                int topY = y - 45 + 35 * ((val.getSlotNb() - 1) / 4);
+
+                boolean hovering = posX >= x - leftX - 30 && posX <= x - leftX && posY >= y - topY - 30 && posY <= y - topY;
 
                 if (hovering) {
                     selected = val.getSlotNb();
-                    render.drawRect(selected_cube, leftX, boxTop, leftX + 30, boxBottom);
+                    render.drawRect(selected_cube, leftX, topY, leftX + 30, topY + 30);
                 } else {
-                    render.drawRect(unselected_cube, leftX, boxTop, leftX + 30, boxBottom);
+                    render.drawRect(unselected_cube, leftX, topY, leftX + 30, topY + 30);
                 }
-                render.drawRect(Textures.UIs.quest_book, leftX + (15 - qbp.getIcon().getWidth()/2), boxTop + (15 - qbp.getIcon().getHeight()/2), qbp.getIcon().getX1(), qbp.getIcon().getY1(hovering), qbp.getIcon().getWidth(), qbp.getIcon().getHeight());
+                render.drawRect(Textures.UIs.quest_book, leftX + (15 - qbp.getIcon().getWidth()/2), topY + (15 - qbp.getIcon().getHeight()/2), qbp.getIcon().getX1(), qbp.getIcon().getY1(hovering), qbp.getIcon().getWidth(), qbp.getIcon().getHeight());
                 if (hovering) {
                     hoveredText = qbp.getHoveredDescription();
                 }
             }
-
-            // put next and back button
-            if (currentPage == pages) {
-                render.drawRect(Textures.UIs.quest_book, x - 15, y + 24, x - 31, y + 15, 238, 243, 254, 234);
-            } else {
-                if (posX >= 16 && posX <= 31 && posY >= -24 & posY <= -15) {
-                    selected = -2;
-                    render.drawRect(Textures.UIs.quest_book, x - 15, y + 24, x - 31, y + 15, 238, 243, 254, 234);
-                } else {
-                    render.drawRect(Textures.UIs.quest_book, x - 15, y + 24, x - 31, y + 15, 222, 243, 238, 234);
-                }
-            }
-
-            render.drawString(currentPage + " / " + pages, x - 165/2f, y + 15, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-
-            if (currentPage == 1) {
-                render.drawRect(Textures.UIs.quest_book, x - 150, y + 15, 238, 234, 16, 9);
-            } else {
-                if (posX >= 135 && posX <= 150 && posY >= -24 & posY <= -15) {
-                    selected = -1;
-                    render.drawRect(Textures.UIs.quest_book, x - 150, y + 15, 238, 234, 16, 9);
-                } else {
-                    render.drawRect(Textures.UIs.quest_book, x - 150, y + 15, 222, 234, 16, 9);
-                }
-            }
-
-            render.drawString("Select an option to continue", x - 81, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
             render.drawSplitString("Welcome to Wynntils. You can see your statistics on the right or select some of the options above for more features",
                     155, x - 150, y + 30, 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
@@ -132,10 +105,6 @@ public class MainPage extends QuestBookPage {
         if (selected > 0) {
             WynntilsSound.QUESTBOOK_PAGE.play();
             QuestBookPages.getPageBySlot(selected).open(false);
-        } else if (selected == -1) {
-            goBack();
-        } else if (selected == -2) {
-            goForward();
         }
     }
 }

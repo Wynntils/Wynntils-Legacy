@@ -7,7 +7,9 @@ package com.wynntils.modules.questbook.overlays.ui;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
+import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.questbook.enums.AnalysePosition;
+import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookListPage;
 import com.wynntils.modules.questbook.managers.QuestManager;
@@ -27,7 +29,7 @@ public class DialoguePage extends QuestBookListPage<String> {
 
 
     public DialoguePage() {
-        super("Dialogue", true, IconContainer.dialogueIcon);
+        super("Dialogue", false, IconContainer.dialogueIcon);
     }
 
     @Override
@@ -46,7 +48,7 @@ public class DialoguePage extends QuestBookListPage<String> {
     protected void drawEntry(String entryInfo, int index, boolean hovered) {
         int x = width / 2;
         int y = height / 2;
-        int currentY = 13 + index * 12;
+        int currentY = 7 + index * 12;
 
         render.drawString(entryInfo, x + 26, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
     }
@@ -63,6 +65,25 @@ public class DialoguePage extends QuestBookListPage<String> {
 
         // Back Button
         drawMenuButton(x, y, posX, posY);
+
+        // Questbook button
+        render.drawRect(Textures.UIs.quest_book, x - 30, y - 100, 16, 255, 16, 16);
+        if (posX >= 14 && posX <= 30 && posY >= 81 && posY < 97) {
+            hoveredText = new ArrayList<>();
+            hoveredText.add(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Quests");
+            hoveredText.add(TextFormatting.GRAY + "Click here to open");
+            hoveredText.add(TextFormatting.GRAY + "the quest book");
+            hoveredText.add(" ");
+            hoveredText.add(TextFormatting.GREEN + "Left click to select");
+        }
+
+        // Reload Data button
+        if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) {
+            hoveredText = Arrays.asList("Reload Button!", TextFormatting.GRAY + "Reloads all quest data.");
+            render.drawRect(Textures.UIs.quest_book, x + 147, y - 99, x + 158, y - 88, 218, 281, 240, 303);
+        } else {
+            render.drawRect(Textures.UIs.quest_book, x + 147, y - 99, x + 158, y - 88, 240, 281, 262, 303);
+        }
     }
 
     @Override
@@ -117,6 +138,9 @@ public class DialoguePage extends QuestBookListPage<String> {
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
             QuestManager.updateAllAnalyses(true);
             return;
+        } else if (posX >= 14 && posX <= 30 && posY >= 81 && posY < 97) { // Quests button
+            Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            QuestBookPages.QUESTS.getPage().open(false);
         }
 
         super.mouseClicked(mouseX, mouseY, mouseButton);

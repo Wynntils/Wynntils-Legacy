@@ -12,6 +12,7 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.map.overlays.ui.MainWorldMapUI;
+import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.enums.QuestLevelType;
 import com.wynntils.modules.questbook.enums.QuestStatus;
 import com.wynntils.modules.questbook.instances.IconContainer;
@@ -175,6 +176,17 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
             }
         }
 
+        // Dialogue page button
+        render.drawRect(Textures.UIs.quest_book, x - 30, y - 97, 222, 306, 14, 11);
+        if (posX >= 16 && posX <= 30 && posY >= 86 && posY < 97) {
+            hoveredText = new ArrayList<>();
+            hoveredText.add(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Dialogue History");
+            hoveredText.add(TextFormatting.GRAY + "Click here to view");
+            hoveredText.add(TextFormatting.GRAY + "your dialogue history");
+            hoveredText.add(" ");
+            hoveredText.add(TextFormatting.GREEN + "Left click to select");
+        }
+
         // Reload Data button
         if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) {
             hoveredText = Arrays.asList("Reload Button!", TextFormatting.GRAY + "Reloads all quest data.");
@@ -285,6 +297,9 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
             sort = SortMethod.values()[(sort.ordinal() + (mouseButton == 0 ? 1 : SortMethod.values().length - 1)) % SortMethod.values().length];
             updateSearch();
             return;
+        } else if (posX >= 16 && posX <= 30 && posY >= 86 && posY < 97) { // Dialogue button
+            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+            QuestBookPages.DIALOGUE.getPage().open(false);
         }
 
         super.mouseClicked(mouseX, mouseY, mouseButton);
