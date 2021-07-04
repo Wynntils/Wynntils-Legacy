@@ -47,12 +47,10 @@ public class UtilitiesModule extends Module {
         registerEvents(new IngredientFilterOverlay());
         registerEvents(new EmeraldCountOverlay());
         registerEvents(new LoreChangerOverlay());
-        registerEvents(new WynnDataOverlay());
+        registerEvents(new WynnBuilderOverlay());
         registerEvents(new ItemSpecificationOverlay());
-        registerEvents(new ServerUptimeOverlay());
         registerEvents(new BankOverlay());
         registerEvents(new ServerSelectorOverlay());
-        registerEvents(new ServerNumberOverlay());
 
         // Real overlays
         registerOverlay(new WarTimerOverlay(), Priority.LOWEST);

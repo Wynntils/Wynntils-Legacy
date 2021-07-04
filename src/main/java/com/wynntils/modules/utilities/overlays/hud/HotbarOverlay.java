@@ -65,6 +65,7 @@ public class HotbarOverlay extends Overlay {
                 else if (description.contains(ItemTier.LEGENDARY.asFormattedName())) color = UtilitiesConfig.Items.INSTANCE.legendaryHighlightColor;
                 else if (description.contains(ItemTier.FABLED.asFormattedName())) color = UtilitiesConfig.Items.INSTANCE.fabledHighlightColor;
                 else if (description.contains(ItemTier.MYTHIC.asFormattedName())) color = UtilitiesConfig.Items.INSTANCE.mythicHighlightColor;
+                else if (description.contains(ItemTier.CRAFTED.asFormattedName())) color = UtilitiesConfig.Items.INSTANCE.craftedHighlightColor;
 
                 if (color != null) {
                     color.setA(UtilitiesConfig.Items.INSTANCE.hotbarAlpha / 100);

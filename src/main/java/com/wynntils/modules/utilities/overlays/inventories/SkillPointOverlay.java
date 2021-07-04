@@ -123,7 +123,7 @@ public class SkillPointOverlay implements Listener {
                 if (!spm.find()) continue;
 
                 value = Integer.parseInt(spm.group(1));
-            } else if (name.contains("Profession")) { // Profession Icons
+            } else if (name.contains("Profession [")) { // Profession Icons
                 int start = lore.indexOf("Level: ") + 7;
                 int end = lore.indexOf("XP: ");
 

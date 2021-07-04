@@ -61,7 +61,7 @@ public class ScoreboardOverlay extends Overlay {
         }
 
         int height = scores.size() * fontRenderer.FONT_HEIGHT;
-        int yOffset = height/3;
+        int yOffset = OverlayConfig.Scoreboard.INSTANCE.growFromTop ? height - 30 : height/3;
         int xOffset = -3 - width;
 
         // Background box
@@ -92,9 +92,12 @@ public class ScoreboardOverlay extends Overlay {
     }
 
     private void removeObjectiveLines(List<Score> scores) {
-        scores.removeIf(s -> TextFormatting.getTextWithoutFormattingCodes(s.getPlayerName()).matches(ObjectivesOverlay.OBJECTIVE_PATTERN.pattern()));
+        scores.removeIf(s -> TextFormatting.getTextWithoutFormattingCodes(s.getPlayerName()).matches(ObjectivesOverlay.OBJECTIVE_PATTERN.pattern())
+                && !s.getPlayerName().startsWith(TextFormatting.AQUA.toString()));
         scores.removeIf(s -> TextFormatting.getTextWithoutFormattingCodes(s.getPlayerName()).matches("- All done"));
         scores.removeIf(s -> TextFormatting.getTextWithoutFormattingCodes(s.getPlayerName()).matches("(Daily )?Objectives?:"));
+
+        scores.removeIf(s -> s.getPlayerName().startsWith(TextFormatting.RED + "- "));
     }
 
     private void removeCompassLines(List<Score> scores) {
@@ -105,16 +108,21 @@ public class ScoreboardOverlay extends Overlay {
         List<Score> toRemove = new ArrayList<>();
         for (int i = scores.size()-1; i >= 0; i--) {
             Score score = scores.get(i);
-            if (!TextFormatting.getTextWithoutFormattingCodes(score.getPlayerName()).isEmpty()) continue;
-            if (i == 0 || TextFormatting.getTextWithoutFormattingCodes(scores.get(i-1).getPlayerName()).isEmpty())
+            //System.out.println(score.getPlayerName());
+            if (!isBlank(score.getPlayerName())) continue;
+            if (i == 0 || isBlank(scores.get(i-1).getPlayerName()))
                 toRemove.add(score);
         }
 
         scores.removeAll(toRemove);
 
         // remove title spacer if title is disabled
-        if (!OverlayConfig.Scoreboard.INSTANCE.showTitle && !scores.isEmpty() && TextFormatting.getTextWithoutFormattingCodes(scores.get(scores.size()-1).getPlayerName()).isEmpty())
+        if (!OverlayConfig.Scoreboard.INSTANCE.showTitle && !scores.isEmpty() && isBlank(scores.get(scores.size()-1).getPlayerName()))
             scores.remove(scores.size()-1);
+    }
+
+    private boolean isBlank(String line) {
+        return TextFormatting.getTextWithoutFormattingCodes(line.replace("À", "")).trim().isEmpty(); // À is used as blank
     }
 
     public static void enableCustomScoreboard(boolean enabled) {

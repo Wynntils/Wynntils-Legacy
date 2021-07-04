@@ -83,14 +83,6 @@ public class ObjectivesOverlay extends Overlay {
             }
         }
 
-        if (goal == null) {
-            if (objectiveLine.startsWith("- ")) {
-                goal = objectiveLine.substring(2);
-            } else {
-                goal = objectiveLine;
-            }
-        }
-
         return new Objective(goal, score, maxScore, objectiveLine);
     }
 
@@ -139,8 +131,9 @@ public class ObjectivesOverlay extends Overlay {
                     return true;
                 }
 
-                String objectiveLine = updateScore.getPlayerName();
-                objectives[pos] = parseObjectiveLine(objectiveLine);
+                String objectiveLine = TextFormatting.getTextWithoutFormattingCodes(updateScore.getPlayerName());
+                if (OBJECTIVE_PATTERN.matcher(objectiveLine).find()) // only create objective if it matches the format
+                    objectives[pos] = parseObjectiveLine(objectiveLine);
                 return true;
             }
         }

@@ -15,7 +15,6 @@ import com.wynntils.webapi.profiles.item.enums.MajorIdentification;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 import com.wynntils.webapi.profiles.item.objects.ItemInfoContainer;
 import com.wynntils.webapi.profiles.item.objects.ItemRequirementsContainer;
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
@@ -46,6 +45,8 @@ public class ItemProfile {
 
     String restriction;
     String lore;
+
+    int wynnBuilderID = 0;
 
     transient Map<DamageType, Integer> parsedAvgDamages = null;
     transient int parsedHealth = Integer.MIN_VALUE;
@@ -162,6 +163,10 @@ public class ItemProfile {
             replacedLore = true;
         }
         return lore;
+    }
+
+    public int getWynnBuilderID() {
+        return wynnBuilderID;
     }
 
     public ItemStack getGuideStack() {

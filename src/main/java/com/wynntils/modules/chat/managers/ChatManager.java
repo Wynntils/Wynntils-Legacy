@@ -156,7 +156,7 @@ public class ChatManager {
 
                     if (QuestManager.getCurrentDiscoveries().isEmpty() && !discoveriesLoaded) {
                         QuestManager.updateAnalysis(EnumSet.of(AnalysePosition.DISCOVERIES, AnalysePosition.SECRET_DISCOVERIES), true, true);
-                        return new Pair<>(original, new Pair<>(ChatManager::getDiscoveriesLoaded, s -> ChatManager.processRealMessage(s).a));
+                        return new Pair<ITextComponent, Pair<Supplier<Boolean>, Function<ITextComponent, ITextComponent>>>(original, new Pair<>(ChatManager::getDiscoveriesLoaded, s -> ChatManager.processRealMessage(s).a));
                     }
 
                     translateWynnic = QuestManager.getCurrentDiscoveries().stream()

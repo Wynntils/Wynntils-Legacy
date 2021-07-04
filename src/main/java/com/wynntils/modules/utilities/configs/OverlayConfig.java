@@ -19,7 +19,6 @@ import com.wynntils.modules.core.enums.OverlayRotation;
 import com.wynntils.modules.utilities.overlays.hud.ObjectivesOverlay;
 import com.wynntils.modules.utilities.overlays.hud.ScoreboardOverlay;
 import com.wynntils.modules.utilities.overlays.hud.TerritoryFeedOverlay;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextFormatting;
 
 @SettingsInfo(name = "overlays", displayPath = "Utilities/Overlays")
@@ -592,6 +591,7 @@ public class OverlayConfig extends SettingsClass {
             MANA_MAX("Max mana"),
             HEALTH("Current health"),
             HEALTH_MAX("Max health"),
+            HEALTH_PCT("Current health percentage"),
             XP("Current XP (Formatted)"),
             XP_RAW("Current XP (Raw)"),
             XP_REQ("Required XP to level up (Formatted)"),
@@ -765,11 +765,14 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Show Compass Reminder", description = "Should the compass text be removed from the tracked quest section?", order = 3)
         public boolean showCompass = false;
 
-        @Setting(displayName = "Background Opacity", description = "How dark should the background box be?", order = 4)
+        @Setting(displayName = "Grow From Top", description = "Should the scoreboard grow downward from the top of its overlay position?", order = 4)
+        public boolean growFromTop = false;
+
+        @Setting(displayName = "Background Opacity", description = "How dark should the background box be?", order = 10)
         @Setting.Limitations.IntLimit(min = 0, max = 100)
         public int opacity = 20;
 
-        @Setting(displayName = "Background Color", description = "What color should the text shadow be?\n\n§aClick the coloured box to open the colour wheel.", order = 5)
+        @Setting(displayName = "Background Color", description = "What color should the text shadow be?\n\n§aClick the coloured box to open the colour wheel.", order = 11)
         public CustomColor backgroundColor = CustomColor.fromInt(0x000000, 0.2f);
 
         @Override

@@ -528,6 +528,7 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
         private static final ItemStack SCROLL_STACK = new ItemStack(Items.DIAMOND_AXE);
         private static final ItemStack RED_POTION_STACK = new ItemStack(Items.POTIONITEM);
         private static final ItemStack BLUE_POTION_STACK = new ItemStack(Items.POTIONITEM);
+        private static final ItemStack REFRESH_STACK = new ItemStack(Items.GOLDEN_SHOVEL);
 
         private static final HelpCategory[] ADV_SEARCH_HELP = {
                 new HelpCategory.Builder(new ItemStack(Items.WRITABLE_BOOK), "Writing Filter Strings",
@@ -589,7 +590,7 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
                         "some strength, sorting the results",
                         "first by level in ascending order,",
                         "then by strength, descending.").build(),
-                new HelpCategory.Builder(new ItemStack(Blocks.DIRT, 1, 1), "Switching Search Modes",
+                new HelpCategory.Builder(REFRESH_STACK, "Switching Search Modes",
                         "The button at the top-right of",
                         "the item guide can be used to",
                         "toggle between basic and",
@@ -764,6 +765,9 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
             tag.setBoolean("Unbreakable", true);
             tag.setInteger("HideFlags", 6);
             SCROLL_STACK.setTagCompound(tag);
+
+            REFRESH_STACK.setItemDamage(21);
+            REFRESH_STACK.setTagCompound(tag);
 
             tag = new NBTTagCompound();
             tag.setInteger("CustomPotionColor", 0xff0000);
