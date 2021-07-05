@@ -5,11 +5,9 @@
 package com.wynntils.modules.chat.managers;
 
 import com.wynntils.McIf;
-import com.wynntils.core.framework.enums.PowderManualChapter;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.utils.StringUtils;
-import com.wynntils.core.utils.helpers.TextAction;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.chat.configs.ChatConfig;
 import com.wynntils.modules.chat.language.WynncraftLanguage;
@@ -63,6 +61,7 @@ public class ChatManager {
     private static String lastChat = null;
     private static final int WYNN_DIALOGUE_NEW_MESSAGES_ID = "wynn_dialogue_new_messages".hashCode();
     private static int lineCount = -1;
+    private static ITextComponent dialogueChat = null;
 
     private static final SoundEvent popOffSound = new SoundEvent(new ResourceLocation("minecraft", "entity.blaze.hurt"));
 
@@ -99,32 +98,7 @@ public class ChatManager {
 
         // timestamps
         if (ChatConfig.INSTANCE.addTimestampsToChat) {
-            if (dateFormat == null || !validDateFormat) {
-                try {
-                    dateFormat = new SimpleDateFormat(ChatConfig.INSTANCE.timestampFormat);
-                    validDateFormat = true;
-                } catch (IllegalArgumentException ex) {
-                    validDateFormat = false;
-                }
-            }
-
-            List<ITextComponent> timeStamp = new ArrayList<>();
-            ITextComponent startBracket = new TextComponentString("[");
-            startBracket.getStyle().setColor(TextFormatting.DARK_GRAY);
-            timeStamp.add(startBracket);
-            ITextComponent time;
-            if (validDateFormat) {
-                time = new TextComponentString(dateFormat.format(new Date()));
-                time.getStyle().setColor(TextFormatting.GRAY);
-            } else {
-                time = new TextComponentString("Invalid Format");
-                time.getStyle().setColor(TextFormatting.RED);
-            }
-            timeStamp.add(time);
-            ITextComponent endBracket = new TextComponentString("] ");
-            endBracket.getStyle().setColor(TextFormatting.DARK_GRAY);
-            timeStamp.add(endBracket);
-            in.getSiblings().addAll(0, timeStamp);
+            addTimestamp(in);
         }
 
         // popup sound
@@ -926,6 +900,7 @@ public class ChatManager {
             newMessageCount = 0;
             lastChat = null;
             lineCount = -1;
+            dialogueChat = null;
             ChatOverlay.getChat().deleteChatLine(WYNN_DIALOGUE_NEW_MESSAGES_ID);
             QuestManager.updateAnalysis(AnalysePosition.QUESTS, true, true);
             return new Pair<>(true, null);
@@ -964,17 +939,26 @@ public class ChatManager {
         if (inDialogue) {
             // Detect new messages
             // If dialogue is the exact same as previously then most likely a message was received
-            if (dialogue.equals(last)) {
+            // The second check is for the colors changing on the shift prompt
+            if (dialogue.equals(last) && dialogue.get(dialogue.size() - 1).getSiblings().equals(last.get(last.size()-1).getSiblings())) {
                 newMessageCount++;
+
+                // most recent message
+                ITextComponent newMessage = siblings.get(siblings.size() - lineCount - 1);
+                // filter out info messages because they wont be caught through the normal checks
+                if (!newMessage.getUnformattedText().startsWith("[Info] ") || !ChatConfig.INSTANCE.filterWynncraftInfo) {
+                    if (dialogueChat == null) {
+                        dialogueChat = newMessage;
+                    } else {
+                        if (ChatConfig.INSTANCE.addTimestampsToChat) addTimestamp(newMessage); // add timestamps to new lines for consistency
+                        dialogueChat.appendSibling(newMessage);
+                    }
+                }
             }
 
-            if (newMessageCount > 0) {
-                ITextComponent message = new TextComponentString(newMessageCount + " delayed message" + (newMessageCount > 1 ? "s" : ""));
-                message.getStyle().setColor(TextFormatting.GRAY);
-                ChatOverlay.getChat().printChatMessageWithOptionalDeletion(message, WYNN_DIALOGUE_NEW_MESSAGES_ID);
-            }
+            if (dialogueChat != null) ChatOverlay.getChat().printChatMessageWithOptionalDeletion(dialogueChat, WYNN_DIALOGUE_NEW_MESSAGES_ID);
+
             lastChat = chat;
-
             ITextComponent newComponent = new TextComponentString("");
             newComponent.getSiblings().addAll(dialogue);
             last = new ArrayList<>(dialogue);
@@ -991,6 +975,35 @@ public class ChatManager {
 
         ChatOverlay.getChat().deleteChatLine(WYNN_DIALOGUE_NEW_MESSAGES_ID);
         ChatOverlay.getChat().deleteChatLine(ChatOverlay.WYNN_DIALOGUE_ID);
+    }
+
+    private static void addTimestamp(ITextComponent in) {
+        if (dateFormat == null || !validDateFormat) {
+            try {
+                dateFormat = new SimpleDateFormat(ChatConfig.INSTANCE.timestampFormat);
+                validDateFormat = true;
+            } catch (IllegalArgumentException ex) {
+                validDateFormat = false;
+            }
+        }
+
+        List<ITextComponent> timeStamp = new ArrayList<>();
+        ITextComponent startBracket = new TextComponentString("[");
+        startBracket.getStyle().setColor(TextFormatting.DARK_GRAY);
+        timeStamp.add(startBracket);
+        ITextComponent time;
+        if (validDateFormat) {
+            time = new TextComponentString(dateFormat.format(new Date()));
+            time.getStyle().setColor(TextFormatting.GRAY);
+        } else {
+            time = new TextComponentString("Invalid Format");
+            time.getStyle().setColor(TextFormatting.RED);
+        }
+        timeStamp.add(time);
+        ITextComponent endBracket = new TextComponentString("] ");
+        endBracket.getStyle().setColor(TextFormatting.DARK_GRAY);
+        timeStamp.add(endBracket);
+        in.getSiblings().addAll(0, timeStamp);
     }
 
     public static void setDiscoveriesLoaded(boolean discoveriesLoaded) {
