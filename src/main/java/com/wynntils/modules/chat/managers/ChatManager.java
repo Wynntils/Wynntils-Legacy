@@ -316,32 +316,6 @@ public class ChatManager {
             in = temp;
         }
 
-        //powder manual
-        if (ChatConfig.INSTANCE.customPowderManual && McIf.getUnformattedText(in).equals("                         Powder Manual")) {
-            List<ITextComponent> chapterSelect = new ArrayList<>();
-
-            ITextComponent offset = new TextComponentString("\n               "); //to center chapter select
-            ITextComponent spacer = new TextComponentString("   "); //space between chapters
-
-            chapterSelect.add(offset);
-
-            for (int i = 1; i <= 3; i++) {
-                ITextComponent chapter = new TextComponentString("Chapter " + i);
-                chapter.getStyle()
-                        .setColor(TextFormatting.GOLD)
-                        .setUnderlined(true)
-                        .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click to read Chapter " + i)));
-                chapter = TextAction.withDynamicEvent(chapter, new ChapterReader(i));
-
-                chapterSelect.add(chapter);
-                chapterSelect.add(spacer);
-            }
-
-            chapterSelect.add(new TextComponentString("\n"));
-            in.getSiblings().addAll(chapterSelect);
-
-        }
-
         return new Pair<>(in, null);
     }
 
@@ -1012,35 +986,5 @@ public class ChatManager {
 
     public static boolean getDiscoveriesLoaded() {
         return ChatManager.discoveriesLoaded;
-    }
-
-    private static class ChapterReader implements Runnable {
-
-        ITextComponent chapterText;
-
-        public ChapterReader(int chapter) {
-            String text;
-            switch (chapter) {
-                case 1:
-                    text = PowderManualChapter.ONE.getText();
-                    break;
-                case 2:
-                    text = PowderManualChapter.TWO.getText();
-                    break;
-                case 3:
-                    text = PowderManualChapter.THREE.getText();
-                    break;
-                default: text = "";
-            }
-
-            chapterText = new TextComponentString(text);
-
-        }
-
-        @Override
-        public void run() {
-            McIf.player().sendMessage(chapterText);
-        }
-
     }
 }
