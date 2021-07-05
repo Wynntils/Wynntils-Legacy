@@ -15,7 +15,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'java'
 apply plugin: 'idea'
 
-def versionObj = new Version(major: 1, minor: 10, revision: 2)
+def versionObj = new Version(major: 1, minor: 10, revision: 3)
 
 version = versionObj.toString()
 group = "com.wynntils"
