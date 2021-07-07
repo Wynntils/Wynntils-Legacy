@@ -29,7 +29,8 @@ public enum MajorIdentification {
     PEACEFUL_EFFIGY("Peaceful Effigy", "Your Totem will last twice as long"),
     FURIOUS_EFFIGY("Furious Effigy", "Totem effects are twice as fast, but duration is halved"),
     FLASHFREEZE("Flash Freeze", "Ice Snake is instant but has a reduced range"),
-    FISSION("Fission", "Explosions from your \"Exploding\" ID are twice as big and twice as strong");
+    FISSION("Fission", "Explosions from your \"Exploding\" ID are twice as big and twice as strong"),
+    EXPLOSIVE_IMPACT("Explosive Impact", "Your \"Exploding\" ID can trigger when hitting mobs with your basic attack");
 
     String name, description;
 
