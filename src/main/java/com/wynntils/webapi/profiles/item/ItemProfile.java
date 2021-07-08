@@ -4,6 +4,26 @@
 
 package com.wynntils.webapi.profiles.item;
 
+import static net.minecraft.util.text.TextFormatting.AQUA;
+import static net.minecraft.util.text.TextFormatting.DARK_AQUA;
+import static net.minecraft.util.text.TextFormatting.DARK_GRAY;
+import static net.minecraft.util.text.TextFormatting.DARK_GREEN;
+import static net.minecraft.util.text.TextFormatting.DARK_RED;
+import static net.minecraft.util.text.TextFormatting.GOLD;
+import static net.minecraft.util.text.TextFormatting.GRAY;
+import static net.minecraft.util.text.TextFormatting.GREEN;
+import static net.minecraft.util.text.TextFormatting.RED;
+import static net.minecraft.util.text.TextFormatting.WHITE;
+import static net.minecraft.util.text.TextFormatting.YELLOW;
+
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Stream;
+
 import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.enums.DamageType;
@@ -11,19 +31,15 @@ import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.profiles.item.enums.ItemAttackSpeed;
 import com.wynntils.webapi.profiles.item.enums.ItemTier;
-import com.wynntils.webapi.profiles.item.enums.MajorIdentification;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 import com.wynntils.webapi.profiles.item.objects.ItemInfoContainer;
 import com.wynntils.webapi.profiles.item.objects.ItemRequirementsContainer;
+import com.wynntils.webapi.profiles.item.objects.MajorIdentification;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
-
-import java.util.*;
-import java.util.stream.Stream;
-
-import static net.minecraft.util.text.TextFormatting.*;
 
 public class ItemProfile {
 
@@ -41,12 +57,14 @@ public class ItemProfile {
     Map<String, Integer> defenseTypes = new HashMap<>();
     Map<String, IdentificationContainer> statuses = new HashMap<>();
 
-    List<MajorIdentification> majorIds = new ArrayList<>();
+    List<String> majorIds = new ArrayList<>();
 
     String restriction;
     String lore;
 
     int wynnBuilderID = 0;
+
+    transient List<MajorIdentification> majorIdentifications = new ArrayList<>();
 
     transient Map<DamageType, Integer> parsedAvgDamages = null;
     transient int parsedHealth = Integer.MIN_VALUE;
@@ -59,7 +77,7 @@ public class ItemProfile {
                        ItemTier tier, boolean identified, ItemAttackSpeed attackSpeed, ItemInfoContainer itemInfo,
                        ItemRequirementsContainer requirements, Map<String, String> damageTypes,
                        Map<String, Integer> defenseTypes, Map<String, IdentificationContainer> statuses,
-                       ArrayList<MajorIdentification> majorIds, String restriction, String lore) {}
+                       ArrayList<String> majorIds, String restriction, String lore) {}
 
     public void registerIdTypes() {
         statuses.entrySet().forEach(e -> e.getValue().registerIdType(e.getKey()));
@@ -146,7 +164,7 @@ public class ItemProfile {
     }
 
     public List<MajorIdentification> getMajorIds() {
-        return majorIds;
+        return majorIdentifications;
     }
 
     public String getRestriction() {
@@ -175,6 +193,14 @@ public class ItemProfile {
 
     public void clearGuideStack() {
         guideStack = null;
+    }
+
+    public void addMajorIds(Map<String, MajorIdentification> idMap) {
+        if (majorIds == null) return;
+        majorIdentifications = new ArrayList<>();
+        for (String id : majorIds) {
+            if (idMap.containsKey(id)) majorIdentifications.add(idMap.get(id));
+        }
     }
 
     private ItemStack generateStack() {
@@ -257,7 +283,7 @@ public class ItemProfile {
 
             // major ids
             if (majorIds != null && majorIds.size() > 0) {
-                for (MajorIdentification majorId : majorIds) {
+                for (MajorIdentification majorId : getMajorIds()) {
                     Stream.of(StringUtils.wrapTextBySize(majorId.asLore(), 150)).forEach(c -> itemLore.add(DARK_AQUA + c));
                 }
                 itemLore.add(" ");

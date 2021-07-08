@@ -22,6 +22,7 @@ import com.wynntils.webapi.profiles.item.ItemGuessProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 import com.wynntils.webapi.profiles.item.enums.ItemType;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
+import com.wynntils.webapi.profiles.item.objects.MajorIdentification;
 import com.wynntils.webapi.profiles.music.MusicLocationsProfile;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
 import com.wynntils.webapi.request.Request;
@@ -61,6 +62,7 @@ public class WebManager {
     private static HashMap<String, String> internalIdentifications = new HashMap<>();
     private static HashMap<ItemType, String[]> materialTypes = new HashMap<>();
     private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
+    private static HashMap<String, MajorIdentification> majorIds = new HashMap<>();
 
     private static ArrayList<MapMarkerProfile> mapMarkers = new ArrayList<>();
     private static ArrayList<MapLabelProfile> mapLabels = new ArrayList<>();
@@ -440,11 +442,20 @@ public class WebManager {
             .cacheTo(new File(API_CACHE_ROOT, "item_list.json"))
             .cacheMD5Validator(() -> getAccount().getMD5Verification("itemList"))
             .handleJsonObject(j -> {
+                translatedReferences = gson.fromJson(j.getAsJsonObject("translatedReferences"), HashMap.class);
+                internalIdentifications = gson.fromJson(j.getAsJsonObject("internalIdentifications"), HashMap.class);
+                Type majorIdsType = new TypeToken<HashMap<String, MajorIdentification>>(){}.getType();
+                majorIds = gson.fromJson(j.getAsJsonObject("majorIdentifications"), majorIdsType);
+                Type materialTypesType = new TypeToken<HashMap<ItemType, String[]>>(){}.getType();
+                materialTypes = gson.fromJson(j.getAsJsonObject("materialTypes"), materialTypesType);
+                IdentificationOrderer.INSTANCE = gson.fromJson(j.getAsJsonObject("identificationOrder"), IdentificationOrderer.class);
+
                 ItemProfile[] gItems = gson.fromJson(j.getAsJsonArray("items"), ItemProfile[].class);
 
                 HashMap<String, ItemProfile> citems = new HashMap<>();
                 for (ItemProfile prof : gItems) {
                     prof.getStatuses().values().forEach(IdentificationContainer::calculateMinMax);
+                    prof.addMajorIds(majorIds);
                     citems.put(prof.getDisplayName(), prof);
                 }
 
@@ -453,11 +464,6 @@ public class WebManager {
                 directItems = citems.values();
                 items = citems;
 
-                translatedReferences = gson.fromJson(j.getAsJsonObject("translatedReferences"), HashMap.class);
-                internalIdentifications = gson.fromJson(j.getAsJsonObject("internalIdentifications"), HashMap.class);
-                Type materialTypesType = new TypeToken<HashMap<ItemType, String[]>>(){}.getType();
-                materialTypes = gson.fromJson(j.getAsJsonObject("materialTypes"), materialTypesType);
-                IdentificationOrderer.INSTANCE = gson.fromJson(j.getAsJsonObject("identificationOrder"), IdentificationOrderer.class);
                 return true;
             })
         );

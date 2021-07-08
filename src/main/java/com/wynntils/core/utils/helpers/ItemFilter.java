@@ -15,8 +15,8 @@ import com.wynntils.webapi.profiles.item.ItemProfile;
 import com.wynntils.webapi.profiles.item.enums.ItemAttackSpeed;
 import com.wynntils.webapi.profiles.item.enums.ItemTier;
 import com.wynntils.webapi.profiles.item.enums.ItemType;
-import com.wynntils.webapi.profiles.item.enums.MajorIdentification;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
+import com.wynntils.webapi.profiles.item.objects.MajorIdentification;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
