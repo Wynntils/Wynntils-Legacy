@@ -14,8 +14,8 @@ import java.util.Map;
 
 public class TabManager {
 
-    public static final String DEFAULT_GUILD_REGEX = "(^&3\\[(&r&b★{0,5})?&r&3(&o)?[\\w ]*?(&r&3)?\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)";
-    public static final String DEFAULT_PARTY_REGEX = "(^&7\\[&r&e[a-zA-Z0-9_ ]+?&r&7\\])|(^&eYou are not in a party!)";
+    public static final String DEFAULT_GUILD_REGEX = "(^&3\\[(&b★{0,5})?(&3)?(&o)?[\\w ]*?(&3)?\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)";
+    public static final String DEFAULT_PARTY_REGEX = "(^&7\\[&r&e(&o)?[a-zA-Z0-9_ ]+?&r&7\\])|(^&eYou are not in a party!)";
 
     private static List<ChatTab> availableTabs;
 
