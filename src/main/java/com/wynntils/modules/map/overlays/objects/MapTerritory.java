@@ -76,6 +76,10 @@ public class MapTerritory {
         return initY + ((endY - initY)/2f);
     }
 
+    public boolean isRendering() {
+        return shouldRender;
+    }
+
     public TerritoryProfile getTerritory() {
         return territory;
     }

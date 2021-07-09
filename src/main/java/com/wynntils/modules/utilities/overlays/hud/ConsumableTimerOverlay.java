@@ -222,7 +222,7 @@ public class ConsumableTimerOverlay extends Overlay {
         if (!isRaw) {
             // loop through all modifier options to find a valid one
             for (IdentificationModifier mod : IdentificationModifier.values()) {
-                if (mod.getInGame().isEmpty() || !suffix.contains(mod.getInGame())) continue;
+                if (mod.getInGame(shortIdName).isEmpty() || !suffix.contains(mod.getInGame(shortIdName))) continue;
 
                 modifier = mod;
                 break;

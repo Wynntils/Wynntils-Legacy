@@ -258,10 +258,10 @@ public class GearViewerUI extends FakeGuiContainer {
                 String lore;
                 if (isInverted)
                     lore = (value < 0 ? GREEN.toString() : value > 0 ? RED + "+" : GRAY.toString())
-                            + value + idContainer.getType().getInGame();
+                            + value + idContainer.getType().getInGame(translatedId);
                 else
                     lore = (value < 0 ? RED.toString() : value > 0 ? GREEN + "+" : GRAY.toString())
-                            + value + idContainer.getType().getInGame();
+                            + value + idContainer.getType().getInGame(translatedId);
 
                 // set stars
                 if ((!isInverted && value > 0) || (isInverted && value < 0)) {

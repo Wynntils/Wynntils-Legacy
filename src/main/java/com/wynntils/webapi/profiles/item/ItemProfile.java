@@ -351,7 +351,7 @@ public class ItemProfile {
                 lore = ((id.getMin() < 0 ? RED.toString() : GREEN + "+") + id.getMin()) +
                         ((id.getMax() < 0 ? DARK_RED + " to " + RED : DARK_GREEN + " to " + GREEN + "+") + id.getMax());
 
-        return lore + id.getType().getInGame() + " " + GRAY + id.getAsLongName(idName);
+        return lore + id.getType().getInGame(idName) + " " + GRAY + id.getAsLongName(idName);
     }
 
 }

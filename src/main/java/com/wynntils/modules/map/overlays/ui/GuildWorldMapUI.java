@@ -168,6 +168,8 @@ public class GuildWorldMapUI extends WorldMapUI {
     }
 
     protected void drawTradeRoute(MapTerritory origin, MapTerritory destination) {
+        if (!origin.isRendering() || !destination.isRendering()) return;
+
         GlStateManager.pushMatrix();
         {
             GlStateManager.disableTexture2D();

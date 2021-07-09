@@ -38,13 +38,6 @@ public class DialoguePage extends QuestBookListPage<String> {
     }
 
     @Override
-    public void open(boolean showAnimation) {
-        super.open(showAnimation);
-
-        QuestManager.updateAnalysis(AnalysePosition.QUESTS, true, true);
-    }
-
-    @Override
     protected void drawEntry(String entryInfo, int index, boolean hovered) {
         int x = width / 2;
         int y = height / 2;
@@ -136,7 +129,7 @@ public class DialoguePage extends QuestBookListPage<String> {
 
         if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) { // Update Data
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-            QuestManager.updateAllAnalyses(true);
+            QuestManager.updateAnalysis(AnalysePosition.QUESTS, true, true);
             return;
         } else if (posX >= 14 && posX <= 30 && posY >= 81 && posY < 97) { // Quests button
             Minecraft.getMinecraft().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));

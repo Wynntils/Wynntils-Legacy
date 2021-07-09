@@ -45,9 +45,9 @@ public class IdentificationHolder {
 
         String idAmount;
         if (IdentificationOrderer.INSTANCE.isInverted(idName))
-            idAmount = (currentAmount > 0 ? RED + "+" + currentAmount + modifier.getInGame() : GREEN.toString() + currentAmount + modifier.getInGame());
+            idAmount = (currentAmount > 0 ? RED + "+" + currentAmount + modifier.getInGame(idName) : GREEN.toString() + currentAmount + modifier.getInGame(idName));
         else
-            idAmount = (currentAmount > 0 ? GREEN + "+" + currentAmount + modifier.getInGame() : RED.toString() + currentAmount + modifier.getInGame());
+            idAmount = (currentAmount > 0 ? GREEN + "+" + currentAmount + modifier.getInGame(idName) : RED.toString() + currentAmount + modifier.getInGame(idName));
 
         return name + " " + idAmount;
     }

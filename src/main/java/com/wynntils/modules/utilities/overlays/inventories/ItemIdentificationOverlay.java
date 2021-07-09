@@ -151,10 +151,10 @@ public class ItemIdentificationOverlay implements Listener {
                 String lore;
                 if (isInverted)
                     lore = (currentValue < 0 ? GREEN.toString() : currentValue > 0 ? RED + "+" : GRAY.toString())
-                            + currentValue + type.getInGame();
+                            + currentValue + type.getInGame(idName);
                 else
                     lore = (currentValue < 0 ? RED.toString() : currentValue > 0 ? GREEN + "+" : GRAY.toString())
-                            + currentValue + type.getInGame();
+                            + currentValue + type.getInGame(idName);
 
                 if (UtilitiesConfig.Identifications.INSTANCE.addStars && ids.hasKey(idName + "*")) {
                     lore += DARK_GREEN + "***".substring(0, ids.getInteger(idName + "*"));

@@ -120,6 +120,9 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Show Item Identification Stars", description = "Should the star rating of an item's identifications be shown?")
         public boolean addStars = false;
 
+        @Setting(displayName = "Legacy Identification Values", description = "Should mana and life steal stats display as /4s instead of /3s and /5s?")
+        public boolean legacyIds = false;
+
         @Setting(displayName = "Rainbow Perfect Items", description = "Should perfect items have rainbow names?")
         public boolean rainbowPerfect = true;
 
