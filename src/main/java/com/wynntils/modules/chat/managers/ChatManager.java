@@ -876,7 +876,6 @@ public class ChatManager {
             lineCount = -1;
             dialogueChat = null;
             ChatOverlay.getChat().deleteChatLine(WYNN_DIALOGUE_NEW_MESSAGES_ID);
-            QuestManager.updateAnalysis(AnalysePosition.QUESTS, true, true);
             return new Pair<>(true, null);
         }
 

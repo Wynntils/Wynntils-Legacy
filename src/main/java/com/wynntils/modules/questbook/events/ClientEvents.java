@@ -4,6 +4,8 @@
 
 package com.wynntils.modules.questbook.events;
 
+import java.util.Arrays;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GameEvent;
@@ -20,7 +22,8 @@ import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.events.custom.QuestBookUpdateEvent;
 import com.wynntils.modules.questbook.instances.QuestBookPage;
 import com.wynntils.modules.questbook.managers.QuestManager;
-import net.minecraft.client.Minecraft;
+import com.wynntils.modules.questbook.managers.ScoreboardManager;
+
 import net.minecraft.init.Items;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
@@ -28,8 +31,6 @@ import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-
-import java.util.Arrays;
 
 public class ClientEvents implements Listener {
 
@@ -69,7 +70,7 @@ public class ClientEvents implements Listener {
             position = AnalysePosition.DISCOVERIES;
         else return;
 
-        QuestManager.updateAnalysis(position, fullRead, readImmediately && !QuestBookConfig.INSTANCE.updateWhenOpen);
+        QuestManager.updateAnalysis(position, fullRead, readImmediately && QuestBookConfig.INSTANCE.autoUpdateQuestbook);
     }
 
     @SubscribeEvent
@@ -91,7 +92,8 @@ public class ClientEvents implements Listener {
         if (e.getNewClass() == ClassType.NONE) return;
 
         if (QuestBookConfig.INSTANCE.allowCustomQuestbook) {
-            new Delay(() -> ToggleSetting.QUEST_TRACKER.set(false), 20);
+            // enable autotracking for quest book updating, if that is enabled
+            new Delay(() -> ToggleSetting.QUEST_TRACKER.set(QuestBookConfig.INSTANCE.autoUpdateQuestbook), 20);
         }
         QuestManager.clearData();
     }
@@ -144,6 +146,19 @@ public class ClientEvents implements Listener {
         QuestBookPages.MAIN.getPage().open(true);
 
         QuestManager.readQuestBook();
+    }
+
+    private int tickCounter = 0;
+
+    @SubscribeEvent
+    public void checkScoreboard(TickEvent.ClientTickEvent e) {
+        if (e.phase == TickEvent.Phase.START || !Reference.onWorld) return;
+        if (!QuestBookConfig.INSTANCE.autoUpdateQuestbook) return;
+
+        // check scoreboard once a second
+        tickCounter++;
+        tickCounter %= 20;
+        if (tickCounter == 0) ScoreboardManager.checkScoreboard();
     }
 
 }

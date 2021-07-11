@@ -13,8 +13,11 @@ public class QuestBookConfig extends SettingsClass {
 
     public static QuestBookConfig INSTANCE;
 
-    @Setting(displayName = "Replace Wynncraft Quest Book", description = "Should Wynncraft's quest book be replaced with Wynntils' custom quest book?")
+    @Setting(displayName = "Replace Wynncraft Quest Book", description = "Should Wynncraft's quest book be replaced with Wynntils' custom quest book?", order = 0)
     public boolean allowCustomQuestbook = true;
+
+    @Setting(displayName = "Auto-Update Quest Book", description = "Should the Wynntils quest book update automatically as you do quests?\n\n§8This setting works best if the scoreboard overlay is enabled as well.", order = 1)
+    public boolean autoUpdateQuestbook = true;
 
     @Setting(displayName = "Set Quest Location to Compass", description = "Should the compass point towards given coordinates of quests?")
     public boolean compassFollowQuests = true;
@@ -24,9 +27,6 @@ public class QuestBookConfig extends SettingsClass {
 
     @Setting(displayName = "Fuzzy Search", description = "Should a different search algorithm be used that allows searching for acronyms and abbreviations?")
     public boolean useFuzzySearch = true;
-
-    @Setting(displayName = "Updating Quest Book", description = "Should the quest book only update when you open it?")
-    public boolean updateWhenOpen = false;
 
     @Setting(displayName = "Show Unavailable Discoveries", description = "When viewing undiscovered discoveries, should discoveries that cannot be currently found be displayed?")
     public boolean showAllDiscoveries = false;

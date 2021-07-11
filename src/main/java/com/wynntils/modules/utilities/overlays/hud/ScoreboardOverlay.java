@@ -9,6 +9,7 @@ import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
+import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 
 import net.minecraft.client.gui.FontRenderer;
@@ -43,9 +44,10 @@ public class ScoreboardOverlay extends Overlay {
         List<Score> scores = Lists.newArrayList(Iterables.filter(scoreboard.getSortedScores(objective), s -> s.getPlayerName() != null && !s.getPlayerName().startsWith("#")));
         if (scores.size() > 15) scores = new ArrayList<Score>(scores.subList(0, 15));
 
-        // remove objective, compass lines, then remove unnecessary blanks
+        // remove objective, compass lines, quest lines, then remove unnecessary blanks
         if (OverlayConfig.Objectives.INSTANCE.enableObjectives) removeObjectiveLines(scores);
-        if (!OverlayConfig.Scoreboard.INSTANCE.showCompass) removeCompassLines(scores);
+        if (!OverlayConfig.Scoreboard.INSTANCE.showCompass || QuestBookConfig.INSTANCE.autoUpdateQuestbook) removeCompassLines(scores);
+        if (QuestBookConfig.INSTANCE.autoUpdateQuestbook) removeQuestLines(scores);
         trimBlankLines(scores);
 
         // nothing to display
@@ -104,11 +106,26 @@ public class ScoreboardOverlay extends Overlay {
         scores.removeIf(s -> s.getPlayerName().matches(TextFormatting.LIGHT_PURPLE + "(Follow your compass|to reach that location)"));
     }
 
+    private void removeQuestLines(List<Score> scores) {
+        List<Score> toRemove = new ArrayList<>();
+        boolean foundQuest = false;
+        for (int i = scores.size()-1; i >= 0; i--) {
+            Score score = scores.get(i);
+            String line = TextFormatting.getTextWithoutFormattingCodes(score.getPlayerName());
+
+            if (line.startsWith("Tracked Quest:")) foundQuest = true; // start quest block
+            if (!foundQuest) continue; // not in quest block yet
+            if (isBlank(line)) break; // end of quest block
+            toRemove.add(score);
+        }
+
+        scores.removeAll(toRemove);
+    }
+
     private void trimBlankLines(List<Score> scores) {
         List<Score> toRemove = new ArrayList<>();
         for (int i = scores.size()-1; i >= 0; i--) {
             Score score = scores.get(i);
-            //System.out.println(score.getPlayerName());
             if (!isBlank(score.getPlayerName())) continue;
             if (i == 0 || isBlank(scores.get(i-1).getPlayerName()))
                 toRemove.add(score);
