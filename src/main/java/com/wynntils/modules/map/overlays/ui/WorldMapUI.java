@@ -25,7 +25,6 @@ import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
@@ -93,7 +92,8 @@ public class WorldMapUI extends GuiMovementScreen {
         }
 
         // Also creates icons
-        updateCenterPosition(startX, startZ);
+        createIcons();
+        this.centerPositionX = startX; this.centerPositionZ = startZ;
 
         if (MapConfig.INSTANCE.hideCompletedQuests) {
             // Request analyse if not already done to
@@ -107,6 +107,14 @@ public class WorldMapUI extends GuiMovementScreen {
         McIf.mc().getSoundHandler().playSound(
                 PositionedSoundRecord.getMasterRecord(SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, 1f)
         );
+    }
+
+    @Override
+    public void initGui() {
+        super.initGui();
+
+        updateCenterPosition(centerPositionX, centerPositionZ);
+        Keyboard.enableRepeatEvents(true);
     }
 
     protected void addButton(MapButtonType type, int offsetX, List<String> hover, Function<Void, Boolean> isEnabled, BiConsumer<MapButton, Integer> onClick) {
@@ -418,14 +426,6 @@ public class WorldMapUI extends GuiMovementScreen {
         double zoomScale = Math.pow(ZOOM_SCALE_FACTOR, -by);
         zoom = MathHelper.clamp((int) Math.round(zoomScale * (zoom + 50) - 50), MIN_ZOOM, MAX_ZOOM);
         updateCenterPosition(centerPositionX, centerPositionZ);
-    }
-
-    @Override
-    public void initGui() {
-        super.initGui();
-
-        updateCenterPosition(centerPositionX, centerPositionZ);
-        Keyboard.enableRepeatEvents(true);
     }
 
     @Override

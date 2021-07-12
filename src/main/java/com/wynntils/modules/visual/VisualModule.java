@@ -33,7 +33,7 @@ public class VisualModule extends Module {
         registerSettings(VisualConfig.Ashes.class);
         registerSettings(VisualConfig.Snowflakes.class);
         registerSettings(VisualConfig.Flames.class);
-        registerSettings(VisualConfig.CharacterSelector.class);
+        registerSettings(VisualConfig.CustomSelector.class);
         registerSettings(VisualConfig.CachedChunks.class);
 
         registerSpawnCondition(new FireflySpawnCondition());

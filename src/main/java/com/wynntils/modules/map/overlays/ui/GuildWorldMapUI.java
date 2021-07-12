@@ -15,7 +15,6 @@ import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.managers.GuildResourceManager;
 import com.wynntils.modules.map.overlays.enums.MapButtonType;
 import com.wynntils.modules.map.overlays.objects.MapTerritory;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
@@ -107,6 +106,7 @@ public class GuildWorldMapUI extends WorldMapUI {
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
+    @Override
     protected void drawIcons(int mouseX, int mouseY, float partialTicks) {
         if (!Reference.onWorld) return;
 

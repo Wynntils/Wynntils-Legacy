@@ -54,18 +54,10 @@ public class MapTerritory {
         float endX = ((mp.getTextureXPosition(territory.getEndX()) - minX) / (maxX - minX));
         float endY = ((mp.getTextureZPosition(territory.getEndZ()) - minZ) / (maxZ - minZ));
 
-        if ((initX > 0 && initX < 1) || (initY > 0 && initY < 1) || (endX > 0 && endX < 1) || (endY > 0 && endY < 1)) {
-            shouldRender = true;
+        this.initX = initX * width; this.initY = initY * height;
+        this.endX = endX * width; this.endY = endY  * height;
 
-            initX*=width; initY*=height;
-            endX*=width; endY*=height;
-
-            this.initX = initX; this.initY = initY;
-            this.endX = endX; this.endY = endY;
-            return;
-        }
-
-        shouldRender = false;
+        shouldRender = (initX > 0 && initX < 1) || (initY > 0 && initY < 1) || (endX > 0 && endX < 1) || (endY > 0 && endY < 1);
     }
 
     public float getCenterX() {

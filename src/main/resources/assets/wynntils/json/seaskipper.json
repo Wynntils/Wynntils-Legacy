@@ -1,0 +1,146 @@
+[
+  {
+    "name": "Nemract",
+    "startX":10,
+    "startZ":-2070,
+    "endX":210,
+    "endZ":-2300,
+    "level": 20
+  },
+  {
+    "name": "Selchar",
+    "startX":-100,
+    "startZ":-3070,
+    "endX":210,
+    "endZ":-3290,
+    "level": 25
+  },
+  {
+    "name": "Llevigar",
+    "startX":-2048,
+    "startZ":-4403,
+    "endX":-1910,
+    "endZ":-4215,
+    "level": 40
+  },
+  {
+    "name": "Bear Zoo",
+    "startX":-409,
+    "startZ":-2539,
+    "endX":-283,
+    "endZ":-2414,
+    "level": 15
+  },
+  {
+    "name": "Durum Isles",
+    "startX":347,
+    "startZ":-2791,
+    "endX":595,
+    "endZ":-2924,
+    "level": 20
+  },
+  {
+    "name": "Rooster Island",
+    "startX":-128,
+    "startZ":-2538,
+    "endX":-30,
+    "endZ":-2448,
+    "level": 20
+  },
+  {
+    "name": "Half Moon Island",
+    "startX":900,
+    "startZ":-2660,
+    "endX":1100,
+    "endZ":-2480,
+    "level": 30
+  },
+  {
+    "name": "Dead Island",
+    "startX":745,
+    "startZ":-4040,
+    "endX":1000,
+    "endZ":-3810,
+    "level": 70
+  },
+  {
+    "name": "Mage Island",
+    "startX":805,
+    "startZ":-2960,
+    "endX":983,
+    "endZ":-2787,
+    "level": 30
+  },
+  {
+    "name": "Nesaak",
+    "startX": 80,
+    "startZ": -900,
+    "endX": 40,
+    "endZ": -920,
+    "level": 40
+  },
+  {
+    "name": "Zhight Island",
+    "startX":-727,
+    "startZ":-2990,
+    "endX":-440,
+    "endZ":-2629,
+    "level": 55
+  },
+  {
+    "name": "Jofash Docks",
+    "startX":1178,
+    "startZ":-4175,
+    "endX":1445,
+    "endZ":-4012,
+    "level": 90
+  },
+  {
+    "name": "Maro Peaks",
+    "startX":-41,
+    "startZ":-4174,
+    "endX":453,
+    "endZ":-3793,
+    "level": 60
+  },
+  {
+    "name": "Nodguj Island",
+    "startX":695,
+    "startZ":-3210,
+    "endX":917,
+    "endZ":-3470,
+    "level": 45
+  },
+  {
+    "name": "Pirate Cove",
+    "startX":-750,
+    "startZ":-3251,
+    "endX":-580,
+    "endZ":-3006,
+    "level": 60
+  },
+  {
+    "name": "Skiens Island",
+    "startX":577,
+    "startZ":-3644,
+    "endX":297,
+    "endZ":-3367,
+    "level": 55
+  },
+  {
+    "name": "Volcanic Isles",
+    "startX":-1164,
+    "startZ":-3870,
+    "endX":-722,
+    "endZ":-3530,
+    "level": 55
+  },
+  {
+    "name": "Galleon's Graveyard",
+    "startX":-688,
+    "startZ":-3590,
+    "endX":-472,
+    "endZ":-3385,
+    "level": 60
+  }
+]
