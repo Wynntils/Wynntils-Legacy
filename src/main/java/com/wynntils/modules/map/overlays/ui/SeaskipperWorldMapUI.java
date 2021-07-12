@@ -8,7 +8,6 @@ import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.textures.Textures;
-import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
@@ -31,7 +30,6 @@ import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.io.IOException;
-import java.sql.Ref;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -40,7 +38,7 @@ import static net.minecraft.util.text.TextFormatting.*;
 
 public class SeaskipperWorldMapUI extends WorldMapUI {
 
-    private final static Pattern SEASKIPPER_PASS_MATCHER = Pattern.compile("^([\\w ]+) Pass for (\\d+)");
+    private final static Pattern SEASKIPPER_PASS_MATCHER = Pattern.compile("([a-zA-Z]* )+Pass for (\\d+)");
 
     SeaskipperLocation origin;
     private final HashMap<String, SeaskipperLocation> locations = new HashMap<>();
@@ -128,14 +126,18 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
             if (stack.isEmpty() || !stack.hasDisplayName()) continue;
 
             if (stack.getItem() == Items.NAME_TAG) receivedItems = true;
-            else return;
+            else continue;
 
             String displayname = getTextWithoutFormattingCodes(stack.getDisplayName());
 
             if (displayname != null) {
                 Matcher result = SEASKIPPER_PASS_MATCHER.matcher(displayname);
                 if (!result.matches()) {
-                    Reference.LOGGER.info(displayname);
+                    Reference.LOGGER.info("Name doesn't match");
+                    Reference.LOGGER.info("Old: -" + stack.getDisplayName() + "-");
+                    Reference.LOGGER.info("New: -" + displayname + "-");
+
+                    continue;
                 }
 
                 SeaskipperLocation location = locations.get(result.group(1));
@@ -163,8 +165,8 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
             if (routes.containsKey(location)) return;
 
             if (location.getSquareRegion().isInside(playerX, playerY)) {
-                origin = location;
                 location.setActiveType(SeaskipperLocation.Accessibility.ORIGIN);
+                origin = location;
                 return;
             }
 
@@ -176,8 +178,10 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
             }
         }
 
-        origin = closest;
-        origin.setActiveType(SeaskipperLocation.Accessibility.ORIGIN);
+        if (closest != null) {
+            closest.setActiveType(SeaskipperLocation.Accessibility.ORIGIN);
+            origin = closest;
+        }
     }
 
 
@@ -217,14 +221,8 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
 
         if (showSeaskipperRoutes) generateSeaSkipperRoutes();
         locations.values().forEach((c) -> c.drawScreen(mouseX, mouseY, partialTicks, showLocations, showInacessableLocations));
-        locations.values().forEach(c -> c.postDraw(mouseX, mouseY, partialTicks, width, height));
 
-        SeaskipperLocation hovered = locations.values().stream().filter(c -> c.isHovered(mouseX, mouseY)).findFirst().orElse(null);
-
-        hoveredLocation = null;
-        if (hovered != null && hovered.getActiveType() == SeaskipperLocation.Accessibility.ACCESSIBLE) {
-                hoveredLocation = hovered;
-        }
+        hoveredLocation = locations.values().stream().filter(c -> c.isHovered(mouseX, mouseY) && c.isAccessible()).findFirst().orElse(null);
 
         clearMask();
     }

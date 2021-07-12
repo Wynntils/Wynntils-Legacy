@@ -14,11 +14,12 @@ import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.webapi.profiles.SeaskipperProfile;
-import net.minecraft.util.text.TextFormatting;
 
 public class SeaskipperLocation {
 
     private static final CustomColor seaskipperNameColour = new CustomColor(CommonColors.WHITE);
+    private static final CustomColor costColour = new CustomColor(CommonColors.LIGHT_GREEN);
+    private static final CustomColor gotoColour = new CustomColor(CommonColors.CYAN);
 
     ScreenRenderer renderer = null;
 
@@ -81,27 +82,23 @@ public class SeaskipperLocation {
         float ppX = getCenterX();
         float ppY = getCenterY();
 
-        boolean hovering = (mouseX > initX && mouseX < endX && mouseY > initY && mouseY < endY);
-
-        if ((MapConfig.WorldMap.INSTANCE.showTerritoryName || hovering) && alpha > 0)
-            renderer.drawString(location.getName(), ppX, ppY - 30, seaskipperNameColour.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+        if ((MapConfig.WorldMap.INSTANCE.showTerritoryName || isHovered(mouseX, mouseY)) && alpha > 0)
+            renderer.drawString(location.getName(), ppX, ppY - 20, seaskipperNameColour.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
 
         if (MapConfig.WorldMap.INSTANCE.useGuildShortNames) alpha = 1;
         if (alpha <= 0) return;
 
-        renderer.drawString(getHoveredText(), ppX, ppY, CommonColors.YELLOW.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
-        if (accessibility == Accessibility.ACCESSIBLE) renderer.drawString(cost + " " + EmeraldSymbols.EMERALDS, ppX, ppY - 20, CommonColors.GREEN.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
-    }
-
-    public String getHoveredText() {
-        if (accessibility != Accessibility.ACCESSIBLE) return TextFormatting.RED + "You can not go to this location!";
-
-        return TextFormatting.YELLOW + "Click on to go to " + location.getName() + "!";
-    }
-
-    public void postDraw(int mouseX, int mouseY, float partialTicks, int width, int height) {
-        boolean hovering = (mouseX > initX && mouseX < endX && mouseY > initY && mouseY < endY);
-        if (!hovering) return;
+        switch (accessibility) {
+            case ACCESSIBLE:
+                renderer.drawString("Click on to go to " + location.getName() + "!", ppX, ppY + 10, gotoColour.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+                renderer.drawString(cost + " " + EmeraldSymbols.EMERALDS, ppX, ppY - 10, costColour.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+                break;
+            case INACCESSIBLE:
+                renderer.drawString("Inaccessible!", ppX, ppY + 10, color.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+                break;
+            case ORIGIN:
+                renderer.drawString("Origin", ppX, ppY, color.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+        }
 
 
     }
@@ -110,12 +107,12 @@ public class SeaskipperLocation {
         return (mouseX > initX && mouseX < endX && mouseY > initY && mouseY < endY);
     }
 
-    public void setActiveType(Accessibility accessability) {
-        this.accessibility = accessability;
+    public void setActiveType(Accessibility accessibility) {
+        this.accessibility = accessibility;
     }
 
-    public Accessibility getActiveType() {
-        return accessibility;
+    public boolean isAccessible() {
+        return accessibility == Accessibility.ACCESSIBLE;
     }
 
     public SquareRegion getSquareRegion() {
@@ -127,9 +124,9 @@ public class SeaskipperLocation {
     }
 
     public enum Accessibility {
-        INACCESSIBLE(CommonColors.LIGHT_GRAY),
-        ACCESSIBLE(CommonColors.LIGHT_BLUE),
-        ORIGIN(CommonColors.ORANGE);
+        INACCESSIBLE(new CustomColor(CommonColors.LIGHT_GRAY)),
+        ACCESSIBLE(new CustomColor(CommonColors.LIGHT_BLUE)),
+        ORIGIN(new CustomColor(CommonColors.ORANGE));
 
         private final CustomColor color;
 

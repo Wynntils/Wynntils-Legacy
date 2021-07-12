@@ -10,9 +10,9 @@
   {
     "name": "Selchar",
     "startX":-100,
-    "startZ":-3070,
+    "startZ":-3290,
     "endX":210,
-    "endZ":-3290,
+    "endZ":-3070,
     "level": 25
   },
   {
@@ -34,9 +34,9 @@
   {
     "name": "Durum Isles",
     "startX":347,
-    "startZ":-2791,
+    "startZ":-2988,
     "endX":595,
-    "endZ":-2924,
+    "endZ":-2791,
     "level": 20
   },
   {
@@ -73,10 +73,10 @@
   },
   {
     "name": "Nesaak",
-    "startX": 80,
-    "startZ": -900,
-    "endX": 40,
-    "endZ": -920,
+    "startX": 30,
+    "startZ": -930,
+    "endX": 90,
+    "endZ": -890,
     "level": 40
   },
   {
@@ -106,9 +106,9 @@
   {
     "name": "Nodguj Island",
     "startX":695,
-    "startZ":-3210,
+    "startZ":-3470,
     "endX":917,
-    "endZ":-3470,
+    "endZ":-3210,
     "level": 45
   },
   {
@@ -121,9 +121,9 @@
   },
   {
     "name": "Skiens Island",
-    "startX":577,
+    "startX":297,
     "startZ":-3644,
-    "endX":297,
+    "endX":577,
     "endZ":-3367,
     "level": 55
   },

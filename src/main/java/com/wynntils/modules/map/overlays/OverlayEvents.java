@@ -29,7 +29,6 @@ public class OverlayEvents implements Listener {
     }
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void closeSeaskipperMenu(GuiOverlapEvent.ChestOverlap.GuiClosed e) {
-        if (!VisualConfig.CustomSelector.INSTANCE.seaskipperSelector) return;
         if (!e.getGui().getLowerInv().getName().contains("V.S.S. Seaskipper")) return;
 
         seaskipperWorldMapUI = null;
