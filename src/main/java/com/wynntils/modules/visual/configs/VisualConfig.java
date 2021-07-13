@@ -149,7 +149,7 @@ public class VisualConfig extends SettingsClass {
 
     }
 
-    @SettingsInfo(name = "characterSelector", displayPath = "Visual/Character Selector")
+    @SettingsInfo(name = "customSelector", displayPath = "Visual/Custom Selector")
     public static class CustomSelector extends SettingsClass {
         public static CustomSelector INSTANCE;
 
