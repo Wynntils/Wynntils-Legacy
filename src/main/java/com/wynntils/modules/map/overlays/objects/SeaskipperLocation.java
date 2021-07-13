@@ -14,6 +14,7 @@ import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.webapi.profiles.SeaskipperProfile;
+import net.minecraft.util.text.TextFormatting;
 
 public class SeaskipperLocation {
 
@@ -79,13 +80,15 @@ public class SeaskipperLocation {
         float ppX = getCenterX();
         float ppY = getCenterY();
 
-        if (MapConfig.WorldMap.INSTANCE.showTerritoryName || isHovered(mouseX, mouseY) || isAccessible())
+        boolean hovering = isHovered(mouseX, mouseY);
+
+        if (MapConfig.WorldMap.INSTANCE.showTerritoryName || hovering || isAccessible())
             renderer.drawString(location.getName(), ppX, ppY - 20, seaskipperNameColour, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
 
         switch (accessibility) {
             case ACCESSIBLE:
                 renderer.drawString(cost + " " + EmeraldSymbols.EMERALDS, ppX, ppY - 10, costColour, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
-                renderer.drawString("Click on to go to here!", ppX, ppY + 10, gotoColour, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+                renderer.drawString(  hovering ? TextFormatting.BOLD + "Click on to go to here!" : "Click on to go to here!", ppX, ppY + 10, gotoColour, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
                 break;
             case INACCESSIBLE:
                 renderer.drawString("Inaccessible!", ppX, ppY + 10, color, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);

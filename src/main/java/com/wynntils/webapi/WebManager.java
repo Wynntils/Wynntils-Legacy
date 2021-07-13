@@ -581,8 +581,6 @@ public class WebManager {
     }
 
     public static void updateSeaskipperLocations(RequestHandler handler) {
-        //TODO - implement on api as well
-        /*
         if (apiUrls == null) return;
         String url = apiUrls.get("Seaskipper");
         handler.addRequest(new Request(url, "seaskipper")
@@ -593,19 +591,6 @@ public class WebManager {
                 seaskipperLocations = gson.fromJson(seaskipperJson, type);
                 return true;
             }));
-        */
-
-        try {
-            ResourceLocation rc = new ResourceLocation(Reference.MOD_ID + ":json/seaskipper.json");
-            JsonArray seaskipperJson = (JsonArray) new JsonParser().parse(IOUtils.toString(McIf.mc().getResourceManager().getResource(rc).getInputStream(), StandardCharsets.UTF_8));
-
-            Type type = new TypeToken<ArrayList<SeaskipperProfile>>() {}.getType();
-
-            seaskipperLocations = gson.fromJson(seaskipperJson, type);
-
-            Reference.LOGGER.info(seaskipperLocations);
-
-        } catch (Exception ignored) {}
     }
 
     public static String getStableJarFileUrl() throws IOException {
