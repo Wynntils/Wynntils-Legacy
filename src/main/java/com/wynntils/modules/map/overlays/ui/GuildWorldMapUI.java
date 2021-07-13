@@ -142,7 +142,7 @@ public class GuildWorldMapUI extends WorldMapUI {
         }
 
         if (showTradeRoutes) generateTradeRoutes();
-        territories.values().forEach(c -> c.drawScreen(mouseX, mouseY, partialTicks, showTerritory, resourceColors, !showOwners, showOwners));
+        territories.values().forEach(c -> c.drawScreen(mouseX, mouseY, partialTicks, showTerritory, resourceColors, !showOwners, showOwners, false));
         territories.values().forEach(c -> c.postDraw(mouseX, mouseY, partialTicks, width, height));
 
         clearMask();

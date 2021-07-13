@@ -72,7 +72,7 @@ public class MapTerritory {
         return territory;
     }
 
-    public void drawScreen(int mouseX, int mouseY, float partialTicks, boolean territoryArea, boolean resourceColor, boolean showHeadquarters, boolean showNames) {
+    public void drawScreen(int mouseX, int mouseY, float partialTicks, boolean territoryArea, boolean resourceColor, boolean showHeadquarters, boolean showNames, boolean useAlpha) {
         if (!shouldRender || renderer == null) return;
 
         CustomColor color;
@@ -100,13 +100,11 @@ public class MapTerritory {
             renderer.drawRect(Textures.Map.map_territory_info, (int) ppX-8, (int) ppY-7, (int) ppX+8, (int) ppY+7, 0, 49, 16, 62);
         }
 
-        if (!showNames) return;
+        if (!useAlpha) alpha = 1;
+        else if (!showNames || alpha <= 0) return;
 
-        if ((MapConfig.WorldMap.INSTANCE.showTerritoryName || hovering) && alpha > 0)
+        if ((MapConfig.WorldMap.INSTANCE.showTerritoryName || hovering))
             renderer.drawString(territory.getFriendlyName(), ppX, ppY - 10, territoryNameColour.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
-
-        if (MapConfig.WorldMap.INSTANCE.useGuildShortNames) alpha = 1;
-        if (alpha <= 0) return;
 
         renderer.drawString(MapConfig.WorldMap.INSTANCE.useGuildShortNames ? territory.getGuildPrefix() : territory.getGuild(), ppX, ppY, color.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
     }

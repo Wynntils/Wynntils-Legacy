@@ -19,6 +19,8 @@ public class OverlayEvents implements Listener {
 
     private SeaskipperWorldMapUI seaskipperWorldMapUI;
 
+    //MouseClicked and MouseClickMove are obsolete since HandleMouseInput is canceled, and mouseClicked is handled by MovementScreen
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void initSeaskipperMenu(GuiOverlapEvent.ChestOverlap.InitGui e) {
         if (!VisualConfig.CustomSelector.INSTANCE.seaskipperSelector) return;
@@ -44,34 +46,23 @@ public class OverlayEvents implements Listener {
         e.setCanceled(true);
     }
 
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void replaceSeaskipperMenuClick(GuiOverlapEvent.ChestOverlap.MouseClicked e) throws IOException {
-        if (seaskipperWorldMapUI == null) return;
-
-        e.setCanceled(true);
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void replaceSeaskipperMouseClickMove(GuiOverlapEvent.ChestOverlap.MouseClickMove e) {
-        if (seaskipperWorldMapUI == null) return;
-
-        e.setCanceled(true);
-    }
-
     @SubscribeEvent
     public void replaceSeaskipperMouseInput(GuiOverlapEvent.ChestOverlap.HandleMouseInput e) throws IOException {
         if (seaskipperWorldMapUI == null) return;
 
         seaskipperWorldMapUI.handleMouseInput();
+        e.setCanceled(true);
     }
 
     @SubscribeEvent
     public void replaceKeyTyped(GuiOverlapEvent.ChestOverlap.KeyTyped e) throws IOException {
         if (seaskipperWorldMapUI == null) return;
 
-        //1 means escape, meaning seaskipperWorldMapUI will close, but ChestReplacer sometimes remains open
-        //So instead we allow escapes to pass through
+        //1 is the keycode escape, meaning that if seaskipperWorldMapUI runs it, it closes the screen,
+        // but the chestreplacer can remain open, leading to a blank screen client side but the chest
+        // is still open.
 
+        //So instead escapes are passed through to the chestreplacer, allowing an actual chest close.
         if (e.getKeyCode() != 1) {
             seaskipperWorldMapUI.keyTyped(e.getTypedChar(), e.getKeyCode());
             e.setCanceled(true);

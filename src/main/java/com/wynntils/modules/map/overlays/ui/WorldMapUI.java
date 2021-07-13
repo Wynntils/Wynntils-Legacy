@@ -346,7 +346,7 @@ public class WorldMapUI extends GuiMovementScreen {
 
         if (MapConfig.WorldMap.INSTANCE.keepTerritoryVisible || Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)) {
             territories.values().forEach(c -> c.drawScreen(mouseX, mouseY, partialTicks,
-                    MapConfig.WorldMap.INSTANCE.territoryArea, false, false, true));
+                    MapConfig.WorldMap.INSTANCE.territoryArea, false, false, true, true));
         }
 
         forEachIcon(c -> c.drawHovering(mouseX, mouseY, partialTicks, renderer));

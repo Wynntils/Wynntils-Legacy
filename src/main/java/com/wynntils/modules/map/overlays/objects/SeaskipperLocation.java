@@ -23,7 +23,6 @@ public class SeaskipperLocation {
 
     ScreenRenderer renderer = null;
 
-    float alpha = 1;
     SeaskipperProfile location;
     Accessibility accessibility = Accessibility.INACCESSIBLE;
 
@@ -42,9 +41,7 @@ public class SeaskipperLocation {
         return this;
     }
 
-    public void updateAxis(MapProfile mp, int width, int height, float maxX, float minX, float maxZ, float minZ, int zoom) {
-        alpha = 1 - ((zoom - 10) / 40.0f);
-
+    public void updateAxis(MapProfile mp, int width, int height, float maxX, float minX, float maxZ, float minZ) {
         float initX = ((mp.getTextureXPosition(location.getStartX()) - minX) / (maxX - minX));
         float initY = ((mp.getTextureZPosition(location.getStartZ()) - minZ) / (maxZ - minZ));
         float endX = ((mp.getTextureXPosition(location.getEndX()) - minX) / (maxX - minX));
@@ -82,22 +79,19 @@ public class SeaskipperLocation {
         float ppX = getCenterX();
         float ppY = getCenterY();
 
-        if ( (MapConfig.WorldMap.INSTANCE.showTerritoryName || isHovered(mouseX, mouseY) || isAccessible()) && alpha > 0)
-            renderer.drawString(location.getName(), ppX, ppY - 20, seaskipperNameColour.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
-
-        if (MapConfig.WorldMap.INSTANCE.useGuildShortNames) alpha = 1;
-        if (alpha <= 0) return;
+        if (MapConfig.WorldMap.INSTANCE.showTerritoryName || isHovered(mouseX, mouseY) || isAccessible())
+            renderer.drawString(location.getName(), ppX, ppY - 20, seaskipperNameColour, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
 
         switch (accessibility) {
             case ACCESSIBLE:
-                renderer.drawString(cost + " " + EmeraldSymbols.EMERALDS, ppX, ppY - 10, costColour.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
-                renderer.drawString("Click on to go to here!", ppX, ppY + 10, gotoColour.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+                renderer.drawString(cost + " " + EmeraldSymbols.EMERALDS, ppX, ppY - 10, costColour, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+                renderer.drawString("Click on to go to here!", ppX, ppY + 10, gotoColour, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
                 break;
             case INACCESSIBLE:
-                renderer.drawString("Inaccessible!", ppX, ppY + 10, color.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+                renderer.drawString("Inaccessible!", ppX, ppY + 10, color, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
                 break;
             case ORIGIN:
-                renderer.drawString("Origin", ppX, ppY, color.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+                renderer.drawString("Origin", ppX, ppY, color, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
         }
 
 

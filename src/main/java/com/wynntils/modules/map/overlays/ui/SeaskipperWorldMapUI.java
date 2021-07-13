@@ -66,7 +66,7 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
     protected void updateCenterPosition(float centerPositionX, float centerPositionZ) {
         super.updateCenterPosition(centerPositionX, centerPositionZ);
 
-        locations.values().forEach(c -> c.updateAxis(MapModule.getModule().getMainMap(), width, height, maxX, minX, maxZ, minZ, zoom));
+        locations.values().forEach(c -> c.updateAxis(MapModule.getModule().getMainMap(), width, height, maxX, minX, maxZ, minZ));
     }
 
     @Override
@@ -269,11 +269,6 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
     }
 
     @Override
-    public void keyTyped(char typedChar, int keyCode) throws IOException {
-
-    }
-
-    @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
 
@@ -287,5 +282,10 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
                 chest.handleMouseClick(chest.inventorySlots.getSlot(slotNumber), slotNumber, 0, ClickType.PICKUP);
             }
         }
+    }
+
+    @Override
+    public void keyTyped(char typedChar, int keyCode) throws IOException {
+        super.keyTyped(typedChar, keyCode);
     }
 }
