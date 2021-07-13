@@ -38,7 +38,7 @@ import static net.minecraft.util.text.TextFormatting.*;
 
 public class SeaskipperWorldMapUI extends WorldMapUI {
 
-    private final static Pattern SEASKIPPER_PASS_MATCHER = Pattern.compile("([a-zA-Z]* )+Pass for (\\d+)");
+    private final static Pattern SEASKIPPER_PASS_MATCHER = Pattern.compile("^([A-Za-z ']+) Pass for (\\d+)");
 
     SeaskipperLocation origin;
     private final HashMap<String, SeaskipperLocation> locations = new HashMap<>();
@@ -49,10 +49,9 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
     ChestReplacer chest;
 
     // Properties
-    private boolean showLocations = true;
-    private boolean showInacessableLocations = true;
-    private boolean showSeaskipperRoutes = true;
-
+    private static boolean showLocations = true;
+    private static boolean showInacessableLocations = true;
+    private static boolean showSeaskipperRoutes = true;
 
     public SeaskipperWorldMapUI(ChestReplacer chest) {
         super((float) McIf.player().posX, (float) McIf.player().posZ);
@@ -132,7 +131,7 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
 
             if (displayname != null) {
                 Matcher result = SEASKIPPER_PASS_MATCHER.matcher(displayname);
-                if (!result.matches()) {
+                if (!result.find()) {
                     Reference.LOGGER.info("Name doesn't match");
                     Reference.LOGGER.info("Old: -" + stack.getDisplayName() + "-");
                     Reference.LOGGER.info("New: -" + displayname + "-");
@@ -140,11 +139,17 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
                     continue;
                 }
 
-                SeaskipperLocation location = locations.get(result.group(1));
-                int cost = Integer.parseInt(result.group(2));
-                location.setCost(cost);
-                location.setActiveType(SeaskipperLocation.Accessibility.ACCESSIBLE);
-                routes.put(location, s.slotNumber);
+                Reference.LOGGER.info("Loading " + result.group(1));
+
+                try {
+                    SeaskipperLocation location = locations.get(result.group(1));
+                    int cost = Integer.parseInt(result.group(2));
+                    location.setCost(cost);
+                    location.setActiveType(SeaskipperLocation.Accessibility.ACCESSIBLE);
+                    routes.put(location, s.slotNumber);
+                } catch (Exception e) {
+                    Reference.LOGGER.info("Loading " + result.group(1) + " Failed");
+                }
             }
         }
 
@@ -162,7 +167,7 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
         SeaskipperLocation closest = null;
 
         for (SeaskipperLocation location : locations.values()) {
-            if (routes.containsKey(location)) return;
+            if (routes.containsKey(location)) continue;
 
             if (location.getSquareRegion().isInside(playerX, playerY)) {
                 location.setActiveType(SeaskipperLocation.Accessibility.ORIGIN);
@@ -181,9 +186,10 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
         if (closest != null) {
             closest.setActiveType(SeaskipperLocation.Accessibility.ORIGIN);
             origin = closest;
+        } else {
+            Reference.LOGGER.info("origin is not defined");
         }
     }
-
 
     protected void drawIcons(int mouseX, int mouseY, float partialTicks) {
         if (!Reference.onWorld) return;
@@ -256,7 +262,7 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
             {
                 buffer.begin(GL11.GL_LINE_STRIP, DefaultVertexFormats.POSITION_COLOR);
                 buffer.pos(destination.getCenterX(), destination.getCenterY(), 0).color(0f, 249, 255f, .5f).endVertex();
-                buffer.pos(origin.getCenterX(), origin.getCenterY(), 0).color(0f, 249, 255f, .5f).endVertex();
+                buffer.pos(origin.getCenterX(), origin.getCenterY(), 0).color(67, 142, 130, .5f).endVertex();
             }
             tess.draw();
 
@@ -267,7 +273,7 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
 
     @Override
     public void keyTyped(char typedChar, int keyCode) throws IOException {
-        super.keyTyped(typedChar, keyCode);
+
     }
 
     @Override

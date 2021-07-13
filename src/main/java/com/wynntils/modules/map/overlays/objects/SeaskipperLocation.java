@@ -68,9 +68,9 @@ public class SeaskipperLocation {
         return location;
     }
 
-    public void drawScreen(int mouseX, int mouseY, float partialTicks, boolean showLocations, boolean showInacessableLocations) {
+    public void drawScreen(int mouseX, int mouseY, float partialTicks, boolean showLocations, boolean showInaccessibleLocations) {
         if (!shouldRender || renderer == null) return;
-        if (!showInacessableLocations && accessibility == Accessibility.INACCESSIBLE) return;
+        if (!showInaccessibleLocations && accessibility == Accessibility.INACCESSIBLE) return;
 
         CustomColor color = accessibility.getColor();
 
@@ -82,7 +82,7 @@ public class SeaskipperLocation {
         float ppX = getCenterX();
         float ppY = getCenterY();
 
-        if ((MapConfig.WorldMap.INSTANCE.showTerritoryName || isHovered(mouseX, mouseY)) && alpha > 0)
+        if ( (MapConfig.WorldMap.INSTANCE.showTerritoryName || isHovered(mouseX, mouseY) || isAccessible()) && alpha > 0)
             renderer.drawString(location.getName(), ppX, ppY - 20, seaskipperNameColour.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
 
         if (MapConfig.WorldMap.INSTANCE.useGuildShortNames) alpha = 1;
@@ -90,8 +90,8 @@ public class SeaskipperLocation {
 
         switch (accessibility) {
             case ACCESSIBLE:
-                renderer.drawString("Click on to go to " + location.getName() + "!", ppX, ppY + 10, gotoColour.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
                 renderer.drawString(cost + " " + EmeraldSymbols.EMERALDS, ppX, ppY - 10, costColour.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+                renderer.drawString("Click on to go to here!", ppX, ppY + 10, gotoColour.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
                 break;
             case INACCESSIBLE:
                 renderer.drawString("Inaccessible!", ppX, ppY + 10, color.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);

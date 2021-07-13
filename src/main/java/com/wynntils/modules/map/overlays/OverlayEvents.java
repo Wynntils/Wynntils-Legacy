@@ -7,8 +7,8 @@ package com.wynntils.modules.map.overlays;
 import com.wynntils.McIf;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
-import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.visual.configs.VisualConfig;
+import com.wynntils.webapi.WebManager;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import com.wynntils.modules.map.overlays.ui.SeaskipperWorldMapUI;
@@ -23,9 +23,11 @@ public class OverlayEvents implements Listener {
     public void initSeaskipperMenu(GuiOverlapEvent.ChestOverlap.InitGui e) {
         if (!VisualConfig.CustomSelector.INSTANCE.seaskipperSelector) return;
         if (!e.getGui().getLowerInv().getName().contains("V.S.S. Seaskipper")) return;
+        //Return if api has no response
+        if (WebManager.getSeaskipperLocations().isEmpty()) return;
 
         seaskipperWorldMapUI = new SeaskipperWorldMapUI(e.getGui());
-        Utils.displayGuiScreen(seaskipperWorldMapUI);
+        seaskipperWorldMapUI.setWorldAndResolution(McIf.mc(), e.getGui().width, e.getGui().height);
     }
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void closeSeaskipperMenu(GuiOverlapEvent.ChestOverlap.GuiClosed e) {
@@ -46,7 +48,6 @@ public class OverlayEvents implements Listener {
     public void replaceSeaskipperMenuClick(GuiOverlapEvent.ChestOverlap.MouseClicked e) throws IOException {
         if (seaskipperWorldMapUI == null) return;
 
-        seaskipperWorldMapUI.mouseClicked(e.getMouseX(), e.getMouseY(), e.getMouseButton());
         e.setCanceled(true);
     }
 
@@ -68,7 +69,12 @@ public class OverlayEvents implements Listener {
     public void replaceKeyTyped(GuiOverlapEvent.ChestOverlap.KeyTyped e) throws IOException {
         if (seaskipperWorldMapUI == null) return;
 
-        seaskipperWorldMapUI.keyTyped(e.getTypedChar(), e.getKeyCode());
-        e.setCanceled(true);
+        //1 means escape, meaning seaskipperWorldMapUI will close, but ChestReplacer sometimes remains open
+        //So instead we allow escapes to pass through
+
+        if (e.getKeyCode() != 1) {
+            seaskipperWorldMapUI.keyTyped(e.getTypedChar(), e.getKeyCode());
+            e.setCanceled(true);
+        }
     }
 }

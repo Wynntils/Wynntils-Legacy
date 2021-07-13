@@ -2,9 +2,9 @@
   {
     "name": "Nemract",
     "startX":10,
-    "startZ":-2070,
+    "startZ":-2300,
     "endX":210,
-    "endZ":-2300,
+    "endZ":-2070,
     "level": 20
   },
   {
@@ -24,7 +24,7 @@
     "level": 40
   },
   {
-    "name": "Bear Zoo",
+    "name": "Bear Zoo Island",
     "startX":-409,
     "startZ":-2539,
     "endX":-283,
@@ -73,10 +73,10 @@
   },
   {
     "name": "Nesaak",
-    "startX": 30,
-    "startZ": -930,
-    "endX": 90,
-    "endZ": -890,
+    "startX": 20,
+    "startZ": -920,
+    "endX": 100,
+    "endZ": -880,
     "level": 40
   },
   {
@@ -104,7 +104,7 @@
     "level": 60
   },
   {
-    "name": "Nodguj Island",
+    "name": "Nodjug Island",
     "startX":695,
     "startZ":-3470,
     "endX":917,

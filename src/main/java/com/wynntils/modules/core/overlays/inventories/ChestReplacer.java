@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.core.overlays.inventories;
 
+import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import net.minecraft.client.gui.GuiButton;
@@ -17,7 +18,6 @@ import java.io.IOException;
 import java.util.List;
 
 public class ChestReplacer extends GuiChest {
-
     IInventory lowerInv;
     IInventory upperInv;
 
