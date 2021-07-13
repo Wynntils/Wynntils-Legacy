@@ -43,14 +43,13 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
     SeaskipperLocation origin;
     private final HashMap<String, SeaskipperLocation> locations = new HashMap<>();
     private final HashMap<SeaskipperLocation, Integer> routes = new HashMap<>();
-    private SeaskipperLocation hoveredLocation;
 
     private boolean receivedItems = false;
     ChestReplacer chest;
 
     // Properties
     private static boolean showLocations = true;
-    private static boolean showInacessableLocations = true;
+    private static boolean showInaccessibleLocations = true;
     private static boolean showSeaskipperRoutes = true;
 
     public SeaskipperWorldMapUI(ChestReplacer chest) {
@@ -86,7 +85,7 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
                 AQUA + "[>] Show inaccessible locations",
                 GRAY + "Click here to enable/disable",
                 GRAY + "inaccessible locations."
-        ), (v) -> showInacessableLocations, (i, btn) -> showInacessableLocations = !showInacessableLocations);
+        ), (v) -> showInaccessibleLocations, (i, btn) -> showInaccessibleLocations = !showInaccessibleLocations);
 
         addButton(MapButtonType.PIN, 2, Arrays.asList(
                 LIGHT_PURPLE + "[>] Show Seaskipper routes",
@@ -226,9 +225,7 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
         }
 
         if (showSeaskipperRoutes) generateSeaSkipperRoutes();
-        locations.values().forEach((c) -> c.drawScreen(mouseX, mouseY, partialTicks, showLocations, showInacessableLocations));
-
-        hoveredLocation = locations.values().stream().filter(c -> c.isHovered(mouseX, mouseY) && c.isAccessible()).findFirst().orElse(null);
+        locations.values().forEach((c) -> c.drawScreen(mouseX, mouseY, partialTicks, showLocations, showInaccessibleLocations));
 
         clearMask();
     }
@@ -278,8 +275,17 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
 
     @Override
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-        if (hoveredLocation != null) chest.handleMouseClick(chest.inventorySlots.getSlot(routes.get(hoveredLocation)), routes.get(hoveredLocation), 0, ClickType.PICKUP);
-
         super.mouseClicked(mouseX, mouseY, mouseButton);
+
+        if (mapButtons.get(0).isHovering(mouseX, mouseY)) return;
+
+        for (SeaskipperLocation location : locations.values()) {
+            if (!routes.containsKey(location)) continue;
+
+            if (location.isHovered(mouseX, mouseY) && location.isAccessible()) {
+                int slotNumber = routes.get(location);
+                chest.handleMouseClick(chest.inventorySlots.getSlot(slotNumber), slotNumber, 0, ClickType.PICKUP);
+            }
+        }
     }
 }
