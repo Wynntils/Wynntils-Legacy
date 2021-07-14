@@ -88,7 +88,7 @@ public class SeaskipperLocation {
         switch (accessibility) {
             case ACCESSIBLE:
                 renderer.drawString(cost + " " + EmeraldSymbols.EMERALDS, ppX, ppY - 10, costColour, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
-                renderer.drawString(  hovering ? TextFormatting.BOLD + "Click on to go to here!" : "Click on to go to here!", ppX, ppY + 10, gotoColour, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+                renderer.drawString(  hovering ? TextFormatting.BOLD.toString() : "" + "Click to go to here!", ppX, ppY + 10, gotoColour, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
                 break;
             case INACCESSIBLE:
                 renderer.drawString("Inaccessible!", ppX, ppY + 10, color, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
