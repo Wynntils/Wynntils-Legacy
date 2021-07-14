@@ -54,18 +54,6 @@ public class SeaskipperProfile {
     public int getLevel() {
         return level;
     }
-
-    @Override
-    public String toString() {
-        return "SeaskipperProfile{" +
-                "name='" + name + '\'' +
-                ", startX=" + startX +
-                ", startZ=" + startZ +
-                ", endX=" + endX +
-                ", endZ=" + endZ +
-                ", level=" + level +
-                '}';
-    }
 }
 
 
