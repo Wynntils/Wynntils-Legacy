@@ -162,7 +162,7 @@ public class VisualConfig extends SettingsClass {
     public static class CachedChunks extends SettingsClass {
         public static CachedChunks INSTANCE;
 
-        @Setting(displayName = "Enable Cached Chunks", description = "Should Wynntils cache the server chunks in order to fullfill your game render distance?\n\n§cEnabling this feature will cause the game to use more disk space.\nDisabling it will delete any cached chunks.")
+        @Setting(displayName = "Enable Cached Chunks", description = "Should Wynntils cache the server chunks in order to fullfill your game render distance?\n\n§cEnabling this feature will cause the game to use more disk space.\nDisabling it will delete any cached chunks.", upload = false)
         public boolean enabled = false;
 
         @Override

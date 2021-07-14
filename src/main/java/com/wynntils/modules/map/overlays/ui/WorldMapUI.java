@@ -95,12 +95,6 @@ public class WorldMapUI extends GuiMovementScreen {
         // Also creates icons
         updateCenterPosition(startX, startZ);
 
-        if (MapConfig.INSTANCE.hideCompletedQuests) {
-            // Request analyse if not already done to
-            // hide completed quests
-            QuestManager.readQuestBook();
-        }
-
         this.animationEnd = System.currentTimeMillis() + MapConfig.WorldMap.INSTANCE.animationLength;
 
         // Opening SFX
