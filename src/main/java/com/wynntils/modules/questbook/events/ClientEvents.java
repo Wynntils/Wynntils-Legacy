@@ -28,6 +28,7 @@ import net.minecraft.init.Items;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItemOnBlock;
 import net.minecraft.network.play.client.CPacketUseEntity;
+import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
@@ -159,6 +160,13 @@ public class ClientEvents implements Listener {
         tickCounter++;
         tickCounter %= 20;
         if (tickCounter == 0) ScoreboardManager.checkScoreboard();
+    }
+
+    @SubscribeEvent
+    public void sound(PlaySoundEvent e) {
+        if (!QuestManager.isAnalysing()) return;
+        // silence the noise the dialogue history makes while analyzing the quest book
+        if (e.getName().equals("entity.item.pickup")) e.setCanceled(true);
     }
 
 }
