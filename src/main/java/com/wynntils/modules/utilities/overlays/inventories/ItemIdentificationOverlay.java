@@ -391,7 +391,7 @@ public class ItemIdentificationOverlay implements Listener {
         ItemUtils.getLoreTag(stack).appendTag(new NBTTagString(GREEN + "- " + GRAY + "Possibilities: " + itemNamesAndCosts));
     }
 
-    private static NBTTagCompound generateData(ItemStack stack) {
+    public static NBTTagCompound generateData(ItemStack stack) {
         IdentificationType idType;
         if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) idType = IdentificationType.MIN_MAX;
         else if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) idType = IdentificationType.UPGRADE_CHANCES;
