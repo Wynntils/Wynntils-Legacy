@@ -19,6 +19,7 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
+import com.wynntils.modules.utilities.enums.IdentificationType;
 import com.wynntils.modules.utilities.overlays.inventories.ItemIdentificationOverlay;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.IdentificationOrderer;
@@ -31,7 +32,10 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagByte;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagInt;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.HoverEvent;
 
 import static net.minecraft.util.text.TextFormatting.*;
 
@@ -44,14 +48,16 @@ public class ChatItemManager {
     private static final String RANGE = "[" + new String(Character.toChars(0xF5003)) + "-" + new String(Character.toChars(0xF5067)) + "]";
     private static final int OFFSET = 0xF5003;
 
-    public static final Pattern ENCODED_PATTERN = Pattern.compile(START + "(" + RANGE + "+)" + SEPARATOR + "(" + RANGE + "*)(?:" + SEPARATOR + "(" + RANGE + "+))?" + SEPARATOR + "(" + RANGE + ")" + END);
+    private static final boolean ENCODE_NAME = false;
+
+    public static final Pattern ENCODED_PATTERN = Pattern.compile(START + "(.+?)" + SEPARATOR + "(" + RANGE + "*)(?:" + SEPARATOR + "(" + RANGE + "+))?" + SEPARATOR + "(" + RANGE + ")" + END);
 
     public static String encodeItem(ItemStack stack) {
         String itemName = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName());
         if (!stack.getTagCompound().hasKey("wynntils") && WebManager.getItems().get(itemName) == null) return null; // not a gear item, cannot be encoded
 
         // get identification data
-        NBTTagCompound itemData = ItemIdentificationOverlay.generateData(stack);
+        NBTTagCompound itemData = ItemIdentificationOverlay.generateData(stack, IdentificationType.PERCENTAGES);
         ItemProfile item = WebManager.getItems().get(itemData.getString("originName"));
 
         // sort list to ensure encoding/decoding is always 1:1
@@ -62,7 +68,9 @@ public class ChatItemManager {
         if (!itemData.hasKey("ids") && !sortedIds.isEmpty()) return null;
 
         // name
-        StringBuilder encoded = new StringBuilder(START + encodeString(item.getDisplayName()) + SEPARATOR);
+        StringBuilder encoded = new StringBuilder(START);
+        encoded.append(ENCODE_NAME ? encodeString(item.getDisplayName()) : item.getDisplayName());
+        encoded.append(SEPARATOR);
 
         // ids
         for (String id : sortedIds) {
@@ -103,11 +111,11 @@ public class ChatItemManager {
         return encoded.toString();
     }
 
-    public static ItemStack decodeItem(String encoded) {
+    public static ITextComponent decodeItem(String encoded) {
         Matcher m = ENCODED_PATTERN.matcher(encoded);
         if (!m.matches()) return null;
 
-        String name = decodeString(m.group(1));
+        String name = ENCODE_NAME ? decodeString(m.group(1)) : m.group(1);
         int ids[] = decodeNumbers(m.group(2));
         String powders = m.group(3) != null ? decodeString(m.group(3)) : "";
         int rerolls = decodeNumbers(m.group(4))[0];
@@ -115,6 +123,7 @@ public class ChatItemManager {
         ItemProfile item = WebManager.getItems().get(name);
         if (item == null) return null;
 
+        // create stack
         ItemStack stack = item.getItemInfo().asItemStack();
         stack.setStackDisplayName(item.getTier().getTextColor() + item.getDisplayName());
         stack.setTagInfo("Unbreakable", new NBTTagByte((byte) 1));
@@ -209,6 +218,7 @@ public class ChatItemManager {
 
                 // id value
                 if (Math.abs(status.getBaseValue()) > 100) {
+                    // using bigdecimal here for precision when rounding
                     value = new BigDecimal(ids[counter] + 30).movePointLeft(2).multiply(new BigDecimal(status.getBaseValue())).setScale(0, RoundingMode.HALF_UP).intValue();
                 } else {
                     value = ids[counter] + status.getMin();
@@ -217,7 +227,7 @@ public class ChatItemManager {
                 // stars
                 stars = DARK_GREEN + "***".substring(0, ids[counter+1]);
 
-                counter+=2;
+                counter+=2; // each id has a pair of characters for its value and its star count
             }
 
             // name
@@ -303,8 +313,15 @@ public class ChatItemManager {
         }
 
         ItemUtils.replaceLore(stack, itemLore);
-        return stack;
 
+        // add advanced id info if enabled - force percentages because this will only ever run once
+        ItemIdentificationOverlay.replaceLore(stack, IdentificationType.PERCENTAGES);
+
+        // create text component
+        ITextComponent msg = new TextComponentString(item.getTier().getTextColor() + TextFormatting.UNDERLINE + item.getDisplayName());
+        msg.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_ITEM, new TextComponentString(stack.writeToNBT(new NBTTagCompound()).toString())));
+
+        return msg;
     }
 
     private static String encodeString(String text) {
