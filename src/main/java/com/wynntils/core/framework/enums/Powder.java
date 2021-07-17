@@ -29,6 +29,14 @@ public enum Powder {
         return symbol;
     }
 
+    public String getColor() {
+        return color;
+    }
+
+    public String getColoredSymbol() {
+        return color + symbol;
+    }
+
     public String getLetterRepresentation() {
         return this.name().substring(0, 1).toLowerCase();
     }

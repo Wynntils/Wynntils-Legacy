@@ -11,6 +11,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.enums.Powder;
@@ -42,16 +44,43 @@ import static net.minecraft.util.text.TextFormatting.*;
 public class ChatItemManager {
 
     // private-use unicode chars
-    private static final String START = new String(Character.toChars(0xF5000));
-    private static final String END = new String(Character.toChars(0xF5001));
-    private static final String SEPARATOR = new String(Character.toChars(0xF5002));
-    private static final String RANGE = "[" + new String(Character.toChars(0xF5003)) + "-" + new String(Character.toChars(0xF5067)) + "]";
-    private static final int OFFSET = 0xF5003;
+    private static final String START = new String(Character.toChars(0xF5FF0));
+    private static final String END = new String(Character.toChars(0xF5FF1));
+    private static final String SEPARATOR = new String(Character.toChars(0xF5FF2));
+    private static final String RANGE = "[" + new String(Character.toChars(0xF5000)) + "-" + new String(Character.toChars(0xF5F00)) + "]";
+    private static final int OFFSET = 0xF5000;
 
     private static final boolean ENCODE_NAME = false;
 
-    public static final Pattern ENCODED_PATTERN = Pattern.compile(START + "(.+?)" + SEPARATOR + "(" + RANGE + "*)(?:" + SEPARATOR + "(" + RANGE + "+))?" + SEPARATOR + "(" + RANGE + ")" + END);
+    public static final Pattern ENCODED_PATTERN = Pattern.compile(START + "(?<Name>.+?)" + SEPARATOR + "(?<Ids>" + RANGE + "*)(?:" + SEPARATOR + "(?<Powders>" + RANGE + "+))?(?<Rerolls>" + RANGE + ")" + END);
 
+    /**
+     * Encodes the given item, as long as it is a standard gear item, into the following format
+     *
+     * START character (U+F5FF0)
+     * Item name (optionally encoded)
+     * SEPARATOR character (U+F5FF2)
+     * Identifications/stars (encoded)
+     * SEPARATOR (only if powdered)
+     * Powders (encoded) (only if powdered)
+     * Rerolls (encoded)
+     * END character (U+F5FF1)
+     *
+     * Any encoded "value" is added to the OFFSET character value U+F5000 and then converted into the corresponding Unicode character:
+     *
+     * The name is encoded based on the ASCII value of each character minus 32
+     *
+     * Identifications are encoded either as the raw value minus the minimum value of that ID, or if the range is larger than 100,
+     * the percent value 0 to 100 of the given roll.
+     * Regardless of either case, this number is multiplied by 4, and the number of stars present on that ID is added.
+     * This ensures that the value and star count can be encoded into a single character and be decoded later.
+     *
+     * Powders are encoded as numerical values 1-5. Up to 4 powders are encoded into a single character - for each new powder,
+     * the running total is multiplied by 6 before the new powder value is added. Thus, each individual powder can be decoded.
+     *
+     * Rerolls are simply encoded as a raw number.
+     *
+     */
     public static String encodeItem(ItemStack stack) {
         String itemName = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName());
         if (!stack.getTagCompound().hasKey("wynntils") && WebManager.getItems().get(itemName) == null) return null; // not a gear item, cannot be encoded
@@ -86,11 +115,12 @@ public class ChatItemManager {
             } else { // raw value
                 translatedValue = idValue - status.getMin();
             }
-            encoded.append(encodeNumber(translatedValue));
 
             // stars
             int stars = itemData.getCompoundTag("ids").hasKey(id + "*") ? itemData.getCompoundTag("ids").getInteger(id + "*") : 0;
-            encoded.append(encodeNumber(stars));
+
+            // encode value + stars in one character
+            encoded.append(encodeNumber(translatedValue*4 + stars));
         }
 
         // powders
@@ -98,13 +128,27 @@ public class ChatItemManager {
             List<Powder> powders = Powder.findPowders(itemData.getString("powderSlots"));
             if (!powders.isEmpty()) {
                 encoded.append(SEPARATOR);
-                powders.forEach(p -> encoded.append(encodeString(p.getLetterRepresentation())));
+
+                int counter = 0;
+                int encodedPowders = 0;
+                for (Powder p : powders) {
+                    encodedPowders *= 6; // shift left
+                    encodedPowders += p.ordinal() + 1; // 0 represents no more powders
+                    counter++;
+
+                    if (counter == 4) { // max # of powders encoded in a single char
+                        encoded.append(encodeNumber(encodedPowders));
+                        encodedPowders = 0;
+                        counter = 0;
+                        continue;
+                    }
+                }
+                if (encodedPowders != 0) encoded.append(encodeNumber(encodedPowders)); // catch any leftover powders
             }
         }
 
         // rerolls
         int rerolls = itemData.hasKey("rerollAmount") ? itemData.getInteger("rerollAmount") : 0;
-        encoded.append(SEPARATOR);
         encoded.append(encodeNumber(rerolls));
 
         encoded.append(END);
@@ -117,7 +161,7 @@ public class ChatItemManager {
 
         String name = ENCODE_NAME ? decodeString(m.group(1)) : m.group(1);
         int ids[] = decodeNumbers(m.group(2));
-        String powders = m.group(3) != null ? decodeString(m.group(3)) : "";
+        int powders[] = m.group(3) != null ? decodeNumbers(m.group(3)) : new int[0];
         int rerolls = decodeNumbers(m.group(4))[0];
 
         ItemProfile item = WebManager.getItems().get(name);
@@ -217,17 +261,18 @@ public class ChatItemManager {
                 if (counter > ids.length) return null; // some kind of mismatch, abort
 
                 // id value
+                int encodedValue = ids[counter] / 4;
                 if (Math.abs(status.getBaseValue()) > 100) {
                     // using bigdecimal here for precision when rounding
-                    value = new BigDecimal(ids[counter] + 30).movePointLeft(2).multiply(new BigDecimal(status.getBaseValue())).setScale(0, RoundingMode.HALF_UP).intValue();
+                    value = new BigDecimal(encodedValue + 30).movePointLeft(2).multiply(new BigDecimal(status.getBaseValue())).setScale(0, RoundingMode.HALF_UP).intValue();
                 } else {
-                    value = ids[counter] + status.getMin();
+                    value = encodedValue + status.getMin();
                 }
 
                 // stars
-                stars = DARK_GREEN + "***".substring(0, ids[counter+1]);
+                stars = DARK_GREEN + "***".substring(0, ids[counter] % 4);
 
-                counter+=2; // each id has a pair of characters for its value and its star count
+                counter++;
             }
 
             // name
@@ -269,25 +314,16 @@ public class ChatItemManager {
             int powderCount = 0;
             String powderList = "";
 
-            if (!powders.isEmpty()) {
-                for (char c : powders.toCharArray()) {
-                    powderCount++;
-                    switch (c) {
-                        case 'e':
-                            powderList += DARK_GREEN + "✤ ";
-                            break;
-                        case 't':
-                            powderList += YELLOW + "✦ ";
-                            break;
-                        case 'w':
-                            powderList += AQUA + "❉ ";
-                            break;
-                        case 'f':
-                            powderList += RED + "✹ ";
-                            break;
-                        case 'a':
-                            powderList += WHITE + "❋ ";
-                            break;
+            if (powders.length > 0) {
+                ArrayUtils.reverse(powders); // must reverse powders so they are read in reverse order
+                for (int powderNum : powders) {
+                    // once powderNum is 0, all the powders have been read
+                    while (powderNum > 0) {
+                        Powder p = Powder.values()[powderNum % 6 - 1];
+                        powderList = p.getColoredSymbol() + " " + powderList; // prepend powders because they are decoded in reverse
+                        powderCount++;
+
+                        powderNum /= 6;
                     }
                 }
             }
