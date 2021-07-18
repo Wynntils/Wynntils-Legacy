@@ -7,10 +7,8 @@ package com.wynntils.modules.map.overlays.ui;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.map.MapModule;
-import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.overlays.objects.SeaskipperLocation;
 import com.wynntils.modules.map.overlays.enums.MapButtonType;
@@ -24,11 +22,9 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.MathHelper;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.*;
 import java.util.regex.Matcher;
@@ -49,8 +45,8 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
 
     // Properties
     private static boolean showLocations = true;
-    private static boolean showInaccessibleLocations = true;
-    private static boolean showSeaskipperRoutes = true;
+    private static boolean showInaccessibleLocations = false;
+    private static boolean showSeaskipperRoutes = false;
 
     public SeaskipperWorldMapUI(ChestReplacer chest) {
         super((float) McIf.player().posX, (float) McIf.player().posZ);
@@ -60,6 +56,10 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
         for (SeaskipperProfile profile : WebManager.getSeaskipperLocations()) {
             locations.put(profile.getName(), new SeaskipperLocation(profile).setRenderer(renderer));
         }
+
+        //Increase zoom for easier moving around
+        MAX_ZOOM = 400;
+        ZOOM_SCALE_FACTOR = 1.2f;
     }
 
     @Override
@@ -128,42 +128,29 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
 
             String displayname = getTextWithoutFormattingCodes(stack.getDisplayName());
 
-            if (displayname != null) {
-                Matcher result = SEASKIPPER_PASS_MATCHER.matcher(displayname);
-                if (!result.find()) {
-                    Reference.LOGGER.info("Name doesn't match");
-                    Reference.LOGGER.info("Old: -" + stack.getDisplayName() + "-");
-                    Reference.LOGGER.info("New: -" + displayname + "-");
+            if (displayname == null) continue;
 
-                    continue;
-                }
-
-                Reference.LOGGER.info("Loading " + result.group(1));
-
-                try {
-                    SeaskipperLocation location = locations.get(result.group(1));
-                    int cost = Integer.parseInt(result.group(2));
-                    location.setCost(cost);
-                    location.setActiveType(SeaskipperLocation.Accessibility.ACCESSIBLE);
-                    routes.put(location, s.slotNumber);
-                } catch (Exception e) {
-                    Reference.LOGGER.info("Loading " + result.group(1) + " Failed");
-                }
+            Matcher result = SEASKIPPER_PASS_MATCHER.matcher(displayname);
+            if (!result.find()) {
+                Reference.LOGGER.info("Seaskipper Pass with name" + stack.getDisplayName() + " didn't parse");
+                continue;
             }
+
+            SeaskipperLocation location = locations.get(result.group(1));
+            int cost = Integer.parseInt(result.group(2));
+            location.setCost(cost);
+            location.setActiveType(SeaskipperLocation.Accessibility.ACCESSIBLE);
+            routes.put(location, s.slotNumber);
         }
 
-        // resets the animation timer
         if (!receivedItems) return;
 
+        // resets the animation timer
         animationEnd = System.currentTimeMillis() + 300;
 
-        //Get origin based on box, make sure seaskipper area is in region
+        //Get origin based on box, make sure Seaskipper area is in region
         double playerX = McIf.player().posX;
         double playerY = McIf.player().posY;
-
-        //Distance based way to find origin if that fails
-        double sqdist = Double.MAX_VALUE;
-        SeaskipperLocation closest = null;
 
         for (SeaskipperLocation location : locations.values()) {
             if (routes.containsKey(location)) continue;
@@ -171,25 +158,35 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
             if (location.getSquareRegion().isInside(playerX, playerY)) {
                 location.setActiveType(SeaskipperLocation.Accessibility.ORIGIN);
                 origin = location;
-                return;
-            }
-
-            double sqLocationToPlayer = (location.getCenterX() - playerX) * (location.getCenterX() - playerX) + (location.getCenterY() - playerY) * (location.getCenterY() - playerY);
-
-            if (sqLocationToPlayer < sqdist) {
-                sqdist = sqLocationToPlayer;
-                closest = location;
+                break;
             }
         }
 
-        if (closest != null) {
-            closest.setActiveType(SeaskipperLocation.Accessibility.ORIGIN);
-            origin = closest;
-        } else {
-            Reference.LOGGER.info("origin is not defined");
+        //Distance based way to find origin if that fails
+        if (origin == null) {
+            double sqdist = Double.MAX_VALUE;
+            SeaskipperLocation closest = null;
+
+            for (SeaskipperLocation location : locations.values()) {
+                double sqLocationToPlayer = (location.getCenterX() - playerX) * (location.getCenterX() - playerX) + (location.getCenterY() - playerY) * (location.getCenterY() - playerY);
+
+                if (sqLocationToPlayer < sqdist) {
+                    sqdist = sqLocationToPlayer;
+                    closest = location;
+                }
+            }
+
+            if (closest != null) {
+                closest.setActiveType(SeaskipperLocation.Accessibility.ORIGIN);
+                origin = closest;
+            }
         }
+
+        //Construct info boxes after all info is gathered
+        locations.values().forEach(SeaskipperLocation::constructInfoBox);
     }
 
+    @Override
     protected void drawIcons(int mouseX, int mouseY, float partialTicks) {
         if (!Reference.onWorld) return;
 
@@ -198,35 +195,9 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
 
         createMask();
 
-        float scale = getScaleFactor();
-
-        float playerPositionX = (map.getTextureXPosition(McIf.player().posX) - minX) / (maxX - minX);
-        float playerPositionZ = (map.getTextureZPosition(McIf.player().posZ) - minZ) / (maxZ - minZ);
-
-        if (playerPositionX > 0 && playerPositionX < 1 && playerPositionZ > 0 && playerPositionZ < 1) {  // <--- player position
-            playerPositionX = width * playerPositionX;
-            playerPositionZ = height * playerPositionZ;
-
-            Point drawingOrigin = ScreenRenderer.drawingOrigin();
-
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(drawingOrigin.x + playerPositionX, drawingOrigin.y + playerPositionZ, 0);
-            GlStateManager.rotate(180 + MathHelper.fastFloor(McIf.player().rotationYaw), 0, 0, 1);
-            GlStateManager.translate(-drawingOrigin.x - playerPositionX, -drawingOrigin.y - playerPositionZ, 0);
-
-            MapConfig.PointerType type = MapConfig.Textures.INSTANCE.pointerStyle;
-
-            MapConfig.Textures.INSTANCE.pointerColor.applyColor();
-            GlStateManager.enableAlpha();
-            renderer.drawRectF(Textures.Map.map_pointers, playerPositionX - type.dWidth * 1.5f, playerPositionZ - type.dHeight * 1.5f, playerPositionX + type.dWidth * 1.5f, playerPositionZ + type.dHeight * 1.5f, 0, type.yStart, type.width, type.yStart + type.height);
-            GlStateManager.color(1, 1, 1, 1);
-
-            GlStateManager.popMatrix();
-        }
-
         if (showSeaskipperRoutes) generateSeaSkipperRoutes();
         locations.values().forEach((c) -> c.drawScreen(mouseX, mouseY, partialTicks, showLocations, showInaccessibleLocations));
-
+        locations.values().forEach((c) -> c.postDraw(mouseX, mouseY, partialTicks, width, height));
         clearMask();
     }
 

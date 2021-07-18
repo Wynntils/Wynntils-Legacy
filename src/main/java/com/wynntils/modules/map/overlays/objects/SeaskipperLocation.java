@@ -13,14 +13,17 @@ import com.wynntils.core.utils.objects.SquareRegion;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
+import com.wynntils.modules.map.overlays.renderer.MapInfoUI;
 import com.wynntils.webapi.profiles.SeaskipperProfile;
 import net.minecraft.util.text.TextFormatting;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class SeaskipperLocation {
 
     private static final CustomColor seaskipperNameColour = new CustomColor(CommonColors.WHITE);
-    private static final CustomColor costColour = new CustomColor(CommonColors.LIGHT_GREEN);
-    private static final CustomColor gotoColour = new CustomColor(CommonColors.CYAN);
 
     ScreenRenderer renderer = null;
 
@@ -32,14 +35,54 @@ public class SeaskipperLocation {
 
     boolean shouldRender = false;
 
+    MapInfoUI infoBox;
+
     public SeaskipperLocation(SeaskipperProfile location) {
         this.location = location;
+
+        this.infoBox = new MapInfoUI(location.getName())
+                .setDescription(Collections.singletonList(TextFormatting.RED + "Info box is not constructed yet"));
     }
 
     public SeaskipperLocation setRenderer(ScreenRenderer renderer) {
         this.renderer = renderer;
-
+        infoBox.setRenderer(renderer);
         return this;
+    }
+
+    public void setActiveType(Accessibility accessibility) {
+        this.accessibility = accessibility;
+    }
+
+    public void setCost(int cost) {
+        this.cost = cost;
+    }
+
+    public void constructInfoBox() {
+        List<String> description = new ArrayList<>();
+
+        description.add("Starting Coordinates: " + location.getStartX() + ". " + location.getStartZ());
+        description.add("Ending Coordinates: " + location.getEndX() + ". " + location.getEndZ());
+        description.add(" ");
+
+        description.add(TextFormatting.GOLD + "Level " + location.getLevel());
+        description.add(" ");
+
+        switch (accessibility) {
+            case ACCESSIBLE:
+                description.add(TextFormatting.GREEN + "Cost: " + cost + EmeraldSymbols.EMERALDS);
+                description.add(TextFormatting.BOLD + (TextFormatting.BLUE + "Click to go here!"));
+                break;
+            case INACCESSIBLE:
+                description.add(TextFormatting.GRAY + "Inaccessible");
+                break;
+            case ORIGIN:
+                description.add(TextFormatting.RED + "Origin");
+        }
+
+        description.add(" ");
+
+        infoBox.setDescription(description);
     }
 
     public void updateAxis(MapProfile mp, int width, int height, float maxX, float minX, float maxZ, float minZ) {
@@ -52,18 +95,6 @@ public class SeaskipperLocation {
         this.endX = endX * width; this.endY = endY  * height;
 
         shouldRender = ((initX > 0 && initX < 1) || (initY > 0 && initY < 1) || (endX > 0 && endX < 1) || (endY > 0 && endY < 1));
-    }
-
-    public float getCenterX() {
-        return initX + ((endX - initX)/2f);
-    }
-
-    public float getCenterY() {
-        return initY + ((endY - initY)/2f);
-    }
-
-    public SeaskipperProfile getLocation() {
-        return location;
     }
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks, boolean showLocations, boolean showInaccessibleLocations) {
@@ -84,28 +115,28 @@ public class SeaskipperLocation {
 
         if (MapConfig.WorldMap.INSTANCE.showTerritoryName || hovering || isAccessible())
             renderer.drawString(location.getName(), ppX, ppY - 20, seaskipperNameColour, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+    }
 
-        switch (accessibility) {
-            case ACCESSIBLE:
-                renderer.drawString(cost + " " + EmeraldSymbols.EMERALDS, ppX, ppY - 10, costColour, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
-                renderer.drawString(  hovering ? TextFormatting.BOLD.toString() : "" + "Click to go to here!", ppX, ppY + 10, gotoColour, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
-                break;
-            case INACCESSIBLE:
-                renderer.drawString("Inaccessible!", ppX, ppY + 10, color, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
-                break;
-            case ORIGIN:
-                renderer.drawString("Origin", ppX, ppY, color, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
-        }
+    public void postDraw(int mouseX, int mouseY, float partialTicks, int width, int height) {
+        if (!isHovered(mouseX, mouseY)) return;
 
-
+        infoBox.render((int)(width * 0.95), (int)(height * 0.1));
     }
 
     public boolean isHovered(int mouseX, int mouseY) {
         return (mouseX > initX && mouseX < endX && mouseY > initY && mouseY < endY);
     }
 
-    public void setActiveType(Accessibility accessibility) {
-        this.accessibility = accessibility;
+    public float getCenterX() {
+        return initX + ((endX - initX)/2f);
+    }
+
+    public float getCenterY() {
+        return initY + ((endY - initY)/2f);
+    }
+
+    public SeaskipperProfile getLocation() {
+        return location;
     }
 
     public boolean isAccessible() {
@@ -114,10 +145,6 @@ public class SeaskipperLocation {
 
     public SquareRegion getSquareRegion() {
         return new SquareRegion(initX, initY, endX, endY);
-    }
-
-    public void setCost(int cost) {
-        this.cost = cost;
     }
 
     public enum Accessibility {
@@ -135,5 +162,4 @@ public class SeaskipperLocation {
             return color;
         }
     }
-
 }

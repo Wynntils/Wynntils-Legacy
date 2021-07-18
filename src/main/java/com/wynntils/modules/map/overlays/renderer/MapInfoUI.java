@@ -4,52 +4,35 @@
 
 package com.wynntils.modules.map.overlays.renderer;
 
-import com.wynntils.core.framework.enums.GuildResource;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
-import com.wynntils.core.utils.objects.Storage;
-import com.wynntils.modules.map.instances.GuildResourceContainer;
-import com.wynntils.webapi.profiles.TerritoryProfile;
-import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
-public class TerritoryInfoUI {
+public class MapInfoUI {
 
     List<String> description = new ArrayList<>();
     String title;
     ScreenRenderer renderer;
 
-    public TerritoryInfoUI(TerritoryProfile territory, GuildResourceContainer resources) {
-        this.title = territory.getFriendlyName();
-        this.renderer = new ScreenRenderer();
 
-        description.add(TextFormatting.LIGHT_PURPLE.toString() + territory.getGuild() + " [" + territory.getGuildPrefix() + "]");
-        description.add(" ");
+    public MapInfoUI(String title) {
+        this.title = title;
+    }
 
-        for (GuildResource resource : GuildResource.values()) {
-            int generation = resources.getGeneration(resource);
-            if (generation != 0) {
-                description.add(resource.getPrettySymbol() + "+" + generation + " " + resource.getName() + " per Hour");
-            }
+    public MapInfoUI setRenderer(ScreenRenderer renderer) {
+        this.renderer = renderer;
+        return this;
+    }
 
-            Storage storage = resources.getStorage(resource);
-            if (storage == null) continue;
-
-            description.add(resource.getPrettySymbol() + storage.getCurrent() + "/" + storage.getMax() + " stored");
-        }
-
-        if (resources.isHeadquarters()) {
-            description.add(" ");
-            description.add(TextFormatting.RED + "Guild Headquarters");
-        }
-
-        description.add(" ");
+    public MapInfoUI setDescription(List<String> description) {
+        this.description = description;
+        return this;
     }
 
     public void render(int posX, int posY) {

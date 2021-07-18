@@ -7,9 +7,7 @@ package com.wynntils.modules.map.overlays.ui;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.map.MapModule;
-import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.GuildResourceContainer;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.managers.GuildResourceManager;
@@ -19,12 +17,10 @@ import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.math.MathHelper;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -115,33 +111,9 @@ public class GuildWorldMapUI extends WorldMapUI {
 
         createMask();
 
-        float scale = getScaleFactor();
-
-        float playerPositionX = (map.getTextureXPosition(McIf.player().posX) - minX) / (maxX - minX);
-        float playerPositionZ = (map.getTextureZPosition(McIf.player().posZ) - minZ) / (maxZ - minZ);
-
-        if (playerPositionX > 0 && playerPositionX < 1 && playerPositionZ > 0 && playerPositionZ < 1) {  // <--- player position
-            playerPositionX = width * playerPositionX;
-            playerPositionZ = height * playerPositionZ;
-
-            Point drawingOrigin = ScreenRenderer.drawingOrigin();
-
-            GlStateManager.pushMatrix();
-            GlStateManager.translate(drawingOrigin.x + playerPositionX, drawingOrigin.y + playerPositionZ, 0);
-            GlStateManager.rotate(180 + MathHelper.fastFloor(McIf.player().rotationYaw), 0, 0, 1);
-            GlStateManager.translate(-drawingOrigin.x - playerPositionX, -drawingOrigin.y - playerPositionZ, 0);
-
-            MapConfig.PointerType type = MapConfig.Textures.INSTANCE.pointerStyle;
-
-            MapConfig.Textures.INSTANCE.pointerColor.applyColor();
-            GlStateManager.enableAlpha();
-            renderer.drawRectF(Textures.Map.map_pointers, playerPositionX - type.dWidth * 1.5f, playerPositionZ - type.dHeight * 1.5f, playerPositionX + type.dWidth * 1.5f, playerPositionZ + type.dHeight * 1.5f, 0, type.yStart, type.width, type.yStart + type.height);
-            GlStateManager.color(1, 1, 1, 1);
-
-            GlStateManager.popMatrix();
-        }
-
+        drawPositionCursor(map);
         if (showTradeRoutes) generateTradeRoutes();
+
         territories.values().forEach(c -> c.drawScreen(mouseX, mouseY, partialTicks, showTerritory, resourceColors, !showOwners, showOwners, false));
         territories.values().forEach(c -> c.postDraw(mouseX, mouseY, partialTicks, width, height));
 
