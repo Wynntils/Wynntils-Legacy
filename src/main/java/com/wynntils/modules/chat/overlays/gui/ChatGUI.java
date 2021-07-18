@@ -15,6 +15,8 @@ import com.wynntils.modules.chat.instances.ChatTab;
 import com.wynntils.modules.chat.language.WynncraftLanguage;
 import com.wynntils.modules.chat.managers.TabManager;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
+import com.wynntils.modules.utilities.managers.ChatItemManager;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
@@ -29,6 +31,8 @@ import org.lwjgl.input.Mouse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.regex.Matcher;
 
 public class ChatGUI extends GuiChat {
 
@@ -41,6 +45,8 @@ public class ChatGUI extends GuiChat {
     private Map<ChatTab, ChatButton> tabButtons = new HashMap<>();
     private ChatButton addTab = null;
     private Map<WynncraftLanguage, ChatButton> languageButtons = new HashMap<>();
+
+    private Map<String, String> chatItems = new HashMap<>();
 
     public ChatGUI() {
 
@@ -101,7 +107,27 @@ public class ChatGUI extends GuiChat {
             typedChar = output.b;
         }
 
+        if (!chatItems.isEmpty() && (keyCode == Keyboard.KEY_RETURN || keyCode == Keyboard.KEY_NUMPADENTER)) { // message is being sent
+            for (Entry<String, String> item : chatItems.entrySet()) { // replace the placeholders with the actual encoded strings
+                this.inputField.setText(this.inputField.getText().replace("<" + item.getKey() + ">", item.getValue()));
+            }
+            chatItems.clear();
+        }
+
         super.keyTyped(typedChar, keyCode);
+
+        // replace encoded strings with placeholders for less confusion
+        Matcher m = ChatItemManager.ENCODED_PATTERN.matcher(this.inputField.getText());
+        while (m.find()) {
+            String encodedItem = m.group();
+            String name = m.group("Name");
+            while (chatItems.containsKey(name)) { // avoid overwriting entries
+                name += "_";
+            }
+
+            this.inputField.setText(this.inputField.getText().replace(encodedItem, "<" + name + ">"));
+            chatItems.put(name, encodedItem);
+        }
     }
 
     @Override
@@ -154,6 +180,12 @@ public class ChatGUI extends GuiChat {
         } else {
             super.drawScreen(mouseX, mouseY, partialTicks);
         }
+    }
+
+    @Override
+    public void onGuiClosed() {
+        super.onGuiClosed();
+        chatItems.clear();
     }
 
     private String getDisplayName(ChatTab tab) {

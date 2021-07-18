@@ -159,10 +159,10 @@ public class ChatItemManager {
         Matcher m = ENCODED_PATTERN.matcher(encoded);
         if (!m.matches()) return null;
 
-        String name = ENCODE_NAME ? decodeString(m.group(1)) : m.group(1);
-        int ids[] = decodeNumbers(m.group(2));
-        int powders[] = m.group(3) != null ? decodeNumbers(m.group(3)) : new int[0];
-        int rerolls = decodeNumbers(m.group(4))[0];
+        String name = ENCODE_NAME ? decodeString(m.group("Name")) : m.group("Name");
+        int ids[] = decodeNumbers(m.group("Ids"));
+        int powders[] = m.group("Powders") != null ? decodeNumbers(m.group("Powders")) : new int[0];
+        int rerolls = decodeNumbers(m.group("Rerolls"))[0];
 
         ItemProfile item = WebManager.getItems().get(name);
         if (item == null) return null;
