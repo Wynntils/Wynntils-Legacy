@@ -50,7 +50,7 @@ public class WorldMapUI extends GuiMovementScreen {
     private static final int MAX_ZOOM = 300;  // Note that this is the most zoomed out
     private static final int MIN_ZOOM = -10;  // And this is the most zoomed in
     private static final float ZOOM_SCALE_FACTOR = 1.1f;
-    private static final float ZOOM_RESISTENCE = 4f; // The zoom resistence in ticks (any change takes 4 ticks)
+    private static final long ZOOM_RESISTENCE = 100; // The zoom resistence in ms (any change takes 200ms)
 
     protected ScreenRenderer renderer = new ScreenRenderer();
 
@@ -62,7 +62,7 @@ public class WorldMapUI extends GuiMovementScreen {
     protected float zoom = 0;  // Zoom goes from 300 (whole world) to -10 (max details)
     protected float zoomInitial = 0;
     protected float zoomTarget = 0;
-    protected float zoomPosition = 0;
+    protected float zoomEnd = 0;
 
     // Properties
     float minX = 0; float maxX = 0;
@@ -387,13 +387,12 @@ public class WorldMapUI extends GuiMovementScreen {
     }
 
     protected void handleZoomAcceleration(float partialTicks) {
-        if (zoomTarget == 0f) return;
+        if (McIf.getSystemTime() > zoomEnd) return;
 
-        // We are using the mc partial ticks because somehow the GUI one ticks slower (no clue why)
-        float percentage = Math.min(1f, (zoomPosition + McIf.mc().getRenderPartialTicks()) / ZOOM_RESISTENCE);
-        float toIncrease = (zoomTarget - zoomInitial) * percentage;
+        float percentage = Math.min(1f, 1f - (zoomEnd - McIf.getSystemTime()) / ZOOM_RESISTENCE);
+        double toIncrease = (zoomTarget - zoomInitial) * Math.sin((Math.PI / 2f) * percentage);
 
-        zoom = zoomInitial + toIncrease;
+        zoom = zoomInitial + (float) toIncrease;
         updateCenterPosition(centerPositionX, centerPositionZ);
     }
 
@@ -434,7 +433,7 @@ public class WorldMapUI extends GuiMovementScreen {
         double zoomScale = Math.pow(ZOOM_SCALE_FACTOR, -by);
         zoomTarget = (float) MathHelper.clamp(zoomScale * (zoom + 50) - 50, MIN_ZOOM, MAX_ZOOM);
 
-        zoomPosition = 0;
+        zoomEnd = McIf.getSystemTime() + ZOOM_RESISTENCE;
         zoomInitial = zoom;
     }
 
@@ -444,18 +443,6 @@ public class WorldMapUI extends GuiMovementScreen {
 
         updateCenterPosition(centerPositionX, centerPositionZ);
         Keyboard.enableRepeatEvents(true);
-    }
-
-    @Override
-    public void onTick() {
-        if (zoomTarget == 0) return;
-
-        // Increase the zoom position animation
-        zoomPosition++;
-
-        // Remove the step if the animation ended
-        if (zoomPosition <= ZOOM_RESISTENCE) return;
-        zoomTarget = 0;
     }
 
     @Override
