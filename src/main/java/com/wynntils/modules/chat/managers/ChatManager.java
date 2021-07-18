@@ -331,26 +331,32 @@ public class ChatManager {
                     continue;
                 }
 
-                String text = McIf.getUnformattedText(comp);
-                Style style = comp.getStyle();
+                do {
 
-                ITextComponent item = ChatItemManager.decodeItem(m.group());
-                if (item == null) { // couldn't decode, skip
-                    ITextComponent newComponent = new TextComponentString(comp.getUnformattedComponentText());
-                    newComponent.setStyle(comp.getStyle().createShallowCopy());
-                    temp.appendSibling(newComponent);
-                    continue;
-                }
+                    String text = McIf.getUnformattedText(comp);
+                    Style style = comp.getStyle();
 
-                ITextComponent preText = new TextComponentString(text.substring(0, m.start()));
-                preText.setStyle(style.createShallowCopy());
-                temp.appendSibling(preText);
+                    ITextComponent item = ChatItemManager.decodeItem(m.group());
+                    if (item == null) { // couldn't decode, skip
+                        comp = new TextComponentString(comp.getUnformattedComponentText());
+                        comp.setStyle(style.createShallowCopy());
+                        continue;
+                    }
 
-                temp.appendSibling(item);
+                    ITextComponent preText = new TextComponentString(text.substring(0, m.start()));
+                    preText.setStyle(style.createShallowCopy());
+                    temp.appendSibling(preText);
 
-                ITextComponent postText = new TextComponentString(text.substring(m.end()));
-                postText.setStyle(style.createShallowCopy());
-                temp.appendSibling(postText);
+                    temp.appendSibling(item);
+
+                    comp = new TextComponentString(text.substring(m.end()));
+                    comp.setStyle(style.createShallowCopy());
+
+                    m = ChatItemManager.ENCODED_PATTERN.matcher(comp.getUnformattedText()); // recreate matcher for new substring
+
+                } while (m.find()); // search for multiple items in the same message
+
+                temp.appendSibling(comp); // leftover text after item(s)
             }
             in = temp;
         }

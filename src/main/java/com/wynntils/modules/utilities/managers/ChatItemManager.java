@@ -176,7 +176,7 @@ public class ChatItemManager {
         List<String> itemLore = new ArrayList<>();
 
         // identifier
-        itemLore.add(DARK_GRAY.toString() + Arrays.stream(ids).sum());
+        itemLore.add(DARK_GRAY.toString() + ITALIC + "From chat");
 
         // attack speed
         if (item.getAttackSpeed() != null) {
