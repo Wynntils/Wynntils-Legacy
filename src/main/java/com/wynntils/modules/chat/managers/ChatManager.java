@@ -270,7 +270,6 @@ public class ChatManager {
 
         // clickable coordinates
         if (ChatConfig.INSTANCE.clickableCoordinates && coordinateReg.matcher(McIf.getUnformattedText(in)).find()) {
-
             ITextComponent temp = new TextComponentString("");
             for (ITextComponent texts : in) {
                 Matcher m = coordinateReg.matcher(texts.getUnformattedComponentText());
@@ -319,10 +318,8 @@ public class ChatManager {
 
         // chat item tooltips
         if (ChatItemManager.ENCODED_PATTERN.matcher(McIf.getUnformattedText(in)).find()) {
-
             ITextComponent temp = new TextComponentString("");
             for (ITextComponent comp : in) {
-
                 Matcher m = ChatItemManager.ENCODED_PATTERN.matcher(comp.getUnformattedComponentText());
                 if (!m.find()) {
                     ITextComponent newComponent = new TextComponentString(comp.getUnformattedComponentText());
@@ -332,7 +329,6 @@ public class ChatManager {
                 }
 
                 do {
-
                     String text = McIf.getUnformattedText(comp);
                     Style style = comp.getStyle();
 
@@ -353,9 +349,7 @@ public class ChatManager {
                     comp.setStyle(style.createShallowCopy());
 
                     m = ChatItemManager.ENCODED_PATTERN.matcher(comp.getUnformattedText()); // recreate matcher for new substring
-
                 } while (m.find()); // search for multiple items in the same message
-
                 temp.appendSibling(comp); // leftover text after item(s)
             }
             in = temp;
