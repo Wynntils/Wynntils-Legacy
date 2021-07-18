@@ -47,10 +47,11 @@ import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class WorldMapUI extends GuiMovementScreen {
 
-    private static final int MAX_ZOOM = 300;  // Note that this is the most zoomed out
-    private static final int MIN_ZOOM = -10;  // And this is the most zoomed in
-    private static final float ZOOM_SCALE_FACTOR = 1.1f;
-    private static final long ZOOM_RESISTENCE = 100; // The zoom resistence in ms (any change takes 200ms)
+    //Allow modification of Zoom related fields by subclassess
+    protected static int MAX_ZOOM = 300;  // Note that this is the most zoomed out
+    protected static int MIN_ZOOM = -10;  // And this is the most zoomed in
+    protected static float ZOOM_SCALE_FACTOR = 1.1f;
+    protected static long ZOOM_RESISTENCE = 100; // The zoom resistence in ms (any change takes 200ms)
 
     protected ScreenRenderer renderer = new ScreenRenderer();
 
