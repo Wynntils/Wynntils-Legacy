@@ -61,11 +61,9 @@ public class SeaskipperLocation {
     public void constructInfoBox() {
         List<String> description = new ArrayList<>();
 
-        description.add("Starting Coordinates: " + location.getStartX() + ". " + location.getStartZ());
-        description.add("Ending Coordinates: " + location.getEndX() + ". " + location.getEndZ());
-        description.add(" ");
-
         description.add(TextFormatting.GOLD + "Level " + location.getLevel());
+        description.add(TextFormatting.YELLOW + "Starting Coordinates: " + location.getStartX() + ". " + location.getStartZ());
+        description.add(TextFormatting.YELLOW + "Ending Coordinates: " + location.getEndX() + ". " + location.getEndZ());
         description.add(" ");
 
         switch (accessibility) {
@@ -79,7 +77,6 @@ public class SeaskipperLocation {
             case ORIGIN:
                 description.add(TextFormatting.RED + "Origin");
         }
-
         description.add(" ");
 
         infoBox.setDescription(description);
@@ -117,8 +114,8 @@ public class SeaskipperLocation {
             renderer.drawString(location.getName(), ppX, ppY - 20, seaskipperNameColour, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
     }
 
-    public void postDraw(int mouseX, int mouseY, float partialTicks, int width, int height) {
-        if (!isHovered(mouseX, mouseY)) return;
+    public void postDraw(int mouseX, int mouseY, float partialTicks, int width, int height, boolean showInaccessibleLocations) {
+        if (!isHovered(mouseX, mouseY) || (!showInaccessibleLocations && accessibility == Accessibility.INACCESSIBLE)) return;
 
         infoBox.render((int)(width * 0.95), (int)(height * 0.1));
     }

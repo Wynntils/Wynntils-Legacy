@@ -46,12 +46,10 @@ import java.util.function.Function;
 import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class WorldMapUI extends GuiMovementScreen {
-
-    //Allow modification of Zoom related fields by subclassess
-    protected static int MAX_ZOOM = 300;  // Note that this is the most zoomed out
-    protected static int MIN_ZOOM = -10;  // And this is the most zoomed in
-    protected static float ZOOM_SCALE_FACTOR = 1.1f;
-    protected static long ZOOM_RESISTENCE = 100; // The zoom resistence in ms (any change takes 200ms)
+    private static final int MAX_ZOOM = 500;  // Note that this is the most zoomed out
+    private static final int MIN_ZOOM = -10;  // And this is the most zoomed in
+    private static final float ZOOM_SCALE_FACTOR = 1.1f;
+    protected static long ZOOM_RESISTANCE = 100; // The zoom resistance in ms (any change takes 200ms)
 
     protected ScreenRenderer renderer = new ScreenRenderer();
 
@@ -308,7 +306,7 @@ public class WorldMapUI extends GuiMovementScreen {
 
         float scale = getScaleFactor();
         // draw map icons
-        boolean[] needToReset = { false };
+        final boolean[] needToReset = {false};
         enableBlend();
         forEachIcon(i -> {
             if (i.getInfo().hasDynamicLocation()) resetIcon(i);
@@ -351,7 +349,7 @@ public class WorldMapUI extends GuiMovementScreen {
         float playerPositionX = (map.getTextureXPosition(McIf.player().posX) - minX) / (maxX - minX);
         float playerPositionZ = (map.getTextureZPosition(McIf.player().posZ) - minZ) / (maxZ - minZ);
 
-        if (playerPositionX < 0 || playerPositionX > 1 || playerPositionZ < 0 || playerPositionZ > 1) {  // <--- player position
+        if (playerPositionX > 0 && playerPositionX < 1 && playerPositionZ > 0 && playerPositionZ < 1) {  // <--- player position
             playerPositionX = width * playerPositionX;
             playerPositionZ = height * playerPositionZ;
 
@@ -403,7 +401,7 @@ public class WorldMapUI extends GuiMovementScreen {
     protected void handleZoomAcceleration(float partialTicks) {
         if (McIf.getSystemTime() > zoomEnd) return;
 
-        float percentage = Math.min(1f, 1f - (zoomEnd - McIf.getSystemTime()) / ZOOM_RESISTENCE);
+        float percentage = Math.min(1f, 1f - (zoomEnd - McIf.getSystemTime()) / ZOOM_RESISTANCE);
         double toIncrease = (zoomTarget - zoomInitial) * Math.sin((Math.PI / 2f) * percentage);
 
         zoom = zoomInitial + (float) toIncrease;
@@ -447,7 +445,7 @@ public class WorldMapUI extends GuiMovementScreen {
         double zoomScale = Math.pow(ZOOM_SCALE_FACTOR, -by);
         zoomTarget = (float) MathHelper.clamp(zoomScale * (zoom + 50) - 50, MIN_ZOOM, MAX_ZOOM);
 
-        zoomEnd = McIf.getSystemTime() + ZOOM_RESISTENCE;
+        zoomEnd = McIf.getSystemTime() + ZOOM_RESISTANCE;
         zoomInitial = zoom;
     }
 

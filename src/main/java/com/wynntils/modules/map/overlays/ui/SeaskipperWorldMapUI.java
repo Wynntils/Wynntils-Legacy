@@ -56,10 +56,6 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
         for (SeaskipperProfile profile : WebManager.getSeaskipperLocations()) {
             locations.put(profile.getName(), new SeaskipperLocation(profile).setRenderer(renderer));
         }
-
-        //Increase zoom for easier moving around
-        MAX_ZOOM = 400;
-        ZOOM_SCALE_FACTOR = 1.2f;
     }
 
     @Override
@@ -197,7 +193,7 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
 
         if (showSeaskipperRoutes) generateSeaSkipperRoutes();
         locations.values().forEach((c) -> c.drawScreen(mouseX, mouseY, partialTicks, showLocations, showInaccessibleLocations));
-        locations.values().forEach((c) -> c.postDraw(mouseX, mouseY, partialTicks, width, height));
+        locations.values().forEach((c) -> c.postDraw(mouseX, mouseY, partialTicks, width, height, showInaccessibleLocations));
         clearMask();
     }
 
