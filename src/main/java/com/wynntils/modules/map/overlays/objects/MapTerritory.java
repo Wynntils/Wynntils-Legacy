@@ -46,7 +46,7 @@ public class MapTerritory {
         return this;
     }
 
-    public void updateAxis(MapProfile mp, int width, int height, float maxX, float minX, float maxZ, float minZ, int zoom) {
+    public void updateAxis(MapProfile mp, int width, int height, float maxX, float minX, float maxZ, float minZ, float zoom) {
         alpha = 1 - ((zoom - 10) / 40.0f);
 
         float initX = ((mp.getTextureXPosition(territory.getStartX()) - minX) / (maxX - minX));
