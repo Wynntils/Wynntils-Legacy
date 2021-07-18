@@ -7,6 +7,7 @@ package com.wynntils.modules.utilities.managers;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
 import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.image.BufferedImage;
@@ -22,7 +23,9 @@ import org.lwjgl.opengl.GL11;
 
 import com.wynntils.McIf;
 import com.wynntils.Reference;
+import com.wynntils.core.utils.helpers.TextAction;
 
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -34,10 +37,13 @@ import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.shader.Framebuffer;
 import net.minecraft.client.util.ITooltipFlag;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.HoverEvent;
 
 public class ItemScreenshotManager {
 
@@ -105,6 +111,18 @@ public class ItemScreenshotManager {
         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(ci, null);
 
         McIf.player().sendMessage(new TextComponentString(TextFormatting.GREEN + "Copied " + stack.getDisplayName() + TextFormatting.GREEN + " to the clipboard!"));
+
+        String encoded = ChatItemManager.encodeItem(stack);
+        if (encoded != null) { // item was valid, show copy message
+            ITextComponent msg = new TextComponentString(TextFormatting.DARK_GREEN + "" + TextFormatting.UNDERLINE + "Click here to copy the item for chat!");
+            msg.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(TextFormatting.DARK_AQUA + "Paste this text in chat to display your item to other Wynntils users.")));
+            msg = TextAction.withDynamicEvent(msg, () -> {
+                Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(encoded), null);
+                McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1f)); // confirmation pling
+                });
+
+            McIf.player().sendMessage(msg);
+        }
     }
 
     private static void removeItemLore(List<String> tooltip) {
