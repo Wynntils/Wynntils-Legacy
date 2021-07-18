@@ -146,12 +146,12 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
 
         //Get origin based on box, make sure Seaskipper area is in region
         double playerX = McIf.player().posX;
-        double playerY = McIf.player().posY;
+        double playerZ = McIf.player().posZ;
 
         for (SeaskipperLocation location : locations.values()) {
             if (routes.containsKey(location)) continue;
 
-            if (location.getSquareRegion().isInside(playerX, playerY)) {
+            if (location.getSquareRegion().isInside(playerX, playerZ)) {
                 location.setActiveType(SeaskipperLocation.Accessibility.ORIGIN);
                 origin = location;
                 break;
@@ -164,7 +164,9 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
             SeaskipperLocation closest = null;
 
             for (SeaskipperLocation location : locations.values()) {
-                double sqLocationToPlayer = (location.getCenterX() - playerX) * (location.getCenterX() - playerX) + (location.getCenterY() - playerY) * (location.getCenterY() - playerY);
+                if (routes.containsKey(location)) continue;
+
+                double sqLocationToPlayer = location.getSquareRegion().sqdist(playerX, playerZ);
 
                 if (sqLocationToPlayer < sqdist) {
                     sqdist = sqLocationToPlayer;

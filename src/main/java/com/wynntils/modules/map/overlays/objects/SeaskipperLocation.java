@@ -141,7 +141,7 @@ public class SeaskipperLocation {
     }
 
     public SquareRegion getSquareRegion() {
-        return new SquareRegion(initX, initY, endX, endY);
+        return new SquareRegion(location.getStartX(), location.getStartZ(), location.getEndX(), location.getEndZ());
     }
 
     public enum Accessibility {

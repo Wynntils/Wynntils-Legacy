@@ -35,6 +35,18 @@ public class SquareRegion {
         return startX <= x && endX >= x && startZ <= z && endZ >= z;
     }
 
+    public double sqdist(double x, double z) {
+        return (getCenterX() - x) * (getCenterX() - x) + (getCenterZ() - z) * (getCenterZ() - z);
+    }
+
+    public double getCenterX() {
+        return (endX + startX)/2;
+    }
+
+    public double getCenterZ() {
+        return (endZ + startZ)/2;
+    }
+
     public boolean isInside(Entity in) {
         return isInside(in.posX, in.posZ);
     }
