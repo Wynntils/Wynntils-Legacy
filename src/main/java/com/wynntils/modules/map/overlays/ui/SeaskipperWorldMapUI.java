@@ -166,7 +166,7 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
             for (SeaskipperLocation location : locations.values()) {
                 if (routes.containsKey(location)) continue;
 
-                double sqLocationToPlayer = location.getSquareRegion().sqdist(playerX, playerZ);
+                double sqLocationToPlayer = location.getSquareRegion().signedDist(playerX, playerZ);
 
                 if (sqLocationToPlayer < sqdist) {
                     sqdist = sqLocationToPlayer;

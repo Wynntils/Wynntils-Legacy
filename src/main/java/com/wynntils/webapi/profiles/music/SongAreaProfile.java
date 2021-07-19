@@ -39,7 +39,7 @@ public class SongAreaProfile {
     }
 
     public double distanceSquared(Location other) {
-        return getRegion().getStartLocation().distanceSquared(other);
+        return getRegion().getCenterLocation().distanceSquared(other);
     }
 
 }
