@@ -941,7 +941,7 @@ public class ChatManager {
                 return new Pair<>(false, component);
             }
             chat = siblings.subList(0, siblings.size() - lineCount).stream().map(McIf::getUnformattedText).collect(Collectors.joining());
-            chat = chat.substring(0, chat.length() - 1);
+            if (!chat.isEmpty()) chat = chat.substring(0, chat.length() - 1);
             dialogue = new ArrayList<>(siblings.subList(siblings.size() - lineCount, siblings.size()));
             if (!chat.equals(lastChat) && !dialogue.equals(last)) {
                 return new Pair<>(false, component);
