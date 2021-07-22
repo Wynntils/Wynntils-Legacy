@@ -1,11 +1,8 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.wynntils.McIf;
 import com.wynntils.Reference;
@@ -15,7 +12,6 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
-
 import net.minecraft.network.play.server.SPacketDisplayObjective;
 import net.minecraft.network.play.server.SPacketScoreboardObjective;
 import net.minecraft.network.play.server.SPacketUpdateScore;
@@ -24,9 +20,13 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class ObjectivesOverlay extends Overlay {
 
     public static final Pattern OBJECTIVE_PATTERN = Pattern.compile("^[- ] (.*): *([0-9]+)/([0-9]+)$");
+    public static final Pattern HEADER_PATTERN = Pattern.compile("(★ )?(Daily )?Objectives?:");
 
     private static final int WIDTH = 130;
     private static final int HEIGHT = 52;
@@ -106,7 +106,7 @@ public class ObjectivesOverlay extends Overlay {
         if (updateScore.getObjectiveName().equals(sidebarObjectiveName)) {
             if (updateScore.getScoreAction() == SPacketUpdateScore.Action.REMOVE) {
                 String objectiveLine = TextFormatting.getTextWithoutFormattingCodes(updateScore.getPlayerName());
-                if (objectiveLine.equals("Objective" + (objectives[1] != null ? "s" : "") + ":") || objectiveLine.equals("Daily Objective" + (objectives[1] != null ? "s" : "") + ":")) {
+                if (HEADER_PATTERN.matcher(objectiveLine).matches()) {
                     objectivesPosition = 0;
                     return true;
                 }
@@ -116,7 +116,7 @@ public class ObjectivesOverlay extends Overlay {
             }
 
             String text = TextFormatting.getTextWithoutFormattingCodes(updateScore.getPlayerName());
-            if (text.matches("Objectives?:") || text.matches("Daily Objectives?:")) {
+            if (HEADER_PATTERN.matcher(text).matches()) {
                 objectivesPosition = updateScore.getScoreValue();
                 return true;
             } else if (updateScore.getPlayerName().equals(TextFormatting.BLACK.toString())) {
@@ -221,7 +221,7 @@ public class ObjectivesOverlay extends Overlay {
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
-        if (!Reference.onWorld || !OverlayConfig.Objectives.INSTANCE.enableObjectives ||
+        if (!Reference.onWorld || !OverlayConfig.Objectives.INSTANCE.enabled ||
                 event.getType() != RenderGameOverlayEvent.ElementType.ALL) return;
 
         int height = 36;

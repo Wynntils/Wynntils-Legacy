@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.chat.events;
@@ -20,7 +20,6 @@ import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.events.custom.QuestBookUpdateEvent;
 import com.wynntils.webapi.services.TranslationManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -49,7 +48,7 @@ public class ClientEvents implements Listener {
         if (McIf.getUnformattedText(msg).startsWith("[Info] ") && ChatConfig.INSTANCE.filterWynncraftInfo) {
             e.setCanceled(true);
         } else if (McIf.getFormattedText(msg).startsWith("\n                       " + TextFormatting.GOLD + TextFormatting.BOLD + "Welcome to Wynncraft!") &&
-                !McIf.getFormattedText(msg).contains("n the Trade Market") && ChatConfig.INSTANCE.filterWynncraftInfo) {
+                !McIf.getFormattedText(msg).contains("n the Trade Market") && ChatConfig.INSTANCE.filterJoinMessages) {
             e.setCanceled(true);
         } else if (McIf.getFormattedText(msg).startsWith(TextFormatting.GRAY + "[You are now entering") && ChatConfig.INSTANCE.filterTerritoryEnter) {
             e.setCanceled(true);

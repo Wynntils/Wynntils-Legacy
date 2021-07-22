@@ -16,6 +16,7 @@ import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.instances.DiscoveryInfo;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.utilities.configs.TranslationConfig;
+import com.wynntils.modules.utilities.managers.ChatItemManager;
 import com.wynntils.webapi.services.TranslationManager;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.Items;
@@ -269,7 +270,6 @@ public class ChatManager {
 
         // clickable coordinates
         if (ChatConfig.INSTANCE.clickableCoordinates && coordinateReg.matcher(McIf.getUnformattedText(in)).find()) {
-
             ITextComponent temp = new TextComponentString("");
             for (ITextComponent texts : in) {
                 Matcher m = coordinateReg.matcher(texts.getUnformattedComponentText());
@@ -312,6 +312,45 @@ public class ChatManager {
                 crdMsg.add(postText);
 
                 temp.getSiblings().addAll(crdMsg);
+            }
+            in = temp;
+        }
+
+        // chat item tooltips
+        if (ChatItemManager.ENCODED_PATTERN.matcher(McIf.getUnformattedText(in)).find()) {
+            ITextComponent temp = new TextComponentString("");
+            for (ITextComponent comp : in) {
+                Matcher m = ChatItemManager.ENCODED_PATTERN.matcher(comp.getUnformattedComponentText());
+                if (!m.find()) {
+                    ITextComponent newComponent = new TextComponentString(comp.getUnformattedComponentText());
+                    newComponent.setStyle(comp.getStyle().createShallowCopy());
+                    temp.appendSibling(newComponent);
+                    continue;
+                }
+
+                do {
+                    String text = McIf.getUnformattedText(comp);
+                    Style style = comp.getStyle();
+
+                    ITextComponent item = ChatItemManager.decodeItem(m.group());
+                    if (item == null) { // couldn't decode, skip
+                        comp = new TextComponentString(comp.getUnformattedComponentText());
+                        comp.setStyle(style.createShallowCopy());
+                        continue;
+                    }
+
+                    ITextComponent preText = new TextComponentString(text.substring(0, m.start()));
+                    preText.setStyle(style.createShallowCopy());
+                    temp.appendSibling(preText);
+
+                    temp.appendSibling(item);
+
+                    comp = new TextComponentString(text.substring(m.end()));
+                    comp.setStyle(style.createShallowCopy());
+
+                    m = ChatItemManager.ENCODED_PATTERN.matcher(comp.getUnformattedText()); // recreate matcher for new substring
+                } while (m.find()); // search for multiple items in the same message
+                temp.appendSibling(comp); // leftover text after item(s)
             }
             in = temp;
         }
@@ -902,7 +941,7 @@ public class ChatManager {
                 return new Pair<>(false, component);
             }
             chat = siblings.subList(0, siblings.size() - lineCount).stream().map(McIf::getUnformattedText).collect(Collectors.joining());
-            chat = chat.substring(0, chat.length() - 1);
+            if (!chat.isEmpty()) chat = chat.substring(0, chat.length() - 1);
             dialogue = new ArrayList<>(siblings.subList(siblings.size() - lineCount, siblings.size()));
             if (!chat.equals(lastChat) && !dialogue.equals(last)) {
                 return new Pair<>(false, component);

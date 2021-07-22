@@ -1,7 +1,8 @@
-package com.wynntils.modules.utilities.overlays.hud;
+/*
+ *  * Copyright © Wynntils - 2021.
+ */
 
-import java.util.ArrayList;
-import java.util.List;
+package com.wynntils.modules.utilities.overlays.hud;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -11,7 +12,6 @@ import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
-
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
@@ -20,6 +20,9 @@ import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ScoreboardOverlay extends Overlay {
 
@@ -45,7 +48,7 @@ public class ScoreboardOverlay extends Overlay {
         if (scores.size() > 15) scores = new ArrayList<Score>(scores.subList(0, 15));
 
         // remove objective, compass lines, quest lines, then remove unnecessary blanks
-        if (OverlayConfig.Objectives.INSTANCE.enableObjectives) removeObjectiveLines(scores);
+        if (OverlayConfig.Objectives.INSTANCE.enabled) removeObjectiveLines(scores);
         if (!OverlayConfig.Scoreboard.INSTANCE.showCompass || QuestBookConfig.INSTANCE.autoUpdateQuestbook) removeCompassLines(scores);
         if (QuestBookConfig.INSTANCE.autoUpdateQuestbook) removeQuestLines(scores);
         trimBlankLines(scores);
@@ -97,7 +100,7 @@ public class ScoreboardOverlay extends Overlay {
         scores.removeIf(s -> TextFormatting.getTextWithoutFormattingCodes(s.getPlayerName()).matches(ObjectivesOverlay.OBJECTIVE_PATTERN.pattern())
                 && !s.getPlayerName().startsWith(TextFormatting.AQUA.toString()));
         scores.removeIf(s -> TextFormatting.getTextWithoutFormattingCodes(s.getPlayerName()).matches("- All done"));
-        scores.removeIf(s -> TextFormatting.getTextWithoutFormattingCodes(s.getPlayerName()).matches("(Daily )?Objectives?:"));
+        scores.removeIf(s -> TextFormatting.getTextWithoutFormattingCodes(s.getPlayerName()).matches(ObjectivesOverlay.HEADER_PATTERN.pattern()));
 
         scores.removeIf(s -> s.getPlayerName().startsWith(TextFormatting.RED + "- "));
     }

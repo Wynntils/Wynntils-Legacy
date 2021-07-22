@@ -27,7 +27,6 @@ import com.wynntils.webapi.profiles.item.enums.ItemTier;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 import com.wynntils.webapi.profiles.item.objects.MajorIdentification;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
@@ -73,7 +72,16 @@ public class ItemIdentificationOverlay implements Listener {
         replaceLore(e.getGui().getSlotUnderMouse().getStack());
     }
 
-    public static void replaceLore(ItemStack stack)  {
+    public static void replaceLore(ItemStack stack) {
+        IdentificationType idType;
+        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) idType = IdentificationType.MIN_MAX;
+        else if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) idType = IdentificationType.UPGRADE_CHANCES;
+        else idType = IdentificationType.PERCENTAGES;
+
+        replaceLore(stack, idType);
+    }
+
+    public static void replaceLore(ItemStack stack, IdentificationType forcedIdType)  {
         if (!UtilitiesConfig.Identifications.INSTANCE.enabled || !stack.hasDisplayName() || !stack.hasTagCompound()) return;
         NBTTagCompound nbt = stack.getTagCompound();
         if (nbt.hasKey("wynntilsIgnore")) return;
@@ -94,7 +102,7 @@ public class ItemIdentificationOverlay implements Listener {
             return;
         }
 
-        NBTTagCompound wynntils = generateData(stack);
+        NBTTagCompound wynntils = generateData(stack, forcedIdType);
         ItemProfile item = WebManager.getItems().get(wynntils.getString("originName"));
 
         // Block if the item is not the real item
@@ -391,12 +399,7 @@ public class ItemIdentificationOverlay implements Listener {
         ItemUtils.getLoreTag(stack).appendTag(new NBTTagString(GREEN + "- " + GRAY + "Possibilities: " + itemNamesAndCosts));
     }
 
-    private static NBTTagCompound generateData(ItemStack stack) {
-        IdentificationType idType;
-        if (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) idType = IdentificationType.MIN_MAX;
-        else if (Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) idType = IdentificationType.UPGRADE_CHANCES;
-        else idType = IdentificationType.PERCENTAGES;
-
+    public static NBTTagCompound generateData(ItemStack stack, IdentificationType idType) {
         if (stack.hasTagCompound() && stack.getTagCompound().hasKey("wynntils")) {
             NBTTagCompound compound = stack.getTagCompound().getCompoundTag("wynntils");
 

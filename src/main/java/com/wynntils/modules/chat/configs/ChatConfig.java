@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.modules.chat.configs;
@@ -40,13 +40,16 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Filter Info Messages", description = "Should Wynncraft Info messages be filtered?\n\n§8Messages starting with §4[Info]§8 will no longer appear in chat.", order = 8)
     public boolean filterWynncraftInfo = true;
 
-    @Setting(displayName = "Filter Territory Enter", description = "Should territory enter messages be displayed in chat?\n\n§8Territory enter messages look like §7[You are now entering Detlas]§8.", order = 9)
+    @Setting(displayName = "Filter Join Messagse", description = "Should Wynncraft Join messages be filtered?", order = 9)
+    public boolean filterJoinMessages = false;
+
+    @Setting(displayName = "Filter Territory Enter", description = "Should territory enter messages be displayed in chat?\n\n§8Territory enter messages look like §7[You are now entering Detlas]§8.", order = 10)
     public boolean filterTerritoryEnter = true;
 
-    @Setting(displayName = "Improved Powder Manual", description = "Should the powder manual be replaced with a cleaner menu?", order = 10)
+    @Setting(displayName = "Improved Powder Manual", description = "Should the powder manual be replaced with a cleaner menu?", order = 11)
     public boolean customPowderManual = true;
 
-    @Setting(displayName = "Show Held Item Chat Message", description = "Should details of your compass and soul points be shown in chat while you are holding them?", order = 11)
+    @Setting(displayName = "Show Held Item Chat Message", description = "Should details of your compass and soul points be shown in chat while you are holding them?", order = 12)
     public boolean heldItemChat = true;
 
     @Setting(displayName = "Chat History Length", description = "How many messages should be saved in the chat history?", order = 1)

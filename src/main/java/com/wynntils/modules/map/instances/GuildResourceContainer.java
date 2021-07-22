@@ -24,6 +24,9 @@ public class GuildResourceContainer {
     HashMap<GuildResource, Integer> generators = new HashMap<>();
     List<String> tradingRoutes = new ArrayList<>();
 
+    String treasury;
+    String defences;
+
     boolean headquarters;
     CustomColor color;
 
@@ -40,6 +43,9 @@ public class GuildResourceContainer {
      * Ⓚ +28800 Fish per Hour
      * Ⓚ 447/500 stored
      * Ⓙ 3/500 stored
+     *
+     * ✦ Treasury: High          ---> represents the treasury value (High)
+     * Territory Defences: Low   ---> represents the territory defence (Low)
      *
      * Trading Routes:
      * - Tree Island              ---> represents a trading route
@@ -59,6 +65,18 @@ public class GuildResourceContainer {
             // initial trading route parsing
             if (unformatted.startsWith("-")) {
                 tradingRoutes.add(unformatted.substring(2));
+                continue;
+            }
+
+            // treasury parsing
+            if (unformatted.startsWith("✦ Treasury:")) {
+                treasury = formatted.substring(14);
+                continue;
+            }
+
+            // defence parsing
+            if (unformatted.startsWith("Territory Defences:")) {
+                defences = formatted.substring(24);
                 continue;
             }
 
@@ -142,6 +160,14 @@ public class GuildResourceContainer {
         return storage.get(resource);
     }
 
+    public String getTreasury() {
+        return treasury;
+    }
+
+    public String getDefences() {
+        return defences;
+    }
+
     public CustomColor getColor() {
         return color;
     }
@@ -156,7 +182,10 @@ public class GuildResourceContainer {
                 "storage=" + storage +
                 ", generators=" + generators +
                 ", tradingRoutes=" + tradingRoutes +
+                ", treasury='" + treasury + '\'' +
+                ", defences='" + defences + '\'' +
                 ", headquarters=" + headquarters +
+                ", color=" + color +
                 '}';
     }
 
