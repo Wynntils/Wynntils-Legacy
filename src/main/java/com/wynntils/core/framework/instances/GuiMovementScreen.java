@@ -1,19 +1,19 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2021.
  */
 
 package com.wynntils.core.framework.instances;
 
 import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.wynntils.WynntilsConflictContext;
-import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
 
-public class GuiMovementScreen extends GuiScreen {
+public abstract class GuiMovementScreen extends GuiTickableScreen {
+
     protected boolean allowMovement = true;
 
     @Override
@@ -42,6 +42,11 @@ public class GuiMovementScreen extends GuiScreen {
                 this.handleKeyboardInput();
             }
         }
+    }
+
+    @Override
+    public void onTick() {
+
     }
 
 }

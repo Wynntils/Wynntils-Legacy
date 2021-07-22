@@ -11,14 +11,15 @@ import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
+import com.wynntils.core.framework.instances.GuiTickableScreen;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.core.utils.reflections.ReflectionMethods;
 import com.wynntils.modules.core.managers.GuildAndFriendManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiDisconnected;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.GuiConnecting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketPlayerListItem;
@@ -228,6 +229,13 @@ public class ClientEvents {
         FrameworkManager.triggerHudTick(e);
         FrameworkManager.triggerKeyPress();
         FrameworkManager.triggerNaturalSpawn();
+
+        if (McIf.mc().currentScreen == null) return;
+
+        // Tick gui screens that requires ticks
+        GuiScreen screen = McIf.mc().currentScreen;
+        if (!(screen instanceof GuiTickableScreen)) return;
+        ((GuiTickableScreen) screen).onTick();
     }
 
     @SubscribeEvent

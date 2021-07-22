@@ -36,13 +36,13 @@ public class WorldMapIcon {
         }
     }
 
-    public void updateAxis(MapProfile mp, int width, int height, float maxX, float minX, float maxZ, float minZ, int zoom) {
+    public void updateAxis(MapProfile mp, int width, int height, float maxX, float minX, float maxZ, float minZ, float zoom) {
         if (!info.isEnabled(false)) {
             shouldRender = false;
             return;
         }
 
-        updateAlphaForZoom(zoom);
+        updateAlphaForZoom((int) zoom);
         if (alpha <= 0) {
             shouldRender = false;
             return;

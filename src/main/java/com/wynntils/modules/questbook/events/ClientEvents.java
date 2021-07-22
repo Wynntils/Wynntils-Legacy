@@ -166,7 +166,7 @@ public class ClientEvents implements Listener {
     public void sound(PlaySoundEvent e) {
         if (!QuestManager.isAnalysing()) return;
         // silence the noise the dialogue history makes while analyzing the quest book
-        if (e.getName().equals("entity.item.pickup")) e.setCanceled(true);
+        if (e.getName().equals("entity.item.pickup")) e.setResultSound(null);
     }
 
 }

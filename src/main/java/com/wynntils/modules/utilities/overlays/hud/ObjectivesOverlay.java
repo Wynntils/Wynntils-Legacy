@@ -27,6 +27,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 public class ObjectivesOverlay extends Overlay {
 
     public static final Pattern OBJECTIVE_PATTERN = Pattern.compile("^[- ] (.*): *([0-9]+)/([0-9]+)$");
+    public static final Pattern HEADER_PATTERN = Pattern.compile("(★ )?(Daily )?Objectives?:");
 
     private static final int WIDTH = 130;
     private static final int HEIGHT = 52;
@@ -106,7 +107,7 @@ public class ObjectivesOverlay extends Overlay {
         if (updateScore.getObjectiveName().equals(sidebarObjectiveName)) {
             if (updateScore.getScoreAction() == SPacketUpdateScore.Action.REMOVE) {
                 String objectiveLine = TextFormatting.getTextWithoutFormattingCodes(updateScore.getPlayerName());
-                if (objectiveLine.equals("Objective" + (objectives[1] != null ? "s" : "") + ":") || objectiveLine.equals("Daily Objective" + (objectives[1] != null ? "s" : "") + ":")) {
+                if (HEADER_PATTERN.matcher(objectiveLine).matches()) {
                     objectivesPosition = 0;
                     return true;
                 }
@@ -116,7 +117,7 @@ public class ObjectivesOverlay extends Overlay {
             }
 
             String text = TextFormatting.getTextWithoutFormattingCodes(updateScore.getPlayerName());
-            if (text.matches("Objectives?:") || text.matches("Daily Objectives?:")) {
+            if (HEADER_PATTERN.matcher(text).matches()) {
                 objectivesPosition = updateScore.getScoreValue();
                 return true;
             } else if (updateScore.getPlayerName().equals(TextFormatting.BLACK.toString())) {
