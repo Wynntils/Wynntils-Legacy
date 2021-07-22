@@ -46,7 +46,7 @@ public class MapTerritory {
 
         List<String> description = new ArrayList<>();
 
-        description.add(TextFormatting.LIGHT_PURPLE.toString() + territory.getGuild() + " [" + territory.getGuildPrefix() + "]");
+        description.add(TextFormatting.LIGHT_PURPLE + territory.getGuild() + " [" + territory.getGuildPrefix() + "]");
         description.add(" ");
 
         for (GuildResource resource : GuildResource.values()) {
@@ -61,12 +61,14 @@ public class MapTerritory {
             description.add(resource.getPrettySymbol() + storage.getCurrent() + "/" + storage.getMax() + " stored");
         }
 
+        description.add("");
+        description.add(TextFormatting.GRAY + "✦ Treasury: " + resources.getTreasury());
+        description.add(TextFormatting.GRAY + "Territory Defences: " + resources.getDefences());
+
         if (resources.isHeadquarters()) {
             description.add(" ");
             description.add(TextFormatting.RED + "Guild Headquarters");
         }
-
-        description.add(" ");
 
         this.infoBox = new MapInfoUI(territory.getFriendlyName())
                 .setDescription(description);
