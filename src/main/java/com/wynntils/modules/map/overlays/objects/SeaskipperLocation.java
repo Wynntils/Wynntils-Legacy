@@ -77,7 +77,6 @@ public class SeaskipperLocation {
             case ORIGIN:
                 description.add(TextFormatting.RED + "Origin");
         }
-        description.add(" ");
 
         infoBox.setDescription(description);
     }

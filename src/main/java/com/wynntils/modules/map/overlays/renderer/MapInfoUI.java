@@ -47,10 +47,10 @@ public class MapInfoUI {
             renderer.drawRect(Textures.Map.map_territory_info, 0, 0, 200, 10, 0, 21, 200, 31);
 
             // mid part
-            renderer.drawRect(Textures.Map.map_territory_info, 0, 10, 200,5 + length, 0, 32, 200, 37);
+            renderer.drawRect(Textures.Map.map_territory_info, 0, 10, 200,15 + length, 0, 32, 200, 37);
 
             // bottom
-            renderer.drawRect(Textures.Map.map_territory_info, 0, length + 4, 200,24 + length, 0, 0, 200, 20);
+            renderer.drawRect(Textures.Map.map_territory_info, 0, 14 + length, 200,24 + length, 0, 0, 200, 20);
 
             // title
             renderer.drawString(title, 10, length + 10, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NORMAL);
