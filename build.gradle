@@ -15,7 +15,7 @@ apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'java'
 apply plugin: 'idea'
 
-def versionObj = new Version(major: 1, minor: 10, revision: 3)
+def versionObj = new Version(major: 1, minor: 10, revision: 4)
 
 version = versionObj.toString()
 group = "com.wynntils"
@@ -128,6 +128,10 @@ repositories {
     jcenter()
 }
 
+/*
+ *  * Copyright © Wynntils - 2021.
+ */
+
 // Allow for local override with different Forge
 if (!project.hasProperty("wynntilsForgeVersion")) {
     ext.wynntilsForgeVersion='1.12.2-14.23.5.2854'
@@ -155,9 +159,7 @@ jar {
     }
 }
 
-/*
- *  * Copyright © Wynntils - 2021.
- */
+
 
 // We need to reobfuscate the Shadow Jar
 reobf {
