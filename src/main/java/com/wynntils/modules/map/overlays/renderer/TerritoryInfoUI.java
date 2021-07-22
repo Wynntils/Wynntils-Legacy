@@ -29,7 +29,7 @@ public class TerritoryInfoUI {
         this.title = territory.getFriendlyName();
         this.renderer = new ScreenRenderer();
 
-        description.add(TextFormatting.LIGHT_PURPLE.toString() + territory.getGuild() + " [" + territory.getGuildPrefix() + "]");
+        description.add(TextFormatting.LIGHT_PURPLE + territory.getGuild() + " [" + territory.getGuildPrefix() + "]");
         description.add(" ");
 
         for (GuildResource resource : GuildResource.values()) {
@@ -43,6 +43,10 @@ public class TerritoryInfoUI {
 
             description.add(resource.getPrettySymbol() + storage.getCurrent() + "/" + storage.getMax() + " stored");
         }
+
+        description.add("");
+        description.add(TextFormatting.GRAY + "✦ Treasury: " + resources.getTreasury());
+        description.add(TextFormatting.GRAY + "Territory Defences: " + resources.getDefences());
 
         if (resources.isHeadquarters()) {
             description.add(" ");
