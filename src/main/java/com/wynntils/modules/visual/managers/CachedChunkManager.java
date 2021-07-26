@@ -28,8 +28,10 @@ import java.util.zip.Inflater;
 
 public class CachedChunkManager {
 
-    private static final int VERSION = 2; // if you change the saved content update this number
     private static final int SERVER_RENDER_DISTANCE = 4;
+    private static final int INJECTED_CHUNK_DISTANCE = 4090; // the real value is 4096
+
+    private static final int VERSION = 2; // if you change the saved content update this number
     private static final File CACHE_FOLDER = new File(Reference.MOD_STORAGE_ROOT, "cachedChunks");
     private static final ReadWriteLock LOCK = new ReentrantReadWriteLock();
     private static final ExecutorService EXECUTOR = Executors.newCachedThreadPool(new ThreadFactoryBuilder()
@@ -151,6 +153,9 @@ public class CachedChunkManager {
                     if (Math.abs(x) <= SERVER_RENDER_DISTANCE && Math.abs(z) <= SERVER_RENDER_DISTANCE) continue;
 
                     ChunkPos pos = new ChunkPos(player.x + x, player.z + z);
+
+                    // Injected chunks are chunks dinamically alocated for for housing/war arenas
+                    if (Math.abs(pos.x) >= INJECTED_CHUNK_DISTANCE && Math.abs(pos.z) >= INJECTED_CHUNK_DISTANCE) continue;
                     if (McIf.world().getChunkProvider().getLoadedChunk(pos.x, pos.z) != null) continue;
 
                     toLoad.add(pos);
