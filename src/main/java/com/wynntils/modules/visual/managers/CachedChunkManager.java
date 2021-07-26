@@ -97,7 +97,7 @@ public class CachedChunkManager {
             LOCK.writeLock().lock();
 
             // Remove from ignored chunks
-            ignoredChunks.add(new ChunkPos(data.getChunkX(), data.getChunkZ()));
+            ignoredChunks.remove(new ChunkPos(data.getChunkX(), data.getChunkZ()));
 
             // We are saving each chunk into a different file for faster reading!
             File chunk = new File(CACHE_FOLDER, data.getChunkX() + "_" + data.getChunkZ() + ".wchunk");
@@ -162,6 +162,9 @@ public class CachedChunkManager {
 
             try {
                 LOCK.readLock().lock();
+
+                // Remove all chunks outside the range from ignored chunks so we don't build up a huge list
+                ignoredChunks.removeIf(c -> !toLoad.contains(c));
 
                 for (ChunkPos pos : toLoad) {
                     if (ignoredChunks.contains(pos)) continue;
