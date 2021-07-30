@@ -173,6 +173,7 @@ public class VisualConfig extends SettingsClass {
         public void onSettingChanged(String name) {
             if (name.equals("deleteChunks") && deleteChunks) {
                 CachedChunkManager.deleteCache();
+                deleteChunks = false;
             }
         }
 
