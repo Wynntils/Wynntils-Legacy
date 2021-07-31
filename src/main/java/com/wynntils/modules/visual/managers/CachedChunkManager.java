@@ -10,7 +10,6 @@ import com.wynntils.Reference;
 import com.wynntils.modules.visual.configs.VisualConfig;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.network.play.server.SPacketChunkData;
 import net.minecraft.util.math.ChunkPos;
@@ -19,7 +18,6 @@ import org.apache.commons.io.FileUtils;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -30,6 +28,9 @@ import java.util.zip.Inflater;
 
 public class CachedChunkManager {
 
+    private static final int SERVER_RENDER_DISTANCE = 4;
+    private static final int INJECTED_CHUNK_DISTANCE = 4090; // the real value is 4096
+
     private static final int VERSION = 2; // if you change the saved content update this number
     private static final File CACHE_FOLDER = new File(Reference.MOD_STORAGE_ROOT, "cachedChunks");
     private static final ReadWriteLock LOCK = new ReentrantReadWriteLock();
@@ -37,7 +38,7 @@ public class CachedChunkManager {
             .setNameFormat("Wynntils-CachedChunks-%d").build()
     );
 
-    private static final Set<ChunkPos> loadedChunks = new HashSet<>();
+    private static final Set<ChunkPos> ignoredChunks = new HashSet<>();
     private static boolean running = false;
 
     /**
@@ -87,7 +88,7 @@ public class CachedChunkManager {
      *
      * This method is thread safe.
      *
-     * @param data
+     * @param data the chunk data
      */
     private static void cacheChunk(SPacketChunkData data) {
         if (!data.isFullChunk()) return;
@@ -96,6 +97,9 @@ public class CachedChunkManager {
 
         try {
             LOCK.writeLock().lock();
+
+            // Remove from ignored chunks
+            ignoredChunks.remove(new ChunkPos(data.getChunkX(), data.getChunkZ()));
 
             // We are saving each chunk into a different file for faster reading!
             File chunk = new File(CACHE_FOLDER, data.getChunkX() + "_" + data.getChunkZ() + ".wchunk");
@@ -141,33 +145,18 @@ public class CachedChunkManager {
             int renderDistance = McIf.mc().gameSettings.renderDistanceChunks;
             ChunkPos player = new ChunkPos(McIf.player().chunkCoordX, McIf.player().chunkCoordZ);
 
-            // Start by removing chunks that are not in the render distance
-            Iterator<ChunkPos> it = loadedChunks.iterator();
-            while (it.hasNext()) {
-                ChunkPos next = it.next();
-
-                // Calculate the X distance and if it's too big remove directly to avoid useless calculations
-                int distanceX = Math.abs(next.x - player.x);
-                if (distanceX > renderDistance) {
-                    it.remove();
-                    continue;
-                }
-
-                // Calculate the Z distance and remove if too far
-                int distanceZ = Math.abs(next.z - player.z);
-                if (distanceZ <= renderDistance) continue;
-
-                it.remove();
-            }
-
             // Calculate which chunks needs to be loaded
             Set<ChunkPos> toLoad = new HashSet<>();
             for (int x = -renderDistance; x < renderDistance; x++) {
                 for (int z = -renderDistance; z < renderDistance; z++) {
+                    // Ignore the render distance this will be sent by the server
+                    if (Math.abs(x) <= SERVER_RENDER_DISTANCE && Math.abs(z) <= SERVER_RENDER_DISTANCE) continue;
+
                     ChunkPos pos = new ChunkPos(player.x + x, player.z + z);
 
-                    if (loadedChunks.contains(pos)) continue;
-                    if (McIf.world().getChunk(pos.x, pos.z).isLoaded()) continue;
+                    // Injected chunks are chunks dinamically alocated for for housing/war arenas
+                    if (Math.abs(pos.x) >= INJECTED_CHUNK_DISTANCE && Math.abs(pos.z) >= INJECTED_CHUNK_DISTANCE) continue;
+                    if (McIf.world().getChunkProvider().getLoadedChunk(pos.x, pos.z) != null) continue;
 
                     toLoad.add(pos);
                 }
@@ -179,13 +168,20 @@ public class CachedChunkManager {
             try {
                 LOCK.readLock().lock();
 
+                // Remove all chunks outside the range from ignored chunks so we don't build up a huge list
+                ignoredChunks.removeIf(c -> !toLoad.contains(c));
+
                 for (ChunkPos pos : toLoad) {
-                    // We add it to loaded chunks even if the file doesn't exists so we don't keep trying
-                    // to load a chunk we don't have cached
-                    loadedChunks.add(pos);
+                    if (ignoredChunks.contains(pos)) continue;
 
                     File chunk = new File(CACHE_FOLDER, pos.x + "_" + pos.z + ".wchunk");
-                    if (!chunk.exists()) continue;
+
+                    // We add it to ignored chunks if the file doesn't exists
+                    // so we don't keep trying to load it over and over
+                    if (!chunk.exists()) {
+                        ignoredChunks.add(pos);
+                        continue;
+                    }
 
                     // Load the required data to be decompressed
                     byte[] data = FileUtils.readFileToByteArray(chunk);
@@ -230,7 +226,7 @@ public class CachedChunkManager {
         }
 
         // Whatever needs to be executed when the thread dies
-        loadedChunks.clear();
+        ignoredChunks.clear();
         running = false;
     }
 
