@@ -162,20 +162,18 @@ public class VisualConfig extends SettingsClass {
     public static class CachedChunks extends SettingsClass {
         public static CachedChunks INSTANCE;
 
-        @Setting(displayName = "Enable Cached Chunks", description = "Should Wynntils cache the server chunks in order to fullfill your game render distance?\n\n§cEnabling this feature will cause the game to use more disk space.\nDisabling it will delete any cached chunks.", upload = false)
+        @Setting(displayName = "Enable Cached Chunks", description = "Should Wynntils cache the server chunks in order to fullfill your game render distance?\n\n§cEnabling this feature will cause the game to use more disk space.", upload = false)
         public boolean enabled = false;
+        
+        
+        @Setting(displayName = "Delete Cached Chunks", description = "Toggling this to true will delete all cached chunks.", upload = false)
+        public boolean deleteChunks = false;
 
         @Override
         public void onSettingChanged(String name) {
-            if (name.equals("enabled")) {
-                if (enabled){
-                    if (Reference.onWorld) {
-                        CachedChunkManager.startAsyncChunkLoader();
-                    }
-                    return;
-                }
-
+            if (name.equals("deleteChunks") && deleteChunks) {
                 CachedChunkManager.deleteCache();
+                deleteChunks = false;
             }
         }
 
