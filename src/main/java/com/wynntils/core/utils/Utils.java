@@ -192,7 +192,7 @@ public class Utils {
     }
 
     /**
-     * Opens a guiScreen without cleaning the users keys/mouse movents
+     * Opens a guiScreen without cleaning the users keys/mouse movements
      *
      * @param screen the provided screen
      */

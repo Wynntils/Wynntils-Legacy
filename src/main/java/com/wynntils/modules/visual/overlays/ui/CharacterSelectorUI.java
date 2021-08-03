@@ -243,6 +243,8 @@ public class CharacterSelectorUI extends GuiScreen {
 
         // character picker
         if (keyCode <= 1 || keyCode > 10) return; // key offset from num 1~9
+        //This also happens to prevent escape from closing
+
         int characterPosition = keyCode - 2;
         if (availableCharacters.size() <= characterPosition) return;
         hoveredButton = characterPosition;

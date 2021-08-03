@@ -149,12 +149,15 @@ public class VisualConfig extends SettingsClass {
 
     }
 
-    @SettingsInfo(name = "characterSelector", displayPath = "Visual/Character Selector")
-    public static class CharacterSelector extends SettingsClass {
-        public static CharacterSelector INSTANCE;
+    @SettingsInfo(name = "customSelector", displayPath = "Visual/Custom Selector")
+    public static class CustomSelector extends SettingsClass {
+        public static CustomSelector INSTANCE;
 
         @Setting(displayName = "Custom Character Selector", description = "Should the custom character selector be enabled?")
-        public boolean enabled = true;
+        public boolean characterSelector = true;
+
+        @Setting(displayName = "Custom Seaskipper Selector", description = "Should the Seaskipper gui be replaced with a map?")
+        public boolean seaskipperSelector = true;
 
     }
 

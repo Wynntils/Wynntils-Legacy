@@ -143,23 +143,23 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void cancelSomeVelocity(PacketEvent<SPacketEntityVelocity> e) {
-        // I'm not sure what this does, but the code has been here a long time,
-        // just moving it here. /magicus, 2021
+    public void cancelBoatSinking(PacketEvent<SPacketEntityVelocity> e) {
+        // Prevents boats from sinking like a submarine
+        //from https://forums.wynncraft.com/threads/wynn-extra-fix-mod-for-1-11-2-boat-finally-not-function-as-submarine.227231/
         SPacketEntityVelocity velocity = e.getPacket();
         if (McIf.world() != null) {
             Entity entity = McIf.world().getEntityByID(velocity.getEntityID());
             Entity vehicle = McIf.player().getLowestRidingEntity();
-            if ((entity == vehicle) && (vehicle != McIf.player()) && (vehicle.canPassengerSteer())) {
+            if ((entity == vehicle) && (vehicle != McIf.player()) && (vehicle.canPassengerSteer()) && e.getPacket().getMotionY() < 0) {
                 e.setCanceled(true);
             }
         }
     }
 
     @SubscribeEvent
-    public void cancelSomeMovements(PacketEvent<SPacketMoveVehicle> e) {
-        // I'm not sure what this does, but the code has been here a long time,
-        // just moving it here. /magicus, 2021
+    public void cancelHorseTeleportBack(PacketEvent<SPacketMoveVehicle> e) {
+        //Prevents horse teleporting backwards probably due to server anticheat or lag,
+        //from https://forums.wynncraft.com/threads/wynn-extra-fix-mod-for-1-11-2-boat-finally-not-function-as-submarine.227231/
         SPacketMoveVehicle moveVehicle = e.getPacket();
         Entity vehicle = McIf.player().getLowestRidingEntity();
         if ((vehicle == McIf.player()) || (!vehicle.canPassengerSteer()) || (vehicle.getDistance(moveVehicle.getX(), moveVehicle.getY(), moveVehicle.getZ()) <= 25D)) {

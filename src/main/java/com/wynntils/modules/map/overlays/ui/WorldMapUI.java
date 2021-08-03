@@ -46,17 +46,16 @@ import java.util.function.Function;
 import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class WorldMapUI extends GuiMovementScreen {
-
-    private static final int MAX_ZOOM = 300;  // Note that this is the most zoomed out
+    private static final int MAX_ZOOM = 500;  // Note that this is the most zoomed out
     private static final int MIN_ZOOM = -10;  // And this is the most zoomed in
     private static final float ZOOM_SCALE_FACTOR = 1.1f;
-    private static final long ZOOM_RESISTENCE = 100; // The zoom resistence in ms (any change takes 200ms)
+    protected static long ZOOM_RESISTANCE = 100; // The zoom resistance in ms (any change takes 200ms)
 
     protected ScreenRenderer renderer = new ScreenRenderer();
 
     // Position Related
-    protected float centerPositionX = Float.NaN;
-    protected float centerPositionZ = Float.NaN;
+    protected float centerPositionX;
+    protected float centerPositionZ;
 
     // Zoom
     protected float zoom = 0;  // Zoom goes from 300 (whole world) to -10 (max details)
@@ -97,7 +96,8 @@ public class WorldMapUI extends GuiMovementScreen {
         }
 
         // Also creates icons
-        updateCenterPosition(startX, startZ);
+        createIcons();
+        this.centerPositionX = startX; this.centerPositionZ = startZ;
 
         this.animationEnd = System.currentTimeMillis() + MapConfig.WorldMap.INSTANCE.animationLength;
 
@@ -107,8 +107,16 @@ public class WorldMapUI extends GuiMovementScreen {
         );
     }
 
+    @Override
+    public void initGui() {
+        super.initGui();
+
+        updateCenterPosition(centerPositionX, centerPositionZ);
+        Keyboard.enableRepeatEvents(true);
+    }
+
     protected void addButton(MapButtonType type, int offsetX, List<String> hover, Function<Void, Boolean> isEnabled, BiConsumer<MapButton, Integer> onClick) {
-        // add the buttom base
+        // add the button base
         if (mapButtons.isEmpty()) {
             mapButtons.add(new MapButton(width / 2, height - 45, MapButtonType.BASE, null, (v) -> true, null));
         }
@@ -298,7 +306,7 @@ public class WorldMapUI extends GuiMovementScreen {
 
         float scale = getScaleFactor();
         // draw map icons
-        boolean[] needToReset = { false };
+        final boolean[] needToReset = {false};
         enableBlend();
         forEachIcon(i -> {
             if (i.getInfo().hasDynamicLocation()) resetIcon(i);
@@ -311,6 +319,33 @@ public class WorldMapUI extends GuiMovementScreen {
 
         if (needToReset[0]) resetAllIcons();
 
+        drawPositionCursor(map);
+
+        if (MapConfig.WorldMap.INSTANCE.keepTerritoryVisible || Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)) {
+            territories.values().forEach(c -> c.drawScreen(mouseX, mouseY, partialTicks,
+                    MapConfig.WorldMap.INSTANCE.territoryArea, false, false, true, true));
+        }
+
+        forEachIcon(c -> c.drawHovering(mouseX, mouseY, partialTicks, renderer));
+        handleOutsideAreaText();
+
+        clearMask();
+    }
+
+    protected void drawCoordinates(int mouseX, int mouseY, float partialTicks) {
+        if (!Reference.onWorld) return;
+
+        MapProfile map = MapModule.getModule().getMainMap();
+        if (!map.isReadyToUse()) return;
+
+        // Render coordinate mouse is over
+        int worldX = getMouseWorldX(mouseX, map);
+        int worldZ = getMouseWorldZ(mouseY, map);
+
+        renderer.drawString(worldX + ", " + worldZ, width / 2.0f, height - 70, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+    }
+
+    protected void drawPositionCursor(MapProfile map) {
         float playerPositionX = (map.getTextureXPosition(McIf.player().posX) - minX) / (maxX - minX);
         float playerPositionZ = (map.getTextureZPosition(McIf.player().posZ) - minZ) / (maxZ - minZ);
 
@@ -334,29 +369,6 @@ public class WorldMapUI extends GuiMovementScreen {
 
             popMatrix();
         }
-
-        if (MapConfig.WorldMap.INSTANCE.keepTerritoryVisible || Keyboard.isKeyDown(Keyboard.KEY_LCONTROL) || Keyboard.isKeyDown(Keyboard.KEY_RCONTROL)) {
-            territories.values().forEach(c -> c.drawScreen(mouseX, mouseY, partialTicks,
-                    MapConfig.WorldMap.INSTANCE.territoryArea, false, false, true));
-        }
-
-        forEachIcon(c -> c.drawHovering(mouseX, mouseY, partialTicks, renderer));
-        handleOutsideAreaText();
-
-        clearMask();
-    }
-
-    protected void drawCoordinates(int mouseX, int mouseY, float partialTicks) {
-        if (!Reference.onWorld) return;
-
-        MapProfile map = MapModule.getModule().getMainMap();
-        if (!map.isReadyToUse()) return;
-
-        // Render coordinate mouse is over
-        int worldX = getMouseWorldX(mouseX, map);
-        int worldZ = getMouseWorldZ(mouseY, map);
-
-        renderer.drawString(worldX + ", " + worldZ, width / 2.0f, height - 70, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
     }
 
     protected void drawMapButtons(int mouseX, int mouseY, float partialTicks) {
@@ -389,7 +401,7 @@ public class WorldMapUI extends GuiMovementScreen {
     protected void handleZoomAcceleration(float partialTicks) {
         if (McIf.getSystemTime() > zoomEnd) return;
 
-        float percentage = Math.min(1f, 1f - (zoomEnd - McIf.getSystemTime()) / ZOOM_RESISTENCE);
+        float percentage = Math.min(1f, 1f - (zoomEnd - McIf.getSystemTime()) / ZOOM_RESISTANCE);
         double toIncrease = (zoomTarget - zoomInitial) * Math.sin((Math.PI / 2f) * percentage);
 
         zoom = zoomInitial + (float) toIncrease;
@@ -410,7 +422,7 @@ public class WorldMapUI extends GuiMovementScreen {
 
         pushMatrix();
         {
-            translate(width / 2, height / 2, 0);
+            translate(width / 2f, height / 2f, 0);
             scale(2, 2, 2);
             renderer.drawString("You're outside the main map area", 0, 0, OUTSIDE_MAP_COLOR_1,
                     SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL
@@ -433,16 +445,8 @@ public class WorldMapUI extends GuiMovementScreen {
         double zoomScale = Math.pow(ZOOM_SCALE_FACTOR, -by);
         zoomTarget = (float) MathHelper.clamp(zoomScale * (zoom + 50) - 50, MIN_ZOOM, MAX_ZOOM);
 
-        zoomEnd = McIf.getSystemTime() + ZOOM_RESISTENCE;
+        zoomEnd = McIf.getSystemTime() + ZOOM_RESISTANCE;
         zoomInitial = zoom;
-    }
-
-    @Override
-    public void initGui() {
-        super.initGui();
-
-        updateCenterPosition(centerPositionX, centerPositionZ);
-        Keyboard.enableRepeatEvents(true);
     }
 
     @Override

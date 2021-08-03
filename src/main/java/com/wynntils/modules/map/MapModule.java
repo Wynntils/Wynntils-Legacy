@@ -19,12 +19,12 @@ import com.wynntils.modules.map.events.ClientEvents;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.map.overlays.MiniMapOverlay;
+import com.wynntils.modules.map.overlays.OverlayEvents;
 import com.wynntils.modules.map.overlays.ui.GuildWorldMapUI;
 import com.wynntils.modules.map.overlays.ui.MainWorldMapUI;
 import com.wynntils.modules.map.overlays.ui.WaypointCreationMenu;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.WebReader;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import org.lwjgl.input.Keyboard;
 
@@ -48,6 +48,7 @@ public class MapModule extends Module {
         LootRunManager.setup();
 
         registerEvents(new ClientEvents());
+        registerEvents(new OverlayEvents());
 
         registerSettings(MapConfig.class);
         registerSettings(MapConfig.Textures.class);
