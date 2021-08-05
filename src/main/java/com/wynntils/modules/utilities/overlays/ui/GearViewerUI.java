@@ -23,6 +23,7 @@ import com.wynntils.modules.utilities.overlays.inventories.ItemIdentificationOve
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.IdentificationOrderer;
 import com.wynntils.webapi.profiles.item.ItemProfile;
+import com.wynntils.webapi.profiles.item.enums.ItemTier;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 import com.wynntils.webapi.profiles.item.objects.ItemRequirementsContainer;
 import com.wynntils.webapi.profiles.item.objects.MajorIdentification;
@@ -137,15 +138,18 @@ public class GearViewerUI extends FakeGuiContainer {
             return;
         }
 
-        // get item from name
-        if (WebManager.getItems().get(itemName) == null) return;
-        ItemProfile item = WebManager.getItems().get(itemName);
-
         // disable viewing unidentified items
         if (stack.getItem() == Items.STONE_SHOVEL && stack.getItemDamage() >= 1 && stack.getItemDamage() <= 6) {
-            stack.setStackDisplayName(item.getTier().getTextColor() + "Unidentified Item");
+            stack.setStackDisplayName(ItemTier.fromBoxDamage(stack.getItemDamage()).getTextColor() + "Unidentified Item");
             return;
         }
+
+        // get item from name
+        if (WebManager.getItems().get(itemName) == null) {
+            ItemUtils.replaceLore(stack, new ArrayList<>()); // empty the lore if the item isn't recognized
+            return;
+        }
+        ItemProfile item = WebManager.getItems().get(itemName);
 
         // attempt to parse item data
         JsonObject data;

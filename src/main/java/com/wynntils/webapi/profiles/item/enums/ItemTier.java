@@ -57,6 +57,11 @@ public enum ItemTier {
         return null;
     }
 
+    public static ItemTier fromBoxDamage(int damage) {
+        if (damage > 6) return NORMAL;
+        return ItemTier.values()[damage];
+    }
+
     public String asCapitalizedName() {
         return StringUtils.capitalizeFirst(toString().toLowerCase());
     }
