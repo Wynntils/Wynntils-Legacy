@@ -3,7 +3,7 @@
 <br>
 <a href="https://discord.gg/ve49m9J"><img src="https://discordapp.com/api/guilds/394189072635133952/widget.png"></a>
 <a href="http://ci.wynntils.com/job/Wynntils/"><img src="http://ci.wynntils.com/buildStatus/icon?job=Wynntils"></a>
-<a href="https://github.com/Wynntils/Wynntils/blob/development/LICENSE"><img src="https://img.shields.io/badge/license-AGLP%203.0-green.svg"></a>
+<a href="https://github.com/Wynntils/Wynntils/blob/development/LICENSE"><img src="https://img.shields.io/badge/license-AGPL%203.0-green.svg"></a>
 </p>
 
 About Wynntils
