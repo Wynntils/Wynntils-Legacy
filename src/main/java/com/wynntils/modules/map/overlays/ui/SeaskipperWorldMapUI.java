@@ -90,7 +90,7 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
                 GRAY + "Seaskipper routes."
         ), (v) -> showSeaskipperRoutes, (i, btn) -> showSeaskipperRoutes = !showSeaskipperRoutes);
 
-        addButton(MapButtonType.BOAT, 1, Arrays.asList(
+        addButton(MapButtonType.BOAT, 2, Arrays.asList(
                 LIGHT_PURPLE + "[>] Buy a boat",
                 GRAY + "Click here",
                 GRAY + "to buy a boat.",
