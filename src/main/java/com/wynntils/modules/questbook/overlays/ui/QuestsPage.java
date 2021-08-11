@@ -241,9 +241,10 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
         }
 
         if (entryInfo.hasTargetLocation()) {
-            lore.add(TextFormatting.YELLOW + (TextFormatting.BOLD + "Middle click to view on map!"));
+            lore.add(TextFormatting.YELLOW + (TextFormatting.BOLD + "Right click to view on map!"));
         }
-        lore.add(TextFormatting.GOLD + (TextFormatting.BOLD + "Right click to open on the wiki!"));
+
+        lore.add(TextFormatting.GOLD + (TextFormatting.BOLD + "Middle click to open on the wiki!"));
 
         return lore;
     }
@@ -308,7 +309,7 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
     @Override
     protected void handleEntryClick(QuestInfo itemInfo, int mouseButton) {
         switch (mouseButton) {
-            case 0: // left click
+            case 0: // Left Click
                 if (selectedEntry.getStatus() == QuestStatus.COMPLETED || selectedEntry.getStatus() == QuestStatus.CANNOT_START)
                     return;
 
@@ -320,7 +321,13 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
                 McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
                 QuestManager.setTrackedQuest(selectedEntry);
                 break;
-            case 1: // right click
+            case 1: // Right Click
+                if (!selectedEntry.hasTargetLocation()) return;
+
+                Location loc = selectedEntry.getTargetLocation();
+                Utils.displayGuiScreen(new MainWorldMapUI((float) loc.x, (float) loc.z));
+                break;
+            case 2: // Middle click
                 McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
 
                 final String baseUrl = "https://wynncraft.fandom.com/wiki/";
@@ -345,12 +352,6 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
                         return true;
                     }), true);
                 }
-                break;
-            case 2: // middle click
-                if (!selectedEntry.hasTargetLocation()) return;
-
-                Location loc = selectedEntry.getTargetLocation();
-                Utils.displayGuiScreen(new MainWorldMapUI((float) loc.x, (float) loc.z));
                 break;
         }
     }
