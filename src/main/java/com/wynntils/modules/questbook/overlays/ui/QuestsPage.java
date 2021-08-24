@@ -243,7 +243,6 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
         if (entryInfo.hasTargetLocation()) {
             lore.add(TextFormatting.YELLOW + (TextFormatting.BOLD + "Right click to view on map!"));
         }
-
         lore.add(TextFormatting.GOLD + (TextFormatting.BOLD + "Middle click to open on the wiki!"));
 
         return lore;
