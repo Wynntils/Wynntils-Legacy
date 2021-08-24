@@ -147,7 +147,7 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
 
                 Matcher result = SEASKIPPER_PASS_MATCHER.matcher(displayname);
                 if (!result.find()) {
-                    Reference.LOGGER.info("Seaskipper Pass with name" + stack.getDisplayName() + " didn't parse");
+                    Reference.LOGGER.info("Seaskipper Pass with name " + stack.getDisplayName() + " didn't parse");
                     continue;
                 }
 
