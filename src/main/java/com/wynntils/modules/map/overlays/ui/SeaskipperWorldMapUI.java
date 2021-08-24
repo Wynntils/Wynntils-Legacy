@@ -281,8 +281,4 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
     public void keyTyped(char typedChar, int keyCode) throws IOException {
         super.keyTyped(typedChar, keyCode);
     }
-
-    public boolean hasReceivedItems() {
-        return receivedItems;
-    }
 }
