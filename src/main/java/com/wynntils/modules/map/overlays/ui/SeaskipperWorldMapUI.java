@@ -92,9 +92,7 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
 
         addButton(MapButtonType.BOAT, 2, Arrays.asList(
                 LIGHT_PURPLE + "[>] Buy a boat",
-                GRAY + "Click here",
-                GRAY + "to buy a boat.",
-                GRAY + "Only works if you don't have one."
+                GRAY + "Click here to buy a boat."
         ), (v) -> {
                 for (Slot slot : McIf.player().inventoryContainer.inventorySlots) {
                     if (slot.getStack().getItem() == Items.BOAT) return false;
@@ -102,8 +100,7 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
 
                 return true;
         }, (i, btn) -> {
-            if (boatSlot == -1) return;
-            Reference.LOGGER.info("BoatSlot is " + boatSlot);
+            if (!i.isEnabled() || boatSlot == -1) return;
             chest.handleMouseClick(chest.inventorySlots.getSlot(boatSlot), boatSlot, 0, ClickType.PICKUP);
         });
 
@@ -146,8 +143,9 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
                 if (displayname == null) continue;
 
                 Matcher result = SEASKIPPER_PASS_MATCHER.matcher(displayname);
-                if (!result.find()) {
-                    Reference.LOGGER.info("Seaskipper Pass with name " + stack.getDisplayName() + " didn't parse");
+
+                if (!result.find() || result.groupCount() != 2) {
+                    Reference.LOGGER.info("Seaskipper Pass with name" + stack.getDisplayName() + " didn't parse");
                     continue;
                 }
 
@@ -156,9 +154,11 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
                 location.setCost(cost);
                 location.setActiveType(SeaskipperLocation.Accessibility.ACCESSIBLE);
                 routes.put(location, s.slotNumber);
-            } else if (stack.getItem() == Items.BOAT) { //Buy boat
+                return;
+            }
+
+            if (stack.getItem() == Items.BOAT) { //Buy boat
                 boatSlot = s.slotNumber;
-                Reference.LOGGER.info("BoatSlot is " + s.slotNumber);
             }
         }
 
@@ -280,5 +280,9 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
     @Override
     public void keyTyped(char typedChar, int keyCode) throws IOException {
         super.keyTyped(typedChar, keyCode);
+    }
+
+    public boolean hasReceivedItems() {
+        return receivedItems;
     }
 }
