@@ -101,7 +101,7 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
                 }
 
                 return true;
-            }, (i, btn) -> {
+        }, (i, btn) -> {
             if (boatSlot == -1) return;
             Reference.LOGGER.info("BoatSlot is " + boatSlot);
             chest.handleMouseClick(chest.inventorySlots.getSlot(boatSlot), boatSlot, 0, ClickType.PICKUP);
