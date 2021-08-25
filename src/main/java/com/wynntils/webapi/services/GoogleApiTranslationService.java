@@ -9,6 +9,7 @@ import com.google.gson.JsonElement;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.webapi.request.Request;
 import com.wynntils.webapi.request.RequestHandler;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -37,8 +38,13 @@ public class GoogleApiTranslationService extends CachingTranslationService imple
                         builder.append(part);
                     }
                     String translatedMessage = builder.toString();
-                    saveTranslation(toLanguage, message, translatedMessage);
-                    handleTranslation.accept(translatedMessage);
+                    //If Google trad return no data ( 500 error ) , display default lang
+                    if(StringUtils.isEmpty(translatedMessage)){
+                        handleTranslation.accept(message);
+                    }else{
+                        saveTranslation(toLanguage, message, translatedMessage);
+                        handleTranslation.accept(translatedMessage);
+                    }
                     return true;
                 }), true);
     }
