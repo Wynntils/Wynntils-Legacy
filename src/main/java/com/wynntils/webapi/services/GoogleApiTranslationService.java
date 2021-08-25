@@ -6,7 +6,6 @@ package com.wynntils.webapi.services;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.webapi.request.Request;
 import com.wynntils.webapi.request.RequestHandler;
