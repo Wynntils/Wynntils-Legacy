@@ -6,6 +6,7 @@ package com.wynntils.webapi.services;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.webapi.request.Request;
 import com.wynntils.webapi.request.RequestHandler;
@@ -38,13 +39,13 @@ public class GoogleApiTranslationService extends CachingTranslationService imple
                         builder.append(part);
                     }
                     String translatedMessage = builder.toString();
+                    saveTranslation(toLanguage, message, translatedMessage);
+                    handleTranslation.accept(translatedMessage);
+
+                    return true;
+                }).onError(integer -> {
                     //If Google trad return no data ( 500 error ) , display default lang
-                    if(StringUtils.isEmpty(translatedMessage)){
-                        handleTranslation.accept(message);
-                    }else{
-                        saveTranslation(toLanguage, message, translatedMessage);
-                        handleTranslation.accept(translatedMessage);
-                    }
+                    handleTranslation.accept(message);
                     return true;
                 }), true);
     }
