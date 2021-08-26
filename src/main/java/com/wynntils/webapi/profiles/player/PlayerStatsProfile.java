@@ -323,7 +323,8 @@ public class PlayerStatsProfile {
         NONE("Basic"),
         VIP("VIP"),
         VIPPLUS("VIP+"),
-        HERO("HERO");
+        HERO("HERO"),
+        CHAMPION("CHAMPION");
 
         @Override
         public String toString() {

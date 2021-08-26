@@ -509,7 +509,11 @@ public class OverlayEvents implements Listener {
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectLoginLocal) {
             if (messageText.matches("^\\[.+\\] .+ has just logged in!")) {
-                if (messageText.startsWith("[HERO]")) {
+                if (messageText.startsWith("[CHAMPION]")) {
+                    GameUpdateOverlay.queueMessage(GREEN + "→ " + YELLOW + "[" + GOLD + "CHAMPION" + YELLOW + "] " + GOLD + messageText.split(" ")[1]);
+                    e.setCanceled(true);
+                    return;
+                } else if (messageText.startsWith("[HERO]")) {
                     GameUpdateOverlay.queueMessage(GREEN + "→ " + DARK_PURPLE + "[" + LIGHT_PURPLE + "HERO" + DARK_PURPLE + "] " + LIGHT_PURPLE + messageText.split(" ")[1]);
                     e.setCanceled(true);
                     return;
