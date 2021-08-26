@@ -8,7 +8,6 @@ import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.map.overlays.enums.MapButtonType;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
 
@@ -71,6 +70,10 @@ public class MapButton {
         );
 
         onClick.accept(this, mouseButton);
+    }
+
+    public Boolean isEnabled() {
+        return isEnabled.apply(null);
     }
 
     public int getStartX() {

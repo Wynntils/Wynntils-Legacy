@@ -39,6 +39,7 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
     SeaskipperLocation origin;
     private final HashMap<String, SeaskipperLocation> locations = new HashMap<>();
     private final HashMap<SeaskipperLocation, Integer> routes = new HashMap<>();
+    private int boatSlot = -1;
 
     private boolean receivedItems = false;
     ChestReplacer chest;
@@ -83,11 +84,26 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
                 GRAY + "inaccessible locations."
         ), (v) -> showInaccessibleLocations, (i, btn) -> showInaccessibleLocations = !showInaccessibleLocations);
 
-        addButton(MapButtonType.PIN, 2, Arrays.asList(
+        addButton(MapButtonType.PIN, 1, Arrays.asList(
                 LIGHT_PURPLE + "[>] Show Seaskipper routes",
                 GRAY + "Click here to enable/disable",
                 GRAY + "Seaskipper routes."
         ), (v) -> showSeaskipperRoutes, (i, btn) -> showSeaskipperRoutes = !showSeaskipperRoutes);
+
+        addButton(MapButtonType.BOAT, 2, Arrays.asList(
+                LIGHT_PURPLE + "[>] Buy a boat",
+                GRAY + "Click here to buy a boat."
+        ), (v) -> {
+                for (Slot slot : McIf.player().inventoryContainer.inventorySlots) {
+                    if (slot.getStack().getItem() == Items.BOAT) return false;
+                }
+
+                return true;
+        }, (i, btn) -> {
+            if (!i.isEnabled() || boatSlot == -1) return;
+            chest.handleMouseClick(chest.inventorySlots.getSlot(boatSlot), boatSlot, 0, ClickType.PICKUP);
+        });
+
     }
 
     @Override
@@ -119,24 +135,31 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
 
             if (stack.isEmpty() || !stack.hasDisplayName()) continue;
 
-            if (stack.getItem() == Items.NAME_TAG) receivedItems = true;
-            else continue;
+            if (stack.getItem() == Items.NAME_TAG) {
+                receivedItems = true;
 
-            String displayname = getTextWithoutFormattingCodes(stack.getDisplayName());
+                String displayname = getTextWithoutFormattingCodes(stack.getDisplayName());
 
-            if (displayname == null) continue;
+                if (displayname == null) continue;
 
-            Matcher result = SEASKIPPER_PASS_MATCHER.matcher(displayname);
-            if (!result.find()) {
-                Reference.LOGGER.info("Seaskipper Pass with name" + stack.getDisplayName() + " didn't parse");
-                continue;
+                Matcher result = SEASKIPPER_PASS_MATCHER.matcher(displayname);
+
+                if (!result.find() || result.groupCount() != 2) {
+                    Reference.LOGGER.info("Seaskipper Pass with name" + stack.getDisplayName() + " didn't parse");
+                    continue;
+                }
+
+                SeaskipperLocation location = locations.get(result.group(1));
+                int cost = Integer.parseInt(result.group(2));
+                location.setCost(cost);
+                location.setActiveType(SeaskipperLocation.Accessibility.ACCESSIBLE);
+                routes.put(location, s.slotNumber);
+                return;
             }
 
-            SeaskipperLocation location = locations.get(result.group(1));
-            int cost = Integer.parseInt(result.group(2));
-            location.setCost(cost);
-            location.setActiveType(SeaskipperLocation.Accessibility.ACCESSIBLE);
-            routes.put(location, s.slotNumber);
+            if (stack.getItem() == Items.BOAT) { //Buy boat
+                boatSlot = s.slotNumber;
+            }
         }
 
         if (!receivedItems) return;
@@ -241,7 +264,8 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
 
-        if (mapButtons.get(0).isHovering(mouseX, mouseY)) return;
+        // Skip if hovering base
+        if (mouseButton != 0 || mapButtons.get(0).isHovering(mouseX, mouseY)) return;
 
         for (SeaskipperLocation location : locations.values()) {
             if (!routes.containsKey(location)) continue;

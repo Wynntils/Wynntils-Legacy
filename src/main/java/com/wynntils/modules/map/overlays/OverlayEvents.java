@@ -17,7 +17,7 @@ import java.io.IOException;
 
 public class OverlayEvents implements Listener {
 
-    private SeaskipperWorldMapUI seaskipperWorldMapUI;
+    private static SeaskipperWorldMapUI seaskipperWorldMapUI;
 
     //MouseClicked and MouseClickMove are obsolete since HandleMouseInput is canceled, and mouseClicked is handled by MovementScreen
 
@@ -41,6 +41,7 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void replaceSeaskipperMenuDraw(GuiOverlapEvent.ChestOverlap.DrawScreen.Pre e) {
         if (seaskipperWorldMapUI == null) return;
+        //close screen if 10 seconds has passed and no items/item parsing failed
 
         seaskipperWorldMapUI.drawScreen(e.getMouseX(), e.getMouseY(), e.getPartialTicks());
         e.setCanceled(true);

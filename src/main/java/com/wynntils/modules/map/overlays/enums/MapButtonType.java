@@ -15,6 +15,7 @@ public enum MapButtonType {
     SHARE(78, 46, 94, 60),
     BACK(94, 46, 110, 58),
     INFO(110, 46, 120, 62),
+    BOAT(120, 46, 135, 62),
     BASE(0, 0, 144, 26, true);
 
     int startX, startY;
