@@ -265,7 +265,7 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
         super.mouseClicked(mouseX, mouseY, mouseButton);
 
         // Skip if hovering base
-        if (mouseButton == 0 || mapButtons.get(0).isHovering(mouseX, mouseY)) return;
+        if (mouseButton != 0 || mapButtons.get(0).isHovering(mouseX, mouseY)) return;
 
         for (SeaskipperLocation location : locations.values()) {
             if (!routes.containsKey(location)) continue;
