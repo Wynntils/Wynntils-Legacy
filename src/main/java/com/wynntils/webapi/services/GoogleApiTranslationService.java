@@ -39,6 +39,11 @@ public class GoogleApiTranslationService extends CachingTranslationService imple
                     String translatedMessage = builder.toString();
                     saveTranslation(toLanguage, message, translatedMessage);
                     handleTranslation.accept(translatedMessage);
+
+                    return true;
+                }).onError(integer -> {
+                    //If Google trad return no data ( 500 error ) , display default lang
+                    handleTranslation.accept(message);
                     return true;
                 }), true);
     }
