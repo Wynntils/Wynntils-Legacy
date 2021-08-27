@@ -21,6 +21,8 @@ import com.wynntils.modules.questbook.QuestBookModule;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookListPage;
+import com.wynntils.modules.utilities.UtilitiesModule;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 import com.wynntils.webapi.profiles.item.enums.ItemType;
@@ -149,6 +151,14 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
         if (entryInfo.getGuideStack().isEmpty()) return;
 
         render.drawItemStack(entryInfo.getGuideStack(), maxX, maxY, false);
+
+        if (entryInfo.isFavorited()) {
+            GlStateManager.translate(0, 0, 360f);
+            ScreenRenderer.scale(0.5f);
+            render.drawRect(Textures.Map.map_icons, (maxX + 10)*2, (maxY - 5)*2, 208, 36, 18, 18);
+            ScreenRenderer.scale(2f);
+            GlStateManager.translate(0, 0, -360f);
+        }
     }
 
     @Override
@@ -195,7 +205,8 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
         lore.add(entryInfo.getGuideStack().getDisplayName());
         lore.addAll(ItemUtils.getLore(entryInfo.getGuideStack()));
         lore.add("");
-        lore.add(TextFormatting.GOLD + "Shift + Right Click to open WynnData");
+        lore.add(TextFormatting.GOLD + "Shift + Left Click to " + (entryInfo.isFavorited() ? "unfavorite" : "favorite"));
+        lore.add(TextFormatting.RED + "Shift + Right Click to open WynnData");
 
         return lore;
     }
@@ -255,10 +266,26 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
 
     @Override
     protected void handleEntryClick(ItemProfile itemInfo, int mouseButton) {
-        if (mouseButton != 1 || !(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) return;
+        if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) return;
+        if (selected >= search.get(currentPage - 1).size() || selected < 0) return;
 
-        if (selected >= search.get(currentPage - 1).size()) return;
-        Utils.openUrl("https://www.wynndata.tk/i/" + Utils.encodeUrl(search.get(currentPage - 1).get(selected).getDisplayName()));
+        ItemProfile item = search.get(currentPage - 1).get(selected);
+
+        if (mouseButton == 0) { // left click
+            if (item.isFavorited())
+                UtilitiesConfig.INSTANCE.favoriteItems.remove(item.getDisplayName());
+            else
+                UtilitiesConfig.INSTANCE.favoriteItems.add(item.getDisplayName());
+            UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
+
+            updateSearch();
+            return;
+        }
+
+        if (mouseButton == 1) { // right click
+            Utils.openUrl("https://www.wynndata.tk/i/" + Utils.encodeUrl(item.getDisplayName()));
+            return;
+        }
     }
 
     private interface SearchHandler {
@@ -309,43 +336,57 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
         @Override
         public List<String> drawScreenElements(ItemPage page, ScreenRenderer render, int mouseX, int mouseY, int x, int y, int posX, int posY, int selected) {
             // order buttons
-            render.drawString("Order the list by", x - 84, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-            render.drawString("Alphabetical Order (A-Z)", x - 140, y - 15, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            // render.drawString("Order the list by", x - 84, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+            render.drawString("Alphabetical Order (A-Z)", x - 140, y - 25, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
-            if (posX >= 144 && posX <= 150 && posY >= 8 && posY <= 15) {
+            if (posX >= 144 && posX <= 150 && posY >= 18 && posY <= 25) {
                 selected = -2;
-                render.drawRect(Textures.UIs.quest_book, x - 150, y - 15, 246, 259, 7, 7);
+                render.drawRect(Textures.UIs.quest_book, x - 150, y - 25, 246, 259, 7, 7);
             } else {
                 if (selected == -2) selected = -1;
                 if (sortFunction == SortFunction.ALPHABETICAL) {
+                    render.drawRect(Textures.UIs.quest_book, x - 150, y - 25, 246, 259, 7, 7);
+                } else {
+                    render.drawRect(Textures.UIs.quest_book, x - 150, y - 25, 254, 259, 7, 7);
+                }
+            }
+
+            render.drawString("Level Order (100-0)", x - 140, y - 15, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+
+            if (posX >= 144 && posX <= 150 && posY >= 8 && posY <= 15) {
+                selected = -3;
+                render.drawRect(Textures.UIs.quest_book, x - 150, y - 15, 246, 259, 7, 7);
+            } else {
+                if (selected == -3) selected = -1;
+                if (sortFunction == SortFunction.BY_LEVEL) {
                     render.drawRect(Textures.UIs.quest_book, x - 150, y - 15, 246, 259, 7, 7);
                 } else {
                     render.drawRect(Textures.UIs.quest_book, x - 150, y - 15, 254, 259, 7, 7);
                 }
             }
 
-            render.drawString("Level Order (100-0)", x - 140, y - 5, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            render.drawString("Rarity Order (MYTH-NORM)", x - 140, y - 5, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
             if (posX >= 144 && posX <= 150 && posY >= -2 && posY <= 5) {
-                selected = -3;
+                selected = -4;
                 render.drawRect(Textures.UIs.quest_book, x - 150, y - 5, 246, 259, 7, 7);
             } else {
-                if (selected == -3) selected = -1;
-                if (sortFunction == SortFunction.BY_LEVEL) {
+                if (selected == -4) selected = -1;
+                if (sortFunction == SortFunction.BY_RARITY) {
                     render.drawRect(Textures.UIs.quest_book, x - 150, y - 5, 246, 259, 7, 7);
                 } else {
                     render.drawRect(Textures.UIs.quest_book, x - 150, y - 5, 254, 259, 7, 7);
                 }
             }
 
-            render.drawString("Rarity Order (MYTH-NORM)", x - 140, y + 5, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            render.drawString("Favorited Items", x - 140, y + 5, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
             if (posX >= 144 && posX <= 150 && posY >= -12 && posY <= -5) {
-                selected = -4;
+                selected = -5;
                 render.drawRect(Textures.UIs.quest_book, x - 150, y + 5, 246, 259, 7, 7);
             } else {
-                if (selected == -4) selected = -1;
-                if (sortFunction == SortFunction.BY_RARITY) {
+                if (selected == -5) selected = -1;
+                if (sortFunction == SortFunction.FAVORITES) {
                     render.drawRect(Textures.UIs.quest_book, x - 150, y + 5, 246, 259, 7, 7);
                 } else {
                     render.drawRect(Textures.UIs.quest_book, x - 150, y + 5, 254, 259, 7, 7);
@@ -353,7 +394,7 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
             }
 
             // filter ++
-            render.drawString("Item Filter", x - 80, y + 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+            // render.drawString("Item Filter", x - 80, y + 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
             int placed = 0;
             int plusY = 0;
@@ -424,6 +465,12 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
                         sortFunction = SortFunction.BY_RARITY;
                     }
                     return true;
+                case -5:
+                    if (sortFunction != SortFunction.FAVORITES) {
+                        McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                        sortFunction = SortFunction.FAVORITES;
+                    }
+                    return true;
             }
 
             if (selected > -10) return false; // selected > -10 means one of the item filter buttons is hovered
@@ -464,6 +511,8 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
                 case BY_RARITY:
                     searchState.addFilter(new ItemFilter.ByRarity(Collections.emptyList(), SortDirection.DESCENDING));
                     break;
+                case FAVORITES:
+                    searchState.addFilter(new ByStat(ByStat.TYPE_FAVORITED, Collections.emptyList(), SortDirection.DESCENDING));
             }
 
             return searchState;
@@ -515,7 +564,7 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
 
         private enum SortFunction {
 
-            ALPHABETICAL, BY_LEVEL, BY_RARITY
+            ALPHABETICAL, BY_LEVEL, BY_RARITY, FAVORITES
 
         }
 

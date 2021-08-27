@@ -505,6 +505,12 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
         @Type.Alias("Powders")
         public static final StatType TYPE_POWDER_SLOTS = new StatType("PowderSlots", "Powder Slot Count", ItemProfile::getPowderAmount);
 
+        // user-favorited
+        @Type.Alias({"Favourited", "fav"})
+        public static final StatType TYPE_FAVORITED = new StatType("Favorited", "Favorited", i -> {
+            return i.isFavorited() ? 1 : 0;
+        });
+
         public static class StatType extends Type<ByStat> {
 
             static StatType getIdStat(String name, String desc, String key) {
