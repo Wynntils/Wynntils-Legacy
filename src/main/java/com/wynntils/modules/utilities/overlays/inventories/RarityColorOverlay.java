@@ -49,6 +49,8 @@ public class RarityColorOverlay implements Listener {
     private static final Pattern DURABILITY_PATTERN = Pattern.compile("\\[([0-9]+)/([0-9]+) Durability\\]");
     private static String professionFilter = "-";
 
+    private static final ScreenRenderer renderer = new ScreenRenderer();
+
     @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawGuiContainerBackgroundLayer e) {
         drawChest(e.getGui(), e.getGui().getLowerInv(), e.getGui().getUpperInv(), true, true);
@@ -263,7 +265,6 @@ public class RarityColorOverlay implements Listener {
     private static void drawHighlightColor(GuiContainer guiContainer, Slot s, CustomColor colour) {
         if (colour == null) return;
 
-        ScreenRenderer renderer = new ScreenRenderer();
         ScreenRenderer.beginGL(guiContainer.getGuiLeft() + s.xPos, guiContainer.getGuiTop() + s.yPos);
         {
             color(colour.r, colour.g, colour.b, UtilitiesConfig.Items.INSTANCE.inventoryAlpha / 100);

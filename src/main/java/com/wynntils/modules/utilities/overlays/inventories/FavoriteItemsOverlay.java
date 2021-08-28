@@ -26,6 +26,8 @@ import static net.minecraft.util.text.TextFormatting.*;
 
 public class FavoriteItemsOverlay implements Listener {
 
+    private static final ScreenRenderer renderer = new ScreenRenderer();
+
     private static void renderFavorites(GuiContainer gui) {
         if (!Reference.onWorld) return;
 
@@ -36,14 +38,12 @@ public class FavoriteItemsOverlay implements Listener {
             if (!nbt.getBoolean("wynntilsFavorite")) continue;
 
             // draw star
-            ScreenRenderer.beginGL(0, 0);
+            ScreenRenderer.beginGL(gui.getGuiLeft() + s.xPos + 10, gui.getGuiTop() + s.yPos - 5);
             GlStateManager.translate(0, 0, 300);
 
-            ScreenRenderer r = new ScreenRenderer();
             RenderHelper.disableStandardItemLighting();
-            float scaleFactor = 0.5f;
-            ScreenRenderer.scale(scaleFactor);
-            r.drawRect(Textures.Map.map_icons, (int)((gui.getGuiLeft() + s.xPos + 10) / scaleFactor), (int)((gui.getGuiTop() + s.yPos - 5) / scaleFactor), 208, 36, 18, 18);
+            ScreenRenderer.scale(0.5f);
+            renderer.drawRect(Textures.Map.map_icons, 0, 0, 208, 36, 18, 18);
             ScreenRenderer.endGL();
         }
     }

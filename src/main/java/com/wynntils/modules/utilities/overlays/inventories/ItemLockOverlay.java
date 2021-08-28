@@ -20,6 +20,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ItemLockOverlay implements Listener {
 
+    private static final ScreenRenderer renderer = new ScreenRenderer();
+
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onInventoryGui(GuiOverlapEvent.InventoryOverlap.HoveredToolTip.Pre e) {
         if (!Reference.onWorld) return;
@@ -62,10 +64,9 @@ public class ItemLockOverlay implements Listener {
         // HeyZeer0: this will make the lock appear over the item
         GlStateManager.translate(0, 0, 260);
 
-        ScreenRenderer r = new ScreenRenderer();
         RenderHelper.disableStandardItemLighting();
         ScreenRenderer.scale(0.5f);
-        r.drawRect(Textures.UIs.hud_overlays, (int)((guiLeft + s.xPos) / 0.5) + 25, (int)((guiTop + s.yPos) / 0.5) - 8, 0, 0, 16, 16);
+        renderer.drawRect(Textures.UIs.hud_overlays, (int)((guiLeft + s.xPos) / 0.5) + 25, (int)((guiTop + s.yPos) / 0.5) - 8, 0, 0, 16, 16);
         ScreenRenderer.endGL();
     }
 

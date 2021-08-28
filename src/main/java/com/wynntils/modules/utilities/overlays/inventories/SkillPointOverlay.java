@@ -62,6 +62,8 @@ public class SkillPointOverlay implements Listener {
     private static final int SAVE_SLOT = 1;
     private static final int LOAD_SLOT = 3;
 
+    private final ScreenRenderer renderer = new ScreenRenderer();
+
     private GuiTextFieldWynn nameField;
 
     private int skillPointsRemaining;
@@ -177,9 +179,8 @@ public class SkillPointOverlay implements Listener {
             ScreenRenderer.beginGL(e.getGui().getGuiLeft() , e.getGui().getGuiTop());
             {
                 GlStateManager.translate(0, 0, 251);
-                ScreenRenderer r = new ScreenRenderer();
                 RenderHelper.disableStandardItemLighting();
-                r.drawString(skillPoint.getColoredSymbol(), s.xPos + 2, s.yPos, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                renderer.drawString(skillPoint.getColoredSymbol(), s.xPos + 2, s.yPos, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             }
             ScreenRenderer.endGL();
         }

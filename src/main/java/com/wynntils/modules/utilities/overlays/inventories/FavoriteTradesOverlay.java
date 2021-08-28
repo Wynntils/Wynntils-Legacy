@@ -13,7 +13,6 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.utilities.managers.KeyManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.inventory.Slot;
@@ -28,6 +27,8 @@ import java.util.List;
 public class FavoriteTradesOverlay implements Listener {
 
     private final List<String> favorites_trade_items_lore = new ArrayList<>();
+
+    private final ScreenRenderer renderer = new ScreenRenderer();
 
     @SubscribeEvent
     public void onKeyPress(GuiOverlapEvent.ChestOverlap.KeyTyped e) {
@@ -76,10 +77,9 @@ public class FavoriteTradesOverlay implements Listener {
         // HeyZeer0: this will make the lock appear over the item
         GlStateManager.translate(0, 0, 260);
 
-        ScreenRenderer r = new ScreenRenderer();
         RenderHelper.disableStandardItemLighting();
         ScreenRenderer.scale(0.5f);
-        r.drawRect(Textures.UIs.hud_overlays, (int)((guiLeft + s.xPos) / 0.5) + 20, (int)((guiTop + s.yPos) / 0.5) - 3, 51, 0, 17, 16);
+        renderer.drawRect(Textures.UIs.hud_overlays, (int)((guiLeft + s.xPos) / 0.5) + 20, (int)((guiTop + s.yPos) / 0.5) - 3, 51, 0, 17, 16);
         ScreenRenderer.endGL();
     }
 
