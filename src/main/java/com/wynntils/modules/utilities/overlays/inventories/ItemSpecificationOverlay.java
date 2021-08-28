@@ -74,7 +74,7 @@ public class ItemSpecificationOverlay implements Listener {
                         ScreenRenderer.endGL();
                     } else {
                         // This is an un-id:ed but named item
-                        destinationName = "?";
+                        destinationName = "";
                         color = MinecraftChatColors.GRAY;
                     }
                 }

@@ -384,37 +384,41 @@ public class StringUtils {
         return Character.toString((char) ((gavellian) - 9327));
     }
 
-    public static int convertEmeraldPrice(String input) {
+    public static long convertEmeraldPrice(String input) {
         input = input.toLowerCase();
-        int emeralds = 0;
+        long emeralds = 0;
 
-        // stx
-        Matcher m = STX_PATTERN.matcher(input);
-        while (m.find()) {
-            emeralds += Float.parseFloat(m.group(1)) * 64 * 64 * 64;
-        }
+        try {
+            // stx
+            Matcher m = STX_PATTERN.matcher(input);
+            while (m.find()) {
+                emeralds += Long.parseLong(m.group(1)) * 64 * 64 * 64;
+            }
 
-        // le
-        m = LE_PATTERN.matcher(input);
-        while (m.find()) {
-            emeralds += Float.parseFloat(m.group(1)) * 64 * 64;
-        }
+            // le
+            m = LE_PATTERN.matcher(input);
+            while (m.find()) {
+                emeralds += Long.parseLong(m.group(1)) * 64 * 64;
+            }
 
-        // eb
-        m = EB_PATTERN.matcher(input);
-        while (m.find()) {
-            emeralds += Float.parseFloat(m.group(1)) * 64;
-        }
+            // eb
+            m = EB_PATTERN.matcher(input);
+            while (m.find()) {
+                emeralds += Long.parseLong(m.group(1)) * 64;
+            }
 
-        // standard numbers/emeralds
-        m = E_PATTERN.matcher(input);
-        while (m.find()) {
-            emeralds += Integer.parseInt(m.group(1));
-        }
+            // standard numbers/emeralds
+            m = E_PATTERN.matcher(input);
+            while (m.find()) {
+                emeralds += Long.parseLong(m.group(1));
+            }
 
-        // account for tax if flagged
-        if (input.contains("-t")) {
-            emeralds = Math.round(emeralds / 1.05F);
+            // account for tax if flagged
+            if (input.contains("-t")) {
+                emeralds = Math.round(emeralds / 1.05F);
+            }
+        } catch (NumberFormatException e) {
+            return 0; // number exceeds long limit (somehow)
         }
 
         return emeralds;

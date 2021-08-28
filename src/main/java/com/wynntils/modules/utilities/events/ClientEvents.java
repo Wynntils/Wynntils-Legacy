@@ -279,7 +279,7 @@ public class ClientEvents implements Listener {
         if (!priceInput) return;
 
         priceInput = false;
-        int price = StringUtils.convertEmeraldPrice(e.getMessage());
+        long price = StringUtils.convertEmeraldPrice(e.getMessage());
         if (price != 0) // price of 0 means either garbage input or actual 0, can be ignored either way
             e.setMessage("" + price);
     }
@@ -666,6 +666,11 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void clickOnChest(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
+        if (e.getSlotIn() != null && e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() == 4) { // prevent accidental pouch clicking
+            e.setCanceled(true);
+            return;
+        }
+
         if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getSlotIn() != null) {
             if (e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() >= 0 && e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() < 27) {
                 e.setCanceled(checkDropState(e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() + 9, McIf.mc().gameSettings.keyBindDrop.getKeyCode()));
