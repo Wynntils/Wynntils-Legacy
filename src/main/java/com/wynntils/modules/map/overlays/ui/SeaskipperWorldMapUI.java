@@ -154,7 +154,7 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
                 location.setCost(cost);
                 location.setActiveType(SeaskipperLocation.Accessibility.ACCESSIBLE);
                 routes.put(location, s.slotNumber);
-                return;
+                continue;
             }
 
             if (stack.getItem() == Items.BOAT) { //Buy boat
