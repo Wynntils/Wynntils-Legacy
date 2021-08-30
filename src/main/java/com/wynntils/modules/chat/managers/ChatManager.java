@@ -54,6 +54,9 @@ public class ChatManager {
     public static Pattern translationPatternNpc = Pattern.compile("^(" +
             "(?:§7\\[[0-9]+/[0-9]+\\] §r§2[^:]*: §r§a)" + // npc talking
             ")(.*)(§r)$");
+    public static Pattern translationPatternQuestDialogueNpc = Pattern.compile(
+            "(.*:)(.+(?:(?:SHIFT)|(?:SNEAK))+.+)(.+.+)", Pattern.DOTALL);  // Quest Dialogue
+
     public static Pattern translationPatternOther = Pattern.compile("^(" +
             "(?:§5[^:]*: §r§d)" + "|" +  // interaction with e.g. blacksmith
             "(?:§[0-9a-z])" + // generic system message
@@ -187,8 +190,7 @@ public class ChatManager {
 
                 } else if (translateGavellian && StringUtils.hasGavellian(McIf.getUnformattedText(untranslated))) {
                     language = WynncraftLanguage.GAVELLIAN;
-                }
-                else {
+                } else {
                     language = WynncraftLanguage.NORMAL;
                 }
 
@@ -224,7 +226,7 @@ public class ChatManager {
                 } else {
                     untranslated.getSiblings().clear();
                     if (!McIf.getUnformattedText(translated).equals(McIf.getUnformattedText(untranslated))) {
-                        untranslated.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,  new TextComponentString(TextFormatting.GRAY + "You don't know this language!")));
+                        untranslated.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(TextFormatting.GRAY + "You don't know this language!")));
                     }
 
                     in.appendSibling(untranslated);
@@ -582,6 +584,12 @@ public class ChatManager {
                 sendTranslation(chatMatcher);
                 return true;
             }
+            Matcher npcQuestDialogueMatcher = translationPatternQuestDialogueNpc.matcher(formatted);
+             if (npcQuestDialogueMatcher.find()) {
+                if (!TranslationConfig.INSTANCE.translateQuestDialogue) return false;
+                sendTranslation(npcQuestDialogueMatcher);
+                return true;
+            }
             Matcher npcMatcher = translationPatternNpc.matcher(formatted);
             if (npcMatcher.find()) {
                 if (!TranslationConfig.INSTANCE.translateNpc) return false;
@@ -612,7 +620,7 @@ public class ChatManager {
                 // ignore
             }
             McIf.mc().addScheduledTask(() ->
-                    ChatOverlay.getChat().printChatMessage(new TextComponentString(TranslationManager.TRANSLATED_PREFIX + prefix + translatedMsg + suffix)));
+                    ChatOverlay.getChat().printChatMessage(new TextComponentString(TranslationManager.TRANSLATED_PREFIX + prefix + org.apache.commons.lang3.StringUtils.stripAccents(translatedMsg) + suffix)));
         });
     }
 
@@ -955,7 +963,7 @@ public class ChatManager {
             // Detect new messages
             // If dialogue is the exact same as previously then most likely a message was received
             // The second check is for the colors changing on the shift prompt
-            if (dialogue.equals(last) && dialogue.get(dialogue.size() - 1).getSiblings().equals(last.get(last.size()-1).getSiblings())) {
+            if (dialogue.equals(last) && dialogue.get(dialogue.size() - 1).getSiblings().equals(last.get(last.size() - 1).getSiblings())) {
                 newMessageCount++;
 
                 // most recent message
@@ -965,13 +973,15 @@ public class ChatManager {
                     if (dialogueChat == null) {
                         dialogueChat = newMessage;
                     } else {
-                        if (ChatConfig.INSTANCE.addTimestampsToChat) addTimestamp(newMessage); // add timestamps to new lines for consistency
+                        if (ChatConfig.INSTANCE.addTimestampsToChat)
+                            addTimestamp(newMessage); // add timestamps to new lines for consistency
                         dialogueChat.appendSibling(newMessage);
                     }
                 }
             }
 
-            if (dialogueChat != null) ChatOverlay.getChat().printChatMessageWithOptionalDeletion(dialogueChat, WYNN_DIALOGUE_NEW_MESSAGES_ID);
+            if (dialogueChat != null)
+                ChatOverlay.getChat().printChatMessageWithOptionalDeletion(dialogueChat, WYNN_DIALOGUE_NEW_MESSAGES_ID);
 
             lastChat = chat;
             ITextComponent newComponent = new TextComponentString("");
