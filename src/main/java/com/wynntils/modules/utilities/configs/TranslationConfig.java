@@ -23,6 +23,9 @@ public class TranslationConfig extends SettingsClass {
     @Setting(displayName = "Translate NPC Lines", description = "Should messages spoken by NPCs be translated?")
     public boolean translateNpc = true;
 
+    @Setting(displayName = "Translate quest dialogue Lines", description = "Should dialogue during quest be translated?")
+    public boolean translateQuestDialogue = true;
+
     @Setting(displayName = "Translate Other", description = "Should other messages, such as system information, be translated?")
     public boolean translateOther = false;
 
