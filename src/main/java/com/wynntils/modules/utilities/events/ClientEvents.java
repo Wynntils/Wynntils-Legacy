@@ -104,7 +104,7 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void onKeyboardEven(InputEvent.KeyInputEvent e) {
+    public void onKeyboardEvent(InputEvent.KeyInputEvent e) {
         long currentTime = System.currentTimeMillis();
         // Events triggered just after the user pressed the Toggle AFK Protection key
         // should be ignored
@@ -279,7 +279,7 @@ public class ClientEvents implements Listener {
         if (!priceInput) return;
 
         priceInput = false;
-        int price = StringUtils.convertEmeraldPrice(e.getMessage());
+        long price = StringUtils.convertEmeraldPrice(e.getMessage());
         if (price != 0) // price of 0 means either garbage input or actual 0, can be ignored either way
             e.setMessage("" + price);
     }
@@ -488,7 +488,7 @@ public class ClientEvents implements Listener {
     public void keyPressOnChest(GuiOverlapEvent.ChestOverlap.KeyTyped e) {
         if (!Reference.onWorld) return;
 
-        if (UtilitiesConfig.INSTANCE.preventMythicChestClose) {
+        if (UtilitiesConfig.INSTANCE.preventMythicChestClose || UtilitiesConfig.INSTANCE.preventFavoritedChestClose) {
             if (e.getKeyCode() == 1 || e.getKeyCode() == McIf.mc().gameSettings.keyBindInventory.getKeyCode()) {
                 IInventory inv = e.getGui().getLowerInv();
                 if (McIf.getUnformattedText(inv.getDisplayName()).contains("Loot Chest") ||
@@ -496,13 +496,20 @@ public class ClientEvents implements Listener {
                         McIf.getUnformattedText(inv.getDisplayName()).contains("Objective Rewards")) {
                     for (int i = 0; i < inv.getSizeInventory(); i++) {
                         ItemStack stack = inv.getStackInSlot(i);
-                        if (!stack.hasDisplayName() ||
-                            !stack.getDisplayName().startsWith(TextFormatting.DARK_PURPLE.toString()) ||
-                            !ItemUtils.getStringLore(stack).toLowerCase().contains("mythic")) continue;
 
-                        TextComponentString text = new TextComponentString("You cannot close this loot chest while there is a mythic in it!");
+                        TextComponentString text;
+                        if (UtilitiesConfig.INSTANCE.preventMythicChestClose && stack.hasDisplayName() &&
+                                stack.getDisplayName().startsWith(TextFormatting.DARK_PURPLE.toString()) &&
+                                ItemUtils.getStringLore(stack).toLowerCase().contains("mythic")) {
+                            text = new TextComponentString("You cannot close this loot chest while there is a mythic in it!");
+                        } else if (UtilitiesConfig.INSTANCE.preventFavoritedChestClose && stack.hasTagCompound() &&
+                                stack.getTagCompound().getBoolean("wynntilsFavorite")) {
+                            text = new TextComponentString("You cannot close this loot chest while there is a favorited item in it!");
+                        } else {
+                            continue;
+                        }
+
                         text.getStyle().setColor(TextFormatting.RED);
-
                         McIf.player().sendMessage(text);
                         McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_BASS, 1f));
                         e.setCanceled(true);
@@ -659,6 +666,11 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void clickOnChest(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
+        if (e.getSlotIn() != null && e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() == 4) { // prevent accidental pouch clicking
+            e.setCanceled(true);
+            return;
+        }
+
         if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getSlotIn() != null) {
             if (e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() >= 0 && e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() < 27) {
                 e.setCanceled(checkDropState(e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() + 9, McIf.mc().gameSettings.keyBindDrop.getKeyCode()));

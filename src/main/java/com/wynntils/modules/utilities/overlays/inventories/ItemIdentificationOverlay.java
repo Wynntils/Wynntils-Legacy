@@ -90,8 +90,8 @@ public class ItemIdentificationOverlay implements Listener {
 
         // Check if unidentified item.
         if (itemName.contains("Unidentified") && UtilitiesConfig.Identifications.INSTANCE.showItemGuesses) {
-            // Add possible identifications
             nbt.setBoolean("wynntilsIgnore", true);
+            // add possible items
             addItemGuesses(stack);
             return;
         }
@@ -352,43 +352,21 @@ public class ItemIdentificationOverlay implements Listener {
     }
 
     private static void addItemGuesses(ItemStack stack) {
-        String name = StringUtils.normalizeBadString(stack.getDisplayName());
-        String itemType = getTextWithoutFormattingCodes(name).split(" ", 3)[1];
-        String levelRange = null;
-
-        List<String> lore = ItemUtils.getLore(stack);
-
-        for (String aLore : lore) {
-            if (aLore.contains("Lv. Range")) {
-                levelRange = getTextWithoutFormattingCodes(aLore).replace("- Lv. Range: ", "");
-                break;
-            }
-        }
-
-        if (itemType == null || levelRange == null) return;
-
-        ItemGuessProfile igp = WebManager.getItemGuesses().get(levelRange);
-        if (igp == null) return;
-
-        Map<String, String> rarityMap = igp.getItems().get(itemType);
-        if (rarityMap == null) return;
-
-        ItemTier tier = ItemTier.fromTextColoredString(name);
-        String items = rarityMap.get(tier.asCapitalizedName());
-
+        String items = getItemsFromBox(stack);
         if (items == null) return;
+
+        ItemTier tier = ItemTier.fromTextColoredString(StringUtils.normalizeBadString(stack.getDisplayName()));
+
         String itemNamesAndCosts = "";
         String[] possiblitiesNames = items.split(", ");
         for (String possibleItem : possiblitiesNames) {
             ItemProfile itemProfile = WebManager.getItems().get(possibleItem);
-            String itemDescription;
+            String itemDescription = tier.getTextColor() +
+                    (UtilitiesConfig.INSTANCE.favoriteItems.contains(possibleItem) ? UNDERLINE : "") + possibleItem; // underline favs
             if (UtilitiesConfig.Identifications.INSTANCE.showGuessesPrice && itemProfile != null) {
                 int level = itemProfile.getRequirements().getLevel();
                 int itemCost = tier.getItemIdentificationCost(level);
-                itemDescription = tier.getTextColor() + possibleItem + GRAY + " [" + GREEN + itemCost + " "
-                        + EmeraldSymbols.E_STRING + GRAY + "]";
-            } else {
-                itemDescription = tier.getTextColor() + possibleItem;
+                itemDescription += GRAY + " [" + GREEN + itemCost + " " + EmeraldSymbols.E_STRING + GRAY + "]";
             }
             if (!itemNamesAndCosts.isEmpty()) {
                 itemNamesAndCosts += GRAY + ", ";
@@ -526,6 +504,32 @@ public class ItemIdentificationOverlay implements Listener {
         if (result.length() == 0) return "";
         result.setCharAt(0, Character.toLowerCase(result.charAt(0)));
         return result.toString();
+    }
+
+    public static String getItemsFromBox(ItemStack stack) {
+        String name = StringUtils.normalizeBadString(stack.getDisplayName());
+        String itemType = getTextWithoutFormattingCodes(name).split(" ", 3)[1];
+        String levelRange = null;
+
+        List<String> lore = ItemUtils.getLore(stack);
+
+        for (String aLore : lore) {
+            if (aLore.contains("Lv. Range")) {
+                levelRange = getTextWithoutFormattingCodes(aLore).replace("- Lv. Range: ", "");
+                break;
+            }
+        }
+
+        if (itemType == null || levelRange == null) return null;
+
+        ItemGuessProfile igp = WebManager.getItemGuesses().get(levelRange);
+        if (igp == null) return null;
+
+        Map<String, String> rarityMap = igp.getItems().get(itemType);
+        if (rarityMap == null) return null;
+
+        ItemTier tier = ItemTier.fromTextColoredString(name);
+        return rarityMap.get(tier.asCapitalizedName());
     }
 
     /**

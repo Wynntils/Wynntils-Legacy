@@ -38,15 +38,17 @@ public class EmeraldCountOverlay implements Listener {
 
     private static final CustomColor textColor = new CustomColor(77f / 255f, 77f / 255f, 77f / 255f, 1);
 
+    private final ScreenRenderer renderer = new ScreenRenderer();
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onPlayerInventory(GuiOverlapEvent.InventoryOverlap.DrawGuiContainerForegroundLayer e) {
         if (!Reference.onWorld || !UtilitiesConfig.Items.INSTANCE.emeraldCountInventory) return;
 
         if (UtilitiesConfig.Items.INSTANCE.emeraldCountText) {
-            drawTextMoneyAmount(170, 7, PlayerInfo.get(InventoryData.class).getMoney(), new ScreenRenderer(), textColor);
+            drawTextMoneyAmount(170, 7, PlayerInfo.get(InventoryData.class).getMoney(), renderer, textColor);
             return;
         }
-        drawIconsMoneyAmount(178, 0, PlayerInfo.get(InventoryData.class).getMoney(), new ScreenRenderer());
+        drawIconsMoneyAmount(178, 0, PlayerInfo.get(InventoryData.class).getMoney(), renderer);
     }
 
     @SubscribeEvent
@@ -58,7 +60,6 @@ public class EmeraldCountOverlay implements Listener {
 
         IInventory upperInv = e.getGui().getUpperInv();
 
-        ScreenRenderer renderer = new ScreenRenderer();
         if (UtilitiesConfig.Items.INSTANCE.emeraldCountText) {
             if (UtilitiesConfig.Items.INSTANCE.emeraldCountInventory)
                 drawTextMoneyAmount(170, -10, ItemUtils.countMoney(lowerInv), renderer, CommonColors.WHITE);
@@ -78,9 +79,8 @@ public class EmeraldCountOverlay implements Listener {
 
         IInventory lowerInv = e.getGui().getLowerInv();
 
-        ScreenRenderer renderer = new ScreenRenderer();
         if (UtilitiesConfig.Items.INSTANCE.emeraldCountText) {
-            drawTextMoneyAmount(170, 7, ItemUtils.countMoney(lowerInv), new ScreenRenderer(), textColor);
+            drawTextMoneyAmount(170, 7, ItemUtils.countMoney(lowerInv), renderer, textColor);
             return;
         }
 

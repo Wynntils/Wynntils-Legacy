@@ -187,6 +187,10 @@ public class ItemProfile {
         return wynnBuilderID;
     }
 
+    public boolean isFavorited() {
+        return UtilitiesConfig.INSTANCE.favoriteItems.contains(displayName);
+    }
+
     public ItemStack getGuideStack() {
         return guideStack != null ? guideStack : generateStack();
     }

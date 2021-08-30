@@ -33,6 +33,8 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ItemSpecificationOverlay implements Listener {
 
+    private final ScreenRenderer renderer = new ScreenRenderer();
+
     private void renderOverlay(GuiContainer gui) {
         if (!Reference.onWorld) return;
 
@@ -66,15 +68,14 @@ public class ItemSpecificationOverlay implements Listener {
                         ScreenRenderer.beginGL(0, 0);
                         GlStateManager.translate(0, 0, 270);
 
-                        ScreenRenderer r = new ScreenRenderer();
                         RenderHelper.disableStandardItemLighting();
                         float scaleFactor = 0.75f;
                         ScreenRenderer.scale(scaleFactor);
-                        r.drawRect(Textures.UIs.hud_overlays, (int)((gui.getGuiLeft() + s.xPos) / scaleFactor) + 3, (int)((gui.getGuiTop() + s.yPos) / scaleFactor) + 3 , type.getTextureX(), type.getTextureY(), 16, 16);
+                        renderer.drawRect(Textures.UIs.hud_overlays, (int)((gui.getGuiLeft() + s.xPos) / scaleFactor) + 3, (int)((gui.getGuiTop() + s.yPos) / scaleFactor) + 3 , type.getTextureX(), type.getTextureY(), 16, 16);
                         ScreenRenderer.endGL();
                     } else {
                         // This is an un-id:ed but named item
-                        destinationName = "?";
+                        destinationName = "";
                         color = MinecraftChatColors.GRAY;
                     }
                 }
@@ -156,13 +157,12 @@ public class ItemSpecificationOverlay implements Listener {
             if (destinationName != null) {
                 ScreenRenderer.beginGL((int) (gui.getGuiLeft()/scale), (int) (gui.getGuiTop()/scale));
                 GlStateManager.translate(0, 0, 260);
-                ScreenRenderer r = new ScreenRenderer();
                 GlStateManager.scale(scale, scale, 1);
                 RenderHelper.disableStandardItemLighting();
                 // Make a modifiable copy
                 color = new CustomColor(color);
                 color.setA(0.8f);
-                r.drawString(destinationName, (s.xPos + xOffset)/scale, (s.yPos + 1)/scale, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
+                renderer.drawString(destinationName, (s.xPos + xOffset)/scale, (s.yPos + 1)/scale, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
                 ScreenRenderer.endGL();
             }
         }
