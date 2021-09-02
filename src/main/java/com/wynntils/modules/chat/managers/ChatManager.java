@@ -576,30 +576,31 @@ public class ChatManager {
     }
 
     private static boolean translateMessage(ITextComponent in) {
-        if (!McIf.getUnformattedText(in).startsWith(TranslationManager.TRANSLATED_PREFIX)) {
+        String unformattedText = McIf.getUnformattedText(in);
+        if (!unformattedText.startsWith(TranslationManager.TRANSLATED_PREFIX) && !unformattedText.startsWith(TranslationManager.UNTRANSLATED_PREFIX)) {
             String formatted = McIf.getFormattedText(in);
             Matcher chatMatcher = translationPatternChat.matcher(formatted);
             if (chatMatcher.find()) {
                 if (!TranslationConfig.INSTANCE.translatePlayerChat) return false;
-                sendTranslation(chatMatcher);
+                sendTranslation(chatMatcher, formatted);
                 return true;
             }
             Matcher npcQuestDialogueMatcher = translationPatternQuestDialogueNpc.matcher(formatted);
-             if (npcQuestDialogueMatcher.find()) {
+            if (npcQuestDialogueMatcher.find()) {
                 if (!TranslationConfig.INSTANCE.translateQuestDialogue) return false;
-                sendTranslation(npcQuestDialogueMatcher);
+                sendTranslation(npcQuestDialogueMatcher, formatted);
                 return true;
             }
             Matcher npcMatcher = translationPatternNpc.matcher(formatted);
             if (npcMatcher.find()) {
                 if (!TranslationConfig.INSTANCE.translateNpc) return false;
-                sendTranslation(npcMatcher);
+                sendTranslation(npcMatcher, formatted);
                 return true;
             }
             Matcher otherMatcher = translationPatternOther.matcher(formatted);
             if (otherMatcher.find()) {
                 if (!TranslationConfig.INSTANCE.translateOther) return false;
-                sendTranslation(otherMatcher);
+                sendTranslation(otherMatcher, formatted);
                 return true;
             }
         }
@@ -607,7 +608,7 @@ public class ChatManager {
         return false;
     }
 
-    private static void sendTranslation(Matcher m) {
+    private static void sendTranslation(Matcher m, String formatted) {
         // We only want to translate the actual message, not formatting, sender, etc.
         String message = TextFormatting.getTextWithoutFormattingCodes(m.group(2));
         String prefix = m.group(1);
@@ -620,7 +621,8 @@ public class ChatManager {
                 // ignore
             }
             McIf.mc().addScheduledTask(() ->
-                    ChatOverlay.getChat().printChatMessage(new TextComponentString(TranslationManager.TRANSLATED_PREFIX + prefix + org.apache.commons.lang3.StringUtils.stripAccents(translatedMsg) + suffix)));
+                    ChatOverlay.getChat().printChatMessage(new TextComponentString(translatedMsg == null ?  TranslationManager.UNTRANSLATED_PREFIX +  formatted : TranslationManager.TRANSLATED_PREFIX + prefix + org.apache.commons.lang3.StringUtils.stripAccents(translatedMsg) + suffix)));
+
         });
     }
 

@@ -13,7 +13,8 @@ import java.util.function.Consumer;
 
 public class TranslationManager {
 
-    public static final String TRANSLATED_PREFIX = TextFormatting.GRAY + "➢" + TextFormatting.RESET;
+    public static final String TRANSLATED_PREFIX = TextFormatting.GRAY + "[" + TranslationConfig.INSTANCE.languageName + "]" + TextFormatting.RESET;
+    public static final String UNTRANSLATED_PREFIX = TextFormatting.GRAY + "[en]" + TextFormatting.RESET;
 
     private static TranslationService translator = null;
 
