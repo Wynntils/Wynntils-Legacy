@@ -7,6 +7,7 @@ package com.wynntils.modules.core.enums;
 public enum UpdateStream {
 
     STABLE,
+    DISABLE,
     CUTTING_EDGE
 
 }

@@ -31,6 +31,10 @@ public class UpdateProfile {
                         latestUpdate = "B" + WebManager.getCuttingEdgeBuildNumber();
                         UpdateOverlay.reset();
                     }
+                } if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.DISABLE) {
+                    latestUpdate = Reference.VERSION;
+                    hasUpdate = false;
+                    UpdateOverlay.reset();
                 } else {
                     String stableMd5 = WebManager.getStableJarFileMD5();
                     if (!md5Installed.equals(stableMd5)) {
