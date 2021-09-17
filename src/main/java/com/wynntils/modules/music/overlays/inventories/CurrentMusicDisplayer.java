@@ -17,13 +17,13 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class CurrentMusicDisplayer implements Listener {
 
+    private static final ScreenRenderer r = new ScreenRenderer();
+
     @SubscribeEvent
     public void onDrawInGameMenu(GuiOverlapEvent.IngameMenuOverlap.DrawScreen e) {
         if (!Reference.onWorld || !MusicConfig.INSTANCE.enabled) return;
         if (!SoundTrackManager.getPlayer().isPlaying() && !SoundTrackManager.getPlayer().getStatus().isPaused()) return;
-
-        ScreenRenderer r = new ScreenRenderer();
-
+        
         ScreenRenderer.beginGL(e.getGui().width / 2, e.getGui().height / 4 - 16);
         float size = r.drawString((SoundTrackManager.getPlayer().getStatus().getCurrentSong() != null ? SoundTrackManager.getPlayer().getStatus().getCurrentSong().getName() : "Nothing is being played!"), 0, 155, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
 

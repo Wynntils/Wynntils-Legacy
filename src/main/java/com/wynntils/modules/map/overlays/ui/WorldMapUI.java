@@ -118,12 +118,12 @@ public class WorldMapUI extends GuiMovementScreen {
     protected void addButton(MapButtonType type, int offsetX, List<String> hover, Function<Void, Boolean> isEnabled, BiConsumer<MapButton, Integer> onClick) {
         // add the button base
         if (mapButtons.isEmpty()) {
-            mapButtons.add(new MapButton(width / 2, height - 45, MapButtonType.BASE, null, (v) -> true, null));
+            mapButtons.add(new MapButton(width / 2, height - 45, MapButtonType.BASE, null, (v) -> true, null, renderer));
         }
 
         int posX = mapButtons.get(0).getStartX() + 13 + (19 * (mapButtons.size() - 1)) + offsetX;
         int posY = height - 45;
-        mapButtons.add(new MapButton(posX, posY, type, hover, isEnabled, onClick));
+        mapButtons.add(new MapButton(posX, posY, type, hover, isEnabled, onClick, renderer));
     }
 
     protected void createIcons() {

@@ -23,7 +23,7 @@ import java.util.ConcurrentModificationException;
 import java.util.List;
 
 public abstract class UI extends GuiScreen {
-    private ScreenRenderer screenRenderer = new ScreenRenderer();
+    private final ScreenRenderer screenRenderer = new ScreenRenderer();
     protected long ticks = 0;
     protected int screenWidth = 0, screenHeight = 0, mouseX = 0, mouseY = 0;
     protected List<UIElement> UIElements = new ArrayList<>();

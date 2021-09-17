@@ -42,7 +42,7 @@ public class WaypointOverviewUI extends GuiScreen {
 
     private static final int ungroupedIndex = WaypointProfile.WaypointType.values().length;
 
-    private ScreenRenderer renderer = new ScreenRenderer();
+    private final ScreenRenderer renderer = new ScreenRenderer();
     private List<WaypointProfile> waypoints;
     @SuppressWarnings("unchecked")
     private List<WaypointProfile>[] groupedWaypoints = (ArrayList<WaypointProfile>[]) new ArrayList[ungroupedIndex + 1];
