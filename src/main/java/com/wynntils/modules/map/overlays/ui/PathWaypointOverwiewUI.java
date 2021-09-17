@@ -29,7 +29,7 @@ public class PathWaypointOverwiewUI extends GuiScreen {
     private GuiButton newBtn;
     private List<GuiButton> editButtons = new ArrayList<>();
 
-    private ScreenRenderer renderer = new ScreenRenderer();
+    private final ScreenRenderer renderer = new ScreenRenderer();
     private List<PathWaypointProfile> paths;
     private int page;
     private int pageHeight;

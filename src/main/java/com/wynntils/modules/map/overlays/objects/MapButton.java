@@ -27,9 +27,9 @@ public class MapButton {
     BiConsumer<MapButton, Integer> onClick;
     Function<Void, Boolean> isEnabled;
 
-    ScreenRenderer renderer = new ScreenRenderer();
+    ScreenRenderer renderer;
 
-    public MapButton(int posX, int posY, MapButtonType type, List<String> hoverLore, Function<Void, Boolean> isEnabled, BiConsumer<MapButton, Integer> onClick) {
+    public MapButton(int posX, int posY, MapButtonType type, List<String> hoverLore, Function<Void, Boolean> isEnabled, BiConsumer<MapButton, Integer> onClick, ScreenRenderer renderer) {
         int halfWidth = type.getWidth() / 2;
         int halfHeight = type.getHeight() / 2;
 
@@ -42,6 +42,7 @@ public class MapButton {
         this.hoverLore = hoverLore;
         this.isEnabled = isEnabled;
         this.onClick = onClick;
+        this.renderer = renderer;
     }
 
     public boolean isHovering(int mouseX, int mouseY) {
