@@ -272,7 +272,6 @@ public class Utils {
         if (name.startsWith("Perfect ")) {
             name = name.substring(8);
         }
-        name = com.wynntils.core.utils.StringUtils.normalizeBadString(name);
         return name;
     }
 

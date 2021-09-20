@@ -37,21 +37,10 @@ public class UtilitiesModule extends Module {
         registerEvents(new ClientEvents());
 
         // Inventory Overlays
-        registerEvents(new ItemIdentificationOverlay());
-        registerEvents(new RarityColorOverlay());
-        registerEvents(new ItemLevelOverlay());
-        registerEvents(new SkillPointOverlay());
-        registerEvents(new ItemLockOverlay());
-        registerEvents(new FavoriteTradesOverlay());
         registerEvents(new MenuButtonsOverlay());
         registerEvents(new IngredientFilterOverlay());
-        registerEvents(new EmeraldCountOverlay());
-        registerEvents(new LoreChangerOverlay());
         registerEvents(new WynnBuilderOverlay());
-        registerEvents(new ItemSpecificationOverlay());
         registerEvents(new BankOverlay());
-        registerEvents(new ServerSelectorOverlay());
-        registerEvents(new FavoriteItemsOverlay());
 
         // Real overlays
         registerOverlay(new WarTimerOverlay(), Priority.LOWEST);
@@ -85,11 +74,9 @@ public class UtilitiesModule extends Module {
         registerSettings(UtilitiesConfig.class);
         registerSettings(UtilitiesConfig.AfkProtection.class);
         registerSettings(UtilitiesConfig.Data.class);
-        registerSettings(UtilitiesConfig.Items.class);
         registerSettings(UtilitiesConfig.Wars.class);
         registerSettings(UtilitiesConfig.Market.class);
         registerSettings(UtilitiesConfig.Bank.class);
-        registerSettings(UtilitiesConfig.Identifications.class);
 
         registerSettings(TranslationConfig.class);
 

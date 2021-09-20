@@ -19,7 +19,7 @@ import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.utilities.instances.ContainerGearViewer;
 import com.wynntils.modules.utilities.managers.ItemScreenshotManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
-import com.wynntils.modules.utilities.overlays.inventories.ItemIdentificationOverlay;
+import com.wynntils.modules.items.overlays.ItemIdentificationOverlay;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.IdentificationOrderer;
 import com.wynntils.webapi.profiles.item.ItemProfile;

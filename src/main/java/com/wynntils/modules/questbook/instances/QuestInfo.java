@@ -51,7 +51,7 @@ public class QuestInfo {
         this.isMiniQuest = isMiniQuest;
 
         lore = ItemUtils.getLore(originalStack);
-        name = StringUtils.normalizeBadString(getTextWithoutFormattingCodes(originalStack.getDisplayName())).replace(" [Tracked]", "");
+        name = getTextWithoutFormattingCodes(originalStack.getDisplayName()).replace(" [Tracked]", "");
 
         Iterator<String> loreIterator = lore.iterator();
 

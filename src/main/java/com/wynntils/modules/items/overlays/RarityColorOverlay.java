@@ -2,7 +2,7 @@
  *  * Copyright © Wynntils - 2018 - 2021.
  */
 
-package com.wynntils.modules.utilities.overlays.inventories;
+package com.wynntils.modules.items.overlays;
 
 import com.wynntils.McIf;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
@@ -11,9 +11,8 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
-import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.IntRange;
-import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import com.wynntils.modules.items.configs.ItemsConfig;
 import com.wynntils.webapi.profiles.item.enums.ItemTier;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -66,13 +65,13 @@ public class RarityColorOverlay implements Listener {
         GuiContainer guiContainer = e.getGui();
 
         for (Slot s : guiContainer.inventorySlots.inventorySlots) {
-            if (!UtilitiesConfig.Items.INSTANCE.accesoryHighlight && s.slotNumber >= 9 && s.slotNumber <= 12)
+            if (!ItemsConfig.Items.INSTANCE.accesoryHighlight && s.slotNumber >= 9 && s.slotNumber <= 12)
                 continue;
-            if (!UtilitiesConfig.Items.INSTANCE.hotbarHighlight && s.slotNumber >= 36 && s.slotNumber <= 41)
+            if (!ItemsConfig.Items.INSTANCE.hotbarHighlight && s.slotNumber >= 36 && s.slotNumber <= 41)
                 continue;
-            if (!UtilitiesConfig.Items.INSTANCE.armorHighlight && s.slotNumber >= 5 && s.slotNumber <= 8)
+            if (!ItemsConfig.Items.INSTANCE.armorHighlight && s.slotNumber >= 5 && s.slotNumber <= 8)
                 continue;
-            if (!UtilitiesConfig.Items.INSTANCE.mainHighlightInventory && s.slotNumber >= 13 && s.slotNumber <= 35)
+            if (!ItemsConfig.Items.INSTANCE.mainHighlightInventory && s.slotNumber >= 13 && s.slotNumber <= 35)
                 continue;
 
             drawItemSlot(guiContainer, false, s);
@@ -85,14 +84,14 @@ public class RarityColorOverlay implements Listener {
         for (Slot s : guiContainer.inventorySlots.inventorySlots) {
             if (s.inventory.getDisplayName().equals(McIf.player().inventory.getDisplayName())) {
                 playerInvSlotNumber++;
-                if (playerInvSlotNumber <= 4 && playerInvSlotNumber >= 1 && !UtilitiesConfig.Items.INSTANCE.accesoryHighlight)
+                if (playerInvSlotNumber <= 4 && playerInvSlotNumber >= 1 && !ItemsConfig.Items.INSTANCE.accesoryHighlight)
                     continue;
-                if (playerInvSlotNumber <= 27 && playerInvSlotNumber >= 5 && !UtilitiesConfig.Items.INSTANCE.mainHighlightInventory)
+                if (playerInvSlotNumber <= 27 && playerInvSlotNumber >= 5 && !ItemsConfig.Items.INSTANCE.mainHighlightInventory)
                     continue;
-                if (playerInvSlotNumber <= 36 && playerInvSlotNumber >= 28 && !UtilitiesConfig.Items.INSTANCE.hotbarHighlight)
+                if (playerInvSlotNumber <= 36 && playerInvSlotNumber >= 28 && !ItemsConfig.Items.INSTANCE.hotbarHighlight)
                     continue;
             } else {
-                if (!UtilitiesConfig.Items.INSTANCE.mainHighlightChest)
+                if (!ItemsConfig.Items.INSTANCE.mainHighlightChest)
                     continue;
             }
 
@@ -103,7 +102,7 @@ public class RarityColorOverlay implements Listener {
     private static void drawItemSlot(GuiContainer guiContainer, boolean isChest, Slot s) {
         ItemStack is = s.getStack();
         String lore = ItemUtils.getStringLore(is);
-        String name = StringUtils.normalizeBadString(is.getDisplayName());
+        String name = is.getDisplayName();
 
         // start rendering
         drawLevelArc(guiContainer, s, ItemUtils.getLevel(lore));
@@ -119,69 +118,69 @@ public class RarityColorOverlay implements Listener {
             return null;
         }
         if (isChest) {
-            if (UtilitiesConfig.Items.INSTANCE.filterEnabled && !professionFilter.equals("-") && lore.contains(professionFilter)) {
+            if (ItemsConfig.Items.INSTANCE.filterEnabled && !professionFilter.equals("-") && lore.contains(professionFilter)) {
                 return new CustomColor(0.078f, 0.35f, 0.8f);
             }
-            if (UtilitiesConfig.Items.INSTANCE.highlightCosmeticDuplicates && slotUnderMouse != null && lore.contains("Reward") && !lore.contains("Raid Reward") && slotUnderMouse.slotNumber != s.slotNumber && slotUnderMouse.getStack().getDisplayName().equals(name)) {
+            if (ItemsConfig.Items.INSTANCE.highlightCosmeticDuplicates && slotUnderMouse != null && lore.contains("Reward") && !lore.contains("Raid Reward") && slotUnderMouse.slotNumber != s.slotNumber && slotUnderMouse.getStack().getDisplayName().equals(name)) {
                 return new CustomColor(0f, 1f, 0f);
             }
             if (lore.contains("Reward")) {
-                if (lore.contains(TextFormatting.GOLD + "Epic") && UtilitiesConfig.Items.INSTANCE.epicEffectsHighlight) {
+                if (lore.contains(TextFormatting.GOLD + "Epic") && ItemsConfig.Items.INSTANCE.epicEffectsHighlight) {
                     return new CustomColor(1f, 0.666f, 0f);
                 }
-                if (lore.contains(TextFormatting.RED + "Godly") && UtilitiesConfig.Items.INSTANCE.godlyEffectsHighlight) {
+                if (lore.contains(TextFormatting.RED + "Godly") && ItemsConfig.Items.INSTANCE.godlyEffectsHighlight) {
                     return new CustomColor(1f, 0f, 0f);
                 }
-                if (lore.contains(TextFormatting.LIGHT_PURPLE + "Rare") && UtilitiesConfig.Items.INSTANCE.rareEffectsHighlight) {
+                if (lore.contains(TextFormatting.LIGHT_PURPLE + "Rare") && ItemsConfig.Items.INSTANCE.rareEffectsHighlight) {
                     return new CustomColor(1f, 0f, 1f);
                 }
-                if (lore.contains(TextFormatting.WHITE + "Common") && UtilitiesConfig.Items.INSTANCE.commonEffectsHighlight) {
+                if (lore.contains(TextFormatting.WHITE + "Common") && ItemsConfig.Items.INSTANCE.commonEffectsHighlight) {
                     return new CustomColor(1f, 1f, 1f);
                 }
-                if (lore.contains(TextFormatting.DARK_RED + " Black Market") && UtilitiesConfig.Items.INSTANCE.blackMarketEffectsHighlight) {
+                if (lore.contains(TextFormatting.DARK_RED + " Black Market") && ItemsConfig.Items.INSTANCE.blackMarketEffectsHighlight) {
                     return new CustomColor(0f, 0f, 0f);
                 }
             }
         }
-        if (lore.contains(ItemTier.NORMAL.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.normalHighlight) {
+        if (lore.contains(ItemTier.NORMAL.asFormattedName()) && ItemsConfig.Items.INSTANCE.normalHighlight) {
             return ItemTier.NORMAL.getCustomizedHighlightColor();
         }
-        if (lore.contains(ItemTier.UNIQUE.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.uniqueHighlight) {
+        if (lore.contains(ItemTier.UNIQUE.asFormattedName()) && ItemsConfig.Items.INSTANCE.uniqueHighlight) {
             return ItemTier.UNIQUE.getCustomizedHighlightColor();
         }
-        if (lore.contains(ItemTier.RARE.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.rareHighlight) {
+        if (lore.contains(ItemTier.RARE.asFormattedName()) && ItemsConfig.Items.INSTANCE.rareHighlight) {
             return ItemTier.RARE.getCustomizedHighlightColor();
         }
-        if (lore.contains(ItemTier.SET.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.setHighlight) {
+        if (lore.contains(ItemTier.SET.asFormattedName()) && ItemsConfig.Items.INSTANCE.setHighlight) {
             return ItemTier.SET.getCustomizedHighlightColor();
         }
-        if (lore.contains(ItemTier.LEGENDARY.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.legendaryHighlight) {
+        if (lore.contains(ItemTier.LEGENDARY.asFormattedName()) && ItemsConfig.Items.INSTANCE.legendaryHighlight) {
             return ItemTier.LEGENDARY.getCustomizedHighlightColor();
         }
-        if (lore.contains(ItemTier.FABLED.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.fabledHighlight) {
+        if (lore.contains(ItemTier.FABLED.asFormattedName()) && ItemsConfig.Items.INSTANCE.fabledHighlight) {
             return ItemTier.FABLED.getCustomizedHighlightColor();
         }
-        if (lore.contains(ItemTier.MYTHIC.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.mythicHighlight) {
+        if (lore.contains(ItemTier.MYTHIC.asFormattedName()) && ItemsConfig.Items.INSTANCE.mythicHighlight) {
             return ItemTier.MYTHIC.getCustomizedHighlightColor();
         }
         if (name.matches("^(" + TextFormatting.DARK_AQUA + ".*%.*)$")) {
             return ItemTier.CRAFTED.getCustomizedHighlightColor();
         }
-        if (UtilitiesConfig.Items.INSTANCE.ingredientHighlight && !(is.getCount() == 0)) {
+        if (ItemsConfig.Items.INSTANCE.ingredientHighlight && !(is.getCount() == 0)) {
             if (name.endsWith(TextFormatting.GOLD + " [" + TextFormatting.YELLOW + "✫" + TextFormatting.DARK_GRAY + "✫✫" + TextFormatting.GOLD + "]")) {
-                return UtilitiesConfig.Items.INSTANCE.ingredientOneHighlightColor;
+                return ItemsConfig.Items.INSTANCE.ingredientOneHighlightColor;
             }
             if (name.endsWith(TextFormatting.GOLD + " [" + TextFormatting.YELLOW + "✫✫" + TextFormatting.DARK_GRAY + "✫" + TextFormatting.GOLD + "]") ||
                     name.endsWith(TextFormatting.DARK_PURPLE + " [" + TextFormatting.LIGHT_PURPLE + "✫✫" + TextFormatting.DARK_GRAY + "✫" + TextFormatting.DARK_PURPLE + "]")) {
-                return UtilitiesConfig.Items.INSTANCE.ingredientTwoHighlightColor;
+                return ItemsConfig.Items.INSTANCE.ingredientTwoHighlightColor;
             }
             if (name.endsWith(TextFormatting.GOLD + " [" + TextFormatting.YELLOW + "✫✫✫" + TextFormatting.GOLD + "]") ||
                     name.endsWith(TextFormatting.DARK_AQUA + " [" + TextFormatting.AQUA + "✫✫✫" + TextFormatting.DARK_AQUA + "]")) {
-                return UtilitiesConfig.Items.INSTANCE.ingredientThreeHighlightColor;
+                return ItemsConfig.Items.INSTANCE.ingredientThreeHighlightColor;
             }
         }
         if (isPowder(is)) {
-            if (UtilitiesConfig.Items.INSTANCE.minPowderTier == 0 || getPowderTier(is) < UtilitiesConfig.Items.INSTANCE.minPowderTier) {
+            if (ItemsConfig.Items.INSTANCE.minPowderTier == 0 || getPowderTier(is) < ItemsConfig.Items.INSTANCE.minPowderTier) {
                 return null;
             } else {
                 return getPowderColor(is);
@@ -200,7 +199,7 @@ public class RarityColorOverlay implements Listener {
     }
 
     private static void drawDurabilityArc(GuiContainer guiContainer, Slot s, float durability){
-    	if (!UtilitiesConfig.Items.INSTANCE.craftedDurabilityBars) return;
+    	if (!ItemsConfig.Items.INSTANCE.craftedDurabilityBars) return;
     	if (durability == -1) return;
 
     	int x = guiContainer.getGuiLeft() + s.xPos;
@@ -216,7 +215,7 @@ public class RarityColorOverlay implements Listener {
         Tessellator tessellator = Tessellator.getInstance();
         BufferBuilder bufferbuilder = tessellator.getBuffer();
         int arcColor = MathHelper.hsvToRGB(Math.max(0.0F, durability) / 3.0F, 1.0F, 1.0F);
-        int radius = (UtilitiesConfig.Items.INSTANCE.itemLevelArc) ? 7 : 8;
+        int radius = (ItemsConfig.Items.INSTANCE.itemLevelArc) ? 7 : 8;
         drawArc(bufferbuilder, x, y, durability, radius, arcColor >> 16 & 255, arcColor >> 8 & 255, arcColor & 255, 160);
 
         GlStateManager.disableBlend();
@@ -237,7 +236,7 @@ public class RarityColorOverlay implements Listener {
     }
 
     private static void drawLevelArc(GuiContainer guiContainer, Slot s, IntRange level) {
-        if (!UtilitiesConfig.Items.INSTANCE.itemLevelArc) return;
+        if (!ItemsConfig.Items.INSTANCE.itemLevelArc) return;
         if (level == null) return;
 
         int x = guiContainer.getGuiLeft() + s.xPos;
@@ -267,7 +266,7 @@ public class RarityColorOverlay implements Listener {
 
         ScreenRenderer.beginGL(guiContainer.getGuiLeft() + s.xPos, guiContainer.getGuiTop() + s.yPos);
         {
-            color(colour.r, colour.g, colour.b, UtilitiesConfig.Items.INSTANCE.inventoryAlpha / 100);
+            color(colour.r, colour.g, colour.b, ItemsConfig.Items.INSTANCE.inventoryAlpha / 100);
             glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
             RenderHelper.disableStandardItemLighting();
 
@@ -285,7 +284,7 @@ public class RarityColorOverlay implements Listener {
     }
 
     private static int getPowderTier(ItemStack is) {
-        String name = StringUtils.normalizeBadString(is.getDisplayName());
+        String name = is.getDisplayName();
         if (name.endsWith("III")) {
             return 3;
         } else if (name.endsWith("IV")) {

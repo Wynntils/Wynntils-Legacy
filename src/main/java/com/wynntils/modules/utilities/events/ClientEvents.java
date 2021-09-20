@@ -780,7 +780,7 @@ public class ClientEvents implements Listener {
 
         int newUses = 0;
         if (!newStack.isEmpty()) {
-            String newName = TextFormatting.getTextWithoutFormattingCodes(StringUtils.normalizeBadString(newStack.getDisplayName()));
+            String newName = TextFormatting.getTextWithoutFormattingCodes(newStack.getDisplayName());
             Matcher newMatcher = CRAFTED_USES.matcher(newName);
             if (newMatcher.matches()) {
                 newUses = Integer.parseInt(newMatcher.group(1));

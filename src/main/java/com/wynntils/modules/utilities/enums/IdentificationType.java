@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.enums;
 
+import com.wynntils.modules.items.configs.ItemsConfig;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.instances.IdentificationResult;
 import com.wynntils.modules.utilities.interfaces.IIdentificationAnalyser;
@@ -18,7 +19,7 @@ public enum IdentificationType implements IIdentificationAnalyser {
 
         @Override
         public String getTitle(double specialAmount) {
-            String amountString = UtilitiesConfig.Identifications.INSTANCE.decimalPlaces.format(specialAmount * 100);
+            String amountString = ItemsConfig.Identifications.INSTANCE.decimalPlaces.format(specialAmount * 100);
 
             int amount = normalize(specialAmount);
 

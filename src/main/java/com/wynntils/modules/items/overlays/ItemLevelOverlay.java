@@ -2,17 +2,15 @@
  *  * Copyright © Wynntils - 2018 - 2021.
  */
 
-package com.wynntils.modules.utilities.overlays.inventories;
+package com.wynntils.modules.items.overlays;
 
 import com.wynntils.McIf;
 import com.wynntils.core.events.custom.RenderEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
-import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.IntRange;
-import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import com.wynntils.modules.items.configs.ItemsConfig;
 import com.wynntils.modules.utilities.managers.KeyManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -27,7 +25,7 @@ public class ItemLevelOverlay implements Listener {
 
     @SubscribeEvent
     public void onItemOverlay(RenderEvent.DrawItemOverlay event) {
-        if (!UtilitiesConfig.Items.INSTANCE.itemLevelOverlayOutsideGui && McIf.mc().currentScreen == null) return;
+        if (!ItemsConfig.Items.INSTANCE.itemLevelOverlayOutsideGui && McIf.mc().currentScreen == null) return;
         if (!KeyManager.getShowLevelOverlayKey().isKeyDown()) return;
 
         ItemStack stack = event.getStack();
@@ -36,9 +34,9 @@ public class ItemLevelOverlay implements Listener {
 
         // powder tier
         if (item == Items.DYE || item == Items.GUNPOWDER || item == Items.CLAY_BALL || item == Items.SUGAR) {
-            Matcher powderMatcher = POWDER_NAME_PATTERN.matcher(StringUtils.normalizeBadString(name));
+            Matcher powderMatcher = POWDER_NAME_PATTERN.matcher(name);
             if (powderMatcher.find()) {
-                if (UtilitiesConfig.Items.INSTANCE.romanNumeralPowderTier) {
+                if (ItemsConfig.Items.INSTANCE.romanNumeralPowderTier) {
                     event.setOverlayText(powderMatcher.group(1));
                     return;
                 }
@@ -73,8 +71,7 @@ public class ItemLevelOverlay implements Listener {
         // item level
         IntRange level = ItemUtils.getLevel(lore);
         if (level != null) {
-            event.setOverlayText(UtilitiesConfig.Items.INSTANCE.averageUnidentifiedLevel ? level.toString() : Integer.toString(level.getAverage()));
-            return;
+            event.setOverlayText(ItemsConfig.Items.INSTANCE.averageUnidentifiedLevel ? level.toString() : Integer.toString(level.getAverage()));
         }
     }
 

@@ -4,6 +4,7 @@
 
 package com.wynntils.webapi.profiles.item.enums;
 
+import com.wynntils.modules.items.configs.ItemsConfig;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 
 public enum IdentificationModifier {
@@ -21,7 +22,7 @@ public enum IdentificationModifier {
     }
 
     public String getInGame(String name) {
-        if (this != FOUR_SECONDS || UtilitiesConfig.Identifications.INSTANCE.legacyIds) return inGame;
+        if (this != FOUR_SECONDS || ItemsConfig.Identifications.INSTANCE.legacyIds) return inGame;
 
         if (name.equals("manaRegen")) return "/5s";
         return "/3s";

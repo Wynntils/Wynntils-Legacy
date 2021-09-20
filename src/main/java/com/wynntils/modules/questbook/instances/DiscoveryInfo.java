@@ -42,7 +42,7 @@ public class DiscoveryInfo {
 
         // simple parameters
         name = originalStack.getDisplayName();
-        name = StringUtils.normalizeBadString(name.substring(0, name.length() - 1));
+        name = name.substring(0, name.length() - 1);
         minLevel = Integer.parseInt(getTextWithoutFormattingCodes(lore.get(0)).replace("✔ Combat Lv. Min: ", ""));
 
         // type

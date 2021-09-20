@@ -2,7 +2,7 @@
  *  * Copyright © Wynntils - 2018 - 2021.
  */
 
-package com.wynntils.modules.utilities.overlays.inventories;
+package com.wynntils.modules.items.overlays;
 
 import java.util.List;
 import java.util.regex.Matcher;
@@ -45,7 +45,7 @@ public class ServerSelectorOverlay implements Listener {
         NBTTagCompound nbt = stack.getTagCompound();
         if (nbt.hasKey("wynntilsServerIgnore")) return;
 
-        String itemName = StringUtils.normalizeBadString(TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName()));
+        String itemName = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName());
         if (itemName == null) return;
 
         Matcher m = WORLD_PATTERN.matcher(itemName);

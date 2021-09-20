@@ -2,7 +2,7 @@
  *  * Copyright © Wynntils - 2021.
  */
 
-package com.wynntils.modules.utilities.overlays.inventories;
+package com.wynntils.modules.items.overlays;
 
 import com.wynntils.McIf;
 import com.wynntils.Reference;
@@ -50,7 +50,7 @@ import java.util.regex.Pattern;
 
 public class SkillPointOverlay implements Listener {
 
-    private static final Pattern SKILLPOINT_PATTERN = Pattern.compile(".*?([-0-9]+)(?=\\spoints).*");
+    public static final Pattern SKILLPOINT_PATTERN = Pattern.compile(".*?([-0-9]+)(?=\\spoints).*");
     private static final Pattern[] MODIFIER_PATTERNS = {
             Pattern.compile("- Strength: ([-+0-9]+)"),
             Pattern.compile("- Dexterity: ([-+0-9]+)"),
@@ -112,47 +112,6 @@ public class SkillPointOverlay implements Listener {
             allocateSkillPoints(e.getGui());
         }
 
-        for (int i = 0; i < e.getGui().getLowerInv().getSizeInventory(); i++) {
-            ItemStack stack = e.getGui().getLowerInv().getStackInSlot(i);
-            if (stack.isEmpty() || !stack.hasDisplayName()) continue; // display name also checks for tag compound
-
-            String lore = TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(stack));
-            String name = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName());
-            int value = 0;
-
-            if (name.contains("Upgrade")) {// Skill Points
-                Matcher spm = SKILLPOINT_PATTERN.matcher(lore);
-                if (!spm.find()) continue;
-
-                value = Integer.parseInt(spm.group(1));
-            } else if (name.contains("Profession [")) { // Profession Icons
-                int start = lore.indexOf("Level: ") + 7;
-                int end = lore.indexOf("XP: ");
-
-                value = Integer.parseInt(lore.substring(start, end));
-            } else if (name.contains("'s Info")) { // Combat level on Info
-                int start = lore.indexOf("Combat Lv: ") + 11;
-                int end = lore.indexOf("Class: ");
-
-                value = Integer.parseInt(lore.substring(start, end));
-            } else if (name.contains("Damage Info")) { //Average Damage
-                Pattern pattern = Pattern.compile("Total Damage \\(\\+Bonus\\): ([0-9]+)-([0-9]+)");
-                Matcher m2  = pattern.matcher(lore);
-                if (!m2.find()) continue;
-
-                int min = Integer.parseInt(m2.group(1));
-                int max = Integer.parseInt(m2.group(2));
-
-                value = Math.round((max + min) / 2.0f);
-            } else if (name.contains("Daily Rewards")) { //Daily Reward Multiplier
-                int start = lore.indexOf("Streak Multiplier: ") + 19;
-                int end = lore.indexOf("Log in everyday to");
-
-                value = Integer.parseInt(lore.substring(start, end));
-            } else continue;
-
-            stack.setCount(value <= 0 ? 1 : value);
-        }
     }
 
     @SubscribeEvent

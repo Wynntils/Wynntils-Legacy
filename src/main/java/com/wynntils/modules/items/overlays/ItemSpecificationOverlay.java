@@ -2,9 +2,8 @@
  *  * Copyright © Wynntils - 2018 - 2021.
  */
 
-package com.wynntils.modules.utilities.overlays.inventories;
+package com.wynntils.modules.items.overlays;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,8 +18,7 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
-import com.wynntils.core.utils.StringUtils;
-import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import com.wynntils.modules.items.configs.ItemsConfig;
 import com.wynntils.webapi.profiles.item.enums.ItemType;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -43,22 +41,14 @@ public class ItemSpecificationOverlay implements Listener {
             if (stack.isEmpty() || !stack.hasDisplayName()) continue; // display name also checks for tag compound
 
             List<String> lore = ItemUtils.getLore(stack);
-            String name = StringUtils.normalizeBadString(stack.getDisplayName());
-
-            // name and lore fixing
-            stack.setStackDisplayName(name);
-            List<String> fixedLore = new ArrayList<>();
-            for (String line : lore) {
-                fixedLore.add(StringUtils.normalizeBadString(line));
-            }
-            ItemUtils.replaceLore(stack, fixedLore);
+            String name = stack.getDisplayName();
 
             String destinationName = null;
             CustomColor color = null;
             int xOffset = 2;
             float scale = 1f;
 
-            if (UtilitiesConfig.Items.INSTANCE.unidentifiedSpecification) {
+            if (ItemsConfig.Items.INSTANCE.unidentifiedSpecification) {
                 Pattern unidentifiedItem = Pattern.compile("^§.Unidentified (.*)");
                 Matcher m = unidentifiedItem.matcher(name);
                 if (m.find()) {
@@ -81,7 +71,7 @@ public class ItemSpecificationOverlay implements Listener {
                 }
             }
 
-            if (UtilitiesConfig.Items.INSTANCE.potionSpecification) {
+            if (ItemsConfig.Items.INSTANCE.potionSpecification) {
                 if (name.startsWith("§aPotion of §")) {
                     SkillPoint skillPoint = SkillPoint.findSkillPoint(name);
                     destinationName = skillPoint.getSymbol();
@@ -89,7 +79,7 @@ public class ItemSpecificationOverlay implements Listener {
                 }
             }
 
-            if (UtilitiesConfig.Items.INSTANCE.keySpecification) {
+            if (ItemsConfig.Items.INSTANCE.keySpecification) {
                 Pattern dungeonKey = Pattern.compile("§6(.*) Key");
                 Matcher m = dungeonKey.matcher(name);
                 if (m.find() && lore.get(0).equals("§7Grants access to the")) {
@@ -113,7 +103,7 @@ public class ItemSpecificationOverlay implements Listener {
                 }
             }
 
-            if (UtilitiesConfig.Items.INSTANCE.transportationSpecification) {
+            if (ItemsConfig.Items.INSTANCE.transportationSpecification) {
                 Pattern boatPass = Pattern.compile("§b(.*) (?:Boat )?Pass");
                 Matcher m = boatPass.matcher(name);
                 if (m.find() && lore.get(0).equals("§7Use this at the §fV.S.S. Seaskipper")) {
@@ -129,7 +119,7 @@ public class ItemSpecificationOverlay implements Listener {
                         color = MinecraftChatColors.GOLD;
                         for (String loreLine : lore) {
                             Pattern dungeonTeleport = Pattern.compile("§3- §7Teleports to: §f(.*)");
-                            Matcher m3 = dungeonTeleport.matcher(StringUtils.normalizeBadString(loreLine));
+                            Matcher m3 = dungeonTeleport.matcher(loreLine);
                             if (m3.find()) {
                                 // Make sure we print "F" for "the Forgery"
                                 destinationName = m3.group(1).replace("the ", "");
@@ -143,7 +133,7 @@ public class ItemSpecificationOverlay implements Listener {
                 }
             }
 
-            if (UtilitiesConfig.Items.INSTANCE.amplifierSpecification) {
+            if (ItemsConfig.Items.INSTANCE.amplifierSpecification) {
                 Pattern amp = Pattern.compile("^§bCorkian Amplifier (I{1,3})$");
                 Matcher m = amp.matcher(name);
                 if (m.matches()) {

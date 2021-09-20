@@ -2,7 +2,7 @@
  *  * Copyright © Wynntils - 2021.
  */
 
-package com.wynntils.modules.utilities.overlays.inventories;
+package com.wynntils.modules.items.overlays;
 
 import com.wynntils.McIf;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
@@ -15,7 +15,7 @@ import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.helpers.RainbowText;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
-import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import com.wynntils.modules.items.configs.ItemsConfig;
 import com.wynntils.modules.utilities.enums.IdentificationType;
 import com.wynntils.modules.utilities.instances.IdentificationResult;
 import com.wynntils.webapi.WebManager;
@@ -82,14 +82,14 @@ public class ItemIdentificationOverlay implements Listener {
     }
 
     public static void replaceLore(ItemStack stack, IdentificationType forcedIdType)  {
-        if (!UtilitiesConfig.Identifications.INSTANCE.enabled || !stack.hasDisplayName() || !stack.hasTagCompound()) return;
+        if (!ItemsConfig.Identifications.INSTANCE.enabled || !stack.hasDisplayName() || !stack.hasTagCompound()) return;
         NBTTagCompound nbt = stack.getTagCompound();
         if (nbt.hasKey("wynntilsIgnore")) return;
 
-        String itemName = StringUtils.normalizeBadString(getTextWithoutFormattingCodes(stack.getDisplayName()));
+        String itemName = getTextWithoutFormattingCodes(stack.getDisplayName());
 
         // Check if unidentified item.
-        if (itemName.contains("Unidentified") && UtilitiesConfig.Identifications.INSTANCE.showItemGuesses) {
+        if (itemName.startsWith("Unidentified") && ItemsConfig.Identifications.INSTANCE.showItemGuesses) {
             nbt.setBoolean("wynntilsIgnore", true);
             // add possible items
             addItemGuesses(stack);
@@ -106,7 +106,7 @@ public class ItemIdentificationOverlay implements Listener {
         ItemProfile item = WebManager.getItems().get(wynntils.getString("originName"));
 
         // Block if the item is not the real item
-        if (!wynntils.hasKey("isPerfect") && !stack.getDisplayName().startsWith(item.getTier().getTextColor())) {
+        if (!wynntils.hasKey("isPerfect") && !ItemTier.CRAFTED.matchesColoredText(item.getDisplayName())) {
             nbt.setBoolean("wynntilsIgnore", true);
             nbt.removeTag("wynntils");
             return;
@@ -164,7 +164,7 @@ public class ItemIdentificationOverlay implements Listener {
                     lore = (currentValue < 0 ? RED.toString() : currentValue > 0 ? GREEN + "+" : GRAY.toString())
                             + currentValue + type.getInGame(idName);
 
-                if (UtilitiesConfig.Identifications.INSTANCE.addStars && ids.hasKey(idName + "*")) {
+                if (ItemsConfig.Identifications.INSTANCE.addStars && ids.hasKey(idName + "*")) {
                     lore += DARK_GREEN + "***".substring(0, ids.getInteger(idName + "*"));
                 }
                 lore += " " + GRAY + longName;
@@ -258,7 +258,7 @@ public class ItemIdentificationOverlay implements Listener {
         // Add id lores
         if (idLore.size() > 0) {
             newLore.addAll(IdentificationOrderer.INSTANCE.order(idLore,
-                    UtilitiesConfig.Identifications.INSTANCE.addSpacing));
+                    ItemsConfig.Identifications.INSTANCE.addSpacing));
 
             newLore.add(" ");
         }
@@ -287,7 +287,7 @@ public class ItemIdentificationOverlay implements Listener {
                 bonusOrder.put(idName, ids.getString(idName));
             }
 
-            newLore.addAll(IdentificationOrderer.INSTANCE.order(bonusOrder, UtilitiesConfig.Identifications.INSTANCE.addSetBonusSpacing));
+            newLore.addAll(IdentificationOrderer.INSTANCE.order(bonusOrder, ItemsConfig.Identifications.INSTANCE.addSetBonusSpacing));
             newLore.add(" ");
         }
 
@@ -297,7 +297,7 @@ public class ItemIdentificationOverlay implements Listener {
         if (rollAmount != 0) quality += " [" + rollAmount + "]";
 
         // adds reroll price if the item
-        if (UtilitiesConfig.Identifications.INSTANCE.showRerollPrice && !item.isIdentified()) {
+        if (ItemsConfig.Identifications.INSTANCE.showRerollPrice && !item.isIdentified()) {
             quality += GREEN + " ["
                     + decimalFormat.format(item.getTier().getRerollPrice(item.getRequirements().getLevel(), rollAmount))
                     + EmeraldSymbols.E + "]";
@@ -333,7 +333,7 @@ public class ItemIdentificationOverlay implements Listener {
         }
 
         // check for item perfection
-        if (relativeTotal/idAmount >= 1d && idType == IdentificationType.PERCENTAGES && !hasNewId && UtilitiesConfig.Identifications.INSTANCE.rainbowPerfect) {
+        if (relativeTotal/idAmount >= 1d && idType == IdentificationType.PERCENTAGES && !hasNewId && ItemsConfig.Identifications.INSTANCE.rainbowPerfect) {
             wynntils.setBoolean("isPerfect", true);
         }
 
@@ -355,15 +355,15 @@ public class ItemIdentificationOverlay implements Listener {
         String items = getItemsFromBox(stack);
         if (items == null) return;
 
-        ItemTier tier = ItemTier.fromTextColoredString(StringUtils.normalizeBadString(stack.getDisplayName()));
+        ItemTier tier = ItemTier.fromTextColoredString(stack.getDisplayName());
 
         String itemNamesAndCosts = "";
         String[] possiblitiesNames = items.split(", ");
         for (String possibleItem : possiblitiesNames) {
             ItemProfile itemProfile = WebManager.getItems().get(possibleItem);
             String itemDescription = tier.getTextColor() +
-                    (UtilitiesConfig.INSTANCE.favoriteItems.contains(possibleItem) ? UNDERLINE : "") + possibleItem; // underline favs
-            if (UtilitiesConfig.Identifications.INSTANCE.showGuessesPrice && itemProfile != null) {
+                    (ItemsConfig.INSTANCE.favoriteItems.contains(possibleItem) ? UNDERLINE : "") + possibleItem; // underline favs
+            if (ItemsConfig.Identifications.INSTANCE.showGuessesPrice && itemProfile != null) {
                 int level = itemProfile.getRequirements().getLevel();
                 int itemCost = tier.getItemIdentificationCost(level);
                 itemDescription += GRAY + " [" + GREEN + itemCost + " " + EmeraldSymbols.E_STRING + GRAY + "]";
@@ -395,7 +395,7 @@ public class ItemIdentificationOverlay implements Listener {
         NBTTagCompound mainTag = new NBTTagCompound();
 
         {  // main data
-            mainTag.setString("originName", StringUtils.normalizeBadString(getTextWithoutFormattingCodes(stack.getDisplayName())));  // this replace allow market items to be scanned
+            mainTag.setString("originName", getTextWithoutFormattingCodes(stack.getDisplayName()));  // this replace allow market items to be scanned
             mainTag.setString("currentType", idType.toString());
             mainTag.setBoolean("shouldUpdate", true);
         }
@@ -507,7 +507,7 @@ public class ItemIdentificationOverlay implements Listener {
     }
 
     public static String getItemsFromBox(ItemStack stack) {
-        String name = StringUtils.normalizeBadString(stack.getDisplayName());
+        String name = stack.getDisplayName();
         String itemType = getTextWithoutFormattingCodes(name).split(" ", 3)[1];
         String levelRange = null;
 

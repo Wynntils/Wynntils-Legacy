@@ -8,6 +8,8 @@ import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.modules.items.configs.ItemsConfig;
+import com.wynntils.modules.items.overlays.RarityColorOverlay;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -22,7 +24,7 @@ public class IngredientFilterOverlay implements Listener {
 
     @SubscribeEvent
     public void initGui(GuiOverlapEvent.ChestOverlap.InitGui e) {
-        if (!Reference.onWorld || !UtilitiesConfig.Items.INSTANCE.filterEnabled) return;
+        if (!Reference.onWorld || !ItemsConfig.Items.INSTANCE.filterEnabled) return;
 
         e.getButtonList().add(
                 new GuiButton(11,

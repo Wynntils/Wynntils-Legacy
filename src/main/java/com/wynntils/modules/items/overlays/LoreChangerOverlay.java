@@ -2,7 +2,7 @@
  *  * Copyright © Wynntils - 2021.
  */
 
-package com.wynntils.modules.utilities.overlays.inventories;
+package com.wynntils.modules.items.overlays;
 
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.instances.PlayerInfo;

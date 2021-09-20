@@ -13,7 +13,7 @@ import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.instances.ContainerBuilds;
 import com.wynntils.modules.utilities.instances.SkillPointAllocation;
-import com.wynntils.modules.utilities.overlays.inventories.SkillPointOverlay;
+import com.wynntils.modules.items.overlays.SkillPointOverlay;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;

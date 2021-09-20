@@ -28,6 +28,7 @@ import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.enums.DamageType;
 import com.wynntils.core.utils.StringUtils;
+import com.wynntils.modules.items.configs.ItemsConfig;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.profiles.item.enums.ItemAttackSpeed;
 import com.wynntils.webapi.profiles.item.enums.ItemTier;
@@ -281,7 +282,7 @@ public class ItemProfile {
                     statusLore.put(idName, getIDLore(id, idName));
                 }
 
-                itemLore.addAll(IdentificationOrderer.INSTANCE.order(statusLore, UtilitiesConfig.Identifications.INSTANCE.addSpacing));
+                itemLore.addAll(IdentificationOrderer.INSTANCE.order(statusLore, ItemsConfig.Identifications.INSTANCE.addSpacing));
                 itemLore.add(" ");
             }
 

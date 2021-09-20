@@ -10,6 +10,7 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.AssetsTexture;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
+import com.wynntils.modules.items.configs.ItemsConfig;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.events.ClientEvents;
@@ -55,21 +56,16 @@ public class HotbarOverlay extends Overlay {
 
             int x = -88 + (i*20);
 
-            String description = ItemUtils.getStringLore(stack);
-            if (UtilitiesConfig.Items.INSTANCE.hotbarHighlight && UtilitiesConfig.Items.INSTANCE.hotbarAlpha > 0 && !description.isEmpty()) {
-                CustomColor color = null;
+            String name = stack.getDisplayName();
+            if (ItemsConfig.Items.INSTANCE.hotbarHighlight && ItemsConfig.Items.INSTANCE.hotbarAlpha > 0 && !name.isEmpty()) {
+                ItemTier tier = ItemTier.fromTextColoredString(name);
 
-                if (description.contains(ItemTier.UNIQUE.asFormattedName())) color = UtilitiesConfig.Items.INSTANCE.uniqueHighlightColor;
-                else if (description.contains(ItemTier.RARE.asFormattedName())) color = UtilitiesConfig.Items.INSTANCE.rareHighlightColor;
-                else if (description.contains(ItemTier.SET.asFormattedName())) color = UtilitiesConfig.Items.INSTANCE.setHighlightColor;
-                else if (description.contains(ItemTier.LEGENDARY.asFormattedName())) color = UtilitiesConfig.Items.INSTANCE.legendaryHighlightColor;
-                else if (description.contains(ItemTier.FABLED.asFormattedName())) color = UtilitiesConfig.Items.INSTANCE.fabledHighlightColor;
-                else if (description.contains(ItemTier.MYTHIC.asFormattedName())) color = UtilitiesConfig.Items.INSTANCE.mythicHighlightColor;
-                else if (description.contains(ItemTier.CRAFTED.asFormattedName())) color = UtilitiesConfig.Items.INSTANCE.craftedHighlightColor;
-
-                if (color != null) {
-                    color.setA(UtilitiesConfig.Items.INSTANCE.hotbarAlpha / 100);
-                    drawRect(color, x, 3, x + 16, 19);
+                if (tier != null) {
+                    CustomColor color = tier.getCustomizedHighlightColor();
+                    if (color != null) {
+                        color.setA(ItemsConfig.Items.INSTANCE.hotbarAlpha / 100);
+                        drawRect(color, x, 3, x + 16, 19);
+                    }
                 }
             }
 

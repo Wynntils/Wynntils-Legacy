@@ -186,7 +186,7 @@ public class QuestManager {
                             continue;
                         }
 
-                        String displayName = StringUtils.normalizeBadString(getTextWithoutFormattingCodes(stack.getDisplayName()));
+                        String displayName = getTextWithoutFormattingCodes(stack.getDisplayName());
                         if (currentQuests.containsKey(displayName) && currentQuests.get(displayName).equals(stack)) {
                             continue;
                         }

@@ -16,6 +16,9 @@ import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.network.play.client.CPacketClientSettings;
+import net.minecraft.network.play.server.SPacketEntityEquipment;
+import net.minecraft.network.play.server.SPacketSetSlot;
+import net.minecraft.network.play.server.SPacketWindowItems;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
@@ -28,7 +31,7 @@ public enum ReflectionFields {
     Entity_CUSTOM_NAME(Entity.class, "CUSTOM_NAME", "field_184242_az"),
     Entity_CUSTOM_NAME_VISIBLE(Entity.class, "CUSTOM_NAME_VISIBLE", "field_184233_aA"),
     EntityItemFrame_ITEM(EntityItemFrame.class, "ITEM", "field_184525_c"),
-    Event_phase(Event.class, "phase"),
+    Event_phase(Event.class, "phase", null),
     GuiScreen_buttonList(GuiScreen.class, "buttonList", "field_146292_n"),
     GuiScreenHorseInventory_horseEntity(GuiScreenHorseInventory.class, "horseEntity", "field_147034_x"),
     GuiScreenHorseInventory_horseInventory(GuiScreenHorseInventory.class, "horseInventory", "field_147029_w"),
@@ -43,7 +46,16 @@ public enum ReflectionFields {
     CPacketClientSettings_chatVisibility(CPacketClientSettings.class, "chatVisibility", "field_149529_c"),
     ModelRenderer_compiled(ModelRenderer.class, "compiled", "field_78812_q"),
     Minecraft_renderItem(Minecraft.class, "renderItem", "field_175621_X"),
-    RenderItem_itemModelMesher(RenderItem.class, "itemModelMesher", "field_175059_m");
+    RenderItem_itemModelMesher(RenderItem.class, "itemModelMesher", "field_175059_m"),
+    SPacketEntityEquipment_itemStack(SPacketEntityEquipment.class, "itemStack", "field_149393_c"),
+    SPacketWindowItems_itemStacks(SPacketWindowItems.class, "itemStacks", "field_148913_b"),
+    SPacketSetSlot_item(SPacketSetSlot.class, "item", "field_149178_c");
+
+    /*
+    In intellij, you can find the obfuscated field by opening the class, then going to the desired field,
+    Right-clicking on it, and pressing "Get SRG Name"
+    If someone knows eclipse, perhaps fill it in as well
+     */
 
     static {
         GuiPlayerTabOverlay_ENTRY_ORDERING.removeFinal();
@@ -51,8 +63,8 @@ public enum ReflectionFields {
 
     final Field field;
 
-    ReflectionFields(Class<?> holdingClass, String... values) {
-        this.field = ReflectionHelper.findField(holdingClass, values);
+    ReflectionFields(Class<?> holdingClass, String deobf, String obf) {
+        this.field = ReflectionHelper.findField(holdingClass, deobf, obf);
     }
 
     public <T> T getValue(Object parent) {

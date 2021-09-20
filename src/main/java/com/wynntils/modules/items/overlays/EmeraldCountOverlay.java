@@ -2,7 +2,7 @@
  *  * Copyright © Wynntils - 2021.
  */
 
-package com.wynntils.modules.utilities.overlays.inventories;
+package com.wynntils.modules.items.overlays;
 
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
@@ -17,7 +17,7 @@ import com.wynntils.core.framework.rendering.textures.AssetsTexture;
 import com.wynntils.core.framework.rendering.textures.Texture;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
-import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import com.wynntils.modules.items.configs.ItemsConfig;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -42,9 +42,9 @@ public class EmeraldCountOverlay implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onPlayerInventory(GuiOverlapEvent.InventoryOverlap.DrawGuiContainerForegroundLayer e) {
-        if (!Reference.onWorld || !UtilitiesConfig.Items.INSTANCE.emeraldCountInventory) return;
+        if (!Reference.onWorld || !ItemsConfig.Items.INSTANCE.emeraldCountInventory) return;
 
-        if (UtilitiesConfig.Items.INSTANCE.emeraldCountText) {
+        if (ItemsConfig.Items.INSTANCE.emeraldCountText) {
             drawTextMoneyAmount(170, 7, PlayerInfo.get(InventoryData.class).getMoney(), renderer, textColor);
             return;
         }
@@ -53,33 +53,33 @@ public class EmeraldCountOverlay implements Listener {
 
     @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawGuiContainerForegroundLayer e) {
-        if (!Reference.onWorld || !(UtilitiesConfig.Items.INSTANCE.emeraldCountInventory || UtilitiesConfig.Items.INSTANCE.emeraldCountChest)) return;
+        if (!Reference.onWorld || !(ItemsConfig.Items.INSTANCE.emeraldCountInventory || ItemsConfig.Items.INSTANCE.emeraldCountChest)) return;
 
         IInventory lowerInv = e.getGui().getLowerInv();
         if (lowerInv.getName().contains("Quests") || lowerInv.getName().contains("points")) return;
 
         IInventory upperInv = e.getGui().getUpperInv();
 
-        if (UtilitiesConfig.Items.INSTANCE.emeraldCountText) {
-            if (UtilitiesConfig.Items.INSTANCE.emeraldCountInventory)
+        if (ItemsConfig.Items.INSTANCE.emeraldCountText) {
+            if (ItemsConfig.Items.INSTANCE.emeraldCountInventory)
                 drawTextMoneyAmount(170, -10, ItemUtils.countMoney(lowerInv), renderer, CommonColors.WHITE);
-            if (UtilitiesConfig.Items.INSTANCE.emeraldCountChest)
+            if (ItemsConfig.Items.INSTANCE.emeraldCountChest)
                 drawTextMoneyAmount(170, 2 * (lowerInv.getSizeInventory() + 10), ItemUtils.countMoney(upperInv), renderer, textColor);
             return;
         }
-        if (UtilitiesConfig.Items.INSTANCE.emeraldCountInventory)
+        if (ItemsConfig.Items.INSTANCE.emeraldCountInventory)
             drawIconsMoneyAmount(178, 0, ItemUtils.countMoney(lowerInv), renderer);
-        if (UtilitiesConfig.Items.INSTANCE.emeraldCountChest)
+        if (ItemsConfig.Items.INSTANCE.emeraldCountChest)
             drawIconsMoneyAmount(178, 2 * (lowerInv.getSizeInventory() + 10), ItemUtils.countMoney(upperInv), renderer);
     }
 
     @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.HorseOverlap.DrawGuiContainerForegroundLayer e) {
-        if (!Reference.onWorld || !UtilitiesConfig.Items.INSTANCE.emeraldCountInventory) return;
+        if (!Reference.onWorld || !ItemsConfig.Items.INSTANCE.emeraldCountInventory) return;
 
         IInventory lowerInv = e.getGui().getLowerInv();
 
-        if (UtilitiesConfig.Items.INSTANCE.emeraldCountText) {
+        if (ItemsConfig.Items.INSTANCE.emeraldCountText) {
             drawTextMoneyAmount(170, 7, ItemUtils.countMoney(lowerInv), renderer, textColor);
             return;
         }
