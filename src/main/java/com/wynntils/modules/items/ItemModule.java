@@ -42,7 +42,7 @@ public class ItemModule extends Module {
 
         //transformers
         ItemStackTransformManager.registerGlobalTransform(new StringNormalizationTransformer());
-        ItemStackTransformManager.registerGlobalTransform(new UnidentifiedItemTransformer());
+        ItemStackTransformManager.registerEntityTransform(new UnidentifiedItemTransformer());
         ItemStackTransformManager.registerGlobalTransform(new ItemStackTransformManager.ItemConsumer(s -> s.setStackDisplayName("test")));
         ItemStackTransformManager.registerGuiTransform(new SkillPointTransformer());
 
