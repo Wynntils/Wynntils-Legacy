@@ -11,15 +11,14 @@ import net.minecraftforge.fml.common.eventhandler.Event;
 
 public class RenderEvent extends Event {
 
-    public static class DrawItemOverlay extends RenderEvent {
+    public static class RenderItem extends RenderEvent {
 
         private final ItemStack stack;
         private final int x, y;
         private String overlayText;
         private CustomColor overlayTextCol = CommonColors.WHITE;
-        private boolean overlayTextChanged = false;
 
-        public DrawItemOverlay(ItemStack stack, int x, int y, String overlayText) {
+        public RenderItem(ItemStack stack, int x, int y, String overlayText) {
             this.stack = stack;
             this.x = x;
             this.y = y;
@@ -44,7 +43,6 @@ public class RenderEvent extends Event {
 
         public void setOverlayText(String text) {
             this.overlayText = text;
-            this.overlayTextChanged = true;
         }
 
         public CustomColor getOverlayTextColor() {
@@ -53,13 +51,7 @@ public class RenderEvent extends Event {
 
         public void setOverlayTextColor(CustomColor col) {
             this.overlayTextCol = col;
-            this.overlayTextChanged = true;
         }
-
-        public boolean isOverlayTextChanged() {
-            return overlayTextChanged;
-        }
-
     }
 
 }

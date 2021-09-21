@@ -16,6 +16,7 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.framework.rendering.textures.AssetsTexture;
 import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.enums.AccountType;
 import com.wynntils.modules.core.managers.UserManager;
@@ -35,7 +36,6 @@ import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.text.TextFormatting;
@@ -314,11 +314,7 @@ public class NametagManager {
                 ItemProfile itemProfile = WebManager.getItems().get(itemName);
                 color = itemProfile.getTier().getChatColor();
 
-                // this solves an unidentified item showcase exploit
-                // boxes items are STONE_SHOVEL, 1 represents UNIQUE boxes and 6 MYTHIC boxes
-                if (is.getItem() == Items.STONE_SHOVEL && is.getItemDamage() >= 1 && is.getItemDamage() <= 6) {
-                    displayName = "Unidentified Item";
-                } else displayName = itemProfile.getDisplayName();
+                displayName = itemProfile.getDisplayName();
             } else if (itemName.contains("Crafted")) {
                 color = ItemTier.CRAFTED.getChatColor();
                 displayName = itemName;

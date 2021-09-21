@@ -17,6 +17,7 @@ import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.helpers.ItemFilter;
 import com.wynntils.core.utils.helpers.ItemFilter.ByStat;
 import com.wynntils.core.utils.helpers.ItemSearchState;
+import com.wynntils.modules.items.configs.ItemsConfig;
 import com.wynntils.modules.questbook.QuestBookModule;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.instances.IconContainer;
@@ -273,10 +274,10 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
 
         if (mouseButton == 0) { // left click
             if (item.isFavorited())
-                UtilitiesConfig.INSTANCE.favoriteItems.remove(item.getDisplayName());
+                ItemsConfig.INSTANCE.favoriteItems.remove(item.getDisplayName());
             else
-                UtilitiesConfig.INSTANCE.favoriteItems.add(item.getDisplayName());
-            UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
+                ItemsConfig.INSTANCE.favoriteItems.add(item.getDisplayName());
+            ItemsConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
 
             updateSearch();
             return;

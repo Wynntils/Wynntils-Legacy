@@ -105,9 +105,6 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting
     public Map<String, SkillPointAllocation> skillPointLoadouts = new HashMap<>();
 
-    @Setting
-    public List<String> favoriteItems = new ArrayList<>();
-
     public enum FovScalingFunction {
         Vanilla,
         Arctangent,

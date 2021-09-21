@@ -200,6 +200,13 @@ public class ItemUtils {
         return null;
     }
 
+    /**
+     * Gets if an item is identified
+     */
+    public static boolean isUnidentified(ItemStack stack) {
+        return stack.getItem() == Items.STONE_SHOVEL && stack.getItemDamage() >= 1 && stack.getItemDamage() <= 6;
+    }
+
     static {
         UNBREAKABLE.setBoolean("Unbreakable", true);
     }

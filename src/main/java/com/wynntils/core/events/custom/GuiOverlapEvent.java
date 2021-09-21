@@ -9,7 +9,6 @@ import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
-import com.wynntils.modules.core.overlays.ui.PlayerInfoReplacer;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -786,27 +785,6 @@ public class GuiOverlapEvent<T extends Gui> extends Event {
 
             public GuiButton getButton() {
                 return button;
-            }
-
-        }
-
-    }
-
-    public static class PlayerInfoOverlap extends GuiOverlapEvent<PlayerInfoReplacer> {
-
-        public PlayerInfoOverlap(PlayerInfoReplacer replacer) {
-            super(replacer);
-        }
-
-        public static class RenderList extends PlayerInfoOverlap {
-
-            public RenderList(PlayerInfoReplacer replacer) {
-                super(replacer);
-            }
-
-            @Override
-            public boolean isCancelable() {
-                return true;
             }
 
         }

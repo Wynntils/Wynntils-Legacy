@@ -53,7 +53,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SkillPointTransformer extends ItemStackTransformManager.ConditionalTransformer<GuiScreen> {
-    SkillPointTransformer() {
+    public SkillPointTransformer() {
         super(new ItemStackTransformManager.ItemConsumer(stack -> {
             if (stack.isEmpty() || !stack.hasDisplayName()) return; // display name also checks for tag compound
 

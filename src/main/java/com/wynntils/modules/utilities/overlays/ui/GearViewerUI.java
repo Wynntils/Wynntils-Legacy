@@ -23,7 +23,6 @@ import com.wynntils.modules.items.overlays.ItemIdentificationOverlay;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.IdentificationOrderer;
 import com.wynntils.webapi.profiles.item.ItemProfile;
-import com.wynntils.webapi.profiles.item.enums.ItemTier;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 import com.wynntils.webapi.profiles.item.objects.ItemRequirementsContainer;
 import com.wynntils.webapi.profiles.item.objects.MajorIdentification;
@@ -34,7 +33,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
-import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
@@ -138,12 +136,6 @@ public class GearViewerUI extends FakeGuiContainer {
             return;
         }
 
-        // disable viewing unidentified items
-        if (stack.getItem() == Items.STONE_SHOVEL && stack.getItemDamage() >= 1 && stack.getItemDamage() <= 6) {
-            stack.setStackDisplayName(ItemTier.fromBoxDamage(stack.getItemDamage()).getTextColor() + "Unidentified Item");
-            return;
-        }
-
         // get item from name
         if (WebManager.getItems().get(itemName) == null) {
             ItemUtils.replaceLore(stack, new ArrayList<>()); // empty the lore if the item isn't recognized
@@ -242,7 +234,7 @@ public class GearViewerUI extends FakeGuiContainer {
 
                 // calculate value
                 IdentificationContainer idContainer = item.getStatuses().get(translatedId);
-                int value = (int) ((idContainer.isFixed()) ? idContainer.getBaseValue() : Math.round(idContainer.getBaseValue() * pct));
+                int value = ((idContainer.isFixed()) ? idContainer.getBaseValue() : Math.round(idContainer.getBaseValue() * pct));
                 if (value == 0) value = 1; // account for mistaken rounding
                 boolean isInverted = IdentificationOrderer.INSTANCE.isInverted(translatedId);
 

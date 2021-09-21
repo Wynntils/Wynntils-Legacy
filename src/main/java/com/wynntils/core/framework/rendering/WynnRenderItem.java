@@ -8,15 +8,13 @@ import com.wynntils.McIf;
 import com.wynntils.core.events.custom.RenderEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.utils.reflections.ReflectionFields;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.item.ItemStack;
 
-public class WynnRenderItem extends RenderItem {
+public class WynnRenderItem extends net.minecraft.client.renderer.RenderItem {
 
     private static WynnRenderItem instance = null;
 
@@ -35,19 +33,18 @@ public class WynnRenderItem extends RenderItem {
 
     private static final int GUI_OVERLAY_WIDTH_THRESH = 16;
 
-    private WynnRenderItem(RenderItem parent, TextureManager texMan, ItemColors itemCols) {
+    private WynnRenderItem(net.minecraft.client.renderer.RenderItem parent, TextureManager texMan, ItemColors itemCols) {
         super(texMan, parent.getItemModelMesher().getModelManager(), itemCols);
         ReflectionFields.RenderItem_itemModelMesher.setValue(this, ReflectionFields.RenderItem_itemModelMesher.getValue(parent));
     }
 
     @Override
     public void renderItemOverlayIntoGUI(FontRenderer fr, ItemStack stack, int xPosition, int yPosition, String text) {
-        RenderEvent.DrawItemOverlay event = new RenderEvent.DrawItemOverlay(stack, xPosition, yPosition, text);
+        ScreenRenderer.beginGL(xPosition, yPosition);
+        GlStateManager.translate(0, 0, 300);
+        RenderEvent.RenderItem event = new RenderEvent.RenderItem(stack, xPosition, yPosition, text);
         FrameworkManager.getEventBus().post(event);
-        if (!event.isOverlayTextChanged()) {
-            super.renderItemOverlayIntoGUI(fr, stack, xPosition, yPosition, text);
-            return;
-        }
+        ScreenRenderer.endGL();
 
         super.renderItemOverlayIntoGUI(fr, stack, xPosition, yPosition, "");
         GlStateManager.disableLighting();

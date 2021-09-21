@@ -189,7 +189,7 @@ public class ItemProfile {
     }
 
     public boolean isFavorited() {
-        return UtilitiesConfig.INSTANCE.favoriteItems.contains(displayName);
+        return ItemsConfig.INSTANCE.favoriteItems.contains(displayName);
     }
 
     public ItemStack getGuideStack() {

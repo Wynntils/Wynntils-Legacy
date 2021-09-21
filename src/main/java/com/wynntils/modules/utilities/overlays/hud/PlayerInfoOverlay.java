@@ -30,10 +30,12 @@ public class PlayerInfoOverlay extends Overlay {
     transient double animationProgress = 0;
     transient long lastTime = -1;
 
+    public static boolean active = false;
+
     @Override
     public void render(RenderGameOverlayEvent.Post event) {
         if (!Reference.onWorld || !OverlayConfig.PlayerInfo.INSTANCE.replaceVanilla) return;
-        if (!McIf.mc().gameSettings.keyBindPlayerList.isKeyDown() && animationProgress <= 0.0) return;
+        if (!active && animationProgress <= 0.0) return;
 
         double animation = 1;
         if (OverlayConfig.PlayerInfo.INSTANCE.openingDuration > 0) { // Animation Detection

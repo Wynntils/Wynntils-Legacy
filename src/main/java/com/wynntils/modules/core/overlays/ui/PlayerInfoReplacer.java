@@ -15,6 +15,7 @@ import net.minecraft.scoreboard.Scoreboard;
 import javax.annotation.Nullable;
 
 public class PlayerInfoReplacer extends GuiPlayerTabOverlay {
+    public static boolean guiOpen = false;
 
     public PlayerInfoReplacer(Minecraft mcIn, GuiIngame guiIngameIn) {
         super(mcIn, guiIngameIn);
@@ -22,8 +23,7 @@ public class PlayerInfoReplacer extends GuiPlayerTabOverlay {
 
     @Override
     public void renderPlayerlist(int width, Scoreboard scoreboardIn, @Nullable ScoreObjective scoreObjectiveIn) {
-        if (FrameworkManager.getEventBus().post(new GuiOverlapEvent.PlayerInfoOverlap.RenderList(this))) return;
-
+        guiOpen = true;
         super.renderPlayerlist(width, scoreboardIn, scoreObjectiveIn);
     }
 

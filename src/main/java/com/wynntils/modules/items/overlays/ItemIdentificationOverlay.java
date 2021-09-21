@@ -52,25 +52,12 @@ public class ItemIdentificationOverlay implements Listener {
     public static final DecimalFormat decimalFormat = new DecimalFormat("#,###,###,###");
 
     @SubscribeEvent
-    public void onChest(GuiOverlapEvent.ChestOverlap.DrawScreen.Post e) {
+    public void onDrawItem(GuiOverlapEvent.ChestOverlap.DrawScreen.Post e) {
         if (e.getGui().getSlotUnderMouse() == null || !e.getGui().getSlotUnderMouse().getHasStack()) return;
 
         replaceLore(e.getGui().getSlotUnderMouse().getStack());
     }
 
-    @SubscribeEvent
-    public void onInventory(GuiOverlapEvent.InventoryOverlap.DrawScreen e) {
-        if (e.getGui().getSlotUnderMouse() == null || !e.getGui().getSlotUnderMouse().getHasStack()) return;
-
-        replaceLore(e.getGui().getSlotUnderMouse().getStack());
-    }
-
-    @SubscribeEvent
-    public void onHorse(GuiOverlapEvent.HorseOverlap.DrawScreen e) {
-        if (e.getGui().getSlotUnderMouse() == null || !e.getGui().getSlotUnderMouse().getHasStack()) return;
-
-        replaceLore(e.getGui().getSlotUnderMouse().getStack());
-    }
 
     public static void replaceLore(ItemStack stack) {
         IdentificationType idType;

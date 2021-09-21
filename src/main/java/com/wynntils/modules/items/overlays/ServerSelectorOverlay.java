@@ -14,7 +14,6 @@ import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.events.custom.RenderEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
-import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
@@ -141,7 +140,7 @@ public class ServerSelectorOverlay implements Listener {
     }
 
     @SubscribeEvent
-    public void onItemOverlay(RenderEvent.DrawItemOverlay event) {
+    public void onItemOverlay(RenderEvent.RenderItem event) {
         ItemStack serverStack = event.getStack();
         String serverName = TextFormatting.getTextWithoutFormattingCodes(serverStack.getDisplayName());
 
