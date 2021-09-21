@@ -5,8 +5,6 @@
 package com.wynntils.modules.cosmetics.layers.models;
 
 import com.google.common.collect.Lists;
-
-
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 

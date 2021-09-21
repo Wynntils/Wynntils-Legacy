@@ -12,7 +12,6 @@ import com.wynntils.core.framework.ui.elements.UIEClickZone;
 import com.wynntils.core.framework.ui.elements.UIEColorWheel;
 import com.wynntils.core.framework.ui.elements.UIEList;
 import com.wynntils.core.framework.ui.elements.UIETextBox;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 

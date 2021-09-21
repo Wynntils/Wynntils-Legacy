@@ -7,11 +7,11 @@ package com.wynntils.modules.map.overlays;
 import com.wynntils.McIf;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.modules.map.overlays.ui.SeaskipperWorldMapUI;
 import com.wynntils.modules.visual.configs.VisualConfig;
 import com.wynntils.webapi.WebManager;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import com.wynntils.modules.map.overlays.ui.SeaskipperWorldMapUI;
 
 import java.io.IOException;
 

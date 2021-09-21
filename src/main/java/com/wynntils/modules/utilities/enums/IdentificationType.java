@@ -5,7 +5,6 @@
 package com.wynntils.modules.utilities.enums;
 
 import com.wynntils.modules.items.configs.ItemsConfig;
-import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.instances.IdentificationResult;
 import com.wynntils.modules.utilities.interfaces.IIdentificationAnalyser;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;

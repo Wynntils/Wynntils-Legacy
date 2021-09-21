@@ -8,7 +8,6 @@ package com.wynntils.modules.core.managers;
 import com.wynntils.McIf;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.core.events.ServerEvents;
-import net.minecraft.client.Minecraft;
 
 public class CompassManager {
 

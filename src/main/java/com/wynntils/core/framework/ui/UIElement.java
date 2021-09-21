@@ -4,10 +4,10 @@
 
 package com.wynntils.core.framework.ui;
 
-import java.util.Objects;
-
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.utils.objects.Position;
+
+import java.util.Objects;
 
 public abstract class UIElement extends ScreenRenderer {
     private int id;

@@ -1,7 +1,6 @@
 package com.wynntils.modules.items.managers;
 
 import com.wynntils.McIf;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
 import net.minecraft.item.ItemStack;

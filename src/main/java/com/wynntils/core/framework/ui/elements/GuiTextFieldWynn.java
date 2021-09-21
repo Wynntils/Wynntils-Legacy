@@ -4,10 +4,10 @@
 
 package com.wynntils.core.framework.ui.elements;
 
-import java.awt.Color;
-
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiTextField;
+
+import java.awt.*;
 
 public class GuiTextFieldWynn extends GuiTextField {
 

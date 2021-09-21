@@ -7,7 +7,6 @@ package com.wynntils.core.framework.entities;
 import com.wynntils.McIf;
 import com.wynntils.core.framework.entities.instances.FakeEntity;
 import com.wynntils.core.utils.Utils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.entity.RenderManager;

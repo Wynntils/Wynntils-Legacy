@@ -8,7 +8,6 @@ import com.wynntils.McIf;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.containers.PartyContainer;
 import com.wynntils.core.framework.instances.data.SocialData;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 import java.util.Collection;

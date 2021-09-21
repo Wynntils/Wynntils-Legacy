@@ -17,7 +17,10 @@ import com.wynntils.modules.utilities.instances.InfoFormatter;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.modules.utilities.overlays.OverlayEvents;
 import com.wynntils.modules.utilities.overlays.hud.*;
-import com.wynntils.modules.utilities.overlays.inventories.*;
+import com.wynntils.modules.utilities.overlays.inventories.BankOverlay;
+import com.wynntils.modules.utilities.overlays.inventories.IngredientFilterOverlay;
+import com.wynntils.modules.utilities.overlays.inventories.MenuButtonsOverlay;
+import com.wynntils.modules.utilities.overlays.inventories.WynnBuilderOverlay;
 
 @ModuleInfo(name = "utilities", displayName = "Utilities")
 public class UtilitiesModule extends Module {

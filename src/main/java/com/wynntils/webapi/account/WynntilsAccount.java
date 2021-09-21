@@ -20,7 +20,6 @@ import net.minecraft.util.CryptManager;
 import org.apache.commons.codec.binary.Hex;
 
 import javax.crypto.SecretKey;
-
 import java.io.File;
 import java.math.BigInteger;
 import java.security.PublicKey;

@@ -37,7 +37,7 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static net.minecraft.client.renderer.GlStateManager.*;
+import static net.minecraft.client.renderer.GlStateManager.disableLighting;
 
 public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
 

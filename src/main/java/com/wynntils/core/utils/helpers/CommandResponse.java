@@ -6,7 +6,6 @@ package com.wynntils.core.utils.helpers;
 
 import com.wynntils.McIf;
 import com.wynntils.core.framework.FrameworkManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;

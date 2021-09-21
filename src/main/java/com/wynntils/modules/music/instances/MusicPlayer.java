@@ -13,7 +13,6 @@ import javazoom.jl.player.JavaSoundAudioDevice;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.SoundCategory;
 import org.lwjgl.opengl.Display;
 

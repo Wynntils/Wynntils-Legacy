@@ -19,7 +19,6 @@ import com.wynntils.modules.music.managers.BossTrackManager;
 import com.wynntils.modules.music.managers.SoundTrackManager;
 import com.wynntils.modules.utilities.overlays.hud.WarTimerOverlay;
 import com.wynntils.webapi.WebManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.network.play.server.SPacketWindowItems;

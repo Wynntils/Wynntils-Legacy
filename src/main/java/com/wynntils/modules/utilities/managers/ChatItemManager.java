@@ -4,6 +4,32 @@
 
 package com.wynntils.modules.utilities.managers;
 
+import com.wynntils.McIf;
+import com.wynntils.core.framework.enums.ClassType;
+import com.wynntils.core.framework.enums.Powder;
+import com.wynntils.core.framework.enums.SpellType;
+import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.CharacterData;
+import com.wynntils.core.utils.ItemUtils;
+import com.wynntils.core.utils.StringUtils;
+import com.wynntils.modules.items.overlays.ItemIdentificationOverlay;
+import com.wynntils.modules.utilities.enums.IdentificationType;
+import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.item.IdentificationOrderer;
+import com.wynntils.webapi.profiles.item.ItemProfile;
+import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
+import com.wynntils.webapi.profiles.item.objects.ItemRequirementsContainer;
+import com.wynntils.webapi.profiles.item.objects.MajorIdentification;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagByte;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.nbt.NBTTagInt;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.HoverEvent;
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.ArrayList;
@@ -13,34 +39,6 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
-
-import org.apache.commons.lang3.ArrayUtils;
-
-import com.wynntils.McIf;
-import com.wynntils.core.framework.enums.ClassType;
-import com.wynntils.core.framework.enums.Powder;
-import com.wynntils.core.framework.enums.SpellType;
-import com.wynntils.core.framework.instances.PlayerInfo;
-import com.wynntils.core.framework.instances.data.CharacterData;
-import com.wynntils.core.utils.ItemUtils;
-import com.wynntils.core.utils.StringUtils;
-import com.wynntils.modules.utilities.enums.IdentificationType;
-import com.wynntils.modules.items.overlays.ItemIdentificationOverlay;
-import com.wynntils.webapi.WebManager;
-import com.wynntils.webapi.profiles.item.IdentificationOrderer;
-import com.wynntils.webapi.profiles.item.ItemProfile;
-import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
-import com.wynntils.webapi.profiles.item.objects.ItemRequirementsContainer;
-import com.wynntils.webapi.profiles.item.objects.MajorIdentification;
-
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagByte;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagInt;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.event.HoverEvent;
 
 import static net.minecraft.util.text.TextFormatting.*;
 

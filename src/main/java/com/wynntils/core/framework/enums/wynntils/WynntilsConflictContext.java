@@ -6,7 +6,6 @@ package com.wynntils.core.framework.enums.wynntils;
 
 import com.wynntils.McIf;
 import com.wynntils.core.framework.instances.GuiMovementScreen;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
 

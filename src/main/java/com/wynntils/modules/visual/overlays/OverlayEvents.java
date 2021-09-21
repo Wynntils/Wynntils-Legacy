@@ -10,7 +10,6 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.instances.WindowedResolution;
 import com.wynntils.modules.visual.configs.VisualConfig;
 import com.wynntils.modules.visual.overlays.ui.CharacterSelectorUI;
-import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 

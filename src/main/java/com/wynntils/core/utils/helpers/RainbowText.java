@@ -5,7 +5,6 @@
 package com.wynntils.core.utils.helpers;
 
 import com.wynntils.McIf;
-import net.minecraft.client.Minecraft;
 
 public class RainbowText {
 

@@ -10,7 +10,6 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.utils.helpers.CommandResponse;
 import com.wynntils.modules.chat.managers.ChatManager;
-
 import net.minecraft.client.gui.GuiChat;
 
 import java.util.regex.Pattern;

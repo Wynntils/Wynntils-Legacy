@@ -17,7 +17,6 @@ import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsHolder;
 import com.wynntils.modules.map.instances.PathWaypointProfile;
 import com.wynntils.webapi.WebManager;
-import net.minecraft.client.Minecraft;
 
 import java.io.*;
 import java.lang.reflect.Type;

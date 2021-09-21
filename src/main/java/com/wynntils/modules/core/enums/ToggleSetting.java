@@ -6,7 +6,6 @@ package com.wynntils.modules.core.enums;
 
 import com.wynntils.McIf;
 import com.wynntils.core.utils.helpers.CommandResponse;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TextComponentBase;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;

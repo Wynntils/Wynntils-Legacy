@@ -38,7 +38,10 @@ import org.lwjgl.opengl.GL11;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 

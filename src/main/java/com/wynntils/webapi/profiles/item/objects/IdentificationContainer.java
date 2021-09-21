@@ -4,13 +4,12 @@
 
 package com.wynntils.webapi.profiles.item.objects;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.commons.lang3.math.Fraction;
-
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.webapi.profiles.item.enums.IdentificationModifier;
+import org.apache.commons.lang3.math.Fraction;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class IdentificationContainer {
 

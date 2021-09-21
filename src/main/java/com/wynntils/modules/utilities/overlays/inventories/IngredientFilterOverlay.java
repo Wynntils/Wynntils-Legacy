@@ -10,7 +10,6 @@ import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.modules.items.configs.ItemsConfig;
 import com.wynntils.modules.items.overlays.RarityColorOverlay;
-import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 

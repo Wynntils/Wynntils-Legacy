@@ -7,7 +7,10 @@ package com.wynntils.modules.map.instances;
 import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.utils.objects.Location;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class LabelBake {
 

@@ -11,7 +11,6 @@ import com.wynntils.modules.cosmetics.configs.CosmeticsConfig;
 import com.wynntils.modules.cosmetics.layers.LayerCape;
 import com.wynntils.modules.cosmetics.layers.LayerElytra;
 import com.wynntils.modules.cosmetics.layers.LayerFoxEars;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 

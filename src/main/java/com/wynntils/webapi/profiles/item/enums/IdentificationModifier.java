@@ -5,7 +5,6 @@
 package com.wynntils.webapi.profiles.item.enums;
 
 import com.wynntils.modules.items.configs.ItemsConfig;
-import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 
 public enum IdentificationModifier {
 

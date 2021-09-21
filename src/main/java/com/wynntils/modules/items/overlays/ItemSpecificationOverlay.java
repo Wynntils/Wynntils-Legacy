@@ -4,10 +4,6 @@
 
 package com.wynntils.modules.items.overlays;
 
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.RenderEvent;
 import com.wynntils.core.framework.enums.SkillPoint;
@@ -20,14 +16,14 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.modules.items.configs.ItemsConfig;
 import com.wynntils.webapi.profiles.item.enums.ItemType;
-
-import net.minecraft.client.gui.inventory.GuiContainer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ItemSpecificationOverlay implements Listener {
 

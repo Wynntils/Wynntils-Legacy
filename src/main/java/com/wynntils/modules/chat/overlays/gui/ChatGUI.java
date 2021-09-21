@@ -16,7 +16,6 @@ import com.wynntils.modules.chat.language.WynncraftLanguage;
 import com.wynntils.modules.chat.managers.TabManager;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.utilities.managers.ChatItemManager;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;

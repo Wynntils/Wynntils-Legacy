@@ -15,7 +15,6 @@ import com.wynntils.modules.questbook.enums.QuestSize;
 import com.wynntils.modules.questbook.enums.QuestStatus;
 import com.wynntils.modules.utilities.configs.TranslationConfig;
 import com.wynntils.webapi.services.TranslationManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
 import java.util.*;

@@ -29,7 +29,6 @@ public class CoreModule extends Module {
 
         registerSettings(CoreDBConfig.class);
 
-        registerCommand(new CommandAdmin());
         registerCommand(new CommandCompass());
         registerCommand(new CommandForceUpdate());
         registerCommand(new CommandServer());

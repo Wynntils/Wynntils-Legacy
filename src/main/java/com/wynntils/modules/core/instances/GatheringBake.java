@@ -7,7 +7,6 @@ package com.wynntils.modules.core.instances;
 import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.professions.GatheringMaterial;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
-import net.minecraft.client.Minecraft;
 
 public class GatheringBake {
 

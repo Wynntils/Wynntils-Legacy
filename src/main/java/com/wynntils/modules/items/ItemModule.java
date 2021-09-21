@@ -10,9 +10,8 @@ import com.wynntils.modules.core.events.ClientEvents;
 import com.wynntils.modules.core.events.ServerEvents;
 import com.wynntils.modules.items.configs.ItemsConfig;
 import com.wynntils.modules.items.instances.SkillPointTransformer;
-import com.wynntils.modules.items.instances.UnidentifiedItemTransformer;
-import com.wynntils.modules.items.overlays.SkillPointOverlay;
 import com.wynntils.modules.items.instances.StringNormalizationTransformer;
+import com.wynntils.modules.items.instances.UnidentifiedItemTransformer;
 import com.wynntils.modules.items.managers.ItemStackTransformManager;
 import com.wynntils.modules.items.overlays.*;
 

@@ -4,19 +4,18 @@
 
 package com.wynntils.modules.questbook.managers;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.wynntils.McIf;
 import com.wynntils.modules.questbook.enums.AnalysePosition;
-
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.text.TextFormatting;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class ScoreboardManager {
 

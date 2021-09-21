@@ -7,7 +7,6 @@ package com.wynntils.modules.core.instances.packet;
 import com.wynntils.McIf;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.managers.PingManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.Packet;
 

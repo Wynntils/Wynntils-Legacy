@@ -15,7 +15,6 @@ import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.visual.configs.VisualConfig;
 import com.wynntils.modules.visual.entities.EntityDamageSplash;
 import com.wynntils.modules.visual.managers.CachedChunkManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.play.server.SPacketChunkData;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 

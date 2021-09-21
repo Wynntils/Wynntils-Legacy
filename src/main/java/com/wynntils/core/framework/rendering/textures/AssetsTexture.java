@@ -6,7 +6,6 @@ package com.wynntils.core.framework.rendering.textures;
 
 import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.ActionResult;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.ResourceLocation;
 
 import javax.imageio.ImageIO;

@@ -9,13 +9,14 @@ import com.wynntils.modules.chat.instances.ChatTab;
 import com.wynntils.modules.chat.managers.TabManager;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import net.minecraft.client.gui.*;
-import static net.minecraft.util.text.TextFormatting.*;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
 import java.util.*;
 import java.util.regex.Pattern;
+
+import static net.minecraft.util.text.TextFormatting.*;
 
 
 public class TabGUI extends GuiScreen {

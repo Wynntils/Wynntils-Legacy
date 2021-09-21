@@ -16,17 +16,16 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
+import com.wynntils.modules.items.overlays.ItemIdentificationOverlay;
 import com.wynntils.modules.utilities.instances.ContainerGearViewer;
 import com.wynntils.modules.utilities.managers.ItemScreenshotManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
-import com.wynntils.modules.items.overlays.ItemIdentificationOverlay;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.IdentificationOrderer;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 import com.wynntils.webapi.profiles.item.objects.ItemRequirementsContainer;
 import com.wynntils.webapi.profiles.item.objects.MajorIdentification;
-
 import net.minecraft.client.entity.EntityOtherPlayerMP;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;

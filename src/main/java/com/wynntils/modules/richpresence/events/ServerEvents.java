@@ -16,7 +16,6 @@ import com.wynntils.modules.richpresence.RichPresenceModule;
 import com.wynntils.modules.richpresence.configs.RichPresenceConfig;
 import com.wynntils.modules.utilities.overlays.hud.WarTimerOverlay;
 import com.wynntils.modules.utilities.overlays.hud.WarTimerOverlay.WarStage;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.play.server.SPacketSetExperience;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;

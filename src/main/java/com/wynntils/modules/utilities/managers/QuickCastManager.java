@@ -12,7 +12,6 @@ import com.wynntils.core.framework.instances.data.ActionBarData;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.instances.data.SpellData;
 import com.wynntils.modules.core.managers.PacketQueue;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketAnimation;
 import net.minecraft.network.play.client.CPacketPlayerDigging;

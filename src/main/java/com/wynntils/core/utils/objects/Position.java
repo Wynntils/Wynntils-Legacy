@@ -4,11 +4,11 @@
 
 package com.wynntils.core.utils.objects;
 
-import java.util.Objects;
-
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.util.math.MathHelper;
+
+import java.util.Objects;
 
 public class Position {
 

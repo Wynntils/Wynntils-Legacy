@@ -6,7 +6,6 @@ package com.wynntils.modules.utilities.instances;
 
 import com.wynntils.McIf;
 import com.wynntils.core.utils.StringUtils;
-import net.minecraft.client.Minecraft;
 
 public class Toast {
     private ToastType type;

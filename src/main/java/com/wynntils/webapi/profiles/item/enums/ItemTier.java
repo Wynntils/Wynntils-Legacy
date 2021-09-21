@@ -8,7 +8,6 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.items.configs.ItemsConfig;
-import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.concurrent.Callable;

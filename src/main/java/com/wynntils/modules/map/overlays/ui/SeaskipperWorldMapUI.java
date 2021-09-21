@@ -10,8 +10,8 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.instances.MapProfile;
-import com.wynntils.modules.map.overlays.objects.SeaskipperLocation;
 import com.wynntils.modules.map.overlays.enums.MapButtonType;
+import com.wynntils.modules.map.overlays.objects.SeaskipperLocation;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.SeaskipperProfile;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -26,7 +26,8 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
