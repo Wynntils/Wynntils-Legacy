@@ -164,6 +164,8 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onChatToRedirect(ChatEvent.Pre e) {
+        if (e.isDialogue()) return;
+
         if (!UtilitiesModule.getModule().getGameUpdateOverlay().active) {
             GameUpdateOverlay.resetMessages();
             return;

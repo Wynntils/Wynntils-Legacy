@@ -157,13 +157,6 @@ public class ChatOverlay extends GuiNewChat {
     private void setChatLine(ITextComponent chatComponent, int chatLineId, int updateCounter, boolean displayOnly, boolean noEvent) {
         chatComponent = chatComponent.createCopy();
 
-        if (!noEvent) {
-            ChatEvent.Pre event = new ChatEvent.Pre(chatComponent, chatLineId);
-            if (FrameworkManager.getEventBus().post(event)) return;
-            chatComponent = event.getMessage();
-            chatLineId = event.getChatLineId();
-        }
-
         Pair<Boolean, ITextComponent> dialogue = ChatManager.applyToDialogue(chatComponent.createCopy());
         if (dialogue.a) {
             chatComponent = dialogue.b;
@@ -172,6 +165,13 @@ public class ChatOverlay extends GuiNewChat {
                 deleteChatLine(chatLineId);
                 return;
             }
+        }
+
+        if (!noEvent) {
+            ChatEvent.Pre event = new ChatEvent.Pre(chatComponent, chatLineId, dialogue.a);
+            if (FrameworkManager.getEventBus().post(event)) return;
+            chatComponent = event.getMessage();
+            chatLineId = event.getChatLineId();
         }
 
         if (chatLineId != 0) {
