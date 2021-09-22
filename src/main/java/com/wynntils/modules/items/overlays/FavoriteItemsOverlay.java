@@ -34,7 +34,7 @@ public class FavoriteItemsOverlay implements Listener {
                 return; // don't care about identified items
             }
 
-            String items = ItemIdentificationOverlay.getItemsFromBox(stack);
+            String items = ItemUtils.getItemsFromBox(stack);
             if (items == null) return;
 
             for (String possibleItem : items.split(", ")) {

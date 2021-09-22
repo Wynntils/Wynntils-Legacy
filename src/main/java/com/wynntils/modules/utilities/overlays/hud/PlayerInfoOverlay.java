@@ -23,18 +23,16 @@ import java.util.stream.Collectors;
 public class PlayerInfoOverlay extends Overlay {
 
     public PlayerInfoOverlay() {
-        super("Player Info Overlay", 410, 229, true, 0.5f, 0f, 0, 10, OverlayGrowFrom.TOP_CENTRE);
+        super("Player Info Overlay", 410, 229, true, 0.5f, 0f, 0, 10, OverlayGrowFrom.TOP_CENTRE, RenderGameOverlayEvent.ElementType.PLAYER_LIST);
     }
 
     transient double animationProgress = 0;
     transient long lastTime = -1;
 
-    public static boolean active = false;
-
     @Override
     public void render(RenderGameOverlayEvent.Post event) {
         if (!Reference.onWorld || !OverlayConfig.PlayerInfo.INSTANCE.replaceVanilla) return;
-        if (!active && animationProgress <= 0.0) return;
+        if (!McIf.mc().gameSettings.keyBindPlayerList.isKeyDown() && animationProgress <= 0.0) return;
 
         double animation = 1;
         if (OverlayConfig.PlayerInfo.INSTANCE.openingDuration > 0) { // Animation Detection

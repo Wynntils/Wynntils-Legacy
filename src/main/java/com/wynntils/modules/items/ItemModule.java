@@ -11,7 +11,7 @@ import com.wynntils.modules.core.events.ServerEvents;
 import com.wynntils.modules.items.configs.ItemsConfig;
 import com.wynntils.modules.items.instances.SkillPointTransformer;
 import com.wynntils.modules.items.instances.StringNormalizationTransformer;
-import com.wynntils.modules.items.instances.UnidentifiedItemTransformer;
+import com.wynntils.modules.items.instances.ItemIdentificationTransformer;
 import com.wynntils.modules.items.managers.ItemStackTransformManager;
 import com.wynntils.modules.items.overlays.*;
 
@@ -42,7 +42,7 @@ public class ItemModule extends Module {
 
         //transformers
         ItemStackTransformManager.registerGlobalTransform(new StringNormalizationTransformer());
-        ItemStackTransformManager.registerEntityTransform(new UnidentifiedItemTransformer());
+        ItemStackTransformManager.registerEntityTransform(new ItemIdentificationTransformer());
         ItemStackTransformManager.registerGlobalTransform(new ItemStackTransformManager.ItemConsumer(s -> s.setStackDisplayName("test")));
         ItemStackTransformManager.registerGuiTransform(new SkillPointTransformer());
 

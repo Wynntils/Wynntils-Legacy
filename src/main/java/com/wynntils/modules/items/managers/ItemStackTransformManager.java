@@ -10,6 +10,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
+/**
+ * The purpose of this class if for static, one-time item changes
+ */
 public class ItemStackTransformManager {
     private static final List<ConditionalTransformer<Entity>> entityTransformers = new ArrayList<>();
     private static final List<ConditionalTransformer<GuiScreen>> guiTransformers = new ArrayList<>();

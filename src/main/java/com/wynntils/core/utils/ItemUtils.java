@@ -7,6 +7,8 @@ package com.wynntils.core.utils;
 import com.wynntils.core.utils.objects.IntRange;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.item.ItemGuessProfile;
+import com.wynntils.webapi.profiles.item.enums.ItemTier;
 import com.wynntils.webapi.profiles.item.enums.ItemType;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -21,14 +23,23 @@ import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static net.minecraft.util.text.TextFormatting.getTextWithoutFormattingCodes;
 
 public class ItemUtils {
 
     private static final Pattern LEVEL_PATTERN = Pattern.compile("(?:Combat|Crafting|Mining|Woodcutting|Farming|Fishing) Lv\\. Min: ([0-9]+)");
     private static final Pattern LEVEL_RANGE_PATTERN = Pattern.compile("Lv\\. Range: " + TextFormatting.WHITE.toString() + "([0-9]+)-([0-9]+)");
+
+    public final static Pattern ID_PATTERN = Pattern.compile("(^\\+?(?<Value>-?\\d+)(?: to \\+?(?<UpperValue>-?\\d+))?(?<Suffix>%|/\\ds| tier)?(?<Stars>\\*{0,3}) (?<ID>[a-zA-Z 0-9]+))");
+
+    public final static Pattern ITEM_QUALITY = Pattern.compile("(?<Quality>Normal|Unique|Rare|Legendary|Fabled|Mythic|Set) Item(?: \\[(?<Rolls>\\d+)])?(?: \\[[0-9,]+" + EmeraldSymbols.E + "])?");
+    public final static Pattern MARKET_PRICE = Pattern.compile(" - (?<Quantity>\\d x )?(?<Value>(?:,?\\d{1,3})+)" + EmeraldSymbols.E);
 
     public static final NBTTagCompound UNBREAKABLE = new NBTTagCompound();
 
@@ -201,10 +212,55 @@ public class ItemUtils {
     }
 
     /**
-     * Gets if an item is identified
+     * Returns if an item is identified
      */
     public static boolean isUnidentified(ItemStack stack) {
         return stack.getItem() == Items.STONE_SHOVEL && stack.getItemDamage() >= 1 && stack.getItemDamage() <= 6;
+    }
+
+    /**
+     *  Gets the short id name from the display name
+     */
+    public static String toShortIdName(String longIdName, boolean raw) {
+        String[] splitName = longIdName.split(" ");
+        StringBuilder result = new StringBuilder(raw ? "raw" : "");
+        for (String r : splitName) {
+            if (r.startsWith("[")) continue;  // ignore ids
+            result.append(Character.toUpperCase(r.charAt(0))).append(r.substring(1).toLowerCase(Locale.ROOT));
+        }
+
+        if (result.length() == 0) return "";
+        if (!raw) result.setCharAt(0, Character.toLowerCase(result.charAt(0)));
+        return result.toString();
+    }
+
+    /**
+     * Gets results from a box as a string
+     */
+    public static String getItemsFromBox(ItemStack stack) {
+        String name = stack.getDisplayName();
+        String itemType = getTextWithoutFormattingCodes(name).split(" ", 3)[1];
+        String levelRange = null;
+
+        List<String> lore = ItemUtils.getLore(stack);
+
+        for (String aLore : lore) {
+            if (aLore.contains("Lv. Range")) {
+                levelRange = getTextWithoutFormattingCodes(aLore).replace("- Lv. Range: ", "");
+                break;
+            }
+        }
+
+        if (itemType == null || levelRange == null) return null;
+
+        ItemGuessProfile igp = WebManager.getItemGuesses().get(levelRange);
+        if (igp == null) return null;
+
+        Map<String, String> rarityMap = igp.getItems().get(itemType);
+        if (rarityMap == null) return null;
+
+        ItemTier tier = ItemTier.fromTextColoredString(name);
+        return rarityMap.get(tier.asCapitalizedName());
     }
 
     static {

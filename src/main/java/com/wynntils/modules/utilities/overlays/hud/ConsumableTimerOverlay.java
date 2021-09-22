@@ -98,7 +98,7 @@ public class ConsumableTimerOverlay extends Overlay {
                         id = id.replace(skillPoint.getSymbol() + " ", "");
                     }
 
-                    m = ItemIdentificationOverlay.ID_PATTERN.matcher(id);
+                    m = ItemUtils.ID_PATTERN.matcher(id);
                     if (!m.matches()) continue; // continues if the effect is not a valid id
 
                     verifyIdentification(m, consumable);
@@ -143,7 +143,7 @@ public class ConsumableTimerOverlay extends Overlay {
             }
 
             // effects | <Value><Suffix> <ID>
-            m = ItemIdentificationOverlay.ID_PATTERN.matcher(line);
+            m = ItemUtils.ID_PATTERN.matcher(line);
             if (!m.matches()) continue; // continues if not a valid effect
 
             verifyIdentification(m, consumable);
@@ -171,7 +171,7 @@ public class ConsumableTimerOverlay extends Overlay {
         String effect = splitMsg[0].substring(1);
         String duration = splitMsg[1];
 
-        Matcher m = ItemIdentificationOverlay.ID_PATTERN.matcher(effect);
+        Matcher m = ItemUtils.ID_PATTERN.matcher(effect);
         if (!m.matches()) return;
 
         Matcher m2 = CHAT_DURATION_PATTERN.matcher(duration);
@@ -179,7 +179,7 @@ public class ConsumableTimerOverlay extends Overlay {
 
         long expiration = McIf.getSystemTime() + (Integer.parseInt(m2.group(1)) * 1000);
         int value = Integer.parseInt(m.group("Value"));
-        String shortIdName = ItemIdentificationOverlay.toShortIdName(m.group("ID"), m.group("Suffix") == null);
+        String shortIdName = ItemUtils.toShortIdName(m.group("ID"), m.group("Suffix") == null);
         ConsumableContainer consumable = null;
 
         for (ConsumableContainer c : activeConsumables) {
@@ -215,7 +215,7 @@ public class ConsumableTimerOverlay extends Overlay {
         SpellType spell = SpellType.fromName(idName);
         if (spell != null) idName = spell.getGenericName();
 
-        String shortIdName = ItemIdentificationOverlay.toShortIdName(idName, isRaw);
+        String shortIdName = ItemUtils.toShortIdName(idName, isRaw);
 
         IdentificationModifier modifier = IdentificationModifier.INTEGER;
         if (!isRaw) {
