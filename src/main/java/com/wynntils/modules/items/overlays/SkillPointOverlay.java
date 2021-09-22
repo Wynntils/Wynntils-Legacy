@@ -81,14 +81,6 @@ public class SkillPointOverlay implements Listener {
     }
 
     @SubscribeEvent
-    public void onDrawScreen(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
-        if (!Reference.onWorld) return;
-        if (!Utils.isCharacterInfoPage(e.getGui())) return;
-
-        addManaTables(e.getGui());
-    }
-
-    @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawScreen.Pre e) {
         Matcher m = Utils.CHAR_INFO_PAGE_TITLE.matcher(e.getGui().getLowerInv().getName());
         if (!m.find()) return;
@@ -220,63 +212,6 @@ public class SkillPointOverlay implements Listener {
         if (!e.getPacket().getSoundName().equalsIgnoreCase("entity.experience_orb.pickup")) return;
 
         e.setCanceled(true);
-    }
-
-    private String remainingLevelsDescription(int remainingLevels) {
-        return "" + TextFormatting.GOLD + remainingLevels + TextFormatting.GRAY + " point" + (remainingLevels == 1 ? "" : "s");
-    }
-
-    private int getIntelligencePoints(ItemStack stack) {
-        String lore = TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(stack));
-        int start = lore.indexOf(" points ") - 3;
-
-        return (start < 0) ? 0 : Integer.parseInt(lore.substring(start, start + 3).trim());
-    }
-
-    public void addManaTables(ChestReplacer gui) {
-        ItemStack stack = gui.getLowerInv().getStackInSlot(11);
-        if (stack.isEmpty() || !stack.hasDisplayName()) return; // display name also checks for tag compound
-
-        int intelligencePoints = getIntelligencePoints(stack);
-        if (stack.getTagCompound().hasKey("wynntilsAnalyzed")) return;
-
-        int closestUpgradeLevel = Integer.MAX_VALUE;
-        int level = PlayerInfo.get(CharacterData.class).getLevel();
-
-        List<String> newLore = new LinkedList<>();
-
-        for (int j = 0; j < 4; j++) {
-            SpellType spell = SpellType.forClass(PlayerInfo.get(CharacterData.class).getCurrentClass(), j + 1);
-
-            if (spell.getUnlockLevel(1) <= level) {
-                int nextUpgrade = spell.getNextManaReduction(level, intelligencePoints);
-                if (nextUpgrade < closestUpgradeLevel) {
-                    closestUpgradeLevel = nextUpgrade;
-                }
-                int manaCost = spell.getManaCost(level, intelligencePoints);
-                String spellName = PlayerInfo.get(CharacterData.class).isReskinned() ? spell.getReskinned() : spell.getName();
-                String spellInfo = TextFormatting.LIGHT_PURPLE + spellName + " Spell: " + TextFormatting.AQUA
-                        + "-" + manaCost + " ✺";
-                if (nextUpgrade < Integer.MAX_VALUE) {
-                    spellInfo += TextFormatting.GRAY + " (-" + (manaCost - 1) + " ✺ in "
-                            + remainingLevelsDescription(nextUpgrade - intelligencePoints) + ")";
-                }
-                newLore.add(spellInfo);
-            }
-        }
-
-        List<String> loreTag = new LinkedList<>(ItemUtils.getLore(stack));
-        if (closestUpgradeLevel < Integer.MAX_VALUE) {
-            loreTag.add("");
-            loreTag.add(TextFormatting.GRAY + "Next upgrade: At " + TextFormatting.WHITE + closestUpgradeLevel
-                    + TextFormatting.GRAY + " points (in " + remainingLevelsDescription(closestUpgradeLevel - intelligencePoints) + ")");
-        }
-
-        loreTag.add("");
-        loreTag.addAll(newLore);
-
-        ItemUtils.replaceLore(stack, loreTag);
-        stack.getTagCompound().setBoolean("wynntilsAnalyzed", true);
     }
 
     private SkillPointAllocation getSkillPoints(ChestReplacer gui) {
