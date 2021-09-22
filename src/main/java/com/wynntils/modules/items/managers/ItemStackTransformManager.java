@@ -14,6 +14,13 @@ import java.util.function.Predicate;
  * The purpose of this class if for static, one-time item changes
  */
 public class ItemStackTransformManager {
+    /*
+        Each transform is for different packets
+        Entity - only for entities
+        Gui - only for GuiScreens
+        Inventory - only for inventory
+        Global - For all packet results
+ */
     private static final List<ConditionalTransformer<Entity>> entityTransformers = new ArrayList<>();
     private static final List<ConditionalTransformer<GuiScreen>> guiTransformers = new ArrayList<>();
     private static final List<ItemTransformer> inventoryTransformers = new ArrayList<>();
