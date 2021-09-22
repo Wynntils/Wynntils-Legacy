@@ -45,7 +45,7 @@ public class ItemSpecificationOverlay implements Listener {
         //TODO test
         float scale = 1f;
 
-        if (ItemsConfig.Items.INSTANCE.unidentifiedSpecification) {
+        if (ItemsConfig.ItemHighlights.INSTANCE.unidentifiedSpecification) {
             Pattern unidentifiedItem = Pattern.compile("^§.Unidentified (.*)");
             Matcher m = unidentifiedItem.matcher(name);
             if (m.find()) {
@@ -67,7 +67,7 @@ public class ItemSpecificationOverlay implements Listener {
             }
         }
 
-        if (ItemsConfig.Items.INSTANCE.potionSpecification) {
+        if (ItemsConfig.ItemHighlights.INSTANCE.potionSpecification) {
             if (name.startsWith("§aPotion of §")) {
                 SkillPoint skillPoint = SkillPoint.findSkillPoint(name);
                 destinationName = skillPoint.getSymbol();
@@ -75,7 +75,7 @@ public class ItemSpecificationOverlay implements Listener {
             }
         }
 
-        if (ItemsConfig.Items.INSTANCE.keySpecification) {
+        if (ItemsConfig.ItemHighlights.INSTANCE.keySpecification) {
             Pattern dungeonKey = Pattern.compile("§6(.*) Key");
             Matcher m = dungeonKey.matcher(name);
             if (m.find() && lore.get(0).equals("§7Grants access to the")) {
@@ -99,7 +99,7 @@ public class ItemSpecificationOverlay implements Listener {
             }
         }
 
-        if (ItemsConfig.Items.INSTANCE.transportationSpecification) {
+        if (ItemsConfig.ItemHighlights.INSTANCE.transportationSpecification) {
             Pattern boatPass = Pattern.compile("§b(.*) (?:Boat )?Pass");
             Matcher m = boatPass.matcher(name);
             if (m.find() && lore.get(0).equals("§7Use this at the §fV.S.S. Seaskipper")) {
@@ -129,7 +129,7 @@ public class ItemSpecificationOverlay implements Listener {
             }
         }
 
-        if (ItemsConfig.Items.INSTANCE.amplifierSpecification) {
+        if (ItemsConfig.ItemHighlights.INSTANCE.amplifierSpecification) {
             Pattern amp = Pattern.compile("^§bCorkian Amplifier (I{1,3})$");
             Matcher m = amp.matcher(name);
             if (m.matches()) {

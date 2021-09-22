@@ -602,6 +602,9 @@ public class OverlayConfig extends SettingsClass {
             POUCH_SLOTS("Number of used slots in the ingredient pouch"),
             INV_FREE("Number of free slots in the inventory"),
             INV_SLOTS("Number of used slots in the inventory"),
+            TERRITORY_OWNER("Current guild that owns current territory"),
+            TERRITORY_OWNER_PREFIX("Current guild that owns current territory's prefix"),
+            BEACON_DISTANCE("Distance from compass beacon"),
             LOCATION("Current location"),
             LEVEL("Current level"),
             SP_TIMER("Time until next soul point (Formatted)"),
@@ -626,8 +629,6 @@ public class OverlayConfig extends SettingsClass {
             POTIONS_MANA("Amount of mana potions in inventory"),
             PARTY_COUNT("Amount of members in the players party"),
             PARTY_OWNER("Owner of the current party"),
-            UNPROCESSED("Current amount of unprocessed materials"),
-            UNPROCESSED_MAX("Max amount of unprocessed materials"),
             ADPS("Current area damage per second");
 
             public final String displayName;

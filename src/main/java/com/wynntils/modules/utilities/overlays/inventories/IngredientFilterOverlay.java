@@ -23,7 +23,7 @@ public class IngredientFilterOverlay implements Listener {
 
     @SubscribeEvent
     public void initGui(GuiOverlapEvent.ChestOverlap.InitGui e) {
-        if (!Reference.onWorld || !ItemsConfig.Items.INSTANCE.filterEnabled) return;
+        if (!Reference.onWorld || !ItemsConfig.ItemHighlights.INSTANCE.filterEnabled) return;
 
         e.getButtonList().add(
                 new GuiButton(11,

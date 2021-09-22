@@ -25,7 +25,7 @@ public class ItemLevelOverlay implements Listener {
 
     @SubscribeEvent
     public void onItemOverlay(RenderEvent.RenderItem event) {
-        if (!ItemsConfig.Items.INSTANCE.itemLevelOverlayOutsideGui && McIf.mc().currentScreen == null) return;
+        if (!ItemsConfig.ItemHighlights.INSTANCE.itemLevelOverlayOutsideGui && McIf.mc().currentScreen == null) return;
         if (!KeyManager.getShowLevelOverlayKey().isKeyDown()) return;
 
         ItemStack stack = event.getStack();
@@ -36,7 +36,7 @@ public class ItemLevelOverlay implements Listener {
         if (item == Items.DYE || item == Items.GUNPOWDER || item == Items.CLAY_BALL || item == Items.SUGAR) {
             Matcher powderMatcher = POWDER_NAME_PATTERN.matcher(name);
             if (powderMatcher.find()) {
-                if (ItemsConfig.Items.INSTANCE.romanNumeralPowderTier) {
+                if (ItemsConfig.ItemHighlights.INSTANCE.romanNumeralPowderTier) {
                     event.setOverlayText(powderMatcher.group(1));
                     return;
                 }
@@ -71,7 +71,7 @@ public class ItemLevelOverlay implements Listener {
         // item level
         IntRange level = ItemUtils.getLevel(lore);
         if (level != null) {
-            event.setOverlayText(ItemsConfig.Items.INSTANCE.averageUnidentifiedLevel ? level.toString() : Integer.toString(level.getAverage()));
+            event.setOverlayText(ItemsConfig.ItemHighlights.INSTANCE.averageUnidentifiedLevel ? level.toString() : Integer.toString(level.getAverage()));
         }
     }
 

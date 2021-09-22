@@ -42,9 +42,9 @@ public class EmeraldCountOverlay implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onPlayerInventory(GuiOverlapEvent.InventoryOverlap.DrawGuiContainerForegroundLayer e) {
-        if (!Reference.onWorld || !ItemsConfig.Items.INSTANCE.emeraldCountInventory) return;
+        if (!Reference.onWorld || !ItemsConfig.ItemHighlights.INSTANCE.emeraldCountInventory) return;
 
-        if (ItemsConfig.Items.INSTANCE.emeraldCountText) {
+        if (ItemsConfig.ItemHighlights.INSTANCE.emeraldCountText) {
             drawTextMoneyAmount(170, 7, PlayerInfo.get(InventoryData.class).getMoney(), renderer, textColor);
             return;
         }
@@ -53,33 +53,33 @@ public class EmeraldCountOverlay implements Listener {
 
     @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawGuiContainerForegroundLayer e) {
-        if (!Reference.onWorld || !(ItemsConfig.Items.INSTANCE.emeraldCountInventory || ItemsConfig.Items.INSTANCE.emeraldCountChest)) return;
+        if (!Reference.onWorld || !(ItemsConfig.ItemHighlights.INSTANCE.emeraldCountInventory || ItemsConfig.ItemHighlights.INSTANCE.emeraldCountChest)) return;
 
         IInventory lowerInv = e.getGui().getLowerInv();
         if (lowerInv.getName().contains("Quests") || lowerInv.getName().contains("points")) return;
 
         IInventory upperInv = e.getGui().getUpperInv();
 
-        if (ItemsConfig.Items.INSTANCE.emeraldCountText) {
-            if (ItemsConfig.Items.INSTANCE.emeraldCountInventory)
+        if (ItemsConfig.ItemHighlights.INSTANCE.emeraldCountText) {
+            if (ItemsConfig.ItemHighlights.INSTANCE.emeraldCountInventory)
                 drawTextMoneyAmount(170, -10, ItemUtils.countMoney(lowerInv), renderer, CommonColors.WHITE);
-            if (ItemsConfig.Items.INSTANCE.emeraldCountChest)
+            if (ItemsConfig.ItemHighlights.INSTANCE.emeraldCountChest)
                 drawTextMoneyAmount(170, 2 * (lowerInv.getSizeInventory() + 10), ItemUtils.countMoney(upperInv), renderer, textColor);
             return;
         }
-        if (ItemsConfig.Items.INSTANCE.emeraldCountInventory)
+        if (ItemsConfig.ItemHighlights.INSTANCE.emeraldCountInventory)
             drawIconsMoneyAmount(178, 0, ItemUtils.countMoney(lowerInv), renderer);
-        if (ItemsConfig.Items.INSTANCE.emeraldCountChest)
+        if (ItemsConfig.ItemHighlights.INSTANCE.emeraldCountChest)
             drawIconsMoneyAmount(178, 2 * (lowerInv.getSizeInventory() + 10), ItemUtils.countMoney(upperInv), renderer);
     }
 
     @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.HorseOverlap.DrawGuiContainerForegroundLayer e) {
-        if (!Reference.onWorld || !ItemsConfig.Items.INSTANCE.emeraldCountInventory) return;
+        if (!Reference.onWorld || !ItemsConfig.ItemHighlights.INSTANCE.emeraldCountInventory) return;
 
         IInventory lowerInv = e.getGui().getLowerInv();
 
-        if (ItemsConfig.Items.INSTANCE.emeraldCountText) {
+        if (ItemsConfig.ItemHighlights.INSTANCE.emeraldCountText) {
             drawTextMoneyAmount(170, 7, ItemUtils.countMoney(lowerInv), renderer, textColor);
             return;
         }

@@ -56,13 +56,13 @@ public class HotbarOverlay extends Overlay {
             int x = -88 + (i*20);
 
             String name = stack.getDisplayName();
-            if (ItemsConfig.Items.INSTANCE.hotbarHighlight && ItemsConfig.Items.INSTANCE.hotbarAlpha > 0 && !name.isEmpty()) {
+            if (ItemsConfig.ItemHighlights.INSTANCE.hotbarHighlight && ItemsConfig.ItemHighlights.INSTANCE.hotbarAlpha > 0 && !name.isEmpty()) {
                 ItemTier tier = ItemTier.fromTextColoredString(name);
 
                 if (tier != null) {
                     CustomColor color = tier.getCustomizedHighlightColor();
                     if (color != null) {
-                        color.setA(ItemsConfig.Items.INSTANCE.hotbarAlpha / 100);
+                        color.setA(ItemsConfig.ItemHighlights.INSTANCE.hotbarAlpha / 100);
                         drawRect(color, x, 3, x + 16, 19);
                     }
                 }

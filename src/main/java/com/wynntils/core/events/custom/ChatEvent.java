@@ -54,8 +54,8 @@ public class ChatEvent extends Event {
 
     public static class Post extends ChatEvent {
 
-        public Post(ITextComponent message, int chatLineId) {
-            super(message, chatLineId);
+        public Post(ITextComponent message, int chatLineId, boolean isDialogue) {
+            super(message, chatLineId, isDialogue);
         }
 
         @Override

@@ -140,7 +140,7 @@ public class UtilitiesConfig extends SettingsClass {
 
     }
 
-    @SettingsInfo(name = "data", displayPath = "")
+    @SettingsInfo(name = "data")
     public static class Data extends SettingsClass {
         public static Data INSTANCE;
 

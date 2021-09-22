@@ -25,6 +25,7 @@ public class ItemModule extends Module {
         registerEvents(new ServerEvents());
 
         registerSettings(ItemsConfig.Identifications.class);
+        registerSettings(ItemsConfig.ItemHighlights.class);
 
         //overlays
         registerEvents(new ItemIdentificationOverlay());
