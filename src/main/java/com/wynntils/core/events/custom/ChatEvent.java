@@ -11,12 +11,10 @@ public class ChatEvent extends Event {
 
     protected ITextComponent message;
     protected int chatLineId;
-    protected boolean isDialogue;
 
-    protected ChatEvent(ITextComponent message, int chatLineId, boolean isDialogue) {
+    protected ChatEvent(ITextComponent message, int chatLineId) {
         this.message = message;
         this.chatLineId = chatLineId;
-        this.isDialogue = isDialogue;
     }
 
     public ITextComponent getMessage() {
@@ -27,14 +25,17 @@ public class ChatEvent extends Event {
         return chatLineId;
     }
 
-    public boolean isDialogue() {
-        return isDialogue;
-    }
-
     public static class Pre extends ChatEvent {
 
+        protected boolean isDialogue;
+
         public Pre(ITextComponent message, int chatLineId, boolean isDialogue) {
-            super(message, chatLineId, isDialogue);
+            super(message, chatLineId);
+            this.isDialogue = isDialogue;
+        }
+
+        public boolean isDialogue() {
+            return isDialogue;
         }
 
         @Override
