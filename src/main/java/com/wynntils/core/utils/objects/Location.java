@@ -12,7 +12,7 @@ import javax.vecmath.Tuple3d;
 import javax.vecmath.Tuple3f;
 import javax.vecmath.Tuple3i;
 
-public class Location extends Point3D {
+public class Location extends Point3d {
 
     public Location(double x, double y, double z) {
         super(x, y, z);
@@ -133,7 +133,7 @@ public class Location extends Point3D {
         return false;
     }
 
-    public boolean equals(Tuple3D other) {
+    public boolean equals(Tuple3d other) {
         if (other == null) return false;
         return x == other.x && y == other.y && z == other.z;
     }
