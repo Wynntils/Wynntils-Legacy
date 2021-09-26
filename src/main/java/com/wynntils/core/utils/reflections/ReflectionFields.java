@@ -36,7 +36,6 @@ public enum ReflectionFields {
     GuiIngame_remainingHighlightTicks(GuiIngame.class, "remainingHighlightTicks", "field_92017_k"),
     GuiIngame_highlightingItemStack(GuiIngame.class, "highlightingItemStack", "field_92016_l"),
     GuiIngame_displayedSubTitle(GuiIngame.class, "displayedSubTitle", "field_175200_y"),
-    GuiIngame_overlayPlayerList(GuiIngame.class, "overlayPlayerList", "field_175196_v"),
     GuiChat_defaultInputFieldText(GuiChat.class, "defaultInputFieldText", "field_146409_v"),
     GuiPlayerTabOverlay_ENTRY_ORDERING(GuiPlayerTabOverlay.class, "ENTRY_ORDERING", "field_175252_a"),
     Minecraft_resourcePackRepository(Minecraft.class, "resourcePackRepository", "field_110448_aq"),
