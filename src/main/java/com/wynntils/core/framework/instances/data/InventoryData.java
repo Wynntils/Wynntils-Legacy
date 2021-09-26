@@ -6,26 +6,20 @@ package com.wynntils.core.framework.instances.data;
 
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.containers.PlayerData;
-import com.wynntils.core.framework.instances.containers.UnprocessedAmount;
 import com.wynntils.core.utils.ItemUtils;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.List;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class InventoryData extends PlayerData {
-
-    private static final Pattern UNPROCESSED_NAME_REGEX = Pattern.compile("^§fUnprocessed [a-zA-Z ]+§8 \\[(?:0|[1-9][0-9]*)/([1-9][0-9]*)]$");
-    private static final Pattern UNPROCESSED_LORE_REGEX = Pattern.compile("^§7Unprocessed Material \\[Weight: ([1-9][0-9]*)]$");
 
     public InventoryData() { }
 
@@ -74,42 +68,6 @@ public class InventoryData extends PlayerData {
         }
 
         return count;
-    }
-
-    /**
-     * @return UnprocessedAmount((total weight of unprocessed materials), (maximum weight that can be held)).
-     *
-     * If there are no unprocessed materials, maximum will be -1.
-     */
-    public UnprocessedAmount getUnprocessedAmount() {
-        EntityPlayerSP player = getPlayer();
-        if (player == null) return new UnprocessedAmount(0, 0);
-
-        int maximum = -1;
-        int amount = 0;
-
-        for (int i = 0, len = player.inventory.getSizeInventory(); i < len; i++) {
-            ItemStack it = player.inventory.getStackInSlot(i);
-            if (it.isEmpty()) continue;
-
-            Matcher nameMatcher = UNPROCESSED_NAME_REGEX.matcher(it.getDisplayName());
-            if (!nameMatcher.matches()) continue;
-
-            NBTTagList lore = ItemUtils.getLoreTag(it);
-            if (lore == null || lore.tagCount() == 0) continue;
-
-            Matcher loreMatcher = UNPROCESSED_LORE_REGEX.matcher(lore.getStringTagAt(0));
-            if (!loreMatcher.matches()) continue;
-
-            // Found an unprocessed item
-            if (maximum == -1) {
-                maximum = Integer.parseInt(nameMatcher.group(1));
-            }
-
-            amount += Integer.parseInt(loreMatcher.group(1)) * it.getCount();
-        }
-
-        return new UnprocessedAmount(amount, maximum);
     }
 
     /**

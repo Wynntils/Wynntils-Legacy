@@ -7,7 +7,6 @@ package com.wynntils.modules.utilities.instances;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
-import com.wynntils.core.framework.instances.containers.UnprocessedAmount;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.instances.data.*;
 import com.wynntils.core.utils.ItemUtils;
@@ -394,23 +393,6 @@ public class InfoFormatter {
             return cache.get("memorypct");
         }, "mempct", "mem_pct");
 
-        // Current amount of unprocessed materials
-        registerFormatter((input) -> {
-            if(!cache.containsKey("unprocessedcurrent")) {
-                cacheUnprocessed();
-            }
-
-            return cache.get("unprocessedcurrent");
-        }, "unprocessed");
-
-        // Max amount of unprocessed materials
-        registerFormatter((input) -> {
-            if(!cache.containsKey("unprocessedmax")) {
-                cacheUnprocessed();
-            }
-            return cache.get("unprocessedmax");
-        }, "unprocessed_max");
-
         // Number of players in the party
         registerFormatter((input) ->
                 Integer.toString(PlayerInfo.get(SocialData.class).getPlayerParty().getPartyMembers().size()),
@@ -541,18 +523,6 @@ public class InfoFormatter {
         cache.put("horsexp", Integer.toString(horse.getXp()));
         cache.put("horsetier", Integer.toString(horse.getTier()));
         cache.put("horselevelmax", Integer.toString(horse.getMaxLevel()));
-    }
-
-    private void cacheUnprocessed() {
-        UnprocessedAmount unproc = PlayerInfo.get(InventoryData.class).getUnprocessedAmount();
-
-        if (unproc.getMaximum() == -1) {
-            cache.put("unprocessedmax", "??");
-        } else {
-            cache.put("unprocessedmax", Integer.toString(unproc.getMaximum()));
-        }
-
-        cache.put("unprocessedcurrent", Integer.toString(unproc.getCurrent()));
     }
 
 }
