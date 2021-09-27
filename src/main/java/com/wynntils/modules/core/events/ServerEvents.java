@@ -105,7 +105,7 @@ public class ServerEvents implements Listener {
             data.updatePlayerClass(CoreDBConfig.INSTANCE.lastClass, CoreDBConfig.INSTANCE.lastClassIsReskinned);
         }
 
-        if (Reference.onWars || Reference.onNether) return; // avoid dispatching commands while in wars/nether
+        if (Reference.onWars) return; // avoid dispatching commands while in wars/nether
 
         // guild members
         if (WebManager.getPlayerProfile() != null && WebManager.getPlayerProfile().getGuildName() != null) {

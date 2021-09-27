@@ -98,7 +98,7 @@ public class WarTimerOverlay extends Overlay {
     }
 
     public static void warMessage(ClientChatReceivedEvent event) {
-        if (!Reference.onWorld || Reference.onNether) return;
+        if (!Reference.onWorld) return;
 
         String message = McIf.getUnformattedText(event.getMessage());
         if (message.startsWith("[WAR] ")) {
@@ -201,7 +201,7 @@ public class WarTimerOverlay extends Overlay {
             changeWarStage(WarStage.WAITING);
         } else if (!Reference.onWars && stage != WarStage.WAITING && stage != WarStage.WAITING_FOR_TIMER && stage != WarStage.WAR_STARTING) {
             resetTimer();
-        } else if (Reference.onNether && time <= System.currentTimeMillis()) {
+        } else if (time <= System.currentTimeMillis()) {
             resetTimer();
         } else if (Reference.onWars && stage == WarStage.WAITING_FOR_MOBS && time <= System.currentTimeMillis()) {
             time = System.currentTimeMillis();
