@@ -37,14 +37,11 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
-import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Team;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderLivingEvent;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -55,15 +52,10 @@ public class NametagManager {
 
     private static final NametagLabel friendLabel = new NametagLabel(null, TextFormatting.YELLOW + (TextFormatting.BOLD + "Friend"), 0.7f);
     private static final NametagLabel guildLabel = new NametagLabel(MinecraftChatColors.AQUA, "Guild Member", 0.7f);
-    private static final NametagLabel moderatorLabel = new NametagLabel(MinecraftChatColors.GOLD, "Wynncraft Moderator", 0.7f);
-    private static final NametagLabel adminLabel = new NametagLabel(MinecraftChatColors.DARK_RED, "Wynncraft Admin", 0.7f);
-    private static final NametagLabel wynnContentTeamLabel = new NametagLabel(MinecraftChatColors.DARK_AQUA, "Wynncraft CT", 0.7f);
     private static final NametagLabel developerLabel = new NametagLabel(null, TextFormatting.GOLD + (TextFormatting.BOLD + "Wynntils Developer"), 0.7f);
-    private static final NametagLabel huntedLabel = new NametagLabel(MinecraftChatColors.RED, "Hunted Mode", 0.7f);
     private static final NametagLabel helperLabel = new NametagLabel(CommonColors.LIGHT_GREEN, "Wynntils Helper", 0.7f);
     private static final NametagLabel contentTeamLabel = new NametagLabel(CommonColors.RAINBOW, "Wynntils CT", 0.7f);
     private static final NametagLabel donatorLabel = new NametagLabel(CommonColors.RAINBOW, "Wynntils Donator", 0.7f);
-    private static final Map<String, NametagLabel> wynncraftTagLabels = new HashMap<>();
 
     public static final Pattern MOB_LEVEL = Pattern.compile("(" + TextFormatting.GOLD + " \\[Lv\\. (.*?)\\])");
     private static final ScreenRenderer renderer = new ScreenRenderer();
@@ -82,12 +74,6 @@ public class NametagManager {
         if (entity instanceof EntityPlayer) {
             if (PlayerInfo.get(SocialData.class).isFriend(entity.getName())) customLabels.add(friendLabel);  // friend
             else if (PlayerInfo.get(SocialData.class).isGuildMember(entity.getName())) customLabels.add(guildLabel);  // guild
-
-            // wynncraft tags (Admin, Moderator, GM, Builder, etc.)
-            if (entity.getTeam() != null && entity.getTeam().getName().matches("(tag|pvp)_.*")) {
-                if (!entity.getTeam().getName().contains("normal")) customLabels.add(getWynncraftTeamLabel((ScorePlayerTeam) e.getEntity().getTeam()));  // wynncraft staff
-                if (entity.getTeam().getName().matches("pvp_.*")) customLabels.add(huntedLabel);  // hunted mode
-            }
 
             if (UserManager.isAccountType(entity.getUniqueID(), AccountType.MODERATOR)) customLabels.add(developerLabel);  // developer
             if (UserManager.isAccountType(entity.getUniqueID(), AccountType.HELPER)) customLabels.add(helperLabel);  // helper
@@ -112,7 +98,6 @@ public class NametagManager {
      * Check if the nametag should be rendered, used over checkForNametags
      */
     private static boolean canRender(Entity entity, RenderManager manager) {
-        if (entity.isBeingRidden()) return false;
         if (!(entity instanceof EntityPlayer)) return entity.getAlwaysRenderNameTagForRender() && entity.hasCustomName();
 
         EntityPlayerSP player = McIf.player();
@@ -343,14 +328,6 @@ public class NametagManager {
         }
 
         return labels;
-    }
-
-    private static NametagLabel getWynncraftTeamLabel(ScorePlayerTeam team) {
-        if (!wynncraftTagLabels.containsKey(team.getName())) {
-            wynncraftTagLabels.put(team.getName(), new NametagLabel(null, team.getPrefix().replace("[PvP]", "") + "Wynncraft " + StringUtils.capitalize(team.getName().replaceAll("(tag|pvp)_", "")), 0.7f));
-        }
-
-        return wynncraftTagLabels.get(team.getName());
     }
 
 }
