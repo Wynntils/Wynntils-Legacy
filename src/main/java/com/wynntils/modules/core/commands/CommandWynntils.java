@@ -204,9 +204,6 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
         if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE) {
             releaseStreamText = new TextComponentString("You are using Stable release stream: ");
             buildText = new TextComponentString("Version " + Reference.VERSION);
-        } else  if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.DISABLE) {
-            releaseStreamText = new TextComponentString("Update are disabled : ");
-            buildText = new TextComponentString("Version " + Reference.VERSION);
         } else {
             releaseStreamText = new TextComponentString("You are using Cutting Edge release stream: ");
             if (Reference.BUILD_NUMBER == -1) {
