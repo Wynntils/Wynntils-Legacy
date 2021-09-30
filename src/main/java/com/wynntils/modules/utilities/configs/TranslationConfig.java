@@ -41,6 +41,9 @@ public class TranslationConfig extends SettingsClass {
     @Setting(displayName = "Translation Service", description = "Which translation service should be used?")
     public TranslationManager.TranslationServices translationService = TranslationManager.TranslationServices.GOOGLEAPI;
 
+    @Setting(displayName = "Remove accents", description = "The accents can cause display problems in some languages,\n\n this option allows you to remove the accents from the translation")
+    public boolean removeAccents = false;
+
     @Override
     public void onSettingChanged(String name) {
         if (name.equals("translationService")) {

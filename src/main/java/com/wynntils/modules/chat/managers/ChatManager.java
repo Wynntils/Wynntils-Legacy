@@ -30,6 +30,7 @@ import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.event.ForgeEventFactory;
 
 import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,6 +38,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -56,6 +59,8 @@ public class ChatManager {
             ")(.*)(§r)$");
     public static Pattern translationPatternQuestDialogueNpc = Pattern.compile(
             "(.*:)(.+(?:(?:SHIFT)|(?:SNEAK))+.+)(.+.+)", Pattern.DOTALL);  // Quest Dialogue
+    public static Pattern translationPatternQuestDialogueNoName = Pattern.compile(
+            "(.*\\n)(.*\\n\\n.+(?:(?:SHIFT)|(?:SNEAK))+.+)(.+.+)", Pattern.MULTILINE|Pattern.DOTALL);  // Quest Dialogue without npc name
 
     public static Pattern translationPatternOther = Pattern.compile("^(" +
             "(?:§5[^:]*: §r§d)" + "|" +  // interaction with e.g. blacksmith
@@ -579,6 +584,7 @@ public class ChatManager {
         String unformattedText = McIf.getUnformattedText(in);
         if (!unformattedText.startsWith(TranslationManager.TRANSLATED_PREFIX) && !unformattedText.startsWith(TranslationManager.UNTRANSLATED_PREFIX)) {
             String formatted = McIf.getFormattedText(in);
+            String unFormatted = McIf.getUnformattedText(in);
             Matcher chatMatcher = translationPatternChat.matcher(formatted);
             if (chatMatcher.find()) {
                 if (!TranslationConfig.INSTANCE.translatePlayerChat) return false;
@@ -589,6 +595,12 @@ public class ChatManager {
             if (npcQuestDialogueMatcher.find()) {
                 if (!TranslationConfig.INSTANCE.translateQuestDialogue) return false;
                 sendTranslation(npcQuestDialogueMatcher, formatted);
+                return true;
+            }
+            Matcher npcQuestDialogueMatcherNoname = translationPatternQuestDialogueNoName.matcher(unFormatted);
+            if (npcQuestDialogueMatcherNoname.find()) {
+                if (!TranslationConfig.INSTANCE.translateQuestDialogue) return false;
+                sendTranslation(npcQuestDialogueMatcherNoname, formatted);
                 return true;
             }
             Matcher npcMatcher = translationPatternNpc.matcher(formatted);
@@ -620,8 +632,12 @@ public class ChatManager {
             } catch (InterruptedException e) {
                 // ignore
             }
+            if(TranslationConfig.INSTANCE.removeAccents){
+                translatedMsg = org.apache.commons.lang3.StringUtils.stripAccents(translatedMsg);
+            }
+            String finalTranslatedMsgFinal = translatedMsg;
             McIf.mc().addScheduledTask(() ->
-                    ChatOverlay.getChat().printChatMessage(new TextComponentString(translatedMsg == null ?  TranslationManager.UNTRANSLATED_PREFIX +  formatted : TranslationManager.TRANSLATED_PREFIX + prefix + org.apache.commons.lang3.StringUtils.stripAccents(translatedMsg) + suffix)));
+                    ChatOverlay.getChat().printChatMessage(new TextComponentString(finalTranslatedMsgFinal == null ? MessageFormat.format("{0}{1}", TranslationManager.UNTRANSLATED_PREFIX, formatted) : MessageFormat.format("{0}{1}{2}{3}", TranslationManager.TRANSLATED_PREFIX, prefix, finalTranslatedMsgFinal, suffix))));
 
         });
     }
@@ -975,8 +991,9 @@ public class ChatManager {
                     if (dialogueChat == null) {
                         dialogueChat = newMessage;
                     } else {
-                        if (ChatConfig.INSTANCE.addTimestampsToChat)
+                        if (ChatConfig.INSTANCE.addTimestampsToChat){
                             addTimestamp(newMessage); // add timestamps to new lines for consistency
+                        }
                         dialogueChat.appendSibling(newMessage);
                     }
                 }
