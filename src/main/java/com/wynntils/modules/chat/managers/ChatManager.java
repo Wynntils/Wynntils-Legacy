@@ -991,7 +991,7 @@ public class ChatManager {
                     if (dialogueChat == null) {
                         dialogueChat = newMessage;
                     } else {
-                        if (ChatConfig.INSTANCE.addTimestampsToChat){
+                        if (ChatConfig.INSTANCE.addTimestampsToChat) {
                             addTimestamp(newMessage); // add timestamps to new lines for consistency
                         }
                         dialogueChat.appendSibling(newMessage);
