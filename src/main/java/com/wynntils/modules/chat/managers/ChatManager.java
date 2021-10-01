@@ -632,7 +632,7 @@ public class ChatManager {
             } catch (InterruptedException e) {
                 // ignore
             }
-            if(TranslationConfig.INSTANCE.removeAccents){
+            if (TranslationConfig.INSTANCE.removeAccents) {
                 translatedMsg = org.apache.commons.lang3.StringUtils.stripAccents(translatedMsg);
             }
             String finalTranslatedMsgFinal = translatedMsg;
