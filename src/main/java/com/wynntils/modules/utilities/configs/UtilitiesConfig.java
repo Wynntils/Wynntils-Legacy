@@ -233,7 +233,10 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Roman Numeral Powder Tier", description = "Should the tier of powders be displayed using roman numerals?", order = 4)
         public boolean romanNumeralPowderTier = true;
 
-        @Setting(displayName = "Item Levels Outside GUIs", description = "Should the item level overlay key be enabled even when no GUI is open?", order = 5)
+        @Setting(displayName = "Roman Numeral Emerald Pouch Tier", description = "Should the tier of Emerald Pouches be displayed using roman numerals?", order = 5)
+        public boolean romanNumeralEmeraldPouchTier = true;
+
+        @Setting(displayName = "Item Levels Outside GUIs", description = "Should the item level overlay key be enabled even when no GUI is open?", order = 6)
         public boolean itemLevelOverlayOutsideGui = false;
 
         @Setting(displayName = "Dungeon Key Specification", description = "Should a letter indicating the destination of dungeon keys be displayed?", order = 8)
