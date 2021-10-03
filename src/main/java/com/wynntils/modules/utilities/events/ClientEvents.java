@@ -304,14 +304,24 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onTitle(PacketEvent<SPacketTitle> e) {
-        if (!OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectPouch) return;
+        if (!OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectIngredientPouch && !OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) return;
 
         SPacketTitle packet = e.getPacket();
         if (packet.getType() != SPacketTitle.Type.SUBTITLE) return;
-        if (!McIf.getUnformattedText(packet.getMessage()).matches("^§a\\+\\d+ §7.+§a to pouch$")) return;
 
-        e.setCanceled(true);
-        GameUpdateOverlay.queueMessage(McIf.getFormattedText(packet.getMessage()));
+        if (McIf.getUnformattedText(packet.getMessage()).matches("^§a\\+\\d+ §7.+§a to pouch$")) {
+            if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectIngredientPouch) {
+                e.setCanceled(true);
+                GameUpdateOverlay.queueMessage(McIf.getFormattedText(packet.getMessage()));
+            }
+        }
+
+        if (McIf.getUnformattedText(packet.getMessage()).matches("^§a\\+\\d+§7.+Emeralds §ato pouch$")) {
+            if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
+                e.setCanceled(true);
+                GameUpdateOverlay.queueMessage(McIf.getFormattedText(packet.getMessage()));
+            }
+        }
     }
 
     @SubscribeEvent
