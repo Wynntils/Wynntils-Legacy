@@ -316,7 +316,7 @@ public class ClientEvents implements Listener {
             }
         }
 
-        if (McIf.getUnformattedText(packet.getMessage()).matches("^§a\\+\\d+§7.+Emeralds §ato pouch$")) {
+        if (McIf.getUnformattedText(packet.getMessage()).matches("^§a\\+\\d+§7.+Emeralds? §ato pouch$")) {
             if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
                 e.setCanceled(true);
                 GameUpdateOverlay.queueMessage(McIf.getFormattedText(packet.getMessage()));
