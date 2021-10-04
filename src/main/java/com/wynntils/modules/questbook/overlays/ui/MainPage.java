@@ -42,7 +42,7 @@ public class MainPage extends QuestBookPage {
         int posX = (x - mouseX); int posY = (y - mouseY);
         hoveredText = new ArrayList<>();
 
-        ScreenRenderer.beginGL(0, 0);
+        render.beginGL(0, 0);
         {
             int right = Math.min(posX + 80, 80);
 
@@ -50,9 +50,9 @@ public class MainPage extends QuestBookPage {
 
             GuiInventory.drawEntityOnScreen(x + 80, y + 30, 30, right, up, McIf.player());
         }
-        ScreenRenderer.endGL();
+        render.endGL();
 
-        ScreenRenderer.beginGL(0, 0);
+        render.beginGL(0, 0);
         {
             String guild;
             if (WebManager.getPlayerProfile() != null)
@@ -96,7 +96,7 @@ public class MainPage extends QuestBookPage {
             render.drawRect(Textures.UIs.quest_book, x + 100, y - 90, 224, 253, 17, 18);
             render.drawRect(Textures.UIs.quest_book, x + 125, y - 90, 224, 253, 17, 18);
         }
-        ScreenRenderer.endGL();
+        render.endGL();
         renderHoveredText(mouseX, mouseY);
     }
 

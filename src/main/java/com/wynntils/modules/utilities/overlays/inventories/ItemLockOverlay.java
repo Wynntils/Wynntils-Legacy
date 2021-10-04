@@ -59,15 +59,15 @@ public class ItemLockOverlay implements Listener {
         if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId())) return;
         if (!UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.get(CharacterData.class).getClassId()).contains(s.getSlotIndex())) return;
 
-        ScreenRenderer.beginGL(0, 0);
+        renderer.beginGL(0, 0);
 
         // HeyZeer0: this will make the lock appear over the item
         GlStateManager.translate(0, 0, 260);
 
         RenderHelper.disableStandardItemLighting();
-        ScreenRenderer.scale(0.5f);
+        renderer.scale(0.5f);
         renderer.drawRect(Textures.UIs.hud_overlays, (int)((guiLeft + s.xPos) / 0.5) + 25, (int)((guiTop + s.yPos) / 0.5) - 8, 0, 0, 16, 16);
-        ScreenRenderer.endGL();
+        renderer.endGL();
     }
 
 }

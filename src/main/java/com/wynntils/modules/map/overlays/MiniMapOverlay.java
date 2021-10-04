@@ -99,7 +99,7 @@ public class MiniMapOverlay extends Overlay {
             GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 
             // rotation axis
-            transformationOrigin(mapSize/2, mapSize/2);
+            getTransformationOrigin(mapSize/2, mapSize/2);
             if (MapConfig.INSTANCE.followPlayerRotation) rotate(180 - MathHelper.fastFloor(McIf.player().rotationYaw));
 
             // map quad
@@ -167,7 +167,7 @@ public class MiniMapOverlay extends Overlay {
                         // Rotate dx and dz
                         if (followRotation = c.followRotation()) {
                             GlStateManager.pushMatrix();
-                            Point drawingOrigin = MiniMapOverlay.drawingOrigin();
+                            Point drawingOrigin = drawingOrigin();
                             GlStateManager.translate(drawingOrigin.x + halfMapSize, drawingOrigin.y + halfMapSize, 0);
                             GlStateManager.rotate(180 - McIf.player().rotationYaw, 0, 0, 1);
                             GlStateManager.translate(-drawingOrigin.x - halfMapSize, -drawingOrigin.y - halfMapSize, 0);
@@ -240,7 +240,7 @@ public class MiniMapOverlay extends Overlay {
                         dx = newDx + halfMapSize;
                         dz = newDz + halfMapSize;
 
-                        Point drawingOrigin = MiniMapOverlay.drawingOrigin();
+                        Point drawingOrigin = drawingOrigin();
 
                         GlStateManager.pushMatrix();
                         GlStateManager.translate(drawingOrigin.x + dx, drawingOrigin.y + dz, 0);
@@ -342,11 +342,11 @@ public class MiniMapOverlay extends Overlay {
     }
 
     private static void drawTextOverlay(ScreenRenderer renderer, float x, float y, String text) {
-        ScreenRenderer.scale(0.8f);
+        renderer.scale(0.8f);
         float w = renderer.getStringWidth(text) / 2f + 3f, h = SmartFontRenderer.CHAR_HEIGHT / 2f + 2f;
         renderer.drawRectF(new CustomColor(0f, 0f, 0f, 0.7f), x - w, y - h + 1f, x + w, y + h);
         renderer.drawCenteredString(text, x, y - 3f, CommonColors.WHITE);
-        ScreenRenderer.resetScale();
+        renderer.resetScale();
     }
 
 }

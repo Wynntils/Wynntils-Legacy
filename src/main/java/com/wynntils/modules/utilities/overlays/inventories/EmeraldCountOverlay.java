@@ -113,11 +113,11 @@ public class EmeraldCountOverlay implements Listener {
         }
 
         // rendering
-        ScreenRenderer.beginGL(x, y);
+        renderer.beginGL(x, y);
         {
             renderer.drawString(moneyText, 0, 0, color, SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NONE);
         }
-        ScreenRenderer.endGL();
+        renderer.endGL();
     }
 
     private static final Texture inventoryTexture = new AssetsTexture(new ResourceLocation("textures/gui/container/inventory.png"), false);
@@ -157,7 +157,7 @@ public class EmeraldCountOverlay implements Listener {
 
         if (!inventoryTexture.loaded) inventoryTexture.load();
 
-        ScreenRenderer.beginGL(0, 0);
+        renderer.beginGL(0, 0);
         {
             if (leAmount != null) {
                 drawOneIcon(Items.EXPERIENCE_BOTTLE, x, y, leAmount, renderer);
@@ -171,7 +171,7 @@ public class EmeraldCountOverlay implements Listener {
                 drawOneIcon(Items.EMERALD, x, y, emeraldAmount, renderer);
             }
         }
-        ScreenRenderer.endGL();
+        renderer.endGL();
     }
 
     private static void drawOneIcon(Item i, int x, int y, String text, ScreenRenderer renderer) {

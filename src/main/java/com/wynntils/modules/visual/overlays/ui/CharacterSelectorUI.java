@@ -127,7 +127,7 @@ public class CharacterSelectorUI extends GuiScreen {
                 int extraY = maxY <= 0 ? 0 : (int)(maxY * scrollPosition);
 
                 // characters mask
-                ScreenRenderer.enableScissorTest((int)(3 * scale), (int)(3 * scale), (int)(118 * scale), (int)(224 * scale));
+                renderer.enableScissorTest((int)(3 * scale), (int)(3 * scale), (int)(118 * scale), (int)(224 * scale));
                 {
                     // character badges
                     int posY = 3 - extraY;
@@ -146,7 +146,7 @@ public class CharacterSelectorUI extends GuiScreen {
                         posY += 32; // the offset
                     }
                 }
-                ScreenRenderer.disableScissorTest();
+                renderer.disableScissorTest();
 
                 translate(118 * animationPercentage, 0, 0); // animation reset
             }

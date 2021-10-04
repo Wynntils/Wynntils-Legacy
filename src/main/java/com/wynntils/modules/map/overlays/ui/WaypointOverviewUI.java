@@ -91,7 +91,7 @@ public class WaypointOverviewUI extends GuiScreen {
         drawCenteredString(fontRenderer, TextFormatting.BOLD + "Y", this.width/2 + 80, 43, 0xFFFFFF);
         drawRect(this.width/2 - 205, 52, this.width/2 + 190, 53, 0xFFFFFFFF);
 
-        ScreenRenderer.beginGL(0, 0);
+        renderer.beginGL(0, 0);
         List<WaypointProfile> waypoints = getWaypoints();
         int hovered = getHoveredWaypoint(mouseX, mouseY);
         for (int i = 0, lim = Math.min(pageHeight, waypoints.size() - pageHeight * page); i < lim; i++) {
@@ -134,7 +134,7 @@ public class WaypointOverviewUI extends GuiScreen {
                 GlStateManager.color(1, 1, 1, 1);
             }
         }
-        ScreenRenderer.endGL();
+        renderer.endGL();
 
         if (exportBtn.isMouseOver()) {
             drawHoveringText(exportText, mouseX, mouseY, fontRenderer);

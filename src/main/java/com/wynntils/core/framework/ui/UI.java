@@ -37,7 +37,7 @@ public abstract class UI extends GuiScreen {
         this.mouseX = mouseX;
         this.mouseY = mouseY;
 
-        ScreenRenderer.beginGL(0, 0);
+        screenRenderer.beginGL(0, 0);
 
         screenWidth = ScreenRenderer.screen.getScaledWidth();
         screenHeight = ScreenRenderer.screen.getScaledHeight();
@@ -46,12 +46,14 @@ public abstract class UI extends GuiScreen {
         for (UIElement uie : UIElements) {
             uie.position.refresh(ScreenRenderer.screen);
             if (!uie.visible) continue;
+            uie.beginGL(0, 0);
             uie.render(mouseX, mouseY);
+            uie.endGL();
         }
 
         onRenderPostUIE(screenRenderer);
 
-        ScreenRenderer.endGL();
+        screenRenderer.endGL();
     }
 
     @Override public void updateScreen() {
@@ -150,12 +152,18 @@ public abstract class UI extends GuiScreen {
     }
 
     public static abstract class CommonUIFeatures {
-        static ScreenRenderer render = new ScreenRenderer();
-        public static void drawBook() {
+        /**
+         * Requires an already active ScreenRenderer to draw the book
+         */
+        public static void drawBook(ScreenRenderer render) {
             int wh = ScreenRenderer.screen.getScaledWidth()/2, hh = ScreenRenderer.screen.getScaledHeight()/2;
             render.drawRect(Textures.UIs.book, wh - 200, hh - 110, wh + 200, hh + 110, 0, 0, 400, 220);
         }
-        public static void drawScrollArea() {
+
+        /**
+         * Requires an already active ScreenRenderer to draw the book
+         */
+        public static void drawScrollArea(ScreenRenderer render) {
             int wh = ScreenRenderer.screen.getScaledWidth()/2, hh = ScreenRenderer.screen.getScaledHeight()/2;
             render.drawRect(Textures.UIs.book_scrollarea_settings, wh - 190, hh - 100, wh - 12, hh + 85, 0, 0, 178, 185);
         }

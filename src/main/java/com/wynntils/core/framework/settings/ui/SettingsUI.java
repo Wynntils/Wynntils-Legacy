@@ -150,8 +150,8 @@ public class SettingsUI extends UI {
     @Override
     public void onRenderPreUIE(ScreenRenderer render) {
         drawDefaultBackground();
-        CommonUIFeatures.drawBook();
-        CommonUIFeatures.drawScrollArea();
+        CommonUIFeatures.drawBook(render);
+        CommonUIFeatures.drawScrollArea(render);
 
         settings.position.offsetY = (int)settingsScrollbar.getValue();
         holders.position.offsetY = (int)holdersScrollbar.getValue();
@@ -160,11 +160,11 @@ public class SettingsUI extends UI {
             int y = el.position.offsetY + holders.position.offsetY;
             el.visible = -99 <= y && y <= +73;
         });
-        ScreenRenderer.enableScissorTest(screenWidth / 2 - 165, screenHeight / 2 - 88, 140, 161);
+        render.enableScissorTest(screenWidth / 2 - 165, screenHeight / 2 - 88, 140, 161);
         holders.render(mouseX, mouseY);
-        // ScreenRenderer.disableScissorTest();  // reenabled on the next line, no need to disable unless this changes
+        // render.disableScissorTest();  // reenabled on the next line, no need to disable unless this changes
 
-        ScreenRenderer.enableScissorTest(screenWidth / 2 + 5, screenHeight / 2 - 100, 180, 200);
+        render.enableScissorTest(screenWidth / 2 + 5, screenHeight / 2 - 100, 180, 200);
         settings.elements.forEach(setting_ -> {
             SettingElement setting = (SettingElement) setting_;
             setting.position.anchorX = settings.position.anchorX;
@@ -181,11 +181,13 @@ public class SettingsUI extends UI {
                     settingElement.position.refresh();
                     settingElement.position.offsetX -= setting.position.offsetX;
                     settingElement.position.offsetY -= setting.position.offsetY;
+                    settingElement.beginGL(0, 0);
                     settingElement.render(mouseX, mouseY);
+                    settingElement.endGL();
                 });
                 if (setting != settings.elements.get(0))
                     render.drawRect(CommonColors.LIGHT_GRAY, setting.position.getDrawingX(), setting.position.getDrawingY() - 4, setting.position.getDrawingX() + 175, setting.position.getDrawingY() -3);
-                ScreenRenderer.scale(0.8f);
+                render.scale(0.8f);
                 String name = setting.field.info.displayName();
                 render.drawString(
                     name,
@@ -193,7 +195,7 @@ public class SettingsUI extends UI {
                     !searchText.isEmpty() && !setting.isSearched ? CommonColors.GRAY : CommonColors.BLACK,
                     SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE
                 );
-                ScreenRenderer.resetScale();
+                render.resetScale();
                 if (setting.isSearched) {
                     int y = (int) (setting.position.getDrawingY() + 4.5f + fontRenderer.FONT_HEIGHT * 0.8f);
                     int x = setting.position.getDrawingX() + 43;
@@ -203,12 +205,12 @@ public class SettingsUI extends UI {
             setting.position.offsetX -= settings.position.offsetX;
             setting.position.offsetY -= settings.position.offsetY;
         });
-        ScreenRenderer.disableScissorTest();
+        render.disableScissorTest();
     }
 
     @Override
     public void onRenderPostUIE(ScreenRenderer render) {
-        ScreenRenderer.scale(0.7f);
+        render.scale(0.7f);
         String path = this.currentSettingsPath.replace("/", " > ");
         render.drawString(path, (screenWidth/2f+10)/0.7f, (screenHeight/2f-103)/0.7f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
         if (Reference.developmentEnvironment) {
@@ -220,7 +222,7 @@ public class SettingsUI extends UI {
                 }
             }
         }
-        ScreenRenderer.resetScale();
+        render.resetScale();
         settings.elements.forEach(setting -> {
             if (setting.visible && mouseX >= screenWidth/2+5 && mouseX < screenWidth/2+185 && mouseY > screenHeight/2-100 && mouseY < screenHeight/2+100 && mouseY >= setting.position.getDrawingY() && mouseY < setting.position.getDrawingY() + settingHeight) {
                 List<String> lines = Arrays.asList(((SettingElement) setting).field.info.description().split("_nl"));

@@ -6,6 +6,7 @@ package com.wynntils.core.framework.ui.elements;
 
 import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.MouseButton;
+import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
@@ -314,37 +315,40 @@ public class UIEColorWheel extends UIEClickZone {
             drawDefaultBackground();
 
             beginGL(0, 0);
-            GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
-            float v = valueSlider.getSliderValue();
-            float a = getAlpha();
-            if (v != 1 || a != 1) {
-                GlStateManager.color(v, v, v, a);
+            {
+                GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR);
+                float v = valueSlider.getSliderValue();
+                float a = getAlpha();
+                if (v != 1 || a != 1) {
+                    GlStateManager.color(v, v, v, a);
+                }
+                drawRectF(Textures.UIs.color_wheel, (width / 2f) - 80, (height / 2f) - 93, (width / 2f) + 80, (height / 2f) + 67, 0, 0, 256, 256);  // rgb wheel
+                if (v != 1 || a != 1) {
+                    GlStateManager.color(1, 1, 1, 1);
+                }
+                drawRectF(Textures.UIs.color_wheel, clickedPosX - 4.5f, clickedPosY - 4.5f, clickedPosX + 4.5f, clickedPosY + 4.5f, 256, 0, 265, 9);  // cursor
+                drawRectF(CommonColors.BLACK, (width / 2f) - 11, (height / 2f) + 94, (width / 2f) + 11, (height / 2f) + 116);  // current color back
+                .drawRectF(toChange, (width / 2f) - 10, (height / 2f) + 95, (width / 2f) + 10, (height / 2f) + 115);  // current color
+
+                drawCenteredString(McIf.mc().fontRenderer, "Click to pick a color!", (width / 2), (height / 2) - 110, 0xFFFFFF);
+
+                for (int i = 0; i < 16; ++i) {
+                    int col = i / 8;
+                    int row = i % 8;
+
+                    // Draw common colours on the right
+                    int x = this.width / 2 + 85 + 20 * col;
+                    int y = this.height / 2 - 93 + 20 * row;
+                    drawRect(x + 2, y + 2, x + 18, y + 18, 0xFF000000);
+                    drawRect(x + 3, y + 3, x + 17, y + 17, CommonColors.set.fromCode(i).toInt());
+
+                    // Draw Minecraft chat colours on the left
+                    x = this.width / 2 - 125 + 20 * col;
+                    drawRect(x + 2, y + 2, x + 18, y + 18, 0xFF000000);
+                    drawRect(x + 3, y + 3, x + 17, y + 17, MinecraftChatColors.set.fromCode(i).toInt());
+                }
             }
-            drawRectF(Textures.UIs.color_wheel, (width/2f)-80, (height/2f)-93, (width/2f)+80, (height/2f)+67, 0, 0, 256, 256);  // rgb wheel
-            if (v != 1 || a != 1) {
-                GlStateManager.color(1, 1, 1, 1);
-            }
-            drawRectF(Textures.UIs.color_wheel, clickedPosX - 4.5f, clickedPosY - 4.5f, clickedPosX + 4.5f, clickedPosY + 4.5f, 256, 0, 265, 9);  // cursor
-            drawRectF(CommonColors.BLACK, (width/2f)-11, (height/2f)+94, (width/2f)+11, (height/2f)+116);  // current color back
-            drawRectF(toChange, (width/2f)-10, (height/2f)+95, (width/2f)+10, (height/2f)+115);  // current color
-
-            drawCenteredString(McIf.mc().fontRenderer, "Click to pick a color!", (width/2), (height/2)-110, 0xFFFFFF);
-
-            for (int i = 0; i < 16; ++i) {
-                int col = i / 8;
-                int row = i % 8;
-
-                // Draw common colours on the right
-                int x = this.width/2 + 85 + 20*col;
-                int y = this.height/2 - 93 + 20*row;
-                drawRect(x + 2, y + 2, x + 18, y + 18, 0xFF000000);
-                drawRect(x + 3, y + 3, x + 17, y + 17, CommonColors.set.fromCode(i).toInt());
-
-                // Draw Minecraft chat colours on the left
-                x = this.width/2 - 125 + 20*col;
-                drawRect(x + 2, y + 2, x + 18, y + 18, 0xFF000000);
-                drawRect(x + 3, y + 3, x + 17, y + 17, MinecraftChatColors.set.fromCode(i).toInt());
-            }
+            endGL();
 
             super.drawScreen(mouseX, mouseY, partialTicks);
         }

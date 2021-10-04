@@ -265,7 +265,7 @@ public class RarityColorOverlay implements Listener {
     private static void drawHighlightColor(GuiContainer guiContainer, Slot s, CustomColor colour) {
         if (colour == null) return;
 
-        ScreenRenderer.beginGL(guiContainer.getGuiLeft() + s.xPos, guiContainer.getGuiTop() + s.yPos);
+        renderer.beginGL(guiContainer.getGuiLeft() + s.xPos, guiContainer.getGuiTop() + s.yPos);
         {
             color(colour.r, colour.g, colour.b, UtilitiesConfig.Items.INSTANCE.inventoryAlpha / 100);
             glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
@@ -276,7 +276,7 @@ public class RarityColorOverlay implements Listener {
             glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
             color(1.0f, 1.0f, 1.0f, 1.0f);
         }
-        ScreenRenderer.endGL();
+        renderer.endGL();
     }
 
     private static boolean isPowder(ItemStack is) {

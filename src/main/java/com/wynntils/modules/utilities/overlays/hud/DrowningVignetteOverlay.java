@@ -40,7 +40,7 @@ public class DrowningVignetteOverlay extends Overlay {
 
         GlStateManager.pushMatrix();
         {
-            ScreenRenderer.transformationOrigin(0, 0);
+            getTransformationOrigin(0, 0);
             GlStateManager.color(0, 0.500f, 1, value);
             GlStateManager.disableDepth();
             GlStateManager.enableBlend();

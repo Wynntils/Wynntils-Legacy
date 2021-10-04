@@ -37,7 +37,7 @@ public class LowHealthVignetteOverlay extends Overlay {
 
         GlStateManager.pushMatrix();
         {
-            ScreenRenderer.transformationOrigin(0, 0);
+            getTransformationOrigin(0, 0);
             GlStateManager.color(1, 0, 0, value);
             GlStateManager.disableDepth();
             GlStateManager.enableBlend();

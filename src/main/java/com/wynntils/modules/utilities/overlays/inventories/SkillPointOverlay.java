@@ -8,6 +8,7 @@ import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.events.custom.PacketEvent;
+import com.wynntils.core.events.custom.RenderEvent;
 import com.wynntils.core.framework.enums.MouseButton;
 import com.wynntils.core.framework.enums.SkillPoint;
 import com.wynntils.core.framework.enums.SpellType;
@@ -17,6 +18,8 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
+import com.wynntils.core.framework.rendering.colors.CustomColor;
+import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.framework.ui.elements.GuiTextFieldWynn;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.Utils;
@@ -111,48 +114,6 @@ public class SkillPointOverlay implements Listener {
             startBuild = false;
             allocateSkillPoints(e.getGui());
         }
-
-        for (int i = 0; i < e.getGui().getLowerInv().getSizeInventory(); i++) {
-            ItemStack stack = e.getGui().getLowerInv().getStackInSlot(i);
-            if (stack.isEmpty() || !stack.hasDisplayName()) continue; // display name also checks for tag compound
-
-            String lore = TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(stack));
-            String name = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName());
-            int value = 0;
-
-            if (name.contains("Upgrade")) {// Skill Points
-                Matcher spm = SKILLPOINT_PATTERN.matcher(lore);
-                if (!spm.find()) continue;
-
-                value = Integer.parseInt(spm.group(1));
-            } else if (name.contains("Profession [")) { // Profession Icons
-                int start = lore.indexOf("Level: ") + 7;
-                int end = lore.indexOf("XP: ");
-
-                value = Integer.parseInt(lore.substring(start, end));
-            } else if (name.contains("'s Info")) { // Combat level on Info
-                int start = lore.indexOf("Combat Lv: ") + 11;
-                int end = lore.indexOf("Class: ");
-
-                value = Integer.parseInt(lore.substring(start, end));
-            } else if (name.contains("Damage Info")) { //Average Damage
-                Pattern pattern = Pattern.compile("Total Damage \\(\\+Bonus\\): ([0-9]+)-([0-9]+)");
-                Matcher m2  = pattern.matcher(lore);
-                if (!m2.find()) continue;
-
-                int min = Integer.parseInt(m2.group(1));
-                int max = Integer.parseInt(m2.group(2));
-
-                value = Math.round((max + min) / 2.0f);
-            } else if (name.contains("Daily Rewards")) { //Daily Reward Multiplier
-                int start = lore.indexOf("Streak Multiplier: ") + 19;
-                int end = lore.indexOf("Log in everyday to");
-
-                value = Integer.parseInt(lore.substring(start, end));
-            } else continue;
-
-            stack.setCount(value <= 0 ? 1 : value);
-        }
     }
 
     @SubscribeEvent
@@ -165,25 +126,6 @@ public class SkillPointOverlay implements Listener {
         GlStateManager.translate(0, 0, 500);
         if (nameField != null) nameField.drawTextBox();
         GlStateManager.popMatrix();
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOW)
-    public void onChestGui(GuiOverlapEvent.ChestOverlap.HoveredToolTip.Pre e) {
-        if (!Reference.onWorld || !Utils.isCharacterInfoPage(e.getGui())) return;
-
-        for (Slot s : e.getGui().inventorySlots.inventorySlots) {
-            String name = TextFormatting.getTextWithoutFormattingCodes(s.getStack().getDisplayName());
-            SkillPoint skillPoint = SkillPoint.findSkillPoint(name);
-            if (skillPoint == null) continue;
-
-            ScreenRenderer.beginGL(e.getGui().getGuiLeft() , e.getGui().getGuiTop());
-            {
-                GlStateManager.translate(0, 0, 251);
-                RenderHelper.disableStandardItemLighting();
-                renderer.drawString(skillPoint.getColoredSymbol(), s.xPos + 2, s.yPos, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            }
-            ScreenRenderer.endGL();
-        }
     }
 
     @SubscribeEvent
@@ -391,6 +333,64 @@ public class SkillPointOverlay implements Listener {
         McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_PLAYER_LEVELUP, 1f));
         loadedBuild = null; // we've fully loaded the build if we reach this point
         buildPercentage = 0.0f;
+    }
+
+    @SubscribeEvent
+    public void onRenderItemOverlay(RenderEvent.DrawItemOverlay.Pre e) {
+        if (!Reference.onWorld || !Utils.isCharacterInfoPage(McIf.mc().currentScreen)) return;
+
+        ItemStack stack = e.getStack();
+        if (stack.isEmpty() || !stack.hasDisplayName()) return; // display name also checks for tag compound
+
+        String lore = TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(stack));
+        String name = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName());
+        String value = e.getOverlayText();
+
+        if (name.contains("Upgrade")) {// Skill Points
+            Matcher spm = SKILLPOINT_PATTERN.matcher(lore);
+            if (!spm.find()) return;
+
+            SkillPoint skillPoint = SkillPoint.findSkillPoint(name);
+            if (skillPoint != null) {
+                value = spm.group(1);
+
+                e.setOverlayTextColor(MinecraftChatColors.fromTextFormatting(skillPoint.getColor()));
+
+                renderer.beginGL(e.getX(), e.getY());
+                {
+                    GlStateManager.translate(0, 0, 500);
+                    RenderHelper.disableStandardItemLighting();
+                    renderer.drawString(skillPoint.getColoredSymbol(),  2, 0, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                }
+                renderer.endGL();
+            }
+        } else if (name.contains("Profession [")) { // Profession Icons
+            int start = lore.indexOf("Level: ") + 7;
+            int end = lore.indexOf("XP: ");
+
+            value = lore.substring(start, end);
+        } else if (name.contains("'s Info")) { // Combat level on Info
+            int start = lore.indexOf("Combat Lv: ") + 11;
+            int end = lore.indexOf("Class: ");
+
+            value = lore.substring(start, end);
+        } else if (name.contains("Damage Info")) { //Average Damage
+            Pattern pattern = Pattern.compile("Total Damage \\(\\+Bonus\\): ([0-9]+)-([0-9]+)");
+            Matcher m2  = pattern.matcher(lore);
+            if (!m2.find()) return;
+
+            int min = Integer.parseInt(m2.group(1));
+            int max = Integer.parseInt(m2.group(2));
+
+            value = "" + (max + min + 1) / 2;
+        } else if (name.contains("Daily Rewards")) { //Daily Reward Multiplier
+            int start = lore.indexOf("Streak Multiplier: ") + 19;
+            int end = lore.indexOf("Log in everyday to");
+
+            value = lore.substring(start, end);
+        } else return;
+
+        e.setOverlayText(value);
     }
 
 }

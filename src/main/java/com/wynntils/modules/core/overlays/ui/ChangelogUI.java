@@ -108,7 +108,7 @@ public class ChangelogUI extends GuiScreen {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
 
-        ScreenRenderer.beginGL(0, 0);
+        renderer.beginGL(0, 0);
 
         float middleX = width/2f; float middleY = height/2f;
 
@@ -120,7 +120,7 @@ public class ChangelogUI extends GuiScreen {
         renderer.drawRect(SCROLL_ACTIVE, (int)middleX + 120, (int)middleY - 79 + scrollbarPosition, (int)middleX + 123, (int)middleY - 79 + scrollbarSize + scrollbarPosition);
 
         // text area
-        ScreenRenderer.enableScissorTest((int) middleX - 110, (int) middleY - 71, 205, 155);
+        renderer.enableScissorTest((int) middleX - 110, (int) middleY - 71, 205, 155);
         float scrollPercent = scrollbarPosition/(118f - scrollbarSize);
 
         int textX = (int)middleX - 105;
@@ -133,7 +133,7 @@ public class ChangelogUI extends GuiScreen {
             baseY += 10;
         }
 
-        ScreenRenderer.endGL();
+        renderer.endGL();
     }
 
     public void updateScrollbarPosition(boolean down) {

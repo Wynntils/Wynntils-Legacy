@@ -7,6 +7,8 @@ package com.wynntils;
 import com.wynntils.core.CoreManager;
 import com.wynntils.core.events.custom.ClientEvent;
 import com.wynntils.core.framework.FrameworkManager;
+import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.WynnRenderItem;
 import com.wynntils.core.framework.rendering.textures.Mappings;
 import com.wynntils.core.framework.rendering.textures.Textures;
@@ -80,6 +82,9 @@ public class ModCore {
         if (!conflicts.isEmpty()) throw new ModConflictScreen(conflicts);
 
         WynnRenderItem.inject();
+
+        ScreenRenderer.fontRenderer = new SmartFontRenderer();
+        ScreenRenderer.fontRenderer.onResourceManagerReload(McIf.mc().getResourceManager());
 
         FrameworkManager.postEnableModules();
 

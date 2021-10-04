@@ -158,11 +158,11 @@ public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
                 scrollAmount = 0;
             }
 
-            ScreenRenderer.enableScissorTestX(x + 26, 13 + 133 - 2 - 26);
+            render.enableScissorTestX(x + 26, 13 + 133 - 2 - 26);
             {
                 render.drawString(name, x + 26 - scrollAmount, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             }
-            ScreenRenderer.disableScissorTest();
+            render.disableScissorTest();
         } else {
             render.drawString(name, x + 26, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
         }

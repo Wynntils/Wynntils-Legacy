@@ -111,7 +111,7 @@ public class MapPathWaypointIcon extends MapIcon {
             return;
         }
 
-        Point drawingOrigin = ScreenRenderer.drawingOrigin();
+        Point drawingOrigin = renderer.drawingOrigin();
         centreX += drawingOrigin.x;
         centreZ += drawingOrigin.y;
 

@@ -168,9 +168,9 @@ public class FrameworkManager {
                     }
                     if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.visible && overlay.active) {
                         McIf.mc().profiler.startSection(overlay.displayName);
-                        ScreenRenderer.beginGL(overlay.position.getDrawingX(), overlay.position.getDrawingY());
+                        overlay.beginGL(overlay.position.getDrawingX(), overlay.position.getDrawingY());
                         overlay.render(e);
-                        ScreenRenderer.endGL();
+                        overlay.endGL();
                         McIf.mc().profiler.endSection();
                     }
                 }
@@ -191,9 +191,9 @@ public class FrameworkManager {
                     if ((overlay.module == null || overlay.module.getModule().isActive()) && overlay.visible && overlay.active) {
                         McIf.mc().profiler.startSection(overlay.displayName);
 
-                        ScreenRenderer.beginGL(overlay.position.getDrawingX(), overlay.position.getDrawingY());
+                        overlay.beginGL(overlay.position.getDrawingX(), overlay.position.getDrawingY());
                         overlay.render(e);
-                        ScreenRenderer.endGL();
+                        overlay.endGL();
 
                         McIf.mc().profiler.endSection();
                     }

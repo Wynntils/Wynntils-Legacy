@@ -18,6 +18,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 import java.awt.*;
 import java.util.Arrays;
+import java.util.Stack;
 
 import static org.lwjgl.opengl.GL11.*;
 
@@ -26,25 +27,31 @@ import static org.lwjgl.opengl.GL11.*;
  * without context as to what they are.
  * The things rendered by this class would not be configurable without
  * them extending overlays!
+ *
+ * The ScreenRenderer has an internal stack like GL's matrix stack.
+ * {@link #beginGL(int, int)} and {@link #endGL()} basically push and pop
+ * from respectively.
+ * Nested ScreenRenderers use the parent's drawOrigin and transformOrigin.
+ *
+ * The active ScreenRenderer refers to the ScreenRenderer on the top of
+ * the stack
  */
 public class ScreenRenderer {
-
+    //Initalized during postInitialization event
     public static SmartFontRenderer fontRenderer = null;
     public static ScaledResolution screen = null;
-    private static boolean rendering = false;
-    private static float scale = 1.0f;
-    private static float rotation = 0;
-    private static boolean mask = false;
-    private static boolean scissorTest = false;
-    private static Point drawingOrigin = new Point(0, 0); public static Point drawingOrigin() { return drawingOrigin; }
-    private static Point transformationOrigin = new Point(0, 0);
-    public static void transformationOrigin(int x, int y) {transformationOrigin.x = x; transformationOrigin.y = y;}protected static Point transformationOrigin() {return transformationOrigin;}
     public static RenderItem itemRenderer = null;
 
-    public static boolean isRendering() { return rendering; }
-    public static float getScale() { return scale; }
-    public static float getRotation() { return rotation; }
-    public static boolean isMasking() { return mask; }
+    private static final Stack<ScreenRenderer> stack = new Stack<>();
+
+    private boolean rendering = false;
+    private float scale = 1.0f;
+    private float rotation = 0;
+    private boolean mask = false;
+    private boolean scissorTest = false;
+    private Point drawingOrigin = new Point(0, 0); public Point drawingOrigin() { return drawingOrigin; }
+    private Point transformationOrigin = new Point(0, 0);
+
 
     /** refresh
      * Triggered by a slower loop(client tick), refresh
@@ -55,13 +62,7 @@ public class ScreenRenderer {
      */
     public static void refresh() {
         screen = new ScaledResolution(McIf.mc());
-        if (fontRenderer == null) {
-            fontRenderer = new SmartFontRenderer();
-            fontRenderer.onResourceManagerReload(McIf.mc().getResourceManager());
-        }
         fontRenderer.setUnicodeFlag(CoreDBConfig.INSTANCE.useUnicode);
-        if (itemRenderer == null)
-            itemRenderer = McIf.mc().getRenderItem();
     }
 
     /** void beginGL
@@ -74,21 +75,50 @@ public class ScreenRenderer {
      * is being called before each overlay render
      * is called automagically.
      *
+     * The drawingOrigin is set relative to the active renderer's
+     * drawing origin and similarly for the transformOrigin
+     *
      * @param x drawing origin's X
      * @param y drawing origin's Y
      */
-    public static void beginGL(int x, int y) {
+    public void beginGL(int x, int y) {
         if (rendering) return;
         rendering = true;
         GlStateManager.pushMatrix();
-        drawingOrigin = new Point(x, y);
-        transformationOrigin = new Point(0, 0);
-        resetScale();
-        resetRotation();
+
+        ScreenRenderer renderer = getActiveRenderer();
+
+        if (renderer != null) {
+            drawingOrigin = new Point(renderer.drawingOrigin.x + x, renderer.drawingOrigin.y + y);
+            transformationOrigin = new Point(renderer.transformationOrigin.x, renderer.transformationOrigin.y);
+        } else {
+            drawingOrigin = new Point(x, y);
+            transformationOrigin = new Point(0, 0);
+        }
+
         GlStateManager.enableAlpha();
         GlStateManager.color(1, 1, 1);
         GlStateManager.enableBlend();
         GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        stack.push(this);
+    }
+
+    /**
+     * Same as {@link #beginGL(int, int)} but not relative to the active ScreenRenderer
+     */
+    public void beginAbsoluteGL(int x, int y) {
+        if (rendering) throw new UnsupportedOperationException("This Screen Renderer is already rendering!");
+        rendering = true;
+        GlStateManager.pushMatrix();
+
+        drawingOrigin = new Point(x, y);
+        transformationOrigin = new Point(0, 0);
+
+        GlStateManager.enableAlpha();
+        GlStateManager.color(1, 1, 1);
+        GlStateManager.enableBlend();
+        GlStateManager.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA);
+        stack.push(this);
     }
 
     /** endGL
@@ -96,10 +126,12 @@ public class ScreenRenderer {
      * and stops the ability to render on screen(the
      * 2D plane).
      */
-    public static void endGL() {
+    public void endGL() {
         if (!rendering) return;
-        resetScale();
-        resetRotation();
+
+        //resetScale and resetRotation sure these are unnecessary due to the popMatrix
+        scale = 1.0f;
+        rotation = 0;
         clearMask();
         disableScissorTest();
 
@@ -107,7 +139,11 @@ public class ScreenRenderer {
         transformationOrigin = new Point(0, 0);
         GlStateManager.popMatrix();
         GlStateManager.color(1, 1, 1);
+
         rendering = false;
+        while (!stack.isEmpty() && !getActiveRenderer().rendering) {
+            stack.pop();
+        }
     }
 
     /** rotate
@@ -117,8 +153,8 @@ public class ScreenRenderer {
      *
      * @param degrees amount of degrees to rotate
      */
-    public static void rotate(float degrees) {
-        if (!rendering) return;
+    public void rotate(float degrees) {
+        if (!rendering) throw new IllegalStateException("This Screen Renderer is not currently rendering");
         GlStateManager.translate((drawingOrigin.x+transformationOrigin.x), (drawingOrigin.y+transformationOrigin.y), 0);
         GlStateManager.rotate(degrees, 0, 0, 1);
         GlStateManager.translate((-drawingOrigin.x-transformationOrigin.x), (-drawingOrigin.y-transformationOrigin.y), 0);
@@ -129,8 +165,8 @@ public class ScreenRenderer {
      * Resets the rotation field and makes the
      * following renders render as usual(pre-scaling).
      */
-    public static void resetRotation() {
-        if (!rendering) return;
+    public void resetRotation() {
+        if (!rendering) throw new IllegalStateException("This Screen Renderer is not currently rendering");
         if (rotation != 0.0f) {
             GlStateManager.translate(drawingOrigin.x+transformationOrigin.x, drawingOrigin.y+transformationOrigin.y, 0);
             GlStateManager.rotate(rotation, 0, 0, -1);
@@ -146,8 +182,8 @@ public class ScreenRenderer {
      *
      * @param multiplier amount to multiply the current scale by
      */
-    public static void scale(float multiplier) {
-        if (!rendering) return;
+    public void scale(float multiplier) {
+        if (!rendering) throw new UnsupportedOperationException("This Screen Renderer is not currently rendering");
         GlStateManager.translate(drawingOrigin.x+transformationOrigin.x, drawingOrigin.y+transformationOrigin.y, 0);
         GlStateManager.scale(multiplier, multiplier, multiplier);
         GlStateManager.translate(-drawingOrigin.x-transformationOrigin.x, -drawingOrigin.y-transformationOrigin.y, 0);
@@ -158,8 +194,8 @@ public class ScreenRenderer {
      * Resets the scale field and makes the
      * following renders render as usual(pre-scaling).
      */
-    public static void resetScale() {
-        if (!rendering) return;
+    public void resetScale() {
+        if (!rendering) throw new UnsupportedOperationException("This Screen Renderer is not currently rendering");
         if (scale != 1.0f) {
             float m = 1.0f/scale;
             GlStateManager.translate(drawingOrigin.x+transformationOrigin.x, drawingOrigin.y+transformationOrigin.y, 0);
@@ -182,8 +218,9 @@ public class ScreenRenderer {
      * @param x2 top-right x(on screen)
      * @param y2 top-right y(on screen)
      */
-    public static void createMask(Texture texture, int x1, int y1, int x2, int y2) {
-        if (!rendering || mask) return;
+    public void createMask(Texture texture, int x1, int y1, int x2, int y2) {
+        if (!rendering) throw new UnsupportedOperationException("This Screen Renderer is not currently rendering");;
+        if (mask) return;
         if (!texture.loaded) return;
         float prevScale = scale;
         resetScale();
@@ -223,8 +260,9 @@ public class ScreenRenderer {
      * @param x2 top-right x(on screen)
      * @param y2 top-right y(on screen)
      */
-    public static void createMask(CustomColor color, int x1, int y1, int x2, int y2) {
-        if (!rendering || mask) return;
+    public void createMask(CustomColor color, int x1, int y1, int x2, int y2) {
+        if (!rendering) return;
+        if (mask) return;
         float prevScale = scale;
         resetScale();
 
@@ -259,8 +297,9 @@ public class ScreenRenderer {
      * @param x2 top-right x(on screen)
      * @param y2 top-right y(on screen)
      */
-    public static void createMask(Texture texture, float x1, float y1, float x2, float y2, float tx1, float ty1, float tx2, float ty2) {
-        if (!rendering || mask) return;
+    public void createMask(Texture texture, float x1, float y1, float x2, float y2, float tx1, float ty1, float tx2, float ty2) {
+        if (!rendering) throw new UnsupportedOperationException("This Screen Renderer is not currently rendering");;
+        if (mask) return;
         if (!texture.loaded) return;
         float prevScale = scale;
         resetScale();
@@ -301,8 +340,9 @@ public class ScreenRenderer {
      * Clears the active rendering mask from the screen.
      *
      */
-    public static void clearMask() {
-        if (!mask || !rendering) return;
+    public void clearMask() {
+        if (!rendering) throw new UnsupportedOperationException("This Screen Renderer is not currently rendering");
+        if (!mask) return;
 
         GlStateManager.depthMask(true);
         GlStateManager.clear(GL_DEPTH_BUFFER_BIT);
@@ -312,7 +352,7 @@ public class ScreenRenderer {
         mask = false;
     }
 
-    private static void enableScissorTest() {
+    private void enableScissorTest() {
         if (!scissorTest) {
             glEnable(GL_SCISSOR_TEST);
             scissorTest = true;
@@ -330,8 +370,8 @@ public class ScreenRenderer {
      * @param width Width of box
      * @param height Height of box
      */
-    public static void enableScissorTest(int x, int y, int width, int height) {
-        if (!rendering) return;
+    public void enableScissorTest(int x, int y, int width, int height) {
+        if (!rendering) throw new UnsupportedOperationException("This Screen Renderer is not currently rendering");
 
         enableScissorTest();
 
@@ -343,7 +383,7 @@ public class ScreenRenderer {
     /**
      * As {@link #enableScissorTest(int, int, int, int)}, but from the drawing origin
      */
-    public static void enableScissorTest(int width, int height) {
+    public void enableScissorTest(int width, int height) {
         enableScissorTest(0, 0, width, height);
     }
 
@@ -351,8 +391,8 @@ public class ScreenRenderer {
      * As {@link #enableScissorTest(int, int, int, int)}, but allow any y,
      * so anything with x coordinate in [x, x + width) will be drawn
      */
-    public static void enableScissorTestX(int x, int width) {
-        if (!rendering) return;
+    public void enableScissorTestX(int x, int width) {
+        if (!rendering) throw new UnsupportedOperationException("This Screen Renderer is not currently rendering");
 
         enableScissorTest();
         int scale = screen.getScaleFactor();
@@ -363,8 +403,8 @@ public class ScreenRenderer {
      * As {@link #enableScissorTest(int, int, int, int)}, but allow any x,
      * so anything with y coordinate in [y, y + height) will be drawn
      */
-    public static void enableScissorTestY(int y, int height) {
-        if (!rendering) return;
+    public void enableScissorTestY(int y, int height) {
+        if (!rendering) throw new UnsupportedOperationException("This Screen Renderer is not currently rendering");
 
         enableScissorTest();
         int scale = screen.getScaleFactor();
@@ -375,7 +415,7 @@ public class ScreenRenderer {
      * Allow drawing outside the previously defined scissor rectangle
      * (By {@link #enableScissorTest(int, int, int, int)} or similar methods) again
      */
-    public static void disableScissorTest() {
+    public void disableScissorTest() {
         if (scissorTest) {
             glDisable(GL_SCISSOR_TEST);
             scissorTest = false;
@@ -469,7 +509,7 @@ public class ScreenRenderer {
      * @param y2 top-right y
      */
     public void drawRect(CustomColor color, int x1, int y1, int x2, int y2) {
-        if (!rendering) return;
+        if (!rendering) throw new UnsupportedOperationException("This Screen Renderer is not currently rendering");
 
         GlStateManager.disableTexture2D();
         GlStateManager.enableAlpha();
@@ -563,7 +603,8 @@ public class ScreenRenderer {
      *
      */
     public void drawRectF(Texture texture, float x1, float y1, float x2, float y2, float tx1, float ty1, float tx2, float ty2) {
-        if (!rendering || !texture.loaded) return;
+        if (!rendering) throw new UnsupportedOperationException("This Screen Renderer is not currently rendering");
+        if (!texture.loaded) return;
         GlStateManager.enableAlpha();
         GlStateManager.enableBlend();
         GlStateManager.enableTexture2D();
@@ -602,7 +643,7 @@ public class ScreenRenderer {
      * @param y2 top-right y
      * */
     public void drawRectF(CustomColor color, float x1, float y1, float x2, float y2) {
-        if (!rendering) return;
+        if (!rendering) throw new UnsupportedOperationException("This Screen Renderer is not currently rendering");
         GlStateManager.enableAlpha();
         GlStateManager.disableTexture2D();
         color.applyColor();
@@ -623,7 +664,7 @@ public class ScreenRenderer {
     }
 
     public void drawRectWBordersF(CustomColor color, float x1, float y1, float x2, float y2, float lineWidth) {
-        if (!rendering) return;
+        if (!rendering) throw new UnsupportedOperationException("This Screen Renderer is not currently rendering");
         GlStateManager.enableAlpha();
         GlStateManager.disableTexture2D();
         color.applyColor();
@@ -659,7 +700,8 @@ public class ScreenRenderer {
      * @param background is it drawing the background or not(whole ty part is background)
      */
     public void drawProgressBar(Texture texture, int x1, int y1, int x2, int y2, int tx1, int ty1, int tx2, int ty2, float progress, boolean background) {
-        if (!rendering || !texture.loaded) return;
+        if (!rendering) throw new UnsupportedOperationException("This Screen Renderer is not currently rendering");
+        if (!texture.loaded) return;
 
         if (background) {
             GlStateManager.enableAlpha();
@@ -830,7 +872,7 @@ public class ScreenRenderer {
      * @param effects show shimmer
      */
     private void drawItemStack(ItemStack is, int x, int y, boolean count, String text, boolean effects) {
-        if (!rendering) return;
+        if (!rendering) throw new UnsupportedOperationException("This Screen Renderer is not currently rendering");
         RenderHelper.enableGUIStandardItemLighting();
         itemRenderer.zLevel = 200.0F;
         net.minecraft.client.gui.FontRenderer font = is.getItem().getFontRenderer(is);
@@ -844,8 +886,14 @@ public class ScreenRenderer {
         RenderHelper.disableStandardItemLighting();
     }
 
-    public static void setRendering(boolean status) {
-        rendering = status;
-    }
+    public void getTransformationOrigin(int x, int y) {transformationOrigin.x = x; transformationOrigin.y = y;}
+    protected Point getTransformationOrigin() {return transformationOrigin;}
+    public boolean isRendering() { return rendering; }
+    public float getScale() { return scale; }
+    public float getRotation() { return rotation; }
+    public boolean isMasking() { return mask; }
 
+    public static ScreenRenderer getActiveRenderer() {
+        return stack.isEmpty() ? null : stack.peek();
+    }
 }

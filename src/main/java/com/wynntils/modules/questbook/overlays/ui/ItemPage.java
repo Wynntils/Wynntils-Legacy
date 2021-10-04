@@ -154,9 +154,9 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
 
         if (entryInfo.isFavorited()) {
             GlStateManager.translate(0, 0, 360f);
-            ScreenRenderer.scale(0.5f);
+            render.scale(0.5f);
             render.drawRect(Textures.Map.map_icons, (maxX + 10)*2, (maxY - 5)*2, 208, 36, 18, 18);
-            ScreenRenderer.scale(2f);
+            render.scale(2f);
             GlStateManager.translate(0, 0, -360f);
         }
     }
@@ -835,12 +835,12 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
 
             render.drawString("Advanced Item Search Mode", x - 81, y - 32,
                     CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-            ScreenRenderer.scale(0.7f);
+            render.scale(0.7f);
             drawHelpLine(render, x, y, 0, "In this mode, items in the item guide can");
             drawHelpLine(render, x, y, 1, "be queried and sorted using a series");
             drawHelpLine(render, x, y, 2, "of highly-flexible filters. Hover over");
             drawHelpLine(render, x, y, 3, "the icons below to learn more!");
-            ScreenRenderer.resetScale();
+            render.resetScale();
 
             drawHelpIconRow(render, 11, ADV_SEARCH_HELP, mouseX, mouseY, x, y, hoveredText);
 

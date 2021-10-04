@@ -23,8 +23,8 @@ public class CurrentMusicDisplayer implements Listener {
     public void onDrawInGameMenu(GuiOverlapEvent.IngameMenuOverlap.DrawScreen e) {
         if (!Reference.onWorld || !MusicConfig.INSTANCE.enabled) return;
         if (!SoundTrackManager.getPlayer().isPlaying() && !SoundTrackManager.getPlayer().getStatus().isPaused()) return;
-        
-        ScreenRenderer.beginGL(e.getGui().width / 2, e.getGui().height / 4 - 16);
+
+        r.beginGL(e.getGui().width / 2, e.getGui().height / 4 - 16);
         float size = r.drawString((SoundTrackManager.getPlayer().getStatus().getCurrentSong() != null ? SoundTrackManager.getPlayer().getStatus().getCurrentSong().getName() : "Nothing is being played!"), 0, 155, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
 
         r.drawRect(Textures.UIs.hud_overlays, (int)(-(size/2)) - 4, 150, 0, 17, 4, 49);  // left corner
@@ -44,7 +44,7 @@ public class CurrentMusicDisplayer implements Listener {
             }
         }
 
-        ScreenRenderer.endGL();
+        r.endGL();
     }
 
     @SubscribeEvent

@@ -45,7 +45,7 @@ public class QuestBookListPage<T> extends QuestBookPage {
         int posY = (y - mouseY);
         hoveredText = new ArrayList<>();
 
-        ScreenRenderer.beginGL(0, 0);
+        render.beginGL(0, 0);
         {
             preEntries(mouseX, mouseY, partialTicks);
 
@@ -93,7 +93,7 @@ public class QuestBookListPage<T> extends QuestBookPage {
             }
             postEntries(mouseX, mouseY, partialTicks);
         }
-        ScreenRenderer.endGL();
+        render.endGL();
         renderHoveredText(mouseX, mouseY);
 
     }

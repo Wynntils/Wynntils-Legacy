@@ -77,7 +77,7 @@ public class EntityDamageSplash extends FakeEntity {
         float percentage = Math.min(1f, (livingTicks + partialTicks) / maxLiving);
         float scale = initialScale * (1f - percentage);
 
-        renderer.setRendering(true);
+        renderer.beginGL(0, 0);
         {
             { // setting up
                 translate(0, -1 * percentage, 0);
@@ -93,7 +93,7 @@ public class EntityDamageSplash extends FakeEntity {
             renderer.drawString(displayText, 0, 0, CommonColors.WHITE,
                     SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
         }
-        renderer.setRendering(false);
+        renderer.endGL();
     }
 
 }

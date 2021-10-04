@@ -59,10 +59,7 @@ public class ServerEvents implements Listener {
 
     @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
-        if (e.getNewClass() != ClassType.NONE) {
-            if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
-            RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("N", ""), "In the nether", e.getNewClass().toString().toLowerCase(), getPlayerInfo(), OffsetDateTime.now());
-        } else if (!Reference.onWars && Reference.onWorld && e.getNewClass() == ClassType.NONE) {
+        if (!Reference.onWars && Reference.onWorld && e.getNewClass() == ClassType.NONE) {
             if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
             RichPresenceModule.getModule().getRichPresence().updateRichPresence(getWorldDescription(), "Selecting a class", null, currentTime);
             forceUpdate = false;

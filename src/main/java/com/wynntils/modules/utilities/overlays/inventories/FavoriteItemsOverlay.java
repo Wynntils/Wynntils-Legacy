@@ -38,13 +38,13 @@ public class FavoriteItemsOverlay implements Listener {
             if (!nbt.getBoolean("wynntilsFavorite")) continue;
 
             // draw star
-            ScreenRenderer.beginGL(gui.getGuiLeft() + s.xPos + 10, gui.getGuiTop() + s.yPos - 5);
+            renderer.beginGL(gui.getGuiLeft() + s.xPos + 10, gui.getGuiTop() + s.yPos - 5);
             GlStateManager.translate(0, 0, 300);
 
             RenderHelper.disableStandardItemLighting();
-            ScreenRenderer.scale(0.5f);
+            renderer.scale(0.5f);
             renderer.drawRect(Textures.Map.map_icons, 0, 0, 208, 36, 18, 18);
-            ScreenRenderer.endGL();
+            renderer.endGL();
         }
     }
 

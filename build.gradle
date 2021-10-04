@@ -5,7 +5,7 @@ buildscript {
         maven { url = "http://maven.minecraftforge.net" }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:4.1.+'
+        classpath 'net.minecraftforge.gradle:ForgeGradle:4.1.14'
         classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.1'
     }
 }

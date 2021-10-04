@@ -152,7 +152,7 @@ public class BankOverlay implements Listener {
 
         int x = e.getGui().getXSize() - 19; int y = 2;
 
-        ScreenRenderer.beginGL(0, 0);
+        renderer.beginGL(0, 0);
         {
             { // quick access numbers
                 int[] destinations = getQuickAccessDestinations();
@@ -187,7 +187,7 @@ public class BankOverlay implements Listener {
                 renderer.drawRect(Textures.UIs.character_selection, x, y, x + 6, y + 12, 182, 102, 190, 118);
             }
         }
-        ScreenRenderer.endGL();
+        renderer.endGL();
 
         // mouse over
         // is mouse over edit button

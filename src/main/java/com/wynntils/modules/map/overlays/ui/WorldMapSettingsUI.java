@@ -101,9 +101,9 @@ public class WorldMapSettingsUI extends GuiScreen {
         this.fontRenderer.drawString("Minimap", 0, 0, 0xFFFFFFFF);
         GlStateManager.popMatrix();
 
-        ScreenRenderer.beginGL(0, 0);
+        GlStateManager.pushMatrix();
         super.drawScreen(mouseX, mouseY, partialTicks);
-        ScreenRenderer.endGL();
+        GlStateManager.popMatrix();
 
         for (Button btn : settingButtons) {
             if (btn.isMouseOver()) {

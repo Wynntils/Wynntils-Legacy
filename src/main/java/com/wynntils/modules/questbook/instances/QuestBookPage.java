@@ -135,19 +135,19 @@ public class QuestBookPage extends GuiScreen {
         int x = width / 2;
         int y = height / 2;
 
-        ScreenRenderer.beginGL(0, 0);
+        render.beginGL(0, 0);
         {
             if (showAnimation) {
                 float animationTick = Easing.BACK_IN.ease((McIf.getSystemTime() - time) + 1000, 1f, 1f, 600f);
                 animationTick /= 10f;
 
                 if (animationTick <= 1) {
-                    ScreenRenderer.scale(animationTick);
+                    render.scale(animationTick);
 
                     x = (int) (x / animationTick);
                     y = (int) (y / animationTick);
                 } else {
-                    ScreenRenderer.resetScale();
+                    render.resetScale();
                     showAnimation = false;
                 }
 
@@ -158,15 +158,15 @@ public class QuestBookPage extends GuiScreen {
 
             render.drawRect(Textures.UIs.quest_book, x - (339 / 2), y - (220 / 2), 0, 0, 339, 220);
 
-            ScreenRenderer.scale(0.7f);
+            render.scale(0.7f);
             render.drawString(CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE ? "Stable v" + Reference.VERSION : "CE Build " + (Reference.BUILD_NUMBER == -1 ? "?" : Reference.BUILD_NUMBER), (x - 80) / 0.7f, (y + 86) / 0.7f, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
-            ScreenRenderer.resetScale();
+            render.resetScale();
 
             render.drawRect(Textures.UIs.quest_book, x - 168, y - 81, 34, 222, 168, 33);
 
-            ScreenRenderer.scale(2f);
+            render.scale(2f);
             render.drawString(title, (x - 158f) / 2.0f, (y - 74) / 2.0f, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            ScreenRenderer.resetScale();
+            render.resetScale();
 
             /*Render search bar when needed*/
             if (showSearchBar) {
@@ -174,7 +174,7 @@ public class QuestBookPage extends GuiScreen {
             }
         }
 
-        ScreenRenderer.endGL();
+        render.endGL();
     }
 
     protected void drawSearchBar(int centerX, int centerY) {
@@ -234,12 +234,12 @@ public class QuestBookPage extends GuiScreen {
     }
 
     protected void renderHoveredText(int mouseX, int mouseY) {
-        ScreenRenderer.beginGL(0, 0);
+        render.beginGL(0, 0);
         {
             GlStateManager.disableLighting();
             if (hoveredText != null) drawHoveringText(hoveredText, mouseX, mouseY);
         }
-        ScreenRenderer.endGL();
+        render.endGL();
     }
 
     protected void searchUpdate(String currentText) { }
@@ -383,9 +383,9 @@ public class QuestBookPage extends GuiScreen {
     protected void drawTextLines(List<String> lines, int startX, int startY, int scale) {
         int currentY = startY;
         for (String line : lines) {
-            ScreenRenderer.scale(scale);
+            render.scale(scale);
             render.drawString(line, startX, currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            ScreenRenderer.resetScale();
+            render.resetScale();
             currentY += 10 * scale;
         }
     }

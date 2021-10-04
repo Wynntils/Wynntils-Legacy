@@ -147,14 +147,14 @@ public class MainWorldMapUI extends WorldMapUI {
         }
 
         // start rendering
-        ScreenRenderer.beginGL(0, 0);
+        renderer.beginGL(0, 0);
 
         drawMap(mouseX, mouseY, partialTicks);
         drawIcons(mouseX, mouseY, partialTicks);
         drawCoordinates(mouseX, mouseY, partialTicks);
         drawMapButtons(mouseX, mouseY, partialTicks);
 
-        ScreenRenderer.endGL();
+        renderer.endGL();
 
         super.drawScreen(mouseX, mouseY, partialTicks);
     }

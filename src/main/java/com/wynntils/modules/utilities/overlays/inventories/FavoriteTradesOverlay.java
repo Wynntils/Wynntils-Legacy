@@ -72,15 +72,15 @@ public class FavoriteTradesOverlay implements Listener {
         String lore = Arrays.toString(ItemUtils.getLore(it).toArray());
         if (!favorites_trade_items_lore.contains(lore)) return;
 
-        ScreenRenderer.beginGL(0, 0);
+        renderer.beginGL(0, 0);
 
         // HeyZeer0: this will make the lock appear over the item
         GlStateManager.translate(0, 0, 260);
 
         RenderHelper.disableStandardItemLighting();
-        ScreenRenderer.scale(0.5f);
+        renderer.scale(0.5f);
         renderer.drawRect(Textures.UIs.hud_overlays, (int)((guiLeft + s.xPos) / 0.5) + 20, (int)((guiTop + s.yPos) / 0.5) - 3, 51, 0, 17, 16);
-        ScreenRenderer.endGL();
+        renderer.endGL();
     }
 
     private void toggleLockState(ItemStack it) {

@@ -170,7 +170,7 @@ public class NametagManager {
     private static void drawBadge(ProfessionType profession, int tier, float x, float y, float z, double horizontalShift, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal, boolean isSneaking) {
         pushMatrix();
         {
-            ScreenRenderer.beginGL(0, 0);
+            renderer.beginGL(0, 0);
             {
                 translate(x, y, z);
                 glNormal3f(0f, 1f, 0f);
@@ -219,7 +219,7 @@ public class NametagManager {
             if (scale != 1) scale(scale, scale, scale);
             verticalShift = (int)(verticalShift/scale);
 
-            ScreenRenderer.beginGL(0, 0);  // we set to 0 because we don't want the ScreenRender to handle this thing
+            renderer.beginGL(0, 0);  // we set to 0 because we don't want the ScreenRender to handle this thing
             {
                 // positions
                 translate(x / scale, y / scale, z / scale);  // translates to the correct postion
@@ -286,7 +286,7 @@ public class NametagManager {
                 disableBlend();
                 color(1.0f, 1.0f, 1.0f, 1.0f);
             }
-            ScreenRenderer.endGL();
+            renderer.endGL();
         }
         popMatrix();
     }

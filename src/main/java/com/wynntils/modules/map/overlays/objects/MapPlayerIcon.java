@@ -111,8 +111,8 @@ public class MapPlayerIcon extends MapIcon {
             McIf.mc().getTextureManager().bindTexture(res);
 
             drawScaledCustomSizeModalRect(
-                    ((centreX + ScreenRenderer.drawingOrigin().x) -sizeX),
-                    ((centreZ + ScreenRenderer.drawingOrigin().y) -sizeZ),
+                    ((centreX + renderer.drawingOrigin().x) -sizeX),
+                    ((centreZ + renderer.drawingOrigin().y) -sizeZ),
                     8f, 8, 8, 8,
                     sizeX * 2f,
                     sizeZ * 2f,

@@ -234,7 +234,7 @@ public class ChatGUI extends GuiChat {
         public void drawButton(Minecraft minecraft, int mouseX, int mouseY, float partialTicks) {
             if (this.visible) {
                 this.hovered = mouseX >= this.x && mouseY >= this.y && mouseX < this.x + this.width && mouseY < this.y + this.height;
-                ScreenRenderer.beginGL(this.x, this.y);
+                renderer.beginGL(this.x, this.y);
                 if (this.hovered) {
                     renderer.drawRect(ChatGUI.selected, 0, 0, this.width, this.height);
                 } else {
@@ -242,7 +242,7 @@ public class ChatGUI extends GuiChat {
                 }
 
                 renderer.drawString(this.displayString, this.width / 2.0f + 1, 3, this.selected ? CommonColors.GREEN : CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                ScreenRenderer.endGL();
+                renderer.endGL();
             }
         }
     }

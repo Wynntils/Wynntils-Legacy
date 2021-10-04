@@ -146,11 +146,11 @@ public class LootRunPage extends QuestBookListPage<String> {
                 scrollAmount = 0;
             }
 
-            ScreenRenderer.enableScissorTestX(x + 26, 13 + 133 - 2 - 26);
+            render.enableScissorTestX(x + 26, 13 + 133 - 2 - 26);
             {
                 render.drawString(name, x + 26 - scrollAmount, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             }
-            ScreenRenderer.disableScissorTest();
+            render.disableScissorTest();
         } else {
             render.drawString(name, x + 26, y - 95 + currentY, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
         }
@@ -170,9 +170,9 @@ public class LootRunPage extends QuestBookListPage<String> {
 
         if (LootRunManager.getActivePathName() != null) {
             //render info
-            ScreenRenderer.scale(1.2f);
+            render.scale(1.2f);
             render.drawString(LootRunManager.getActivePathName(), x/1.2f - 154/1.2f, y/1.2f - 35/1.2f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            ScreenRenderer.resetScale();
+            render.resetScale();
 
             LootRunPath path = LootRunManager.getActivePath();
             Location start = path.getPoints().get(0);
@@ -204,7 +204,7 @@ public class LootRunPage extends QuestBookListPage<String> {
                     //boundary around map
                     int boundarySize = 3;
                     render.drawRect(Textures.Map.paper_map_textures, mapX - boundarySize, mapY - boundarySize, mapX + mapWidth + boundarySize, mapY + mapHeight + boundarySize, 0, 0, 217, 217);
-                    ScreenRenderer.enableScissorTest(mapX, mapY, mapWidth, mapHeight);
+                    render.enableScissorTest(mapX, mapY, mapWidth, mapHeight);
 
                     map.bindTexture();
                     color(1.0f, 1.0f, 1.0f, 1.0f);
@@ -246,8 +246,8 @@ public class LootRunPage extends QuestBookListPage<String> {
                 //reset settings
                 disableAlpha();
                 disableBlend();
-                ScreenRenderer.disableScissorTest();
-                ScreenRenderer.clearMask();
+                render.disableScissorTest();
+                render.clearMask();
             }
         } else {
             drawTextLines(textLines, x - 154, y - 30, 1);

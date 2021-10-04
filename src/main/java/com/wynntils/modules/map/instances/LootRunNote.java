@@ -60,7 +60,7 @@ public class LootRunNote {
     private static void drawNametag(String input, CustomColor color, float x, float y, float z, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal) {
         pushMatrix();
         {
-            ScreenRenderer.beginGL(0, 0); // we set to 0 because we don't want the ScreenRender to handle this thing
+            renderer.beginGL(0, 0); // we set to 0 because we don't want the ScreenRender to handle this thing
             {
                 // positions
                 translate(x, y, z); // translates to the correct postion
@@ -85,7 +85,7 @@ public class LootRunNote {
                 disableBlend();
                 color(1.0f, 1.0f, 1.0f, 1.0f);
             }
-            ScreenRenderer.endGL();
+            renderer.endGL();
         }
         popMatrix();
     }

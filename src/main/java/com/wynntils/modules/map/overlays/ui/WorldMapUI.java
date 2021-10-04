@@ -219,11 +219,11 @@ public class WorldMapUI extends GuiMovementScreen {
     }
 
     protected void createMask() {
-        ScreenRenderer.createMask(Textures.Map.full_map, 10, 10, width - 10, height - 10, 1, 257, 511, 510);
+        renderer.createMask(Textures.Map.full_map, 10, 10, width - 10, height - 10, 1, 257, 511, 510);
     }
 
     protected void clearMask() {
-        ScreenRenderer.clearMask();
+        renderer.clearMask();
     }
 
     protected void updatePosition(int mouseX, int mouseY) {
@@ -353,7 +353,7 @@ public class WorldMapUI extends GuiMovementScreen {
             playerPositionX = width * playerPositionX;
             playerPositionZ = height * playerPositionZ;
 
-            Point drawingOrigin = ScreenRenderer.drawingOrigin();
+            Point drawingOrigin = renderer.drawingOrigin();
 
             pushMatrix();
             translate(drawingOrigin.x + playerPositionX, drawingOrigin.y + playerPositionZ, 0);

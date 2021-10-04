@@ -277,7 +277,7 @@ public class PathWaypointCreationUI extends WorldMapUI {
         hidden = hiddenBox.isChecked();
         setCircular();
 
-        ScreenRenderer.beginGL(0, 0);
+        renderer.beginGL(0, 0);
 
         drawMap(mouseX, mouseY, partialTicks);
 
@@ -295,7 +295,7 @@ public class PathWaypointCreationUI extends WorldMapUI {
         colorWheel.position.refresh();
         colorWheel.render(mouseX, mouseY);
 
-        ScreenRenderer.endGL();
+        renderer.endGL();
 
 
         if (nameField != null) nameField.drawTextBox();

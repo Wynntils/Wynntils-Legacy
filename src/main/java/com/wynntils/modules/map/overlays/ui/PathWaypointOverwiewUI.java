@@ -58,7 +58,7 @@ public class PathWaypointOverwiewUI extends GuiScreen {
         drawCenteredString(fontRenderer, TextFormatting.BOLD + "Z", this.width/2 + 60, 39, 0xFFFFFF);
         drawRect(this.width/2 - 185, 48, this.width/2 + 170, 49, 0xFFFFFFFF);
 
-        ScreenRenderer.beginGL(0, 0);
+        renderer.beginGL(0, 0);
         for (int i = 0; i < Math.min(pageHeight, paths.size() - pageHeight * page); i++) {
             PathWaypointProfile wp = paths.get(page * pageHeight + i);
 
@@ -79,7 +79,7 @@ public class PathWaypointOverwiewUI extends GuiScreen {
                 drawHorizontalLine(this.width / 2 - 155, this.width / 2 + 75, 60 + 25 * i - 1, colour | 0xFF000000);
             }
         }
-        ScreenRenderer.endGL();
+        renderer.endGL();
     }
 
     @Override

@@ -141,7 +141,7 @@ public class ServerSelectorOverlay implements Listener {
     }
 
     @SubscribeEvent
-    public void onItemOverlay(RenderEvent.DrawItemOverlay event) {
+    public void onItemOverlay(RenderEvent.DrawItemOverlay.Pre event) {
         ItemStack serverStack = event.getStack();
         String serverName = TextFormatting.getTextWithoutFormattingCodes(serverStack.getDisplayName());
 
