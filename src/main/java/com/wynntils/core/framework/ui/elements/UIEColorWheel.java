@@ -328,7 +328,7 @@ public class UIEColorWheel extends UIEClickZone {
                 }
                 drawRectF(Textures.UIs.color_wheel, clickedPosX - 4.5f, clickedPosY - 4.5f, clickedPosX + 4.5f, clickedPosY + 4.5f, 256, 0, 265, 9);  // cursor
                 drawRectF(CommonColors.BLACK, (width / 2f) - 11, (height / 2f) + 94, (width / 2f) + 11, (height / 2f) + 116);  // current color back
-                .drawRectF(toChange, (width / 2f) - 10, (height / 2f) + 95, (width / 2f) + 10, (height / 2f) + 115);  // current color
+                drawRectF(toChange, (width / 2f) - 10, (height / 2f) + 95, (width / 2f) + 10, (height / 2f) + 115);  // current color
 
                 drawCenteredString(McIf.mc().fontRenderer, "Click to pick a color!", (width / 2), (height / 2) - 110, 0xFFFFFF);
 
