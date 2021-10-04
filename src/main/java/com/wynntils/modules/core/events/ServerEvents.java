@@ -30,6 +30,7 @@ import com.wynntils.modules.core.managers.PartyManager;
 import com.wynntils.modules.core.managers.UserManager;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
+import com.wynntils.modules.core.overlays.ui.PlayerInfoReplacer;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
@@ -73,6 +74,9 @@ public class ServerEvents implements Listener {
     public void joinServer(FMLNetworkEvent.ClientConnectedToServerEvent e) {
         e.getManager().channel().pipeline().addBefore("fml:packet_handler", Reference.MOD_ID + ":packet_filter", new PacketIncomingFilter());
         e.getManager().channel().pipeline().addBefore("fml:packet_handler", Reference.MOD_ID + ":outgoingFilter", new PacketOutgoingFilter());
+
+        GuiIngame ingameGui = McIf.mc().ingameGUI;
+        ReflectionFields.GuiIngame_overlayPlayerList.setValue(ingameGui, new PlayerInfoReplacer(McIf.mc(), ingameGui));
 
         WebManager.tryReloadApiUrls(true);
         WebManager.checkForUpdatesOnJoin();
