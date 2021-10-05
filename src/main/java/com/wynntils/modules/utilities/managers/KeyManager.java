@@ -21,6 +21,7 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketClickWindow;
+import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.settings.KeyConflictContext;
@@ -94,8 +95,7 @@ public class KeyManager {
 
            EntityPlayerSP player = McIf.player();
            NonNullList<ItemStack> inventory = player.inventory.mainInventory;
-           List<Integer> emeraldPouchSlots = new ArrayList<Integer>() {
-           };
+           List<Integer> emeraldPouchSlots = new ArrayList<Integer>() {};
 
            for (int i = 0; i < inventory.size(); i++) {
                ItemStack stack = inventory.get(i);
@@ -109,10 +109,19 @@ public class KeyManager {
                case 0:
                    GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You do not have an emerald pouch in your inventory.");
                case 1:
-                   player.connection.sendPacket(new CPacketClickWindow(
-                           player.inventoryContainer.windowId,
-                           emeraldPouchSlots.get(0), 1, ClickType.PICKUP, player.inventory.getStackInSlot(emeraldPouchSlots.get(0)),
-                           player.inventoryContainer.getNextTransactionID(player.inventory)));
+                   if (emeraldPouchSlots.get(0) > 8) {
+                       // This method doesn't work if pouch is in hotbar
+                       player.connection.sendPacket(new CPacketClickWindow(
+                               player.inventoryContainer.windowId,
+                               emeraldPouchSlots.get(0), 1, ClickType.PICKUP, player.inventory.getStackInSlot(emeraldPouchSlots.get(0)),
+                               player.inventoryContainer.getNextTransactionID(player.inventory)));
+                   } else {
+                       // Instead, use the same method we use to spawn a horse
+                       int prev = McIf.player().inventory.currentItem;
+                       McIf.player().inventory.currentItem = emeraldPouchSlots.get(0);
+                       McIf.mc().playerController.processRightClick(McIf.player(), McIf.player().world, EnumHand.MAIN_HAND);
+                       McIf.player().inventory.currentItem = prev;
+                   }
            }
         });
 
