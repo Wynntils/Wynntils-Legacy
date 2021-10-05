@@ -13,14 +13,20 @@ import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.map.overlays.MiniMapOverlay;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.events.ClientEvents;
+import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
 import com.wynntils.modules.utilities.overlays.hud.StopWatchOverlay;
 import com.wynntils.modules.utilities.overlays.ui.GearViewerUI;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.inventory.ClickType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketClickWindow;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import org.lwjgl.input.Keyboard;
+import java.util.ArrayList;
+import java.util.List;
 
 public class KeyManager {
 
@@ -81,6 +87,33 @@ public class KeyManager {
                     13, 0, ClickType.PICKUP, player.inventory.getStackInSlot(13),
                     player.inventoryContainer.getNextTransactionID(player.inventory)
             ));
+        });
+
+        CoreModule.getModule().registerKeyBinding("Open Emerald Pouch", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+           if (!Reference.onWorld) return;
+
+           EntityPlayerSP player = McIf.player();
+           NonNullList<ItemStack> inventory = player.inventory.mainInventory;
+           List<Integer> emeraldPouchSlots = new ArrayList<Integer>() {
+           };
+
+           for (int i = 0; i < inventory.size(); i++) {
+               ItemStack stack = inventory.get(i);
+               if (!stack.isEmpty() && stack.hasDisplayName() && stack.getDisplayName().contains("§aEmerald Pouch§2 [Tier")) { // Match as much as possible of the emerald pouch name to prevent false positives
+                   emeraldPouchSlots.add(i);
+               }
+           }
+           switch (emeraldPouchSlots.size()) {
+               default:
+                   GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You have more than one emerald pouch in your inventory.");
+               case 0:
+                   GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You do not have an emerald pouch in your inventory.");
+               case 1:
+                   player.connection.sendPacket(new CPacketClickWindow(
+                           player.inventoryContainer.windowId,
+                           emeraldPouchSlots.get(0), 1, ClickType.PICKUP, player.inventory.getStackInSlot(emeraldPouchSlots.get(0)),
+                           player.inventoryContainer.getNextTransactionID(player.inventory)));
+           }
         });
 
         stopwatchKey = CoreModule.getModule().registerKeyBinding("Start/Stop Stopwatch", Keyboard.KEY_NUMPAD5, "Wynntils", KeyConflictContext.IN_GAME, true, StopWatchOverlay::start);
