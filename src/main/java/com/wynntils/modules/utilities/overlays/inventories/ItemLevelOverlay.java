@@ -23,8 +23,8 @@ import java.util.regex.Pattern;
 
 public class ItemLevelOverlay implements Listener {
 
-    private static final Pattern POWDER_NAME_PATTERN = Pattern.compile("(?:Earth|Thunder|Water|Fire|Air|Blank) Powder (VI|IV|V|I{1,3})");
-    private static final Pattern EMERALD_POUCH_PATTERN = Pattern.compile("§aEmerald Pouch§2 \\[Tier (IX|X|VI{1,3}|IV|V|I{1,3})]");
+    private static final Pattern POWDER_NAME_PATTERN = Pattern.compile("(?:Earth|Thunder|Water|Fire|Air|Blank) Powder ([IV]{1,3})");
+    private static final Pattern EMERALD_POUCH_PATTERN = Pattern.compile("§aEmerald Pouch§2 \\[Tier ([XIV]{1,4})]");
     private static final Pattern CORKIAN_AMPLIFIER_PATTERN = Pattern.compile("§bCorkian Amplifier (I{1,3})");
 
     private int romanToArabic(String romanNumeral) {
@@ -90,7 +90,7 @@ public class ItemLevelOverlay implements Listener {
 
         // emerald pouch tier
         if (item == Items.DIAMOND_AXE) {
-            Matcher emeraldPouchMatcher = EMERALD_POUCH_PATTERN.matcher(StringUtils.normalizeBadString(name));
+            Matcher emeraldPouchMatcher = EMERALD_POUCH_PATTERN.matcher(name);
             if (emeraldPouchMatcher.find()) {
                 if (!UtilitiesConfig.Items.INSTANCE.levelKeyShowsItemTiers) return;
                 if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
@@ -105,7 +105,7 @@ public class ItemLevelOverlay implements Listener {
 
         // cork amp tier
         if (item == Item.getItemFromBlock(Blocks.STONE_BUTTON)) {
-            Matcher amplifierMatcher = CORKIAN_AMPLIFIER_PATTERN.matcher(StringUtils.normalizeBadString(name));
+            Matcher amplifierMatcher = CORKIAN_AMPLIFIER_PATTERN.matcher(name);
             if (amplifierMatcher.find()) {
                 if (!UtilitiesConfig.Items.INSTANCE.levelKeyShowsItemTiers) return;
                 if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
