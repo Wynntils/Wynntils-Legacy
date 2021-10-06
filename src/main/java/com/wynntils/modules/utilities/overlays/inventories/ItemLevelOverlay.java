@@ -7,6 +7,7 @@ package com.wynntils.modules.utilities.overlays.inventories;
 import com.wynntils.McIf;
 import com.wynntils.core.events.custom.RenderEvent;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.framework.enums.Powder;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.IntRange;
@@ -23,7 +24,7 @@ import java.util.regex.Pattern;
 
 public class ItemLevelOverlay implements Listener {
 
-    private static final Pattern POWDER_NAME_PATTERN = Pattern.compile("(?:Earth|Thunder|Water|Fire|Air|Blank) Powder ([IV]{1,3})");
+    private static final Pattern POWDER_NAME_PATTERN = Powder.powderRegexPattern;
     private static final Pattern EMERALD_POUCH_PATTERN = Pattern.compile("§aEmerald Pouch§2 \\[Tier ([XIV]{1,4})]");
     private static final Pattern CORKIAN_AMPLIFIER_PATTERN = Pattern.compile("§bCorkian Amplifier (I{1,3})");
 
