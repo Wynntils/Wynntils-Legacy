@@ -124,7 +124,9 @@ public class OverlayPositionsUI extends UI {
         drawDefaultBackground();
 
         for (UIEClickZone zone : registeredOverlaySettings) {
+            zone.beginGL(0, 0);
             zone.render(mouseX, mouseY);
+            zone.endGL();
         }
         if (stringToDrawOnTop != null) {
             if (stringToDrawOnTop.y > ScreenRenderer.screen.getScaledHeight()) {
