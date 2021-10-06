@@ -230,7 +230,7 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Show Average Unidentified Level", description = "Should the average level of an unidentified item be shown instead of the entire range?", order = 3)
         public boolean averageUnidentifiedLevel = true;
 
-        @Setting(displayName = "Show Levels Also Shows Item Tiers", description = "Should the tier of items (powders, amplifiers, pouches) be shown when pressing the show item level key?", order = 5)
+        @Setting(displayName = "Show Levels Key Also Shows Item Tiers", description = "Should the tier of items (powders, amplifiers, pouches) be shown when pressing the show item level key?", order = 5)
         public boolean levelKeyShowsItemTiers = false;
 
         @Setting(displayName = "Roman Numeral Item Tiers", description = "Should the tier of items (powders, amplifiers, pouches) be displayed using roman numerals?", order = 6)
@@ -251,7 +251,7 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Transportation Item Specification", description = "Should a letter indicating the destination of teleport scrolls and boat passes be displayed?", order = 11)
         public boolean transportationSpecification = true;
 
-        @Setting(displayName = "Amplifier Specification", description = "Should the tier of a Corkian Amplifier be displayed?", order = 12)
+        @Setting(displayName = "Corkian Amplifier Specification", description = "Should the tier of a Corkian Amplifier be displayed?", order = 12)
         public boolean amplifierSpecification = true;
 
         @Setting(displayName = "Powder Specification", description = "Should the tier of powders be displayed?", order = 13)
