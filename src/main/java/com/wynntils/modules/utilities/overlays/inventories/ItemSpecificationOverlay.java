@@ -151,7 +151,7 @@ public class ItemSpecificationOverlay implements Listener {
                     destinationName = m.group(1);
                     color = MinecraftChatColors.AQUA;
                     xOffset = -1;
-                    scale = 1.0f;
+                    scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;
                 }
             }
 
@@ -181,7 +181,7 @@ public class ItemSpecificationOverlay implements Listener {
                             break;
                     }
                     xOffset = -1;
-                    scale = 1.0f;
+                    scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;
                 }
             }
 
@@ -192,7 +192,7 @@ public class ItemSpecificationOverlay implements Listener {
                     destinationName = m.group(1);
                     color = MinecraftChatColors.GREEN;
                     xOffset = -1;
-                    scale = 1.0f;
+                    scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;
                 }
             }
 

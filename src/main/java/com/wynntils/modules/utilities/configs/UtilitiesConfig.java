@@ -260,40 +260,44 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Emerald Pouch Specification", description = "Should the tier of emerald pouches be displayed?", order = 14)
         public boolean emeraldPouchSpecification = true;
 
-        @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted according to rarity in remote containers?\n\n§8Remote containers are items such as chests and banks.", order = 15)
+        @Setting(displayName = "Tier Overlay Size", description = "How large should the tier overlays (emerald pouches, powders, amplifiers) be?", order = 15)
+        @Setting.Limitations.FloatLimit(min = 0.5f, max = 1, precision = 0.1f)
+        public float specificationTierSize = 1;
+
+        @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted according to rarity in remote containers?\n\n§8Remote containers are items such as chests and banks.", order = 17)
         public boolean mainHighlightChest = true;
 
-        @Setting(displayName = "Item Highlights in Inventory", description = "Should items be highlighted according to rarity in your inventory?", order = 16)
+        @Setting(displayName = "Item Highlights in Inventory", description = "Should items be highlighted according to rarity in your inventory?", order = 18)
         public boolean mainHighlightInventory = true;
 
-        @Setting(displayName = "Accessories Highlight", description = "Should your worn accessories be highlighted according to rarity?", order = 17)
+        @Setting(displayName = "Accessories Highlight", description = "Should your worn accessories be highlighted according to rarity?", order = 19)
         public boolean accesoryHighlight = true;
 
-        @Setting(displayName = "Highlight Hotbar Items", description = "Should the items in your hotbar be highlighted according to rarity?", order = 18)
+        @Setting(displayName = "Highlight Hotbar Items", description = "Should the items in your hotbar be highlighted according to rarity?", order = 20)
         public boolean hotbarHighlight = true;
 
-        @Setting(displayName = "Highlight Armour Items", description = "Should your worn armour be highlighted according to rarity?", order = 19)
+        @Setting(displayName = "Highlight Armour Items", description = "Should your worn armour be highlighted according to rarity?", order = 21)
         public boolean armorHighlight = true;
 
-        @Setting(displayName = "Highlight Mythics", description = "Should mythic items be highlighted?", order = 20)
+        @Setting(displayName = "Highlight Mythics", description = "Should mythic items be highlighted?", order = 22)
         public boolean mythicHighlight = true;
 
-        @Setting(displayName = "Highlight Fabled", description = "Should fabled items be highlighted?", order = 21)
+        @Setting(displayName = "Highlight Fabled", description = "Should fabled items be highlighted?", order = 23)
         public boolean fabledHighlight = true;
 
-        @Setting(displayName = "Highlight Legendaries", description = "Should legendary items be highlighted?", order = 22)
+        @Setting(displayName = "Highlight Legendaries", description = "Should legendary items be highlighted?", order = 24)
         public boolean legendaryHighlight = true;
 
-        @Setting(displayName = "Highlight Rares", description = "Should rare items be highlighted?", order = 23)
+        @Setting(displayName = "Highlight Rares", description = "Should rare items be highlighted?", order = 25)
         public boolean rareHighlight = true;
 
-        @Setting(displayName = "Highlight Uniques", description = "Should unique items be highlighted?", order = 24)
+        @Setting(displayName = "Highlight Uniques", description = "Should unique items be highlighted?", order = 26)
         public boolean uniqueHighlight = true;
 
-        @Setting(displayName = "Highlight Set Items", description = "Should set items be highlighted?", order = 25)
+        @Setting(displayName = "Highlight Set Items", description = "Should set items be highlighted?", order = 27)
         public boolean setHighlight = true;
 
-        @Setting(displayName = "Highlight Normal Items", description = "Should normal items be highlighted?", order = 26)
+        @Setting(displayName = "Highlight Normal Items", description = "Should normal items be highlighted?", order = 28)
         public boolean normalHighlight = false;
 
         @Setting(displayName = "Highlight Black Market Cosmetics", description = "Should black market cosmetic items be highlighted?", order = 30)
