@@ -109,19 +109,43 @@ public class KeyManager {
                case 0:
                    GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You do not have an emerald pouch in your inventory.");
                case 1:
-                   if (emeraldPouchSlots.get(0) > 8) {
-                       // This method doesn't work if pouch is in hotbar
-                       player.connection.sendPacket(new CPacketClickWindow(
-                               player.inventoryContainer.windowId,
-                               emeraldPouchSlots.get(0), 1, ClickType.PICKUP, player.inventory.getStackInSlot(emeraldPouchSlots.get(0)),
-                               player.inventoryContainer.getNextTransactionID(player.inventory)));
-                   } else {
-                       // Instead, use the same method we use to spawn a horse
-                       int prev = McIf.player().inventory.currentItem;
-                       McIf.player().inventory.currentItem = emeraldPouchSlots.get(0);
-                       McIf.mc().playerController.processRightClick(McIf.player(), McIf.player().world, EnumHand.MAIN_HAND);
-                       McIf.player().inventory.currentItem = prev;
+                   int slotNumber = emeraldPouchSlots.get(0);
+                   if (slotNumber < 9) {
+                       // sendPacket uses raw slot numbers, we need to manually remap the hotbar
+                       switch (emeraldPouchSlots.get(0)) {
+                           case 0:
+                               slotNumber = 36;
+                               break;
+                           case 1:
+                               slotNumber = 37;
+                               break;
+                           case 2:
+                               slotNumber = 38;
+                               break;
+                           case 3:
+                               slotNumber = 39;
+                               break;
+                           case 4:
+                               slotNumber = 40;
+                               break;
+                           case 5:
+                               slotNumber = 41;
+                               break;
+                           case 6:
+                               slotNumber = 42;
+                               break;
+                           case 7:
+                               slotNumber = 43;
+                               break;
+                           case 8:
+                               slotNumber = 44;
+                               break;
+                       }
                    }
+                   player.connection.sendPacket(new CPacketClickWindow(
+                           player.inventoryContainer.windowId,
+                           slotNumber, 1, ClickType.PICKUP, player.inventory.getStackInSlot(slotNumber),
+                           player.inventoryContainer.getNextTransactionID(player.inventory)));
            }
         });
 
