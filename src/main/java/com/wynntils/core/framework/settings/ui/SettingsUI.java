@@ -181,9 +181,7 @@ public class SettingsUI extends UI {
                     settingElement.position.refresh();
                     settingElement.position.offsetX -= setting.position.offsetX;
                     settingElement.position.offsetY -= setting.position.offsetY;
-                    settingElement.beginGL(0, 0);
                     settingElement.render(mouseX, mouseY);
-                    settingElement.endGL();
                 });
                 if (setting != settings.elements.get(0))
                     render.drawRect(CommonColors.LIGHT_GRAY, setting.position.getDrawingX(), setting.position.getDrawingY() - 4, setting.position.getDrawingX() + 175, setting.position.getDrawingY() -3);

@@ -62,7 +62,11 @@ public abstract class UIESlider extends UIEClickZone {
         @Override
         public void render(int mouseX, int mouseY) {
             super.render(mouseX, mouseY);
-            if (this.backColor != null) drawRect(this.backColor, this.position.getDrawingX(), this.position.getDrawingY(), this.position.getDrawingX() + width, this.position.getDrawingY() + height);
+            if (this.backColor != null) {
+                beginGL(0, 0);
+                drawRect(this.backColor, this.position.getDrawingX(), this.position.getDrawingY(), this.position.getDrawingX() + width, this.position.getDrawingY() + height);
+                endGL();
+            }
             this.sliderButton.active = this.active;
             this.sliderButton.position.copy(this.position);
             this.sliderButton.position.drawingX += MathHelper.fastFloor(progress * (width - sliderButton.width));
@@ -101,7 +105,11 @@ public abstract class UIESlider extends UIEClickZone {
         @Override
         public void render(int mouseX, int mouseY) {
             super.render(mouseX, mouseY);
-            if (this.backColor != null) drawRect(this.backColor, this.position.getDrawingX(), this.position.getDrawingY(), this.position.getDrawingX() + width, this.position.getDrawingY() + height);
+            if (this.backColor != null) {
+                beginGL(0, 0);
+                drawRect(this.backColor, this.position.getDrawingX(), this.position.getDrawingY(), this.position.getDrawingX() + width, this.position.getDrawingY() + height);
+                endGL();
+            }
             this.sliderButton.active = this.active;
             this.sliderButton.position.copy(this.position);
             this.sliderButton.position.offsetY = MathHelper.fastFloor(progress * (height - sliderButton.height)) + this.position.offsetY;

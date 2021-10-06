@@ -46,9 +46,7 @@ public abstract class UI extends GuiScreen {
         for (UIElement uie : UIElements) {
             uie.position.refresh(ScreenRenderer.screen);
             if (!uie.visible) continue;
-            uie.beginGL(0, 0);
             uie.render(mouseX, mouseY);
-            uie.endGL();
         }
 
         onRenderPostUIE(screenRenderer);

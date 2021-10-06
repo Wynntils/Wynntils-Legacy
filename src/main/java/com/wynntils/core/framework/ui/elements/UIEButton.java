@@ -52,32 +52,35 @@ public class UIEButton extends UIEClickZone {
         super.render(mouseX, mouseY);
         if (!visible) return;
 
-        width = (int) Math.max(this.setWidth < 0 ? (int) getStringWidth(text) - this.setWidth : this.setWidth, texture == null ? 0 : tx2 - tx1);
+        beginGL(0, 0);
+        {
+            width = (int) Math.max(this.setWidth < 0 ? (int) getStringWidth(text) - this.setWidth : this.setWidth, texture == null ? 0 : tx2 - tx1);
 
-        if (!active) {
-            if (texture != null) {
-                drawRect(texture, this.position.getDrawingX() + (int) ((tx1 + tx2) / 2), this.position.getDrawingY(), this.position.getDrawingX() + width - (int) ((tx1 + tx2) / 2), this.position.getDrawingY() + height, (tx1 + tx2) / 2, (ty2 - ty1) / 3 * 2 + ty1, (tx1 + tx2) / 2, ty2);
-                drawRect(texture, this.position.getDrawingX(), this.position.getDrawingY(), this.position.getDrawingX() + (int) ((tx1 + tx2) / 2), this.position.getDrawingY() + height, tx1, (ty2 - ty1) / 3 * 2 + ty1, (tx1 + tx2) / 2, ty2);
-                drawRect(texture, this.position.getDrawingX() + width - (int) ((tx1 + tx2) / 2), this.position.getDrawingY(), this.position.getDrawingX() + width, this.position.getDrawingY() + height, (tx1 + tx2) / 2, (ty2 - ty1) / 3 * 2 + ty1, tx2, ty2);
+            if (!active) {
+                if (texture != null) {
+                    drawRect(texture, this.position.getDrawingX() + (int) ((tx1 + tx2) / 2), this.position.getDrawingY(), this.position.getDrawingX() + width - (int) ((tx1 + tx2) / 2), this.position.getDrawingY() + height, (tx1 + tx2) / 2, (ty2 - ty1) / 3 * 2 + ty1, (tx1 + tx2) / 2, ty2);
+                    drawRect(texture, this.position.getDrawingX(), this.position.getDrawingY(), this.position.getDrawingX() + (int) ((tx1 + tx2) / 2), this.position.getDrawingY() + height, tx1, (ty2 - ty1) / 3 * 2 + ty1, (tx1 + tx2) / 2, ty2);
+                    drawRect(texture, this.position.getDrawingX() + width - (int) ((tx1 + tx2) / 2), this.position.getDrawingY(), this.position.getDrawingX() + width, this.position.getDrawingY() + height, (tx1 + tx2) / 2, (ty2 - ty1) / 3 * 2 + ty1, tx2, ty2);
+                }
+                if (text != null && !text.equals(""))
+                    drawString(text, this.position.getDrawingX() + width / 2.0f, this.position.getDrawingY() + height / 2.0f - 4.0f, TEXTCOLOR_NOTACTIVE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
+            } else if (hovering) {
+                if (texture != null) {
+                    drawRect(texture, this.position.getDrawingX() + (int) ((tx1 + tx2) / 2), this.position.getDrawingY(), this.position.getDrawingX() + width - (int) ((tx1 + tx2) / 2), this.position.getDrawingY() + height, (tx1 + tx2) / 2, (ty2 - ty1) / 3 + ty1, (tx1 + tx2) / 2, (ty2 - ty1) / 3 * 2 + ty1);
+                    drawRect(texture, this.position.getDrawingX(), this.position.getDrawingY(), this.position.getDrawingX() + (int) ((tx1 + tx2) / 2), this.position.getDrawingY() + height, tx1, (ty2 - ty1) / 3 + ty1, (tx1 + tx2) / 2, (ty2 - ty1) / 3 * 2 + ty1);
+                    drawRect(texture, this.position.getDrawingX() + width - (int) ((tx1 + tx2) / 2), this.position.getDrawingY(), this.position.getDrawingX() + width, this.position.getDrawingY() + height, (tx1 + tx2) / 2, (ty2 - ty1) / 3 + ty1, tx2, (ty2 - ty1) / 3 * 2 + ty1);
+                }
+                if (text != null && !text.equals(""))
+                    drawString(text, this.position.getDrawingX() + width / 2.0f, this.position.getDrawingY() + height / 2.0f - 4.0f, TEXTCOLOR_HOVERING, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
+            } else {
+                if (texture != null) {
+                    drawRect(texture, this.position.getDrawingX() + (int) ((tx1 + tx2) / 2), this.position.getDrawingY(), this.position.getDrawingX() + width - (int) ((tx1 + tx2) / 2), this.position.getDrawingY() + height, (tx1 + tx2) / 2, ty1, (tx1 + tx2) / 2, (ty2 - ty1) / 3 + ty1);
+                    drawRect(texture, this.position.getDrawingX(), this.position.getDrawingY(), this.position.getDrawingX() + (int) ((tx1 + tx2) / 2), this.position.getDrawingY() + height, tx1, ty1, (tx1 + tx2) / 2, (ty2 - ty1) / 3 + ty1);
+                    drawRect(texture, this.position.getDrawingX() + width - (int) ((tx1 + tx2) / 2), this.position.getDrawingY(), this.position.getDrawingX() + width, this.position.getDrawingY() + height, (tx1 + tx2) / 2, ty1, tx2, (ty2 - ty1) / 3 + ty1);
+                }
+                if (text != null && !text.equals(""))
+                    drawString(text, this.position.getDrawingX() + width / 2.0f, this.position.getDrawingY() + height / 2.0f - 4.0f, TEXTCOLOR_NORMAL, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
             }
-            if (text != null && !text.equals(""))
-                drawString(text, this.position.getDrawingX()+width / 2.0f, this.position.getDrawingY()+height / 2.0f - 4.0f, TEXTCOLOR_NOTACTIVE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
-        } else if (hovering) {
-            if (texture != null) {
-                drawRect(texture, this.position.getDrawingX() + (int) ((tx1 + tx2) / 2), this.position.getDrawingY(), this.position.getDrawingX() + width - (int) ((tx1 + tx2) / 2), this.position.getDrawingY() + height, (tx1 + tx2) / 2, (ty2 - ty1) / 3 + ty1, (tx1 + tx2) / 2, (ty2 - ty1) / 3 * 2 + ty1);
-                drawRect(texture, this.position.getDrawingX(), this.position.getDrawingY(), this.position.getDrawingX() + (int) ((tx1 + tx2) / 2), this.position.getDrawingY() + height, tx1, (ty2 - ty1) / 3 + ty1, (tx1 + tx2) / 2, (ty2 - ty1) / 3 * 2 + ty1);
-                drawRect(texture, this.position.getDrawingX() + width - (int) ((tx1 + tx2) / 2), this.position.getDrawingY(), this.position.getDrawingX() + width, this.position.getDrawingY() + height, (tx1 + tx2) / 2, (ty2 - ty1) / 3 + ty1, tx2, (ty2 - ty1) / 3 * 2 + ty1);
-            }
-            if (text != null && !text.equals(""))
-                drawString(text, this.position.getDrawingX()+width / 2.0f, this.position.getDrawingY()+height / 2.0f - 4.0f, TEXTCOLOR_HOVERING, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
-        } else {
-            if (texture != null) {
-                drawRect(texture, this.position.getDrawingX() + (int) ((tx1 + tx2) / 2), this.position.getDrawingY(), this.position.getDrawingX() + width - (int) ((tx1 + tx2) / 2), this.position.getDrawingY() + height, (tx1 + tx2) / 2, ty1, (tx1 + tx2) / 2, (ty2 - ty1) / 3 + ty1);
-                drawRect(texture, this.position.getDrawingX(), this.position.getDrawingY(), this.position.getDrawingX() + (int) ((tx1 + tx2) / 2), this.position.getDrawingY() + height, tx1, ty1, (tx1 + tx2) / 2, (ty2 - ty1) / 3 + ty1);
-                drawRect(texture, this.position.getDrawingX() + width - (int) ((tx1 + tx2) / 2), this.position.getDrawingY(), this.position.getDrawingX() + width, this.position.getDrawingY() + height, (tx1 + tx2) / 2, ty1, tx2, (ty2 - ty1) / 3 + ty1);
-            }
-            if (text != null && !text.equals(""))
-                drawString(text, this.position.getDrawingX()+width / 2.0f, this.position.getDrawingY()+height / 2.0f - 4.0f, TEXTCOLOR_NORMAL, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
         }
     }
 

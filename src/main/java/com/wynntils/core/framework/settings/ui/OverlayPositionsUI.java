@@ -124,9 +124,7 @@ public class OverlayPositionsUI extends UI {
         drawDefaultBackground();
 
         for (UIEClickZone zone : registeredOverlaySettings) {
-            zone.beginGL(0, 0);
             zone.render(mouseX, mouseY);
-            zone.endGL();
         }
         if (stringToDrawOnTop != null) {
             if (stringToDrawOnTop.y > ScreenRenderer.screen.getScaledHeight()) {
@@ -271,41 +269,45 @@ public class OverlayPositionsUI extends UI {
         public void render(int mouseX, int mouseY) {
             super.render(mouseX, mouseY);
             position.refresh();
-            // Clickable box
-            CustomColor color;
-            Overlay overlay = (Overlay) overlaySettings.getHolder();
-            if (selected != null && selected.equals(this)) {
-                color = CommonColors.BLUE;
-            } else if (mouseButtonHeld && shiftDown) {
-                color = CommonColors.PURPLE;
-            } else if (mouseButtonHeld) {
-                color = CommonColors.ORANGE;
-            } else if (hovering) {
-                color = CommonColors.YELLOW;
-            } else if (overlay.active) {
-                color = CommonColors.GREEN;
-            } else {
-                color = CommonColors.RED;
-            }
-            drawRect(color, position.getDrawingX(), position.getDrawingY(), position.getDrawingX() + width, position.getDrawingY() + 1);
-            drawRect(color, position.getDrawingX(), position.getDrawingY() + height, position.getDrawingX() + width, position.getDrawingY() + height - 1);
-            drawRect(color, position.getDrawingX(), position.getDrawingY(), position.getDrawingX() + 1, position.getDrawingY() + height);
-            drawRect(color, position.getDrawingX() + width, position.getDrawingY(), position.getDrawingX() + width - 1, position.getDrawingY() + height);
-            // Text
-            if (hovering && !mouseButtonHeld) {
-                stringToDrawOnTop = new StringDrawing(overlay.displayName,
-                        position.getDrawingX() + (overlay.staticSize.x / 2),
-                        position.getDrawingY() + (overlay.staticSize.y / 2) - 4,
-                        CommonColors.PURPLE,
-                        SmartFontRenderer.TextAlignment.MIDDLE,
-                        SmartFontRenderer.TextShadow.OUTLINE);
-                toClick = this;
-            } else {
-                if (stringToDrawOnTop != null && stringToDrawOnTop.getString().equals(overlay.displayName)) {
-                    stringToDrawOnTop = null;
-                    toClick = null;
+            beginGL(0, 0);
+            {
+                // Clickable box
+                CustomColor color;
+                Overlay overlay = (Overlay) overlaySettings.getHolder();
+                if (selected != null && selected.equals(this)) {
+                    color = CommonColors.BLUE;
+                } else if (mouseButtonHeld && shiftDown) {
+                    color = CommonColors.PURPLE;
+                } else if (mouseButtonHeld) {
+                    color = CommonColors.ORANGE;
+                } else if (hovering) {
+                    color = CommonColors.YELLOW;
+                } else if (overlay.active) {
+                    color = CommonColors.GREEN;
+                } else {
+                    color = CommonColors.RED;
+                }
+                drawRect(color, position.getDrawingX(), position.getDrawingY(), position.getDrawingX() + width, position.getDrawingY() + 1);
+                drawRect(color, position.getDrawingX(), position.getDrawingY() + height, position.getDrawingX() + width, position.getDrawingY() + height - 1);
+                drawRect(color, position.getDrawingX(), position.getDrawingY(), position.getDrawingX() + 1, position.getDrawingY() + height);
+                drawRect(color, position.getDrawingX() + width, position.getDrawingY(), position.getDrawingX() + width - 1, position.getDrawingY() + height);
+                // Text
+                if (hovering && !mouseButtonHeld) {
+                    stringToDrawOnTop = new StringDrawing(overlay.displayName,
+                            position.getDrawingX() + (overlay.staticSize.x / 2),
+                            position.getDrawingY() + (overlay.staticSize.y / 2) - 4,
+                            CommonColors.PURPLE,
+                            SmartFontRenderer.TextAlignment.MIDDLE,
+                            SmartFontRenderer.TextShadow.OUTLINE);
+                    toClick = this;
+                } else {
+                    if (stringToDrawOnTop != null && stringToDrawOnTop.getString().equals(overlay.displayName)) {
+                        stringToDrawOnTop = null;
+                        toClick = null;
+                    }
                 }
             }
+            endGL();
         }
 
         @Override

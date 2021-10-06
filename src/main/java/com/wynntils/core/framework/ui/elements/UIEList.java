@@ -33,9 +33,7 @@ public class UIEList extends UIElement {
                 uie.position.offsetY -= this.position.offsetY;
             }
             if (!uie.visible) continue;
-            uie.beginGL(0, 0);
             uie.render(mouseX, mouseY);
-            uie.endGL();
         }
     }
 
