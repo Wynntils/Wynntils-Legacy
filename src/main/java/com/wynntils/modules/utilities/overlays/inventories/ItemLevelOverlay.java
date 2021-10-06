@@ -24,9 +24,8 @@ import java.util.regex.Pattern;
 
 public class ItemLevelOverlay implements Listener {
 
-    private static final Pattern POWDER_NAME_PATTERN = Powder.powderRegexPattern;
-    private static final Pattern EMERALD_POUCH_PATTERN = Pattern.compile("§aEmerald Pouch§2 \\[Tier ([XIV]{1,4})]");
-    private static final Pattern CORKIAN_AMPLIFIER_PATTERN = Pattern.compile("§bCorkian Amplifier (I{1,3})");
+    public static final Pattern EMERALD_POUCH_PATTERN = Pattern.compile("§aEmerald Pouch§2 \\[Tier ([XIV]{1,4})]");
+    public static final Pattern CORKIAN_AMPLIFIER_PATTERN = Pattern.compile("§bCorkian Amplifier (I{1,3})");
 
     private int romanToArabic(String romanNumeral) {
         int num = 0;
@@ -76,7 +75,7 @@ public class ItemLevelOverlay implements Listener {
 
         // powder tier
         if (item == Items.DYE || item == Items.GUNPOWDER || item == Items.CLAY_BALL || item == Items.SUGAR) {
-            Matcher powderMatcher = POWDER_NAME_PATTERN.matcher(StringUtils.normalizeBadString(name));
+            Matcher powderMatcher = Powder.POWDER_NAME_PATTERN.matcher(StringUtils.normalizeBadString(name));
             if (powderMatcher.find()) {
                 if (!UtilitiesConfig.Items.INSTANCE.levelKeyShowsItemTiers) return;
                 if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {

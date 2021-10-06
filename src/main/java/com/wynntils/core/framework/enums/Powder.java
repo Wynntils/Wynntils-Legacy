@@ -27,7 +27,7 @@ public enum Powder {
         this.color = color.toString();
     }
 
-    public static Pattern powderRegexPattern = Pattern.compile("§[2ebcf8].? ?(Earth|Thunder|Water|Fire|Air|Blank) Powder ([IV]{1,3})");
+    public static Pattern POWDER_NAME_PATTERN = Pattern.compile("§[2ebcf8].? ?(Earth|Thunder|Water|Fire|Air|Blank) Powder ([IV]{1,3})");
 
     public char getSymbol() {
         return symbol;

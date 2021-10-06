@@ -22,7 +22,6 @@ import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.profiles.item.enums.ItemType;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -144,7 +143,7 @@ public class ItemSpecificationOverlay implements Listener {
             }
 
             if (UtilitiesConfig.Items.INSTANCE.amplifierSpecification) {
-                Pattern amp = Pattern.compile("^§bCorkian Amplifier (I{1,3})$");
+                Pattern amp = ItemLevelOverlay.CORKIAN_AMPLIFIER_PATTERN;
                 Matcher m = amp.matcher(name);
                 if (m.matches()) {
                     destinationName = m.group(1);
@@ -155,7 +154,7 @@ public class ItemSpecificationOverlay implements Listener {
             }
 
             if (UtilitiesConfig.Items.INSTANCE.powderSpecification) {
-                Pattern powder = Powder.powderRegexPattern;
+                Pattern powder = Powder.POWDER_NAME_PATTERN;
                 Matcher m = powder.matcher(StringUtils.normalizeBadString(name));
                 if (m.matches()) {
                     destinationName = m.group(2);
@@ -186,7 +185,7 @@ public class ItemSpecificationOverlay implements Listener {
             }
 
             if (UtilitiesConfig.Items.INSTANCE.emeraldPouchSpecification) {
-                Pattern emeraldPouch = Pattern.compile("§aEmerald Pouch§2 \\[Tier ([XIV]{1,4})]");
+                Pattern emeraldPouch = ItemLevelOverlay.EMERALD_POUCH_PATTERN;
                 Matcher m = emeraldPouch.matcher(name);
                 if (m.matches()) {
                     destinationName = m.group(1);
