@@ -254,6 +254,12 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Amplifier Specification", description = "Should the tier of a Corkian Amplifier be displayed?", order = 12)
         public boolean amplifierSpecification = true;
 
+        @Setting(displayName = "Powder Specification", description = "Should the tier of powders be displayed?", order = 13)
+        public boolean powderSpecification = true;
+
+        @Setting(displayName = "Emerald Pouch Specification", description = "Should the tier of emerald pouches be displayed?", order = 14)
+        public boolean emeraldPouchSpecification = true;
+
         @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted according to rarity in remote containers?\n\n§8Remote containers are items such as chests and banks.", order = 15)
         public boolean mainHighlightChest = true;
 
