@@ -233,9 +233,6 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Roman Numeral Powder Tier", description = "Should the tier of powders be displayed using roman numerals?", order = 4)
         public boolean romanNumeralPowderTier = true;
 
-        @Setting(displayName = "Roman Numeral Emerald Pouch Tier", description = "Should the tier of Emerald Pouches be displayed using roman numerals?", order = 5)
-        public boolean romanNumeralEmeraldPouchTier = true;
-
         @Setting(displayName = "Item Levels Outside GUIs", description = "Should the item level overlay key be enabled even when no GUI is open?", order = 6)
         public boolean itemLevelOverlayOutsideGui = false;
 
@@ -253,6 +250,9 @@ public class UtilitiesConfig extends SettingsClass {
 
         @Setting(displayName = "Amplifier Specification", description = "Should the tier of a Corkian Amplifier be displayed?", order = 12)
         public boolean amplifierSpecification = true;
+
+        @Setting(displayName = "Emerald Pouch Specification", description = "Should the tier of an Emerald Pouch be displayed?", order=13)
+        public boolean emeraldPouchSpecification = true;
 
         @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted according to rarity in remote containers?\n\n§8Remote containers are items such as chests and banks.", order = 15)
         public boolean mainHighlightChest = true;

@@ -23,7 +23,6 @@ import java.util.regex.Pattern;
 public class ItemLevelOverlay implements Listener {
 
     private static final Pattern POWDER_NAME_PATTERN = Pattern.compile("(?:Earth|Thunder|Water|Fire|Air|Blank) Powder (VI|IV|V|I{1,3})");
-    private static final Pattern EMERALD_POUCH_PATTERN = Pattern.compile("Emerald Pouch§2 \\[Tier (IX|X|VI{1,3}|IV|V|I{1,3})]");
 
     @SubscribeEvent
     public void onItemOverlay(RenderEvent.DrawItemOverlay event) {
@@ -70,51 +69,6 @@ public class ItemLevelOverlay implements Listener {
 
         String lore = ItemUtils.getStringLore(stack);
 
-        // emerald pouch tier
-        if (item == Items.DIAMOND_AXE) {
-            Matcher emeraldPouchMatcher = EMERALD_POUCH_PATTERN.matcher(StringUtils.normalizeBadString(name));
-            if (emeraldPouchMatcher.find()) {
-                if (UtilitiesConfig.Items.INSTANCE.romanNumeralEmeraldPouchTier) {
-                    event.setOverlayText(emeraldPouchMatcher.group(1));
-                    return;
-                }
-                int tier = 0;
-                switch (emeraldPouchMatcher.group(1)) {
-                    case "I":
-                        tier = 1;
-                        break;
-                    case "II":
-                        tier = 2;
-                        break;
-                    case "III":
-                        tier = 3;
-                        break;
-                    case "IV":
-                        tier = 4;
-                        break;
-                    case "V":
-                        tier = 5;
-                        break;
-                    case "VI":
-                        tier = 6;
-                        break;
-                    case "VII":
-                        tier = 7;
-                        break;
-                    case "VIII":
-                        tier = 8;
-                        break;
-                    case "IX":
-                        tier = 9;
-                        break;
-                    case "X":
-                        tier = 10;
-                        break;
-                }
-                event.setOverlayText(Integer.toString(tier));
-                return;
-            }
-        }
 
         // item level
         IntRange level = ItemUtils.getLevel(lore);

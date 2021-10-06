@@ -154,6 +154,17 @@ public class ItemSpecificationOverlay implements Listener {
                 }
             }
 
+            if (UtilitiesConfig.Items.INSTANCE.emeraldPouchSpecification) {
+                Pattern emeraldPouch = Pattern.compile("§aEmerald Pouch§2 \\[Tier (I{1,3}|IV|V|VI{1,3}|IX|X)]");
+                Matcher m = emeraldPouch.matcher(name);
+                if (m.matches()) {
+                    destinationName = m.group(1);
+                    color = MinecraftChatColors.GREEN;
+                    xOffset = -1;
+                    scale = 0.8f;
+                }
+            }
+
             if (destinationName != null) {
                 ScreenRenderer.beginGL((int) (gui.getGuiLeft()/scale), (int) (gui.getGuiTop()/scale));
                 GlStateManager.translate(0, 0, 260);
