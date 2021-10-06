@@ -12,7 +12,7 @@ import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.IntRange;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.KeyManager;
-import net.minecraft.client.Minecraft;
+import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -24,6 +24,45 @@ import java.util.regex.Pattern;
 public class ItemLevelOverlay implements Listener {
 
     private static final Pattern POWDER_NAME_PATTERN = Pattern.compile("(?:Earth|Thunder|Water|Fire|Air|Blank) Powder (VI|IV|V|I{1,3})");
+    private static final Pattern EMERALD_POUCH_PATTERN = Pattern.compile("§aEmerald Pouch§2 \\[Tier (IX|X|VI{1,3}|IV|V|I{1,3})]");
+    private static final Pattern CORKIAN_AMPLIFIER_PATTERN = Pattern.compile("§bCorkian Amplifier (I{1,3})");
+
+    private int romanToArabic(String romanNumeral) {
+        int num = 0;
+        switch (romanNumeral) {
+            case "I":
+                num = 1;
+                break;
+            case "II":
+                num = 2;
+                break;
+            case "III":
+                num = 3;
+                break;
+            case "IV":
+                num = 4;
+                break;
+            case "V":
+                num = 5;
+                break;
+            case "VI":
+                num = 6;
+                break;
+            case "VII":
+                num = 7;
+                break;
+            case "VIII":
+                num = 8;
+                break;
+            case "IX":
+                num = 9;
+                break;
+            case "X":
+                num = 10;
+                break;
+        }
+        return num;
+    }
 
     @SubscribeEvent
     public void onItemOverlay(RenderEvent.DrawItemOverlay event) {
@@ -38,31 +77,42 @@ public class ItemLevelOverlay implements Listener {
         if (item == Items.DYE || item == Items.GUNPOWDER || item == Items.CLAY_BALL || item == Items.SUGAR) {
             Matcher powderMatcher = POWDER_NAME_PATTERN.matcher(StringUtils.normalizeBadString(name));
             if (powderMatcher.find()) {
-                if (UtilitiesConfig.Items.INSTANCE.romanNumeralPowderTier) {
+                if (!UtilitiesConfig.Items.INSTANCE.levelKeyShowsItemTiers) return;
+                if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
                     event.setOverlayText(powderMatcher.group(1));
                     return;
                 }
-                int tier = 0;
-                switch (powderMatcher.group(1)) {
-                    case "I":
-                        tier = 1;
-                        break;
-                    case "II":
-                        tier = 2;
-                        break;
-                    case "III":
-                        tier = 3;
-                        break;
-                    case "IV":
-                        tier = 4;
-                        break;
-                    case "V":
-                        tier = 5;
-                        break;
-                    case "VI":
-                        tier = 6;
-                        break;
+                int tier = romanToArabic(powderMatcher.group(1));
+                event.setOverlayText(Integer.toString(tier));
+                return;
+            }
+        }
+
+        // emerald pouch tier
+        if (item == Items.DIAMOND_AXE) {
+            Matcher emeraldPouchMatcher = EMERALD_POUCH_PATTERN.matcher(StringUtils.normalizeBadString(name));
+            if (emeraldPouchMatcher.find()) {
+                if (!UtilitiesConfig.Items.INSTANCE.levelKeyShowsItemTiers) return;
+                if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
+                    event.setOverlayText(emeraldPouchMatcher.group(1));
+                    return;
                 }
+                int tier = romanToArabic(emeraldPouchMatcher.group(1));
+                event.setOverlayText(Integer.toString(tier));
+                return;
+            }
+        }
+
+        // cork amp tier
+        if (item == Item.getItemFromBlock(Blocks.STONE_BUTTON)) {
+            Matcher amplifierMatcher = CORKIAN_AMPLIFIER_PATTERN.matcher(StringUtils.normalizeBadString(name));
+            if (amplifierMatcher.find()) {
+                if (!UtilitiesConfig.Items.INSTANCE.levelKeyShowsItemTiers) return;
+                if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
+                    event.setOverlayText(amplifierMatcher.group(1));
+                    return;
+                }
+                int tier = romanToArabic(amplifierMatcher.group(1));
                 event.setOverlayText(Integer.toString(tier));
                 return;
             }

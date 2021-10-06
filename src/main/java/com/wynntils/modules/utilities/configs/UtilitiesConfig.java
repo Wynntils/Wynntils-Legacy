@@ -230,10 +230,13 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Show Average Unidentified Level", description = "Should the average level of an unidentified item be shown instead of the entire range?", order = 3)
         public boolean averageUnidentifiedLevel = true;
 
-        @Setting(displayName = "Roman Numeral Powder Tier", description = "Should the tier of powders be displayed using roman numerals?", order = 4)
-        public boolean romanNumeralPowderTier = true;
+        @Setting(displayName = "Show Levels Also Shows Item Tiers", description = "Should the tier of items (powders, amplifiers, pouches) be shown when pressing the show item level key?", order = 5)
+        public boolean levelKeyShowsItemTiers = false;
 
-        @Setting(displayName = "Item Levels Outside GUIs", description = "Should the item level overlay key be enabled even when no GUI is open?", order = 5)
+        @Setting(displayName = "Roman Numeral Item Tiers", description = "Should the tier of items (powders, amplifiers, pouches) be displayed using roman numerals?", order = 6)
+        public boolean romanNumeralItemTier = true;
+
+        @Setting(displayName = "Item Levels Outside GUIs", description = "Should the item level overlay key be enabled even when no GUI is open?", order = 7)
         public boolean itemLevelOverlayOutsideGui = false;
 
         @Setting(displayName = "Dungeon Key Specification", description = "Should a letter indicating the destination of dungeon keys be displayed?", order = 8)
