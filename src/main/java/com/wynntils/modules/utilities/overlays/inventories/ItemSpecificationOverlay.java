@@ -22,7 +22,7 @@ import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.profiles.item.enums.ItemType;
-
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
@@ -151,7 +151,48 @@ public class ItemSpecificationOverlay implements Listener {
                 destinationName = m.group(1);
                 color = MinecraftChatColors.AQUA;
                 xOffset = -1;
-                scale = 0.8f;
+                scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;
+            }
+        }
+
+        if (UtilitiesConfig.Items.INSTANCE.powderSpecification) {
+            Pattern powder = Pattern.compile("§[2ebcf8].? ?(Earth|Thunder|Water|Fire|Air|Blank) Powder ([IV]{1,3})");
+            Matcher m = powder.matcher(StringUtils.normalizeBadString(name));
+            if (m.matches()) {
+                destinationName = m.group(2);
+                switch (m.group(1)) {
+                    case "Earth":
+                        color = MinecraftChatColors.DARK_GREEN;
+                        break;
+                    case "Thunder":
+                        color = MinecraftChatColors.YELLOW;
+                        break;
+                    case "Water":
+                        color = MinecraftChatColors.AQUA;
+                        break;
+                    case "Fire":
+                        color = MinecraftChatColors.RED;
+                        break;
+                    case "Air":
+                        color = MinecraftChatColors.WHITE;
+                        break;
+                    case "Blank":
+                        color = MinecraftChatColors.GRAY; // Dark gray is too hard to see, use normal instead
+                        break;
+                }
+                xOffset = -1;
+                scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;
+            }
+        }
+
+        if (UtilitiesConfig.Items.INSTANCE.emeraldPouchSpecification) {
+            Pattern emeraldPouch = Pattern.compile("§aEmerald Pouch§2 \\[Tier (IX|X|VI{1,3}|IV|V|I{1,3})]");
+            Matcher m = emeraldPouch.matcher(name);
+            if (m.matches()) {
+                destinationName = m.group(1);
+                color = MinecraftChatColors.GREEN;
+                xOffset = -1;
+                scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;
             }
         }
 
