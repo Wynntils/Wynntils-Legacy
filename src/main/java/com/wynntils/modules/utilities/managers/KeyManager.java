@@ -111,36 +111,8 @@ public class KeyManager {
                case 1:
                    int slotNumber = emeraldPouchSlots.get(0);
                    if (slotNumber < 9) {
-                       // sendPacket uses raw slot numbers, we need to manually remap the hotbar
-                       switch (emeraldPouchSlots.get(0)) {
-                           case 0:
-                               slotNumber = 36;
-                               break;
-                           case 1:
-                               slotNumber = 37;
-                               break;
-                           case 2:
-                               slotNumber = 38;
-                               break;
-                           case 3:
-                               slotNumber = 39;
-                               break;
-                           case 4:
-                               slotNumber = 40;
-                               break;
-                           case 5:
-                               slotNumber = 41;
-                               break;
-                           case 6:
-                               slotNumber = 42;
-                               break;
-                           case 7:
-                               slotNumber = 43;
-                               break;
-                           case 8:
-                               slotNumber = 44;
-                               break;
-                       }
+                       // sendPacket uses raw slot numbers, we need to remap the hotbar
+                       slotNumber += 36;
                    }
                    player.connection.sendPacket(new CPacketClickWindow(
                            player.inventoryContainer.windowId,
