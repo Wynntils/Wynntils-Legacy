@@ -355,8 +355,11 @@ public class OverlayConfig extends SettingsClass {
             @Setting(displayName = "Redirect AFK Messages", description = "Should messages about AFK Protection be redirected to the game update ticker?")
             public boolean redirectAfk = true;
 
-            @Setting(displayName = "Redirect pouch Messages", description = "Should messages about ingredients being added to your pouch be redirected to the game update ticker?")
-            public boolean redirectPouch = true;
+            @Setting(displayName = "Redirect Ingredient Pouch Messages", description = "Should messages about ingredients being added to your pouch be redirected to the game update ticker?")
+            public boolean redirectIngredientPouch = true;
+
+            @Setting(displayName = "Redirect Emerald Pouch Messages", description = "Should messages about ingredients being added to your pouch be redirected to the game update ticker?")
+            public boolean redirectEmeraldPouch = true;
 
             @Setting(displayName = "Redirect Gathering Tool Messages", description = "Should messages about your gathering tool durability be redirected to the game update ticker?")
             public boolean redirectGatheringDura = true;

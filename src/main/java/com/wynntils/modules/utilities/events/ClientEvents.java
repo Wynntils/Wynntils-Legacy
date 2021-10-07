@@ -66,7 +66,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-
+import java.sql.Timestamp;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -90,6 +90,9 @@ public class ClientEvents implements Listener {
     private static long lastUserInput = Long.MAX_VALUE;
     private static long lastAfkRequested = Long.MAX_VALUE;
     private int tickCounter;
+
+    private Timestamp emeraldPouchLastPickup = new Timestamp(0);
+    private int emeraldPouchLastAmt = 0;
 
     public static boolean isAwaitingHorseMount = false;
     private static int lastHorseId = -1;
@@ -304,14 +307,39 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onTitle(PacketEvent<SPacketTitle> e) {
-        if (!OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectPouch) return;
+        if (!OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectIngredientPouch && !OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) return;
 
         SPacketTitle packet = e.getPacket();
         if (packet.getType() != SPacketTitle.Type.SUBTITLE) return;
-        if (!McIf.getUnformattedText(packet.getMessage()).matches("^§a\\+\\d+ §7.+§a to pouch$")) return;
 
-        e.setCanceled(true);
-        GameUpdateOverlay.queueMessage(McIf.getFormattedText(packet.getMessage()));
+        if (McIf.getUnformattedText(packet.getMessage()).matches("^§a\\+\\d+ §7.+§a to pouch$")) {
+            if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectIngredientPouch) {
+                e.setCanceled(true);
+                GameUpdateOverlay.queueMessage(McIf.getFormattedText(packet.getMessage()));
+            }
+        }
+
+        Matcher m = Pattern.compile("§a\\+(\\d+)§7 Emeralds? §ato pouch").matcher(McIf.getUnformattedText(packet.getMessage()));
+        if (m.matches()) {
+            if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
+                e.setCanceled(true);
+                if (new Timestamp(System.currentTimeMillis() - 3000).before(emeraldPouchLastPickup)) {
+                    // If the last emerald pickup event was less than 3 seconds ago, assume Wynn has relayed us an "updated" emerald title
+                    // What we do here is we get the amount that Wynn tells us, we minus the last amount that it told us, then we display the difference
+                    // After that, we set the amounts and last pickup times for the next title
+                    int currentEmeralds = Integer.parseInt(m.group(1));
+                    int actualEmeralds = currentEmeralds - emeraldPouchLastAmt;
+                    GameUpdateOverlay.queueMessage("§a+" + actualEmeralds + "§7 Emeralds §ato pouch. Total: §a" + currentEmeralds + "§7 Emeralds.");
+                    emeraldPouchLastAmt = currentEmeralds;
+                    emeraldPouchLastPickup = new Timestamp(System.currentTimeMillis());
+                    return;
+                }
+                GameUpdateOverlay.queueMessage(McIf.getFormattedText(packet.getMessage()));
+                // Set these because we don't want data from the last set of titles
+                emeraldPouchLastPickup = new Timestamp(System.currentTimeMillis());
+                emeraldPouchLastAmt = Integer.parseInt(m.group(1));
+            }
+        }
     }
 
     @SubscribeEvent
