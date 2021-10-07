@@ -13,6 +13,7 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+import io.netty.channel.MessageSizeEstimator;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.apache.logging.log4j.LogManager;
 
@@ -121,7 +122,7 @@ public class GameUpdateOverlay extends Overlay {
         }
 
         String processedMessage = message;
-        LogManager.getFormatterLogger("GameTicker").info("Editable Message Queued: " + processedMessage);
+        LogManager.getFormatterLogger("GameTicker").info("Message Queued: " + processedMessage);
         MessageContainer msgContainer = new MessageContainer(processedMessage);
         McIf.mc().addScheduledTask(() -> {
             messageQueue.add(msgContainer);
@@ -132,29 +133,9 @@ public class GameUpdateOverlay extends Overlay {
         return msgContainer;
     }
 
-    public static MessageContainer editMessage(MessageContainer oldMsgContainer, String newMessage) {
-        if (!Reference.onWorld) return null;
-
-        if (OverlayConfig.GameUpdate.INSTANCE.messageMaxLength != 0 && OverlayConfig.GameUpdate.INSTANCE.messageMaxLength < newMessage.length()) {
-            newMessage = newMessage.substring(0, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 4);
-
-            if (newMessage.endsWith("§")) {
-                newMessage = newMessage.substring(0, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 5);
-            }
-            newMessage = newMessage + "...";
-        }
-
-        String processedMessage = newMessage;
-        LogManager.getFormatterLogger("GameTicker").info("Edit Message Queued: " + processedMessage);
-        int oldMsgLocation = messageQueue.indexOf(oldMsgContainer);
-        MessageContainer newMsgContainer = new MessageContainer(processedMessage);
-        McIf.mc().addScheduledTask(() -> {
-            messageQueue.set(oldMsgLocation, newMsgContainer);
-
-            if (OverlayConfig.GameUpdate.INSTANCE.overrideNewMessages && messageQueue.size() > OverlayConfig.GameUpdate.INSTANCE.messageLimit)
-                messageQueue.remove(0);
-        });
-        return newMsgContainer;
+    public static void editMessage(MessageContainer msgContainer, String newMessage) {
+        msgContainer.editMessage(newMessage);
+        msgContainer.resetRemainingTime();
     }
 
     public static void resetMessages() {
@@ -162,9 +143,9 @@ public class GameUpdateOverlay extends Overlay {
     }
 
 
-    public static class MessageContainer {
+    private static class MessageContainer {
 
-        final String message;
+        String message;
         long endTime;
 
         private MessageContainer(String message) {
@@ -178,6 +159,14 @@ public class GameUpdateOverlay extends Overlay {
 
         public String getMessage() {
             return message;
+        }
+
+        public void editMessage(String newMessage) {
+            this.message = newMessage;
+        }
+
+        public void resetRemainingTime() {
+            this.endTime = System.currentTimeMillis() + (long) (OverlayConfig.GameUpdate.INSTANCE.messageTimeLimit * 1000);
         }
 
     }
