@@ -143,7 +143,7 @@ public class GameUpdateOverlay extends Overlay {
     }
 
 
-    private static class MessageContainer {
+    public static class MessageContainer {
 
         String message;
         long endTime;

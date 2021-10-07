@@ -92,7 +92,7 @@ public class ClientEvents implements Listener {
     private int tickCounter;
 
     private Timestamp emeraldPouchLastPickup = new Timestamp(0);
-    private int emeraldPouchLastAmt = 0;
+    private GameUpdateOverlay.MessageContainer emeraldPouchMessage;
 
     public static boolean isAwaitingHorseMount = false;
     private static int lastHorseId = -1;
@@ -328,16 +328,13 @@ public class ClientEvents implements Listener {
                     // What we do here is we get the amount that Wynn tells us, we minus the last amount that it told us, then we display the difference
                     // After that, we set the amounts and last pickup times for the next title
                     int currentEmeralds = Integer.parseInt(m.group(1));
-                    int actualEmeralds = currentEmeralds - emeraldPouchLastAmt;
-                    GameUpdateOverlay.queueMessage("§a+" + actualEmeralds + "§7 Emeralds §ato pouch. Total: §a" + currentEmeralds + "§7 Emeralds.");
-                    emeraldPouchLastAmt = currentEmeralds;
+                    GameUpdateOverlay.editMessage(emeraldPouchMessage, "§a+" + currentEmeralds + "§7 Emeralds §ato pouch.");
                     emeraldPouchLastPickup = new Timestamp(System.currentTimeMillis());
                     return;
                 }
-                GameUpdateOverlay.queueMessage(McIf.getFormattedText(packet.getMessage()));
+                emeraldPouchMessage = GameUpdateOverlay.queueEditableMessage(McIf.getFormattedText(packet.getMessage()));
                 // Set these because we don't want data from the last set of titles
                 emeraldPouchLastPickup = new Timestamp(System.currentTimeMillis());
-                emeraldPouchLastAmt = Integer.parseInt(m.group(1));
             }
         }
     }
