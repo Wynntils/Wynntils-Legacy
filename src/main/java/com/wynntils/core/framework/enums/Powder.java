@@ -5,9 +5,9 @@
 package com.wynntils.core.framework.enums;
 
 import net.minecraft.util.text.TextFormatting;
-
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public enum Powder {
 
@@ -18,12 +18,16 @@ public enum Powder {
     AIR('❋', TextFormatting.WHITE);
 
     char symbol;
+    TextFormatting rawColor;
     String color;
 
     Powder(char symbol, TextFormatting color) {
         this.symbol = symbol;
+        this.rawColor = color;
         this.color = color.toString();
     }
+
+    public static Pattern POWDER_NAME_PATTERN = Pattern.compile("§[2ebcf8].? ?(Earth|Thunder|Water|Fire|Air|Blank) Powder ([IV]{1,3})");
 
     public char getSymbol() {
         return symbol;
@@ -31,6 +35,10 @@ public enum Powder {
 
     public String getColor() {
         return color;
+    }
+
+    public TextFormatting getRawColor() {
+        return rawColor;
     }
 
     public String getColoredSymbol() {

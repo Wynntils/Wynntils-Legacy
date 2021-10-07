@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.RenderEvent;
 import com.wynntils.core.framework.enums.SkillPoint;
+import com.wynntils.core.framework.enums.Powder;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -145,7 +145,7 @@ public class ItemSpecificationOverlay implements Listener {
         }
 
         if (UtilitiesConfig.Items.INSTANCE.amplifierSpecification) {
-            Pattern amp = Pattern.compile("^§bCorkian Amplifier (I{1,3})$");
+            Pattern amp = ItemLevelOverlay.CORKIAN_AMPLIFIER_PATTERN;
             Matcher m = amp.matcher(name);
             if (m.matches()) {
                 destinationName = m.group(1);
@@ -156,27 +156,28 @@ public class ItemSpecificationOverlay implements Listener {
         }
 
         if (UtilitiesConfig.Items.INSTANCE.powderSpecification) {
-            Pattern powder = Pattern.compile("§[2ebcf8].? ?(Earth|Thunder|Water|Fire|Air|Blank) Powder ([IV]{1,3})");
+            Pattern powder = Powder.POWDER_NAME_PATTERN;
             Matcher m = powder.matcher(StringUtils.normalizeBadString(name));
             if (m.matches()) {
                 destinationName = m.group(2);
                 switch (m.group(1)) {
                     case "Earth":
-                        color = MinecraftChatColors.DARK_GREEN;
+                        color = MinecraftChatColors.fromTextFormatting(Powder.EARTH.getRawColor());
                         break;
                     case "Thunder":
-                        color = MinecraftChatColors.YELLOW;
+                        color = MinecraftChatColors.fromTextFormatting(Powder.THUNDER.getRawColor());
                         break;
                     case "Water":
-                        color = MinecraftChatColors.AQUA;
+                        color = MinecraftChatColors.fromTextFormatting(Powder.WATER.getRawColor());
                         break;
                     case "Fire":
-                        color = MinecraftChatColors.RED;
+                        color = MinecraftChatColors.fromTextFormatting(Powder.FIRE.getRawColor());
                         break;
                     case "Air":
-                        color = MinecraftChatColors.WHITE;
+                        color = MinecraftChatColors.fromTextFormatting(Powder.AIR.getRawColor());
                         break;
                     case "Blank":
+                        // Powder enum doesn't have blank
                         color = MinecraftChatColors.GRAY; // Dark gray is too hard to see, use normal instead
                         break;
                 }
@@ -185,8 +186,9 @@ public class ItemSpecificationOverlay implements Listener {
             }
         }
 
+
         if (UtilitiesConfig.Items.INSTANCE.emeraldPouchSpecification) {
-            Pattern emeraldPouch = Pattern.compile("§aEmerald Pouch§2 \\[Tier (IX|X|VI{1,3}|IV|V|I{1,3})]");
+            Pattern emeraldPouch = ItemLevelOverlay.EMERALD_POUCH_PATTERN;
             Matcher m = emeraldPouch.matcher(name);
             if (m.matches()) {
                 destinationName = m.group(1);
