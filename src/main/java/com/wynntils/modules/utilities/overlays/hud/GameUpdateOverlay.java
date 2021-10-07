@@ -108,12 +108,61 @@ public class GameUpdateOverlay extends Overlay {
         });
     }
 
+    public static MessageContainer queueEditableMessage(String message) {
+        if (!Reference.onWorld) return null;
+
+        if (OverlayConfig.GameUpdate.INSTANCE.messageMaxLength != 0 && OverlayConfig.GameUpdate.INSTANCE.messageMaxLength < message.length()) {
+            message = message.substring(0, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 4);
+
+            if (message.endsWith("§")) {
+                message = message.substring(0, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 5);
+            }
+            message = message + "...";
+        }
+
+        String processedMessage = message;
+        LogManager.getFormatterLogger("GameTicker").info("Editable Message Queued: " + processedMessage);
+        MessageContainer msgContainer = new MessageContainer(processedMessage);
+        McIf.mc().addScheduledTask(() -> {
+            messageQueue.add(msgContainer);
+
+            if (OverlayConfig.GameUpdate.INSTANCE.overrideNewMessages && messageQueue.size() > OverlayConfig.GameUpdate.INSTANCE.messageLimit)
+                messageQueue.remove(0);
+        });
+        return msgContainer;
+    }
+
+    public static MessageContainer editMessage(MessageContainer oldMsgContainer, String newMessage) {
+        if (!Reference.onWorld) return null;
+
+        if (OverlayConfig.GameUpdate.INSTANCE.messageMaxLength != 0 && OverlayConfig.GameUpdate.INSTANCE.messageMaxLength < newMessage.length()) {
+            newMessage = newMessage.substring(0, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 4);
+
+            if (newMessage.endsWith("§")) {
+                newMessage = newMessage.substring(0, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 5);
+            }
+            newMessage = newMessage + "...";
+        }
+
+        String processedMessage = newMessage;
+        LogManager.getFormatterLogger("GameTicker").info("Edit Message Queued: " + processedMessage);
+        int oldMsgLocation = messageQueue.indexOf(oldMsgContainer);
+        MessageContainer newMsgContainer = new MessageContainer(processedMessage);
+        McIf.mc().addScheduledTask(() -> {
+            messageQueue.set(oldMsgLocation, newMsgContainer);
+
+            if (OverlayConfig.GameUpdate.INSTANCE.overrideNewMessages && messageQueue.size() > OverlayConfig.GameUpdate.INSTANCE.messageLimit)
+                messageQueue.remove(0);
+        });
+        return newMsgContainer;
+    }
+
     public static void resetMessages() {
         McIf.mc().addScheduledTask(() -> messageQueue.clear());
     }
 
 
-    private static class MessageContainer {
+    public static class MessageContainer {
 
         final String message;
         long endTime;
