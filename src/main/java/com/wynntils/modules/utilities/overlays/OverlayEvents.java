@@ -22,6 +22,7 @@ import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.enums.ItemTier;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.*;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.text.TextComponentString;
@@ -46,6 +47,7 @@ public class OverlayEvents implements Listener {
     private static final Pattern CHEST_COOLDOWN_PATTERN = Pattern.compile("Please wait an additional ([0-9]+) minutes? before opening this chest.");
     private static final Pattern GATHERING_COOLDOWN_PATTERN = Pattern.compile("^You need to wait ([0-9]+) seconds after logging in to gather from this resource!");
     private static final Pattern SERVER_RESTART_PATTERN = Pattern.compile("The server is restarting in ([0-9]+) (minutes?|seconds?)");
+    private static final Pattern POUCH_USAGE_PATTERN = Pattern.compile("§6§l([0-9]* ?[0-9]* ?[0-9]*)" + EmeraldSymbols.E_STRING);
 
     private static boolean wynnExpTimestampNotified = false;
     private long loginTime;
@@ -870,6 +872,25 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onMobTotemEvent(SpellEvent.MobTotemRemoved e) {
         ConsumableTimerOverlay.removeBasicTimer(e.getMobTotem().toString());
+    }
+
+    @SubscribeEvent
+    public void onSetSlot(PacketEvent<SPacketSetSlot> e) {
+        if (!Reference.onWorld || !OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) return;
+
+        SPacketSetSlot packet = e.getPacket();
+        ItemStack oldPouch = McIf.player().inventory.getStackInSlot(packet.getSlot());
+        ItemStack newPouch = packet.getStack();
+
+        Matcher oldAmountMatcher = POUCH_USAGE_PATTERN.matcher(oldPouch.getDisplayName());
+        Matcher newAmountMatcher = POUCH_USAGE_PATTERN.matcher(newPouch.getDisplayName());
+
+        int oldAmount = Integer.parseInt(oldAmountMatcher.group(1).replaceAll("\\s", ""));
+        int newAmount = Integer.parseInt(newAmountMatcher.group(1).replaceAll("\\s", ""));
+        int difference = newAmount - oldAmount;
+
+        GameUpdateOverlay.queueMessage("§a+" + difference + "§7 Emeralds §ato pouch");
+
     }
 
 }
