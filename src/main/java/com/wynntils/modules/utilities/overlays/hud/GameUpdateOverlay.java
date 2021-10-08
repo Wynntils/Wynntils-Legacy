@@ -87,29 +87,7 @@ public class GameUpdateOverlay extends Overlay {
 
     }
 
-    public static void queueMessage(String message) {
-        if (!Reference.onWorld) return;
-
-        if (OverlayConfig.GameUpdate.INSTANCE.messageMaxLength != 0 && OverlayConfig.GameUpdate.INSTANCE.messageMaxLength < message.length()) {
-            message = message.substring(0, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 4);
-
-            if (message.endsWith("§")) {
-                message = message.substring(0, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 5);
-            }
-            message = message + "...";
-        }
-
-        String processedMessage = message;
-        LogManager.getFormatterLogger("GameTicker").info("Message Queued: " + processedMessage);
-        McIf.mc().addScheduledTask(() -> {
-            messageQueue.add(new MessageContainer(processedMessage));
-
-            if (OverlayConfig.GameUpdate.INSTANCE.overrideNewMessages && messageQueue.size() > OverlayConfig.GameUpdate.INSTANCE.messageLimit)
-                messageQueue.remove(0);
-        });
-    }
-
-    public static MessageContainer queueEditableMessage(String message) {
+    public static MessageContainer queueMessage(String message) {
         if (!Reference.onWorld) return null;
 
         if (OverlayConfig.GameUpdate.INSTANCE.messageMaxLength != 0 && OverlayConfig.GameUpdate.INSTANCE.messageMaxLength < message.length()) {

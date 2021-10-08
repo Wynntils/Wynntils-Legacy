@@ -332,7 +332,7 @@ public class ClientEvents implements Listener {
                     emeraldPouchLastPickup = new Timestamp(System.currentTimeMillis());
                     return;
                 }
-                emeraldPouchMessage = GameUpdateOverlay.queueEditableMessage(McIf.getFormattedText(packet.getMessage()));
+                emeraldPouchMessage = GameUpdateOverlay.queueMessage(McIf.getFormattedText(packet.getMessage()));
                 // Set these because we don't want data from the last set of titles
                 emeraldPouchLastPickup = new Timestamp(System.currentTimeMillis());
             }
