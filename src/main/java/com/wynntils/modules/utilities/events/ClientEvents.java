@@ -328,7 +328,7 @@ public class ClientEvents implements Listener {
                     // What we do here is we get the amount that Wynn tells us, we minus the last amount that it told us, then we display the difference
                     // After that, we set the amounts and last pickup times for the next title
                     int currentEmeralds = Integer.parseInt(m.group(1));
-                    GameUpdateOverlay.editMessage(emeraldPouchMessage, "§a+" + currentEmeralds + "§7 Emeralds §ato pouch.");
+                    GameUpdateOverlay.editMessage(emeraldPouchMessage, "§a+" + currentEmeralds + "§7 Emeralds §ato pouch");
                     emeraldPouchLastPickup = new Timestamp(System.currentTimeMillis());
                     return;
                 }
