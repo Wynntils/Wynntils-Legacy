@@ -325,15 +325,15 @@ public class ClientEvents implements Listener {
                 e.setCanceled(true);
                 if (new Timestamp(System.currentTimeMillis() - 3000).before(emeraldPouchLastPickup)) {
                     // If the last emerald pickup event was less than 3 seconds ago, assume Wynn has relayed us an "updated" emerald title
-                    // What we do here is we get the amount that Wynn tells us, we minus the last amount that it told us, then we display the difference
-                    // After that, we set the amounts and last pickup times for the next title
+                    // Edit the first message it gave us with the new amount
+                    // editMessage doesn't return the new MessageContainer, so we can just keep re-using the first one
                     int currentEmeralds = Integer.parseInt(m.group(1));
                     GameUpdateOverlay.editMessage(emeraldPouchMessage, "§a+" + currentEmeralds + "§7 Emeralds §ato pouch");
                     emeraldPouchLastPickup = new Timestamp(System.currentTimeMillis());
                     return;
                 }
+                // First time we've picked up emeralds in 3 seconds, set new MessageContainer and start the timer
                 emeraldPouchMessage = GameUpdateOverlay.queueMessage(McIf.getFormattedText(packet.getMessage()));
-                // Set these because we don't want data from the last set of titles
                 emeraldPouchLastPickup = new Timestamp(System.currentTimeMillis());
             }
         }
