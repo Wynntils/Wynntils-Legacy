@@ -71,6 +71,12 @@ public class OverlayEvents implements Listener {
         WarTimerOverlay.onTitle(e);
     }
 
+    @SubscribeEvent
+    public void onPlayerInfoRender(GuiOverlapEvent.PlayerInfoOverlap.RenderList e) {
+        if (!Reference.onWorld || !OverlayConfig.PlayerInfo.INSTANCE.replaceVanilla) return;
+
+        e.setCanceled(true);
+    }
     private static long tickcounter = 0;
     private static long msgcounter = 0;
 
