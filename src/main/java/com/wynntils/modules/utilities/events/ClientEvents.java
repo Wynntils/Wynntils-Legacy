@@ -828,7 +828,7 @@ public class ClientEvents implements Listener {
 
         UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
     }
-    
+
     // blocking healing pots below
     @SubscribeEvent
     public void onUseItem(PacketEvent<CPacketPlayerTryUseItem> e) {
@@ -836,7 +836,6 @@ public class ClientEvents implements Listener {
 
         if (item.isEmpty() || !item.hasDisplayName() || !UtilitiesConfig.INSTANCE.blockHealingPots) return;
 
-        if (item.getDisplayName().startsWith(TextFormatting.DARK_AQUA.toString())) return;
         if (!item.getDisplayName().contains(TextFormatting.LIGHT_PURPLE + "Potions of Healing") && !item.getDisplayName().contains(TextFormatting.RED + "Potions of Healing")) return;
 
         EntityPlayerSP player = McIf.player();
