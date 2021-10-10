@@ -829,12 +829,17 @@ public class ClientEvents implements Listener {
         UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
     }
 
+    private static final Pattern potionRegex = Pattern.compile("Potions? of Healing");
+
     // blocking healing pots below
     @SubscribeEvent
     public void onUseItem(PacketEvent<CPacketPlayerTryUseItem> e) {
         ItemStack item = McIf.player().getHeldItem(EnumHand.MAIN_HAND);
 
-        if (item.isEmpty() || !item.hasDisplayName() || !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing") || !UtilitiesConfig.INSTANCE.blockHealingPots) return;
+        if (item.isEmpty() || !item.hasDisplayName() || !UtilitiesConfig.INSTANCE.blockHealingPots) return;
+
+        if (item.getDisplayName().startsWith(TextFormatting.DARK_AQUA.toString())) return;
+        if (!item.getDisplayName().contains(TextFormatting.LIGHT_PURPLE + "Potions of Healing") && !item.getDisplayName().contains(TextFormatting.RED + "Potions of Healing")) return;
 
         EntityPlayerSP player = McIf.player();
         if (player.getHealth() != player.getMaxHealth()) return;
