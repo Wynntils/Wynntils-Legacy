@@ -828,9 +828,7 @@ public class ClientEvents implements Listener {
 
         UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
     }
-
-    private static final Pattern potionRegex = Pattern.compile("Potions? of Healing");
-
+    
     // blocking healing pots below
     @SubscribeEvent
     public void onUseItem(PacketEvent<CPacketPlayerTryUseItem> e) {
