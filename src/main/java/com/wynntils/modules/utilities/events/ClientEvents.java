@@ -836,7 +836,7 @@ public class ClientEvents implements Listener {
 
         if (item.isEmpty() || !item.hasDisplayName() || !UtilitiesConfig.INSTANCE.blockHealingPots) return;
 
-        if (!item.getDisplayName().contains(TextFormatting.LIGHT_PURPLE + "Potions of Healing") && !item.getDisplayName().contains(TextFormatting.RED + "Potions of Healing")) return;
+        if (!item.getDisplayName().contains(TextFormatting.LIGHT_PURPLE + "Potions of Healing") && !item.getDisplayName().contains(TextFormatting.RED + "Potion of Healing")) return;
 
         EntityPlayerSP player = McIf.player();
         if (player.getHealth() != player.getMaxHealth()) return;
