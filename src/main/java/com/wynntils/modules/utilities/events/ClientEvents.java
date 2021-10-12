@@ -667,7 +667,7 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void clickOnChest(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
         // Prevent accidental ingredient/emerald pouch clicks in loot chests
-        if (e.getSlotIn() != null && e.getGui().getLowerInv().getDisplayName().getUnformattedText().contains("Loot Chest")) {
+        if (e.getSlotIn() != null && e.getGui().getLowerInv().getDisplayName().getUnformattedText().contains("Loot Chest") && UtilitiesConfig.INSTANCE.preventOpeningPouchesChest) {
             // Ingredient pouch
             if (e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() == 4) {
                 e.setCanceled(true);
