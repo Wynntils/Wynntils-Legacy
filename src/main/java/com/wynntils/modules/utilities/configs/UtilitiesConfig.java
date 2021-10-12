@@ -134,9 +134,9 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Animate Perfect/Defect Item Names", description = "Should perfect and defective items have animated names?\n\n§8 This includes perfect items having rainbow names.")
         public boolean rainbowPerfect = true;
 
-        @Setting.Limitations.FloatLimit(min = 0.01f, max = 0.2f)
-        @Setting(displayName = "Defect Item Obfuscation Amount", description = "How much should defective item names be obfuscated?\n\n§8 Obfuscation is where the characters constantly change and appear corrupted.")
-        public float defectiveObfuscationAmount = 0.1f;
+        @Setting.Limitations.FloatLimit(min = 1.0f, max = 20.0f, precision = 1.0f)
+        @Setting(displayName = "Defect Item Obfuscation Percentage", description = "How much should defective item names be obfuscated?\n\n§8 Obfuscation is where the characters constantly change and appear corrupted.")
+        public float defectiveObfuscationAmount = 8.0f;
 
         @Setting(displayName = "Categorize Identifications", description = "Should the identifications in an item's tooltip be categorized?")
         public boolean addSpacing = true;

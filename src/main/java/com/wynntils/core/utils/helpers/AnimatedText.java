@@ -38,13 +38,14 @@ public class AnimatedText {
         StringBuilder sb = new StringBuilder();
         String resetString = "§r§4";
         if (bold) {resetString += "§l";}
+        float obfuscationChance = UtilitiesConfig.Identifications.INSTANCE.defectiveObfuscationAmount / 100;
         boolean obfuscated = false;
 
         sb.append(resetString); // Initial reset
 
         // "Defective"
         for (char c : "Defective ".toCharArray()) {
-             if (Math.random() < UtilitiesConfig.Identifications.INSTANCE.defectiveObfuscationAmount && !obfuscated) {
+             if (Math.random() < obfuscationChance && !obfuscated) {
                  sb.append("§k");
                  obfuscated = true;
              } else if (obfuscated) {
@@ -56,7 +57,7 @@ public class AnimatedText {
 
         // Actual item name
         for (char c : input.toCharArray()) {
-            if (Math.random() < UtilitiesConfig.Identifications.INSTANCE.defectiveObfuscationAmount && !obfuscated) {
+            if (Math.random() < obfuscationChance && !obfuscated) {
                 sb.append("§k");
                 obfuscated = true;
             } else if (obfuscated) {
