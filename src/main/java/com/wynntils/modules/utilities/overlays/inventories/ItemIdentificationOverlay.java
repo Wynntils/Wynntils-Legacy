@@ -343,7 +343,7 @@ public class ItemIdentificationOverlay implements Listener {
         }
 
         // check for 0% item
-        if (!(relativeTotal/idAmount >= 1d) && relativeTotal/idAmount == relativeTotal && idType == IdentificationType.PERCENTAGES && !hasNewId && UtilitiesConfig.Identifications.INSTANCE.rainbowPerfect) {
+        if (relativeTotal/idAmount == 0 && idType == IdentificationType.PERCENTAGES && !hasNewId && UtilitiesConfig.Identifications.INSTANCE.rainbowPerfect) {
             wynntils.setBoolean("isDefective", true);
         }
 
