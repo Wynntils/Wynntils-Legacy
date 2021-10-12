@@ -5,6 +5,8 @@
 package com.wynntils.core.utils.helpers;
 
 import com.wynntils.McIf;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+
 import java.lang.Math;
 
 public class AnimatedText {
@@ -36,17 +38,13 @@ public class AnimatedText {
         StringBuilder sb = new StringBuilder();
         String resetString = "§r§4";
         if (bold) {resetString += "§l";}
-
-        // obfuscationChance repesents percent chance to obfuscate a single character
-        // Increase for more obfuscation & vice versa
-        float obfuscationChance = 0.2f;
         boolean obfuscated = false;
 
         sb.append(resetString); // Initial reset
 
         // "Defective"
         for (char c : "Defective ".toCharArray()) {
-             if (Math.random() < obfuscationChance && !obfuscated) {
+             if (Math.random() < UtilitiesConfig.Identifications.INSTANCE.defectiveObfuscationAmount && !obfuscated) {
                  sb.append("§k");
                  obfuscated = true;
              } else if (obfuscated) {
@@ -58,7 +56,7 @@ public class AnimatedText {
 
         // Actual item name
         for (char c : input.toCharArray()) {
-            if (Math.random() < obfuscationChance && !obfuscated) {
+            if (Math.random() < UtilitiesConfig.Identifications.INSTANCE.defectiveObfuscationAmount && !obfuscated) {
                 sb.append("§k");
                 obfuscated = true;
             } else if (obfuscated) {
