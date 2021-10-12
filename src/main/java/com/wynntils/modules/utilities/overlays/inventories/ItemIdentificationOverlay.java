@@ -106,7 +106,7 @@ public class ItemIdentificationOverlay implements Listener {
         ItemProfile item = WebManager.getItems().get(wynntils.getString("originName"));
 
         // Block if the item is not the real item
-        if (!wynntils.hasKey("isPerfect") && !stack.getDisplayName().startsWith(item.getTier().getTextColor())) {
+        if (!wynntils.hasKey("isPerfect") && !wynntils.hasKey("isDefective") && !stack.getDisplayName().startsWith(item.getTier().getTextColor())) {
             nbt.setBoolean("wynntilsIgnore", true);
             nbt.removeTag("wynntils");
             return;
@@ -115,6 +115,11 @@ public class ItemIdentificationOverlay implements Listener {
         // Perfect name
         if (wynntils.hasKey("isPerfect")) {
             stack.setStackDisplayName(RainbowText.makeRainbow("Perfect " + wynntils.getString("originName"), true));
+        }
+
+        // Defective name
+        if (wynntils.hasKey("isDefective")) {
+            stack.setStackDisplayName(DARK_RED.toString() + BOLD + "Defective " + wynntils.getString("originName"));
         }
 
         // Update only if should update, this is decided on generateDate
@@ -335,6 +340,11 @@ public class ItemIdentificationOverlay implements Listener {
         // check for item perfection
         if (relativeTotal/idAmount >= 1d && idType == IdentificationType.PERCENTAGES && !hasNewId && UtilitiesConfig.Identifications.INSTANCE.rainbowPerfect) {
             wynntils.setBoolean("isPerfect", true);
+        }
+
+        // check for 0% item
+        if (!(relativeTotal/idAmount >= 1d) && idType == IdentificationType.PERCENTAGES && !hasNewId && UtilitiesConfig.Identifications.INSTANCE.rainbowPerfect) {
+            wynntils.setBoolean("isDefective", true);
         }
 
         stack.setStackDisplayName(item.getTier().getTextColor() + item.getDisplayName() + specialDisplay);
