@@ -13,7 +13,7 @@ import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
-import com.wynntils.core.utils.helpers.RainbowText;
+import com.wynntils.core.utils.helpers.AnimatedText;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.enums.IdentificationType;
@@ -114,12 +114,12 @@ public class ItemIdentificationOverlay implements Listener {
 
         // Perfect name
         if (wynntils.hasKey("isPerfect")) {
-            stack.setStackDisplayName(RainbowText.makeRainbow("Perfect " + wynntils.getString("originName"), true));
+            stack.setStackDisplayName(AnimatedText.makeRainbow("Perfect " + wynntils.getString("originName"), true));
         }
 
         // Defective name
         if (wynntils.hasKey("isDefective")) {
-            stack.setStackDisplayName(DARK_RED.toString() + BOLD + "Defective " + wynntils.getString("originName"));
+            stack.setStackDisplayName(AnimatedText.makeDefective(wynntils.getString("originName"), true));
         }
 
         // Update only if should update, this is decided on generateDate
@@ -343,7 +343,7 @@ public class ItemIdentificationOverlay implements Listener {
         }
 
         // check for 0% item
-        if (!(relativeTotal/idAmount >= 1d) && idType == IdentificationType.PERCENTAGES && !hasNewId && UtilitiesConfig.Identifications.INSTANCE.rainbowPerfect) {
+        if (!(relativeTotal/idAmount >= 1d) && relativeTotal/idAmount == relativeTotal && idType == IdentificationType.PERCENTAGES && !hasNewId && UtilitiesConfig.Identifications.INSTANCE.rainbowPerfect) {
             wynntils.setBoolean("isDefective", true);
         }
 
