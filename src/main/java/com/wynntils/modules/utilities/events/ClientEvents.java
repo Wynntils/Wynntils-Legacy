@@ -93,6 +93,7 @@ public class ClientEvents implements Listener {
 
     private Timestamp emeraldPouchLastPickup = new Timestamp(0);
     private GameUpdateOverlay.MessageContainer emeraldPouchMessage;
+    private IInventory currentLootChest;
 
     public static boolean isAwaitingHorseMount = false;
     private static int lastHorseId = -1;
@@ -238,12 +239,19 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
+    public void onGUIOpen(GuiOpenEvent e) {
+        // Store the original opened chest so we can check itemstacks later
+        if (e.getGui() instanceof ChestReplacer && ((ChestReplacer) e.getGui()).getLowerInv().getDisplayName().toString().contains("Loot Chest")) {
+            currentLootChest = ((ChestReplacer) e.getGui()).getLowerInv();
+        }
+    }
+
+    @SubscribeEvent
     public void onGUIClose(GuiOpenEvent e) {
         if (e.getGui() == null) {
             afkProtectionBlocked = false;
             lastUserInput = System.currentTimeMillis();
-        } else if (e.getGui() instanceof InventoryReplacer || e.getGui() instanceof ChestReplacer ||
-                e.getGui() instanceof HorseReplacer) {
+        } else if (e.getGui() instanceof InventoryReplacer || e.getGui() instanceof ChestReplacer || e.getGui() instanceof HorseReplacer) {
             afkProtectionBlocked = true;
         }
         if (scheduledGuiScreen != null && e.getGui() == null && firstNullOccurred) {
@@ -691,6 +699,16 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void clickOnChest(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
+        // Queue messages into game update ticker when clicking on emeralds in loot chest
+        if (e.getSlotIn() != null && e.getGui().getLowerInv().getDisplayName().getUnformattedText().contains("Loot Chest") && OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
+            // Check if item is actually an emerald, if we're left clicking, and make sure we're not shift clicking
+            if (currentLootChest.getStackInSlot(e.getSlotId()).getDisplayName().equals("§aEmerald") && e.getMouseButton() == 0 && !GuiScreen.isShiftKeyDown()) {
+                String emeraldString = "Emerald";
+                if (currentLootChest.getStackInSlot(e.getSlotId()).getCount() > 1) {emeraldString += 's';} // Grammar check!
+                GameUpdateOverlay.queueMessage("§a+" + currentLootChest.getStackInSlot(e.getSlotId()).getCount() + "§7 " + emeraldString + " §ato pouch");
+            }
+        }
+
         if (e.getSlotIn() != null && e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() == 4) { // prevent accidental pouch clicking
             e.setCanceled(true);
             return;
