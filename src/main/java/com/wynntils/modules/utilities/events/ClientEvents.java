@@ -56,6 +56,7 @@ import net.minecraft.network.play.server.SPacketEntityMetadata;
 import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -94,6 +95,10 @@ public class ClientEvents implements Listener {
     private Timestamp emeraldPouchLastPickup = new Timestamp(0);
     private GameUpdateOverlay.MessageContainer emeraldPouchMessage;
     private IInventory currentLootChest;
+    private static final String EB = EmeraldSymbols.E_STRING + EmeraldSymbols.B_STRING;
+    private static final String LE = EmeraldSymbols.L_STRING + EmeraldSymbols.E_STRING;
+    private static final Pattern POUCH_CAPACITY_PATTERN = Pattern.compile("\\(([0-9]+)(" + EB + "|" + LE + "|stx) Total\\)");
+    private static final Pattern POUCH_USAGE_PATTERN = Pattern.compile("§6§l([0-9]* ?[0-9]* ?[0-9]*)" + EmeraldSymbols.E_STRING);
 
     public static boolean isAwaitingHorseMount = false;
     private static int lastHorseId = -1;
@@ -703,9 +708,25 @@ public class ClientEvents implements Listener {
         if (e.getSlotIn() != null && e.getGui().getLowerInv().getDisplayName().getUnformattedText().contains("Loot Chest") && OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
             // Check if item is actually an emerald, if we're left clicking, and make sure we're not shift clicking
             if (currentLootChest.getStackInSlot(e.getSlotId()).getDisplayName().equals("§aEmerald") && e.getMouseButton() == 0 && !GuiScreen.isShiftKeyDown()) {
-                String emeraldString = "Emerald";
-                if (currentLootChest.getStackInSlot(e.getSlotId()).getCount() > 1) {emeraldString += 's';} // Grammar check!
-                GameUpdateOverlay.queueMessage("§a+" + currentLootChest.getStackInSlot(e.getSlotId()).getCount() + "§7 " + emeraldString + " §ato pouch");
+                // Find all emerald pouches in inventory
+                NonNullList<Integer> availableCapacities = NonNullList.create();
+                for (int i = 0; i < e.getGui().getUpperInv().getSizeInventory(); i++) {
+                    ItemStack is = e.getGui().getUpperInv().getStackInSlot(i);
+                    if (EmeraldPouchManager.isEmeraldPouch(is)) {
+                        // Append the available capacities of all emerald pouches to a list
+                        availableCapacities.add(EmeraldPouchManager.getPouchCapacity(is) - EmeraldPouchManager.getPouchUsage(is));
+                    }
+                }
+                int emeraldAmount = currentLootChest.getStackInSlot(e.getSlotId()).getCount();
+                // Iterate through all the available capacities and determine if emeralds can actually fit into any pouch
+                for (int capacity : availableCapacities) {
+                    // If yes, proceed and send a message to ticker
+                    if (!(emeraldAmount > capacity)) {
+                        String emeraldString = "Emerald";
+                        if (emeraldAmount > 1) {emeraldString += 's';} // Grammar check!
+                        GameUpdateOverlay.queueMessage("§a+" + emeraldAmount+ "§7 " + emeraldString + " §ato pouch");
+                    }
+                }
             }
         }
 
