@@ -54,6 +54,9 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Prevent Favorited Item Chest Closing", description = "Should the closing of loot chests be prevented when they contain favorited items?")
     public boolean preventFavoritedChestClose = true;
 
+    @Setting(displayName = "Prevent Clicking on Pouches in Loot Chests", description = "Should opening ingredient and emerald pouches be blocked in loot chests?")
+    public boolean preventOpeningPouchesChest = true;
+
     @Setting(displayName = "Prevent Clicking on Locked Items", description = "Should moving items to and from locked inventory slots be blocked?")
     public boolean preventSlotClicking = false;
 
