@@ -61,7 +61,7 @@ public class MainWorldMapUI extends WorldMapUI {
             GRAY + "List, Delete or Create",
             GRAY + "drawed lines that help you",
             GRAY + "to navigate around the world!"
-        ), (v) -> true, (i, btn) -> McIf.mc().displayGuiScreen(new PathWaypointOverwiewUI()));
+        ), (v) -> true, (i, btn) -> McIf.mc().displayGuiScreen(new PathWaypointOverviewUI()));
 
         addButton(MapButtonType.PIN, 1, Arrays.asList(
                 RED + "[>] Manage Waypoints",
