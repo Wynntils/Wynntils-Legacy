@@ -30,6 +30,7 @@ import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.event.ForgeEventFactory;
 
 import java.text.DateFormat;
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -37,6 +38,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.logging.LogManager;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -54,6 +57,11 @@ public class ChatManager {
     public static Pattern translationPatternNpc = Pattern.compile("^(" +
             "(?:§7\\[[0-9]+/[0-9]+\\] §r§2[^:]*: §r§a)" + // npc talking
             ")(.*)(§r)$");
+    public static Pattern translationPatternQuestDialogueNpc = Pattern.compile(
+            "(.*:)(.+(?:(?:SHIFT)|(?:SNEAK))+.+)(.+.+)", Pattern.DOTALL);  // Quest Dialogue
+    public static Pattern translationPatternQuestDialogueNoName = Pattern.compile(
+            "(.*\\n)(.*\\n\\n.+(?:(?:SHIFT)|(?:SNEAK))+.+)(.+.+)", Pattern.MULTILINE|Pattern.DOTALL);  // Quest Dialogue without npc name
+
     public static Pattern translationPatternOther = Pattern.compile("^(" +
             "(?:§5[^:]*: §r§d)" + "|" +  // interaction with e.g. blacksmith
             "(?:§[0-9a-z])" + // generic system message
@@ -187,8 +195,7 @@ public class ChatManager {
 
                 } else if (translateGavellian && StringUtils.hasGavellian(McIf.getUnformattedText(untranslated))) {
                     language = WynncraftLanguage.GAVELLIAN;
-                }
-                else {
+                } else {
                     language = WynncraftLanguage.NORMAL;
                 }
 
@@ -224,7 +231,7 @@ public class ChatManager {
                 } else {
                     untranslated.getSiblings().clear();
                     if (!McIf.getUnformattedText(translated).equals(McIf.getUnformattedText(untranslated))) {
-                        untranslated.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,  new TextComponentString(TextFormatting.GRAY + "You don't know this language!")));
+                        untranslated.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(TextFormatting.GRAY + "You don't know this language!")));
                     }
 
                     in.appendSibling(untranslated);
@@ -574,24 +581,38 @@ public class ChatManager {
     }
 
     private static boolean translateMessage(ITextComponent in) {
-        if (!McIf.getUnformattedText(in).startsWith(TranslationManager.TRANSLATED_PREFIX)) {
+        String unformattedText = McIf.getUnformattedText(in);
+        if (!unformattedText.startsWith(TranslationManager.TRANSLATED_PREFIX) && !unformattedText.startsWith(TranslationManager.UNTRANSLATED_PREFIX)) {
             String formatted = McIf.getFormattedText(in);
+            String unFormatted = McIf.getUnformattedText(in);
             Matcher chatMatcher = translationPatternChat.matcher(formatted);
             if (chatMatcher.find()) {
                 if (!TranslationConfig.INSTANCE.translatePlayerChat) return false;
-                sendTranslation(chatMatcher);
+                sendTranslation(chatMatcher, formatted);
+                return true;
+            }
+            Matcher npcQuestDialogueMatcher = translationPatternQuestDialogueNpc.matcher(formatted);
+            if (npcQuestDialogueMatcher.find()) {
+                if (!TranslationConfig.INSTANCE.translateQuestDialogue) return false;
+                sendTranslation(npcQuestDialogueMatcher, formatted);
+                return true;
+            }
+            Matcher npcQuestDialogueMatcherNoname = translationPatternQuestDialogueNoName.matcher(unFormatted);
+            if (npcQuestDialogueMatcherNoname.find()) {
+                if (!TranslationConfig.INSTANCE.translateQuestDialogue) return false;
+                sendTranslation(npcQuestDialogueMatcherNoname, formatted);
                 return true;
             }
             Matcher npcMatcher = translationPatternNpc.matcher(formatted);
             if (npcMatcher.find()) {
                 if (!TranslationConfig.INSTANCE.translateNpc) return false;
-                sendTranslation(npcMatcher);
+                sendTranslation(npcMatcher, formatted);
                 return true;
             }
             Matcher otherMatcher = translationPatternOther.matcher(formatted);
             if (otherMatcher.find()) {
                 if (!TranslationConfig.INSTANCE.translateOther) return false;
-                sendTranslation(otherMatcher);
+                sendTranslation(otherMatcher, formatted);
                 return true;
             }
         }
@@ -599,7 +620,7 @@ public class ChatManager {
         return false;
     }
 
-    private static void sendTranslation(Matcher m) {
+    private static void sendTranslation(Matcher m, String formatted) {
         // We only want to translate the actual message, not formatting, sender, etc.
         String message = TextFormatting.getTextWithoutFormattingCodes(m.group(2));
         String prefix = m.group(1);
@@ -611,8 +632,13 @@ public class ChatManager {
             } catch (InterruptedException e) {
                 // ignore
             }
+            if (TranslationConfig.INSTANCE.removeAccents) {
+                translatedMsg = org.apache.commons.lang3.StringUtils.stripAccents(translatedMsg);
+            }
+            String finalTranslatedMsgFinal = translatedMsg;
             McIf.mc().addScheduledTask(() ->
-                    ChatOverlay.getChat().printChatMessage(new TextComponentString(TranslationManager.TRANSLATED_PREFIX + prefix + translatedMsg + suffix)));
+                    ChatOverlay.getChat().printChatMessage(new TextComponentString(finalTranslatedMsgFinal == null ? MessageFormat.format("{0}{1}", TranslationManager.UNTRANSLATED_PREFIX, formatted) : MessageFormat.format("{0}{1}{2}{3}", TranslationManager.TRANSLATED_PREFIX, prefix, finalTranslatedMsgFinal, suffix))));
+
         });
     }
 
@@ -955,7 +981,7 @@ public class ChatManager {
             // Detect new messages
             // If dialogue is the exact same as previously then most likely a message was received
             // The second check is for the colors changing on the shift prompt
-            if (dialogue.equals(last) && dialogue.get(dialogue.size() - 1).getSiblings().equals(last.get(last.size()-1).getSiblings())) {
+            if (dialogue.equals(last) && dialogue.get(dialogue.size() - 1).getSiblings().equals(last.get(last.size() - 1).getSiblings())) {
                 newMessageCount++;
 
                 // most recent message
@@ -965,13 +991,16 @@ public class ChatManager {
                     if (dialogueChat == null) {
                         dialogueChat = newMessage;
                     } else {
-                        if (ChatConfig.INSTANCE.addTimestampsToChat) addTimestamp(newMessage); // add timestamps to new lines for consistency
+                        if (ChatConfig.INSTANCE.addTimestampsToChat) {
+                            addTimestamp(newMessage); // add timestamps to new lines for consistency
+                        }
                         dialogueChat.appendSibling(newMessage);
                     }
                 }
             }
 
-            if (dialogueChat != null) ChatOverlay.getChat().printChatMessageWithOptionalDeletion(dialogueChat, WYNN_DIALOGUE_NEW_MESSAGES_ID);
+            if (dialogueChat != null)
+                ChatOverlay.getChat().printChatMessageWithOptionalDeletion(dialogueChat, WYNN_DIALOGUE_NEW_MESSAGES_ID);
 
             lastChat = chat;
             ITextComponent newComponent = new TextComponentString("");

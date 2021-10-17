@@ -23,6 +23,9 @@ public class TranslationConfig extends SettingsClass {
     @Setting(displayName = "Translate NPC Lines", description = "Should messages spoken by NPCs be translated?")
     public boolean translateNpc = true;
 
+    @Setting(displayName = "Translate quest dialogue Lines", description = "Should dialogue during quest be translated?")
+    public boolean translateQuestDialogue = true;
+
     @Setting(displayName = "Translate Other", description = "Should other messages, such as system information, be translated?")
     public boolean translateOther = false;
 
@@ -37,6 +40,9 @@ public class TranslationConfig extends SettingsClass {
 
     @Setting(displayName = "Translation Service", description = "Which translation service should be used?")
     public TranslationManager.TranslationServices translationService = TranslationManager.TranslationServices.GOOGLEAPI;
+
+    @Setting(displayName = "Remove accents", description = "The accents can cause display problems in some languages,\n\n this option allows you to remove the accents from the translation")
+    public boolean removeAccents = false;
 
     @Override
     public void onSettingChanged(String name) {
