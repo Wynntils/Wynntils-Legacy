@@ -58,36 +58,32 @@ public class LootRunNote {
     }
 
     private static void drawNametag(String input, CustomColor color, float x, float y, float z, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal) {
-        pushMatrix();
+        renderer.beginGL(0, 0); // we set to 0 because we don't want the ScreenRender to handle this thing
         {
-            renderer.beginGL(0, 0); // we set to 0 because we don't want the ScreenRender to handle this thing
-            {
-                // positions
-                translate(x, y, z); // translates to the correct postion
-                glNormal3f(0.0F, 1.0F, 0.0F);
-                rotate(-viewerYaw, 0.0F, 1.0F, 0.0F);
-                rotate((float) (isThirdPersonFrontal ? -1 : 1) * viewerPitch, 1.0F, 0.0F, 0.0F);
-                scale(-0.025F, -0.025F, 0.025F);
-                disableLighting();
+            // positions
+            translate(x, y, z); // translates to the correct postion
+            glNormal3f(0.0F, 1.0F, 0.0F);
+            rotate(-viewerYaw, 0.0F, 1.0F, 0.0F);
+            rotate((float) (isThirdPersonFrontal ? -1 : 1) * viewerPitch, 1.0F, 0.0F, 0.0F);
+            scale(-0.025F, -0.025F, 0.025F);
+            disableLighting();
 
-                int middlePos = (int) renderer.getStringWidth(input) / 2;
+            int middlePos = (int) renderer.getStringWidth(input) / 2;
 
-                // draws the label
-                renderer.drawString(input, -middlePos, verticalShift, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            // draws the label
+            renderer.drawString(input, -middlePos, verticalShift, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
-                // renders twice to replace the areas that are overlaped by tile entities
-                enableDepth();
-                renderer.drawString(input, -middlePos, verticalShift, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            // renders twice to replace the areas that are overlaped by tile entities
+            enableDepth();
+            renderer.drawString(input, -middlePos, verticalShift, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
-                // returns back to normal
-                enableDepth();
-                enableLighting();
-                disableBlend();
-                color(1.0f, 1.0f, 1.0f, 1.0f);
-            }
-            renderer.endGL();
+            // returns back to normal
+            enableDepth();
+            enableLighting();
+            disableBlend();
+            color(1.0f, 1.0f, 1.0f, 1.0f);
         }
-        popMatrix();
+        renderer.endGL();
     }
 
 }

@@ -92,7 +92,7 @@ public class WorldMapUI extends GuiMovementScreen {
     protected WorldMapUI(float startX, float startZ) {
         // HeyZeer0: Handles the territories
         for (TerritoryProfile territory : WebManager.getTerritories().values()) {
-            territories.put(territory.getFriendlyName(), new MapTerritory(territory).setRenderer(renderer));
+            territories.put(territory.getFriendlyName(), new MapTerritory(territory));
         }
 
         // Also creates icons
@@ -118,12 +118,12 @@ public class WorldMapUI extends GuiMovementScreen {
     protected void addButton(MapButtonType type, int offsetX, List<String> hover, Function<Void, Boolean> isEnabled, BiConsumer<MapButton, Integer> onClick) {
         // add the button base
         if (mapButtons.isEmpty()) {
-            mapButtons.add(new MapButton(width / 2, height - 45, MapButtonType.BASE, null, (v) -> true, null, renderer));
+            mapButtons.add(new MapButton(width / 2, height - 45, MapButtonType.BASE, null, (v) -> true, null));
         }
 
         int posX = mapButtons.get(0).getStartX() + 13 + (19 * (mapButtons.size() - 1)) + offsetX;
         int posY = height - 45;
-        mapButtons.add(new MapButton(posX, posY, type, hover, isEnabled, onClick, renderer));
+        mapButtons.add(new MapButton(posX, posY, type, hover, isEnabled, onClick));
     }
 
     protected void createIcons() {
@@ -314,7 +314,7 @@ public class WorldMapUI extends GuiMovementScreen {
                 needToReset[0] = true;
                 return;
             }
-            i.drawScreen(mouseX, mouseY, partialTicks, scale, renderer);
+            i.drawScreen(mouseX, mouseY, partialTicks, scale);
         });
 
         if (needToReset[0]) resetAllIcons();
@@ -326,7 +326,7 @@ public class WorldMapUI extends GuiMovementScreen {
                     MapConfig.WorldMap.INSTANCE.territoryArea, false, false, true));
         }
 
-        forEachIcon(c -> c.drawHovering(mouseX, mouseY, partialTicks, renderer));
+        forEachIcon(c -> c.drawHovering(mouseX, mouseY, partialTicks));
         handleOutsideAreaText();
 
         clearMask();

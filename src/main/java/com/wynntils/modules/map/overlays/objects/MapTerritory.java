@@ -28,7 +28,7 @@ public class MapTerritory {
 
     private static final CustomColor territoryNameColour = new CustomColor(CommonColors.WHITE);
 
-    ScreenRenderer renderer = null;
+    ScreenRenderer renderer = new ScreenRenderer();
 
     float alpha = 1;
     TerritoryProfile territory;
@@ -72,12 +72,6 @@ public class MapTerritory {
 
         this.infoBox = new MapInfoUI(territory.getFriendlyName())
                 .setDescription(description);
-    }
-
-    public MapTerritory setRenderer(ScreenRenderer renderer) {
-        this.renderer = renderer;
-        infoBox.setRenderer(renderer);
-        return this;
     }
 
     public void updateAxis(MapProfile mp, int width, int height, float maxX, float minX, float maxZ, float minZ, float zoom) {

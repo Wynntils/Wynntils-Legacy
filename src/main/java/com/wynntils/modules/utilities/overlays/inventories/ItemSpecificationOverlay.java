@@ -63,7 +63,7 @@ public class ItemSpecificationOverlay implements Listener {
                 ItemType type = ItemType.from(m.group(1));
                 if (type != null) {
                     // Draw an icon representing the type on top
-                    //Absolute GL is used as e.getX and e.getY give absolute positions for rendering
+                    //Absolute GL is used as e.getX and e.getY give absolute positions for rendering items
                     renderer.beginAbsoluteGL(e.getX(), e.getY());
                     {
                         RenderHelper.disableStandardItemLighting();

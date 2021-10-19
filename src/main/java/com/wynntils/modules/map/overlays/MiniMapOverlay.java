@@ -165,6 +165,7 @@ public class MiniMapOverlay extends Overlay {
 
                     if (MapConfig.INSTANCE.followPlayerRotation) {
                         // Rotate dx and dz
+                        //TODO see if assignment intended
                         if (followRotation = c.followRotation()) {
                             GlStateManager.pushMatrix();
                             Point drawingOrigin = drawingOrigin();
@@ -178,7 +179,7 @@ public class MiniMapOverlay extends Overlay {
                         }
                     }
 
-                    c.renderAt(this, dx + halfMapSize, dz + halfMapSize, sizeMultiplier, scaleFactor);
+                    c.renderAt(dx + halfMapSize, dz + halfMapSize, sizeMultiplier, scaleFactor);
                     if (followRotation) {
                         GlStateManager.popMatrix();
                     }
@@ -247,18 +248,18 @@ public class MiniMapOverlay extends Overlay {
                         GlStateManager.rotate(angle, 0, 0, 1);
                         GlStateManager.translate(-drawingOrigin.x - dx, -drawingOrigin.y - dz, 0);
 
-                        MapCompassIcon.pointer.renderAt(this, dx, dz, sizeMultiplier, 1f);
+                        MapCompassIcon.pointer.renderAt(dx, dz, sizeMultiplier, 1f);
 
                         GlStateManager.popMatrix();
 
                         if (MapConfig.INSTANCE.compassDistanceType == MapConfig.DistanceMarkerType.ALWAYS ||
                                 MapConfig.INSTANCE.compassDistanceType == MapConfig.DistanceMarkerType.OFF_MAP)
-                            drawTextOverlay(this, dx, dz, StringUtils.integerToShortString(Math.round((float)Math.sqrt(distanceSq) / scaleFactor)) + "m");
+                            drawTextOverlay(dx, dz, StringUtils.integerToShortString(Math.round((float)Math.sqrt(distanceSq) / scaleFactor)) + "m");
                     } else if (rendering) {
-                        compassIcon.renderAt(this, dx + halfMapSize, dz + halfMapSize, sizeMultiplier, scaleFactor);
+                        compassIcon.renderAt(dx + halfMapSize, dz + halfMapSize, sizeMultiplier, scaleFactor);
 
                         if (MapConfig.INSTANCE.compassDistanceType == MapConfig.DistanceMarkerType.ALWAYS)
-                            drawTextOverlay(this, dx + halfMapSize, dz + halfMapSize, StringUtils.integerToShortString(Math.round((float)Math.sqrt(distanceSq) / scaleFactor)) + "m");
+                            drawTextOverlay(dx + halfMapSize, dz + halfMapSize, StringUtils.integerToShortString(Math.round((float)Math.sqrt(distanceSq) / scaleFactor)) + "m");
                     }
                 }
             }
@@ -341,12 +342,12 @@ public class MiniMapOverlay extends Overlay {
         }
     }
 
-    private static void drawTextOverlay(ScreenRenderer renderer, float x, float y, String text) {
-        renderer.scale(0.8f);
-        float w = renderer.getStringWidth(text) / 2f + 3f, h = SmartFontRenderer.CHAR_HEIGHT / 2f + 2f;
-        renderer.drawRectF(new CustomColor(0f, 0f, 0f, 0.7f), x - w, y - h + 1f, x + w, y + h);
-        renderer.drawCenteredString(text, x, y - 3f, CommonColors.WHITE);
-        renderer.resetScale();
+    private void drawTextOverlay(float x, float y, String text) {
+        scale(0.8f);
+        float w = getStringWidth(text) / 2f + 3f, h = SmartFontRenderer.CHAR_HEIGHT / 2f + 2f;
+        drawRectF(new CustomColor(0f, 0f, 0f, 0.7f), x - w, y - h + 1f, x + w, y + h);
+        drawCenteredString(text, x, y - 3f, CommonColors.WHITE);
+        resetScale();
     }
 
 }

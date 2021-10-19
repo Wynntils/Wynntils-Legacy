@@ -214,81 +214,77 @@ public class NametagManager {
     private static void drawNametag(String input, CustomColor color, float x, float y, float z, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal, boolean isSneaking, float scale) {
         FontRenderer fontRenderer = McIf.mc().fontRenderer;  // since our fontrender ignores bold or italic texts we need to use the mc one
 
-        pushMatrix();
+        if (scale != 1) scale(scale, scale, scale);
+        verticalShift = (int)(verticalShift/scale);
+
+        renderer.beginGL(0, 0);  // we set to 0 because we don't want the ScreenRender to handle this thing
         {
-            if (scale != 1) scale(scale, scale, scale);
-            verticalShift = (int)(verticalShift/scale);
+            // positions
+            translate(x / scale, y / scale, z / scale);  // translates to the correct postion
+            glNormal3f(0.0F, 1.0F, 0.0F);
+            rotate(-viewerYaw, 0.0F, 1.0F, 0.0F);
+            rotate((float) (isThirdPersonFrontal ? -1 : 1) * viewerPitch, 1.0F, 0.0F, 0.0F);
+            scale(-0.025F, -0.025F, 0.025F);
+            disableLighting();
+            depthMask(false);
 
-            renderer.beginGL(0, 0);  // we set to 0 because we don't want the ScreenRender to handle this thing
-            {
-                // positions
-                translate(x / scale, y / scale, z / scale);  // translates to the correct postion
-                glNormal3f(0.0F, 1.0F, 0.0F);
-                rotate(-viewerYaw, 0.0F, 1.0F, 0.0F);
-                rotate((float) (isThirdPersonFrontal ? -1 : 1) * viewerPitch, 1.0F, 0.0F, 0.0F);
-                scale(-0.025F, -0.025F, 0.025F);
-                disableLighting();
-                depthMask(false);
-
-                // disable depth == will be visible through walls
-                if (!isSneaking && !UtilitiesConfig.INSTANCE.hideNametags) {
-                    if (Math.abs(x) <= 7.5f && Math.abs(y) <= 7.5f && Math.abs(z) <= 7.5f) disableDepth();  // this limit this feature to 7.5 blocks
-                }
-
-                int middlePos = color != null ? (int) renderer.getStringWidth(input) / 2 : fontRenderer.getStringWidth(input) / 2;
-
-                // Nametag Box
-                if (!UtilitiesConfig.INSTANCE.hideNametagBox) {
-                    enableBlend();
-                    tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-                    disableTexture2D();
-                    Tessellator tesselator = Tessellator.getInstance();
-
-                    float r = color == null ? 0 : color.r;  // red
-                    float g = color == null ? 0 : color.g;  // green
-                    float b = color == null ? 0 : color.b;  // blue
-
-                    // draws the box
-                    BufferBuilder vertexBuffer = tesselator.getBuffer();
-                    {
-                        vertexBuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
-                        vertexBuffer.pos(-middlePos - 1, -1 + verticalShift, 0.0D).color(r, g, b, 0.25F).endVertex();
-                        vertexBuffer.pos(-middlePos - 1, 8 + verticalShift, 0.0D).color(r, g, b, 0.25F).endVertex();
-                        vertexBuffer.pos(middlePos + 1, 8 + verticalShift, 0.0D).color(r, g, b, 0.25F).endVertex();
-                        vertexBuffer.pos(middlePos + 1, -1 + verticalShift, 0.0D).color(r, g, b, 0.25F).endVertex();
-                    }
-                    tesselator.draw();
-                    enableTexture2D();
-                }
-
-                depthMask(true);
-
-                // draws the label
-                if (!isSneaking && color != null) {
-                    if (!UtilitiesConfig.INSTANCE.hideNametags)
-                        renderer.drawString(input, -middlePos, verticalShift, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-
-                    // renders twice to replace the areas that are overlaped by tile entities
-                    enableDepth();
-                    renderer.drawString(input, -middlePos, verticalShift, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                } else {
-                    if (!UtilitiesConfig.INSTANCE.hideNametags)
-                        fontRenderer.drawString(input, -middlePos, verticalShift, isSneaking ? 553648127 : -1);
-
-                    // renders twice to replace the areas that are overlaped by tile entities
-                    enableDepth();
-                    fontRenderer.drawString(input, -middlePos, verticalShift, isSneaking ? 553648127 : -1);
-                }
-
-                // returns back to normal
-                enableDepth();
-                enableLighting();
-                disableBlend();
-                color(1.0f, 1.0f, 1.0f, 1.0f);
+            // disable depth == will be visible through walls
+            if (!isSneaking && !UtilitiesConfig.INSTANCE.hideNametags) {
+                if (Math.abs(x) <= 7.5f && Math.abs(y) <= 7.5f && Math.abs(z) <= 7.5f) disableDepth();  // this limit this feature to 7.5 blocks
             }
-            renderer.endGL();
+
+            int middlePos = color != null ? (int) renderer.getStringWidth(input) / 2 : fontRenderer.getStringWidth(input) / 2;
+
+            // Nametag Box
+            if (!UtilitiesConfig.INSTANCE.hideNametagBox) {
+                enableBlend();
+                tryBlendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
+                disableTexture2D();
+                Tessellator tesselator = Tessellator.getInstance();
+
+                float r = color == null ? 0 : color.r;  // red
+                float g = color == null ? 0 : color.g;  // green
+                float b = color == null ? 0 : color.b;  // blue
+
+                // draws the box
+                BufferBuilder vertexBuffer = tesselator.getBuffer();
+                {
+                    vertexBuffer.begin(7, DefaultVertexFormats.POSITION_COLOR);
+                    vertexBuffer.pos(-middlePos - 1, -1 + verticalShift, 0.0D).color(r, g, b, 0.25F).endVertex();
+                    vertexBuffer.pos(-middlePos - 1, 8 + verticalShift, 0.0D).color(r, g, b, 0.25F).endVertex();
+                    vertexBuffer.pos(middlePos + 1, 8 + verticalShift, 0.0D).color(r, g, b, 0.25F).endVertex();
+                    vertexBuffer.pos(middlePos + 1, -1 + verticalShift, 0.0D).color(r, g, b, 0.25F).endVertex();
+                }
+                tesselator.draw();
+                enableTexture2D();
+            }
+
+            depthMask(true);
+
+            // draws the label
+            if (!isSneaking && color != null) {
+                if (!UtilitiesConfig.INSTANCE.hideNametags)
+                    renderer.drawString(input, -middlePos, verticalShift, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+
+                // renders twice to replace the areas that are overlaped by tile entities
+                enableDepth();
+                renderer.drawString(input, -middlePos, verticalShift, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            } else {
+                if (!UtilitiesConfig.INSTANCE.hideNametags)
+                    fontRenderer.drawString(input, -middlePos, verticalShift, isSneaking ? 553648127 : -1);
+
+                // renders twice to replace the areas that are overlaped by tile entities
+                enableDepth();
+                fontRenderer.drawString(input, -middlePos, verticalShift, isSneaking ? 553648127 : -1);
+            }
+
+            // returns back to normal
+            enableDepth();
+            enableLighting();
+            disableBlend();
+            color(1.0f, 1.0f, 1.0f, 1.0f);
         }
-        popMatrix();
+        renderer.endGL();
     }
 
     /**

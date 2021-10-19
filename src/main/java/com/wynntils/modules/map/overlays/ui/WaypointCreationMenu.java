@@ -230,7 +230,7 @@ public class WaypointCreationMenu extends UI {
         float centreX = this.width / 2f - 60 + 9;
         float centreZ = this.height / 2f + 10 + 9;
         float multiplier = 9f / Math.max(wpIcon.getSizeX(), wpIcon.getSizeZ());
-        wpIcon.renderAt(renderer, centreX, centreZ, multiplier, 1);
+        wpIcon.renderAt(centreX, centreZ, multiplier, 1);
     }
 
     @Override

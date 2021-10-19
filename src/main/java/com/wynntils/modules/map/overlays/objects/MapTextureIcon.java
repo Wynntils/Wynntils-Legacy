@@ -35,15 +35,17 @@ public abstract class MapTextureIcon extends MapIcon {
     public abstract int getTexSizeZ();
 
     @Override
-    public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier, float blockScale) {
+    public void renderAt(float centreX, float centreZ, float sizeMultiplier, float blockScale) {
         float sizeX = getSizeX() * sizeMultiplier;
         float sizeZ = getSizeZ() * sizeMultiplier;
-        renderer.drawRectF(
+        beginGL(0, 0);
+        drawRectF(
                 getTexture(),
                 centreX - sizeX, centreZ - sizeZ,
                 centreX + sizeX, centreZ + sizeZ,
                 getTexPosX(), getTexPosZ(), getTexSizeX(), getTexSizeZ()
         );
+        endGL();
     }
 
     @Override
@@ -86,15 +88,17 @@ public abstract class MapTextureIcon extends MapIcon {
             @Override public boolean isEnabled(boolean forMinimap) { throw new UnsupportedOperationException("Cannot isEnabled() on a static icon"); }
             @Override public boolean hasDynamicLocation() { throw new UnsupportedOperationException("Cannot hasDynamicLocation() on a static icon"); }
             @Override
-            public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier, float blockScale) {
+            public void renderAt(float centreX, float centreZ, float sizeMultiplier, float blockScale) {
                 float ssizeX = sizeX * sizeMultiplier;
                 float ssizeZ = sizeZ * sizeMultiplier;
-                renderer.drawRectF(
+                beginGL(0, 0);
+                drawRectF(
                         texture,
                         centreX - ssizeX, centreZ - ssizeZ,
                         centreX + ssizeX, centreZ + ssizeZ,
                         texPosX, texPosZ, texSizeX, texSizeZ
                 );
+                endGL();
             }
         };
     }

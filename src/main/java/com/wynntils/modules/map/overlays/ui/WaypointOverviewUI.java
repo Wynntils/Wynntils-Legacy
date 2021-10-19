@@ -92,46 +92,48 @@ public class WaypointOverviewUI extends GuiScreen {
         drawRect(this.width/2 - 205, 52, this.width/2 + 190, 53, 0xFFFFFFFF);
 
         renderer.beginGL(0, 0);
-        List<WaypointProfile> waypoints = getWaypoints();
-        int hovered = getHoveredWaypoint(mouseX, mouseY);
-        for (int i = 0, lim = Math.min(pageHeight, waypoints.size() - pageHeight * page); i < lim; i++) {
-            WaypointProfile wp = waypoints.get(page * pageHeight + i);
-            if (wp == null || wp.getType() == null) continue;
+        {
+            List<WaypointProfile> waypoints = getWaypoints();
+            int hovered = getHoveredWaypoint(mouseX, mouseY);
+            for (int i = 0, lim = Math.min(pageHeight, waypoints.size() - pageHeight * page); i < lim; i++) {
+                WaypointProfile wp = waypoints.get(page * pageHeight + i);
+                if (wp == null || wp.getType() == null) continue;
 
-            int colour = 0xFFFFFF;
-            boolean hidden = wp.getZoomNeeded() == MapWaypointIcon.HIDDEN_ZOOM;
-            if (hidden) {
-                colour = 0x636363;
-            }
+                int colour = 0xFFFFFF;
+                boolean hidden = wp.getZoomNeeded() == MapWaypointIcon.HIDDEN_ZOOM;
+                if (hidden) {
+                    colour = 0x636363;
+                }
 
-            MapWaypointIcon wpIcon = new MapWaypointIcon(wp);
-            float centreZ = 64 + 25 * i;
-            float multiplier = 9f / Math.max(wpIcon.getSizeX(), wpIcon.getSizeZ());
-            wpIcon.renderAt(renderer, this.width / 2f - 151, centreZ, multiplier, 1);
+                MapWaypointIcon wpIcon = new MapWaypointIcon(wp);
+                float centreZ = 64 + 25 * i;
+                float multiplier = 9f / Math.max(wpIcon.getSizeX(), wpIcon.getSizeZ());
+                wpIcon.renderAt(this.width / 2f - 151, centreZ, multiplier, 1);
 
-            if (i == hovered) {
-                GuiButtonImageBetter.setColour(true, true);
-            }
-            if (wp.getGroup() == null) {
-                String text = "NONE";
-                fontRenderer.drawString(text, (int) (this.width / 2f - 191 - fontRenderer.getStringWidth(text) / 2f), (int) centreZ, 0xFFFFFFFF);
-            } else {
-                MapWaypointIcon groupIcon = MapWaypointIcon.getFree(wp.getGroup());
-                float groupIconMultiplier = 9f / Math.max(groupIcon.getSizeX(), groupIcon.getSizeZ());
-                groupIcon.renderAt(renderer, this.width / 2f - 191, centreZ, groupIconMultiplier, 1);
-            }
-            if (i == hovered) {
-                GuiButtonImageBetter.setColour(false, true);
-            }
+                if (i == hovered) {
+                    GuiButtonImageBetter.setColour(true, true);
+                }
+                if (wp.getGroup() == null) {
+                    String text = "NONE";
+                    fontRenderer.drawString(text, (int) (this.width / 2f - 191 - fontRenderer.getStringWidth(text) / 2f), (int) centreZ, 0xFFFFFFFF);
+                } else {
+                    MapWaypointIcon groupIcon = MapWaypointIcon.getFree(wp.getGroup());
+                    float groupIconMultiplier = 9f / Math.max(groupIcon.getSizeX(), groupIcon.getSizeZ());
+                    groupIcon.renderAt(this.width / 2f - 191, centreZ, groupIconMultiplier, 1);
+                }
+                if (i == hovered) {
+                    GuiButtonImageBetter.setColour(false, true);
+                }
 
-            fontRenderer.drawString(wp.getName(), this.width/2 - 130, 60 + 25 * i, colour);
-            drawCenteredString(fontRenderer, Integer.toString((int) wp.getX()), this.width/2 - 15, 60 + 25 * i, colour);
-            drawCenteredString(fontRenderer, Integer.toString((int) wp.getZ()), this.width/2 + 40, 60 + 25 * i, colour);
-            drawCenteredString(fontRenderer, Integer.toString((int) wp.getY()), this.width/2 + 80, 60 + 25 * i, colour);
+                fontRenderer.drawString(wp.getName(), this.width / 2 - 130, 60 + 25 * i, colour);
+                drawCenteredString(fontRenderer, Integer.toString((int) wp.getX()), this.width / 2 - 15, 60 + 25 * i, colour);
+                drawCenteredString(fontRenderer, Integer.toString((int) wp.getZ()), this.width / 2 + 40, 60 + 25 * i, colour);
+                drawCenteredString(fontRenderer, Integer.toString((int) wp.getY()), this.width / 2 + 80, 60 + 25 * i, colour);
 
-            if (hidden) {
-                drawHorizontalLine(this.width / 2 - 135, this.width / 2 + 95, (int) centreZ - 1, colour | 0xFF000000);
-                GlStateManager.color(1, 1, 1, 1);
+                if (hidden) {
+                    drawHorizontalLine(this.width / 2 - 135, this.width / 2 + 95, (int) centreZ - 1, colour | 0xFF000000);
+                    GlStateManager.color(1, 1, 1, 1);
+                }
             }
         }
         renderer.endGL();

@@ -278,23 +278,23 @@ public class PathWaypointCreationUI extends WorldMapUI {
         setCircular();
 
         renderer.beginGL(0, 0);
+        {
+            drawMap(mouseX, mouseY, partialTicks);
 
-        drawMap(mouseX, mouseY, partialTicks);
+            if (showIconsBox.isChecked()) {
+                drawIcons(mouseX, mouseY, partialTicks);
+            } else {
+                createMask();
+                GlStateManager.enableBlend();
+                wmIcon.drawScreen(mouseX, mouseY, partialTicks, getScaleFactor());
+                clearMask();
+            }
 
-        if (showIconsBox.isChecked()) {
-            drawIcons(mouseX, mouseY, partialTicks);
-        } else {
-            createMask();
-            GlStateManager.enableBlend();
-            wmIcon.drawScreen(mouseX, mouseY, partialTicks, getScaleFactor(), renderer);
-            clearMask();
+            drawCoordinates(mouseX, mouseY, partialTicks);
+
+            colorWheel.position.refresh();
+            colorWheel.render(mouseX, mouseY);
         }
-
-        drawCoordinates(mouseX, mouseY, partialTicks);
-
-        colorWheel.position.refresh();
-        colorWheel.render(mouseX, mouseY);
-
         renderer.endGL();
 
 

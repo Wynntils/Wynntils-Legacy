@@ -39,11 +39,13 @@ public class FavoriteItemsOverlay implements Listener {
 
             // draw star
             renderer.beginGL(gui.getGuiLeft() + s.xPos + 10, gui.getGuiTop() + s.yPos - 5);
-            GlStateManager.translate(0, 0, 300);
+            {
+                GlStateManager.translate(0, 0, 300);
 
-            RenderHelper.disableStandardItemLighting();
-            renderer.scale(0.5f);
-            renderer.drawRect(Textures.Map.map_icons, 0, 0, 208, 36, 18, 18);
+                RenderHelper.disableStandardItemLighting();
+                renderer.scale(0.5f);
+                renderer.drawRect(Textures.Map.map_icons, 0, 0, 208, 36, 18, 18);
+            }
             renderer.endGL();
         }
     }

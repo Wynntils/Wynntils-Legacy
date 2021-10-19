@@ -83,7 +83,7 @@ public class MapPathWaypointIcon extends MapIcon {
     }
 
     @Override
-    public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier, float blockScale) {
+    public void renderAt(float centreX, float centreZ, float sizeMultiplier, float blockScale) {
         if (profile.size() == 0) return;
 
         int posX = getPosX();
@@ -104,14 +104,21 @@ public class MapPathWaypointIcon extends MapIcon {
             float width = outlineWidth;
             float x = (p.getX() - posX) * blockScale + centreX;
             float z = (p.getZ() - posZ) * blockScale + centreZ;
-            renderer.drawRect(CommonColors.BLACK, (int) (x - width), (int) (z - width), (int) (x + width), (int) (z + width));
-            width = pathWidth;
-            renderer.drawRect(profile.getColor(), (int) (x - width), (int) (z - width), (int) (x + width), (int) (z + width));
+            beginGL(0, 0);
+            {
+                drawRect(CommonColors.BLACK, (int) (x - width), (int) (z - width), (int) (x + width), (int) (z + width));
+                width = pathWidth;
+                drawRect(profile.getColor(), (int) (x - width), (int) (z - width), (int) (x + width), (int) (z + width));
+            }
+            endGL();
 
             return;
         }
 
-        Point drawingOrigin = renderer.drawingOrigin();
+        //The reason that only this icon directly gets the active's drawingOrigin is because the code
+        //doesn't use ScreenRenderer, one way to make it cleaner could be to update all the code to screen renderer
+        //but that'd require a new method for more complex lines
+        Point drawingOrigin = getActiveDrawingOrigin();
         centreX += drawingOrigin.x;
         centreZ += drawingOrigin.y;
 

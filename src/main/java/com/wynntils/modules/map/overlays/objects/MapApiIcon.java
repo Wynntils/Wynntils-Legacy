@@ -146,15 +146,19 @@ public class MapApiIcon extends MapTextureIcon {
 
     // As an optimisation, so methods don't need to be called all the time
     @Override
-    public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier, float blockScale) {
+    public void renderAt(float centreX, float centreZ, float sizeMultiplier, float blockScale) {
         float sizeX = this.sizeX * sizeMultiplier;
         float sizeZ = this.sizeZ * sizeMultiplier;
-        renderer.drawRectF(
-                Textures.Map.map_icons,
-                centreX - sizeX, centreZ - sizeZ,
-                centreX + sizeX, centreZ + sizeZ,
-                texPosX, texPosZ, texSizeX, texSizeZ
-        );
+        beginGL(0, 0);
+        {
+            drawRectF(
+                    Textures.Map.map_icons,
+                    centreX - sizeX, centreZ - sizeZ,
+                    centreX + sizeX, centreZ + sizeZ,
+                    texPosX, texPosZ, texSizeX, texSizeZ
+            );
+        }
+        endGL();
     }
 
     private static List<MapIcon> classicApiMarkers = null;

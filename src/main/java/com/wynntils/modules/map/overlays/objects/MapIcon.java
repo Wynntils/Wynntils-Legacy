@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Represents something drawn on the main map or minimap
  */
-public abstract class MapIcon {
+public abstract class MapIcon extends ScreenRenderer {
     /**
      * If {@link #getZoomNeeded()} returns this, the icon will always be visible
      */
@@ -61,13 +61,12 @@ public abstract class MapIcon {
     /**
      * Render this icon
      *
-     * @param renderer What to use to render
      * @param centreX The x position of centre of the icon (on the screen)
      * @param centreZ As centreX, but for z position
      * @param sizeMultiplier The width should be {@link #getSizeX()} * sizeMultiplier, and the height {@link #getSizeZ()} * sizeMultiplier
      * @param blockScale The number of pixels on screen that represent one Minecraft block. Used for icons that span multiple blocks.
      */
-    public abstract void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier, float blockScale);
+    public abstract void renderAt(float centreX, float centreZ, float sizeMultiplier, float blockScale);
 
     /**
      * If true, this icon should be rendered rotated (e.g. in a rotated minimap)

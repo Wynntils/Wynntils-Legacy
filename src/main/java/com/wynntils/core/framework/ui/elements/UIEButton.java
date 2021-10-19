@@ -82,6 +82,7 @@ public class UIEButton extends UIEClickZone {
                     drawString(text, this.position.getDrawingX() + width / 2.0f, this.position.getDrawingY() + height / 2.0f - 4.0f, TEXTCOLOR_NORMAL, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
             }
         }
+        endGL();
     }
 
     public static class Toggle extends UIEButton {

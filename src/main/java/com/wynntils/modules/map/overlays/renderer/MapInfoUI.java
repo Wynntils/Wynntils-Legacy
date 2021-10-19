@@ -18,16 +18,10 @@ public class MapInfoUI {
 
     List<String> description = new ArrayList<>();
     String title;
-    ScreenRenderer renderer;
-
+    ScreenRenderer renderer = new ScreenRenderer();
 
     public MapInfoUI(String title) {
         this.title = title;
-    }
-
-    public MapInfoUI setRenderer(ScreenRenderer renderer) {
-        this.renderer = renderer;
-        return this;
     }
 
     public MapInfoUI setDescription(List<String> description) {
@@ -36,7 +30,7 @@ public class MapInfoUI {
     }
 
     public void render(int posX, int posY) {
-        pushMatrix();
+        renderer.beginGL(0, 0);
         {
             translate(posX - 200, posY, 0);
             color(1f, 1f, 1f, 1f);
@@ -61,10 +55,8 @@ public class MapInfoUI {
                 renderer.drawString(input, 10, yPosition, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NORMAL);
                 yPosition += 10;
             }
-
-            translate(-posX + 200, -posY, 0);
         }
-        popMatrix();
+        renderer.endGL();
     }
 
 }

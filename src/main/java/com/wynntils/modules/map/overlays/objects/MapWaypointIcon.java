@@ -143,7 +143,7 @@ public class MapWaypointIcon extends MapTextureIcon {
     }
 
     @Override
-    public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier, float blockScale) {
+    public void renderAt(float centreX, float centreZ, float sizeMultiplier, float blockScale) {
         int distancePlayerWp = 0;
         float percentage = 1f;
         // TODO: Find a better solution to detect whether icon is being drawn on minimap
@@ -166,7 +166,7 @@ public class MapWaypointIcon extends MapTextureIcon {
                 GL11.glColor4f(color.r * percentage, color.g * percentage, color.b * percentage, color.a * currentColorBuf.get(3));
             }
         }
-        super.renderAt(renderer, centreX, centreZ, sizeMultiplier, blockScale);
+        super.renderAt(centreX, centreZ, sizeMultiplier, blockScale);
         if (color != null) {
             GL11.glColor4f(currentColorBuf.get(0), currentColorBuf.get(1), currentColorBuf.get(2), currentColorBuf.get(3));
         }

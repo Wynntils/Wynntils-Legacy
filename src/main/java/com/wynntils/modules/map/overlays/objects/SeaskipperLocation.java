@@ -25,7 +25,7 @@ public class SeaskipperLocation {
 
     private static final CustomColor seaskipperNameColour = new CustomColor(CommonColors.WHITE);
 
-    ScreenRenderer renderer = null;
+    ScreenRenderer renderer = new ScreenRenderer();
 
     SeaskipperProfile location;
     Accessibility accessibility = Accessibility.INACCESSIBLE;
@@ -42,12 +42,6 @@ public class SeaskipperLocation {
 
         this.infoBox = new MapInfoUI(location.getName())
                 .setDescription(Collections.singletonList(TextFormatting.RED + "Info box is not constructed yet"));
-    }
-
-    public SeaskipperLocation setRenderer(ScreenRenderer renderer) {
-        this.renderer = renderer;
-        infoBox.setRenderer(renderer);
-        return this;
     }
 
     public void setActiveType(Accessibility accessibility) {

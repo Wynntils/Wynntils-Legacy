@@ -83,11 +83,12 @@ public class MapPlayerIcon extends MapIcon {
     }
 
     @Override
-    public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier, float blockScale) {
+    public void renderAt(float centreX, float centreZ, float sizeMultiplier, float blockScale) {
         enableAlpha();
         disableBlend();
 
-        { pushMatrix();
+        beginGL(0, 0);
+        {
             float sizeX = getSizeX() * sizeMultiplier;
             float sizeZ = getSizeZ() * sizeMultiplier;
 
@@ -101,7 +102,7 @@ public class MapPlayerIcon extends MapIcon {
             else if (profile.isGuildmate())
                 outlineColor = CommonColors.LIGHT_BLUE;
 
-            if (outlineColor != null) renderer.drawRectF(outlineColor,
+            if (outlineColor != null) drawRectF(outlineColor,
                     (centreX) - sizeX - .5f,
                     (centreZ) - sizeZ - .5f,
                     (centreX) + sizeX + .5f,
@@ -111,8 +112,8 @@ public class MapPlayerIcon extends MapIcon {
             McIf.mc().getTextureManager().bindTexture(res);
 
             drawScaledCustomSizeModalRect(
-                    ((centreX + renderer.drawingOrigin().x) -sizeX),
-                    ((centreZ + renderer.drawingOrigin().y) -sizeZ),
+                    ((centreX + drawingOrigin().x) -sizeX),
+                    ((centreZ + drawingOrigin().y) -sizeZ),
                     8f, 8, 8, 8,
                     sizeX * 2f,
                     sizeZ * 2f,
@@ -121,7 +122,8 @@ public class MapPlayerIcon extends MapIcon {
             if (profile.hasHat())
                 drawScaledCustomSizeModalRect(-sizeX, -sizeZ, 40.0F, 8, 8, 8, sizeX * 2f, sizeZ * 2f, 64.0F, 64.0F);
 
-        } popMatrix();
+        }
+        endGL();
 
         enableBlend();
     }

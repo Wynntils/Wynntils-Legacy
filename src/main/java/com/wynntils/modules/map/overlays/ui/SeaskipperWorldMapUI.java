@@ -55,7 +55,7 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
         this.chest = chest;
 
         for (SeaskipperProfile profile : WebManager.getSeaskipperLocations()) {
-            locations.put(profile.getName(), new SeaskipperLocation(profile).setRenderer(renderer));
+            locations.put(profile.getName(), new SeaskipperLocation(profile));
         }
     }
 

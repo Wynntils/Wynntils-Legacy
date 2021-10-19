@@ -82,7 +82,7 @@ public class ScreenRenderer {
      * @param y drawing origin's Y
      */
     public void beginGL(int x, int y) {
-        if (rendering) return;
+        if (rendering) throw new UnsupportedOperationException("This Screen Renderer is already rendering!");
         rendering = true;
         GlStateManager.pushMatrix();
 
@@ -895,5 +895,9 @@ public class ScreenRenderer {
 
     public static ScreenRenderer getActiveRenderer() {
         return stack.isEmpty() ? null : stack.peek();
+    }
+
+    public static Point getActiveDrawingOrigin() {
+        return stack.isEmpty() ? new Point(0, 0) : stack.peek().drawingOrigin;
     }
 }

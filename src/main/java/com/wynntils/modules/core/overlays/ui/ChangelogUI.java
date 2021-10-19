@@ -109,30 +109,33 @@ public class ChangelogUI extends GuiScreen {
         drawDefaultBackground();
 
         renderer.beginGL(0, 0);
+        {
 
-        float middleX = width/2f; float middleY = height/2f;
+            float middleX = width / 2f;
+            float middleY = height / 2f;
 
-        renderer.drawRect(Textures.UIs.changelog, (int)middleX - 150, (int)middleY - 100, 0, 0, 300, 200);
-        renderer.drawString("Changelog " + (CoreDBConfig.INSTANCE.updateStream == UpdateStream.CUTTING_EDGE && !major ? "B" + Reference.BUILD_NUMBER : "v" + Reference.VERSION), middleX - 105, middleY - 83, CommonColors.RED, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            renderer.drawRect(Textures.UIs.changelog, (int) middleX - 150, (int) middleY - 100, 0, 0, 300, 200);
+            renderer.drawString("Changelog " + (CoreDBConfig.INSTANCE.updateStream == UpdateStream.CUTTING_EDGE && !major ? "B" + Reference.BUILD_NUMBER : "v" + Reference.VERSION), middleX - 105, middleY - 83, CommonColors.RED, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
-        // scrollbar
-        renderer.drawRect(SCROLL_BACKGROUND, (int)middleX + 119, (int)middleY - 80, (int)middleX + 119 + 5, (int)middleY + 40);
-        renderer.drawRect(SCROLL_ACTIVE, (int)middleX + 120, (int)middleY - 79 + scrollbarPosition, (int)middleX + 123, (int)middleY - 79 + scrollbarSize + scrollbarPosition);
+            // scrollbar
+            renderer.drawRect(SCROLL_BACKGROUND, (int) middleX + 119, (int) middleY - 80, (int) middleX + 119 + 5, (int) middleY + 40);
+            renderer.drawRect(SCROLL_ACTIVE, (int) middleX + 120, (int) middleY - 79 + scrollbarPosition, (int) middleX + 123, (int) middleY - 79 + scrollbarSize + scrollbarPosition);
 
-        // text area
-        renderer.enableScissorTest((int) middleX - 110, (int) middleY - 71, 205, 155);
-        float scrollPercent = scrollbarPosition/(118f - scrollbarSize);
+            // text area
+            renderer.enableScissorTest((int) middleX - 110, (int) middleY - 71, 205, 155);
+            float scrollPercent = scrollbarPosition / (118f - scrollbarSize);
 
-        int textX = (int)middleX - 105;
-        int baseY = (int)middleY - 70;
+            int textX = (int) middleX - 105;
+            int baseY = (int) middleY - 70;
 
-        float scrollPositionOffset = scrollbarSize == 118 ? 0 : (((changelogContent.size() / 15.0f) * 159) * scrollPercent);
-        for (String changelogLine : changelogContent) {
-            renderer.drawString(changelogLine.replace("%user%", McIf.mc().getSession().getUsername()), textX, baseY - scrollPositionOffset, CommonColors.BROWN, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            float scrollPositionOffset = scrollbarSize == 118 ? 0 : (((changelogContent.size() / 15.0f) * 159) * scrollPercent);
+            for (String changelogLine : changelogContent) {
+                renderer.drawString(changelogLine.replace("%user%", McIf.mc().getSession().getUsername()), textX, baseY - scrollPositionOffset, CommonColors.BROWN, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
-            baseY += 10;
+                baseY += 10;
+            }
+
         }
-
         renderer.endGL();
     }
 

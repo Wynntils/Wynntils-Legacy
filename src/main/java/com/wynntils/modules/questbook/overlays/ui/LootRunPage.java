@@ -232,7 +232,7 @@ public class LootRunPage extends QuestBookListPage<String> {
                     if (MapConfig.LootRun.INSTANCE.displayLootrunOnMap) {
                         List<MapIcon> icons = LootRunManager.getMapPathWaypoints();
                         for (MapIcon mapIcon : icons) {
-                            mapIcon.renderAt(render, (float) (mapX + mapWidth / 2f + (mapIcon.getPosX() - start.getX())/(float) mapScale), (float) (mapY + mapHeight / 2f + (mapIcon.getPosZ() - start.getZ())/(float) mapScale), 1/((float) mapScale + 1/4f) + 0.2f, 1/(float) mapScale);
+                            mapIcon.renderAt((float) (mapX + mapWidth / 2f + (mapIcon.getPosX() - start.getX())/(float) mapScale), (float) (mapY + mapHeight / 2f + (mapIcon.getPosZ() - start.getZ())/(float) mapScale), 1/((float) mapScale + 1/4f) + 0.2f, 1/(float) mapScale);
                         }
                     }
 

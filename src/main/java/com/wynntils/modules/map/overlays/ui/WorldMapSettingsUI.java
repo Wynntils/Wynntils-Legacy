@@ -299,10 +299,10 @@ public class WorldMapSettingsUI extends GuiScreen {
             if (!onMainMap()) {
                 disabledColour.applyColor();
             }
-            icon.renderAt(renderer, x + (height / 2f), y + (height / 2f), mainScale, 1);
+            icon.renderAt(x + (height / 2f), y + (height / 2f), mainScale, 1);
 
             (onMinimap() ? CommonColors.WHITE : disabledColour).applyColor();
-            icon.renderAt(renderer, x + height + (height * 0.375f), y + (height / 2f), miniScale, 1);
+            icon.renderAt(x + height + (height * 0.375f), y + (height / 2f), miniScale, 1);
             CommonColors.WHITE.applyColor();
 
             this.drawString(minecraft.fontRenderer, displayString, this.x + (int) (height * 1.75f) + 2, this.y + (this.height - minecraft.fontRenderer.FONT_HEIGHT) / 2, 0xFFFFFFFF);

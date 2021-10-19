@@ -10,7 +10,7 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.modules.map.instances.MapProfile;
 import net.minecraft.client.renderer.GlStateManager;
 
-public class WorldMapIcon {
+public class WorldMapIcon extends ScreenRenderer {
 
     MapIcon info;
 
@@ -75,24 +75,28 @@ public class WorldMapIcon {
         return mouseX >= (axisX - sizeX) && mouseX <= (axisX + sizeX) && mouseY >= (axisZ - sizeZ) && mouseY <= (axisZ + sizeZ);
     }
 
-    public void drawScreen(int mouseX, int mouseY, float partialTicks, float blockScale, ScreenRenderer renderer) {
-        if (!shouldRender || renderer == null) return;
+    public void drawScreen(int mouseX, int mouseY, float partialTicks, float blockScale) {
+        if (!shouldRender) return;
 
         GlStateManager.color(1, 1, 1, alpha);
         float multi = mouseOver(mouseX, mouseY) ? 1.3f : 1f;
 
-        info.renderAt(renderer, axisX, axisZ, multi, blockScale);
+        info.renderAt(axisX, axisZ, multi, blockScale);
 
         GlStateManager.color(1, 1, 1, 1);
     }
 
-    public void drawHovering(int mouseX, int mouseY, float partialTicks, ScreenRenderer renderer) {
+    public void drawHovering(int mouseX, int mouseY, float partialTicks) {
         if (!shouldRender || !mouseOver(mouseX, mouseY)) return;
 
         GlStateManager.color(1, 1, 1, 1);
         String name = info.getName();
         if (name != null) {
-            renderer.drawString(name, (int) (axisX), (int) (axisZ) - 20, CommonColors.MAGENTA, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+            beginGL(0, 0);
+            {
+                drawString(name, (int) (axisX), (int) (axisZ) - 20, CommonColors.MAGENTA, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+            }
+            endGL();
         }
     }
 

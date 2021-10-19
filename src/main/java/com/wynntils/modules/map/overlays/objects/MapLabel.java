@@ -73,7 +73,7 @@ public class MapLabel extends MapIcon {
     }
 
     @Override
-    public void renderAt(ScreenRenderer renderer, float centreX, float centreZ, float sizeMultiplier, float blockScale) {
+    public void renderAt(float centreX, float centreZ, float sizeMultiplier, float blockScale) {
         throw new UnsupportedOperationException("Not valid for MapLabel");
     }
 
