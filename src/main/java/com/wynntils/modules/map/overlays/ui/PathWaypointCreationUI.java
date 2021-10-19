@@ -318,9 +318,9 @@ public class PathWaypointCreationUI extends WorldMapUI {
                 MapConfig.Waypoints.INSTANCE.pathWaypoints.add(profile);
             }
             MapConfig.Waypoints.INSTANCE.saveSettings(MapModule.getModule());
-            McIf.mc().displayGuiScreen(new PathWaypointOverwiewUI());
+            McIf.mc().displayGuiScreen(new PathWaypointOverviewUI());
         } else if (btn == cancelButton) {
-            McIf.mc().displayGuiScreen(new PathWaypointOverwiewUI());
+            McIf.mc().displayGuiScreen(new PathWaypointOverviewUI());
         } else if (btn == resetButton) {
             McIf.mc().displayGuiScreen(new PathWaypointCreationUI(originalProfile));
         } else if (btn == clearButton) {

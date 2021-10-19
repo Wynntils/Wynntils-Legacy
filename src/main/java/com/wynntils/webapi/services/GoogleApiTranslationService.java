@@ -43,7 +43,7 @@ public class GoogleApiTranslationService extends CachingTranslationService imple
                     return true;
                 }).onError(integer -> {
                     //If Google trad return no data ( 500 error ) , display default lang
-                    handleTranslation.accept(message);
+                    handleTranslation.accept(null);
                     return true;
                 }), true);
     }

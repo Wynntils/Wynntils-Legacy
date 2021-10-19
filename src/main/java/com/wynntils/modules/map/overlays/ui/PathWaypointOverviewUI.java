@@ -12,7 +12,6 @@ import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.PathWaypointProfile;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.TextFormatting;
@@ -22,7 +21,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class PathWaypointOverwiewUI extends GuiScreen {
+public class PathWaypointOverviewUI extends GuiScreen {
     private GuiButton nextPageBtn;
     private GuiButton previousPageBtn;
     private GuiButton exitBtn;
@@ -99,7 +98,7 @@ public class PathWaypointOverwiewUI extends GuiScreen {
         } else if (b.id %10 == 5) {
             MapConfig.Waypoints.INSTANCE.pathWaypoints.remove(paths.get(b.id / 10 + page * pageHeight));
             MapConfig.Waypoints.INSTANCE.saveSettings(MapModule.getModule());
-            McIf.mc().displayGuiScreen(new PathWaypointOverwiewUI());
+            McIf.mc().displayGuiScreen(new PathWaypointOverviewUI());
         } else if (b == newBtn) {
             McIf.mc().displayGuiScreen(new PathWaypointCreationUI());
         }

@@ -453,7 +453,7 @@ public class RichProfile {
         }
     }
 
-    public boolean validSecrent(String secret) {
+    public boolean validSecret(String secret) {
         if (disabled) return false;
         return joinSecret != null && joinSecret.getRandomHash().equals(secret);
     }
