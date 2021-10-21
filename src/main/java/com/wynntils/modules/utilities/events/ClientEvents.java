@@ -683,6 +683,7 @@ public class ClientEvents implements Listener {
             }
         }
 
+        // Bulk buy functionality
         // The title for the shops are in slot 4
         if (UtilitiesConfig.INSTANCE.shiftBulkBuy && e.getSlotIn() != null && e.getGui().getLowerInv().getSizeInventory() == 54 && e.getGui().getLowerInv().getStackInSlot(4).getDisplayName().endsWith(" Shop") && GuiScreen.isShiftKeyDown()) {
             CPacketClickWindow packet = new CPacketClickWindow(e.getGui().inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), e.getSlotIn().getStack(), e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
