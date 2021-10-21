@@ -683,6 +683,14 @@ public class ClientEvents implements Listener {
             }
         }
 
+        // The title for the shops are in slot 4
+        if (UtilitiesConfig.INSTANCE.shiftBulkBuy && e.getSlotIn() != null && e.getGui().getLowerInv().getSizeInventory() == 54 && e.getGui().getLowerInv().getStackInSlot(4).getDisplayName().endsWith(" Shop") && GuiScreen.isShiftKeyDown()) {
+            CPacketClickWindow packet = new CPacketClickWindow(e.getGui().inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), e.getSlotIn().getStack(), e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
+            for (int i = 0; i < 2; i++) {
+                McIf.mc().getConnection().sendPacket(packet);
+            }
+        }
+
         if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getSlotIn() != null) {
             if (e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() >= 0 && e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() < 27) {
                 e.setCanceled(checkDropState(e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() + 9, McIf.mc().gameSettings.keyBindDrop.getKeyCode()));

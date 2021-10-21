@@ -96,6 +96,9 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Prevent Trades/Duels in Combat", description = "Should trade and duel requests be disabled while holding an item?")
     public boolean preventTradesDuels = false;
 
+    @Setting(displayName = "Shift-click to Bulk Buy", description = "Should the option to bulk buy items (scrolls, potions) while holding shift be available?")
+    public boolean shiftBulkBuy = true;
+
     @Setting(upload = false)
     public String lastServerResourcePack = "";
 
