@@ -35,6 +35,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiYesNo;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
@@ -42,10 +43,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryBasic;
-import net.minecraft.inventory.Slot;
+import net.minecraft.inventory.*;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -56,10 +54,12 @@ import net.minecraft.network.play.server.SPacketEntityMetadata;
 import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -685,9 +685,9 @@ public class ClientEvents implements Listener {
 
         // Bulk buy functionality
         // The title for the shops are in slot 4
-        if (UtilitiesConfig.INSTANCE.shiftBulkBuy && e.getSlotIn() != null && e.getGui().getLowerInv().getSizeInventory() == 54 && e.getGui().getLowerInv().getStackInSlot(4).getDisplayName().endsWith(" Shop") && GuiScreen.isShiftKeyDown()) {
+        if (UtilitiesConfig.INSTANCE.shiftBulkBuy && e.getSlotIn() != null && isBulkShopConsumable(e.getGui().getLowerInv().getStackInSlot(e.getSlotId())) && GuiScreen.isShiftKeyDown()) {
             CPacketClickWindow packet = new CPacketClickWindow(e.getGui().inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), e.getSlotIn().getStack(), e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
-            for (int i = 0; i < 2; i++) {
+            for (int i = 1; i < UtilitiesConfig.INSTANCE.bulkBuyAmount; i++) { // int i is 1 by default because the user's original click is not cancelled
                 McIf.mc().getConnection().sendPacket(packet);
             }
         }
@@ -975,6 +975,35 @@ public class ClientEvents implements Listener {
         ItemStack stack = e.getGui().getSlotUnderMouse().getStack();
         if (stack.hasDisplayName() && stack.getDisplayName().equals(" ")) {
             e.setCanceled(true);
+        }
+    }
+
+    private boolean isBulkShopConsumable(ItemStack is) {
+        String itemName = is.getDisplayName();
+        return (itemName.endsWith(" Teleport Scroll") ||
+                itemName.contains("Potion of ") || // We're using contains here because we check for skill point potions which are different colors/symbols
+                itemName.endsWith("Speed Surge") ||
+                itemName.endsWith("Bipedal Spring"))
+
+                && ItemUtils.getStringLore(is).contains("Price:");
+    }
+
+    @SubscribeEvent
+    public void onItemHovered(ItemTooltipEvent e) {
+        ItemStack is = e.getItemStack();
+
+        if (!is.hasTagCompound() && !isBulkShopConsumable(is)) return;
+        NBTTagCompound nbt = is.getTagCompound();
+        if (nbt.hasKey("wynntilsBulkTag")) return;
+
+
+        // Check only if name contains Potion of, as we want to be able to buy skill potions too
+        if (isBulkShopConsumable(is)) { // Only replace lore for purchaseable items
+            List<String> lore = ItemUtils.getLore(is);
+            lore.add(" ");
+            lore.add("§aShift-click to purchase " + UtilitiesConfig.INSTANCE.bulkBuyAmount);
+            ItemUtils.replaceLore(is, lore);
+            nbt.setBoolean("wynntilsBulkTag", true);
         }
     }
 
