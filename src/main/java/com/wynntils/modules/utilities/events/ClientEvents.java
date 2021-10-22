@@ -990,6 +990,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onItemHovered(ItemTooltipEvent e) {
+        if (!UtilitiesConfig.INSTANCE.shiftBulkBuy) return;
         ItemStack is = e.getItemStack();
 
         if (!is.hasTagCompound() && !isBulkShopConsumable(is)) return;
