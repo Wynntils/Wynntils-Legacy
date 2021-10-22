@@ -666,8 +666,10 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void clickOnChest(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
+        if (e.getSlotIn() == null) return;
+
         // Prevent accidental ingredient/emerald pouch clicks in loot chests
-        if (e.getSlotIn() != null && e.getGui().getLowerInv().getDisplayName().getUnformattedText().contains("Loot Chest") && UtilitiesConfig.INSTANCE.preventOpeningPouchesChest) {
+        if (e.getGui().getLowerInv().getDisplayName().getUnformattedText().contains("Loot Chest") && UtilitiesConfig.INSTANCE.preventOpeningPouchesChest) {
             // Ingredient pouch
             if (e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() == 4) {
                 e.setCanceled(true);
@@ -685,14 +687,14 @@ public class ClientEvents implements Listener {
 
         // Bulk buy functionality
         // The title for the shops are in slot 4
-        if (UtilitiesConfig.INSTANCE.shiftBulkBuy && e.getSlotIn() != null && isBulkShopConsumable(e.getGui().getLowerInv().getStackInSlot(e.getSlotId())) && GuiScreen.isShiftKeyDown()) {
+        if (UtilitiesConfig.INSTANCE.shiftBulkBuy && isBulkShopConsumable(e.getGui().getLowerInv().getStackInSlot(e.getSlotId())) && GuiScreen.isShiftKeyDown()) {
             CPacketClickWindow packet = new CPacketClickWindow(e.getGui().inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), e.getSlotIn().getStack(), e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
             for (int i = 1; i < UtilitiesConfig.INSTANCE.bulkBuyAmount; i++) { // int i is 1 by default because the user's original click is not cancelled
                 McIf.mc().getConnection().sendPacket(packet);
             }
         }
 
-        if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getSlotIn() != null) {
+        if (UtilitiesConfig.INSTANCE.preventSlotClicking) {
             if (e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() >= 0 && e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() < 27) {
                 e.setCanceled(checkDropState(e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() + 9, McIf.mc().gameSettings.keyBindDrop.getKeyCode()));
             } else {
@@ -700,7 +702,7 @@ public class ClientEvents implements Listener {
             }
         }
 
-        if (UtilitiesConfig.Bank.INSTANCE.addBankConfirmation && e.getSlotIn() != null) {
+        if (UtilitiesConfig.Bank.INSTANCE.addBankConfirmation) {
             IInventory inventory = e.getSlotIn().inventory;
             if (McIf.getUnformattedText(inventory.getDisplayName()).contains("Bank") && e.getSlotIn().getHasStack()) {
                 ItemStack item = e.getSlotIn().getStack();
@@ -981,11 +983,11 @@ public class ClientEvents implements Listener {
     private boolean isBulkShopConsumable(ItemStack is) {
         String itemName = is.getDisplayName();
         return (itemName.endsWith(" Teleport Scroll") ||
-                itemName.contains("Potion of ") || // We're using contains here because we check for skill point potions which are different colors/symbols
+                itemName.contains("Potion of ") || // We're using .contains here because we check for skill point potions which are different colors/symbols
                 itemName.endsWith("Speed Surge") ||
                 itemName.endsWith("Bipedal Spring"))
 
-                && ItemUtils.getStringLore(is).contains("Price:");
+                && ItemUtils.getStringLore(is).contains("§6Price:");
     }
 
     @SubscribeEvent
@@ -1001,6 +1003,7 @@ public class ClientEvents implements Listener {
         // Check only if name contains Potion of, as we want to be able to buy skill potions too
         if (isBulkShopConsumable(is)) { // Only replace lore for purchaseable items
             List<String> lore = ItemUtils.getLore(is);
+            System.out.println(ItemUtils.getStringLore(is));
             lore.add(" ");
             lore.add("§aShift-click to purchase " + UtilitiesConfig.INSTANCE.bulkBuyAmount);
             ItemUtils.replaceLore(is, lore);
