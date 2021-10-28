@@ -60,8 +60,11 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Prevent Clicking on Locked Items", description = "Should moving items to and from locked inventory slots be blocked?")
     public boolean preventSlotClicking = false;
 
-    @Setting(displayName = "Prevent Clicking on Bank Dump Buttons", description = "Should Wynntils block the inventory dump to bank buttons?")
-    public boolean preventBankDump = false;
+    @Setting(displayName = "Bank Dump Button Behaviour", description = "What should happen when the bank inventory dump button is clicked?")
+    public BankButtonSetting bankDumpButton = BankButtonSetting.Confirm;
+
+    @Setting(displayName = "Bank Quick Stash Button Behaviour", description = "What should happen when the bank quick stash button is clicked?")
+    public BankButtonSetting bankStashButton = BankButtonSetting.Confirm;
 
     @Setting(displayName = "FOV Scaling Function", description = "What scaling function should be used for speed-based FOV changes?")
     public FovScalingFunction fovScalingFunction = FovScalingFunction.Vanilla;
@@ -119,6 +122,12 @@ public class UtilitiesConfig extends SettingsClass {
         Arctangent,
         Sprint_Only,
         None
+    }
+
+    public enum BankButtonSetting {
+        Default,
+        Confirm,
+        Block
     }
 
     @SettingsInfo(name = "identifications", displayPath = "Utilities/Identifications")
