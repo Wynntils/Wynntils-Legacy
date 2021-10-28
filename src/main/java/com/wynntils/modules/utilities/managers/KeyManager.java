@@ -13,14 +13,21 @@ import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.map.overlays.MiniMapOverlay;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.events.ClientEvents;
+import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
 import com.wynntils.modules.utilities.overlays.hud.StopWatchOverlay;
 import com.wynntils.modules.utilities.overlays.ui.GearViewerUI;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.inventory.ClickType;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketClickWindow;
+import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import org.lwjgl.input.Keyboard;
+import java.util.ArrayList;
+import java.util.List;
 
 public class KeyManager {
 
@@ -72,16 +79,9 @@ public class KeyManager {
             McIf.player().sendChatMessage("/totem");
         });
 
-        CoreModule.getModule().registerKeyBinding("Open Ingredient Pouch", Keyboard.KEY_O, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
-            if (!Reference.onWorld) return;
+        CoreModule.getModule().registerKeyBinding("Open Ingredient Pouch", Keyboard.KEY_O, "Wynntils", KeyConflictContext.IN_GAME, true, PouchHotkeyManager::onIngredientHotkeyPress);
 
-            EntityPlayerSP player = McIf.player();
-            player.connection.sendPacket(new CPacketClickWindow(
-                    player.inventoryContainer.windowId,
-                    13, 0, ClickType.PICKUP, player.inventory.getStackInSlot(13),
-                    player.inventoryContainer.getNextTransactionID(player.inventory)
-            ));
-        });
+        CoreModule.getModule().registerKeyBinding("Open Emerald Pouch", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, PouchHotkeyManager::onEmeraldHotkeyPress);
 
         stopwatchKey = CoreModule.getModule().registerKeyBinding("Start/Stop Stopwatch", Keyboard.KEY_NUMPAD5, "Wynntils", KeyConflictContext.IN_GAME, true, StopWatchOverlay::start);
 
