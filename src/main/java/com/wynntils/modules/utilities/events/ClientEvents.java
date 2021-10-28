@@ -665,8 +665,9 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void clickOnChest(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
+        if (e.getSlotIn() == null) return;
         // Prevent accidental ingredient/emerald pouch clicks in loot chests
-        if (e.getSlotIn() != null && e.getGui().getLowerInv().getDisplayName().getUnformattedText().contains("Loot Chest") && UtilitiesConfig.INSTANCE.preventOpeningPouchesChest) {
+        if (e.getGui().getLowerInv().getDisplayName().getUnformattedText().contains("Loot Chest") && UtilitiesConfig.INSTANCE.preventOpeningPouchesChest) {
             // Ingredient pouch
             if (e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() == 4) {
                 e.setCanceled(true);
@@ -682,13 +683,13 @@ public class ClientEvents implements Listener {
             }
         }
 
-        if (UtilitiesConfig.INSTANCE.preventBankDump && e.getSlotIn() != null) {
+        if (UtilitiesConfig.INSTANCE.preventBankDump) {
             if (e.getGui().getLowerInv().getStackInSlot(e.getSlotId()).getDisplayName().equals("§dDump Inventory") || e.getGui().getLowerInv().getStackInSlot(e.getSlotId()).getDisplayName().equals("§dQuick Stash")) {
                 e.setCanceled(true);
             }
         }
 
-        if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getSlotIn() != null) {
+        if (UtilitiesConfig.INSTANCE.preventSlotClicking) {
             if (e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() >= 0 && e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() < 27) {
                 e.setCanceled(checkDropState(e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() + 9, McIf.mc().gameSettings.keyBindDrop.getKeyCode()));
             } else {
@@ -696,7 +697,7 @@ public class ClientEvents implements Listener {
             }
         }
 
-        if (UtilitiesConfig.Bank.INSTANCE.addBankConfirmation && e.getSlotIn() != null) {
+        if (UtilitiesConfig.Bank.INSTANCE.addBankConfirmation) {
             IInventory inventory = e.getSlotIn().inventory;
             if (McIf.getUnformattedText(inventory.getDisplayName()).contains("Bank") && e.getSlotIn().getHasStack()) {
                 ItemStack item = e.getSlotIn().getStack();
