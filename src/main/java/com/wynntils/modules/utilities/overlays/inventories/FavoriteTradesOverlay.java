@@ -36,7 +36,7 @@ public class FavoriteTradesOverlay implements Listener {
         if (e.getKeyCode() != KeyManager.getFavoriteTradeKey().getKeyBinding().getKeyCode()) return;
 
         if (e.getGui().getSlotUnderMouse() != null && McIf.player().inventory != e.getGui().getSlotUnderMouse().inventory) {
-            toggleLockState(e.getGui().getSlotUnderMouse().getStack());
+            toggleFavoriteState(e.getGui().getSlotUnderMouse().getStack());
         }
     }
 
@@ -83,7 +83,7 @@ public class FavoriteTradesOverlay implements Listener {
         ScreenRenderer.endGL();
     }
 
-    private void toggleLockState(ItemStack it) {
+    private void toggleFavoriteState(ItemStack it) {
         if (!Reference.onWorld || isNotMarketItem(it)) return;
 
         ItemIdentificationOverlay.replaceLore(it);

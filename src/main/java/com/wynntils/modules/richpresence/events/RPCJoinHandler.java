@@ -127,7 +127,7 @@ public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_c
             String content = TextFormatting.getTextWithoutFormattingCodes(m.group(4).substring(1));
             String user = TextFormatting.getTextWithoutFormattingCodes(m.group(2));
 
-            if (!RichPresenceModule.getModule().getRichPresence().validSecrent(content.substring(0, content.length() - 1)))
+            if (!RichPresenceModule.getModule().getRichPresence().validSecret(content.substring(0, content.length() - 1)))
                 return;
 
             e.setCanceled(true);

@@ -84,9 +84,4 @@ public class ServerEvents implements Listener {
         if (WarManager.filterMob(e)) e.setCanceled(true);
     }
 
-    @SubscribeEvent
-    public void onClickEntity(PacketEvent<CPacketUseEntity> e) {
-        if (WarManager.allowClick(e)) e.setCanceled(true);
-    }
-
 }

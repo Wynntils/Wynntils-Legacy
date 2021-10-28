@@ -54,6 +54,9 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Prevent Favorited Item Chest Closing", description = "Should the closing of loot chests be prevented when they contain favorited items?")
     public boolean preventFavoritedChestClose = true;
 
+    @Setting(displayName = "Prevent Clicking on Pouches in Loot Chests", description = "Should opening ingredient and emerald pouches be blocked in loot chests?")
+    public boolean preventOpeningPouchesChest = true;
+
     @Setting(displayName = "Prevent Clicking on Locked Items", description = "Should moving items to and from locked inventory slots be blocked?")
     public boolean preventSlotClicking = false;
 
@@ -131,8 +134,12 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Legacy Identification Values", description = "Should mana and life steal stats display as /4s instead of /3s and /5s?")
         public boolean legacyIds = false;
 
-        @Setting(displayName = "Rainbow Perfect Items", description = "Should perfect items have rainbow names?")
+        @Setting(displayName = "Animate Perfect/Defect Item Names", description = "Should perfect and defective items have animated names?\n\n§8 This includes perfect items having rainbow names.")
         public boolean rainbowPerfect = true;
+
+        @Setting.Limitations.FloatLimit(min = 1.0f, max = 20.0f, precision = 1.0f)
+        @Setting(displayName = "Defect Item Obfuscation Percentage", description = "How much should defective item names be obfuscated?\n\n§8 Obfuscation is where the characters constantly change and appear corrupted.")
+        public float defectiveObfuscationAmount = 8.0f;
 
         @Setting(displayName = "Categorize Identifications", description = "Should the identifications in an item's tooltip be categorized?")
         public boolean addSpacing = true;
@@ -194,9 +201,6 @@ public class UtilitiesConfig extends SettingsClass {
 
         @Setting(displayName = "Entity Filter", description = "Should the nametag of mobs be hidden in war servers?")
         public boolean allowEntityFilter = true;
-
-        @Setting(displayName = "Block Workstations", description = "Should the mod prevent you from clicking on workstations while in war servers?")
-        public boolean blockWorkstations = true;
 
         @Setting(displayName = "Show Player Health Bar", description = "Should the health bar of other players in a war server be displayed above their heads?")
         public boolean warrerHealthBar = true;

@@ -117,7 +117,7 @@ public class QuestInfo {
         // translation (might replace splittedDescription)
         if (TranslationConfig.INSTANCE.enableTextTranslation && TranslationConfig.INSTANCE.translateTrackedQuest) {
             TranslationManager.getTranslator().translate(description, TranslationConfig.INSTANCE.languageName, translatedMsg -> {
-                List<String> translatedSplitted = Stream.of(StringUtils.wrapTextBySize(TranslationManager.TRANSLATED_PREFIX + translatedMsg, 200)).collect(Collectors.toList());
+                List<String> translatedSplitted = Stream.of(StringUtils.wrapTextBySize(translatedMsg == null ? TranslationManager.UNTRANSLATED_PREFIX +   description : TranslationManager.TRANSLATED_PREFIX + translatedMsg, 200)).collect(Collectors.toList());
                 if (TranslationConfig.INSTANCE.keepOriginal) {
                     splittedDescription.addAll(translatedSplitted);
                 } else {

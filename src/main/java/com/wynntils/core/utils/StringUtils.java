@@ -26,6 +26,7 @@ public class StringUtils {
     private static final Pattern LE_PATTERN = Pattern.compile("(\\.?\\d+\\.?\\d*)\\s*(l|le)");
     private static final Pattern EB_PATTERN = Pattern.compile("(\\.?\\d+\\.?\\d*)\\s*(b|eb)");
     private static final Pattern E_PATTERN = Pattern.compile("(\\d+)($|\\s|\\s*e|\\s*em)(?![^\\d\\s-])");
+    private static final Pattern RAW_PRICE_PATTERN = Pattern.compile("\\d+");
 
     /**
      * Removes the characters 'À' ('\u00c0') and '\u058e' that is sometimes added in Wynn APIs and
@@ -384,33 +385,36 @@ public class StringUtils {
         return Character.toString((char) ((gavellian) - 9327));
     }
 
-    public static long convertEmeraldPrice(String input) {
+    public static String convertEmeraldPrice(String input) {
+        Matcher rawMatcher = RAW_PRICE_PATTERN.matcher(input);
+        if (rawMatcher.matches()) return "";
+
         input = input.toLowerCase();
         long emeralds = 0;
 
         try {
             // stx
-            Matcher m = STX_PATTERN.matcher(input);
-            while (m.find()) {
-                emeralds += Long.parseLong(m.group(1)) * 64 * 64 * 64;
+            Matcher stxMatcher = STX_PATTERN.matcher(input);
+            while (stxMatcher.find()) {
+                emeralds += (long) (Double.parseDouble(stxMatcher.group(1)) * 64 * 64 * 64);
             }
 
             // le
-            m = LE_PATTERN.matcher(input);
-            while (m.find()) {
-                emeralds += Long.parseLong(m.group(1)) * 64 * 64;
+            Matcher leMatcher = LE_PATTERN.matcher(input);
+            while (leMatcher.find()) {
+                emeralds += (long) (Double.parseDouble(leMatcher.group(1)) * 64 * 64);
             }
 
             // eb
-            m = EB_PATTERN.matcher(input);
-            while (m.find()) {
-                emeralds += Long.parseLong(m.group(1)) * 64;
+            Matcher ebMatcher = EB_PATTERN.matcher(input);
+            while (ebMatcher.find()) {
+                emeralds += (long) (Double.parseDouble(ebMatcher.group(1)) * 64);
             }
 
             // standard numbers/emeralds
-            m = E_PATTERN.matcher(input);
-            while (m.find()) {
-                emeralds += Long.parseLong(m.group(1));
+            Matcher eMatcher = E_PATTERN.matcher(input);
+            while (eMatcher.find()) {
+                emeralds += Long.parseLong(eMatcher.group(1));
             }
 
             // account for tax if flagged
@@ -418,10 +422,10 @@ public class StringUtils {
                 emeralds = Math.round(emeralds / 1.05F);
             }
         } catch (NumberFormatException e) {
-            return 0; // number exceeds long limit (somehow)
+            return ""; //
         }
 
-        return emeralds;
+        return (emeralds > 0) ? String.valueOf(emeralds) : "";
     }
 
     /**
