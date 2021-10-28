@@ -682,6 +682,12 @@ public class ClientEvents implements Listener {
             }
         }
 
+        if (UtilitiesConfig.INSTANCE.preventBankDump && e.getSlotIn() != null) {
+            if (e.getGui().getLowerInv().getStackInSlot(e.getSlotId()).getDisplayName().equals("§dDump Inventory") || e.getGui().getLowerInv().getStackInSlot(e.getSlotId()).getDisplayName().equals("§dQuick Stash")) {
+                e.setCanceled(true);
+            }
+        }
+
         if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getSlotIn() != null) {
             if (e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() >= 0 && e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() < 27) {
                 e.setCanceled(checkDropState(e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() + 9, McIf.mc().gameSettings.keyBindDrop.getKeyCode()));

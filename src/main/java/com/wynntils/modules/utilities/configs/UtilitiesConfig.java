@@ -60,6 +60,9 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Prevent Clicking on Locked Items", description = "Should moving items to and from locked inventory slots be blocked?")
     public boolean preventSlotClicking = false;
 
+    @Setting(displayName = "Prevent Clicking on Bank Dump Buttons", description = "Should Wynntils block the inventory dump to bank buttons?")
+    public boolean preventBankDump = false;
+
     @Setting(displayName = "FOV Scaling Function", description = "What scaling function should be used for speed-based FOV changes?")
     public FovScalingFunction fovScalingFunction = FovScalingFunction.Vanilla;
 
