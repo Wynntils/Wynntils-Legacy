@@ -344,10 +344,15 @@ public class InfoFormatter {
             return cache.get("emeralds");
         }, "e", "emeralds");
 
-        // Count of health potions
+        // health pot charges
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.get(InventoryData.class).getHealthPotions()),
-                "potions_health", "hp_pot");
+                Integer.toString(PlayerInfo.get(InventoryData.class).getHealthPotionCharges()),
+                "potions_health_charges", "hp_pot_charges");
+
+        // max health pot charges
+        registerFormatter((input) ->
+                Integer.toString(PlayerInfo.get(InventoryData.class).getHealthPotionMaxCharges()),
+                "potions_health_charges_max", "hp_pot_max_charges");
 
         // Count of mana potions
         registerFormatter((input) ->
