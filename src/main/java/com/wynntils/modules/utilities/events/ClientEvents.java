@@ -724,6 +724,7 @@ public class ClientEvents implements Listener {
                         String emeraldString = "Emerald";
                         if (emeraldAmount > 1) {emeraldString += 's';} // Grammar check!
                         GameUpdateOverlay.queueMessage("§a+" + emeraldAmount+ "§7 " + emeraldString + " §ato pouch");
+                        break; // Make sure we don't send multiple messages, if multiple pouches in inventory
                     }
                 }
             }
