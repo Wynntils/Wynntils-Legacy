@@ -16,6 +16,11 @@ body:
         required: true
   - type: textarea
     attributes:
+        label: Steps to Reproduce
+    validations:
+        required: true
+  - type: textarea
+    attributes:
         label: Expected Behaviour
     validations:
         required: true
