@@ -117,9 +117,9 @@ public class InventoryData extends PlayerData {
     /**
      * @return Number of health pot charges remaining
      */
-    public int getHealthPotionCharges() {
+    public String getHealthPotionCharges() {
         EntityPlayerSP player = getPlayer();
-        if (player == null) return 0;
+        if (player == null) return "0/0";
 
         NonNullList<ItemStack> contents = player.inventory.mainInventory;
 
@@ -128,32 +128,11 @@ public class InventoryData extends PlayerData {
                 Matcher nameMatcher = HEALTH_POTION_REGEX.matcher(TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()));
                 if (!nameMatcher.matches()) continue;
 
-                return Integer.parseInt(nameMatcher.group(1));
+                return nameMatcher.group(1) + "/" + nameMatcher.group(2);
             }
         }
 
-        return 0;
-    }
-
-    /**
-     * @return Max number of health pot charges
-     */
-    public int getHealthPotionMaxCharges() {
-        EntityPlayerSP player = getPlayer();
-        if (player == null) return 0;
-
-        NonNullList<ItemStack> contents = player.inventory.mainInventory;
-
-        for (ItemStack item : contents) {
-            if (!item.isEmpty() && item.hasDisplayName() && item.getDisplayName().contains("Potion of Healing") || item.getDisplayName().contains("Potions of Healing")) {
-                Matcher nameMatcher = HEALTH_POTION_REGEX.matcher(TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()));
-                if (!nameMatcher.matches()) continue;
-
-                return Integer.parseInt(nameMatcher.group(2));
-            }
-        }
-
-        return 0;
+        return "0/0";
     }
 
     /**
