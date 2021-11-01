@@ -1,5 +1,5 @@
-name: Bug Report
-description: Create a bug report
+name: Crash Report
+description: Create a crash report
 labels:
   - Bug
 body:
