@@ -346,23 +346,23 @@ public class InfoFormatter {
 
         // health pot charges
         registerFormatter((input) -> {
-                if (!cache.containsKey("potionchargesremaining")) {
-                    cachePotionCharges();
-                }
+            if (!cache.containsKey("potionchargesremaining")) {
+                cachePotionCharges();
+            }
 
-                return cache.get("potionchargesremaining");
+            return cache.get("potionchargesremaining");
         },"potions_health_charges", "hp_pot_charges");
 
         // max health pot charges
         registerFormatter((input) -> {
-                if (!cache.containsKey("potionchargesmax")) {
-                    cachePotionCharges();
-                }
+            if (!cache.containsKey("potionchargesmax")) {
+                cachePotionCharges();
+            }
 
-                return cache.get("potionchargesmax");
+            return cache.get("potionchargesmax");
         }, "potions_health_max", "hp_pot_max");
 
-        // max health pot charges
+        // combined health pot charges
         registerFormatter((input) -> {
             if (!cache.containsKey("potionchargescombined")) {
                 cachePotionCharges();
