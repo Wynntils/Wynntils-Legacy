@@ -393,11 +393,29 @@ public class BankOverlay implements Listener {
         if (!isSearching()) return;
 
         String searchText = searchField.getText().toLowerCase();
-        for (int i = 0; i < bankGui.getLowerInv().getSizeInventory(); i++) {
-            if (i % 9 > 6) continue; // ignore sidebar items
+        if (searchText.startsWith("lore:")) {
+            String actualSearchText;
+            try {
+                actualSearchText = searchText.split("lore:")[1];
+            } catch (ArrayIndexOutOfBoundsException ignored) {
+                actualSearchText = "";
+            }
 
-            ItemStack is = bankGui.getLowerInv().getStackInSlot(i);
-            if (TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()).toLowerCase().contains(searchText)) searchedItems.add(is);
+            for (int i = 0; i < bankGui.getLowerInv().getSizeInventory(); i++) {
+                if (i % 9 > 6) continue; // ignore sidebar items
+
+                ItemStack is = bankGui.getLowerInv().getStackInSlot(i);
+                if (TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(is)).toLowerCase().contains(actualSearchText))
+                    searchedItems.add(is);
+            }
+        } else {
+            for (int i = 0; i < bankGui.getLowerInv().getSizeInventory(); i++) {
+                if (i % 9 > 6) continue; // ignore sidebar items
+
+                ItemStack is = bankGui.getLowerInv().getStackInSlot(i);
+                if (TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()).toLowerCase().contains(searchText))
+                    searchedItems.add(is);
+            }
         }
     }
 
