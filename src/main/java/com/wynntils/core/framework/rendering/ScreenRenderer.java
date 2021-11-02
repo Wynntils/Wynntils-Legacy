@@ -82,7 +82,7 @@ public class ScreenRenderer {
      * @param y drawing origin's Y
      */
     public void beginGL(int x, int y) {
-        if (rendering) throw new UnsupportedOperationException("This Screen Renderer is already rendering!");
+        if (rendering) throw new UnsupportedOperationException("This Screen Renderer is already rendering");
         rendering = true;
         GlStateManager.pushMatrix();
 
@@ -127,7 +127,7 @@ public class ScreenRenderer {
      * 2D plane).
      */
     public void endGL() {
-        if (!rendering) return;
+        if (!rendering) throw new UnsupportedOperationException("This Screen Renderer is not currently rendering");
 
         //resetScale and resetRotation sure these are unnecessary due to the popMatrix
         scale = 1.0f;
@@ -219,7 +219,7 @@ public class ScreenRenderer {
      * @param y2 top-right y(on screen)
      */
     public void createMask(Texture texture, int x1, int y1, int x2, int y2) {
-        if (!rendering) throw new UnsupportedOperationException("This Screen Renderer is not currently rendering");;
+        if (!rendering) throw new UnsupportedOperationException("This Screen Renderer is not currently rendering");
         if (mask) return;
         if (!texture.loaded) return;
         float prevScale = scale;
@@ -261,7 +261,7 @@ public class ScreenRenderer {
      * @param y2 top-right y(on screen)
      */
     public void createMask(CustomColor color, int x1, int y1, int x2, int y2) {
-        if (!rendering) return;
+        if (!rendering) throw new UnsupportedOperationException("This Screen Renderer is not currently rendering");
         if (mask) return;
         float prevScale = scale;
         resetScale();
@@ -298,7 +298,7 @@ public class ScreenRenderer {
      * @param y2 top-right y(on screen)
      */
     public void createMask(Texture texture, float x1, float y1, float x2, float y2, float tx1, float ty1, float tx2, float ty2) {
-        if (!rendering) throw new UnsupportedOperationException("This Screen Renderer is not currently rendering");;
+        if (!rendering) throw new UnsupportedOperationException("This Screen Renderer is not currently rendering");
         if (mask) return;
         if (!texture.loaded) return;
         float prevScale = scale;
@@ -798,6 +798,8 @@ public class ScreenRenderer {
      * @param alpha the alpha value of the progress bar
      */
     public void drawProgressBar(Texture texture, int x1, int y1, int x2, int y2, int tx1, int ty1, int tx2, int ty2, float progress, float alpha) {
+        if (!rendering) throw new UnsupportedOperationException("This Screen Renderer is not currently rendering");
+
         int half = (ty1 + ty2) / 2;
         GlStateManager.enableBlend();
         GlStateManager.color(1, 1, 1, alpha);
@@ -818,6 +820,8 @@ public class ScreenRenderer {
      * @param progress progress of the bar, 0.0f to 1.0f is left to right and 0.0f to -1.0f is right to left
      */
     public void drawProgressBar(CustomColor backColor, CustomColor color, int x1, int y1, int x2, int y2, float progress) {
+        if (!rendering) throw new UnsupportedOperationException("This Screen Renderer is not currently rendering");
+
         drawRect(backColor, x1, y1, x2, y2);
 
         float xMin  = Math.min(x1, x2),
