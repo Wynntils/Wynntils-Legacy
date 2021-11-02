@@ -395,6 +395,7 @@ public class BankOverlay implements Listener {
         String searchText = searchField.getText().toLowerCase();
         if (searchText.startsWith("lore:")) {
             searchText = searchText.substring(5);
+            if (searchText.equals("")) return;
             for (int i = 0; i < bankGui.getLowerInv().getSizeInventory(); i++) {
                 if (i % 9 > 6) continue; // ignore sidebar items
 
