@@ -61,11 +61,13 @@ public class WorldMapLabel extends WorldMapIcon {
         return color;
     }
 
-    public void drawScreen(int mouseX, int mouseY, float partialTicks, float blockScale, ScreenRenderer renderer) {
-        if (!shouldRender || renderer == null) return;
+    public void drawScreen(int mouseX, int mouseY, float partialTicks, float blockScale) {
+        if (!shouldRender) return;
 
-        renderer.drawString(label.getName(), axisX - label.getSizeX(), axisZ - label.getSizeZ(),
+        beginGL(0, 0);
+        drawString(label.getName(), axisX - label.getSizeX(), axisZ - label.getSizeZ(),
                 getDimmedColorFromLayer(alpha), SmartFontRenderer.TextAlignment.LEFT_RIGHT, getTextShadowFromLayer());
+        endGL();
     }
 
     public void drawHovering(int mouseX, int mouseY, float partialTicks, ScreenRenderer renderer) {
