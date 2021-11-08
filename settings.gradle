@@ -1,0 +1,19 @@
+pluginManagement {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+        maven { url = "https://maven.minecraftforge.net/" }
+        maven { url = "https://jitpack.io/" }
+    }
+    resolutionStrategy {
+        eachPlugin {
+            switch (requested.id.id) {
+                case "net.minecraftforge.gradle":
+                    useModule("net.minecraftforge.gradle:ForgeGradle:${requested.version}")
+                    break
+            }
+        }
+    }
+}
+
+rootProject.name = "Wynntils"
