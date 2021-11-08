@@ -279,9 +279,8 @@ public class ClientEvents implements Listener {
         if (!priceInput) return;
 
         priceInput = false;
-        long price = StringUtils.convertEmeraldPrice(e.getMessage());
-        if (price != 0) // price of 0 means either garbage input or actual 0, can be ignored either way
-            e.setMessage("" + price);
+        String price = StringUtils.convertEmeraldPrice(e.getMessage());
+        if (!price.isEmpty()) e.setMessage(price);
     }
 
     @SubscribeEvent

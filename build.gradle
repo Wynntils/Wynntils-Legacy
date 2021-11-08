@@ -1,44 +1,31 @@
-buildscript {
-    repositories {
-        jcenter()
-        maven { url "https://plugins.gradle.org/m2/" }
-        maven { url = "https://maven.minecraftforge.net" }
-    }
-    dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:4.1.14'
-        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.1'
-    }
+plugins {
+	id "java"
+	id "idea"
+	id "maven-publish"
+	id "net.minecraftforge.gradle" version "5.1.+"
+	id "com.github.johnrengelman.shadow" version "7.1.0"
 }
-
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: 'java'
-apply plugin: 'idea'
 
 def versionObj = new Version(major: 1, minor: 10, revision: 5)
 
 version = versionObj.toString()
-group = "com.wynntils"
-archivesBaseName = "Wynntils"
+group = mod_base_package
+archivesBaseName = mod_id
 
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
-compileJava.options.encoding = 'UTF-8'
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
+compileJava.options.encoding = "UTF-8"
 
 minecraft {
-    mappings channel: "stable", version: "39-1.12"
+    mappings channel: mappings_channel, version: mappings_version
 
     runs {
         client {
             workingDirectory project.file('run')
 
-            environment 'MC_VERSION', '1.12.2'
-
-            // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
-
-            // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
+
+
         }
 
         if (project.hasProperty("minecraftEmailUsername") || project.hasProperty("minecraftPassword")) {
@@ -116,68 +103,44 @@ minecraft {
     }
 }
 
-idea {
-    module {
-        inheritOutputDirs = true
-    }
-}
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-    jcenter()
-}
-
-/*
- *  * Copyright © Wynntils - 2021.
- */
-
-// Allow for local override with different Forge
+// allow local forge version override
 if (!project.hasProperty("wynntilsForgeVersion")) {
-    ext.wynntilsForgeVersion='1.12.2-14.23.5.2854'
+    ext.wynntilsForgeVersion=forge_version
+}
+
+configurations {
+    include
+    implementation.extendsFrom(include)
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${wynntilsForgeVersion}"
-    compile "javazoom:jlayer:1.0.1"
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${wynntilsForgeVersion}"
+
+    include "javazoom:jlayer:1.0.1"
+}
+
+jar {
+	enabled = false
+}
+
+shadowJar {
+	archiveFileName = jar.archiveFileName
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+	configurations = [project.configurations.include]
 }
 
 processResources {
     inputs.property "description", "The best Wynncraft mod you'll probably find!\nBuild " + versionObj.getBuild()
     inputs.property "version", versionObj.toVersion()
 
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-
-        expand 'description':"The best Wynncraft mod you'll probably find!\nBuild " + versionObj.getBuild(), 'version':versionObj.toVersion()
+    filesMatching("mcmod.info") {
+        expand "version": versionObj.toVersion(), "description": "The best Wynncraft mod you'll probably find!\nBuild " + versionObj.getBuild()
     }
 }
 
-jar {
-    manifest {
-        attributes [:]
-    }
-}
-
-
-
-// We need to reobfuscate the Shadow Jar
 reobf {
     shadowJar {}
 }
-
-shadowJar {
-    dependencies {
-        include(dependency('javazoom:jlayer:.*'))
-    }
-
-    baseName = archivesBaseName + "-" + version
-    classifier = null
-    version = null
-    configurations = [project.configurations.compile]
-}
-
-
 
 class Version {
     int major, minor, revision
@@ -194,3 +157,5 @@ class Version {
         "${major}.${minor}.${revision}_$build-MC1.12.2"
     }
 }
+
+jar.dependsOn("shadowJar")

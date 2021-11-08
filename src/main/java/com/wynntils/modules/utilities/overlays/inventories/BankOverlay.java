@@ -4,15 +4,7 @@
 
 package com.wynntils.modules.utilities.overlays.inventories;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import com.wynntils.McIf;
-import org.lwjgl.input.Keyboard;
-
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
@@ -25,7 +17,6 @@ import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
-
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.ITextureObject;
@@ -42,6 +33,13 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.lwjgl.input.Keyboard;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class BankOverlay implements Listener {
 
@@ -150,7 +148,8 @@ public class BankOverlay implements Listener {
         searchPageForItems(e.getGui());
         checkItemsLoaded(e.getGui());
 
-        int x = e.getGui().getXSize() - 19; int y = 2;
+        int x = e.getGui().getXSize() - 19;
+        int y = 2;
 
         renderer.beginGL(0, 0);
         {
@@ -195,8 +194,8 @@ public class BankOverlay implements Listener {
                 e.getMouseY() >= e.getGui().getGuiTop() + y && e.getMouseY() <= e.getGui().getGuiTop() + y + 12) {
             editButtonHover = true;
             e.getGui().drawHoveringText(Arrays.asList(
-                    nameField == null ? TextFormatting.GOLD + "[>] Change current page name" : TextFormatting.RED + "[X] Cancel operation",
-                    nameField == null ? TextFormatting.GRAY + "Right-click to reset to default" : TextFormatting.GRAY + "Write in the left text field."
+                            nameField == null ? TextFormatting.GOLD + "[>] Change current page name" : TextFormatting.RED + "[X] Cancel operation",
+                            nameField == null ? TextFormatting.GRAY + "Right-click to reset to default" : TextFormatting.GRAY + "Write in the left text field."
                     ),
                     e.getMouseX() - e.getGui().getGuiLeft(), e.getMouseY() - e.getGui().getGuiTop());
             return;
@@ -325,7 +324,7 @@ public class BankOverlay implements Listener {
         if (itemsLoaded) return;
 
         // if one of these is in inventory, items have loaded in
-        if(!bankGui.inventorySlots.getSlot(PAGE_FORWARD).getStack().isEmpty() || !bankGui.inventorySlots.getSlot(PAGE_BACK).getStack().isEmpty()) {
+        if (!bankGui.inventorySlots.getSlot(PAGE_FORWARD).getStack().isEmpty() || !bankGui.inventorySlots.getSlot(PAGE_BACK).getStack().isEmpty()) {
             itemsLoaded = true;
             searchBank(bankGui);
             if (destinationPage != 0 && destinationPage != page)
@@ -337,7 +336,7 @@ public class BankOverlay implements Listener {
     private void updateName(IInventory bankGui) {
         String name = (UtilitiesConfig.Bank.INSTANCE.pageNames.containsKey(page))
                 ? UtilitiesConfig.Bank.INSTANCE.pageNames.get(page) : TextFormatting.DARK_GRAY
-                        + McIf.player().getName() + "'s" + TextFormatting.BLACK + " Bank";
+                + McIf.player().getName() + "'s" + TextFormatting.BLACK + " Bank";
 
         ((InventoryBasic) bankGui).setCustomName(TextFormatting.BLACK + "[Pg. " + page + "] " + name);
     }
@@ -352,7 +351,7 @@ public class BankOverlay implements Listener {
         int hop = (destinationPage / 4) * 4 + 1;
 
         // don't assume we can hop to a page that's greater than the destination
-        if (hop > UtilitiesConfig.Bank.INSTANCE.maxPages && hop > destinationPage) hop -=4;
+        if (hop > UtilitiesConfig.Bank.INSTANCE.maxPages && hop > destinationPage) hop -= 4;
 
         CPacketClickWindow packet = null;
         if (Math.abs(destinationPage - hop) >= Math.abs(destinationPage - page)) { // we already hopped, or started from a better/equivalent spot
@@ -366,7 +365,7 @@ public class BankOverlay implements Listener {
                     return;
                 }
                 packet = new CPacketClickWindow(bankGui.inventorySlots.windowId, PAGE_FORWARD, 0, ClickType.PICKUP, is,
-                                bankGui.inventorySlots.getNextTransactionID(McIf.player().inventory));
+                        bankGui.inventorySlots.getNextTransactionID(McIf.player().inventory));
             } else {
                 ItemStack is = bankGui.inventorySlots.getSlot(PAGE_BACK).getStack();
 
@@ -377,12 +376,12 @@ public class BankOverlay implements Listener {
                     return;
                 }
                 packet = new CPacketClickWindow(bankGui.inventorySlots.windowId, PAGE_BACK, 0, ClickType.PICKUP, is,
-                                bankGui.inventorySlots.getNextTransactionID(McIf.player().inventory));
+                        bankGui.inventorySlots.getNextTransactionID(McIf.player().inventory));
             }
         } else { // attempt to hop using default quick access buttons
             int slotId = QA_SLOTS[(hop / 4)];
             packet = new CPacketClickWindow(bankGui.inventorySlots.windowId, slotId, 0, ClickType.PICKUP, bankGui.inventorySlots.getSlot(slotId).getStack(),
-                            bankGui.inventorySlots.getNextTransactionID(McIf.player().inventory));
+                    bankGui.inventorySlots.getNextTransactionID(McIf.player().inventory));
         }
 
         McIf.mc().getConnection().sendPacket(packet);
@@ -393,11 +392,31 @@ public class BankOverlay implements Listener {
         if (!isSearching()) return;
 
         String searchText = searchField.getText().toLowerCase();
+        boolean searchLore = false;
+
+        if (searchText.startsWith("lore:")) {
+            searchText = searchText.substring(5);
+            searchLore = true;
+        }
+
+        if (searchText.equals("")) return; // Don't search when nothing is specified
+
         for (int i = 0; i < bankGui.getLowerInv().getSizeInventory(); i++) {
             if (i % 9 > 6) continue; // ignore sidebar items
 
             ItemStack is = bankGui.getLowerInv().getStackInSlot(i);
-            if (TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName()).toLowerCase().contains(searchText)) searchedItems.add(is);
+            if (getSearchString(is, searchLore).contains(searchText)) {
+                searchedItems.add(is);
+            }
+
+        }
+    }
+
+    private String getSearchString(ItemStack is, boolean isLore) {
+        if (isLore) {
+          return TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(is).toLowerCase());
+        } else {
+          return TextFormatting.getTextWithoutFormattingCodes(is.getDisplayName().toLowerCase());
         }
     }
 
@@ -432,7 +451,7 @@ public class BankOverlay implements Listener {
     }
 
     private static int[] getQuickAccessDestinations() {
-        return new int[] {
+        return new int[]{
                 UtilitiesConfig.Bank.INSTANCE.quickAccessOne,
                 UtilitiesConfig.Bank.INSTANCE.quickAccessTwo,
                 UtilitiesConfig.Bank.INSTANCE.quickAccessThree,

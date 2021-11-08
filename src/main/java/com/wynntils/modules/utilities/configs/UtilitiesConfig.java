@@ -134,8 +134,12 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Legacy Identification Values", description = "Should mana and life steal stats display as /4s instead of /3s and /5s?")
         public boolean legacyIds = false;
 
-        @Setting(displayName = "Rainbow Perfect Items", description = "Should perfect items have rainbow names?")
+        @Setting(displayName = "Animate Perfect/Defect Item Names", description = "Should perfect and defective items have animated names?\n\n§8 This includes perfect items having rainbow names.")
         public boolean rainbowPerfect = true;
+
+        @Setting.Limitations.FloatLimit(min = 1.0f, max = 20.0f, precision = 1.0f)
+        @Setting(displayName = "Defect Item Obfuscation Percentage", description = "How much should defective item names be obfuscated?\n\n§8 Obfuscation is where the characters constantly change and appear corrupted.")
+        public float defectiveObfuscationAmount = 8.0f;
 
         @Setting(displayName = "Categorize Identifications", description = "Should the identifications in an item's tooltip be categorized?")
         public boolean addSpacing = true;
