@@ -118,8 +118,10 @@ public class MapTerritory {
         }
 
         if (territoryArea) {
+            renderer.beginGL(0, 0);
             renderer.drawRectF(color.setA(MapConfig.WorldMap.INSTANCE.colorAlpha), initX, initY, endX, endY);
             renderer.drawRectWBordersF(color.setA(1), initX, initY, endX, endY, 2f);
+            renderer.endGL();
         }
 
         float ppX = getCenterX();
@@ -130,19 +132,26 @@ public class MapTerritory {
         if (showHeadquarters) {
             if (!resources.isHeadquarters()) return;
 
+            renderer.beginGL(0, 0);
             GlStateManager.color(1f, 1f, 1f, 1f);
             renderer.drawRect(Textures.Map.map_territory_info, (int) ppX-8, (int) ppY-7, (int) ppX+8, (int) ppY+7, 0, 49, 16, 62);
+            renderer.endGL();
         }
 
         if (!showNames) return;
 
-        if ((MapConfig.WorldMap.INSTANCE.showTerritoryName || hovering) && alpha > 0)
+        if ((MapConfig.WorldMap.INSTANCE.showTerritoryName || hovering) && alpha > 0) {
+            renderer.beginGL(0, 0);
             renderer.drawString(territory.getFriendlyName(), ppX, ppY - 10, territoryNameColour.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+            renderer.endGL();
+        }
 
         if (MapConfig.WorldMap.INSTANCE.useGuildShortNames) alpha = 1;
         else if (alpha <= 0) return;
 
+        renderer.beginGL(0, 0);
         renderer.drawString(MapConfig.WorldMap.INSTANCE.useGuildShortNames ? territory.getGuildPrefix() : territory.getGuild(), ppX, ppY, color.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+        renderer.endGL();
     }
 
     public void postDraw(int mouseX, int mouseY, float partialTicks, int width, int height) {

@@ -68,16 +68,18 @@ public class WorldMapLabel extends WorldMapIcon {
                 getDimmedColorFromLayer(alpha), SmartFontRenderer.TextAlignment.LEFT_RIGHT, getTextShadowFromLayer());
     }
 
-    public void drawHovering(int mouseX, int mouseY, float partialTicks, ScreenRenderer renderer) {
+    public void drawHovering(int mouseX, int mouseY, float partialTicks) {
         if (!shouldRender || !mouseOver(mouseX, mouseY)) return;
 
         String level = label.getLevel();
+        beginGL(0, 0);
         if (level != null) {
             String lvStr = "[Lv. " + level + "]";
-            renderer.drawString(lvStr,  (int) (axisX), (int) (axisZ) + 8, CommonColors.GRAY, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+            drawString(lvStr,  (int) (axisX), (int) (axisZ) + 8, CommonColors.GRAY, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
         }
 
-        renderer.drawString(label.getName(), axisX - label.getSizeX(), axisZ - label.getSizeZ(), getColorFromLayer());
+        drawString(label.getName(), axisX - label.getSizeX(), axisZ - label.getSizeZ(), getColorFromLayer());
+        endGL();
     }
 
 }

@@ -100,8 +100,10 @@ public class SeaskipperLocation {
         CustomColor color = accessibility.getColor();
 
         if (showLocations) {
+            renderer.beginGL(0, 0);
             renderer.drawRectF(color.setA(MapConfig.WorldMap.INSTANCE.colorAlpha), initX, initY, endX, endY);
             renderer.drawRectWBordersF(color.setA(1), initX, initY, endX, endY, 2f);
+            renderer.endGL();
         }
 
         float ppX = getCenterX();
@@ -109,8 +111,11 @@ public class SeaskipperLocation {
 
         boolean hovering = isHovered(mouseX, mouseY);
 
-        if (MapConfig.WorldMap.INSTANCE.showTerritoryName || hovering || isAccessible())
+        if (MapConfig.WorldMap.INSTANCE.showTerritoryName || hovering || isAccessible()) {
+            renderer.beginGL(0, 0);
             renderer.drawString(location.getName(), ppX, ppY - 20, seaskipperNameColour, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+            renderer.endGL();
+        }
     }
 
     public void postDraw(int mouseX, int mouseY, float partialTicks, int width, int height, boolean showInaccessibleLocations) {

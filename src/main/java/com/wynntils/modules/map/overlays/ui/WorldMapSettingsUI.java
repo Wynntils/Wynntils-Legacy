@@ -212,8 +212,6 @@ public class WorldMapSettingsUI extends GuiScreen {
 
     private static class Button extends GuiButton {
 
-        static final ScreenRenderer renderer = new ScreenRenderer();
-
         String key;
         int selectionState = 0;
         int page;
