@@ -46,7 +46,6 @@ public class LevelingManager {
      * @return The XP value gathered in one minute
      */
     public static int getXpPerMinute() {
-        update();
         if (XP_SET.isEmpty()) return 0;
 
         int sum = 0;
@@ -62,7 +61,6 @@ public class LevelingManager {
      * @return Formatted string with the relative XP in one minute
      */
     public static String getXpPercentPerMinute() {
-        update();
         int LPM = getXpPerMinute();
         int maxXp = PlayerInfo.get(CharacterData.class).getXpNeededToLevelUp();
         double PPM = ((double) LPM / (double) maxXp) * 100D;

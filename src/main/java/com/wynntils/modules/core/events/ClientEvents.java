@@ -32,6 +32,8 @@ import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
+import com.wynntils.modules.utilities.managers.KillsManager;
+import com.wynntils.modules.utilities.managers.LevelingManager;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiIngameMenu;
@@ -344,6 +346,27 @@ public class ClientEvents implements Listener {
 
         EntityManager.tickEntities();
     }
+
+    private int xpTickCount = 0;
+
+    @SubscribeEvent
+    public void onXpChangeInterval(TickEvent.ClientTickEvent e) {
+        if (Reference.onWorld && xpTickCount % 10 == 0) {
+            LevelingManager.update();
+        }
+        xpTickCount++;
+    }
+
+    private int killTickCount = 0;
+
+    @SubscribeEvent
+    public void onKillsUpdateInterval(TickEvent.ClientTickEvent e) {
+        if (Reference.onWorld && killTickCount % (10) == 0) {
+            KillsManager.update();
+        }
+        killTickCount++;
+    }
+
 
     GuiScreen lastScreen = null;
 

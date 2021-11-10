@@ -9,8 +9,10 @@ public class KillsManager {
     public static void addKill() {
         KILLS_SET.put(true);
     }
-    public static int getKillsPerMinute() {
+    public static void update() {
         KILLS_SET.releaseEntries();
+    }
+    public static int getKillsPerMinute() {
         return KILLS_SET.size();
     }
 }
