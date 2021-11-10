@@ -344,6 +344,7 @@ public class SettingsUI extends UI {
             width = Math.max(this.setWidth < 0 ? (int)getStringWidth(text) - this.setWidth : this.setWidth, 0);
 
             CustomColor color = !active ? TEXTCOLOR_NOTACTIVE : hovering ? TEXTCOLOR_HOVERING : (!searchText.isEmpty() && !isSearched) ? TEXTCOLOR_UNSEARCHED : TEXTCOLOR_NORMAL;
+            beginGL(0, 0);
             drawString(text, this.position.getDrawingX()+width/2f, this.position.getDrawingY()+height/2f-4f, color, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
 
             if (isSearched) {
@@ -352,6 +353,7 @@ public class SettingsUI extends UI {
                 drawRect(CommonColors.BLACK, x + 1, y + 1, x + textWidth + 1, y + 2);
                 drawRect(color, x, y, x + textWidth, y + 1);
             }
+            endGL();
         }
 
         @Override
