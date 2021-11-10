@@ -542,7 +542,9 @@ public class OverlayConfig extends SettingsClass {
             PING("Ping", "%ping%ms/15s"),
             BLOCKSPERSECOND("Blocks Per Second", "%bps% bps"),
             BLOCKSPERMINUTE("Blocks Per Minute", "%bpm% bpm"),
-            AREA_DPS("Area Damage Per Second", "Area DPS: ❤ %adps%");
+            AREA_DPS("Area Damage Per Second", "Area DPS: ❤ %adps%"),
+            LEVELING("XP per Minute", "XPPM: %xpm% XP (%xppm%\\%)"),
+            KILLS("Kills per Minute and Damage", "KPM: %kpm%, ADPS: ❤ %adps%");
 
             public final String displayName;
             public final String value;
@@ -628,7 +630,12 @@ public class OverlayConfig extends SettingsClass {
             PARTY_OWNER("Owner of the current party"),
             UNPROCESSED("Current amount of unprocessed materials"),
             UNPROCESSED_MAX("Max amount of unprocessed materials"),
-            ADPS("Current area damage per second");
+            ADPS("Current area damage per second"),
+            XPM_RAW("Current XP per Minute (Raw)"),
+            XPM("Current XP per Minute (Formatted)"),
+            XPPM("Current XP Percent per Minute"),
+            KPM_RAW("Kills per Minute (Raw)"),
+            KPM("Kills per Minute (Formatted)");
 
             public final String displayName;
             public final String value;
