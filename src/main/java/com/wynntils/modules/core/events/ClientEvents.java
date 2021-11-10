@@ -20,6 +20,7 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
+import com.wynntils.core.utils.objects.TimedSet;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.instances.GatheringBake;
 import com.wynntils.modules.core.instances.MainMenuButtons;
@@ -64,9 +65,9 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -282,6 +283,25 @@ public class ClientEvents implements Listener {
         if (damageList.isEmpty()) return;
 
         FrameworkManager.getEventBus().post(new GameEvent.DamageEntity(damageList, i));
+    }
+
+    // We need to keep track of UUIDs, because the Kill Labels are visible for so long that they
+    // send multiple events if we dont deduplicate them
+    private TimedSet<UUID> killLabelSet = new TimedSet<>(10, TimeUnit.SECONDS);
+    @SubscribeEvent
+    public void checkKillLabelFound(LocationEvent.LabelFoundEvent event) {
+        String value = TextFormatting.getTextWithoutFormattingCodes(event.getLabel());
+        Entity i = event.getEntity();
+        UUID id = i.getUniqueID();
+        killLabelSet.releaseEntries();
+        for (UUID setUuid : killLabelSet) {
+            if (id.equals(setUuid)) return;
+        }
+        killLabelSet.put(id);
+        String expected = "[" + McIf.mc().player.getName() + "]";
+        if (expected.equals(value)) {
+            FrameworkManager.getEventBus().post(new GameEvent.KillEntity(i));
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

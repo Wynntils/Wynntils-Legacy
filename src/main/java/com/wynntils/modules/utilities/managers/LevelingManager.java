@@ -57,18 +57,6 @@ public class LevelingManager {
     }
 
     /**
-     * Get the amount of XP adding events.
-     * Note: This can effectively be used as a kill counter, because enemies will give you XP upon death.
-     * (Idea: Maybe check if area damage was dealt before to avoid getting a "kill" by getting XP through
-     * dungeons/quests etc.? Might be useful to make another set which only counts while area damage is dealt)
-     * @return The amount of XP adding events in one minute
-     */
-    public static int getXpEventsPerMinute() {
-        update();
-        return XP_SET.size();
-    }
-
-    /**
      * Same as getXpPerMinute(), but returns a relative percentage to the current level instead of an
      * absolute XP count. Formatted as a string with 2 decimals.
      * @return Formatted string with the relative XP in one minute

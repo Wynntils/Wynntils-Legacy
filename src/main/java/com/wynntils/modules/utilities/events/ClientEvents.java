@@ -235,6 +235,11 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
+    public void onKill(GameEvent.KillEntity ignored) {
+        KillsManager.addKill();
+    }
+
+    @SubscribeEvent
     public void onGUIClose(GuiOpenEvent e) {
         if (e.getGui() == null) {
             afkProtectionBlocked = false;

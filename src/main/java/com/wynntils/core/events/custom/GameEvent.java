@@ -187,6 +187,22 @@ public class GameEvent extends Event {
     }
 
     /**
+     * Called whenever an entity kill tag is received by the client
+     */
+    public static class KillEntity extends GameEvent {
+        Entity entity;
+
+        public KillEntity(Entity entity) {
+            this.entity = entity;
+        }
+
+        public Entity getEntity() {
+            return entity;
+        }
+
+    }
+
+    /**
      * Called when a discovery is found
      */
     public static class DiscoveryFound extends GameEvent {
