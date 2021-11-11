@@ -12,6 +12,7 @@ import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.IntRange;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import com.wynntils.modules.utilities.managers.EmeraldPouchManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -88,17 +89,14 @@ public class ItemLevelOverlay implements Listener {
         }
 
         // emerald pouch tier
-        if (item == Items.DIAMOND_AXE) {
-            Matcher emeraldPouchMatcher = EMERALD_POUCH_PATTERN.matcher(name);
-            if (emeraldPouchMatcher.find()) {
-                if (!UtilitiesConfig.Items.INSTANCE.levelKeyShowsItemTiers) return;
-                if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
-                    event.setOverlayText(emeraldPouchMatcher.group(1));
-                    return;
-                }
-                event.setOverlayText(romanToArabic(emeraldPouchMatcher.group(1)));
+        if (EmeraldPouchManager.isEmeraldPouch(stack)) {
+            if (!UtilitiesConfig.Items.INSTANCE.levelKeyShowsItemTiers) return;
+            if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
+                event.setOverlayText(EmeraldPouchManager.getPouchTier(stack));
                 return;
             }
+            event.setOverlayText(romanToArabic(EmeraldPouchManager.getPouchTier(stack)));
+            return;
         }
 
         // cork amp tier
