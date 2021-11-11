@@ -148,7 +148,11 @@ public class ItemSpecificationOverlay implements Listener {
                 Pattern amp = ItemLevelOverlay.CORKIAN_AMPLIFIER_PATTERN;
                 Matcher m = amp.matcher(name);
                 if (m.matches()) {
-                    destinationName = m.group(1);
+                    if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
+                        destinationName = m.group(1);
+                    } else {
+                        destinationName = ItemLevelOverlay.romanToArabic(m.group(1));
+                    }
                     color = MinecraftChatColors.AQUA;
                     xOffset = -1;
                     scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;
@@ -159,7 +163,11 @@ public class ItemSpecificationOverlay implements Listener {
                 Pattern powder = Powder.POWDER_NAME_PATTERN;
                 Matcher m = powder.matcher(StringUtils.normalizeBadString(name));
                 if (m.matches()) {
-                    destinationName = m.group(2);
+                    if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
+                        destinationName = m.group(2);
+                    } else {
+                        destinationName = ItemLevelOverlay.romanToArabic(m.group(2));
+                    }
                     switch (m.group(1)) {
                         case "Earth":
                             color = MinecraftChatColors.fromTextFormatting(Powder.EARTH.getRawColor());
@@ -188,7 +196,11 @@ public class ItemSpecificationOverlay implements Listener {
 
             if (UtilitiesConfig.Items.INSTANCE.emeraldPouchSpecification) {
                 if (EmeraldPouchManager.isEmeraldPouch(stack)) {
-                    destinationName = EmeraldPouchManager.getPouchTier(stack);
+                    if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
+                        destinationName = EmeraldPouchManager.getPouchTier(stack);
+                    } else {
+                        destinationName = ItemLevelOverlay.romanToArabic(EmeraldPouchManager.getPouchTier(stack));
+                    }
                     color = MinecraftChatColors.GREEN;
                     xOffset = -1;
                     scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;

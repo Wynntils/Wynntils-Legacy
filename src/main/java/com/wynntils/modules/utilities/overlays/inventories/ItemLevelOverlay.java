@@ -25,10 +25,9 @@ import java.util.regex.Pattern;
 
 public class ItemLevelOverlay implements Listener {
 
-    public static final Pattern EMERALD_POUCH_PATTERN = Pattern.compile("§aEmerald Pouch§2 \\[Tier ([XIV]{1,4})]");
     public static final Pattern CORKIAN_AMPLIFIER_PATTERN = Pattern.compile("§bCorkian Amplifier (I{1,3})");
 
-    private String romanToArabic(String romanNumeral) {
+    public static String romanToArabic(String romanNumeral) {
         String num = "0";
         switch (romanNumeral) {
             case "I":
