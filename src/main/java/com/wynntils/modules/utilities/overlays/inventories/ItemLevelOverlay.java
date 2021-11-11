@@ -6,8 +6,8 @@ package com.wynntils.modules.utilities.overlays.inventories;
 
 import com.wynntils.McIf;
 import com.wynntils.core.events.custom.RenderEvent;
-import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.enums.Powder;
+import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.IntRange;
@@ -27,38 +27,38 @@ public class ItemLevelOverlay implements Listener {
     public static final Pattern EMERALD_POUCH_PATTERN = Pattern.compile("§aEmerald Pouch§2 \\[Tier ([XIV]{1,4})]");
     public static final Pattern CORKIAN_AMPLIFIER_PATTERN = Pattern.compile("§bCorkian Amplifier (I{1,3})");
 
-    private int romanToArabic(String romanNumeral) {
-        int num = 0;
+    private String romanToArabic(String romanNumeral) {
+        String num = "0";
         switch (romanNumeral) {
             case "I":
-                num = 1;
+                num = "1";
                 break;
             case "II":
-                num = 2;
+                num = "2";
                 break;
             case "III":
-                num = 3;
+                num = "3";
                 break;
             case "IV":
-                num = 4;
+                num = "4";
                 break;
             case "V":
-                num = 5;
+                num = "5";
                 break;
             case "VI":
-                num = 6;
+                num = "6";
                 break;
             case "VII":
-                num = 7;
+                num = "7";
                 break;
             case "VIII":
-                num = 8;
+                num = "8";
                 break;
             case "IX":
-                num = 9;
+                num = "9";
                 break;
             case "X":
-                num = 10;
+                num = "10";
                 break;
         }
         return num;
@@ -82,8 +82,7 @@ public class ItemLevelOverlay implements Listener {
                     event.setOverlayText(powderMatcher.group(1));
                     return;
                 }
-                int tier = romanToArabic(powderMatcher.group(1));
-                event.setOverlayText(Integer.toString(tier));
+                event.setOverlayText(romanToArabic(powderMatcher.group(1)));
                 return;
             }
         }
@@ -97,8 +96,7 @@ public class ItemLevelOverlay implements Listener {
                     event.setOverlayText(emeraldPouchMatcher.group(1));
                     return;
                 }
-                int tier = romanToArabic(emeraldPouchMatcher.group(1));
-                event.setOverlayText(Integer.toString(tier));
+                event.setOverlayText(romanToArabic(emeraldPouchMatcher.group(1)));
                 return;
             }
         }
@@ -112,8 +110,7 @@ public class ItemLevelOverlay implements Listener {
                     event.setOverlayText(amplifierMatcher.group(1));
                     return;
                 }
-                int tier = romanToArabic(amplifierMatcher.group(1));
-                event.setOverlayText(Integer.toString(tier));
+                event.setOverlayText(romanToArabic(amplifierMatcher.group(1)));
                 return;
             }
         }
