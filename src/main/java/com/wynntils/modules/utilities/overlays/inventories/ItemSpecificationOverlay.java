@@ -168,27 +168,7 @@ public class ItemSpecificationOverlay implements Listener {
                     } else {
                         destinationName = ItemLevelOverlay.romanToArabic(m.group(2));
                     }
-                    switch (m.group(1)) {
-                        case "Earth":
-                            color = MinecraftChatColors.fromTextFormatting(Powder.EARTH.getRawColor());
-                            break;
-                        case "Thunder":
-                            color = MinecraftChatColors.fromTextFormatting(Powder.THUNDER.getRawColor());
-                            break;
-                        case "Water":
-                            color = MinecraftChatColors.fromTextFormatting(Powder.WATER.getRawColor());
-                            break;
-                        case "Fire":
-                            color = MinecraftChatColors.fromTextFormatting(Powder.FIRE.getRawColor());
-                            break;
-                        case "Air":
-                            color = MinecraftChatColors.fromTextFormatting(Powder.AIR.getRawColor());
-                            break;
-                        case "Blank":
-                            // Powder enum doesn't have blank
-                            color = MinecraftChatColors.GRAY; // Dark gray is too hard to see, use normal instead
-                            break;
-                    }
+                    color = Powder.determineChatColor(m.group(1));
                     xOffset = -1;
                     scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;
                 }
