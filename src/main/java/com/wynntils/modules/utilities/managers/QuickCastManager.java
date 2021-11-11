@@ -11,8 +11,10 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.ActionBarData;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.instances.data.SpellData;
+import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.modules.core.managers.PacketQueue;
 import net.minecraft.client.Minecraft;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketAnimation;
 import net.minecraft.network.play.client.CPacketPlayerDigging;
@@ -49,6 +51,7 @@ public class QuickCastManager {
     }
 
     public static void castFirstSpell() {
+        if (!ItemUtils.getStringLore(McIf.player().getHeldItemMainhand()).contains("§7 Class Req:")) return;
         if (PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ARCHER) {
             queueSpell(1, SPELL_LEFT, SPELL_RIGHT, SPELL_LEFT);
             return;
@@ -58,6 +61,7 @@ public class QuickCastManager {
     }
 
     public static void castSecondSpell() {
+        if (!ItemUtils.getStringLore(McIf.player().getHeldItemMainhand()).contains("§7 Class Req:")) return;
         if (PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ARCHER) {
             queueSpell(2, SPELL_LEFT, SPELL_LEFT, SPELL_LEFT);
             return;
@@ -67,6 +71,7 @@ public class QuickCastManager {
     }
 
     public static void castThirdSpell() {
+        if (!ItemUtils.getStringLore(McIf.player().getHeldItemMainhand()).contains("§7 Class Req:")) return;
         if (PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ARCHER) {
             queueSpell(3, SPELL_LEFT, SPELL_RIGHT, SPELL_RIGHT);
             return;
@@ -76,6 +81,7 @@ public class QuickCastManager {
     }
 
     public static void castFourthSpell() {
+        if (!ItemUtils.getStringLore(McIf.player().getHeldItemMainhand()).contains("§7 Class Req:")) return;
         if (PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ARCHER) {
             queueSpell(4, SPELL_LEFT, SPELL_LEFT, SPELL_RIGHT);
             return;

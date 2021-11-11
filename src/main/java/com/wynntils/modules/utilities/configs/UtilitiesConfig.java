@@ -141,8 +141,12 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Legacy Identification Values", description = "Should mana and life steal stats display as /4s instead of /3s and /5s?")
         public boolean legacyIds = false;
 
-        @Setting(displayName = "Rainbow Perfect Items", description = "Should perfect items have rainbow names?")
+        @Setting(displayName = "Animate Perfect/Defect Item Names", description = "Should perfect and defective items have animated names?\n\n§8 This includes perfect items having rainbow names.")
         public boolean rainbowPerfect = true;
+
+        @Setting.Limitations.FloatLimit(min = 1.0f, max = 20.0f, precision = 1.0f)
+        @Setting(displayName = "Defect Item Obfuscation Percentage", description = "How much should defective item names be obfuscated?\n\n§8 Obfuscation is where the characters constantly change and appear corrupted.")
+        public float defectiveObfuscationAmount = 8.0f;
 
         @Setting(displayName = "Categorize Identifications", description = "Should the identifications in an item's tooltip be categorized?")
         public boolean addSpacing = true;
@@ -237,10 +241,13 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Show Average Unidentified Level", description = "Should the average level of an unidentified item be shown instead of the entire range?", order = 3)
         public boolean averageUnidentifiedLevel = true;
 
-        @Setting(displayName = "Roman Numeral Powder Tier", description = "Should the tier of powders be displayed using roman numerals?", order = 4)
-        public boolean romanNumeralPowderTier = true;
+        @Setting(displayName = "Show Levels Key Also Shows Item Tiers", description = "Should the tier of items (powders, amplifiers, pouches) be shown when pressing the show item level key?", order = 5)
+        public boolean levelKeyShowsItemTiers = false;
 
-        @Setting(displayName = "Item Levels Outside GUIs", description = "Should the item level overlay key be enabled even when no GUI is open?", order = 5)
+        @Setting(displayName = "Roman Numeral Item Tiers", description = "Should the tier of items (powders, amplifiers, pouches) be displayed using roman numerals?", order = 6)
+        public boolean romanNumeralItemTier = true;
+
+        @Setting(displayName = "Item Levels Outside GUIs", description = "Should the item level overlay key be enabled even when no GUI is open?", order = 7)
         public boolean itemLevelOverlayOutsideGui = false;
 
         @Setting(displayName = "Dungeon Key Specification", description = "Should a letter indicating the destination of dungeon keys be displayed?", order = 8)
@@ -255,43 +262,53 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Transportation Item Specification", description = "Should a letter indicating the destination of teleport scrolls and boat passes be displayed?", order = 11)
         public boolean transportationSpecification = true;
 
-        @Setting(displayName = "Amplifier Specification", description = "Should the tier of a Corkian Amplifier be displayed?", order = 12)
+        @Setting(displayName = "Corkian Amplifier Specification", description = "Should the tier of a Corkian Amplifier be displayed?", order = 12)
         public boolean amplifierSpecification = true;
 
-        @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted according to rarity in remote containers?\n\n§8Remote containers are items such as chests and banks.", order = 15)
+        @Setting(displayName = "Powder Specification", description = "Should the tier of powders be displayed?", order = 13)
+        public boolean powderSpecification = true;
+
+        @Setting(displayName = "Emerald Pouch Specification", description = "Should the tier of emerald pouches be displayed?", order = 14)
+        public boolean emeraldPouchSpecification = true;
+
+        @Setting(displayName = "Tier Overlay Size", description = "How large should the tier overlays (emerald pouches, powders, amplifiers) be?", order = 15)
+        @Setting.Limitations.FloatLimit(min = 0.5f, max = 1, precision = 0.1f)
+        public float specificationTierSize = 1;
+
+        @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted according to rarity in remote containers?\n\n§8Remote containers are items such as chests and banks.", order = 17)
         public boolean mainHighlightChest = true;
 
-        @Setting(displayName = "Item Highlights in Inventory", description = "Should items be highlighted according to rarity in your inventory?", order = 16)
+        @Setting(displayName = "Item Highlights in Inventory", description = "Should items be highlighted according to rarity in your inventory?", order = 18)
         public boolean mainHighlightInventory = true;
 
-        @Setting(displayName = "Accessories Highlight", description = "Should your worn accessories be highlighted according to rarity?", order = 17)
+        @Setting(displayName = "Accessories Highlight", description = "Should your worn accessories be highlighted according to rarity?", order = 19)
         public boolean accesoryHighlight = true;
 
-        @Setting(displayName = "Highlight Hotbar Items", description = "Should the items in your hotbar be highlighted according to rarity?", order = 18)
+        @Setting(displayName = "Highlight Hotbar Items", description = "Should the items in your hotbar be highlighted according to rarity?", order = 20)
         public boolean hotbarHighlight = true;
 
-        @Setting(displayName = "Highlight Armour Items", description = "Should your worn armour be highlighted according to rarity?", order = 19)
+        @Setting(displayName = "Highlight Armour Items", description = "Should your worn armour be highlighted according to rarity?", order = 21)
         public boolean armorHighlight = true;
 
-        @Setting(displayName = "Highlight Mythics", description = "Should mythic items be highlighted?", order = 20)
+        @Setting(displayName = "Highlight Mythics", description = "Should mythic items be highlighted?", order = 22)
         public boolean mythicHighlight = true;
 
-        @Setting(displayName = "Highlight Fabled", description = "Should fabled items be highlighted?", order = 21)
+        @Setting(displayName = "Highlight Fabled", description = "Should fabled items be highlighted?", order = 23)
         public boolean fabledHighlight = true;
 
-        @Setting(displayName = "Highlight Legendaries", description = "Should legendary items be highlighted?", order = 22)
+        @Setting(displayName = "Highlight Legendaries", description = "Should legendary items be highlighted?", order = 24)
         public boolean legendaryHighlight = true;
 
-        @Setting(displayName = "Highlight Rares", description = "Should rare items be highlighted?", order = 23)
+        @Setting(displayName = "Highlight Rares", description = "Should rare items be highlighted?", order = 25)
         public boolean rareHighlight = true;
 
-        @Setting(displayName = "Highlight Uniques", description = "Should unique items be highlighted?", order = 24)
+        @Setting(displayName = "Highlight Uniques", description = "Should unique items be highlighted?", order = 26)
         public boolean uniqueHighlight = true;
 
-        @Setting(displayName = "Highlight Set Items", description = "Should set items be highlighted?", order = 25)
+        @Setting(displayName = "Highlight Set Items", description = "Should set items be highlighted?", order = 27)
         public boolean setHighlight = true;
 
-        @Setting(displayName = "Highlight Normal Items", description = "Should normal items be highlighted?", order = 26)
+        @Setting(displayName = "Highlight Normal Items", description = "Should normal items be highlighted?", order = 28)
         public boolean normalHighlight = false;
 
         @Setting(displayName = "Highlight Black Market Cosmetics", description = "Should black market cosmetic items be highlighted?", order = 30)
