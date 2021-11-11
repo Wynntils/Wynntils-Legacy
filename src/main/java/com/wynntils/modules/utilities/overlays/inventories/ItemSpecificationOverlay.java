@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.enums.SkillPoint;
+import com.wynntils.core.framework.enums.Powder;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -22,7 +22,6 @@ import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.profiles.item.enums.ItemType;
-
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -144,13 +143,55 @@ public class ItemSpecificationOverlay implements Listener {
             }
 
             if (UtilitiesConfig.Items.INSTANCE.amplifierSpecification) {
-                Pattern amp = Pattern.compile("^§bCorkian Amplifier (I{1,3})$");
+                Pattern amp = ItemLevelOverlay.CORKIAN_AMPLIFIER_PATTERN;
                 Matcher m = amp.matcher(name);
                 if (m.matches()) {
                     destinationName = m.group(1);
                     color = MinecraftChatColors.AQUA;
                     xOffset = -1;
-                    scale = 0.8f;
+                    scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;
+                }
+            }
+
+            if (UtilitiesConfig.Items.INSTANCE.powderSpecification) {
+                Pattern powder = Powder.POWDER_NAME_PATTERN;
+                Matcher m = powder.matcher(StringUtils.normalizeBadString(name));
+                if (m.matches()) {
+                    destinationName = m.group(2);
+                    switch (m.group(1)) {
+                        case "Earth":
+                            color = MinecraftChatColors.fromTextFormatting(Powder.EARTH.getRawColor());
+                            break;
+                        case "Thunder":
+                            color = MinecraftChatColors.fromTextFormatting(Powder.THUNDER.getRawColor());
+                            break;
+                        case "Water":
+                            color = MinecraftChatColors.fromTextFormatting(Powder.WATER.getRawColor());
+                            break;
+                        case "Fire":
+                            color = MinecraftChatColors.fromTextFormatting(Powder.FIRE.getRawColor());
+                            break;
+                        case "Air":
+                            color = MinecraftChatColors.fromTextFormatting(Powder.AIR.getRawColor());
+                            break;
+                        case "Blank":
+                            // Powder enum doesn't have blank
+                            color = MinecraftChatColors.GRAY; // Dark gray is too hard to see, use normal instead
+                            break;
+                    }
+                    xOffset = -1;
+                    scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;
+                }
+            }
+
+            if (UtilitiesConfig.Items.INSTANCE.emeraldPouchSpecification) {
+                Pattern emeraldPouch = ItemLevelOverlay.EMERALD_POUCH_PATTERN;
+                Matcher m = emeraldPouch.matcher(name);
+                if (m.matches()) {
+                    destinationName = m.group(1);
+                    color = MinecraftChatColors.GREEN;
+                    xOffset = -1;
+                    scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;
                 }
             }
 
