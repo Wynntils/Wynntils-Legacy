@@ -33,10 +33,7 @@ public class ServerEvents implements Listener {
 
     @SubscribeEvent
     public void onWorldJoin(WynnWorldEvent.Join e) {
-        if (Reference.onNether) {
-            if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
-            RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("N", ""), "In the nether", getPlayerInfo(), OffsetDateTime.now());
-        } else if (!Reference.onWars) {
+        if (!Reference.onWars) {
             currentTime = OffsetDateTime.now();
         }
     }
@@ -62,10 +59,7 @@ public class ServerEvents implements Listener {
 
     @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
-        if (Reference.onNether && e.getNewClass() != ClassType.NONE) {
-            if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
-            RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("N", ""), "In the nether", e.getNewClass().toString().toLowerCase(), getPlayerInfo(), OffsetDateTime.now());
-        } else if (!Reference.onWars && Reference.onWorld && e.getNewClass() == ClassType.NONE) {
+        if (!Reference.onWars && Reference.onWorld && e.getNewClass() == ClassType.NONE) {
             if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
             RichPresenceModule.getModule().getRichPresence().updateRichPresence(getWorldDescription(), "Selecting a class", null, currentTime);
             forceUpdate = false;
@@ -138,12 +132,6 @@ public class ServerEvents implements Listener {
                     } else {
                         RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WAR", ""), "Warring", getPlayerInfo(), OffsetDateTime.now());
                     }
-                }
-            } else if (Reference.onNether) {
-                if (PlayerInfo.get(CharacterData.class).isLoaded()) {
-                    RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("N", ""), "In the nether", PlayerInfo.get(CharacterData.class).getCurrentClass().toString().toLowerCase(), getPlayerInfo(), OffsetDateTime.now());
-                } else {
-                    RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("N", ""), "In the nether", getPlayerInfo(), OffsetDateTime.now());
                 }
             } else if (Reference.onWorld) {
                 if (!PlayerInfo.get(CharacterData.class).isLoaded()) {
