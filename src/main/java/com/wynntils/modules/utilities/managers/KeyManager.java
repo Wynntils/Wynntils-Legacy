@@ -53,12 +53,12 @@ public class KeyManager {
             McIf.mc().gameSettings.gammaSetting = lastGamma;
         });
 
-        checkForUpdatesKey = CoreModule.getModule().registerKeyBinding("Check for Updates", Keyboard.KEY_L, "Wynntils", true, WebManager::checkForUpdates);
+        checkForUpdatesKey = CoreModule.getModule().registerKeyBinding("Check for Updates", Keyboard.KEY_NONE, "Wynntils", true, WebManager::checkForUpdates);
 
         CoreModule.getModule().registerKeyBinding("Open Settings", Keyboard.KEY_P, "Wynntils", KeyConflictContext.IN_GAME, true, () -> McIf.mc().displayGuiScreen(SettingsUI.getInstance(McIf.mc().currentScreen)));
 
         lockInventoryKey = UtilitiesModule.getModule().registerKeyBinding("Lock Slot", Keyboard.KEY_H, "Wynntils", KeyConflictContext.GUI, true, () -> {});
-        favoriteTradeKey = UtilitiesModule.getModule().registerKeyBinding("Favorite Trade", Keyboard.KEY_F, "Wynntils", KeyConflictContext.GUI, true, () -> {});
+        favoriteTradeKey = UtilitiesModule.getModule().registerKeyBinding("Favorite Trade", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.GUI, true, () -> {});
 
         UtilitiesModule.getModule().registerKeyBinding("Toggle AFK Protection", Keyboard.KEY_N, "Wynntils", KeyConflictContext.IN_GAME, true, ClientEvents::toggleAfkProtection);
 

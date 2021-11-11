@@ -11,7 +11,6 @@ import com.wynntils.core.framework.instances.data.HorseData;
 import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.modules.utilities.events.ClientEvents;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.Entity;

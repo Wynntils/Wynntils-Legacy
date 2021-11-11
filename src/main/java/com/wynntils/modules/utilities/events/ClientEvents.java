@@ -56,6 +56,7 @@ import net.minecraft.network.play.server.SPacketEntityMetadata;
 import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -66,7 +67,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-
+import java.sql.Timestamp;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -90,6 +91,14 @@ public class ClientEvents implements Listener {
     private static long lastUserInput = Long.MAX_VALUE;
     private static long lastAfkRequested = Long.MAX_VALUE;
     private int tickCounter;
+
+    private Timestamp emeraldPouchLastPickup = new Timestamp(0);
+    private GameUpdateOverlay.MessageContainer emeraldPouchMessage;
+    private IInventory currentLootChest;
+    private static final String EB = EmeraldSymbols.E_STRING + EmeraldSymbols.B_STRING;
+    private static final String LE = EmeraldSymbols.L_STRING + EmeraldSymbols.E_STRING;
+    private static final Pattern POUCH_CAPACITY_PATTERN = Pattern.compile("\\(([0-9]+)(" + EB + "|" + LE + "|stx) Total\\)");
+    private static final Pattern POUCH_USAGE_PATTERN = Pattern.compile("§6§l([0-9]* ?[0-9]* ?[0-9]*)" + EmeraldSymbols.E_STRING);
 
     public static boolean isAwaitingHorseMount = false;
     private static int lastHorseId = -1;
@@ -235,12 +244,19 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
+    public void onGUIOpen(GuiOpenEvent e) {
+        // Store the original opened chest so we can check itemstacks later
+        if (e.getGui() instanceof ChestReplacer && ((ChestReplacer) e.getGui()).getLowerInv().getDisplayName().toString().contains("Loot Chest")) {
+            currentLootChest = ((ChestReplacer) e.getGui()).getLowerInv();
+        }
+    }
+
+    @SubscribeEvent
     public void onGUIClose(GuiOpenEvent e) {
         if (e.getGui() == null) {
             afkProtectionBlocked = false;
             lastUserInput = System.currentTimeMillis();
-        } else if (e.getGui() instanceof InventoryReplacer || e.getGui() instanceof ChestReplacer ||
-                e.getGui() instanceof HorseReplacer) {
+        } else if (e.getGui() instanceof InventoryReplacer || e.getGui() instanceof ChestReplacer || e.getGui() instanceof HorseReplacer) {
             afkProtectionBlocked = true;
         }
         if (scheduledGuiScreen != null && e.getGui() == null && firstNullOccurred) {
@@ -303,14 +319,36 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onTitle(PacketEvent<SPacketTitle> e) {
-        if (!OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectPouch) return;
+        if (!OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectIngredientPouch && !OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) return;
 
         SPacketTitle packet = e.getPacket();
         if (packet.getType() != SPacketTitle.Type.SUBTITLE) return;
-        if (!McIf.getUnformattedText(packet.getMessage()).matches("^§a\\+\\d+ §7.+§a to pouch$")) return;
 
-        e.setCanceled(true);
-        GameUpdateOverlay.queueMessage(McIf.getFormattedText(packet.getMessage()));
+        if (McIf.getUnformattedText(packet.getMessage()).matches("^§a\\+\\d+ §7.+§a to pouch$")) {
+            if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectIngredientPouch) {
+                e.setCanceled(true);
+                GameUpdateOverlay.queueMessage(McIf.getFormattedText(packet.getMessage()));
+            }
+        }
+
+        Matcher m = Pattern.compile("§a\\+(\\d+)§7 Emeralds? §ato pouch").matcher(McIf.getUnformattedText(packet.getMessage()));
+        if (m.matches()) {
+            if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
+                e.setCanceled(true);
+                if (new Timestamp(System.currentTimeMillis() - 3000).before(emeraldPouchLastPickup)) {
+                    // If the last emerald pickup event was less than 3 seconds ago, assume Wynn has relayed us an "updated" emerald title
+                    // Edit the first message it gave us with the new amount
+                    // editMessage doesn't return the new MessageContainer, so we can just keep re-using the first one
+                    int currentEmeralds = Integer.parseInt(m.group(1));
+                    GameUpdateOverlay.editMessage(emeraldPouchMessage, "§a+" + currentEmeralds + "§7 Emeralds §ato pouch");
+                    emeraldPouchLastPickup = new Timestamp(System.currentTimeMillis());
+                    return;
+                }
+                // First time we've picked up emeralds in 3 seconds, set new MessageContainer and start the timer
+                emeraldPouchMessage = GameUpdateOverlay.queueMessage(McIf.getFormattedText(packet.getMessage()));
+                emeraldPouchLastPickup = new Timestamp(System.currentTimeMillis());
+            }
+        }
     }
 
     @SubscribeEvent
@@ -665,7 +703,37 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void clickOnChest(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
+
         if (e.getSlotIn() == null) return;
+      
+        // Queue messages into game update ticker when clicking on emeralds in loot chest
+        if (e.getGui().getLowerInv().getDisplayName().getUnformattedText().contains("Loot Chest") && OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
+            // Check if item is actually an emerald, if we're left clicking, and make sure we're not shift clicking
+            if (currentLootChest.getStackInSlot(e.getSlotId()).getDisplayName().equals("§aEmerald") && e.getMouseButton() == 0 && !GuiScreen.isShiftKeyDown()) {
+                // Find all emerald pouches in inventory
+                NonNullList<Integer> availableCapacities = NonNullList.create();
+                for (int i = 0; i < e.getGui().getUpperInv().getSizeInventory(); i++) {
+                    ItemStack is = e.getGui().getUpperInv().getStackInSlot(i);
+                    if (EmeraldPouchManager.isEmeraldPouch(is)) {
+                        // Append the available capacities of all emerald pouches to a list
+                        availableCapacities.add(EmeraldPouchManager.getPouchCapacity(is) - EmeraldPouchManager.getPouchUsage(is));
+                    }
+                }
+                int emeraldAmount = currentLootChest.getStackInSlot(e.getSlotId()).getCount();
+                // Iterate through all the available capacities and determine if emeralds can actually fit into any pouch
+                for (int capacity : availableCapacities) {
+                    // If yes, proceed and send a message to ticker
+                    if (!(emeraldAmount > capacity)) {
+                        String emeraldString = "Emerald";
+                        if (emeraldAmount > 1) {emeraldString += 's';} // Grammar check!
+                        GameUpdateOverlay.queueMessage("§a+" + emeraldAmount+ "§7 " + emeraldString + " §ato pouch");
+                        break; // Make sure we don't send multiple messages, if multiple pouches in inventory
+                    }
+                }
+            }
+        }
+
+
         // Prevent accidental ingredient/emerald pouch clicks in loot chests
         if (e.getGui().getLowerInv().getDisplayName().getUnformattedText().contains("Loot Chest") && UtilitiesConfig.INSTANCE.preventOpeningPouchesChest) {
             // Ingredient pouch
