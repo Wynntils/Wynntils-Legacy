@@ -14,6 +14,7 @@ import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.IntRange;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import com.wynntils.modules.utilities.managers.EmeraldPouchManager;
 import com.wynntils.webapi.profiles.item.enums.ItemTier;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -109,6 +110,7 @@ public class RarityColorOverlay implements Listener {
         drawLevelArc(guiContainer, s, ItemUtils.getLevel(lore));
         drawHighlightColor(guiContainer, s, getHighlightColor(s, is, lore, name, isChest, guiContainer.getSlotUnderMouse()));
         drawDurabilityArc(guiContainer, s, getDurability(lore));
+        drawPouchUsageArc(guiContainer, s, getPouchUsage(is));
     }
 
     private static CustomColor getHighlightColor(Slot s, ItemStack is, String lore, String name, boolean isChest, Slot slotUnderMouse) {
@@ -190,20 +192,64 @@ public class RarityColorOverlay implements Listener {
         return null;
     }
 
+    private static float getPouchUsage(ItemStack is) {
+        if (!EmeraldPouchManager.isEmeraldPouch(is)) {
+            return -1;
+        }
+        int usage = EmeraldPouchManager.getPouchUsage(is);
+        int capacity = EmeraldPouchManager.getPouchCapacity(is);
+        return (float) usage / capacity;
+    }
+
+    private static void drawPouchUsageArc(GuiContainer guiContainer, Slot s, float usage) {
+        if (!UtilitiesConfig.Items.INSTANCE.emeraldPouchArc || usage == -1) return;
+
+        // This is 100% stolen from the function immediately below
+        int x = guiContainer.getGuiLeft() + s.xPos;
+        int y = guiContainer.getGuiTop() + s.yPos;
+        // So (float usage) returns a number from 0-1 representing the percentage used of the emerald pouch
+        // When the pouch is full, we want red; when empty, green. The hue scale does this perfectly - green is 120', red is 0'.
+        // (MathHelper.hsvToRGB) takes a float input from 0-1; green is 0.33333, red is still 0.
+        // Since we don't like manually typing out infinitely repeating decimals, we can do (120 * inverseUsage) / 360.
+        // In this case, when usage is 1 (100%), it'll be 120 * 0 = 0, 0 / 360 = 0 (red), correct
+        // When usage is 0 (0%), it'll be 120 * 1 = 120, 120 / 360 = 0.333333 (green), correct
+        // Below, all this is simplified into inverseUsage / 3.0F
+        int arcColor = MathHelper.hsvToRGB((1 - usage) / 3.0F, 1.0F, 1.0F);
+        int radius = (UtilitiesConfig.Items.INSTANCE.itemLevelArc) ? 7 : 8;
+
+        GlStateManager.disableLighting();
+        GlStateManager.disableDepth();
+        GlStateManager.disableTexture2D();
+        GlStateManager.disableAlpha();
+        GlStateManager.enableBlend();
+        GlStateManager.glLineWidth(4.0f);
+
+        Tessellator tessellator = Tessellator.getInstance();
+        BufferBuilder bufferbuilder = tessellator.getBuffer();
+
+        drawArc(bufferbuilder, x, y, usage, radius, arcColor >> 16 & 255, arcColor >> 8 & 255, arcColor & 255, 160);
+
+        GlStateManager.disableBlend();
+        GlStateManager.enableAlpha();
+        GlStateManager.enableTexture2D();
+        GlStateManager.enableDepth();
+        GlStateManager.enableLighting();
+    }
+
     private static float getDurability(String lore) {
-    	Matcher m = DURABILITY_PATTERN.matcher(lore);
-    	if(m.find()) {
-    		return Float.parseFloat(m.group(1)) / Float.parseFloat(m.group(2));
-    	}
-    	return -1;
+        Matcher m = DURABILITY_PATTERN.matcher(lore);
+        if (m.find()) {
+            return Float.parseFloat(m.group(1)) / Float.parseFloat(m.group(2));
+        }
+        return -1;
 
     }
 
-    private static void drawDurabilityArc(GuiContainer guiContainer, Slot s, float durability){
-    	if (!UtilitiesConfig.Items.INSTANCE.craftedDurabilityBars) return;
-    	if (durability == -1) return;
+    private static void drawDurabilityArc(GuiContainer guiContainer, Slot s, float durability) {
+        if (!UtilitiesConfig.Items.INSTANCE.craftedDurabilityBars) return;
+        if (durability == -1) return;
 
-    	int x = guiContainer.getGuiLeft() + s.xPos;
+        int x = guiContainer.getGuiLeft() + s.xPos;
         int y = guiContainer.getGuiTop() + s.yPos;
 
         GlStateManager.disableLighting();
@@ -302,6 +348,7 @@ public class RarityColorOverlay implements Listener {
     }
 
     private static final Map<Character, CustomColor> POWDER_COLOUR_MAP = new HashMap<>(10);
+
     static {
         // Lightning
         POWDER_COLOUR_MAP.put(TextFormatting.YELLOW.toString().charAt(1), new CustomColor(1, 1, 1 / 3f));
