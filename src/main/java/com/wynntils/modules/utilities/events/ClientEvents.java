@@ -1066,7 +1066,6 @@ public class ClientEvents implements Listener {
         // Check only if name contains Potion of, as we want to be able to buy skill potions too
         if (isBulkShopConsumable(is)) { // Only replace lore for purchaseable items
             List<String> lore = ItemUtils.getLore(is);
-            System.out.println(ItemUtils.getStringLore(is));
             lore.add(" ");
             lore.add("§aShift-click to purchase " + UtilitiesConfig.INSTANCE.bulkBuyAmount);
             ItemUtils.replaceLore(is, lore);
