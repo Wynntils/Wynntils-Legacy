@@ -740,6 +740,7 @@ public class ClientEvents implements Listener {
             }
         }
 
+
         // Prevent accidental ingredient/emerald pouch clicks in loot chests
         if (e.getGui().getLowerInv().getDisplayName().getUnformattedText().contains("Loot Chest") && UtilitiesConfig.INSTANCE.preventOpeningPouchesChest) {
             // Ingredient pouch
@@ -757,12 +758,52 @@ public class ClientEvents implements Listener {
             }
         }
 
+
         // Bulk buy functionality
         // The title for the shops are in slot 4
         if (UtilitiesConfig.INSTANCE.shiftBulkBuy && isBulkShopConsumable(e.getGui().getLowerInv().getStackInSlot(e.getSlotId())) && GuiScreen.isShiftKeyDown()) {
             CPacketClickWindow packet = new CPacketClickWindow(e.getGui().inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), e.getSlotIn().getStack(), e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
             for (int i = 1; i < UtilitiesConfig.INSTANCE.bulkBuyAmount; i++) { // int i is 1 by default because the user's original click is not cancelled
                 McIf.mc().getConnection().sendPacket(packet);
+
+              
+        if (e.getSlotIn().getStack().getDisplayName().equals("§dDump Inventory")) {
+            switch (UtilitiesConfig.INSTANCE.bankDumpButton) {
+                case Default:
+                    return;
+                case Confirm:
+                    ChestReplacer gui = e.getGui();
+                    ItemStack item = e.getSlotIn().getStack();
+                    CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), item, e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
+                    McIf.mc().displayGuiScreen(new GuiYesNo((result, parentButtonID) -> {
+                        McIf.mc().displayGuiScreen(gui);
+                        if (result) {
+                            McIf.mc().getConnection().sendPacket(packet);
+                            bankPageConfirmed = true;
+                        }
+                    }, "Are you sure you want to dump your inventory?", "This confirm may be disabled in the Wynntils config.", 0));
+                case Block:
+                    e.setCanceled(true);
+            }
+        }
+
+        if (e.getSlotIn().getStack().getDisplayName().equals("§dQuick Stash")) {
+            switch (UtilitiesConfig.INSTANCE.bankDumpButton) {
+                case Default:
+                    return;
+                case Confirm:
+                    ChestReplacer gui = e.getGui();
+                    ItemStack item = e.getSlotIn().getStack();
+                    CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), item, e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
+                    McIf.mc().displayGuiScreen(new GuiYesNo((result, parentButtonID) -> {
+                        McIf.mc().displayGuiScreen(gui);
+                        if (result) {
+                            McIf.mc().getConnection().sendPacket(packet);
+                            bankPageConfirmed = true;
+                        }
+                    }, "Are you sure you want to quick stash?", "This confirm may be disabled in the Wynntils config.", 0));
+                case Block:
+                    e.setCanceled(true);
             }
         }
 
