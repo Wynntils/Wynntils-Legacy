@@ -765,8 +765,10 @@ public class ClientEvents implements Listener {
             CPacketClickWindow packet = new CPacketClickWindow(e.getGui().inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), e.getSlotIn().getStack(), e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
             for (int i = 1; i < UtilitiesConfig.INSTANCE.bulkBuyAmount; i++) { // int i is 1 by default because the user's original click is not cancelled
                 McIf.mc().getConnection().sendPacket(packet);
+            }
+        }
 
-              
+        // Bank dump confirm
         if (e.getSlotIn().getStack().getDisplayName().equals("§dDump Inventory")) {
             switch (UtilitiesConfig.INSTANCE.bankDumpButton) {
                 case Default:
@@ -787,6 +789,7 @@ public class ClientEvents implements Listener {
             }
         }
 
+        // Bank quick stash confirm
         if (e.getSlotIn().getStack().getDisplayName().equals("§dQuick Stash")) {
             switch (UtilitiesConfig.INSTANCE.bankDumpButton) {
                 case Default:
