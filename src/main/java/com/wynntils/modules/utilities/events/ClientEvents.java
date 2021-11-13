@@ -703,8 +703,11 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void clickOnChest(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
+
+        if (e.getSlotIn() == null) return;
+      
         // Queue messages into game update ticker when clicking on emeralds in loot chest
-        if (e.getSlotIn() != null && e.getGui().getLowerInv().getDisplayName().getUnformattedText().contains("Loot Chest") && OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
+        if (e.getGui().getLowerInv().getDisplayName().getUnformattedText().contains("Loot Chest") && OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
             // Check if item is actually an emerald, if we're left clicking, and make sure we're not shift clicking
             if (currentLootChest.getStackInSlot(e.getSlotId()).getDisplayName().equals("§aEmerald") && e.getMouseButton() == 0 && !GuiScreen.isShiftKeyDown()) {
                 // Find all emerald pouches in inventory
@@ -730,8 +733,9 @@ public class ClientEvents implements Listener {
             }
         }
 
+
         // Prevent accidental ingredient/emerald pouch clicks in loot chests
-        if (e.getSlotIn() != null && e.getGui().getLowerInv().getDisplayName().getUnformattedText().contains("Loot Chest") && UtilitiesConfig.INSTANCE.preventOpeningPouchesChest) {
+        if (e.getGui().getLowerInv().getDisplayName().getUnformattedText().contains("Loot Chest") && UtilitiesConfig.INSTANCE.preventOpeningPouchesChest) {
             // Ingredient pouch
             if (e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() == 4) {
                 e.setCanceled(true);
@@ -747,7 +751,47 @@ public class ClientEvents implements Listener {
             }
         }
 
-        if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getSlotIn() != null) {
+        if (e.getSlotIn().getStack().getDisplayName().equals("§dDump Inventory")) {
+            switch (UtilitiesConfig.INSTANCE.bankDumpButton) {
+                case Default:
+                    return;
+                case Confirm:
+                    ChestReplacer gui = e.getGui();
+                    ItemStack item = e.getSlotIn().getStack();
+                    CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), item, e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
+                    McIf.mc().displayGuiScreen(new GuiYesNo((result, parentButtonID) -> {
+                        McIf.mc().displayGuiScreen(gui);
+                        if (result) {
+                            McIf.mc().getConnection().sendPacket(packet);
+                            bankPageConfirmed = true;
+                        }
+                    }, "Are you sure you want to dump your inventory?", "This confirm may be disabled in the Wynntils config.", 0));
+                case Block:
+                    e.setCanceled(true);
+            }
+        }
+
+        if (e.getSlotIn().getStack().getDisplayName().equals("§dQuick Stash")) {
+            switch (UtilitiesConfig.INSTANCE.bankDumpButton) {
+                case Default:
+                    return;
+                case Confirm:
+                    ChestReplacer gui = e.getGui();
+                    ItemStack item = e.getSlotIn().getStack();
+                    CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), item, e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
+                    McIf.mc().displayGuiScreen(new GuiYesNo((result, parentButtonID) -> {
+                        McIf.mc().displayGuiScreen(gui);
+                        if (result) {
+                            McIf.mc().getConnection().sendPacket(packet);
+                            bankPageConfirmed = true;
+                        }
+                    }, "Are you sure you want to quick stash?", "This confirm may be disabled in the Wynntils config.", 0));
+                case Block:
+                    e.setCanceled(true);
+            }
+        }
+
+        if (UtilitiesConfig.INSTANCE.preventSlotClicking) {
             if (e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() >= 0 && e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() < 27) {
                 e.setCanceled(checkDropState(e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() + 9, McIf.mc().gameSettings.keyBindDrop.getKeyCode()));
             } else {
@@ -755,7 +799,7 @@ public class ClientEvents implements Listener {
             }
         }
 
-        if (UtilitiesConfig.Bank.INSTANCE.addBankConfirmation && e.getSlotIn() != null) {
+        if (UtilitiesConfig.Bank.INSTANCE.addBankConfirmation) {
             IInventory inventory = e.getSlotIn().inventory;
             if (McIf.getUnformattedText(inventory.getDisplayName()).contains("Bank") && e.getSlotIn().getHasStack()) {
                 ItemStack item = e.getSlotIn().getStack();
