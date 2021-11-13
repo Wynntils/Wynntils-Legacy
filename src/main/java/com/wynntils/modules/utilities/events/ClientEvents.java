@@ -791,7 +791,7 @@ public class ClientEvents implements Listener {
 
         // Bank quick stash confirm
         if (e.getSlotIn().getStack().getDisplayName().equals("§dQuick Stash")) {
-            switch (UtilitiesConfig.INSTANCE.bankDumpButton) {
+            switch (UtilitiesConfig.INSTANCE.bankStashButton) {
                 case Default:
                     return;
                 case Confirm:
