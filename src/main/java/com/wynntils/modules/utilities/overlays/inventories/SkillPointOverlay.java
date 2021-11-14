@@ -382,7 +382,7 @@ public class SkillPointOverlay implements Listener {
             if (skillPoint != null) {
                 value = spm.group(1);
 
-                e.setOverlayTextColor(MinecraftChatColors.fromTextFormatting(skillPoint.getColor()));
+                if (UtilitiesConfig.Items.INSTANCE.colorSkillPointNumberOverlay) e.setOverlayTextColor(MinecraftChatColors.fromTextFormatting(skillPoint.getColor()));
 
                 ScreenRenderer.beginGL(e.getX(), e.getY());
                 {

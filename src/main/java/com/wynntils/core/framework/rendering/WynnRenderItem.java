@@ -11,6 +11,7 @@ import com.wynntils.core.utils.reflections.ReflectionFields;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.client.renderer.color.ItemColors;
 import net.minecraft.client.renderer.texture.TextureManager;
@@ -67,7 +68,7 @@ public class WynnRenderItem extends RenderItem {
                 SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NORMAL);
 
         GlStateManager.popMatrix();
-        GlStateManager.enableLighting();
+        RenderHelper.enableGUIStandardItemLighting();
         GlStateManager.enableDepth();
         GlStateManager.enableBlend();
     }
