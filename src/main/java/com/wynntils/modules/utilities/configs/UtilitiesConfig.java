@@ -380,7 +380,7 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting.Limitations.FloatLimit(min = 0, max = 100, precision = 0.5f)
         public float hotbarAlpha = 30;
 
-        @Setting(displayName = "Color number of skillpoints", description = "Should the number of skillpoints be colored??")
+        @Setting(displayName = "Color Number of Skillpoints", description = "Should the number of skillpoints be colored??")
         public boolean colorSkillPointNumberOverlay = true;
     }
 
