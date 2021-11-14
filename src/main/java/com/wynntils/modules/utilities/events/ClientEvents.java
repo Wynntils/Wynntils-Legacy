@@ -806,12 +806,11 @@ public class ClientEvents implements Listener {
         }
 
         if (UtilitiesConfig.Bank.INSTANCE.addBankConfirmation) {
-            IInventory inventory = e.getSlotIn().inventory;
-            if (McIf.getUnformattedText(inventory.getDisplayName()).contains("Bank") && e.getSlotIn().getHasStack()) {
+            if (McIf.getUnformattedText(e.getSlotIn().inventory.getDisplayName()).contains("[Pg. ") && e.getSlotIn().getHasStack()) {
                 ItemStack item = e.getSlotIn().getStack();
                 if (item.getDisplayName().contains(">" + TextFormatting.DARK_RED + ">" + TextFormatting.RED + ">" + TextFormatting.DARK_RED + ">" + TextFormatting.RED + ">")) {
                     String lore = TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(item));
-                    String price = lore.substring(lore.indexOf(" Price: ") + 8, lore.length());
+                    String price = lore.substring(lore.indexOf(" Price: ") + 8);
                     String itemName = item.getDisplayName();
                     String pageNumber = itemName.substring(9, itemName.indexOf(TextFormatting.RED + " >"));
                     ChestReplacer gui = e.getGui();
