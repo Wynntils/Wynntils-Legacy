@@ -790,7 +790,6 @@ public class ClientEvents implements Listener {
                         McIf.mc().displayGuiScreen(gui);
                         if (result) {
                             McIf.mc().getConnection().sendPacket(packet);
-                            bankPageConfirmed = true;
                         }
                     }, "Are you sure you want to quick stash?", "This confirm may be disabled in the Wynntils config.", 0));
                 case Block:
@@ -842,7 +841,6 @@ public class ClientEvents implements Listener {
                         McIf.mc().displayGuiScreen(gui);
                         if (result) {
                             McIf.mc().getConnection().sendPacket(packet);
-                            bankPageConfirmed = true;
                         }
                     }, "Are you sure you want to purchase another bank page?", "Page number: " + pageNumber + "\nCost: " + priceDisplay, 0));
                     e.setCanceled(true);
