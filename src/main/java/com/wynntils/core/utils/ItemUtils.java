@@ -132,8 +132,9 @@ public class ItemUtils {
                         damageValue = Integer.parseInt(values[1]);
                     }
 
-                    if (Item.getIdFromItem(item.getItem()) == i && item.getItemDamage() == damageValue)
+                    if (Item.getIdFromItem(item.getItem()) == i && item.getItemDamage() == damageValue) {
                         return e.getKey();
+                    }
                 }
             }
         }
