@@ -10,11 +10,13 @@ import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
+import com.wynntils.core.framework.instances.data.InventoryData;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
+import com.wynntils.core.utils.reference.RequirementSymbols;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
@@ -1123,17 +1125,26 @@ public class ClientEvents implements Listener {
         NBTTagCompound nbt = is.getTagCompound();
 
         for (String loreLine : ItemUtils.getLore(is)) {
-            Matcher priceMatcher = PRICE_REPLACER.matcher(loreLine);
-            if (priceMatcher.matches() && !nbt.hasKey("wynntilsBulkShiftPrice") && isShiftHeld) {
-                loreLine = loreLine.replace(priceMatcher.group(1), String.valueOf(Integer.parseInt(priceMatcher.group(1)) * UtilitiesConfig.INSTANCE.bulkBuyAmount));
-                nbt.setBoolean("wynntilsBulkShiftPrice", true);
-            } else if (priceMatcher.matches() && nbt.hasKey("wynntilsBulkShiftPrice") && !isShiftHeld) {
-                loreLine = loreLine.replace(priceMatcher.group(1), String.valueOf(Integer.parseInt(priceMatcher.group(1)) / UtilitiesConfig.INSTANCE.bulkBuyAmount));
-                nbt.removeTag("wynntilsBulkShiftPrice");
-            }
             // Do not add the last bit of info text
             if (!loreLine.contains("§aPurchasing ") && !loreLine.contains("§aShift-click to purchase ")) {
                 newLore.add(loreLine);
+            }
+
+            Matcher priceMatcher = PRICE_REPLACER.matcher(loreLine);
+            if (priceMatcher.matches() && !nbt.hasKey("wynntilsBulkPrice")) {
+                // Determine if we have enough money to buy the bulk amount and add lore
+                String moneySymbol = RequirementSymbols.CHECKMARK_STRING;
+                int singularPrice = Integer.parseInt(priceMatcher.group(1));
+                int bulkPrice = singularPrice * UtilitiesConfig.INSTANCE.bulkBuyAmount;
+                int availMoney = PlayerInfo.get(InventoryData.class).getMoney();
+                System.out.println("money: " + availMoney);
+                System.out.println("bulkPrice: " +bulkPrice);
+                if (bulkPrice > availMoney) {
+                    moneySymbol = RequirementSymbols.XMARK_STRING;
+                }
+                String loreString = "§6 - §a"  + moneySymbol + " §f" + bulkPrice + "§7" + EmeraldSymbols.E_STRING;
+                newLore.add(loreString);
+                nbt.setBoolean("wynntilsBulkPrice", true);
             }
         }
 
