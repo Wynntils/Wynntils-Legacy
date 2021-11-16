@@ -6,6 +6,7 @@ package com.wynntils.core.utils;
 
 import com.wynntils.core.utils.objects.IntRange;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
+import com.wynntils.modules.utilities.managers.EmeraldPouchManager;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.enums.ItemType;
 import net.minecraft.init.Blocks;
@@ -29,7 +30,6 @@ public class ItemUtils {
 
     private static final Pattern LEVEL_PATTERN = Pattern.compile("(?:Combat|Crafting|Mining|Woodcutting|Farming|Fishing) Lv\\. Min: ([0-9]+)");
     private static final Pattern LEVEL_RANGE_PATTERN = Pattern.compile("Lv\\. Range: " + TextFormatting.WHITE.toString() + "([0-9]+)-([0-9]+)");
-    private static final Pattern POUCH_USAGE_PATTERN = Pattern.compile("§6§l([0-9]* ?[0-9]* ?[0-9]*)" + EmeraldSymbols.E_STRING); // TODO: replace this usage with EmeraldPouchManager once that's merged (#354)
 
     public static final NBTTagCompound UNBREAKABLE = new NBTTagCompound();
 
@@ -132,7 +132,8 @@ public class ItemUtils {
                         damageValue = Integer.parseInt(values[1]);
                     }
 
-                    if (Item.getIdFromItem(item.getItem()) == i && item.getItemDamage() == damageValue) return e.getKey();
+                    if (Item.getIdFromItem(item.getItem()) == i && item.getItemDamage() == damageValue)
+                        return e.getKey();
                 }
             }
         }
@@ -153,12 +154,8 @@ public class ItemUtils {
             ItemStack it = inv.getStackInSlot(i);
             if (it.isEmpty()) continue;
 
-            // TODO: replace this with EmeraldPouchManager once that's merged (#354)
-            if (it.getDisplayName().startsWith("§aEmerald Pouch§2 [Tier")) {
-                Matcher usageMatcher = POUCH_USAGE_PATTERN.matcher(getStringLore(it));
-                if (usageMatcher.find()) {
-                    money += Integer.parseInt(usageMatcher.group(1).replaceAll("\\s", ""));
-                }
+            if (EmeraldPouchManager.isEmeraldPouch(it)) {
+                money += EmeraldPouchManager.getPouchUsage(it);
             } else if (it.getItem() == Items.EMERALD && it.getDisplayName().equals(TextFormatting.GREEN + "Emerald")) {
                 money += it.getCount();
             } else if (it.getItem() == EMERALD_BLOCK && it.getDisplayName().equals(TextFormatting.GREEN + "Emerald Block")) {
