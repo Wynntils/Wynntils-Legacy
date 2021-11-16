@@ -641,8 +641,6 @@ public class ClientEvents implements Listener {
                 if (openSlot == 0) return; // no open slots, cannot move accessory anywhere
                 accessoryDestinationSlot = openSlot;
 
-                e.setCanceled(true);
-
             } else { // putting on accessory
                 // verify it's an accessory
                 ItemType item = ItemUtils.getItemType(e.getSlotIn().getStack());
@@ -671,8 +669,8 @@ public class ClientEvents implements Listener {
                 if (openSlot == 0) return;
                 accessoryDestinationSlot = openSlot;
 
-                e.setCanceled(true); // only cancel after finding open slot
             }
+            e.setCanceled(true); // only cancel after finding open slot
 
             // pick up accessory
             CPacketClickWindow packet = new CPacketClickWindow(e.getGui().inventorySlots.windowId, e.getSlotId(), 0, ClickType.PICKUP, e.getSlotIn().getStack(), e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
