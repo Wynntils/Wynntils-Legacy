@@ -18,6 +18,7 @@ import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.managers.PingManager;
 import com.wynntils.modules.utilities.interfaces.InfoModule;
 import com.wynntils.modules.utilities.managers.AreaDPSManager;
+import com.wynntils.modules.utilities.managers.ServerListManager;
 import com.wynntils.modules.utilities.managers.SpeedometerManager;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
@@ -38,58 +39,58 @@ public class InfoFormatter {
     private int tick = 0;
 
     private static final Pattern formatRegex = Pattern.compile(
-        "%([a-zA-Z_]+|%)%|\\\\([\\\\n%§EBLMH]|x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})"
+            "%([a-zA-Z_]+|%)%|\\\\([\\\\n%§EBLMH]|x[0-9A-Fa-f]{2}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})"
     );
 
     public InfoFormatter() {
         // Escape for % character
         registerFormatter((input) ->
-                "%",
+                        "%",
                 "%");
 
         // Blocks per second
         registerFormatter((input) ->
-                CharacterData.PER_FORMAT.format(SpeedometerManager.getCurrentSpeed()),
+                        CharacterData.PER_FORMAT.format(SpeedometerManager.getCurrentSpeed()),
                 "bps");
 
         // Blocks per minute
         registerFormatter((input) ->
-                CharacterData.PER_FORMAT.format(SpeedometerManager.getCurrentSpeed() * 60),
+                        CharacterData.PER_FORMAT.format(SpeedometerManager.getCurrentSpeed() * 60),
                 "bpm");
 
         // Kilometers per hour (1000 blocks per hour)
         registerFormatter((input) ->
-                CharacterData.PER_FORMAT.format(SpeedometerManager.getCurrentSpeed() * 3.6),
+                        CharacterData.PER_FORMAT.format(SpeedometerManager.getCurrentSpeed() * 3.6),
                 "kmph");
 
         // X coordinate
         registerFormatter((input) ->
-                Integer.toString((int) McIf.player().posX),
+                        Integer.toString((int) McIf.player().posX),
                 "x");
 
         // Y coordinate
         registerFormatter((input) ->
-                Integer.toString((int) McIf.player().posY),
+                        Integer.toString((int) McIf.player().posY),
                 "y");
 
         // Z coordinate
         registerFormatter((input) ->
-                Integer.toString((int) McIf.player().posZ),
+                        Integer.toString((int) McIf.player().posZ),
                 "z");
 
         // The facing cardinal direction
         registerFormatter((input) ->
-                Utils.getPlayerDirection(McIf.player().rotationYaw),
+                        Utils.getPlayerDirection(McIf.player().rotationYaw),
                 "dir");
 
         // Frames per second
         registerFormatter((input) ->
-                Integer.toString(Minecraft.getDebugFPS()),
+                        Integer.toString(Minecraft.getDebugFPS()),
                 "fps");
 
         // The world/server number
         registerFormatter((input) ->
-                Reference.getUserWorld(),
+                        Reference.getUserWorld(),
                 "world");
 
         // The ping time to the server
@@ -114,54 +115,54 @@ public class InfoFormatter {
 
         // Current mana
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.get(CharacterData.class).getCurrentMana()),
+                        Integer.toString(PlayerInfo.get(CharacterData.class).getCurrentMana()),
                 "mana");
 
         // Max mana
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.get(CharacterData.class).getMaxMana()),
+                        Integer.toString(PlayerInfo.get(CharacterData.class).getMaxMana()),
                 "mana_max");
 
         // Current health
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.get(CharacterData.class).getCurrentHealth()),
+                        Integer.toString(PlayerInfo.get(CharacterData.class).getCurrentHealth()),
                 "health");
 
         // Max health
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.get(CharacterData.class).getMaxHealth()),
+                        Integer.toString(PlayerInfo.get(CharacterData.class).getMaxHealth()),
                 "health_max");
 
         // Health percentage
         registerFormatter((input) -> {
             double currentHealth = PlayerInfo.get(CharacterData.class).getCurrentHealth();
             double maxHealth = PlayerInfo.get(CharacterData.class).getMaxHealth();
-            return Integer.toString((int)Math.round(currentHealth / maxHealth * 100));
+            return Integer.toString((int) Math.round(currentHealth / maxHealth * 100));
         }, "health_pct");
 
         // Current XP (formatted)
         registerFormatter((input) ->
-                StringUtils.integerToShortString(PlayerInfo.get(CharacterData.class).getCurrentXP()),
+                        StringUtils.integerToShortString(PlayerInfo.get(CharacterData.class).getCurrentXP()),
                 "xp");
 
         // Current XP (raw)
         registerFormatter((input) ->
-                Long.toString(PlayerInfo.get(CharacterData.class).getCurrentXP()),
+                        Long.toString(PlayerInfo.get(CharacterData.class).getCurrentXP()),
                 "xp_raw");
 
         // XP required to level up (formatted)
         registerFormatter((input) ->
-                StringUtils.integerToShortString(PlayerInfo.get(CharacterData.class).getXpNeededToLevelUp()),
+                        StringUtils.integerToShortString(PlayerInfo.get(CharacterData.class).getXpNeededToLevelUp()),
                 "xp_req");
 
         // XP required to level up (raw)
         registerFormatter((input) ->
-                Long.toString(PlayerInfo.get(CharacterData.class).getXpNeededToLevelUp()),
+                        Long.toString(PlayerInfo.get(CharacterData.class).getXpNeededToLevelUp()),
                 "xp_req_raw");
 
         // Percentage XP to next level
         registerFormatter((input) ->
-                PlayerInfo.get(CharacterData.class).getCurrentXPAsPercentage(),
+                        PlayerInfo.get(CharacterData.class).getCurrentXPAsPercentage(),
                 "xp_pct");
 
         // Horse XP
@@ -202,32 +203,32 @@ public class InfoFormatter {
 
         // Number of items in ingredient pouch
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.get(InventoryData.class).getIngredientPouchCount(false)),
+                        Integer.toString(PlayerInfo.get(InventoryData.class).getIngredientPouchCount(false)),
                 "pouch");
 
         // Number of free slots in ingredient pouch
         registerFormatter((input) ->
-                Integer.toString(27 - PlayerInfo.get(InventoryData.class).getIngredientPouchCount(true)),
+                        Integer.toString(27 - PlayerInfo.get(InventoryData.class).getIngredientPouchCount(true)),
                 "pouch_free");
 
         // Number of used slots in ingredient pouch
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.get(InventoryData.class).getIngredientPouchCount(true)),
+                        Integer.toString(PlayerInfo.get(InventoryData.class).getIngredientPouchCount(true)),
                 "pouch_slots");
 
         // Number of free slots in the inventory
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.get(InventoryData.class).getFreeInventorySlots()),
+                        Integer.toString(PlayerInfo.get(InventoryData.class).getFreeInventorySlots()),
                 "inv_free");
 
         // Number of used slots in the inventory
         registerFormatter((input) ->
-                Integer.toString(28 - PlayerInfo.get(InventoryData.class).getFreeInventorySlots()),
+                        Integer.toString(28 - PlayerInfo.get(InventoryData.class).getFreeInventorySlots()),
                 "inv_slots");
 
         // Current territory
         registerFormatter((input) ->
-                PlayerInfo.get(LocationData.class).getLocation(),
+                        PlayerInfo.get(LocationData.class).getLocation(),
                 "location", "loc");
 
 
@@ -247,7 +248,7 @@ public class InfoFormatter {
                 "territory_owner_prefix", "terguild_pref");
 
         // Distance from compass beacon
-        registerFormatter((input) ->{
+        registerFormatter((input) -> {
             Location compass = CompassManager.getCompassLocation();
             Location playerPos = new Location(McIf.player());
 
@@ -258,7 +259,7 @@ public class InfoFormatter {
 
         // Current level
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.get(CharacterData.class).getLevel()),
+                        Integer.toString(PlayerInfo.get(CharacterData.class).getLevel()),
                 "level", "lvl");
 
         // Time until soul point (formatted)
@@ -277,7 +278,7 @@ public class InfoFormatter {
             }
 
             return cache.get("soulpointsminutes");
-        },"soulpoint_timer_m", "sp_timer_m");
+        }, "soulpoint_timer_m", "sp_timer_m");
 
         // Seconds until soul point
         registerFormatter((input) -> {
@@ -290,12 +291,12 @@ public class InfoFormatter {
 
         // Current soul points
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.get(InventoryData.class).getSoulPoints()),
+                        Integer.toString(PlayerInfo.get(InventoryData.class).getSoulPoints()),
                 "soulpoints", "sp");
 
         // Max soul points
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.get(InventoryData.class).getMaxSoulPoints()),
+                        Integer.toString(PlayerInfo.get(InventoryData.class).getMaxSoulPoints()),
                 "soulpoints_max", "sp_max");
 
         // Total money in inventory
@@ -345,12 +346,12 @@ public class InfoFormatter {
 
         // Count of health potions
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.get(InventoryData.class).getHealthPotions()),
+                        Integer.toString(PlayerInfo.get(InventoryData.class).getHealthPotions()),
                 "potions_health", "hp_pot");
 
         // Count of mana potions
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.get(InventoryData.class).getManaPotions()),
+                        Integer.toString(PlayerInfo.get(InventoryData.class).getManaPotions()),
                 "potions_mana", "mp_pot");
 
         // Current class
@@ -395,17 +396,22 @@ public class InfoFormatter {
 
         // Number of players in the party
         registerFormatter((input) ->
-                Integer.toString(PlayerInfo.get(SocialData.class).getPlayerParty().getPartyMembers().size()),
+                        Integer.toString(PlayerInfo.get(SocialData.class).getPlayerParty().getPartyMembers().size()),
                 "party_count");
 
         // Owner of players party
         registerFormatter((input) ->
-                PlayerInfo.get(SocialData.class).getPlayerParty().getOwner(),
+                        PlayerInfo.get(SocialData.class).getPlayerParty().getOwner(),
                 "party_owner");
 
-        registerFormatter((input ->
-                String.valueOf(AreaDPSManager.getCurrentDPS())),
+        registerFormatter((input) ->
+                        String.valueOf(AreaDPSManager.getCurrentDPS()),
                 "adps", "areadps");
+
+        // Current WC uptime
+        registerFormatter((input) ->
+                        ServerListManager.getUptime(Reference.getUserWorld()),
+                "uptime");
     }
 
     private void registerFormatter(InfoModule formatter, String... vars) {
@@ -416,20 +422,29 @@ public class InfoFormatter {
 
     String doEscapeFormat(String escaped) {
         switch (escaped) {
-            case "\\": return "\\\\";
-            case "n": return "\n";
-            case "%": return "%";
-            case "§": return "&";
-            case "E": return EmeraldSymbols.E_STRING;
-            case "B": return EmeraldSymbols.B_STRING;
-            case "L": return EmeraldSymbols.L_STRING;
-            case "M": return "✺";
-            case "H": return "❤";
+            case "\\":
+                return "\\\\";
+            case "n":
+                return "\n";
+            case "%":
+                return "%";
+            case "§":
+                return "&";
+            case "E":
+                return EmeraldSymbols.E_STRING;
+            case "B":
+                return EmeraldSymbols.B_STRING;
+            case "L":
+                return EmeraldSymbols.L_STRING;
+            case "M":
+                return "✺";
+            case "H":
+                return "❤";
             default:
                 // xXX, uXXXX, UXXXXXXXX
                 int codePoint = Integer.parseInt(escaped.substring(1), 16);
                 if (Utils.StringUtils.isValidCodePoint(codePoint)) {
-                    return new String(new int[]{ codePoint }, 0, 1);
+                    return new String(new int[]{codePoint}, 0, 1);
                 }
                 return null;
         }
