@@ -18,6 +18,7 @@ import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.managers.PingManager;
 import com.wynntils.modules.utilities.interfaces.InfoModule;
 import com.wynntils.modules.utilities.managers.AreaDPSManager;
+import com.wynntils.modules.utilities.managers.ServerListManager;
 import com.wynntils.modules.utilities.managers.SpeedometerManager;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
@@ -403,9 +404,18 @@ public class InfoFormatter {
                 PlayerInfo.get(SocialData.class).getPlayerParty().getOwner(),
                 "party_owner");
 
-        registerFormatter((input ->
-                String.valueOf(AreaDPSManager.getCurrentDPS())),
+        registerFormatter((input) ->
+                String.valueOf(AreaDPSManager.getCurrentDPS()),
                 "adps", "areadps");
+
+        // Uptime variables
+        registerFormatter((input) ->
+                ServerListManager.getUptimeHours(Reference.getUserWorld()),
+                "uptime_h");
+
+        registerFormatter((input) ->
+                ServerListManager.getUptimeMinutes(Reference.getUserWorld()),
+                "uptime_m");
     }
 
     private void registerFormatter(InfoModule formatter, String... vars) {
