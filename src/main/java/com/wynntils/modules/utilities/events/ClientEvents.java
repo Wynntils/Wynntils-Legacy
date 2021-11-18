@@ -8,6 +8,7 @@ import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
+import com.wynntils.core.framework.instances.GuiParentedYesNo;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.interfaces.Listener;
@@ -34,7 +35,6 @@ import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiYesNo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
@@ -766,8 +766,7 @@ public class ClientEvents implements Listener {
                     ChestReplacer gui = e.getGui();
                     ItemStack item = e.getSlotIn().getStack();
                     CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), item, e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
-                    McIf.mc().displayGuiScreen(new GuiYesNo((result, parentButtonID) -> {
-                        McIf.mc().displayGuiScreen(gui);
+                    McIf.mc().displayGuiScreen(new GuiParentedYesNo(() -> gui, (result, parentButtonID) -> {
                         if (result) {
                             McIf.mc().getConnection().sendPacket(packet);
                             bankPageConfirmed = true;
@@ -786,8 +785,7 @@ public class ClientEvents implements Listener {
                     ChestReplacer gui = e.getGui();
                     ItemStack item = e.getSlotIn().getStack();
                     CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), item, e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
-                    McIf.mc().displayGuiScreen(new GuiYesNo((result, parentButtonID) -> {
-                        McIf.mc().displayGuiScreen(gui);
+                    McIf.mc().displayGuiScreen(new GuiParentedYesNo(() -> gui, (result, parentButtonID) -> {
                         if (result) {
                             McIf.mc().getConnection().sendPacket(packet);
                             bankPageConfirmed = true;
@@ -838,8 +836,7 @@ public class ClientEvents implements Listener {
                     String pageNumber = itemName.substring(9, itemName.indexOf(TextFormatting.RED + " >"));
                     ChestReplacer gui = e.getGui();
                     CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), item, e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
-                    McIf.mc().displayGuiScreen(new GuiYesNo((result, parentButtonID) -> {
-                        McIf.mc().displayGuiScreen(gui);
+                    McIf.mc().displayGuiScreen(new GuiParentedYesNo(() -> gui, (result, parentButtonID) -> {
                         if (result) {
                             McIf.mc().getConnection().sendPacket(packet);
                             bankPageConfirmed = true;

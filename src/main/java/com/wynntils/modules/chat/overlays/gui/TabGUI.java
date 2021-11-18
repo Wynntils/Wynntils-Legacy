@@ -5,6 +5,7 @@
 package com.wynntils.modules.chat.overlays.gui;
 
 import com.wynntils.McIf;
+import com.wynntils.core.framework.instances.GuiParentedYesNo;
 import com.wynntils.modules.chat.instances.ChatTab;
 import com.wynntils.modules.chat.managers.TabManager;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
@@ -149,15 +150,13 @@ public class TabGUI extends GuiScreen {
             }
             McIf.mc().displayGuiScreen(new ChatGUI());
         } else if (button == deleteButton) {
-            McIf.mc().displayGuiScreen(new GuiYesNo((result, cc) -> {
+            McIf.mc().displayGuiScreen(new GuiParentedYesNo(ChatGUI::new, (result, cc) -> {
                 if (result) {
                     int c = TabManager.deleteTab(id);
                     if (ChatOverlay.getChat().getCurrentTabId() == id) ChatOverlay.getChat().setCurrentTab(c);
-                    McIf.mc().displayGuiScreen(new ChatGUI());
-                } else {
-                    McIf.mc().displayGuiScreen(this);
                 }
-            }, WHITE + (BOLD + "Do you really want to delete this chat tab?"), RED + "This action is irreversible!", 0));
+            }, WHITE + (BOLD + "Do you really want to delete this chat tab?"), RED + "This action is irreversible!", 0) {
+            });
         } else if (button == advancedButton) {
             boolean simple;
             if (button.displayString.equals("Show Advanced Settings")) {
