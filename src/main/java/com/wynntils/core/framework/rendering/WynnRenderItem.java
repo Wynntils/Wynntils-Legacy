@@ -68,7 +68,7 @@ public class WynnRenderItem extends RenderItem {
                 SmartFontRenderer.TextAlignment.RIGHT_LEFT, SmartFontRenderer.TextShadow.NORMAL);
 
         GlStateManager.popMatrix();
-        RenderHelper.enableGUIStandardItemLighting();
+        GlStateManager.enableLighting();
         GlStateManager.enableDepth();
         GlStateManager.enableBlend();
     }
