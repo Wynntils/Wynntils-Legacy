@@ -375,7 +375,7 @@ public class SkillPointOverlay implements Listener {
         String value = e.getOverlayText();
 
         if (!name.contains("Upgrade")) return; // Skill Points
-        
+
         Matcher spm = SKILLPOINT_PATTERN.matcher(lore);
         if (!spm.find()) return;
 
@@ -390,6 +390,7 @@ public class SkillPointOverlay implements Listener {
                 GlStateManager.translate(0, 0, 500);
                 RenderHelper.disableStandardItemLighting();
                 renderer.drawString(skillPoint.getColoredSymbol(),  2, 0, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+                RenderHelper.enableGUIStandardItemLighting();
             }
             ScreenRenderer.endGL();
         }
