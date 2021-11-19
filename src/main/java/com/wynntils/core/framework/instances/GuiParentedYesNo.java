@@ -29,7 +29,7 @@ public class GuiParentedYesNo extends GuiYesNo {
     }
 
     @FunctionalInterface
-    public abstract static interface ParentScreenSupplier {
-        public GuiScreen getClicked(boolean result, int id);
+    public interface ParentScreenSupplier {
+        GuiScreen getClicked(boolean result, int id);
     }
 }
