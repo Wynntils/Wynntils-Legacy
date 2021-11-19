@@ -374,24 +374,24 @@ public class SkillPointOverlay implements Listener {
         String name = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName());
         String value = e.getOverlayText();
 
-        if (name.contains("Upgrade")) {// Skill Points
-            Matcher spm = SKILLPOINT_PATTERN.matcher(lore);
-            if (!spm.find()) return;
+        if (!name.contains("Upgrade")) return; // Skill Points
+        
+        Matcher spm = SKILLPOINT_PATTERN.matcher(lore);
+        if (!spm.find()) return;
 
-            SkillPoint skillPoint = SkillPoint.findSkillPoint(name);
-            if (skillPoint != null) {
-                value = spm.group(1);
+        SkillPoint skillPoint = SkillPoint.findSkillPoint(name);
+        if (skillPoint != null) {
+            value = spm.group(1);
 
-                if (UtilitiesConfig.Items.INSTANCE.colorSkillPointNumberOverlay) e.setOverlayTextColor(MinecraftChatColors.fromTextFormatting(skillPoint.getColor()));
+            if (UtilitiesConfig.Items.INSTANCE.colorSkillPointNumberOverlay) e.setOverlayTextColor(MinecraftChatColors.fromTextFormatting(skillPoint.getColor()));
 
-                ScreenRenderer.beginGL(e.getX(), e.getY());
-                {
-                    GlStateManager.translate(0, 0, 500);
-                    RenderHelper.disableStandardItemLighting();
-                    renderer.drawString(skillPoint.getColoredSymbol(),  2, 0, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-                }
-                ScreenRenderer.endGL();
+            ScreenRenderer.beginGL(e.getX(), e.getY());
+            {
+                GlStateManager.translate(0, 0, 500);
+                RenderHelper.disableStandardItemLighting();
+                renderer.drawString(skillPoint.getColoredSymbol(),  2, 0, CommonColors.WHITE, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             }
+            ScreenRenderer.endGL();
         }
 
         e.setOverlayText(value);
