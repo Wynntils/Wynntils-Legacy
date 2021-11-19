@@ -150,7 +150,13 @@ public class TabGUI extends GuiScreen {
             }
             McIf.mc().displayGuiScreen(new ChatGUI());
         } else if (button == deleteButton) {
-            McIf.mc().displayGuiScreen(new GuiParentedYesNo(ChatGUI::new, (result, cc) -> {
+            McIf.mc().displayGuiScreen(new GuiParentedYesNo((result, parentButtonId) -> {
+                if (result) {
+                    return new ChatGUI();
+                } else {
+                    return this;
+                }
+            }, (result, cc) -> {
                 if (result) {
                     int c = TabManager.deleteTab(id);
                     if (ChatOverlay.getChat().getCurrentTabId() == id) ChatOverlay.getChat().setCurrentTab(c);

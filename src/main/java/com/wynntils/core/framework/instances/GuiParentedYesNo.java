@@ -6,13 +6,12 @@ import net.minecraft.client.gui.GuiYesNo;
 import net.minecraft.client.gui.GuiYesNoCallback;
 
 import java.io.IOException;
-import java.util.function.Supplier;
 
 public class GuiParentedYesNo extends GuiYesNo {
 
-    private final Supplier<GuiScreen> parentScreenSupplier;
+    private final ParentScreenSupplier parentScreenSupplier;
 
-    public GuiParentedYesNo(Supplier<GuiScreen> parentScreenSupplier, GuiYesNoCallback callback, String messageLine1In, String messageLine2In, int parentButtonClickedIdIn) {
+    public GuiParentedYesNo(ParentScreenSupplier parentScreenSupplier, GuiYesNoCallback callback, String messageLine1In, String messageLine2In, int parentButtonClickedIdIn) {
         super(callback, messageLine1In, messageLine2In, parentButtonClickedIdIn);
         this.parentScreenSupplier = parentScreenSupplier;
     }
@@ -22,10 +21,15 @@ public class GuiParentedYesNo extends GuiYesNo {
     {
         if (keyCode == 1) //escape
         {
-            Utils.displayGuiScreen(parentScreenSupplier.get());
+            Utils.displayGuiScreen(parentScreenSupplier.getClicked(false, this.parentButtonClickedId));
 
             //parentScreen is minecraft naming scheme
             parentScreen.confirmClicked(false, this.parentButtonClickedId);
         }
+    }
+
+    @FunctionalInterface
+    public abstract static interface ParentScreenSupplier {
+        public GuiScreen getClicked(boolean result, int id);
     }
 }

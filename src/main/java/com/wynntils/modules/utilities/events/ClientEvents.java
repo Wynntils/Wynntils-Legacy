@@ -766,7 +766,7 @@ public class ClientEvents implements Listener {
                     ChestReplacer gui = e.getGui();
                     ItemStack item = e.getSlotIn().getStack();
                     CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), item, e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
-                    McIf.mc().displayGuiScreen(new GuiParentedYesNo(() -> gui, (result, parentButtonID) -> {
+                    McIf.mc().displayGuiScreen(new GuiParentedYesNo((result, parentButtonId) -> gui, (result, parentButtonID) -> {
                         if (result) {
                             McIf.mc().getConnection().sendPacket(packet);
                             bankPageConfirmed = true;
@@ -785,7 +785,7 @@ public class ClientEvents implements Listener {
                     ChestReplacer gui = e.getGui();
                     ItemStack item = e.getSlotIn().getStack();
                     CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), item, e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
-                    McIf.mc().displayGuiScreen(new GuiParentedYesNo(() -> gui, (result, parentButtonID) -> {
+                    McIf.mc().displayGuiScreen(new GuiParentedYesNo((result, parentButtonId) -> gui, (result, parentButtonID) -> {
                         if (result) {
                             McIf.mc().getConnection().sendPacket(packet);
                             bankPageConfirmed = true;
@@ -836,7 +836,7 @@ public class ClientEvents implements Listener {
                     String pageNumber = itemName.substring(9, itemName.indexOf(TextFormatting.RED + " >"));
                     ChestReplacer gui = e.getGui();
                     CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), item, e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
-                    McIf.mc().displayGuiScreen(new GuiParentedYesNo(() -> gui, (result, parentButtonID) -> {
+                    McIf.mc().displayGuiScreen(new GuiParentedYesNo((result, parentButtonId) -> gui, (result, parentButtonID) -> {
                         if (result) {
                             McIf.mc().getConnection().sendPacket(packet);
                             bankPageConfirmed = true;
