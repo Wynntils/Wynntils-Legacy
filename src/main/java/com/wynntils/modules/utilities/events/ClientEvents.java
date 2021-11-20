@@ -516,11 +516,11 @@ public class ClientEvents implements Listener {
             return;
         }
 
-        if (e.getGui().getSlotUnderMouse() != null && McIf.player().inventory == e.getGui().getSlotUnderMouse().inventory) {
+        if (e.getKeyCode() == McIf.mc().gameSettings.keyBindDrop.getKeyCode() && e.getGui().getSlotUnderMouse() != null && McIf.player().inventory == e.getGui().getSlotUnderMouse().inventory) {
             if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId()))
                 return;
 
-            e.setCanceled(checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex(), e.getKeyCode()));
+            e.setCanceled(checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex()));
         }
     }
 
@@ -573,11 +573,11 @@ public class ClientEvents implements Listener {
             return;
         }
 
-        if (e.getGui().getSlotUnderMouse() != null && McIf.player().inventory == e.getGui().getSlotUnderMouse().inventory) {
+        if (e.getKeyCode() == McIf.mc().gameSettings.keyBindDrop.getKeyCode() && e.getGui().getSlotUnderMouse() != null && McIf.player().inventory == e.getGui().getSlotUnderMouse().inventory) {
             if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId()))
                 return;
 
-            e.setCanceled(checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex(), e.getKeyCode()));
+            e.setCanceled(checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex()));
         }
     }
 
@@ -598,11 +598,11 @@ public class ClientEvents implements Listener {
             return;
         }
 
-        if (e.getGui().getSlotUnderMouse() != null && McIf.player().inventory == e.getGui().getSlotUnderMouse().inventory) {
+        if (e.getKeyCode() == McIf.mc().gameSettings.keyBindDrop.getKeyCode() && e.getGui().getSlotUnderMouse() != null && McIf.player().inventory == e.getGui().getSlotUnderMouse().inventory) {
             if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId()))
                 return;
 
-            e.setCanceled(checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex(), e.getKeyCode()));
+            e.setCanceled(checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex()));
         }
     }
 
@@ -612,8 +612,8 @@ public class ClientEvents implements Listener {
     public void clickOnInventory(GuiOverlapEvent.InventoryOverlap.HandleMouseClick e) {
         if (!Reference.onWorld) return;
 
-        if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().inventory == McIf.player().inventory) {
-            if (checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex(), McIf.mc().gameSettings.keyBindDrop.getKeyCode())) {
+        if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().inventory instanceof InventoryPlayer) {
+            if ((!EmeraldPouchManager.isEmeraldPouch(e.getGui().getSlotUnderMouse().getStack()) || e.getMouseButton() == 0) && checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex())) {
                 e.setCanceled(true);
                 return;
             }
@@ -796,11 +796,9 @@ public class ClientEvents implements Listener {
             }
         }
 
-        if (UtilitiesConfig.INSTANCE.preventSlotClicking) {
-            if (e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() >= 0 && e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() < 27) {
-                e.setCanceled(checkDropState(e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() + 9, McIf.mc().gameSettings.keyBindDrop.getKeyCode()));
-            } else {
-                e.setCanceled(checkDropState(e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() - 27, McIf.mc().gameSettings.keyBindDrop.getKeyCode()));
+        if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().inventory instanceof InventoryPlayer) {
+            if ((!EmeraldPouchManager.isEmeraldPouch(e.getGui().getSlotUnderMouse().getStack()) || e.getMouseButton() == 0) && checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex())) {
+                e.setCanceled(true);
             }
         }
 
@@ -859,8 +857,10 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void clickOnHorse(GuiOverlapEvent.HorseOverlap.HandleMouseClick e) {
-        if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null) {
-            e.setCanceled(checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex(), McIf.mc().gameSettings.keyBindDrop.getKeyCode()));
+        if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().inventory instanceof InventoryPlayer) {
+            if ((!EmeraldPouchManager.isEmeraldPouch(e.getGui().getSlotUnderMouse().getStack()) || e.getMouseButton() == 0) && checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex())) {
+                e.setCanceled(true);
+            }
         }
     }
 
@@ -926,16 +926,13 @@ public class ClientEvents implements Listener {
         }
     }
 
-    private static boolean checkDropState(int slot, int key) {
+    private static boolean checkDropState(int slot) {
         if (!Reference.onWorld) return false;
 
-        if (key == McIf.mc().gameSettings.keyBindDrop.getKeyCode()) {
-            if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId()))
-                return false;
+        if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId()))
+            return false;
 
-            return UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.get(CharacterData.class).getClassId()).contains(slot);
-        }
-        return false;
+        return UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.get(CharacterData.class).getClassId()).contains(slot);
     }
 
     private static void checkLockState(int slot) {

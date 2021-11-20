@@ -1,6 +1,7 @@
 package com.wynntils.core.framework.instances;
 
 import com.wynntils.core.utils.Utils;
+import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiYesNo;
 import net.minecraft.client.gui.GuiYesNoCallback;
@@ -14,6 +15,15 @@ public class GuiParentedYesNo extends GuiYesNo {
     public GuiParentedYesNo(ParentScreenSupplier parentScreenSupplier, GuiYesNoCallback callback, String messageLine1In, String messageLine2In, int parentButtonClickedIdIn) {
         super(callback, messageLine1In, messageLine2In, parentButtonClickedIdIn);
         this.parentScreenSupplier = parentScreenSupplier;
+    }
+
+    @Override
+    protected void actionPerformed(GuiButton button) throws IOException {
+        boolean result = button.id == 0;
+
+        Utils.displayGuiScreen(parentScreenSupplier.getClicked(result, this.parentButtonClickedId));
+
+        parentScreen.confirmClicked(result, this.parentButtonClickedId);
     }
 
     @Override
