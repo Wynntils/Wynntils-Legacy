@@ -790,7 +790,6 @@ public class ClientEvents implements Listener {
                         McIf.mc().displayGuiScreen(gui);
                         if (result) {
                             McIf.mc().getConnection().sendPacket(packet);
-                            bankPageConfirmed = true;
                         }
                     }, "Are you sure you want to quick stash?", "This confirm may be disabled in the Wynntils config.", 0));
                 case Block:
@@ -807,33 +806,11 @@ public class ClientEvents implements Listener {
         }
 
         if (UtilitiesConfig.Bank.INSTANCE.addBankConfirmation) {
-            IInventory inventory = e.getSlotIn().inventory;
-            if (McIf.getUnformattedText(inventory.getDisplayName()).contains("Bank") && e.getSlotIn().getHasStack()) {
+            if (McIf.getUnformattedText(e.getSlotIn().inventory.getDisplayName()).contains("[Pg. ") && e.getSlotIn().getHasStack()) {
                 ItemStack item = e.getSlotIn().getStack();
                 if (item.getDisplayName().contains(">" + TextFormatting.DARK_RED + ">" + TextFormatting.RED + ">" + TextFormatting.DARK_RED + ">" + TextFormatting.RED + ">")) {
                     String lore = TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(item));
-                    String price = lore.substring(lore.indexOf(" Price: ") + 8, lore.length());
-                    String priceDisplay;
-                    if (price.matches("\\d+" + EmeraldSymbols.EMERALDS)) {
-                        int actualPrice = Integer.parseInt(price.replace(EmeraldSymbols.EMERALDS, ""));
-                        int le = (int) Math.floor(actualPrice) / 4096;
-                        int eb = (int) Math.floor(((double) (actualPrice % 4096)) / 64);
-                        int emeralds = actualPrice % 64;
-                        StringBuilder priceBuilder = new StringBuilder();
-                        if (le != 0) {
-                            priceBuilder.append(le + EmeraldSymbols.LE + " ");
-                        }
-                        if (eb != 0) {
-                            priceBuilder.append(eb + EmeraldSymbols.BLOCKS + " ");
-                        }
-                        if (emeralds != 0) {
-                            priceBuilder.append(emeralds + EmeraldSymbols.EMERALDS + " ");
-                        }
-                        priceBuilder.deleteCharAt(priceBuilder.length() - 1);
-                        priceDisplay = priceBuilder.toString();
-                    } else {
-                        priceDisplay = price;
-                    }
+                    String price = lore.substring(lore.indexOf(" Price: ") + 8);
                     String itemName = item.getDisplayName();
                     String pageNumber = itemName.substring(9, itemName.indexOf(TextFormatting.RED + " >"));
                     ChestReplacer gui = e.getGui();
@@ -842,9 +819,8 @@ public class ClientEvents implements Listener {
                         McIf.mc().displayGuiScreen(gui);
                         if (result) {
                             McIf.mc().getConnection().sendPacket(packet);
-                            bankPageConfirmed = true;
                         }
-                    }, "Are you sure you want to purchase another bank page?", "Page number: " + pageNumber + "\nCost: " + priceDisplay, 0));
+                    }, "Are you sure you want to purchase another bank page?", "Page number: " + pageNumber + "\nCost: " + price, 0));
                     e.setCanceled(true);
                 }
             }
