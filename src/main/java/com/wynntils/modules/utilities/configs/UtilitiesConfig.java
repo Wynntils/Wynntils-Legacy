@@ -350,53 +350,53 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Minimum Powder Tier Highlight", description = "What should the minimum tier of powders be for it to be highlighted?\n\n§8Set to 0 to disable.", order = 42)
         @Setting.Limitations.IntLimit(min = 0, max = 6)
         public int minPowderTier = 4;
+        
+        @Setting(displayName = "Profession Filter Highlight Colour", description = "What colour should the highlight for filtered ingredients be?\n\n§aClick the coloured box to open the colour wheel.", order = 50)
+        public CustomColor professionFilterHighlightColor = new CustomColor(0.078f, 0.35f, 0.8f);
 
-        @Setting(displayName = "Normal Item Highlight Colour", description = "What colour should the highlight for normal items be?\n\n§aClick the coloured box to open the colour wheel.", order = 50)
+        @Setting(displayName = "Normal Item Highlight Colour", description = "What colour should the highlight for normal items be?\n\n§aClick the coloured box to open the colour wheel.", order = 51)
         public CustomColor normalHighlightColor = ItemTier.NORMAL.getDefaultHighlightColor();
 
-        @Setting(displayName = "Unique Item Highlight Colour", description = "What colour should the highlight for unique items be?\n\n§aClick the coloured box to open the colour wheel.", order = 51)
+        @Setting(displayName = "Unique Item Highlight Colour", description = "What colour should the highlight for unique items be?\n\n§aClick the coloured box to open the colour wheel.", order = 52)
         public CustomColor uniqueHighlightColor = ItemTier.UNIQUE.getDefaultHighlightColor();
 
-        @Setting(displayName = "Rare Item Highlight Colour", description = "What colour should the highlight for rare items be?\n\n§aClick the coloured box to open the colour wheel.", order = 52)
+        @Setting(displayName = "Rare Item Highlight Colour", description = "What colour should the highlight for rare items be?\n\n§aClick the coloured box to open the colour wheel.", order = 53)
         public CustomColor rareHighlightColor = ItemTier.RARE.getDefaultHighlightColor();
 
-        @Setting(displayName = "Set Item Highlight Colour", description = "What colour should the highlight for set items be?\n\n§aClick the coloured box to open the colour wheel.", order = 53)
+        @Setting(displayName = "Set Item Highlight Colour", description = "What colour should the highlight for set items be?\n\n§aClick the coloured box to open the colour wheel.", order = 54)
         public CustomColor setHighlightColor = ItemTier.SET.getDefaultHighlightColor();
 
-        @Setting(displayName = "Legendary Item Highlight Colour", description = "What colour should the highlight for legendary items be?\n\n§aClick the coloured box to open the colour wheel.", order = 54)
+        @Setting(displayName = "Legendary Item Highlight Colour", description = "What colour should the highlight for legendary items be?\n\n§aClick the coloured box to open the colour wheel.", order = 55)
         public CustomColor legendaryHighlightColor = ItemTier.LEGENDARY.getDefaultHighlightColor();
 
-        @Setting(displayName = "Fabled Item Highlight Colour", description = "What colour should the highlight for fabled items be?\n\n§aClick the coloured box to open the colour wheel.", order = 55)
+        @Setting(displayName = "Fabled Item Highlight Colour", description = "What colour should the highlight for fabled items be?\n\n§aClick the coloured box to open the colour wheel.", order = 56)
         public CustomColor fabledHighlightColor = ItemTier.FABLED.getDefaultHighlightColor();
 
-        @Setting(displayName = "Mythic Item Highlight Colour", description = "What colour should the highlight for mythic items be?\n\n§aClick the coloured box to open the colour wheel.", order = 56)
+        @Setting(displayName = "Mythic Item Highlight Colour", description = "What colour should the highlight for mythic items be?\n\n§aClick the coloured box to open the colour wheel.", order = 57)
         public CustomColor mythicHighlightColor = ItemTier.MYTHIC.getDefaultHighlightColor();
 
-        @Setting(displayName = "Crafted Armour & Weapon Highlight Colour", description = "What colour should the highlight for crafted armour and weapons be?\n\n§aClick the coloured box to open the colour wheel.", order = 57)
+        @Setting(displayName = "Crafted Armour & Weapon Highlight Colour", description = "What colour should the highlight for crafted armour and weapons be?\n\n§aClick the coloured box to open the colour wheel.", order = 58)
         public CustomColor craftedHighlightColor = ItemTier.CRAFTED.getDefaultHighlightColor();
 
-        @Setting(displayName = "Ingredient Highlight Colour (1 star)", description = "What colour should the highlight for ingredients with one star be?\n\n§aClick the coloured box to open the colour wheel.", order = 58)
+        @Setting(displayName = "Ingredient Highlight Colour (1 star)", description = "What colour should the highlight for ingredients with one star be?\n\n§aClick the coloured box to open the colour wheel.", order = 59)
         public CustomColor ingredientOneHighlightColor = new CustomColor(1, 0.97f, 0.6f);
 
-        @Setting(displayName = "Ingredient Highlight Colour (2 stars)", description = "What colour should the highlight for ingredients with two stars be?\n\n§aClick the coloured box to open the colour wheel.", order = 59)
+        @Setting(displayName = "Ingredient Highlight Colour (2 stars)", description = "What colour should the highlight for ingredients with two stars be?\n\n§aClick the coloured box to open the colour wheel.", order = 60)
         public CustomColor ingredientTwoHighlightColor = new CustomColor(1f, 1f, 0f);
 
-        @Setting(displayName = "Ingredient Highlight Colour (3 stars)", description = "What colour should the highlight for ingredients with three stars be?\n\n§aClick the coloured box to open the colour wheel.", order = 60)
+        @Setting(displayName = "Ingredient Highlight Colour (3 stars)", description = "What colour should the highlight for ingredients with three stars be?\n\n§aClick the coloured box to open the colour wheel.", order = 61)
         public CustomColor ingredientThreeHighlightColor = new CustomColor(0.9f, .3f, 0);
 
-        @Setting(displayName = "Inventory Item Highlight Opacity %", description = "How opaque should highlights in your inventory be? (As a percentage)", order = 61)
+        @Setting(displayName = "Inventory Item Highlight Opacity %", description = "How opaque should highlights in your inventory be? (As a percentage)", order = 62)
         @Setting.Limitations.FloatLimit(min = 0, max = 100, precision = 0.5f)
         public float inventoryAlpha = 100;
 
-        @Setting(displayName = "Hotbar Item Highlight Opacity %", description = "Should the highlight of item rarities be displayed on the hotbar?\n\n§8Set to 0 to disable.", order = 62)
+        @Setting(displayName = "Hotbar Item Highlight Opacity %", description = "Should the highlight of item rarities be displayed on the hotbar?\n\n§8Set to 0 to disable.", order = 63)
         @Setting.Limitations.FloatLimit(min = 0, max = 100, precision = 0.5f)
         public float hotbarAlpha = 30;
 
-        @Setting(displayName = "Color Number of Skillpoints", description = "Should the number of skillpoints be colored??", order = 63)
+        @Setting(displayName = "Color Number of Skillpoints", description = "Should the number of skillpoints be colored??")
         public boolean colorSkillPointNumberOverlay = true;
-        
-        @Setting(displayName = "Profession Filter Highlight Colour", description = "What colour should the highlight for filtered ingredients be?\n\n§aClick the coloured box to open the colour wheel.", order = 64)
-        public CustomColor professionFilterHighlightColor = new CustomColor(0.078f, 0.35f, 0.8f);
     }
 
     @SettingsInfo(name = "market", displayPath = "Utilities/Market")
