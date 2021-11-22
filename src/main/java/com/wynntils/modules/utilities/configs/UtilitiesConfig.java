@@ -392,8 +392,11 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting.Limitations.FloatLimit(min = 0, max = 100, precision = 0.5f)
         public float hotbarAlpha = 30;
 
-        @Setting(displayName = "Color Number of Skillpoints", description = "Should the number of skillpoints be colored??")
+        @Setting(displayName = "Color Number of Skillpoints", description = "Should the number of skillpoints be colored??", order = 63)
         public boolean colorSkillPointNumberOverlay = true;
+        
+        @Setting(displayName = "Profession Filter Highlight Colour", description = "What colour should the highlight for filtered ingredients be?\n\n§aClick the coloured box to open the colour wheel.", order = 64)
+        public CustomColor professionFilterHighlightColor = new CustomColor(0.078f, 0.35f, 0.8f);
     }
 
     @SettingsInfo(name = "market", displayPath = "Utilities/Market")
