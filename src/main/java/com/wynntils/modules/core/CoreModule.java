@@ -32,6 +32,7 @@ public class CoreModule extends Module {
         registerCommand(new CommandAdmin());
         registerCommand(new CommandCompass());
         registerCommand(new CommandForceUpdate());
+        registerCommand(new CommandNextSoulPoints());
         registerCommand(new CommandServer());
         registerCommand(new CommandTerritory());
         registerCommand(new CommandToken());

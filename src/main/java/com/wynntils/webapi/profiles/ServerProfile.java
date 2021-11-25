@@ -14,14 +14,15 @@ public class ServerProfile {
     Set<String> players;
 
     public ServerProfile(long firstSeem, Set<String> players) {
-        this.firstSeen = firstSeem; this.players = players;
+        this.firstSeen = firstSeem;
+        this.players = players;
     }
 
     public Set<String> getPlayers() {
         return players;
     }
 
-    public long getFirstSeem() {
+    public long getFirstSeen() {
         return firstSeen;
     }
 
