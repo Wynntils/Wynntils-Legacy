@@ -37,7 +37,7 @@ public class CommandNextSoulPoints extends CommandBase implements IClientCommand
 
         // Get all servers that will generate a soul point within the next 10 minutes
         for (String availServer : ServerListManager.availableServers.keySet()) {
-            int uptimeMinutes = ServerListManager.getUptimeTotalMinutes(availServer);
+            int uptimeMinutes = ServerListManager.getUptimeTotalMinutes(availServer) + 2; // Add 2 minutes to uptime, as Athena doesn't return 100% accurate uptimes
             if ((uptimeMinutes % 20) >= 10) { // >= to 10min because we're looking for time UNTIL 20min, not after
                 nextServers.put(availServer, 20 - (uptimeMinutes % 20));
             }
@@ -48,7 +48,7 @@ public class CommandNextSoulPoints extends CommandBase implements IClientCommand
                 .sorted(Map.Entry.comparingByValue())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
-        TextComponentString toSend = new TextComponentString("§bNext soul points:");
+        TextComponentString toSend = new TextComponentString("§bApproximate soul point times:");
 
         for (String wynnServer : sortedServers.keySet()) {
             int uptimeMinutes = sortedServers.get(wynnServer);
