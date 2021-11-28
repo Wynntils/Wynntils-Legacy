@@ -8,6 +8,7 @@ import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
+import com.wynntils.core.framework.instances.GuiParentedYesNo;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.interfaces.Listener;
@@ -34,7 +35,6 @@ import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiYesNo;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
@@ -516,11 +516,12 @@ public class ClientEvents implements Listener {
             return;
         }
 
-        if (e.getGui().getSlotUnderMouse() != null && McIf.player().inventory == e.getGui().getSlotUnderMouse().inventory) {
+
+        if (e.getKeyCode() == McIf.mc().gameSettings.keyBindDrop.getKeyCode() && e.getGui().getSlotUnderMouse() != null && McIf.player().inventory == e.getGui().getSlotUnderMouse().inventory) {
             if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId()))
                 return;
 
-            e.setCanceled(checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex(), e.getKeyCode()));
+            e.setCanceled(checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex()));
         }
     }
 
@@ -573,11 +574,12 @@ public class ClientEvents implements Listener {
             return;
         }
 
-        if (e.getGui().getSlotUnderMouse() != null && McIf.player().inventory == e.getGui().getSlotUnderMouse().inventory) {
+
+        if (e.getKeyCode() == McIf.mc().gameSettings.keyBindDrop.getKeyCode() && e.getGui().getSlotUnderMouse() != null && McIf.player().inventory == e.getGui().getSlotUnderMouse().inventory) {
             if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId()))
                 return;
 
-            e.setCanceled(checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex(), e.getKeyCode()));
+            e.setCanceled(checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex()));
         }
     }
 
@@ -598,11 +600,11 @@ public class ClientEvents implements Listener {
             return;
         }
 
-        if (e.getGui().getSlotUnderMouse() != null && McIf.player().inventory == e.getGui().getSlotUnderMouse().inventory) {
+        if (e.getKeyCode() == McIf.mc().gameSettings.keyBindDrop.getKeyCode() && e.getGui().getSlotUnderMouse() != null && McIf.player().inventory == e.getGui().getSlotUnderMouse().inventory) {
             if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId()))
                 return;
 
-            e.setCanceled(checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex(), e.getKeyCode()));
+            e.setCanceled(checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex()));
         }
     }
 
@@ -612,8 +614,8 @@ public class ClientEvents implements Listener {
     public void clickOnInventory(GuiOverlapEvent.InventoryOverlap.HandleMouseClick e) {
         if (!Reference.onWorld) return;
 
-        if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().inventory == McIf.player().inventory) {
-            if (checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex(), McIf.mc().gameSettings.keyBindDrop.getKeyCode())) {
+        if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().inventory instanceof InventoryPlayer) {
+            if ((!EmeraldPouchManager.isEmeraldPouch(e.getGui().getSlotUnderMouse().getStack()) || e.getMouseButton() == 0) && checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex())) {
                 e.setCanceled(true);
                 return;
             }
@@ -708,8 +710,11 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void clickOnChest(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
+
+        if (e.getSlotIn() == null) return;
+
         // Queue messages into game update ticker when clicking on emeralds in loot chest
-        if (e.getSlotIn() != null && e.getGui().getLowerInv().getDisplayName().getUnformattedText().contains("Loot Chest") && OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
+        if (e.getGui().getLowerInv().getDisplayName().getUnformattedText().contains("Loot Chest") && OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
             // Check if item is actually an emerald, if we're left clicking, and make sure we're not shift clicking
             if (currentLootChest.getStackInSlot(e.getSlotId()).getDisplayName().equals("§aEmerald") && e.getMouseButton() == 0 && !GuiScreen.isShiftKeyDown()) {
                 // Find all emerald pouches in inventory
@@ -737,8 +742,9 @@ public class ClientEvents implements Listener {
             }
         }
 
+
         // Prevent accidental ingredient/emerald pouch clicks in loot chests
-        if (e.getSlotIn() != null && e.getGui().getLowerInv().getDisplayName().getUnformattedText().contains("Loot Chest") && UtilitiesConfig.INSTANCE.preventOpeningPouchesChest) {
+        if (e.getGui().getLowerInv().getDisplayName().getUnformattedText().contains("Loot Chest") && UtilitiesConfig.INSTANCE.preventOpeningPouchesChest) {
             // Ingredient pouch
             if (e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() == 4) {
                 e.setCanceled(true);
@@ -754,53 +760,64 @@ public class ClientEvents implements Listener {
             }
         }
 
-        if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getSlotIn() != null) {
-            if (e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() >= 0 && e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() < 27) {
-                e.setCanceled(checkDropState(e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() + 9, McIf.mc().gameSettings.keyBindDrop.getKeyCode()));
-            } else {
-                e.setCanceled(checkDropState(e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() - 27, McIf.mc().gameSettings.keyBindDrop.getKeyCode()));
-            }
-        }
-
-        if (UtilitiesConfig.Bank.INSTANCE.addBankConfirmation && e.getSlotIn() != null) {
-            IInventory inventory = e.getSlotIn().inventory;
-            if (McIf.getUnformattedText(inventory.getDisplayName()).contains("Bank") && e.getSlotIn().getHasStack()) {
-                ItemStack item = e.getSlotIn().getStack();
-                if (item.getDisplayName().contains(">" + TextFormatting.DARK_RED + ">" + TextFormatting.RED + ">" + TextFormatting.DARK_RED + ">" + TextFormatting.RED + ">")) {
-                    String lore = TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(item));
-                    String price = lore.substring(lore.indexOf(" Price: ") + 8, lore.length());
-                    String priceDisplay;
-                    if (price.matches("\\d+" + EmeraldSymbols.EMERALDS)) {
-                        int actualPrice = Integer.parseInt(price.replace(EmeraldSymbols.EMERALDS, ""));
-                        int le = (int) Math.floor(actualPrice) / 4096;
-                        int eb = (int) Math.floor(((double) (actualPrice % 4096)) / 64);
-                        int emeralds = actualPrice % 64;
-                        StringBuilder priceBuilder = new StringBuilder();
-                        if (le != 0) {
-                            priceBuilder.append(le + EmeraldSymbols.LE + " ");
-                        }
-                        if (eb != 0) {
-                            priceBuilder.append(eb + EmeraldSymbols.BLOCKS + " ");
-                        }
-                        if (emeralds != 0) {
-                            priceBuilder.append(emeralds + EmeraldSymbols.EMERALDS + " ");
-                        }
-                        priceBuilder.deleteCharAt(priceBuilder.length() - 1);
-                        priceDisplay = priceBuilder.toString();
-                    } else {
-                        priceDisplay = price;
-                    }
-                    String itemName = item.getDisplayName();
-                    String pageNumber = itemName.substring(9, itemName.indexOf(TextFormatting.RED + " >"));
+        if (e.getSlotIn().getStack().getDisplayName().equals("§dDump Inventory")) {
+            switch (UtilitiesConfig.INSTANCE.bankDumpButton) {
+                case Default:
+                    return;
+                case Confirm:
                     ChestReplacer gui = e.getGui();
+                    ItemStack item = e.getSlotIn().getStack();
                     CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), item, e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
-                    McIf.mc().displayGuiScreen(new GuiYesNo((result, parentButtonID) -> {
-                        McIf.mc().displayGuiScreen(gui);
+                    McIf.mc().displayGuiScreen(new GuiParentedYesNo((result, parentButtonId) -> gui, (result, parentButtonID) -> {
                         if (result) {
                             McIf.mc().getConnection().sendPacket(packet);
                             bankPageConfirmed = true;
                         }
-                    }, "Are you sure you want to purchase another bank page?", "Page number: " + pageNumber + "\nCost: " + priceDisplay, 0));
+                    }, "Are you sure you want to dump your inventory?", "This confirm may be disabled in the Wynntils config.", 0));
+                case Block:
+                    e.setCanceled(true);
+            }
+        }
+
+        if (e.getSlotIn().getStack().getDisplayName().equals("§dQuick Stash")) {
+            switch (UtilitiesConfig.INSTANCE.bankStashButton) {
+                case Default:
+                    return;
+                case Confirm:
+                    ChestReplacer gui = e.getGui();
+                    ItemStack item = e.getSlotIn().getStack();
+                    CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), item, e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
+                    McIf.mc().displayGuiScreen(new GuiParentedYesNo((result, parentButtonId) -> gui, (result, parentButtonID) -> {
+                        if (result) {
+                            McIf.mc().getConnection().sendPacket(packet);
+                        }
+                    }, "Are you sure you want to quick stash?", "This confirm may be disabled in the Wynntils config.", 0));
+                case Block:
+                    e.setCanceled(true);
+            }
+        }
+
+        if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().inventory instanceof InventoryPlayer) {
+            if ((!EmeraldPouchManager.isEmeraldPouch(e.getGui().getSlotUnderMouse().getStack()) || e.getMouseButton() == 0) && checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex())) {
+                e.setCanceled(true);
+            }
+        }
+
+        if (UtilitiesConfig.Bank.INSTANCE.addBankConfirmation) {
+            if (McIf.getUnformattedText(e.getSlotIn().inventory.getDisplayName()).contains("[Pg. ") && e.getSlotIn().getHasStack()) {
+                ItemStack item = e.getSlotIn().getStack();
+                if (item.getDisplayName().contains(">" + TextFormatting.DARK_RED + ">" + TextFormatting.RED + ">" + TextFormatting.DARK_RED + ">" + TextFormatting.RED + ">")) {
+                    String lore = TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(item));
+                    String price = lore.substring(lore.indexOf(" Price: ") + 8);
+                    String itemName = item.getDisplayName();
+                    String pageNumber = itemName.substring(9, itemName.indexOf(TextFormatting.RED + " >"));
+                    ChestReplacer gui = e.getGui();
+                    CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), item, e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
+                    McIf.mc().displayGuiScreen(new GuiParentedYesNo((result, parentButtonId) -> gui, (result, parentButtonID) -> {
+                        if (result) {
+                            McIf.mc().getConnection().sendPacket(packet);
+                        }
+                    }, "Are you sure you want to purchase another bank page?", "Page number: " + pageNumber + "\nCost: " + price, 0));
                     e.setCanceled(true);
                 }
             }
@@ -818,8 +835,10 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void clickOnHorse(GuiOverlapEvent.HorseOverlap.HandleMouseClick e) {
-        if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null) {
-            e.setCanceled(checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex(), McIf.mc().gameSettings.keyBindDrop.getKeyCode()));
+        if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().inventory instanceof InventoryPlayer) {
+            if ((!EmeraldPouchManager.isEmeraldPouch(e.getGui().getSlotUnderMouse().getStack()) || e.getMouseButton() == 0) && checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex())) {
+                e.setCanceled(true);
+            }
         }
     }
 
@@ -885,16 +904,13 @@ public class ClientEvents implements Listener {
         }
     }
 
-    private static boolean checkDropState(int slot, int key) {
+    private static boolean checkDropState(int slot) {
         if (!Reference.onWorld) return false;
 
-        if (key == McIf.mc().gameSettings.keyBindDrop.getKeyCode()) {
-            if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId()))
-                return false;
+        if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId()))
+            return false;
 
-            return UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.get(CharacterData.class).getClassId()).contains(slot);
-        }
-        return false;
+        return UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.get(CharacterData.class).getClassId()).contains(slot);
     }
 
     private static void checkLockState(int slot) {

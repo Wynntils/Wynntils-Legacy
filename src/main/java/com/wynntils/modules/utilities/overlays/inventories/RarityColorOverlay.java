@@ -122,7 +122,7 @@ public class RarityColorOverlay implements Listener {
         }
         if (isChest) {
             if (UtilitiesConfig.Items.INSTANCE.filterEnabled && !professionFilter.equals("-") && lore.contains(professionFilter)) {
-                return new CustomColor(0.078f, 0.35f, 0.8f);
+                return UtilitiesConfig.Items.INSTANCE.professionFilterHighlightColor;
             }
             if (UtilitiesConfig.Items.INSTANCE.highlightCosmeticDuplicates && slotUnderMouse != null && lore.contains("Reward") && !lore.contains("Raid Reward") && slotUnderMouse.slotNumber != s.slotNumber && slotUnderMouse.getStack().getDisplayName().equals(name)) {
                 return new CustomColor(0f, 1f, 0f);
