@@ -20,7 +20,6 @@ import com.wynntils.modules.utilities.managers.MountHorseManager;
 import com.wynntils.modules.utilities.overlays.hud.*;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.enums.ItemTier;
-import net.minecraft.client.Minecraft;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.network.play.server.*;
@@ -48,7 +47,7 @@ public class OverlayEvents implements Listener {
     private static final Pattern GATHERING_COOLDOWN_PATTERN = Pattern.compile("^You need to wait ([0-9]+) seconds after logging in to gather from this resource!");
     private static final Pattern SERVER_RESTART_PATTERN = Pattern.compile("The server is restarting in ([0-9]+) (minutes?|seconds?)");
 
-    private static boolean wynnExpTimestampNotified = false;
+    //private static boolean wynnExpTimestampNotified = false;
     private long loginTime;
 
     private static String totemName;
@@ -164,6 +163,8 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onChatToRedirect(ChatEvent.Pre e) {
+        if (e.isDialogue()) return;
+
         if (!UtilitiesModule.getModule().getGameUpdateOverlay().active) {
             GameUpdateOverlay.resetMessages();
             return;
@@ -172,6 +173,7 @@ public class OverlayEvents implements Listener {
         if (!Reference.onWorld || McIf.getUnformattedText(e.getMessage()).equals(" ")) return;
         String messageText = McIf.getUnformattedText(e.getMessage());
         String formattedText = McIf.getFormattedText(e.getMessage());
+        /*
         if (messageText.split(" ")[0].matches("\\[\\d+:\\d+\\]")) {
             if (!wynnExpTimestampNotified) {
                 TextComponentString text = new TextComponentString("[" + Reference.NAME + "] WynnExpansion's chat timestamps detected, please use " + Reference.NAME + "' chat timestamps for full compatibility.");
@@ -180,6 +182,9 @@ public class OverlayEvents implements Listener {
                 wynnExpTimestampNotified = true;
             }
         }
+
+         */
+
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectHorse) {
             switch (messageText) {
                 case "There is no room for a horse.":

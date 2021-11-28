@@ -13,6 +13,7 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+import io.netty.channel.MessageSizeEstimator;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.apache.logging.log4j.LogManager;
 
@@ -86,8 +87,8 @@ public class GameUpdateOverlay extends Overlay {
 
     }
 
-    public static void queueMessage(String message) {
-        if (!Reference.onWorld) return;
+    public static MessageContainer queueMessage(String message) {
+        if (!Reference.onWorld) return null;
 
         if (OverlayConfig.GameUpdate.INSTANCE.messageMaxLength != 0 && OverlayConfig.GameUpdate.INSTANCE.messageMaxLength < message.length()) {
             message = message.substring(0, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 4);
@@ -100,12 +101,19 @@ public class GameUpdateOverlay extends Overlay {
 
         String processedMessage = message;
         LogManager.getFormatterLogger("GameTicker").info("Message Queued: " + processedMessage);
+        MessageContainer msgContainer = new MessageContainer(processedMessage);
         McIf.mc().addScheduledTask(() -> {
-            messageQueue.add(new MessageContainer(processedMessage));
+            messageQueue.add(msgContainer);
 
             if (OverlayConfig.GameUpdate.INSTANCE.overrideNewMessages && messageQueue.size() > OverlayConfig.GameUpdate.INSTANCE.messageLimit)
                 messageQueue.remove(0);
         });
+        return msgContainer;
+    }
+
+    public static void editMessage(MessageContainer msgContainer, String newMessage) {
+        msgContainer.editMessage(newMessage);
+        msgContainer.resetRemainingTime();
     }
 
     public static void resetMessages() {
@@ -113,9 +121,9 @@ public class GameUpdateOverlay extends Overlay {
     }
 
 
-    private static class MessageContainer {
+    public static class MessageContainer {
 
-        final String message;
+        String message;
         long endTime;
 
         private MessageContainer(String message) {
@@ -129,6 +137,14 @@ public class GameUpdateOverlay extends Overlay {
 
         public String getMessage() {
             return message;
+        }
+
+        public void editMessage(String newMessage) {
+            this.message = newMessage;
+        }
+
+        public void resetRemainingTime() {
+            this.endTime = System.currentTimeMillis() + (long) (OverlayConfig.GameUpdate.INSTANCE.messageTimeLimit * 1000);
         }
 
     }
