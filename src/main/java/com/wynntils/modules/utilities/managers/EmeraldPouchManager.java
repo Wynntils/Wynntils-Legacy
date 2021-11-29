@@ -2,20 +2,15 @@ package com.wynntils.modules.utilities.managers;
 
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
-import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
 public class EmeraldPouchManager {
 
-    private static final String EB = EmeraldSymbols.E_STRING + EmeraldSymbols.B_STRING;
-    private static final String LE = EmeraldSymbols.L_STRING + EmeraldSymbols.E_STRING;
-    private static final Pattern POUCH_CAPACITY_PATTERN = Pattern.compile("\\(([0-9]+)(" + EB + "|" + LE + "|stx) Total\\)");
+    private static final Pattern POUCH_CAPACITY_PATTERN = Pattern.compile("\\(([0-9]+)(" + EmeraldSymbols.BLOCKS + "|" + EmeraldSymbols.LE + "|stx) Total\\)");
     private static final Pattern POUCH_USAGE_PATTERN = Pattern.compile("§6§l([0-9]* ?[0-9]* ?[0-9]*)" + EmeraldSymbols.E_STRING);
 
 
@@ -25,16 +20,20 @@ public class EmeraldPouchManager {
 
     public static int getPouchCapacity(ItemStack i) {
         Matcher capacityMatcher = POUCH_CAPACITY_PATTERN.matcher(ItemUtils.getStringLore(i));
-        if (!capacityMatcher.find()) {return -1;}
+        if (!capacityMatcher.find()) {
+            return -1;
+        }
         int capacity = Integer.parseInt(capacityMatcher.group(1)) * 64;
-        if (capacityMatcher.group(2).equals(LE)) capacity *= 64;
+        if (capacityMatcher.group(2).equals(EmeraldSymbols.LE)) capacity *= 64;
         if (capacityMatcher.group(2).equals("stx")) capacity *= 4096;
         return capacity;
     }
 
     public static int getPouchUsage(ItemStack i) {
         Matcher usageMatcher = POUCH_USAGE_PATTERN.matcher(ItemUtils.getStringLore(i));
-        if (!usageMatcher.find()) {return -1;}
+        if (!usageMatcher.find()) {
+            return -1;
+        }
         return Integer.parseInt(usageMatcher.group(1).replaceAll("\\s", ""));
     }
 
