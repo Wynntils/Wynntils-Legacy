@@ -343,10 +343,32 @@ public class InfoFormatter {
             return cache.get("emeralds");
         }, "e", "emeralds");
 
-        // Count of health potions
-        registerFormatter((input) ->
-                Integer.toString(PlayerInfo.get(InventoryData.class).getHealthPotions()),
-                "potions_health", "hp_pot");
+        // health pot charges
+        registerFormatter((input) -> {
+            if (!cache.containsKey("potionchargesremaining")) {
+                cachePotionCharges();
+            }
+
+            return cache.get("potionchargesremaining");
+        },"potions_health_charges", "hp_pot_charges");
+
+        // max health pot charges
+        registerFormatter((input) -> {
+            if (!cache.containsKey("potionchargesmax")) {
+                cachePotionCharges();
+            }
+
+            return cache.get("potionchargesmax");
+        }, "potions_health_max", "hp_pot_max");
+
+        // combined health pot charges
+        registerFormatter((input) -> {
+            if (!cache.containsKey("potionchargescombined")) {
+                cachePotionCharges();
+            }
+
+            return cache.get("potionchargescombined");
+        }, "potions_health_combined", "hp_pot_combined");
 
         // Count of mana potions
         registerFormatter((input) ->
@@ -482,6 +504,16 @@ public class InfoFormatter {
         cache.put("emeralds", em);
         cache.put("money", output);
         cache.put("money_desc", ItemUtils.describeMoney(total));
+    }
+
+    private void cachePotionCharges() {
+        String potionCharges = PlayerInfo.get(InventoryData.class).getHealthPotionCharges();
+        String remainingCharges = potionCharges.split("/")[0];
+        String maxCharges = potionCharges.split("/")[1];
+
+        cache.put("potionchargesremaining", remainingCharges);
+        cache.put("potionchargesmax", maxCharges);
+        cache.put("potionchargescombined", potionCharges);
     }
 
     private void cacheMemory() {

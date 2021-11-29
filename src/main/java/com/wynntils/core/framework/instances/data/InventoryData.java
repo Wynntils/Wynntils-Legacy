@@ -26,6 +26,8 @@ public class InventoryData extends PlayerData {
     private static final Pattern UNPROCESSED_NAME_REGEX = Pattern.compile("^§fUnprocessed [a-zA-Z ]+§8 \\[(?:0|[1-9][0-9]*)/([1-9][0-9]*)]$");
     private static final Pattern UNPROCESSED_LORE_REGEX = Pattern.compile("^§7Unprocessed Material \\[Weight: ([1-9][0-9]*)]$");
 
+    private static final Pattern HEALTH_POTION_REGEX = Pattern.compile("(?:\\[\\+\\d+ ❤] )?Potions? of Healing \\[(\\d+)/(\\d+)]");
+
     public InventoryData() { }
 
     /**
@@ -78,21 +80,22 @@ public class InventoryData extends PlayerData {
     /**
      * @return Total number of health potions in inventory
      */
-    public int getHealthPotions() {
+    public String getHealthPotionCharges() {
         EntityPlayerSP player = getPlayer();
-        if (player == null) return 0;
+        if (player == null) return "0/0";
 
         NonNullList<ItemStack> contents = player.inventory.mainInventory;
 
-        int count = 0;
-
         for (ItemStack item : contents) {
-            if (!item.isEmpty() && item.hasDisplayName() && item.getDisplayName().contains("Potion of Healing")) {
-                count++;
+            if (!item.isEmpty() && item.hasDisplayName() && item.getDisplayName().contains("Potion of Healing") || item.getDisplayName().contains("Potions of Healing")) {
+                Matcher nameMatcher = HEALTH_POTION_REGEX.matcher(TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()));
+                if (!nameMatcher.matches()) continue;
+
+                return nameMatcher.group(1) + "/" + nameMatcher.group(2);
             }
         }
 
-        return count;
+        return "0/0";
     }
 
     /**
