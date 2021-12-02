@@ -39,7 +39,6 @@ public class Reference {
         userWorld = uw;
 
         onWorld = onServer && userWorld != null;
-        onNether = onWorld && userWorld.contains("N");
         onWars = onWorld && userWorld.contains("WAR");
         onBeta = onWorld && userWorld.contains("HB") || onServer && lowerIP.startsWith("beta.");
         onLobby = onServer && !onWorld;
@@ -56,7 +55,6 @@ public class Reference {
     public static boolean onServer = false;
 
     public static boolean onWorld = false;
-    public static boolean onNether = false;
     public static boolean onWars = false;
     public static boolean onBeta = false;
     public static boolean onLobby = false;

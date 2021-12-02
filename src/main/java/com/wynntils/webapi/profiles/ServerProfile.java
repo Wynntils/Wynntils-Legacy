@@ -21,7 +21,7 @@ public class ServerProfile {
         return players;
     }
 
-    public long getFirstSeem() {
+    public long getFirstSeen() {
         return firstSeen;
     }
 

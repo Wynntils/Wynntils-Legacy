@@ -4,6 +4,7 @@
 
 package com.wynntils.core.framework.enums;
 
+import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.utils.StringUtils;
 import net.minecraft.util.text.TextFormatting;
 
