@@ -1101,15 +1101,18 @@ public class ClientEvents implements Listener {
             Matcher priceMatcher = PRICE_REPLACER.matcher(loreLine);
             if (priceMatcher.matches() && !nbt.hasKey("wynntilsBulkPrice")) {
                 // Determine if we have enough money to buy the bulk amount and add lore
+
                 String moneySymbol = RequirementSymbols.CHECKMARK_STRING;
                 int singularPrice = Integer.parseInt(priceMatcher.group(1));
                 int bulkPrice = singularPrice * UtilitiesConfig.INSTANCE.bulkBuyAmount;
-                int availMoney = PlayerInfo.get(InventoryData.class).getMoney();
+                int availMoney = PlayerInfo.get(InventoryData.class).getMoney(); // this value includes both raw emeralds and pouches
+
                 System.out.println("money: " + availMoney);
-                System.out.println("bulkPrice: " +bulkPrice);
-                if (bulkPrice > availMoney) {
+                System.out.println("bulkPrice: " + bulkPrice);
+                if (bulkPrice > availMoney) { // If bulk price costs more than money in inventory
                     moneySymbol = RequirementSymbols.XMARK_STRING;
                 }
+
                 String loreString = "§6 - §a"  + moneySymbol + " §f" + bulkPrice + "§7" + EmeraldSymbols.E_STRING;
                 newLore.add(loreString);
                 nbt.setBoolean("wynntilsBulkPrice", true);
