@@ -52,7 +52,7 @@ public class PouchHotkeyManager {
                     if (amount > 0 && !alreadyHasNonEmpty) { // We've discovered one pouch with a non-zero balance, remember this
                         alreadyHasNonEmpty = true;
                     } else if (amount > 0) { // Another pouch has a non-zero balance; notify user
-                        GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You have more than one non-empty emerald pouch in your inventory.");
+                        GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You have more than one filled emerald pouch in your inventory.");
                         break pouchSwitch;
                     }
                 }
