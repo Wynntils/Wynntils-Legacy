@@ -104,12 +104,18 @@ public class StringUtils {
         int length = 0;
 
         for (String string : stringArray) {
-            if (length + string.length() >= max) {
-                result.append('|');
-                length = 0;
+            String[] lines = string.split("\\|", -1);
+            for (int i = 0; i < lines.length; i ++) {
+                String line = lines[i];
+                if (i > 0 || length + line.length() >= max) {
+                    result.append('|');
+                    length = 0;
+                }
+                if (line.length() > 0) {
+                    result.append(line).append(' ');
+                    length += line.length() + 1;  // +1 for the space following
+                }
             }
-            result.append(string).append(' ');
-            length += string.length() + 1;  // +1 for the space following
         }
 
         return result.toString().split("\\|");
@@ -124,12 +130,18 @@ public class StringUtils {
         int length = 0;
 
         for (String string : stringArray) {
-            if (length + renderer.getStringWidth(string) >= maxPixels) {
-                result.append('|');
-                length = 0;
+            String[] lines = string.split("\\|", -1);
+            for (int i = 0; i < lines.length; i ++) {
+                String line = lines[i];
+                if (i > 0 || length + renderer.getStringWidth(line) >= maxPixels) {
+                    result.append('|');
+                    length = 0;
+                }
+                if (line.length() > 0) {
+                    result.append(line).append(' ');
+                    length += renderer.getStringWidth(line) + spaceSize;
+                }
             }
-            result.append(string).append(' ');
-            length += renderer.getStringWidth(string) + spaceSize;
         }
 
         return result.toString().split("\\|");
