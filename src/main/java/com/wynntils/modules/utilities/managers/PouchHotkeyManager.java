@@ -35,15 +35,13 @@ public class PouchHotkeyManager {
         HashMap<Integer, Integer> emeraldPouches = new HashMap<Integer, Integer>() { // <inventory slot, usage>
         };
 
-        Integer slot = 4958;
-
         for (int i = 0; i < inventory.size(); i++) {
             ItemStack stack = inventory.get(i);
             if (!stack.isEmpty() && stack.hasDisplayName() && EmeraldPouchManager.isEmeraldPouch(stack)) {
                 emeraldPouches.put(i, EmeraldPouchManager.getPouchUsage(stack));
-                slot = i;
             }
         }
+
         pouchSwitch:
         switch (emeraldPouches.size()) {
             default:
