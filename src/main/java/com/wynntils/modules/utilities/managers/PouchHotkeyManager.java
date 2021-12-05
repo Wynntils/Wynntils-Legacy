@@ -10,9 +10,7 @@ import net.minecraft.network.play.client.CPacketClickWindow;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 public class PouchHotkeyManager {
 
@@ -46,10 +44,12 @@ public class PouchHotkeyManager {
         switch (emeraldPouches.size()) {
             default:
                 boolean alreadyHasNonEmpty = false;
-                for (Integer amount : emeraldPouches.values()) { // We're just checking balances here, we have no way of knowing which pouch has which balance
-                    if (amount > 0 && !alreadyHasNonEmpty) { // We've discovered one pouch with a non-zero balance, remember this
+                Integer usedPouch = -1;
+                for (Integer key : emeraldPouches.keySet()) {
+                    if (emeraldPouches.get(key) > 0 && !alreadyHasNonEmpty) { // We've discovered one pouch with a non-zero balance, remember this
                         alreadyHasNonEmpty = true;
-                    } else if (amount > 0) { // Another pouch has a non-zero balance; notify user
+                        usedPouch = key; // Save our pouch slot ID
+                    } else if (emeraldPouches.get(key) > 0) { // Another pouch has a non-zero balance; notify user
                         GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You have more than one filled emerald pouch in your inventory.");
                         break pouchSwitch;
                     }
@@ -57,21 +57,15 @@ public class PouchHotkeyManager {
 
                 // At this point, we have either multiple pouches with zero emeralds, or multiple pouches but only one with a non-zero balance
                 // Check to make sure we don't have a bunch of zero balances - if we do, notify user
-                System.out.println(emeraldPouches.values().stream().mapToInt(Integer::intValue).sum());
                 if (emeraldPouches.values().stream().mapToInt(Integer::intValue).sum() < 1) {
                     GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You have more than one empty and no filled emerald pouches in your inventory.");
                     break;
                 }
 
-                // Now, we know we have 1 used pouch and 1+ empty pouches - just open the used one
-                List<Integer> pouchSlotList = new ArrayList<>();
-                emeraldPouches.entrySet().stream() // Sort our HashMap to determine which is the used one
-                        .sorted((k1, k2) -> -k1.getValue().compareTo(k2.getValue()))
-                        .forEach(k -> pouchSlotList.add(k.getKey()));
-
+                // Now, we know we have 1 used pouch and 1+ empty pouches - just open the used one we saved from before
                 player.connection.sendPacket(new CPacketClickWindow(
                         player.inventoryContainer.windowId,
-                        pouchSlotList.get(0), 1, ClickType.PICKUP, player.inventory.getStackInSlot(pouchSlotList.get(0)),
+                        usedPouch, 1, ClickType.PICKUP, player.inventory.getStackInSlot(usedPouch),
                         player.inventoryContainer.getNextTransactionID(player.inventory)));
                 break;
 
