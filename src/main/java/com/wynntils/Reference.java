@@ -32,6 +32,13 @@ public class Reference {
     private static String userWorld = null;
 
     public static synchronized void setUserWorld(String uw) {
+        if (uw.equals("-")) {
+            inStream = true;
+            return;
+        }
+
+        inStream = false;
+
         ServerData currentServer = McIf.mc().getCurrentServerData();
         String lowerIP = currentServer == null || currentServer.serverIP == null ? null : currentServer.serverIP.toLowerCase(Locale.ROOT);
         onServer = !McIf.mc().isSingleplayer() && lowerIP != null && !currentServer.isOnLAN() && lowerIP.contains("wynncraft");
@@ -58,6 +65,8 @@ public class Reference {
     public static boolean onWars = false;
     public static boolean onBeta = false;
     public static boolean onLobby = false;
+
+    public static boolean inStream = false;
 
     public static boolean developmentEnvironment = false;
 
