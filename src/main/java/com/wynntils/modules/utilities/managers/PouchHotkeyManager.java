@@ -57,7 +57,7 @@ public class PouchHotkeyManager {
 
                 // At this point, we have either multiple pouches with zero emeralds, or multiple pouches but only one with a non-zero balance
                 // Check to make sure we don't have a bunch of zero balances - if we do, notify user
-                if (emeraldPouches.values().stream().mapToInt(Integer::intValue).sum() < 1) {
+                if (!alreadyHasNonEmpty) {
                     GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You have more than one empty and no filled emerald pouches in your inventory.");
                     break;
                 }
