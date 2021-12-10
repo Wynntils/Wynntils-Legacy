@@ -1098,7 +1098,7 @@ public class ClientEvents implements Listener {
             }
 
             Matcher priceMatcher = PRICE_REPLACER.matcher(loreLine);
-            if (priceMatcher.matches() && !nbt.hasKey("wynntilsBulkPrice")) {
+            if (!nbt.hasKey("wynntilsBulkPrice") && priceMatcher.matches()) {
                 // Determine if we have enough money to buy the bulk amount and add lore
 
                 int singularPrice = Integer.parseInt(priceMatcher.group(1));
