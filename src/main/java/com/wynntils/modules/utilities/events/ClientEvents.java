@@ -1088,7 +1088,6 @@ public class ClientEvents implements Listener {
         if (!UtilitiesConfig.INSTANCE.shiftBulkBuy || !isBulkShopConsumable(e.getItemStack())) return;
 
         ItemStack is = e.getItemStack();
-        boolean isShiftHeld = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT);
         List<String> newLore = new ArrayList<>();
         NBTTagCompound nbt = is.getTagCompound();
 
@@ -1102,16 +1101,13 @@ public class ClientEvents implements Listener {
             if (priceMatcher.matches() && !nbt.hasKey("wynntilsBulkPrice")) {
                 // Determine if we have enough money to buy the bulk amount and add lore
 
-                String moneySymbol = RequirementSymbols.CHECKMARK_STRING;
                 int singularPrice = Integer.parseInt(priceMatcher.group(1));
                 int bulkPrice = singularPrice * UtilitiesConfig.INSTANCE.bulkBuyAmount;
                 int availMoney = PlayerInfo.get(InventoryData.class).getMoney(); // this value includes both raw emeralds and pouches
 
-                if (bulkPrice > availMoney) { // If bulk price costs more than money in inventory
-                    moneySymbol = TextFormatting.RED + RequirementSymbols.XMARK_STRING;
-                }
+                String moneySymbol = (bulkPrice > availMoney) ? TextFormatting.RED + RequirementSymbols.XMARK_STRING : TextFormatting.GREEN + RequirementSymbols.CHECKMARK_STRING;
+                String loreString = "§6 - " + moneySymbol + " §f" + bulkPrice + "§7" + EmeraldSymbols.E_STRING + " (" + UtilitiesConfig.INSTANCE.bulkBuyAmount + "x)";
 
-                String loreString = "§6 - §a"  + moneySymbol + " §f" + bulkPrice + "§7" + EmeraldSymbols.E_STRING + " (" + UtilitiesConfig.INSTANCE.bulkBuyAmount + "x)";
                 newLore.add(loreString);
                 nbt.setBoolean("wynntilsBulkPrice", true);
             }
@@ -1123,12 +1119,9 @@ public class ClientEvents implements Listener {
             nbt.setBoolean("wynntilsBulkShiftSpacer", true);
         }
 
-        String purchaseString; // If user is holding shift, just tell them they're already buying x amount
-        if (isShiftHeld) {
-            purchaseString = "§aPurchasing " + UtilitiesConfig.INSTANCE.bulkBuyAmount;
-        } else {
-            purchaseString = "§aShift-click to purchase " + UtilitiesConfig.INSTANCE.bulkBuyAmount;
-        }
+        // If user is holding shift, just tell them they're already buying x amount
+        String purchaseString = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? "§aPurchasing " + UtilitiesConfig.INSTANCE.bulkBuyAmount : "§aShift-click to purchase " + UtilitiesConfig.INSTANCE.bulkBuyAmount;
+
         newLore.add(purchaseString);
         ItemUtils.replaceLore(is, newLore);
     }
