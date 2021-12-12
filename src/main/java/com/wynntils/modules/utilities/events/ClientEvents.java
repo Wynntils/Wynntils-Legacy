@@ -1097,19 +1097,21 @@ public class ClientEvents implements Listener {
                 newLore.add(loreLine);
             }
 
-            Matcher priceMatcher = PRICE_REPLACER.matcher(loreLine);
-            if (!nbt.hasKey("wynntilsBulkPrice") && priceMatcher.matches()) {
-                // Determine if we have enough money to buy the bulk amount and add lore
+            if (!nbt.hasKey("wynntilsBulkPrice")) {
+                Matcher priceMatcher = PRICE_REPLACER.matcher(loreLine);
+                if (priceMatcher.matches()) {
+                    // Determine if we have enough money to buy the bulk amount and add lore
 
-                int singularPrice = Integer.parseInt(priceMatcher.group(1));
-                int bulkPrice = singularPrice * UtilitiesConfig.INSTANCE.bulkBuyAmount;
-                int availMoney = PlayerInfo.get(InventoryData.class).getMoney(); // this value includes both raw emeralds and pouches
+                    int singularPrice = Integer.parseInt(priceMatcher.group(1));
+                    int bulkPrice = singularPrice * UtilitiesConfig.INSTANCE.bulkBuyAmount;
+                    int availMoney = PlayerInfo.get(InventoryData.class).getMoney(); // this value includes both raw emeralds and pouches
 
-                String moneySymbol = (bulkPrice > availMoney) ? TextFormatting.RED + RequirementSymbols.XMARK_STRING : TextFormatting.GREEN + RequirementSymbols.CHECKMARK_STRING;
-                String loreString = "§6 - " + moneySymbol + " §f" + bulkPrice + "§7" + EmeraldSymbols.E_STRING + " (" + UtilitiesConfig.INSTANCE.bulkBuyAmount + "x)";
+                    String moneySymbol = (bulkPrice > availMoney) ? TextFormatting.RED + RequirementSymbols.XMARK_STRING : TextFormatting.GREEN + RequirementSymbols.CHECKMARK_STRING;
+                    String loreString = "§6 - " + moneySymbol + " §f" + bulkPrice + "§7" + EmeraldSymbols.E_STRING + " (" + UtilitiesConfig.INSTANCE.bulkBuyAmount + "x)";
 
-                newLore.add(loreString);
-                nbt.setBoolean("wynntilsBulkPrice", true);
+                    newLore.add(loreString);
+                    nbt.setBoolean("wynntilsBulkPrice", true);
+                }
             }
         }
 
