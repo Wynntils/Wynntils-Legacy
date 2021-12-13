@@ -122,7 +122,7 @@ public class ClientEvents implements Listener {
     }
 
     public static final Pattern GATHERING_STATUS = Pattern.compile("\\[\\+([0-9]*) [ⒸⒷⒿⓀ] (.*?) XP\\] \\[([0-9]*)%\\]");
-    public static final Pattern GATHERING_RESOURCE = Pattern.compile("\\[\\+([0-9]+) (.+)\\]");
+    public static final Pattern GATHERING_RESOURCE = Pattern.compile("\\[\\+([0-9a]+) (.+)\\]");
     public static final Pattern MOB_DAMAGE = DamageType.compileDamagePattern();
 
     // bake status
