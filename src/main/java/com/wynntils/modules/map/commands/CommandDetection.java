@@ -98,6 +98,13 @@ public class CommandDetection extends CommandBase implements IClientCommand {
                 serviceCount++;
             }
 
+            int miniquestCount = 0;
+            for (Location key : LabelBake.detectedMiniquests.keySet()) {
+                String name = LabelBake.detectedMiniquests.get(key);
+                printInstance(ps, "Miniquest", name, "...", key);
+                miniquestCount++;
+            }
+
             int otherCount = 0;
             for (LabelBake.LabelLocation key : LabelBake.locationBaker.nameMap.keySet()) {
                 String name = LabelBake.locationBaker.nameMap.get(key);
@@ -107,7 +114,7 @@ public class CommandDetection extends CommandBase implements IClientCommand {
                 otherCount++;
             }
 
-            sender.sendMessage(new TextComponentString("Wrote " + bakedCount + " baked types, " + serviceCount + " services and " + otherCount + " other to " + filename));
+            sender.sendMessage(new TextComponentString("Wrote " + bakedCount + " baked types, " + serviceCount + " services, " + miniquestCount + " miniquests and " + otherCount + " other to " + filename));
         } catch (FileNotFoundException e) {
             sender.sendMessage(new TextComponentString("Invalid filename"));
             e.printStackTrace();

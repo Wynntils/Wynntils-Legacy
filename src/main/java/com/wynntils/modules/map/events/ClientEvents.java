@@ -50,7 +50,7 @@ public class ClientEvents implements Listener {
     private static final Pattern WYBEL_OWNER = Pattern.compile("^§7\\[.*\\]$");
     private static final Pattern WYBEL_LEVEL = Pattern.compile("^§2Lv. §a[0-9]+.*$");
     private static final Pattern WYBEL_NAME = Pattern.compile("^§7.*'s .*Wybel$");
-    private static final Pattern TERRITORY_HOLDER = Pattern.compile("^§7Controlled by §b§l.*§r§7 \\[Lv\\. .*\\]$");
+    private static final Pattern TERRITORY_HOLDER = Pattern.compile("^§7Controlled by §b§l.*§r§7 \\[Lv\\. [0-9]+\\]$");
     private static final Pattern TERRITORY_MSG = Pattern.compile("^§3< .* >$");
 
     BlockPos lastLocation = null;
@@ -189,7 +189,7 @@ public class ClientEvents implements Listener {
         Matcher m13 = TERRITORY_MSG.matcher(formattedLabel);
         if (m13.find()) return;
 
-        LabelBake.handleLabel(label, event.getLabel(), location);
+        LabelBake.handleLabel(label, event.getLabel(), location, event.getEntity());
     }
 
     @SubscribeEvent

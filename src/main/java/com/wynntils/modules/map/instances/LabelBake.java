@@ -6,10 +6,16 @@ package com.wynntils.modules.map.instances;
 
 import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.utils.objects.Location;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityArmorStand;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class LabelBake {
+
+    private static final Pattern MINIQUEST_POST = Pattern.compile("§2§a.* Post §2\\[.* Lv\\. [0-9]+\\]");
 
     private static final List<String> SERVICES = Arrays.asList(
             "Armour Merchant",
@@ -49,19 +55,31 @@ public class LabelBake {
             "Scrolls",
             "Spears and Daggers",
             "Bows, Wands and Reliks",
-            "Left-Click to set up booth"
+            "Left-Click to set up booth",
+            "EXIT"
     );
 
     public static final LocationBaker locationBaker = new LocationBaker();
     public static final Map<Location, String> detectedServices = new HashMap<>();
+    public static final Map<Location, String> detectedMiniquests = new HashMap<>();
 
-    public static void handleLabel(String label, String formattedLabel, Location location) {
+    public static void handleLabel(String label, String formattedLabel, Location location, Entity entity) {
         if (SERVICES.stream().anyMatch(l -> l.equals(label))) {
-            detectedServices.put(location, label);
+            if (entity instanceof EntityArmorStand) {
+                detectedServices.put(location, label);
+            }
+            // If it's named as a service but is not an armor stand, we'll ignore it
+            // (typically item frames outside the shop)
             return;
         }
 
         if (IGNORE.stream().anyMatch(l -> l.equals(label))) return;
+
+        Matcher m = MINIQUEST_POST.matcher(formattedLabel);
+        if (m.find()) {
+            detectedMiniquests.put(location, label);
+            return;
+        }
 
         if (label.equals("NPC")) {
             locationBaker.registerTypeLocation(BakerType.NPC, location);
@@ -104,6 +122,7 @@ public class LabelBake {
         NPC,
         DUNGEON,
         TERRITORY,
+        MINIQUEST,
         BOOTH
     }
     public static class LocationBaker {
@@ -148,19 +167,20 @@ public class LabelBake {
 
         public void registerName(String name, String formattedLabel, Location location) {
             LabelLocation l = new LabelLocation(location);
+            String cleanedName = name.replace("À", "");
 
             for (BakerType type : BakerType.values()) {
                 Map<LabelLocation, Location> typeMap = typeMaps.get(type);
                 Location typeLoc = typeMap.get(l);
                 if (typeLoc != null) {
-                    finalizeType(type, typeLoc, name);
+                    finalizeType(type, typeLoc, cleanedName);
                     typeMap.remove(l);
                     return;
                 }
             }
 
             // If we had no matching type, just store it as a known name
-            nameMap.put(l, name);
+            nameMap.put(l, cleanedName);
             formattedNameMap.put(l, formattedLabel);
             otherLocMap.put(l, location);
         }
