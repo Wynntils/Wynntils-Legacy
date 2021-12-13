@@ -11,11 +11,13 @@ import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.instances.GuiParentedYesNo;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
+import com.wynntils.core.framework.instances.data.InventoryData;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
+import com.wynntils.core.utils.reference.RequirementSymbols;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
@@ -61,17 +63,20 @@ import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import org.lwjgl.input.Keyboard;
 
 import java.sql.Timestamp;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -96,17 +101,15 @@ public class ClientEvents implements Listener {
     private Timestamp emeraldPouchLastPickup = new Timestamp(0);
     private GameUpdateOverlay.MessageContainer emeraldPouchMessage;
     private IInventory currentLootChest;
-    private static final String EB = EmeraldSymbols.E_STRING + EmeraldSymbols.B_STRING;
-    private static final String LE = EmeraldSymbols.L_STRING + EmeraldSymbols.E_STRING;
-    private static final Pattern POUCH_CAPACITY_PATTERN = Pattern.compile("\\(([0-9]+)(" + EB + "|" + LE + "|stx) Total\\)");
-    private static final Pattern POUCH_USAGE_PATTERN = Pattern.compile("§6§l([0-9]* ?[0-9]* ?[0-9]*)" + EmeraldSymbols.E_STRING);
+
+    private static final Pattern PRICE_REPLACER = Pattern.compile("§6 - §a. §f([1-9]\\d*)§7" + EmeraldSymbols.E_STRING);
 
     public static boolean isAwaitingHorseMount = false;
     private static int lastHorseId = -1;
 
     private static boolean priceInput = false;
 
-    private static Pattern CRAFTED_USES = Pattern.compile(".* \\[(\\d)/\\d\\]");
+    private static final Pattern CRAFTED_USES = Pattern.compile(".* \\[(\\d)/\\d\\]");
 
     @SubscribeEvent
     public void onMoveEvent(InputEvent.MouseInputEvent e) {
@@ -638,8 +641,6 @@ public class ClientEvents implements Listener {
                 if (openSlot == 0) return; // no open slots, cannot move accessory anywhere
                 accessoryDestinationSlot = openSlot;
 
-                e.setCanceled(true);
-
             } else { // putting on accessory
                 // verify it's an accessory
                 ItemType item = ItemUtils.getItemType(e.getSlotIn().getStack());
@@ -668,8 +669,8 @@ public class ClientEvents implements Listener {
                 if (openSlot == 0) return;
                 accessoryDestinationSlot = openSlot;
 
-                e.setCanceled(true); // only cancel after finding open slot
             }
+            e.setCanceled(true); // only cancel after finding open slot
 
             // pick up accessory
             CPacketClickWindow packet = new CPacketClickWindow(e.getGui().inventorySlots.windowId, e.getSlotId(), 0, ClickType.PICKUP, e.getSlotIn().getStack(), e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
@@ -708,7 +709,6 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void clickOnChest(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
-
         if (e.getSlotIn() == null) return;
 
         // Queue messages into game update ticker when clicking on emeralds in loot chest
@@ -758,6 +758,17 @@ public class ClientEvents implements Listener {
             }
         }
 
+
+        // Bulk buy functionality
+        // The title for the shops are in slot 4
+        if (UtilitiesConfig.INSTANCE.shiftBulkBuy && isBulkShopConsumable(e.getGui().getLowerInv().getStackInSlot(e.getSlotId())) && GuiScreen.isShiftKeyDown()) {
+            CPacketClickWindow packet = new CPacketClickWindow(e.getGui().inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), e.getSlotIn().getStack(), e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
+            for (int i = 1; i < UtilitiesConfig.INSTANCE.bulkBuyAmount; i++) { // int i is 1 by default because the user's original click is not cancelled
+                McIf.mc().getConnection().sendPacket(packet);
+            }
+        }
+
+        // Bank dump confirm
         if (e.getSlotIn().getStack().getDisplayName().equals("§dDump Inventory")) {
             switch (UtilitiesConfig.INSTANCE.bankDumpButton) {
                 case Default:
@@ -777,6 +788,7 @@ public class ClientEvents implements Listener {
             }
         }
 
+        // Bank quick stash confirm
         if (e.getSlotIn().getStack().getDisplayName().equals("§dQuick Stash")) {
             switch (UtilitiesConfig.INSTANCE.bankStashButton) {
                 case Default:
@@ -1060,4 +1072,55 @@ public class ClientEvents implements Listener {
         }
     }
 
+    private static boolean isBulkShopConsumable(ItemStack is) {
+        String itemName = is.getDisplayName();
+        return (itemName.endsWith(" Teleport Scroll") ||
+                itemName.contains("Potion of ") || // We're using .contains here because we check for skill point potions which are different colors/symbols
+                itemName.endsWith("Speed Surge") ||
+                itemName.endsWith("Bipedal Spring"))
+
+                && ItemUtils.getStringLore(is).contains("§6Price:");
+    }
+
+    @SubscribeEvent
+    public void onItemHovered(ItemTooltipEvent e) {
+        // If the shift to bulk buy setting is on and is applicable to the hovered item, add bulk prices
+        if (!UtilitiesConfig.INSTANCE.shiftBulkBuy || !isBulkShopConsumable(e.getItemStack())) return;
+
+        ItemStack is = e.getItemStack();
+        List<String> newLore = new ArrayList<>();
+        NBTTagCompound nbt = is.getTagCompound();
+
+        for (String loreLine : ItemUtils.getLore(is)) {
+            if (!loreLine.contains("§aPurchasing ") && !loreLine.contains("§aShift-click to purchase ")) { // Do not add the last bit of info text
+                newLore.add(loreLine);
+            }
+
+            if (!nbt.hasKey("wynntilsBulkPrice")) {
+                Matcher priceMatcher = PRICE_REPLACER.matcher(loreLine);
+                if (priceMatcher.matches()) { // Determine if we have enough money to buy the bulk amount and add lore
+                    int singularPrice = Integer.parseInt(priceMatcher.group(1));
+                    int bulkPrice = singularPrice * UtilitiesConfig.INSTANCE.bulkBuyAmount;
+                    int availMoney = PlayerInfo.get(InventoryData.class).getMoney(); // this value includes both raw emeralds and pouches
+
+                    String moneySymbol = (bulkPrice > availMoney) ? TextFormatting.RED + RequirementSymbols.XMARK_STRING : TextFormatting.GREEN + RequirementSymbols.CHECKMARK_STRING;
+                    String loreString = "§6 - " + moneySymbol + " §f" + bulkPrice + "§7" + EmeraldSymbols.E_STRING + " (" + UtilitiesConfig.INSTANCE.bulkBuyAmount + "x)";
+
+                    newLore.add(loreString);
+                    nbt.setBoolean("wynntilsBulkPrice", true);
+                }
+            }
+        }
+
+        if (!nbt.hasKey("wynntilsBulkShiftSpacer")) { // Only add the spacer once
+            newLore.add(" ");
+            nbt.setBoolean("wynntilsBulkShiftSpacer", true);
+        }
+
+        // If user is holding shift, just tell them they're already buying x amount
+        String purchaseString = "§a" + (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? "Purchasing " : "Shift-click to purchase ") + UtilitiesConfig.INSTANCE.bulkBuyAmount;
+
+        newLore.add(purchaseString);
+        ItemUtils.replaceLore(is, newLore);
+    }
 }
