@@ -102,14 +102,14 @@ public class ClientEvents implements Listener {
     private GameUpdateOverlay.MessageContainer emeraldPouchMessage;
     private IInventory currentLootChest;
 
-    private static Pattern PRICE_REPLACER = Pattern.compile("§6 - §a. §f([1-9]\\d*)§7" + EmeraldSymbols.E_STRING);
+    private static final Pattern PRICE_REPLACER = Pattern.compile("§6 - §a. §f([1-9]\\d*)§7" + EmeraldSymbols.E_STRING);
 
     public static boolean isAwaitingHorseMount = false;
     private static int lastHorseId = -1;
 
     private static boolean priceInput = false;
 
-    private static Pattern CRAFTED_USES = Pattern.compile(".* \\[(\\d)/\\d\\]");
+    private static final Pattern CRAFTED_USES = Pattern.compile(".* \\[(\\d)/\\d\\]");
 
     @SubscribeEvent
     public void onMoveEvent(InputEvent.MouseInputEvent e) {
@@ -1084,7 +1084,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onItemHovered(ItemTooltipEvent e) {
-        // This stuff checks if the shift to bulk buy setting is on, and if it is, replace the price of items with bulk prices when shift is held
+        // If the shift to bulk buy setting is on and is applicable to the hovered item, add bulk prices
         if (!UtilitiesConfig.INSTANCE.shiftBulkBuy || !isBulkShopConsumable(e.getItemStack())) return;
 
         ItemStack is = e.getItemStack();
@@ -1092,16 +1092,13 @@ public class ClientEvents implements Listener {
         NBTTagCompound nbt = is.getTagCompound();
 
         for (String loreLine : ItemUtils.getLore(is)) {
-            // Do not add the last bit of info text
-            if (!loreLine.contains("§aPurchasing ") && !loreLine.contains("§aShift-click to purchase ")) {
+            if (!loreLine.contains("§aPurchasing ") && !loreLine.contains("§aShift-click to purchase ")) { // Do not add the last bit of info text
                 newLore.add(loreLine);
             }
 
             if (!nbt.hasKey("wynntilsBulkPrice")) {
                 Matcher priceMatcher = PRICE_REPLACER.matcher(loreLine);
-                if (priceMatcher.matches()) {
-                    // Determine if we have enough money to buy the bulk amount and add lore
-
+                if (priceMatcher.matches()) { // Determine if we have enough money to buy the bulk amount and add lore
                     int singularPrice = Integer.parseInt(priceMatcher.group(1));
                     int bulkPrice = singularPrice * UtilitiesConfig.INSTANCE.bulkBuyAmount;
                     int availMoney = PlayerInfo.get(InventoryData.class).getMoney(); // this value includes both raw emeralds and pouches
@@ -1115,14 +1112,13 @@ public class ClientEvents implements Listener {
             }
         }
 
-        // Only add the spacer once
-        if (!nbt.hasKey("wynntilsBulkShiftSpacer")) {
+        if (!nbt.hasKey("wynntilsBulkShiftSpacer")) { // Only add the spacer once
             newLore.add(" ");
             nbt.setBoolean("wynntilsBulkShiftSpacer", true);
         }
 
         // If user is holding shift, just tell them they're already buying x amount
-        String purchaseString = Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? "§aPurchasing " + UtilitiesConfig.INSTANCE.bulkBuyAmount : "§aShift-click to purchase " + UtilitiesConfig.INSTANCE.bulkBuyAmount;
+        String purchaseString = "§a" + (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? "Purchasing " : "Shift-click to purchase ") + UtilitiesConfig.INSTANCE.bulkBuyAmount;
 
         newLore.add(purchaseString);
         ItemUtils.replaceLore(is, newLore);
