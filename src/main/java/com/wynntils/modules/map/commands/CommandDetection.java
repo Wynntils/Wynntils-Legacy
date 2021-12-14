@@ -77,7 +77,7 @@ public class CommandDetection extends CommandBase implements IClientCommand {
         String filename = args[0];
 
         try (PrintStream ps = new PrintStream(filename)) {
-            Set<LabelDetector.LabelInfo> allInfos = LabelDetector.getAllLabelInfo();
+            Set<LabelDetector.LabelInfo> allInfos = LabelDetector.getDetectedLabels();
 
             int locationCount = 0;
 
