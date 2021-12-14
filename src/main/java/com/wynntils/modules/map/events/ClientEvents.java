@@ -48,7 +48,7 @@ public class ClientEvents implements Listener {
         // MOB_LABEL
         Pattern.compile("^.*\\[Lv. [0-9]+\\]$"),
         // HEALTH_LABEL
-        Pattern.compile("^§4\\[(§c)?(\\||§0){5,6}[§0-9]+(§c)?(\\||§0){5,6}§4\\]$s"),
+        Pattern.compile("^§4\\[(§c)?(\\||§0){5,6}[§0-9]+(§c)?(\\||§0){5,6}§4\\]$"),
         // ELEMENTAL_LABEL
         Pattern.compile("^§7\\[((§..)+(Weak|Dam|Def) ?)+§7\\]$"),
         // TOTEM_LABEL
