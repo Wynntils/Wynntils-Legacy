@@ -70,7 +70,10 @@ public class ClientEvents implements Listener {
         // TERRITORY_HOLDER
         Pattern.compile("^§7Controlled by §b§l.*§r§7 \\[Lv\\. [0-9]+\\]$"),
         // TERRITORY_MSG
-        Pattern.compile("^§3< .* >$")
+        Pattern.compile("^§3< .* >$"),
+        // BOSS_ALTAR_TRIBUTE
+        Pattern.compile("^§7§lTribute: \\[.*\\]$")
+
     };
 
     BlockPos lastLocation = null;

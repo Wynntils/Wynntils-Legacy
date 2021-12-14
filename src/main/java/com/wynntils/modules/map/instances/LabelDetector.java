@@ -110,6 +110,16 @@ public class LabelDetector {
             return;
         }
 
+        if (formattedLabel.equals("§cRaid")) {
+            registerTypeLocation(BakerType.RAID, location);
+            return;
+        }
+
+        if (formattedLabel.equals("§cBoss Altar")) {
+            registerTypeLocation(BakerType.BOSS_ALTAR, location);
+            return;
+        }
+
         if (formattedLabel.matches("^§b.*'s §7Shop$")) {
             registerTypeLocation(BakerType.BOOTH, location);
             Location offsetLocation = location.add(0, -1, 0);
@@ -192,12 +202,20 @@ public class LabelDetector {
                 if (info.type != null) {
                     type = info.type.toString();
                 } else {
+                    // Service NPCs often has item frames outside the shop; ignore them
+                    if (SERVICE_NPCS.contains(name)) continue;
+
                     type = "Other";
                     extraData = info.formattedName;
                 }
 
                 if (info.type == LabelDetector.BakerType.BOOTH) {
                     name = "..."; // hide current owner
+                }
+
+                if (info.type == BakerType.TERRITORY) {
+                    // It's a special marker in Guild Hall, not a Territory Post
+                    if (name.startsWith("«")) continue;
                 }
 
                 if (info.type == LabelDetector.BakerType.NPC) {
@@ -277,6 +295,8 @@ public class LabelDetector {
         UNKNOWN("Unknown"),
         NPC("NPC"),
         DUNGEON("Dungeon"),
+        RAID("Raid"),
+        BOSS_ALTAR("Boss Altar"),
         TERRITORY("Territory Post"),
         GATHER("Gathering Spot"),
         BOOTH("Booth Shop"),
