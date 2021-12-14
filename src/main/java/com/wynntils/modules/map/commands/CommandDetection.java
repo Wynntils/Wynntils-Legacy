@@ -86,8 +86,11 @@ public class CommandDetection extends CommandBase implements IClientCommand {
                     if (type == LabelBake.BakerType.BOOTH) {
                         name = "Booth Shop"; // hide current owner
                     }
-                    printInstance(ps, type.name(), name, "...", key);
-                    bakedCount++;
+                    if (type != LabelBake.BakerType.BOOTH_LINE_2) {
+                        // Booth line 2 is just a placeholder to hide the second line of booth ads
+                        printInstance(ps, type.name(), name, "...", key);
+                        bakedCount++;
+                    }
                 }
             }
 
@@ -101,7 +104,8 @@ public class CommandDetection extends CommandBase implements IClientCommand {
             int miniquestCount = 0;
             for (Location key : LabelBake.detectedMiniquests.keySet()) {
                 String name = LabelBake.detectedMiniquests.get(key);
-                printInstance(ps, "Miniquest", name, "...", key);
+                String level = LabelBake.detectedMiniquestsLevel.get(key);
+                printInstance(ps, "Miniquest", name, level, key);
                 miniquestCount++;
             }
 
