@@ -5,7 +5,7 @@
 package com.wynntils.modules.map.commands;
 
 import com.wynntils.core.utils.objects.Location;
-import com.wynntils.modules.map.instances.LabelBake;
+import com.wynntils.modules.map.instances.LabelDetector;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.LocationProfile;
 import net.minecraft.command.CommandBase;
@@ -77,11 +77,11 @@ public class CommandDetection extends CommandBase implements IClientCommand {
         String filename = args[0];
 
         try (PrintStream ps = new PrintStream(filename)) {
-            Set<LabelBake.LabelInfo> allInfos = LabelBake.getAllLabelInfo();
+            Set<LabelDetector.LabelInfo> allInfos = LabelDetector.getAllLabelInfo();
 
             int locationCount = 0;
 
-            for (LabelBake.LabelInfo info : allInfos) {
+            for (LabelDetector.LabelInfo info : allInfos) {
                 printInstance(ps, info.getType(), info.getName(), info.getExtraInfo(), info.getLocation());
                 locationCount++;
             }

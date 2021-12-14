@@ -15,7 +15,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class LabelBake {
+public class LabelDetector {
 
     private static final Pattern MINIQUEST_POST = Pattern.compile("^§2§a.* Post §2\\[.* Lv\\. [0-9]+\\]$");
     private static final Pattern GATHERING_LABEL = Pattern.compile("^. [ⒸⒷⒿⓀ] .* Lv. Min: [0-9]+$");
@@ -182,14 +182,14 @@ public class LabelBake {
 
     public static Set<LabelInfo> getAllLabelInfo() {
         Set<LabelInfo> allInfos = new HashSet<>();
-        for (LabelBake.LabelLocation key : LabelBake.locationBaker.bakeMap.keySet()) {
-            LabelBake.LocationBakeInfo info = LabelBake.locationBaker.bakeMap.get(key);
+        for (LabelDetector.LabelLocation key : LabelDetector.locationBaker.bakeMap.keySet()) {
+            LabelDetector.LocationBakeInfo info = LabelDetector.locationBaker.bakeMap.get(key);
             if (info.name == null) {
                 LabelInfo labelInfo = new LabelInfo("BROKEN", info.type.toString(), info.formattedName, info.location);
                 allInfos.add(labelInfo);
             } else {
                 // Booth line 2 is just a placeholder to hide the second line of booth ads
-                if (info.type == LabelBake.BakerType.BOOTH_LINE_2) continue;
+                if (info.type == LabelDetector.BakerType.BOOTH_LINE_2) continue;
 
                 String type = "Other";
                 String name = info.name;
@@ -198,10 +198,10 @@ public class LabelBake {
                 if (info.type != null) {
                     type = info.type.toString();
                 }
-                if (info.type == LabelBake.BakerType.BOOTH) {
+                if (info.type == LabelDetector.BakerType.BOOTH) {
                     name = "..."; // hide current owner
                 }
-                if (info.type == LabelBake.BakerType.NPC) {
+                if (info.type == LabelDetector.BakerType.NPC) {
                     if (name.equals("Key Collector") || name.equals("Seaskipper Captain")) {
                         extraData = "Utility";
                     } else if (name.endsWith("Merchant")) {
@@ -215,15 +215,15 @@ public class LabelBake {
             }
         }
 
-        for (Location key : LabelBake.detectedServices.keySet()) {
-            String name = LabelBake.detectedServices.get(key);
+        for (Location key : LabelDetector.detectedServices.keySet()) {
+            String name = LabelDetector.detectedServices.get(key);
             LabelInfo labelInfo = new LabelInfo("Service", name, "...", key);
             allInfos.add(labelInfo);
         }
 
-        for (Location key : LabelBake.detectedMiniquests.keySet()) {
-            String name = LabelBake.detectedMiniquests.get(key);
-            String level = LabelBake.detectedMiniquestsLevel.get(key);
+        for (Location key : LabelDetector.detectedMiniquests.keySet()) {
+            String name = LabelDetector.detectedMiniquests.get(key);
+            String level = LabelDetector.detectedMiniquestsLevel.get(key);
             LabelInfo labelInfo = new LabelInfo("Miniquest", name, level, key);
             allInfos.add(labelInfo);
         }

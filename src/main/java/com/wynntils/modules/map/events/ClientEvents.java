@@ -14,7 +14,7 @@ import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
-import com.wynntils.modules.map.instances.LabelBake;
+import com.wynntils.modules.map.instances.LabelDetector;
 import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.map.managers.BeaconManager;
 import com.wynntils.modules.map.managers.GuildResourceManager;
@@ -175,7 +175,7 @@ public class ClientEvents implements Listener {
             if (m.find()) return;
         }
 
-        LabelBake.handleLabel(label, formattedLabel, location, event.getEntity());
+        LabelDetector.handleLabel(label, formattedLabel, location, event.getEntity());
     }
 
     @SubscribeEvent
@@ -194,12 +194,12 @@ public class ClientEvents implements Listener {
 
         if (!(entity instanceof EntityVillager)) return;
 
-        LabelBake.handleNpc(name, event.getLabel(), location);
+        LabelDetector.handleNpc(name, event.getLabel(), location);
     }
 
     @SubscribeEvent
     public void onWorldJoin(WynnWorldEvent.Join e) {
-        LabelBake.onWorldJoin(e);
+        LabelDetector.onWorldJoin(e);
     }
 
 }
