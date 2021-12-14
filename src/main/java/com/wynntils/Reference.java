@@ -32,7 +32,7 @@ public class Reference {
     private static String userWorld = null;
 
     public static synchronized void setUserWorld(String uw) {
-        if (uw.equals("-")) {
+        if ("-".equals(uw)) {
             inStream = true;
             return;
         }

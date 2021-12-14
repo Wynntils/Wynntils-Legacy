@@ -68,7 +68,7 @@ public class PlayerInfoOverlay extends Overlay {
 
                 {  // titles
                     drawString("Friends", -124, 7, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-                    drawString(Reference.inStream ? "Stream Mode" : Reference.getUserWorld(), -39, 7, Reference.inStream ? CommonColors.RED : CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                    drawString(Reference.inStream ? "Streaming" : Reference.getUserWorld(), -39, 7, Reference.inStream ? CommonColors.RED : CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
                     drawString("Party", 47, 7, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
                     drawString("Guild", 133, 7, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
                 }
