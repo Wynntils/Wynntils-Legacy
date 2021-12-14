@@ -23,6 +23,7 @@ public class LabelBake {
     private static final Map<String, String> SERVICES_MAP = ImmutableMap.<String, String>builder().
         put("§dArmour Merchant", "Armour Merchant").
         put("§dBlacksmith", "Blacksmith").
+        put("§dDungeon Merchant", "Dungeon Merchant").
         put("§dDungeon Scroll Merchant", "Dungeon Scroll Merchant").
         put("§dEmerald Merchant", "Emerald Merchant").
         put("§dItem Identifier", "Item Identifier").
@@ -31,9 +32,11 @@ public class LabelBake {
         put("§dPotion Merchant", "Potion Merchant").
         put("§dPowder Master", "Powder Master").
         put("§dScroll Merchant", "Scroll Merchant").
+        put("§dTool Merchant", "Tool Merchant").
         put("§dWeapon Merchant", "Weapon Merchant").
         put("§cTrade Market", "Trade Market").
         put("§fClick §7to go to your housing plot", "Housing Balloon").
+        put("§6V.S.S. Seaskipper", "Boat Fast Travel").
         put("§fⒶ §6§lCooking§r§f Ⓐ", "Cooking Station").
         put("§fⒹ §6§lJeweling§r§f Ⓓ", "Jeweling Station").
         put("§fⒺ §6§lScribing§r§f Ⓔ", "Scribing Station").
@@ -48,6 +51,7 @@ public class LabelBake {
             "Buy & sell items",
             "on the market",
             "Looking for a group?",
+            "Right-click to Sail",
             "Accessories",
             "Boots and Pants",
             "Bows",
@@ -130,6 +134,7 @@ public class LabelBake {
         }
 
         if (label.matches ("Left-Click to set up booth")) {
+            locationBaker.registerName("Unclaimed", "Unclaimed", location);
             locationBaker.registerTypeLocation(BakerType.BOOTH, location);
             return;
         }
