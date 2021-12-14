@@ -6,6 +6,7 @@ package com.wynntils.modules.map.instances;
 
 import com.google.common.collect.ImmutableMap;
 import com.wynntils.core.events.custom.WynnWorldEvent;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Location;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
@@ -139,7 +140,7 @@ public class LabelBake {
             return;
         }
 
-        // It might be an NPC name
+        // Send the label on to the baker
         locationBaker.registerName(label, formattedLabel, location);
     }
 
@@ -147,6 +148,86 @@ public class LabelBake {
         if (!(label.equals("Sell, scrap and repair items") || label.equals("NPC"))) return;
 
         locationBaker.registerTypeLocation(BakerType.NPC, location);
+    }
+
+    public static class LabelInfo {
+        private final String type;
+        private final String name;
+        private final String extraInfo;
+        private final Location location;
+
+        public LabelInfo(String type, String name, String extraInfo, Location location) {
+            this.type = type;
+            this.name = name;
+            this.extraInfo = extraInfo;
+            this.location = location;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getExtraInfo() {
+            return extraInfo;
+        }
+
+        public Location getLocation() {
+            return location;
+        }
+    }
+
+    public static Set<LabelInfo> getAllLabelInfo() {
+        Set<LabelInfo> allInfos = new HashSet<>();
+        for (LabelBake.LabelLocation key : LabelBake.locationBaker.bakeMap.keySet()) {
+            LabelBake.LocationBakeInfo info = LabelBake.locationBaker.bakeMap.get(key);
+            if (info.name == null) {
+                LabelInfo labelInfo = new LabelInfo("BROKEN", info.type.toString(), info.formattedName, info.location);
+                allInfos.add(labelInfo);
+            } else {
+                // Booth line 2 is just a placeholder to hide the second line of booth ads
+                if (info.type == LabelBake.BakerType.BOOTH_LINE_2) continue;
+
+                String type = "Other";
+                String name = info.name;
+                String extraData = "...";
+
+                if (info.type != null) {
+                    type = info.type.toString();
+                }
+                if (info.type == LabelBake.BakerType.BOOTH) {
+                    name = "..."; // hide current owner
+                }
+                if (info.type == LabelBake.BakerType.NPC) {
+                    if (name.equals("Key Collector") || name.equals("Seaskipper Captain")) {
+                        extraData = "Utility";
+                    } else if (name.endsWith("Merchant")) {
+                        extraData = "Merchant";
+                    } else if (name.endsWith("Citizen")) {
+                        extraData = "Citizen";
+                    }
+                }
+                LabelInfo labelInfo = new LabelInfo(type, name, extraData, info.location);
+                allInfos.add(labelInfo);
+            }
+        }
+
+        for (Location key : LabelBake.detectedServices.keySet()) {
+            String name = LabelBake.detectedServices.get(key);
+            LabelInfo labelInfo = new LabelInfo("Service", name, "...", key);
+            allInfos.add(labelInfo);
+        }
+
+        for (Location key : LabelBake.detectedMiniquests.keySet()) {
+            String name = LabelBake.detectedMiniquests.get(key);
+            String level = LabelBake.detectedMiniquestsLevel.get(key);
+            LabelInfo labelInfo = new LabelInfo("Miniquest", name, level, key);
+            allInfos.add(labelInfo);
+        }
+        return allInfos;
     }
 
     public static void onWorldJoin(WynnWorldEvent.Join e) {
@@ -158,84 +239,81 @@ public class LabelBake {
     }
 
     public enum BakerType {
-        NPC,
-        DUNGEON,
-        TERRITORY,
-        GATHER,
-        BOOTH,
-        BOOTH_LINE_2,
-    }
-    public static class LocationBaker {
-        public final Map<LabelLocation, String> nameMap = new HashMap<>();
-        public final Map<LabelLocation, String> formattedNameMap = new HashMap<>();
-        private final Map<BakerType, Map<LabelLocation, Location>> typeMaps = new HashMap<>();
-        public final Map<LabelLocation, Location> otherLocMap = new HashMap<>();
+        UNKNOWN("Unknown"),
+        NPC("NPC"),
+        DUNGEON("Dungeon"),
+        TERRITORY("Territory Post"),
+        GATHER("Gathering Spot"),
+        BOOTH("Booth Shop"),
+        BOOTH_LINE_2("Hidden Booth Data");
 
-        public final Map<BakerType, Map<Location, String>> detectedTypes = new HashMap<>();
-        public final Set<Location> detectedLocations = new HashSet<>();
+        private final String name;
+
+        BakerType(String name) {
+            this.name = name;
+        }
+
+        @Override
+        public String toString() {
+            return name;
+        }
+    }
+
+    public static class LocationBakeInfo {
+        public String name;
+        public String formattedName;
+        public BakerType type;
+        public Location location;
+    }
+
+    public static class LocationBaker {
+        public final Map<LabelLocation, LocationBakeInfo> bakeMap = new HashMap<>();
 
         public LocationBaker() {
-            for (BakerType type : BakerType.values()) {
-                typeMaps.put(type, new HashMap<>());
-                detectedTypes.put(type, new HashMap<>());
-            }
         }
 
         public void clearAll() {
-            for (BakerType type : BakerType.values()) {
-                typeMaps.get(type).clear();
-                detectedTypes.get(type).clear();
-            }
-            nameMap.clear();
-            formattedNameMap.clear();
-            otherLocMap.clear();
-            detectedLocations.clear();
+            bakeMap.clear();
         }
 
         public void registerTypeLocation(BakerType type, Location location) {
-            // Avoid storing locations multiple times
-            if (detectedLocations.contains(location)) return;
+            LabelLocation labelLocation = new LabelLocation(location);
+            LocationBakeInfo info = bakeMap.get(labelLocation);
 
-            LabelLocation l = new LabelLocation(location);
-            String name = nameMap.get(l);
-            if (name != null) {
-                finalizeType(type, location, name);
-                nameMap.remove(l);
-                formattedNameMap.remove(l);
-                otherLocMap.remove(l);
+            if (info == null) {
+                info = new LocationBakeInfo();
+                info.type = type;
+                info.location = location;
+                bakeMap.put(labelLocation, info);
             } else {
-                Map<LabelLocation, Location> typeMap = typeMaps.get(type);
-                typeMap.put(l, location);
+                assert (info.type == null || info.type == type);
+                info.type = type;
+                updateLocation(info, location);
+            }
+        }
+
+        private void updateLocation(LocationBakeInfo info, Location location) {
+            if (location.y < info.location.y) {
+                // Use the smallest found value (since NPCs are "falling" into existence)
+                info.location = location;
             }
         }
 
         public void registerName(String name, String formattedLabel, Location location) {
-            // Avoid storing locations multiple times
-            if (detectedLocations.contains(location)) return;
+            LabelLocation labelLocation = new LabelLocation(location);
+            LocationBakeInfo info = bakeMap.get(labelLocation);
+            String cleanedName = StringUtils.normalizeBadString(name);
 
-            LabelLocation l = new LabelLocation(location);
-            String cleanedName = name.replace("À", "");
-
-            for (BakerType type : BakerType.values()) {
-                Map<LabelLocation, Location> typeMap = typeMaps.get(type);
-                Location typeLoc = typeMap.get(l);
-                if (typeLoc != null) {
-                    finalizeType(type, typeLoc, cleanedName);
-                    typeMap.remove(l);
-                    return;
-                }
+            if (info == null) {
+                info = new LocationBakeInfo();
+                info.name = cleanedName;
+                info.location = location;
+                bakeMap.put(labelLocation, info);
+            } else {
+                assert (info.name == null || info.name.equals(cleanedName));
+                info.name = cleanedName;
+                updateLocation(info, location);
             }
-
-            // If we had no matching type, just store it as a known name
-            nameMap.put(l, cleanedName);
-            formattedNameMap.put(l, formattedLabel);
-            otherLocMap.put(l, location);
-        }
-
-        private void finalizeType(BakerType type, Location location, String name) {
-            Map<Location, String> detectedTypeMap = detectedTypes.get(type);
-            detectedTypeMap.put(location, name);
-            detectedLocations.add(location);
         }
     }
 

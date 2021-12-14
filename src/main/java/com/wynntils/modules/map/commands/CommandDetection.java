@@ -77,48 +77,16 @@ public class CommandDetection extends CommandBase implements IClientCommand {
         String filename = args[0];
 
         try (PrintStream ps = new PrintStream(filename)) {
+            Set<LabelBake.LabelInfo> allInfos = LabelBake.getAllLabelInfo();
 
-            int bakedCount = 0;
-            for (LabelBake.BakerType type : LabelBake.BakerType.values()) {
-                Map<Location, String> m = LabelBake.locationBaker.detectedTypes.get(type);
-                for (Location key : m.keySet()) {
-                    String name = m.get(key);
-                    if (type == LabelBake.BakerType.BOOTH) {
-                        name = "Booth Shop"; // hide current owner
-                    }
-                    if (type != LabelBake.BakerType.BOOTH_LINE_2) {
-                        // Booth line 2 is just a placeholder to hide the second line of booth ads
-                        printInstance(ps, type.name(), name, "...", key);
-                        bakedCount++;
-                    }
-                }
+            int locationCount = 0;
+
+            for (LabelBake.LabelInfo info : allInfos) {
+                printInstance(ps, info.getType(), info.getName(), info.getExtraInfo(), info.getLocation());
+                locationCount++;
             }
 
-            int serviceCount = 0;
-            for (Location key : LabelBake.detectedServices.keySet()) {
-                String name = LabelBake.detectedServices.get(key);
-                printInstance(ps, "Service", name, "...", key);
-                serviceCount++;
-            }
-
-            int miniquestCount = 0;
-            for (Location key : LabelBake.detectedMiniquests.keySet()) {
-                String name = LabelBake.detectedMiniquests.get(key);
-                String level = LabelBake.detectedMiniquestsLevel.get(key);
-                printInstance(ps, "Miniquest", name, level, key);
-                miniquestCount++;
-            }
-
-            int otherCount = 0;
-            for (LabelBake.LabelLocation key : LabelBake.locationBaker.nameMap.keySet()) {
-                String name = LabelBake.locationBaker.nameMap.get(key);
-                String formattedName = LabelBake.locationBaker.formattedNameMap.get(key);
-                Location location = LabelBake.locationBaker.otherLocMap.get(key);
-                printInstance(ps, "Other", name, formattedName, location);
-                otherCount++;
-            }
-
-            sender.sendMessage(new TextComponentString("Wrote " + bakedCount + " baked types, " + serviceCount + " services, " + miniquestCount + " miniquests and " + otherCount + " other to " + filename));
+            sender.sendMessage(new TextComponentString("Wrote " + locationCount + " locations to " + filename));
         } catch (FileNotFoundException e) {
             sender.sendMessage(new TextComponentString("Invalid filename"));
             e.printStackTrace();
