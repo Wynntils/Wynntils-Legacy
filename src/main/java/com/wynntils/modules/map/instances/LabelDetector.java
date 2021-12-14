@@ -17,24 +17,26 @@ import java.util.regex.Pattern;
 
 public class LabelDetector {
 
-    private static final Pattern MINIQUEST_POST = Pattern.compile("^§2§a.* Post §2\\[.* Lv\\. [0-9]+\\]$");
     private static final Pattern GATHERING_LABEL = Pattern.compile("^. [ⒸⒷⒿⓀ] .* Lv. Min: [0-9]+$");
     private static final Pattern MINIQUEST_POST_PARSE = Pattern.compile("\\w+ Post \\[(\\w+) Lv. ([0-9]+)\\]");
 
+    private static final List<String> SERVICE_NPCS = Arrays.asList(
+        "Armour Merchant",
+        "Blacksmith",
+        "Dungeon Merchant",
+        "Dungeon Scroll Merchant",
+        "Emerald Merchant",
+        "Item Identifier",
+        "Liquid Merchant",
+        "Party Finder",
+        "Potion Merchant",
+        "Powder Master",
+        "Scroll Merchant",
+        "Tool Merchant",
+        "Weapon Merchant"
+    );
+
     private static final Map<String, String> SERVICES_MAP = ImmutableMap.<String, String>builder().
-        put("§dArmour Merchant", "Armour Merchant").
-        put("§dBlacksmith", "Blacksmith").
-        put("§dDungeon Merchant", "Dungeon Merchant").
-        put("§dDungeon Scroll Merchant", "Dungeon Scroll Merchant").
-        put("§dEmerald Merchant", "Emerald Merchant").
-        put("§dItem Identifier", "Item Identifier").
-        put("§dLiquid Merchant", "Liquid Merchant").
-        put("§dParty Finder", "Party Finder").
-        put("§dPotion Merchant", "Potion Merchant").
-        put("§dPowder Master", "Powder Master").
-        put("§dScroll Merchant", "Scroll Merchant").
-        put("§dTool Merchant", "Tool Merchant").
-        put("§dWeapon Merchant", "Weapon Merchant").
         put("§cTrade Market", "Trade Market").
         put("§fClick §7to go to your housing plot", "Housing Balloon").
         put("§6V.S.S. Seaskipper", "Boat Fast Travel").
@@ -73,8 +75,6 @@ public class LabelDetector {
 
     private static final Map<LabelLocation, LocationBakeInfo> bakeMap = new HashMap<>();
     private static final Map<Location, String> detectedServices = new HashMap<>();
-    private static final Map<Location, String> detectedMiniquests = new HashMap<>();
-    private static final Map<Location, String> detectedMiniquestsLevel = new HashMap<>();
 
     public static void handleLabel(String label, String formattedLabel, Location location, Entity entity) {
         if (SERVICES_MAP.keySet().stream().anyMatch(l -> l.equals(formattedLabel))) {
@@ -87,23 +87,6 @@ public class LabelDetector {
         }
 
         if (IGNORE.stream().anyMatch(l -> l.equals(label))) return;
-
-        Matcher m = MINIQUEST_POST.matcher(formattedLabel);
-        if (m.find()) {
-            Matcher parse = MINIQUEST_POST_PARSE.matcher(label);
-            // E.g. "Gathering Post [Fishing Lv. 8]" or
-            // "Slaying Post [Combat Lv. 4]"
-            if (parse.find()) {
-                String type = parse.group(1);
-                String level = parse.group(2);
-                if (type.equals("Combat")) {
-                    type = "Slaying";
-                }
-                detectedMiniquests.put(location, type);
-                detectedMiniquestsLevel.put(location, level);
-            }
-            return;
-        }
 
         Matcher m1 = GATHERING_LABEL.matcher(label);
         if (m1.find())         {
@@ -174,6 +157,7 @@ public class LabelDetector {
         if (info == null) {
             info = new LocationBakeInfo();
             info.name = cleanedName;
+            info.formattedName = formattedLabel;
             info.location = location;
             bakeMap.put(labelLocation, info);
         } else {
@@ -201,18 +185,33 @@ public class LabelDetector {
                 // Booth line 2 is just a placeholder to hide the second line of booth ads
                 if (info.type == LabelDetector.BakerType.BOOTH_LINE_2) continue;
 
-                String type = "Other";
+                String type;
                 String name = info.name;
                 String extraData = "...";
 
                 if (info.type != null) {
                     type = info.type.toString();
+                } else {
+                    type = "Other";
+                    extraData = info.formattedName;
                 }
+
                 if (info.type == LabelDetector.BakerType.BOOTH) {
                     name = "..."; // hide current owner
                 }
+
                 if (info.type == LabelDetector.BakerType.NPC) {
-                    if (name.equals("Key Collector") || name.equals("Seaskipper Captain")) {
+                    Matcher parse = MINIQUEST_POST_PARSE.matcher(name);
+                    if (parse.find()) {
+                        type = "Miniquest";
+                        name = parse.group(1);
+                        extraData = parse.group(2);
+                        if (name.equals("Combat")) {
+                            name = "Slaying";
+                        }
+                    } else if (SERVICE_NPCS.contains(name)) {
+                        type = "ServiceNPC";
+                    } else if (name.equals("Key Collector") || name.equals("Seaskipper Captain")) {
                         extraData = "Utility";
                     } else if (name.endsWith("Merchant")) {
                         extraData = "Merchant";
@@ -231,20 +230,12 @@ public class LabelDetector {
             allInfos.add(labelInfo);
         }
 
-        for (Location key : LabelDetector.detectedMiniquests.keySet()) {
-            String name = LabelDetector.detectedMiniquests.get(key);
-            String level = LabelDetector.detectedMiniquestsLevel.get(key);
-            LabelInfo labelInfo = new LabelInfo("Miniquest", name, level, key);
-            allInfos.add(labelInfo);
-        }
         return allInfos;
     }
 
     public static void clearAll() {
         bakeMap.clear();
         detectedServices.clear();
-        detectedMiniquests.clear();
-        detectedMiniquestsLevel.clear();
     }
 
     public static void onWorldJoin(WynnWorldEvent.Join e) {
