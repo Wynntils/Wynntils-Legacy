@@ -185,7 +185,9 @@ public class ClientEvents {
                     String name = McIf.getUnformattedText(nameComponent);
                     String world = name.substring(name.indexOf("[") + 1, name.indexOf("]"));
 
-                    if (world.equalsIgnoreCase(lastWorld)) continue;
+                    if (world.equalsIgnoreCase(lastWorld)) {
+                        continue;
+                    }
 
                     Reference.setUserWorld(world);
                     FrameworkManager.getEventBus().post(new WynnWorldEvent.Join(world));

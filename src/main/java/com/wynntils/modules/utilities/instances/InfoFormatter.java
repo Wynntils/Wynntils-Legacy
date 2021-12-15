@@ -90,7 +90,7 @@ public class InfoFormatter {
 
         // The world/server number
         registerFormatter((input) ->
-                Reference.getUserWorld(),
+                Reference.inStream ? "WC -" : Reference.getUserWorld(),
                 "world");
 
         // The ping time to the server
