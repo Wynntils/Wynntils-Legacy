@@ -17,11 +17,7 @@ import com.wynntils.webapi.profiles.item.enums.ItemTier;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @SettingsInfo(name = "main", displayPath = "Utilities")
 public class UtilitiesConfig extends SettingsClass {
@@ -287,6 +283,9 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting.Limitations.FloatLimit(min = 0.5f, max = 1, precision = 0.1f)
         public float specificationTierSize = 1;
 
+        @Setting(displayName = "Emerald Pouch Usage Arc", description = "Should emerald pouch usage be shown with an arc?", order = 16)
+        public boolean emeraldPouchArc = true;
+
         @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted according to rarity in remote containers?\n\n§8Remote containers are items such as chests and banks.", order = 17)
         public boolean mainHighlightChest = true;
 
@@ -414,7 +413,7 @@ public class UtilitiesConfig extends SettingsClass {
         public boolean displayInCustomFormat = true;
 
         @Setting(displayName = "Market Prices Format", description = "What format should market prices be displayed in?\n\n§8Brackets indicate all parameters inside must not be 0.")
-        @Setting.Features.StringParameters(parameters = { "les", "ebs", "es", "stx", "le", "eb", "e" })
+        @Setting.Features.StringParameters(parameters = {"les", "ebs", "es", "stx", "le", "eb", "e"})
         public String customFormat = "(%stx%stx )(%le%%les% )(%eb%%ebs% )(%e%%es%)";
 
         @Setting(displayName = "Open Chat", description = "Should the chat open when the trade market asks you to type a response?")

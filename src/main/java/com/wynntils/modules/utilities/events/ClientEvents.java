@@ -519,6 +519,7 @@ public class ClientEvents implements Listener {
             return;
         }
 
+
         if (e.getKeyCode() == McIf.mc().gameSettings.keyBindDrop.getKeyCode() && e.getGui().getSlotUnderMouse() != null && McIf.player().inventory == e.getGui().getSlotUnderMouse().inventory) {
             if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId()))
                 return;
@@ -575,6 +576,7 @@ public class ClientEvents implements Listener {
             ItemScreenshotManager.takeScreenshot();
             return;
         }
+
 
         if (e.getKeyCode() == McIf.mc().gameSettings.keyBindDrop.getKeyCode() && e.getGui().getSlotUnderMouse() != null && McIf.player().inventory == e.getGui().getSlotUnderMouse().inventory) {
             if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId()))
@@ -752,7 +754,7 @@ public class ClientEvents implements Listener {
             int mappedSlot = e.getSlotId();
             if (e.getSlotId() > 54) mappedSlot -= 54;
             if (e.getSlotId() > 31 && e.getSlotId() < 54) mappedSlot -= 18;
-            if (e.getGui().getUpperInv().getStackInSlot(mappedSlot).getDisplayName().startsWith("§aEmerald Pouch§2 [Tier ") && e.getSlotId() > 26) {
+            if (EmeraldPouchManager.isEmeraldPouch(e.getGui().getUpperInv().getStackInSlot(mappedSlot)) && e.getSlotId() > 26) {
                 e.setCanceled(true);
                 return;
             }
