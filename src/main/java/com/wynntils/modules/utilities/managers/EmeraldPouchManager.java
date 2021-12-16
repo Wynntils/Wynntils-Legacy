@@ -32,6 +32,10 @@ public class EmeraldPouchManager {
     public static int getPouchUsage(ItemStack i) {
         Matcher usageMatcher = POUCH_USAGE_PATTERN.matcher(ItemUtils.getStringLore(i));
         if (!usageMatcher.find()) {
+            if (ItemUtils.getStringLore(i).contains("§7Empty")) { // We might just have an valid, empty pouch
+                return 0;
+            }
+
             return -1;
         }
         return Integer.parseInt(usageMatcher.group(1).replaceAll("\\s", ""));
