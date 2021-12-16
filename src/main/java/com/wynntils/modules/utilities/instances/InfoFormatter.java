@@ -18,6 +18,7 @@ import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.managers.PingManager;
 import com.wynntils.modules.utilities.interfaces.InfoModule;
 import com.wynntils.modules.utilities.managers.AreaDPSManager;
+import com.wynntils.modules.utilities.managers.ServerListManager;
 import com.wynntils.modules.utilities.managers.SpeedometerManager;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.Minecraft;
@@ -89,7 +90,7 @@ public class InfoFormatter {
 
         // The world/server number
         registerFormatter((input) ->
-                Reference.getUserWorld(),
+                Reference.inStream ? "WC -" : Reference.getUserWorld(),
                 "world");
 
         // The ping time to the server
@@ -343,10 +344,32 @@ public class InfoFormatter {
             return cache.get("emeralds");
         }, "e", "emeralds");
 
-        // Count of health potions
-        registerFormatter((input) ->
-                Integer.toString(PlayerInfo.get(InventoryData.class).getHealthPotions()),
-                "potions_health", "hp_pot");
+        // health pot charges
+        registerFormatter((input) -> {
+            if (!cache.containsKey("potionchargesremaining")) {
+                cachePotionCharges();
+            }
+
+            return cache.get("potionchargesremaining");
+        },"potions_health_charges", "hp_pot_charges");
+
+        // max health pot charges
+        registerFormatter((input) -> {
+            if (!cache.containsKey("potionchargesmax")) {
+                cachePotionCharges();
+            }
+
+            return cache.get("potionchargesmax");
+        }, "potions_health_max", "hp_pot_max");
+
+        // combined health pot charges
+        registerFormatter((input) -> {
+            if (!cache.containsKey("potionchargescombined")) {
+                cachePotionCharges();
+            }
+
+            return cache.get("potionchargescombined");
+        }, "potions_health_combined", "hp_pot_combined");
 
         // Count of mana potions
         registerFormatter((input) ->
@@ -403,9 +426,18 @@ public class InfoFormatter {
                 PlayerInfo.get(SocialData.class).getPlayerParty().getOwner(),
                 "party_owner");
 
-        registerFormatter((input ->
-                String.valueOf(AreaDPSManager.getCurrentDPS())),
+        registerFormatter((input) ->
+                String.valueOf(AreaDPSManager.getCurrentDPS()),
                 "adps", "areadps");
+
+        // Uptime variables
+        registerFormatter((input) ->
+                ServerListManager.getUptimeHours(Reference.getUserWorld()),
+                "uptime_h");
+
+        registerFormatter((input) ->
+                ServerListManager.getUptimeMinutes(Reference.getUserWorld()),
+                "uptime_m");
     }
 
     private void registerFormatter(InfoModule formatter, String... vars) {
@@ -482,6 +514,16 @@ public class InfoFormatter {
         cache.put("emeralds", em);
         cache.put("money", output);
         cache.put("money_desc", ItemUtils.describeMoney(total));
+    }
+
+    private void cachePotionCharges() {
+        String potionCharges = PlayerInfo.get(InventoryData.class).getHealthPotionCharges();
+        String remainingCharges = potionCharges.split("/")[0];
+        String maxCharges = potionCharges.split("/")[1];
+
+        cache.put("potionchargesremaining", remainingCharges);
+        cache.put("potionchargesmax", maxCharges);
+        cache.put("potionchargescombined", potionCharges);
     }
 
     private void cacheMemory() {

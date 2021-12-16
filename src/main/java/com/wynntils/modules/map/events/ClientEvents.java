@@ -7,13 +7,14 @@ package com.wynntils.modules.map.events;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
+import com.wynntils.core.framework.enums.DamageType;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.utils.objects.Location;
-import com.wynntils.modules.map.instances.LabelBake;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
+import com.wynntils.modules.map.instances.LabelDetector;
 import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.map.managers.BeaconManager;
 import com.wynntils.modules.map.managers.GuildResourceManager;
@@ -23,7 +24,6 @@ import com.wynntils.modules.utilities.overlays.hud.ToastOverlay;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.passive.EntityVillager;
@@ -39,16 +39,42 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.wynntils.modules.core.events.ClientEvents.*;
-
 public class ClientEvents implements Listener {
     private static final Pattern MOB_LABEL = Pattern.compile("^.*\\[Lv. [0-9]+\\]$");
     private static final Pattern HEALTH_LABEL = Pattern.compile("^\\[\\|+[0-9]+\\|+\\]$");
-    private static final Pattern TOTEM_LABEL = Pattern.compile("^§c[0-9]+s|\\§c+[0-9]+❤/§7s$");
-    private static final Pattern GATHERING_LABEL = Pattern.compile("^. [ⒸⒷⒿⓀ] .* Lv. Min: [0-9]+$");
-    private static final Pattern RESOURCE_LABEL = Pattern.compile("^(?:Right|Left)-Click for .*$");
-    private static final Pattern WYBEL_OWNER = Pattern.compile("^§7\\[.*\\]$");
-    private static final Pattern WYBEL_LEVEL = Pattern.compile("^§2Lv. §a[0-9]+.*$");
+    private static final Pattern[] IGNORE_PATTERNS = {
+        // MOB_DAMAGE
+        DamageType.compileDamagePattern(),
+        // MOB_LABEL
+        Pattern.compile("^.*\\[Lv. [0-9]+\\]$"),
+        // HEALTH_LABEL
+        Pattern.compile("^§4\\[(§c)?(\\||§0){5,6}[§0-9]+(§c)?(\\||§0){5,6}§4\\]$"),
+        // ELEMENTAL_LABEL
+        Pattern.compile("^§7\\[((§..)+(Weak|Dam|Def) ?)+§7\\]$"),
+        // TOTEM_LABEL
+        Pattern.compile("^§c[0-9]+s|\\§c+[0-9]+❤/§7s$"),
+        // COMBAT_XP
+        Pattern.compile("^(&bx[0-9.]+ )?§7\\[§f\\+§f[0-9]+§f (Combat)|(Guild) XP§7\\]$"),
+        // GATHER_XP
+        Pattern.compile("^§7\\[\\+[0-9]+§f [ⒸⒷⒿⓀ]§7 [A-Za-z ]+§7 XP\\] §6\\[[0-9]+%\\]$"),
+        // GATHER_RESOURCE
+        Pattern.compile("^§2\\[§a+[0-9]+§2 [A-Za-z ]+\\]$"),
+        // RESOURCE_LABEL
+        Pattern.compile("^§8(?:Right|Left)-Click for \\w+$"),
+        // WYBEL_OWNER
+        Pattern.compile("^§7\\[[A-Za-z0-9_]{3,16}\\]$"),
+        // WYBEL_LEVEL
+        Pattern.compile("^§2Lv. §a[0-9]+.*$"),
+        // PET_NAME
+        Pattern.compile("^§7[A-Za-z0-9_]{3,16}'s .*[A-Z].*$"),
+        // TERRITORY_HOLDER
+        Pattern.compile("^§7Controlled by §b§l.*§r§7 \\[Lv\\. [0-9]+\\]$"),
+        // TERRITORY_MSG
+        Pattern.compile("^§3< .* >$"),
+        // BOSS_ALTAR_TRIBUTE
+        Pattern.compile("^§7§lTribute: \\[.*\\]$")
+
+    };
 
     BlockPos lastLocation = null;
 
@@ -147,38 +173,12 @@ public class ClientEvents implements Listener {
         String label = TextFormatting.getTextWithoutFormattingCodes(formattedLabel);
         Location location = event.getLocation();
 
-        Matcher m = MOB_LABEL.matcher(label);
-        if (m.find()) return;
+        for (Pattern p : IGNORE_PATTERNS) {
+            Matcher m = p.matcher(formattedLabel);
+            if (m.find()) return;
+        }
 
-        Matcher m2 = HEALTH_LABEL.matcher(label);
-        if (m2.find()) return;
-
-        Matcher m3 = MOB_DAMAGE.matcher(label);
-        if (m3.find()) return;
-
-        Matcher m4 = GATHERING_STATUS.matcher(label);
-        if (m4.find()) return;
-
-        Matcher m5 = GATHERING_RESOURCE.matcher(label);
-        if (m5.find()) return;
-
-        Matcher m6 = TOTEM_LABEL.matcher(formattedLabel);
-        if (m6.find()) return;
-
-        Matcher m7 = GATHERING_LABEL.matcher(label);
-        if (m7.find()) return;
-
-        Matcher m8 = RESOURCE_LABEL.matcher(label);
-        if (m8.find()) return;
-
-        Matcher m9 = WYBEL_OWNER.matcher(formattedLabel);
-        if (m9.find()) return;
-
-        Matcher m10 = WYBEL_LEVEL.matcher(formattedLabel);
-        if (m10.find()) return;
-
-
-        LabelBake.handleLabel(label, event.getLabel(), location);
+        LabelDetector.handleLabel(label, formattedLabel, location, event.getEntity());
     }
 
     @SubscribeEvent
@@ -197,12 +197,12 @@ public class ClientEvents implements Listener {
 
         if (!(entity instanceof EntityVillager)) return;
 
-        LabelBake.handleNpc(name, event.getLabel(), location);
+        LabelDetector.handleNpc(name, event.getLabel(), location);
     }
 
     @SubscribeEvent
     public void onWorldJoin(WynnWorldEvent.Join e) {
-        LabelBake.onWorldJoin(e);
+        LabelDetector.onWorldJoin(e);
     }
 
 }

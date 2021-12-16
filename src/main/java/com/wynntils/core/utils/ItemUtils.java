@@ -6,6 +6,7 @@ package com.wynntils.core.utils;
 
 import com.wynntils.core.utils.objects.IntRange;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
+import com.wynntils.modules.utilities.managers.EmeraldPouchManager;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.enums.ItemType;
 import net.minecraft.init.Blocks;
@@ -131,7 +132,9 @@ public class ItemUtils {
                         damageValue = Integer.parseInt(values[1]);
                     }
 
-                    if (Item.getIdFromItem(item.getItem()) == i && item.getItemDamage() == damageValue) return e.getKey();
+                    if (Item.getIdFromItem(item.getItem()) == i && item.getItemDamage() == damageValue) {
+                        return e.getKey();
+                    }
                 }
             }
         }
@@ -152,7 +155,9 @@ public class ItemUtils {
             ItemStack it = inv.getStackInSlot(i);
             if (it.isEmpty()) continue;
 
-            if (it.getItem() == Items.EMERALD && it.getDisplayName().equals(TextFormatting.GREEN + "Emerald")) {
+            if (EmeraldPouchManager.isEmeraldPouch(it)) {
+                money += EmeraldPouchManager.getPouchUsage(it);
+            } else if (it.getItem() == Items.EMERALD && it.getDisplayName().equals(TextFormatting.GREEN + "Emerald")) {
                 money += it.getCount();
             } else if (it.getItem() == EMERALD_BLOCK && it.getDisplayName().equals(TextFormatting.GREEN + "Emerald Block")) {
                 money += it.getCount() * 64;

@@ -27,4 +27,14 @@ public class ServerListManager {
         else return availableServers.get(id).getUptime();
     }
 
+    public static String getUptimeHours(String id) {
+        long milliseconds = System.currentTimeMillis() - availableServers.get(id).getFirstSeen();
+        return String.valueOf((milliseconds / (1000*60*60)) % 24);
+    }
+
+    public static String getUptimeMinutes(String id) {
+        long milliseconds = System.currentTimeMillis() - availableServers.get(id).getFirstSeen();
+        return String.valueOf(milliseconds / (1000*60) % 60);
+    }
+
 }
