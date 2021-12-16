@@ -12,20 +12,17 @@ import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.IntRange;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import com.wynntils.modules.utilities.managers.CorkianAmplifierManager;
 import com.wynntils.modules.utilities.managers.EmeraldPouchManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
-import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ItemLevelOverlay implements Listener {
-
-    public static final Pattern CORKIAN_AMPLIFIER_PATTERN = Pattern.compile("§bCorkian Amplifier (I{1,3})");
 
     public static String romanToArabic(String romanNumeral) {
         String num = "0";
@@ -99,17 +96,13 @@ public class ItemLevelOverlay implements Listener {
         }
 
         // cork amp tier
-        if (item == Item.getItemFromBlock(Blocks.STONE_BUTTON)) {
-            Matcher amplifierMatcher = CORKIAN_AMPLIFIER_PATTERN.matcher(name);
-            if (amplifierMatcher.find()) {
-                if (!UtilitiesConfig.Items.INSTANCE.levelKeyShowsItemTiers) return;
-                if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
-                    event.setOverlayText(amplifierMatcher.group(1));
-                    return;
-                }
-                event.setOverlayText(romanToArabic(amplifierMatcher.group(1)));
+        if (CorkianAmplifierManager.isAmplifier(stack)) {
+            if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
+                event.setOverlayText(CorkianAmplifierManager.getAmplifierTier(stack));
                 return;
             }
+            event.setOverlayText(romanToArabic(CorkianAmplifierManager.getAmplifierTier(stack)));
+            return;
         }
 
         String lore = ItemUtils.getStringLore(stack);

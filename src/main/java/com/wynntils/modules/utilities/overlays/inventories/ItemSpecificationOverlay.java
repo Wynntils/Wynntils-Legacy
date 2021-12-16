@@ -17,6 +17,7 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import com.wynntils.modules.utilities.managers.CorkianAmplifierManager;
 import com.wynntils.modules.utilities.managers.EmeraldPouchManager;
 import com.wynntils.webapi.profiles.item.enums.ItemType;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -144,21 +145,6 @@ public class ItemSpecificationOverlay implements Listener {
                 }
             }
 
-            if (UtilitiesConfig.Items.INSTANCE.amplifierSpecification) {
-                Pattern amp = ItemLevelOverlay.CORKIAN_AMPLIFIER_PATTERN;
-                Matcher m = amp.matcher(name);
-                if (m.matches()) {
-                    if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
-                        destinationName = m.group(1);
-                    } else {
-                        destinationName = ItemLevelOverlay.romanToArabic(m.group(1));
-                    }
-                    color = MinecraftChatColors.AQUA;
-                    xOffset = -1;
-                    scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;
-                }
-            }
-
             if (UtilitiesConfig.Items.INSTANCE.powderSpecification) {
                 Pattern powder = Powder.POWDER_NAME_PATTERN;
                 Matcher m = powder.matcher(StringUtils.normalizeBadString(name));
@@ -169,6 +155,19 @@ public class ItemSpecificationOverlay implements Listener {
                         destinationName = ItemLevelOverlay.romanToArabic(m.group(2));
                     }
                     color = Powder.determineChatColor(m.group(1));
+                    xOffset = -1;
+                    scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;
+                }
+            }
+
+            if (UtilitiesConfig.Items.INSTANCE.amplifierSpecification) {
+                if (CorkianAmplifierManager.isAmplifier(stack)) {
+                    if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
+                        destinationName = CorkianAmplifierManager.getAmplifierTier(stack);
+                    } else {
+                        destinationName = ItemLevelOverlay.romanToArabic(CorkianAmplifierManager.getAmplifierTier(stack));
+                    }
+                    color = MinecraftChatColors.AQUA;
                     xOffset = -1;
                     scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;
                 }
