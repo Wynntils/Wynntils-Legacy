@@ -72,16 +72,16 @@ public class ServerEvents implements Listener {
             currentTime = OffsetDateTime.now().plusSeconds(30);
             if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
             if (WarTimerOverlay.getTerritory() != null) {
-                RichPresenceModule.getModule().getRichPresence().updateRichPresenceEndDate("World " + Reference.getUserWorld().replace("WAR", ""), "Waiting for the war for " + WarTimerOverlay.getTerritory() + " to start", PlayerInfo.get(CharacterData.class).getCurrentClass().toString().toLowerCase(), getPlayerInfo(), currentTime);
+                RichPresenceModule.getModule().getRichPresence().updateRichPresenceEndDate("World " + (Reference.inStream ? "-" : Reference.getUserWorld().replace("WAR", "")), "Waiting for the war for " + WarTimerOverlay.getTerritory() + " to start", PlayerInfo.get(CharacterData.class).getCurrentClass().toString().toLowerCase(), getPlayerInfo(), currentTime);
             } else {
-                RichPresenceModule.getModule().getRichPresence().updateRichPresenceEndDate("World " + Reference.getUserWorld().replace("WAR", ""), "Waiting for a war to start", PlayerInfo.get(CharacterData.class).getCurrentClass().toString().toLowerCase(), getPlayerInfo(), currentTime);
+                RichPresenceModule.getModule().getRichPresence().updateRichPresenceEndDate("World " + (Reference.inStream ? "-" : Reference.getUserWorld().replace("WAR", "")), "Waiting for a war to start", PlayerInfo.get(CharacterData.class).getCurrentClass().toString().toLowerCase(), getPlayerInfo(), currentTime);
             }
         } else if (e.getNewStage() == WarStage.IN_WAR) {
             if (!RichPresenceConfig.INSTANCE.enableRichPresence) return;
             if (WarTimerOverlay.getTerritory() != null) {
-                RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WAR", ""), "Warring in " + WarTimerOverlay.getTerritory(), PlayerInfo.get(CharacterData.class).getCurrentClass().toString().toLowerCase(), getPlayerInfo(), OffsetDateTime.now());
+                RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + (Reference.inStream ? "-" : Reference.getUserWorld().replace("WAR", "")), "Warring in " + WarTimerOverlay.getTerritory(), PlayerInfo.get(CharacterData.class).getCurrentClass().toString().toLowerCase(), getPlayerInfo(), OffsetDateTime.now());
             } else {
-                RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WAR", ""), "Warring", PlayerInfo.get(CharacterData.class).getCurrentClass().toString().toLowerCase(), getPlayerInfo(), OffsetDateTime.now());
+                RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + (Reference.inStream ? "-" : Reference.getUserWorld().replace("WAR", "")), "Warring", PlayerInfo.get(CharacterData.class).getCurrentClass().toString().toLowerCase(), getPlayerInfo(), OffsetDateTime.now());
             }
         }
     }
@@ -122,15 +122,15 @@ public class ServerEvents implements Listener {
             } else if (Reference.onWars) {
                 if (PlayerInfo.get(CharacterData.class).isLoaded()) {
                     if (WarTimerOverlay.getTerritory() != null) {
-                        RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WAR", ""), "Warring in " + WarTimerOverlay.getTerritory(), PlayerInfo.get(CharacterData.class).getCurrentClass().toString().toLowerCase(), getPlayerInfo(), OffsetDateTime.now());
+                        RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + (Reference.inStream ? "-" : Reference.getUserWorld().replace("WAR", "")), "Warring in " + WarTimerOverlay.getTerritory(), PlayerInfo.get(CharacterData.class).getCurrentClass().toString().toLowerCase(), getPlayerInfo(), OffsetDateTime.now());
                     } else {
-                        RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WAR", ""), "Warring", PlayerInfo.get(CharacterData.class).getCurrentClass().toString().toLowerCase(), getPlayerInfo(), OffsetDateTime.now());
+                        RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + (Reference.inStream ? "-" : Reference.getUserWorld().replace("WAR", "")), "Warring", PlayerInfo.get(CharacterData.class).getCurrentClass().toString().toLowerCase(), getPlayerInfo(), OffsetDateTime.now());
                     }
                 } else {
                     if (WarTimerOverlay.getTerritory() != null) {
-                        RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WAR", ""), "Warring in " + WarTimerOverlay.getTerritory(), getPlayerInfo(), OffsetDateTime.now());
+                        RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + (Reference.inStream ? "-" : Reference.getUserWorld().replace("WAR", "")), "Warring in " + WarTimerOverlay.getTerritory(), getPlayerInfo(), OffsetDateTime.now());
                     } else {
-                        RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + Reference.getUserWorld().replace("WAR", ""), "Warring", getPlayerInfo(), OffsetDateTime.now());
+                        RichPresenceModule.getModule().getRichPresence().updateRichPresence("World " + (Reference.inStream ? "-" : Reference.getUserWorld().replace("WAR", "")), "Warring", getPlayerInfo(), OffsetDateTime.now());
                     }
                 }
             } else if (Reference.onWorld) {
@@ -146,7 +146,7 @@ public class ServerEvents implements Listener {
     private static String getWorldDescription() {
         if (Reference.getUserWorld() == null) return "Lobby";
 
-        return "World " + Reference.getUserWorld().replace("WC", "");
+        return "World " + (Reference.inStream ? "-" : Reference.getUserWorld().replace("WC", ""));
     }
 
     /**

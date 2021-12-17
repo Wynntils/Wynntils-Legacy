@@ -451,11 +451,11 @@ public class InfoFormatter {
 
         // Uptime variables
         registerFormatter((input) ->
-                ServerListManager.getUptimeHours(Reference.getUserWorld()),
+                Reference.inStream ? "-" : ServerListManager.getUptimeHours(Reference.getUserWorld()),
                 "uptime_h");
 
         registerFormatter((input) ->
-                ServerListManager.getUptimeMinutes(Reference.getUserWorld()),
+                Reference.inStream ? "-" : ServerListManager.getUptimeMinutes(Reference.getUserWorld()),
                 "uptime_m");
     }
 
