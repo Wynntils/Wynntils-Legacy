@@ -26,6 +26,7 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 
 import java.awt.Point;
 import java.util.function.Consumer;
@@ -107,6 +108,9 @@ public class MiniMapOverlay extends Overlay {
 
             int option = MapConfig.INSTANCE.renderUsingLinear ? GL11.GL_LINEAR : GL11.GL_NEAREST;
             GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, option);
+
+            GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL13.GL_CLAMP_TO_BORDER);
+            GlStateManager.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL13.GL_CLAMP_TO_BORDER);
 
             GlStateManager.enableBlend();
             GlStateManager.enableTexture2D();
