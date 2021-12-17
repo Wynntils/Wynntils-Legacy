@@ -21,6 +21,7 @@ import com.wynntils.modules.utilities.managers.AreaDPSManager;
 import com.wynntils.modules.utilities.managers.ServerListManager;
 import com.wynntils.modules.utilities.managers.SpeedometerManager;
 import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.Minecraft;
 
 import java.time.LocalDateTime;
@@ -235,7 +236,16 @@ public class InfoFormatter {
         // Current guild that owns current territory
         registerFormatter((input) -> {
                     String territory = PlayerInfo.get(LocationData.class).getLocation();
-                    return territory.isEmpty() ? "" : WebManager.getTerritories().get(territory).getGuild();
+                    if (territory.isEmpty()) return "";
+
+                    TerritoryProfile profile = WebManager.getTerritories().get(territory);
+
+                    if (profile == null) {
+                        Reference.LOGGER.warn(String.format("Invalid territory for %%territory_owner%% %s", territory));
+                        return "?";
+                    }
+
+                    return profile.getGuild();
                 },
                 "territory_owner", "terguild");
 
@@ -243,8 +253,17 @@ public class InfoFormatter {
         // Current guild that owns current territory (prefix)
         registerFormatter((input) -> {
                     String territory = PlayerInfo.get(LocationData.class).getLocation();
-                    return territory.isEmpty() ? "" : WebManager.getTerritories().get(territory).getGuildPrefix();
-                },
+                    if (territory.isEmpty()) return "";
+
+                    TerritoryProfile profile = WebManager.getTerritories().get(territory);
+
+                    if (profile == null) {
+                        Reference.LOGGER.warn(String.format("Invalid territory for %%territory_owner_prefix%% %s", territory));
+                        return "?";
+                    }
+
+                    return profile.getGuildPrefix();
+                    },
                 "territory_owner_prefix", "terguild_pref");
 
         // Distance from compass beacon
