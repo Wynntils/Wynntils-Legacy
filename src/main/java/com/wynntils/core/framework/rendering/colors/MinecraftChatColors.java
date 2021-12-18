@@ -9,7 +9,6 @@ import net.minecraft.util.text.TextFormatting;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.regex.Pattern;
 
 public class MinecraftChatColors extends CustomColor.SetBase {
 
@@ -35,23 +34,18 @@ public class MinecraftChatColors extends CustomColor.SetBase {
     public static final MinecraftChatColors WHITE = new MinecraftChatColors(0xFFFFFF);
 
     private static final MinecraftChatColors[] colors = {
-        BLACK,     DARK_BLUE,    DARK_GREEN, DARK_AQUA,
-        DARK_RED,  DARK_PURPLE,  GOLD,       GRAY,
-        DARK_GRAY, BLUE,         GREEN,      AQUA,
-        RED,       LIGHT_PURPLE, YELLOW,     WHITE
+            BLACK,     DARK_BLUE,    DARK_GREEN, DARK_AQUA,
+            DARK_RED,  DARK_PURPLE,  GOLD,       GRAY,
+            DARK_GRAY, BLUE,         GREEN,      AQUA,
+            RED,       LIGHT_PURPLE, YELLOW,     WHITE
     };
 
     private static final String[] names = {
-        "BLACK",     "DARK_BLUE",    "DARK_GREEN", "DARK_AQUA",
-        "DARK_RED",  "DARK_PURPLE",  "GOLD",       "GRAY",
-        "DARK_GRAY", "BLUE",         "GREEN",      "AQUA",
-        "RED",       "LIGHT_PURPLE", "YELLOW",     "WHITE"
+            "BLACK",     "DARK_BLUE",    "DARK_GREEN", "DARK_AQUA",
+            "DARK_RED",  "DARK_PURPLE",  "GOLD",       "GRAY",
+            "DARK_GRAY", "BLUE",         "GREEN",      "AQUA",
+            "RED",       "LIGHT_PURPLE", "YELLOW",     "WHITE"
     };
-
-    /*
-    Pattern from org.bukkit.ChatColor
-     */
-    private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + '§' + "[0-9A-FK-OR]");
 
     private static final Map<String, MinecraftChatColors> aliases = new HashMap<>();
 
@@ -78,13 +72,6 @@ public class MinecraftChatColors extends CustomColor.SetBase {
 
     public static MinecraftChatColors fromTextFormatting(TextFormatting textFormatting) {
         return set.fromName(textFormatting.name());
-    }
-
-    /*
-    Function from org.bukkit.ChatColor
-     */
-    public static String stripColor(String input) {
-        return input == null ? null : STRIP_COLOR_PATTERN.matcher(input).replaceAll("");
     }
 
     /*

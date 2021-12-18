@@ -8,9 +8,9 @@ import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Location;
 
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.util.text.TextFormatting;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
@@ -73,7 +73,7 @@ public class LootRunNote {
                 scale(-0.025F, -0.025F, 0.025F);
                 disableLighting();
 
-                int middlePos = (int) renderer.getStringWidth(MinecraftChatColors.stripColor(input)) / 2;
+                int middlePos = (int) renderer.getStringWidth(TextFormatting.getTextWithoutFormattingCodes(input)) / 2;
 
                 // draws the label
                 renderer.drawString(input, -middlePos, verticalShift, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
