@@ -9,6 +9,7 @@ import net.minecraft.util.text.TextFormatting;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 public class MinecraftChatColors extends CustomColor.SetBase {
 
@@ -47,6 +48,11 @@ public class MinecraftChatColors extends CustomColor.SetBase {
         "RED",       "LIGHT_PURPLE", "YELLOW",     "WHITE"
     };
 
+    /*
+    Pattern from org.bukkit.ChatColor
+     */
+    private static final Pattern STRIP_COLOR_PATTERN = Pattern.compile("(?i)" + '§' + "[0-9A-FK-OR]");
+
     private static final Map<String, MinecraftChatColors> aliases = new HashMap<>();
 
     static {
@@ -72,6 +78,27 @@ public class MinecraftChatColors extends CustomColor.SetBase {
 
     public static MinecraftChatColors fromTextFormatting(TextFormatting textFormatting) {
         return set.fromName(textFormatting.name());
+    }
+
+    /*
+    Function from org.bukkit.ChatColor
+     */
+    public static String stripColor(String input) {
+        return input == null ? null : STRIP_COLOR_PATTERN.matcher(input).replaceAll("");
+    }
+
+    /*
+    Function from org.bukkit.ChatColor
+     */
+    public static String translateAlternateColorCodes(char altColorChar, String textToTranslate) {
+        char[] b = textToTranslate.toCharArray();
+        for (int i = 0; i < b.length - 1; ++i) {
+            if (b[i] == altColorChar && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i + 1]) > -1) {
+                b[i] = 167;
+                b[i + 1] = Character.toLowerCase(b[i + 1]);
+            }
+        }
+        return new String(b);
     }
 
 }
