@@ -111,6 +111,8 @@ public class ClientEvents implements Listener {
 
     private static final Pattern CRAFTED_USES = Pattern.compile(".* \\[(\\d)/\\d\\]");
 
+    private Boolean isInInteractionDialogue = false;
+
     @SubscribeEvent
     public void onMoveEvent(InputEvent.MouseInputEvent e) {
         lastUserInput = System.currentTimeMillis();
@@ -124,6 +126,11 @@ public class ClientEvents implements Listener {
         if (currentTime <= lastAfkRequested + 500) return;
 
         lastUserInput = currentTime;
+
+        // Manually send a hotbar packet if we're in dialogue + the user presses the already selected hotbar slot
+        if (isInInteractionDialogue && Keyboard.getEventKeyState() && Keyboard.getEventKey() - 2 == McIf.player().inventory.currentItem) { // -2 because KEY_1 is 0x02, and hotbar is 0-8
+            McIf.mc().getConnection().sendPacket(new CPacketHeldItemChange(McIf.player().inventory.currentItem));
+        }
     }
 
     @SubscribeEvent
@@ -319,6 +326,8 @@ public class ClientEvents implements Listener {
         if (msg.startsWith("[Daily Rewards:")) {
             DailyReminderManager.openedDaily();
         }
+
+        isInInteractionDialogue = msg.contains("Select an option to continue");
     }
 
     @SubscribeEvent
