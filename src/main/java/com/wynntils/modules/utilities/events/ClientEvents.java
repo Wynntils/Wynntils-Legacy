@@ -1081,7 +1081,9 @@ public class ClientEvents implements Listener {
                 itemName.endsWith("Speed Surge") ||
                 itemName.endsWith("Bipedal Spring"))
 
-                && ItemUtils.getStringLore(is).contains("§6Price:");
+                && ItemUtils.getStringLore(is).contains("§6Price:")
+                && !ItemUtils.getStringLore(is).contains(" x "); // Make sure we're not in trade market
+        // Normal shops don't have a string with " x " whereas TM uses it for the amount of the item being sold
     }
 
     @SubscribeEvent
