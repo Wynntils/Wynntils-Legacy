@@ -43,7 +43,7 @@ public class ModCore {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
-        if (ForgeVersion.getBuildVersion() < 2859) throw new ForgeConflictScreen(14, 23, 5, 2859);
+        if (ForgeVersion.getBuildVersion() < 2856) throw new ForgeConflictScreen();
 
         Reference.VERSION = e.getModMetadata().version;
         String[] splitDescription = e.getModMetadata().description.split(" ");

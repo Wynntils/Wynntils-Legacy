@@ -11,15 +11,6 @@ import net.minecraftforge.fml.client.CustomModLoadingErrorDisplayException;
 
 public class ForgeConflictScreen extends CustomModLoadingErrorDisplayException {
 
-    private final int reqMajorVersion, reqMinorVersion, reqRevisionVersion, reqBuildVersion;
-
-    public ForgeConflictScreen(int reqMajorVersion, int reqMinorVersion, int reqRevisionVersion, int reqBuildVersion) {
-        this.reqMajorVersion = reqMajorVersion;
-        this.reqMinorVersion = reqMinorVersion;
-        this.reqRevisionVersion = reqRevisionVersion;
-        this.reqBuildVersion = reqBuildVersion;
-    }
-
     @Override
     public void initGui(GuiErrorScreen errorScreen, FontRenderer fontRenderer) {
 
@@ -32,25 +23,26 @@ public class ForgeConflictScreen extends CustomModLoadingErrorDisplayException {
         errorScreen.drawCenteredString(
                 fontRenderer,
                 String.format(
-                    "Wynntils has detected that you are using Forge version: %s.",
+                    "Wynntils has detected that you are using Forge 1.12.2 version: %s.",
                     ForgeVersion.getVersion()
                 ),
                 errorScreen.width / 2,
-                errorScreen.height / 2 - 10,
+                errorScreen.height / 2 - 30,
                 0xFFFFFF);
         errorScreen.drawCenteredString(fontRenderer,
-                String.format(
-                        "However, Wynntils requires Forge to be of %d.%d.%d.%d or higher.",
-                    reqMajorVersion,
-                    reqMinorVersion,
-                    reqRevisionVersion,
-                    reqBuildVersion
-                ),
+                "However, Wynntils requires Forge 1.12.2 to be of 14.23.5.2856 or higher.",
                 errorScreen.width / 2,
-                errorScreen.height / 2,
+                errorScreen.height / 2 - 20,
                 0xFFFFFF);
+        errorScreen.drawCenteredString(
+                fontRenderer,
+                "As lower versions of Forge are vulnerable to a severe exploit (log4shell).",
+                errorScreen.width / 2,
+                errorScreen.height / 2 - 10,
+                0xFFFFFF
+        );
         errorScreen.drawCenteredString(fontRenderer,
-                "Please update your Forge version to continue using Wynntils.",
+                "§cPlease update your Forge version to stay safe.",
                 errorScreen.width / 2,
                 errorScreen.height / 2 + 10,
                 0xFFFFFF);
