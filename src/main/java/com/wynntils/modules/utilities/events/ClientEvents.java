@@ -323,11 +323,15 @@ public class ClientEvents implements Listener {
         if (e.isCanceled() || e.getType() == ChatType.GAME_INFO) return;
 
         String msg = McIf.getUnformattedText(e.getMessage());
+        String fMsg = McIf.getFormattedText(e.getMessage());
         if (msg.startsWith("[Daily Rewards:")) {
             DailyReminderManager.openedDaily();
         }
 
-        isInInteractionDialogue = msg.contains("Select an option to continue");
+        isInInteractionDialogue = fMsg.contains("§r§7Select §r§fan option §r§7to continue§r") ||
+                fMsg.contains("§r§4Select §r§can option §r§4to continue§r") ||
+                fMsg.contains("§r§fCLICK §r§7an option to continue§r") ||
+                fMsg.contains("§r§cCLICK §r§4an option to continue§r");
     }
 
     @SubscribeEvent
