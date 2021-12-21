@@ -79,6 +79,36 @@ public class KeyManager {
             McIf.player().sendChatMessage("/totem");
         });
 
+        CoreModule.getModule().registerKeyBinding("Guild Menu", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+            if (!Reference.onWorld) return;
+
+            McIf.player().sendChatMessage("/gu manage");
+        });
+
+        CoreModule.getModule().registerKeyBinding("Attack Territory", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+            if (!Reference.onWorld) return;
+
+            McIf.player().sendChatMessage("/gu attack");
+        });
+
+        CoreModule.getModule().registerKeyBinding("Territory Menu", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+            if (!Reference.onWorld) return;
+
+            McIf.player().sendChatMessage("/gu territory");
+        });
+
+        CoreModule.getModule().registerKeyBinding("Pet Menu", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+            if (!Reference.onWorld) return;
+
+            McIf.player().sendChatMessage("/pets");
+        });
+
+        CoreModule.getModule().registerKeyBinding("Housing Edit Toggle", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+            if (!Reference.onWorld) return;
+
+            McIf.player().sendChatMessage("/is edit");
+        });
+
         CoreModule.getModule().registerKeyBinding("Open Ingredient Pouch", Keyboard.KEY_O, "Wynntils", KeyConflictContext.IN_GAME, true, PouchHotkeyManager::onIngredientHotkeyPress);
 
         CoreModule.getModule().registerKeyBinding("Open Emerald Pouch", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, PouchHotkeyManager::onEmeraldHotkeyPress);
