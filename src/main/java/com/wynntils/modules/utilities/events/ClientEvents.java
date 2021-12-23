@@ -1078,8 +1078,8 @@ public class ClientEvents implements Listener {
         String itemName = is.getDisplayName();
         return (itemName.endsWith(" Teleport Scroll") ||
                 itemName.contains("Potion of ") || // We're using .contains here because we check for skill point potions which are different colors/symbols
-                itemName.endsWith("Speed Surge") ||
-                itemName.endsWith("Bipedal Spring"))
+                itemName.endsWith("Speed Surge [1/1]") ||
+                itemName.endsWith("Bipedal Spring [1/1]"))
 
                 && ItemUtils.getStringLore(is).contains("§6Price:")
                 && !ItemUtils.getStringLore(is).contains(" x "); // Make sure we're not in trade market
