@@ -24,7 +24,9 @@ import net.minecraft.network.play.client.CPacketClickWindow;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.settings.KeyConflictContext;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.lwjgl.input.Keyboard;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +43,8 @@ public class KeyManager {
     private static KeyHolder stopwatchKey;
     private static KeyHolder itemScreenshotKey;
     private static KeyHolder showLevelOverlayKey;
-
+    public static KeyBinding GuildMenuKeyBind;
+    
     public static void registerKeys() {
         UtilitiesModule.getModule().registerKeyBinding("Gammabright", Keyboard.KEY_G, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
             if (McIf.mc().gameSettings.gammaSetting < 1000) {
@@ -78,23 +81,20 @@ public class KeyManager {
 
             McIf.player().sendChatMessage("/totem");
         });
-
-        CoreModule.getModule().registerKeyBinding("Guild Menu", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
-            if (!Reference.onWorld) return;
-
-            McIf.player().sendChatMessage("/gu manage");
-        });
+        
+        GuildMenuKeyBind = new KeyBinding("Open Guild Menu", Keyboard.KEY_R, "Wynntils");
+        ClientRegistry.registerKeyBinding(GuildMenuKeyBind);
 
         CoreModule.getModule().registerKeyBinding("Attack Territory", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
             if (!Reference.onWorld) return;
 
-            McIf.player().sendChatMessage("/gu attack");
+            McIf.player().sendChatMessage("/guild attack");
         });
 
         CoreModule.getModule().registerKeyBinding("Territory Menu", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
             if (!Reference.onWorld) return;
 
-            McIf.player().sendChatMessage("/gu territory");
+            McIf.player().sendChatMessage("/guild territory");
         });
 
         CoreModule.getModule().registerKeyBinding("Pet Menu", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
@@ -106,7 +106,7 @@ public class KeyManager {
         CoreModule.getModule().registerKeyBinding("Housing Edit Toggle", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
             if (!Reference.onWorld) return;
 
-            McIf.player().sendChatMessage("/is edit");
+            McIf.player().sendChatMessage("/housing edit");
         });
 
         CoreModule.getModule().registerKeyBinding("Open Ingredient Pouch", Keyboard.KEY_O, "Wynntils", KeyConflictContext.IN_GAME, true, PouchHotkeyManager::onIngredientHotkeyPress);
