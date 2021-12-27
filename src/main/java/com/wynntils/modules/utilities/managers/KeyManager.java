@@ -91,6 +91,30 @@ public class KeyManager {
         CoreModule.getModule().registerKeyBinding("View Player's Gear", -98, "Wynntils", KeyConflictContext.IN_GAME, true, GearViewerUI::openGearViewer);
 
         showLevelOverlayKey = UtilitiesModule.getModule().registerKeyBinding("Show Item Level Overlay", Keyboard.KEY_LCONTROL, "Wynntils", WynntilsConflictContext.AMBIENT, true, () -> {});
+
+        CoreModule.getModule().registerKeyBinding("Attack Territory", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+            if (!Reference.onWorld) return;
+
+            McIf.player().sendChatMessage("/guild attack");
+        });
+
+        CoreModule.getModule().registerKeyBinding("Territory Menu", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+            if (!Reference.onWorld) return;
+
+            McIf.player().sendChatMessage("/guild territory");
+        });
+
+        CoreModule.getModule().registerKeyBinding("Pet Menu", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+            if (!Reference.onWorld) return;
+
+            McIf.player().sendChatMessage("/pets");
+        });
+
+        CoreModule.getModule().registerKeyBinding("Housing Edit Toggle", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+            if (!Reference.onWorld) return;
+
+            McIf.player().sendChatMessage("/housing edit");
+        });
     }
 
     public static KeyHolder getFavoriteTradeKey() {
