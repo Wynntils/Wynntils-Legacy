@@ -302,7 +302,7 @@ public class ClientEvents implements Listener {
                 .setColor(TextFormatting.BLUE)
                 .setUnderlined(true)
                 .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/territory " + territory))
-                .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Set waypoint to " + territory)));
+                .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Set waypoint to: " + territory)));
             McIf.player().sendMessage(m);
         }
     }
