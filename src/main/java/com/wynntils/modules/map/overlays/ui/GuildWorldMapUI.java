@@ -192,4 +192,26 @@ public class GuildWorldMapUI extends WorldMapUI {
         super.keyTyped(typedChar, keyCode);
     }
 
+    @Override
+    public void handleMouseInput() throws IOException {
+        clicking[1] = Mouse.isButtonDown(1);
+
+        //Check for shift + left click
+        if (!clicking[1] || !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+            super.handleMouseInput();
+            return;
+        }
+
+        for (MapTerritory territory : territories.values()) {
+            boolean hovering = territory.IsBeingHovered(lastMouseX, lastMouseY);
+            if (!hovering) continue;
+
+            //Close map and open territory management menu
+            McIf.mc().displayGuiScreen(null);
+            McIf.player().sendChatMessage("/guild territory "+territory.getTerritory().getName());
+            return;
+        }
+
+        super.handleMouseInput();
+    }
 }
