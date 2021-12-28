@@ -354,6 +354,10 @@ public class ClientEvents implements Listener {
         }
 
         Matcher potionMatcher = Pattern.compile("§a\\+(\\d+)§7 potion §acharges?").matcher(message);
+        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectPotionStack && potionMatcher.matches()) {
+            e.setCanceled(true);
+            GameUpdateOverlay.queueMessage(message);
+        }
     }
 
     @SubscribeEvent
