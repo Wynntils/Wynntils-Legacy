@@ -76,10 +76,7 @@ import java.sql.Timestamp;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1124,5 +1121,52 @@ public class ClientEvents implements Listener {
 
         newLore.add(purchaseString);
         ItemUtils.replaceLore(is, newLore);
+    }
+
+    @SubscribeEvent
+    public void onIngredientPouchHovered(ItemTooltipEvent e) {
+        // Is item Ingredient Pouch
+        if (!e.getItemStack().getDisplayName().endsWith("Ingredient Pouch"))
+            return;
+
+        ItemStack itemStack = e.getItemStack();
+        NBTTagCompound nbt = itemStack.getTagCompound();
+
+        if (nbt.hasKey("groupedItems"))
+            return;
+
+        List<String> lore = ItemUtils.getLore(itemStack);
+
+        HashMap<String, Integer> itemCounts = new HashMap<>();
+
+        for (int i = 4; i < lore.size(); i++) {
+            String line = TextFormatting.getTextWithoutFormattingCodes(lore.get(i));
+
+            int end = line != null ? line.indexOf(" x ") : -1;
+
+            if (end == -1) break;
+
+            String itemName = lore.get(i).substring(lore.get(i).indexOf(" x ") + 3);
+            int itemCount = Integer.parseInt(line.substring(0, end));
+
+            if (!itemCounts.containsKey(itemName)) {
+                itemCounts.put(itemName, itemCount);
+            } else {
+                itemCounts.replace(itemName, itemCount + itemCounts.get(itemName));
+            }
+        }
+
+        List<String> groupedItemLore = new ArrayList<>();
+
+        for (int i = 0; i < 4; i++) {
+            groupedItemLore.add(lore.get(i));
+        }
+
+        for (Map.Entry<String, Integer> line : itemCounts.entrySet()) {
+            groupedItemLore.add("§f"+line.getValue() + " x " + line.getKey());
+        }
+
+        nbt.setBoolean("groupedItems", true);
+        ItemUtils.replaceLore(itemStack, groupedItemLore);
     }
 }
