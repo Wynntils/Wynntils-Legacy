@@ -10,6 +10,8 @@ import com.wynntils.core.framework.enums.wynntils.WynntilsConflictContext;
 import com.wynntils.core.framework.instances.KeyHolder;
 import com.wynntils.core.framework.settings.ui.SettingsUI;
 import com.wynntils.modules.core.CoreModule;
+import com.wynntils.modules.core.instances.inventory.FakeInventory;
+import com.wynntils.modules.core.instances.inventory.InventoryOpenByItem;
 import com.wynntils.modules.map.overlays.MiniMapOverlay;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.events.ClientEvents;
@@ -28,9 +30,11 @@ import net.minecraftforge.client.settings.KeyConflictContext;
 import org.lwjgl.input.Keyboard;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class KeyManager {
 
+    private static final Pattern CHARACTER_MENU_WINDOW_TITLE_PATTERN = Pattern.compile("[0-9]+ skill points remaining");
     private static float lastGamma = 1f;
 
     private static KeyHolder lockInventoryKey;
@@ -115,6 +119,19 @@ public class KeyManager {
 
             McIf.player().sendChatMessage("/housing edit");
         });
+
+        CoreModule.getModule().registerKeyBinding("Open Guild Menu", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+            if (!Reference.onWorld) return;
+
+            FakeInventory inv = new FakeInventory(CHARACTER_MENU_WINDOW_TITLE_PATTERN, new InventoryOpenByItem(6));
+            inv.onReceiveItems((i) -> {
+                //37 -> guild banner
+                i.clickItem(37, 0, ClickType.PICKUP);
+                i.close();
+            });
+
+            inv.open();
+        });
     }
 
     public static KeyHolder getFavoriteTradeKey() {
@@ -148,5 +165,4 @@ public class KeyManager {
     public static KeyHolder getShowLevelOverlayKey() {
         return showLevelOverlayKey;
     }
-
 }
