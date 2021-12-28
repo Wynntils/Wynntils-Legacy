@@ -12,6 +12,7 @@ import com.wynntils.core.framework.settings.ui.SettingsUI;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.map.overlays.MiniMapOverlay;
 import com.wynntils.modules.utilities.UtilitiesModule;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.events.ClientEvents;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
 import com.wynntils.modules.utilities.overlays.hud.StopWatchOverlay;
@@ -91,6 +92,72 @@ public class KeyManager {
         CoreModule.getModule().registerKeyBinding("View Player's Gear", -98, "Wynntils", KeyConflictContext.IN_GAME, true, GearViewerUI::openGearViewer);
 
         showLevelOverlayKey = UtilitiesModule.getModule().registerKeyBinding("Show Item Level Overlay", Keyboard.KEY_LCONTROL, "Wynntils", WynntilsConflictContext.AMBIENT, true, () -> {});
+
+        CoreModule.getModule().registerKeyBinding("Command keybind 1", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+            String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind1;
+            if (cKeyBind.isEmpty())
+                return;
+
+            if (cKeyBind.startsWith("/"))
+                McIf.player().sendChatMessage(cKeyBind);
+            else
+                McIf.player().sendChatMessage("/" + cKeyBind);
+        });
+
+        CoreModule.getModule().registerKeyBinding("Command keybind 2", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+            String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind2;
+            if (cKeyBind.isEmpty())
+                return;
+
+            if (cKeyBind.startsWith("/"))
+                McIf.player().sendChatMessage(cKeyBind);
+            else
+                McIf.player().sendChatMessage("/" + cKeyBind);
+        });
+
+        CoreModule.getModule().registerKeyBinding("Command keybind 3", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+            String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind3;
+            if (cKeyBind.isEmpty())
+                return;
+
+            if (cKeyBind.startsWith("/"))
+                McIf.player().sendChatMessage(cKeyBind);
+            else
+                McIf.player().sendChatMessage("/" + cKeyBind);
+        });
+
+        CoreModule.getModule().registerKeyBinding("Command keybind 4", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+            String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind4;
+            if (cKeyBind.isEmpty())
+                return;
+
+            if (cKeyBind.startsWith("/"))
+                McIf.player().sendChatMessage(cKeyBind);
+            else
+                McIf.player().sendChatMessage("/" + cKeyBind);
+        });
+
+        CoreModule.getModule().registerKeyBinding("Command keybind 5", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+            String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind5;
+            if (cKeyBind.isEmpty())
+                return;
+
+            if (cKeyBind.startsWith("/"))
+                McIf.player().sendChatMessage(cKeyBind);
+            else
+                McIf.player().sendChatMessage("/" + cKeyBind);
+        });
+
+        CoreModule.getModule().registerKeyBinding("Command keybind 6", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+            String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind6;
+            if (cKeyBind.isEmpty())
+                return;
+
+            if (cKeyBind.startsWith("/"))
+                McIf.player().sendChatMessage(cKeyBind);
+            else
+                McIf.player().sendChatMessage("/" + cKeyBind);
+        });
     }
 
     public static KeyHolder getFavoriteTradeKey() {
