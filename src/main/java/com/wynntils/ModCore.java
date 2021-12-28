@@ -6,8 +6,6 @@ package com.wynntils;
 
 import com.wynntils.core.CoreManager;
 import com.wynntils.core.events.custom.ClientEvent;
-import com.wynntils.core.events.custom.KeyInputEventHandler;
-import com.wynntils.core.events.custom.OnGuiOpenEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.rendering.WynnRenderItem;
 import com.wynntils.core.framework.rendering.textures.Mappings;
@@ -24,7 +22,6 @@ import com.wynntils.webapi.WebManager;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.ForgeVersion;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.*;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -73,9 +70,6 @@ public class ModCore {
         FrameworkManager.startModules();
 
         CoreManager.afterModules();
-
-        MinecraftForge.EVENT_BUS.register(new KeyInputEventHandler());
-        MinecraftForge.EVENT_BUS.register(new OnGuiOpenEvent());
     }
 
     @Mod.EventHandler

@@ -47,8 +47,7 @@ public class KeyManager {
     private static KeyHolder stopwatchKey;
     private static KeyHolder itemScreenshotKey;
     private static KeyHolder showLevelOverlayKey;
-    public static KeyBinding GuildMenuKeyBind;
-    
+
     public static void registerKeys() {
         UtilitiesModule.getModule().registerKeyBinding("Gammabright", Keyboard.KEY_G, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
             if (McIf.mc().gameSettings.gammaSetting < 1000) {
@@ -84,33 +83,6 @@ public class KeyManager {
             if (!Reference.onWorld) return;
 
             McIf.player().sendChatMessage("/totem");
-        });
-        
-        GuildMenuKeyBind = new KeyBinding("Open Guild Menu", Keyboard.KEY_R, "Wynntils");
-        ClientRegistry.registerKeyBinding(GuildMenuKeyBind);
-
-        CoreModule.getModule().registerKeyBinding("Attack Territory", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
-            if (!Reference.onWorld) return;
-
-            McIf.player().sendChatMessage("/guild attack");
-        });
-
-        CoreModule.getModule().registerKeyBinding("Territory Menu", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
-            if (!Reference.onWorld) return;
-
-            McIf.player().sendChatMessage("/guild territory");
-        });
-
-        CoreModule.getModule().registerKeyBinding("Pet Menu", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
-            if (!Reference.onWorld) return;
-
-            McIf.player().sendChatMessage("/pets");
-        });
-
-        CoreModule.getModule().registerKeyBinding("Housing Edit Toggle", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
-            if (!Reference.onWorld) return;
-
-            McIf.player().sendChatMessage("/housing edit");
         });
 
         CoreModule.getModule().registerKeyBinding("Open Ingredient Pouch", Keyboard.KEY_O, "Wynntils", KeyConflictContext.IN_GAME, true, PouchHotkeyManager::onIngredientHotkeyPress);
