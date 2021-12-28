@@ -1126,7 +1126,7 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void onIngredientPouchHovered(ItemTooltipEvent e) {
         // Is item Ingredient Pouch
-        if (!e.getItemStack().getDisplayName().endsWith("Ingredient Pouch"))
+        if (!e.getItemStack().getDisplayName().equals("§6Ingredient Pouch"))
             return;
 
         ItemStack itemStack = e.getItemStack();
@@ -1163,7 +1163,7 @@ public class ClientEvents implements Listener {
         }
 
         for (Map.Entry<String, Integer> line : itemCounts.entrySet()) {
-            groupedItemLore.add("§f"+line.getValue() + " x " + line.getKey());
+            groupedItemLore.add("§f" + line.getValue() + " x " + line.getKey());
         }
 
         nbt.setBoolean("groupedItems", true);
