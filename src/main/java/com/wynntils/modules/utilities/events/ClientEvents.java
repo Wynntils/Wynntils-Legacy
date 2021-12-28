@@ -100,6 +100,7 @@ public class ClientEvents implements Listener {
     private IInventory currentLootChest;
 
     private static final Pattern PRICE_REPLACER = Pattern.compile("§6 - §a. §f([1-9]\\d*)§7" + EmeraldSymbols.E_STRING);
+    private static final Pattern INGREDIENT_SPLIT_PATTERN = Pattern.compile("(\\d+) x (.+)");
 
     public static boolean isAwaitingHorseMount = false;
     private static int lastHorseId = -1;
@@ -1139,15 +1140,13 @@ public class ClientEvents implements Listener {
 
         HashMap<String, Integer> itemCounts = new HashMap<>();
 
-        Pattern ingredientSplitPattern = Pattern.compile("(\\d+) x (.+)");
-
         for (int i = 4; i < lore.size(); i++) {
             String line = lore.get(i);
 
             if (line == null)
                 return;
 
-            Matcher matcher = ingredientSplitPattern.matcher(line);
+            Matcher matcher = INGREDIENT_SPLIT_PATTERN.matcher(line);
             if (!matcher.find())
                 return;
 
