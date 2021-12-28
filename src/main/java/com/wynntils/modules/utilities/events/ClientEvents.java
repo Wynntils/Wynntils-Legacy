@@ -330,7 +330,8 @@ public class ClientEvents implements Listener {
         if (packet.getType() != SPacketTitle.Type.SUBTITLE) return;
         String message = McIf.getUnformattedText(packet.getMessage());
 
-        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectIngredientPouch && message.matches("^§a\\+\\d+ §7.+§a to pouch$")) {
+        Matcher ingredientMatcher = Pattern.compile("^§a\\+\\d+ §7.+§a to pouch$").matcher(message);
+        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectIngredientPouch && ingredientMatcher.matches()) {
             e.setCanceled(true);
             GameUpdateOverlay.queueMessage(message);
         }
