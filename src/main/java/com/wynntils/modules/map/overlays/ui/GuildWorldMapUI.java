@@ -37,6 +37,7 @@ public class GuildWorldMapUI extends WorldMapUI {
     private boolean showOwners = false;
     private boolean resourceColors = false;
     private boolean showTradeRoutes = true;
+    private boolean territoryManageShortcut = true;
 
     public GuildWorldMapUI() {
         super((float) McIf.player().posX, (float) McIf.player().posZ);
@@ -72,6 +73,13 @@ public class GuildWorldMapUI extends WorldMapUI {
                 GRAY + "Click here to enable/disable",
                 GRAY + "territory trade routes."
         ), (v) -> showTradeRoutes, (i, btn) -> showTradeRoutes = !showTradeRoutes);
+
+        addButton(MapButtonType.PLUS, 3, Arrays.asList(
+                RED + "[>] Shift + Right Click on a territory",
+                RED + "to open management menu.",
+                GRAY + "Click here to enable/disable",
+                GRAY + "territory management shortcut."
+        ), (v) -> territoryManageShortcut, (i, btn) -> territoryManageShortcut = !territoryManageShortcut);
     }
 
     @Override
@@ -197,7 +205,7 @@ public class GuildWorldMapUI extends WorldMapUI {
         clicking[1] = Mouse.isButtonDown(1);
 
         //Check for shift + left click
-        if (!clicking[1] || !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+        if (!territoryManageShortcut || !clicking[1] || !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
             super.handleMouseInput();
             return;
         }
