@@ -59,9 +59,9 @@ import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -103,6 +103,7 @@ public class ClientEvents implements Listener {
     private IInventory currentLootChest;
 
     private static final Pattern PRICE_REPLACER = Pattern.compile("§6 - §a. §f([1-9]\\d*)§7" + EmeraldSymbols.E_STRING);
+    private static final Pattern WAR_CHAT_MESSAGE_PATTERN = Pattern.compile("§3\\[WAR§3\\] The war for (.+) will start in \\d+ minutes.");
 
     public static boolean isAwaitingHorseMount = false;
     private static int lastHorseId = -1;
@@ -291,6 +292,18 @@ public class ClientEvents implements Listener {
             if (McIf.getUnformattedText(e.getMessage()).matches("Please type an item name in chat!")) {
                 scheduledGuiScreen = new ChatGUI();
             }
+        }
+
+        Matcher warMatcher = WAR_CHAT_MESSAGE_PATTERN.matcher(McIf.getUnformattedText(e.getMessage()));
+        if (warMatcher.matches()) {
+            String territory = warMatcher.group(1);
+            ITextComponent m = new TextComponentString("Click here to set your waypoint to " + territory + ".");
+            m.getStyle()
+                .setColor(TextFormatting.BLUE)
+                .setUnderlined(true)
+                .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/territory " + territory))
+                .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Set waypoint to " + territory)));
+            McIf.player().sendMessage(m);
         }
     }
 
