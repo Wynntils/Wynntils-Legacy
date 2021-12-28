@@ -7,6 +7,7 @@ package com.wynntils.modules.map.overlays.ui;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.instances.GuildResourceContainer;
 import com.wynntils.modules.map.instances.MapProfile;
@@ -211,11 +212,11 @@ public class GuildWorldMapUI extends WorldMapUI {
         }
 
         for (MapTerritory territory : territories.values()) {
-            boolean hovering = territory.IsBeingHovered(lastMouseX, lastMouseY);
+            boolean hovering = territory.isBeingHovered(lastMouseX, lastMouseY);
             if (!hovering) continue;
 
             //Close map and open territory management menu
-            McIf.mc().displayGuiScreen(null);
+            Utils.displayGuiScreen(null);
             McIf.player().sendChatMessage("/guild territory "+territory.getTerritory().getName());
             return;
         }
