@@ -1139,15 +1139,20 @@ public class ClientEvents implements Listener {
 
         HashMap<String, Integer> itemCounts = new HashMap<>();
 
+        Pattern ingredientSplitPattern = Pattern.compile("(\\d+) x (.+)");
+
         for (int i = 4; i < lore.size(); i++) {
-            String line = TextFormatting.getTextWithoutFormattingCodes(lore.get(i));
+            String line = lore.get(i);
 
-            int end = line != null ? line.indexOf(" x ") : -1;
+            if (line == null)
+                return;
 
-            if (end == -1) break;
+            Matcher matcher = ingredientSplitPattern.matcher(line);
+            if (!matcher.find())
+                return;
 
-            String itemName = lore.get(i).substring(lore.get(i).indexOf(" x ") + 3);
-            int itemCount = Integer.parseInt(line.substring(0, end));
+            int itemCount = Integer.parseInt(matcher.group(1));
+            String itemName = matcher.group(2);
 
             if (!itemCounts.containsKey(itemName)) {
                 itemCounts.put(itemName, itemCount);
