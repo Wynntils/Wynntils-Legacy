@@ -1146,7 +1146,7 @@ public class ClientEvents implements Listener {
     public void onPlayerDeath(GameEvent.PlayerDeath e) {
         if (lastPlayerLocation == null || !UtilitiesConfig.INSTANCE.deathMessageWithCoords) return;
 
-        ITextComponent textComponent = new TextComponentString(String.format("You died at X: %d Y: %d Z: %d. Click here to set your waypoint there.", lastPlayerLocation.getX(), lastPlayerLocation.getY(), lastPlayerLocation.getZ()));
+        ITextComponent textComponent = new TextComponentString(String.format("You have died at X: %d Y: %d Z: %d. Click here to set your waypoint there.", lastPlayerLocation.getX(), lastPlayerLocation.getY(), lastPlayerLocation.getZ()));
         textComponent.getStyle()
                 .setColor(TextFormatting.DARK_RED)
                 .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/compass " + lastPlayerLocation.getX() + " " + lastPlayerLocation.getY() + " " + lastPlayerLocation.getZ()));
