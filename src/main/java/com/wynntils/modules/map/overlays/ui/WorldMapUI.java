@@ -44,6 +44,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static com.wynntils.modules.map.configs.MapConfig.INSTANCE;
 import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class WorldMapUI extends GuiMovementScreen {
@@ -129,7 +130,7 @@ public class WorldMapUI extends GuiMovementScreen {
 
     protected void createIcons() {
         // HeyZeer0: Handles MiniMap markers provided by Wynn API
-        List<MapIcon> apiMapIcons = MapIcon.getApiMarkers(MapConfig.INSTANCE.iconTexture);
+        List<MapIcon> apiMapIcons = MapIcon.getApiMarkers(INSTANCE.iconTexture);
         // Handles map labels from map.wynncraft.com
         List<MapIcon> mapLabels = MapIcon.getLabels();
         // Handles all waypoints
@@ -394,7 +395,7 @@ public class WorldMapUI extends GuiMovementScreen {
         float invertedProgress = (animationEnd - System.currentTimeMillis()) / (float) MapConfig.WorldMap.INSTANCE.animationLength;
         double radians = (Math.PI / 2f) * invertedProgress;
 
-        zoom = (float) (25 * Math.sin(radians));
+        zoom = (float) (25 * Math.sin(radians)) + (float) MapConfig.WorldMap.INSTANCE.defaultMapZoom;
         updateCenterPosition(centerPositionX, centerPositionZ);
     }
 
