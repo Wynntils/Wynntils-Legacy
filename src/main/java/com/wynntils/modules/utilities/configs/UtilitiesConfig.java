@@ -114,7 +114,7 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Bulk Buy Amount", description = "How many items should be bought in bulk?")
     public int bulkBuyAmount = 3;
 
-    @Setting(displayName = "Show death message with coordinates", description = "Should there be a message with your death coordinates?")
+    @Setting(displayName = "Show Death Message with Coordinates", description = "Should there be a message with your death coordinates?")
     public boolean deathMessageWithCoords = true;
 
     @Setting(upload = false)
