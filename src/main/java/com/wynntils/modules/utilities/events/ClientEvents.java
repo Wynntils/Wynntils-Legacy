@@ -1147,12 +1147,17 @@ public class ClientEvents implements Listener {
     public void onPlayerDeath(GameEvent.PlayerDeath e) {
         if (lastPlayerLocation == null || !UtilitiesConfig.INSTANCE.deathMessageWithCoords) return;
 
-        ITextComponent textComponent = new TextComponentString(String.format("You have died at X: %d Y: %d Z: %d. Click here to set your waypoint there.", lastPlayerLocation.getX(), lastPlayerLocation.getY(), lastPlayerLocation.getZ()));
+        ITextComponent textComponent = new TextComponentString("You have died at ");
+        ITextComponent textComponentCoords = new TextComponentString(String.format("X: %d Y: %d Z: %d.", lastPlayerLocation.getX(), lastPlayerLocation.getY(), lastPlayerLocation.getZ()));
+
         textComponent.getStyle()
+                .setColor(TextFormatting.DARK_RED);
+        textComponentCoords.getStyle()
                 .setColor(TextFormatting.DARK_RED)
+                .setUnderlined(true)
                 .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/compass " + lastPlayerLocation.getX() + " " + lastPlayerLocation.getY() + " " + lastPlayerLocation.getZ()));
 
-        McIf.player().sendMessage(textComponent);
+        McIf.player().sendMessage(textComponent.appendSibling(textComponentCoords));
     }
 
     //Dry streak counter, mythic music event
@@ -1163,7 +1168,7 @@ public class ClientEvents implements Listener {
         if (!UtilitiesConfig.INSTANCE.enableDryStreak) return;
 
         ChestReplacer chest = (ChestReplacer) McIf.mc().currentScreen;
-        //Dry streak counter
+        //Dry streak counter and sound sfx
         if (chest.getLowerInv().getName().contains("Loot Chest")) {
             //Only run at first time we get items, don't care about updating
             if (chest == lastOpenedChest) return;
@@ -1184,6 +1189,10 @@ public class ClientEvents implements Listener {
                 foundMythic = true;
                 UtilitiesConfig.INSTANCE.dryStreakCount = 0;
                 UtilitiesConfig.INSTANCE.dryStreakBoxes = 0;
+
+                SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("mythicFound"),
+                        true, false, false, false, true, false);
+
                 ITextComponent textComponent = new TextComponentString("Dry streak broken! Mythic found!");
                 textComponent.getStyle()
                         .setColor(TextFormatting.DARK_PURPLE)
@@ -1199,10 +1208,8 @@ public class ClientEvents implements Listener {
             UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
         }
 
-        //Mythic found sfx part
-        if (!chest.getLowerInv().getName().contains("Loot Chest") &&
-                !chest.getLowerInv().getName().contains("Daily Rewards") &&
-                !chest.getLowerInv().getName().contains("Objective Rewards")) return;
+        //Mythic found sfx for daily rewards and objective rewards
+        if (!chest.getLowerInv().getName().contains("Daily Rewards") && !chest.getLowerInv().getName().contains("Objective Rewards")) return;
 
         int size = Math.min(chest.getLowerInv().getSizeInventory(), e.getPacket().getItemStacks().size());
         for (int i = 0; i < size; i++) {
