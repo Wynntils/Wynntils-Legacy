@@ -463,6 +463,10 @@ public class InfoFormatter {
         registerFormatter((input) ->
                 !UtilitiesConfig.INSTANCE.enableDryStreak ? "-" : String.valueOf(UtilitiesConfig.INSTANCE.dryStreakCount),
                 "dry_streak");
+
+        registerFormatter((input) ->
+                        !UtilitiesConfig.INSTANCE.enableDryStreak ? "-" : String.valueOf(UtilitiesConfig.INSTANCE.dryStreakBoxes),
+                "dry_boxes", "dry_streak_boxes");
     }
 
     private void registerFormatter(InfoModule formatter, String... vars) {

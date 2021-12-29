@@ -59,6 +59,9 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting
     public int dryStreakCount = 0;
 
+    @Setting
+    public int dryStreakBoxes = 0;
+
     @Setting(displayName = "Prevent Clicking on Locked Items", description = "Should moving items to and from locked inventory slots be blocked?")
     public boolean preventSlotClicking = false;
 

@@ -1174,11 +1174,15 @@ public class ClientEvents implements Listener {
         for (int i = 0; i < size; i++) {
             ItemStack stack = e.getPacket().getItemStacks().get(i);
             if (stack.isEmpty() || !stack.hasDisplayName()) continue;
-            if (!stack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString())) continue;
             if (!stack.getDisplayName().contains("Unidentified")) continue;
+
+            UtilitiesConfig.INSTANCE.dryStreakBoxes += 1;
+
+            if (!stack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString())) continue;
 
             foundMythic = true;
             UtilitiesConfig.INSTANCE.dryStreakCount = 0;
+            UtilitiesConfig.INSTANCE.dryStreakBoxes = 0;
             ITextComponent textComponent = new TextComponentString("Dry streak broken! Mythic found!");
             textComponent.getStyle()
                     .setColor(TextFormatting.DARK_PURPLE)
