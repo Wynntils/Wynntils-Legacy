@@ -97,7 +97,7 @@ public class KeyManager {
     }
 
     private static void RegisterCustomCommandKeybinds() {
-        CoreModule.getModule().registerKeyBinding("Command keybind 1", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+        CoreModule.getModule().registerKeyBinding("Command Keybind 1", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
             String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind1;
             if (cKeyBind.isEmpty())
                 return;
@@ -107,7 +107,7 @@ public class KeyManager {
             McIf.player().sendChatMessage("/" + cKeyBind);
         });
 
-        CoreModule.getModule().registerKeyBinding("Command keybind 2", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+        CoreModule.getModule().registerKeyBinding("Command Keybind 2", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
             String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind2;
             if (cKeyBind.isEmpty())
                 return;
@@ -117,7 +117,7 @@ public class KeyManager {
             McIf.player().sendChatMessage("/" + cKeyBind);
         });
 
-        CoreModule.getModule().registerKeyBinding("Command keybind 3", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+        CoreModule.getModule().registerKeyBinding("Command Keybind 3", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
             String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind3;
             if (cKeyBind.isEmpty())
                 return;
@@ -127,7 +127,7 @@ public class KeyManager {
             McIf.player().sendChatMessage("/" + cKeyBind);
         });
 
-        CoreModule.getModule().registerKeyBinding("Command keybind 4", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+        CoreModule.getModule().registerKeyBinding("Command Keybind 4", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
             String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind4;
             if (cKeyBind.isEmpty())
                 return;
@@ -137,7 +137,7 @@ public class KeyManager {
             McIf.player().sendChatMessage("/" + cKeyBind);
         });
 
-        CoreModule.getModule().registerKeyBinding("Command keybind 5", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+        CoreModule.getModule().registerKeyBinding("Command Keybind 5", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
             String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind5;
             if (cKeyBind.isEmpty())
                 return;
@@ -147,7 +147,7 @@ public class KeyManager {
             McIf.player().sendChatMessage("/" + cKeyBind);
         });
 
-        CoreModule.getModule().registerKeyBinding("Command keybind 6", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+        CoreModule.getModule().registerKeyBinding("Command Keybind 6", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
             String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind6;
             if (cKeyBind.isEmpty())
                 return;

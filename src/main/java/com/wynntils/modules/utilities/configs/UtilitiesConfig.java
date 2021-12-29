@@ -480,22 +480,22 @@ public class UtilitiesConfig extends SettingsClass {
     public static class CommandKeybinds extends SettingsClass {
         public static CommandKeybinds INSTANCE;
 
-        @Setting(displayName = "Command keybind 1", description = "Command that runs upon pressing command keybind 1 key.", order = 1)
+        @Setting(displayName = "Command Keybind 1", description = "Command that runs upon pressing command keybind 1 key.", order = 1)
         public String cKeyBind1 = "";
 
-        @Setting(displayName = "Command keybind 2", description = "Command that runs upon pressing command keybind 2 key.", order = 2)
+        @Setting(displayName = "Command Keybind 2", description = "Command that runs upon pressing command keybind 2 key.", order = 2)
         public String cKeyBind2 = "";
 
-        @Setting(displayName = "Command keybind 3", description = "Command that runs upon pressing command keybind 3 key.", order = 3)
+        @Setting(displayName = "Command Keybind 3", description = "Command that runs upon pressing command keybind 3 key.", order = 3)
         public String cKeyBind3 = "";
 
-        @Setting(displayName = "Command keybind 4", description = "Command that runs upon pressing command keybind 4 key.", order = 4)
+        @Setting(displayName = "Command Keybind 4", description = "Command that runs upon pressing command keybind 4 key.", order = 4)
         public String cKeyBind4 = "";
 
-        @Setting(displayName = "Command keybind 5", description = "Command that runs upon pressing command keybind 5 key.", order = 5)
+        @Setting(displayName = "Command Keybind 5", description = "Command that runs upon pressing command keybind 5 key.", order = 5)
         public String cKeyBind5 = "";
 
-        @Setting(displayName = "Command keybind 6", description = "Command that runs upon pressing command keybind 6 key.", order = 6)
+        @Setting(displayName = "Command Keybind 6", description = "Command that runs upon pressing command keybind 6 key.", order = 6)
         public String cKeyBind6 = "";
     }
 
