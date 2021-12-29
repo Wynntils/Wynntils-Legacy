@@ -76,10 +76,7 @@ import java.sql.Timestamp;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -103,6 +100,7 @@ public class ClientEvents implements Listener {
     private IInventory currentLootChest;
 
     private static final Pattern PRICE_REPLACER = Pattern.compile("§6 - §a. §f([1-9]\\d*)§7" + EmeraldSymbols.E_STRING);
+    private static final Pattern INGREDIENT_SPLIT_PATTERN = Pattern.compile("§f(\\d+) x (.+)");
 
     public static boolean isAwaitingHorseMount = false;
     private static int lastHorseId = -1;
@@ -1124,5 +1122,67 @@ public class ClientEvents implements Listener {
 
         newLore.add(purchaseString);
         ItemUtils.replaceLore(is, newLore);
+    }
+
+    @SubscribeEvent
+    public void onIngredientPouchHovered(ItemTooltipEvent e) {
+        // Is item Ingredient Pouch
+        if (!e.getItemStack().getDisplayName().equals("§6Ingredient Pouch"))
+            return;
+
+        ItemStack itemStack = e.getItemStack();
+        NBTTagCompound nbt = itemStack.getTagCompound();
+
+        if (nbt.hasKey("groupedItems"))
+            return;
+
+        List<String> lore = ItemUtils.getLore(itemStack);
+
+        HashMap<String, Integer> itemCounts = new HashMap<>();
+
+        boolean foundFirstItem = false;
+        for (String line : lore) {
+            if (line == null)
+                return;
+
+            Matcher matcher = INGREDIENT_SPLIT_PATTERN.matcher(line);
+
+            //Account for ironman
+            if (!matcher.matches() && foundFirstItem)
+                break;
+            else if (!matcher.matches())
+                continue;
+
+            foundFirstItem = true;
+
+            int itemCount = Integer.parseInt(matcher.group(1));
+            String itemName = matcher.group(2);
+
+            if (!itemCounts.containsKey(itemName)) {
+                itemCounts.put(itemName, itemCount);
+            } else {
+                itemCounts.replace(itemName, itemCount + itemCounts.get(itemName));
+            }
+        }
+
+        List<String> groupedItemLore = new ArrayList<>();
+
+        //Account for +2 lines when using ironman
+        for (int i = 0; i < 6 && i < lore.size(); i++) {
+            String line = lore.get(i);
+            Matcher matcher = INGREDIENT_SPLIT_PATTERN.matcher(line);
+
+            if (matcher.matches())
+                break;
+
+            groupedItemLore.add(line);
+        }
+
+        for (Map.Entry<String, Integer> line : itemCounts.entrySet()) {
+            groupedItemLore.add("§f" + line.getValue() + " x " + line.getKey());
+        }
+
+        nbt.setBoolean("groupedItems", true);
+        ItemUtils.replaceLore(itemStack, groupedItemLore);
     }
 }
