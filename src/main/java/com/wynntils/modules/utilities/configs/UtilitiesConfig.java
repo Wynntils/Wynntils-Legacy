@@ -53,6 +53,15 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Prevent Clicking on Pouches in Loot Chests", description = "Should opening ingredient and emerald pouches be blocked in loot chests?")
     public boolean preventOpeningPouchesChest = true;
 
+    @Setting(displayName = "Count dry steak", description = "Should the number of chests since last mythic found in a chest counted?", order = 0)
+    public boolean enableDryStreak = true;
+
+    @Setting
+    public int dryStreakCount = 0;
+
+    @Setting
+    public int dryStreakBoxes = 0;
+
     @Setting(displayName = "Prevent Clicking on Locked Items", description = "Should moving items to and from locked inventory slots be blocked?")
     public boolean preventSlotClicking = false;
 
@@ -104,6 +113,9 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting.Limitations.IntLimit(min = 2, max = 16)
     @Setting(displayName = "Bulk Buy Amount", description = "How many items should be bought in bulk?")
     public int bulkBuyAmount = 3;
+
+    @Setting(displayName = "Show death message with coordinates", description = "Should there be a message with your death coordinates?")
+    public boolean deathMessageWithCoords = true;
 
     @Setting(upload = false)
     public String lastServerResourcePack = "";
@@ -356,7 +368,7 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Minimum Powder Tier Highlight", description = "What should the minimum tier of powders be for it to be highlighted?\n\n§8Set to 0 to disable.", order = 42)
         @Setting.Limitations.IntLimit(min = 0, max = 6)
         public int minPowderTier = 4;
-        
+
         @Setting(displayName = "Profession Filter Highlight Colour", description = "What colour should the highlight for filtered ingredients be?\n\n§aClick the coloured box to open the colour wheel.", order = 50)
         public CustomColor professionFilterHighlightColor = new CustomColor(0.078f, 0.35f, 0.8f);
 
