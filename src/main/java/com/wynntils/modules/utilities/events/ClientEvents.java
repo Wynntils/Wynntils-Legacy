@@ -1141,6 +1141,8 @@ public class ClientEvents implements Listener {
         HashMap<String, Integer> itemCounts = new HashMap<>();
 
         boolean foundFirstItem = false;
+        int[] originalSlots = new int[27];
+        int slot = 0;
         for (String line : lore) {
             if (line == null)
                 return;
@@ -1163,6 +1165,8 @@ public class ClientEvents implements Listener {
             } else {
                 itemCounts.replace(itemName, itemCount + itemCounts.get(itemName));
             }
+            originalSlots[slot] = itemCount;
+            slot += 1;
         }
 
         List<String> groupedItemLore = new ArrayList<>();
@@ -1183,6 +1187,7 @@ public class ClientEvents implements Listener {
         }
 
         nbt.setBoolean("groupedItems", true);
+        nbt.setIntArray("originalItems", originalSlots);
         ItemUtils.replaceLore(itemStack, groupedItemLore);
     }
 }
