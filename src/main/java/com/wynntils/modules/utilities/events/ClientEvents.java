@@ -25,6 +25,7 @@ import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
 import com.wynntils.modules.map.managers.LootRunManager;
+import com.wynntils.modules.music.managers.SoundTrackManager;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.configs.SoundEffectsConfig;
@@ -1154,7 +1155,7 @@ public class ClientEvents implements Listener {
         McIf.player().sendMessage(textComponent);
     }
 
-    //Dry streak counter
+    //Dry streak counter, mythic music event
     @SubscribeEvent
     public void onMythicFound(PacketEvent<SPacketWindowItems> e) {
         if (McIf.mc().currentScreen == null) return;
@@ -1162,39 +1163,57 @@ public class ClientEvents implements Listener {
         if (!UtilitiesConfig.INSTANCE.enableDryStreak) return;
 
         ChestReplacer chest = (ChestReplacer) McIf.mc().currentScreen;
-        if (!chest.getLowerInv().getName().contains("Loot Chest")) return;
+        //Dry streak counter
+        if (chest.getLowerInv().getName().contains("Loot Chest")) {
+            //Only run at first time we get items, don't care about updating
+            if (chest == lastOpenedChest) return;
 
-        //Only run at first time we get items, don't care about updating
-        if (chest == lastOpenedChest) return;
+            lastOpenedChest = chest;
 
-        lastOpenedChest = chest;
+            boolean foundMythic = false;
+            int size = Math.min(chest.getLowerInv().getSizeInventory(), e.getPacket().getItemStacks().size());
+            for (int i = 0; i < size; i++) {
+                ItemStack stack = e.getPacket().getItemStacks().get(i);
+                if (stack.isEmpty() || !stack.hasDisplayName()) continue;
+                if (!stack.getDisplayName().contains("Unidentified")) continue;
 
-        boolean foundMythic = false;
+                UtilitiesConfig.INSTANCE.dryStreakBoxes += 1;
+
+                if (!stack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString())) continue;
+
+                foundMythic = true;
+                UtilitiesConfig.INSTANCE.dryStreakCount = 0;
+                UtilitiesConfig.INSTANCE.dryStreakBoxes = 0;
+                ITextComponent textComponent = new TextComponentString("Dry streak broken! Mythic found!");
+                textComponent.getStyle()
+                        .setColor(TextFormatting.DARK_PURPLE)
+                        .setBold(true);
+
+                McIf.player().sendMessage(textComponent);
+                break;
+            }
+
+            if (!foundMythic)
+                UtilitiesConfig.INSTANCE.dryStreakCount += 1;
+
+            UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
+        }
+
+        //Mythic found sfx part
+        if (!chest.getLowerInv().getName().contains("Loot Chest") &&
+                !chest.getLowerInv().getName().contains("Daily Rewards") &&
+                !chest.getLowerInv().getName().contains("Objective Rewards")) return;
+
         int size = Math.min(chest.getLowerInv().getSizeInventory(), e.getPacket().getItemStacks().size());
         for (int i = 0; i < size; i++) {
             ItemStack stack = e.getPacket().getItemStacks().get(i);
             if (stack.isEmpty() || !stack.hasDisplayName()) continue;
+            if (!stack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString())) continue;
             if (!stack.getDisplayName().contains("Unidentified")) continue;
 
-            UtilitiesConfig.INSTANCE.dryStreakBoxes += 1;
-
-            if (!stack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString())) continue;
-
-            foundMythic = true;
-            UtilitiesConfig.INSTANCE.dryStreakCount = 0;
-            UtilitiesConfig.INSTANCE.dryStreakBoxes = 0;
-            ITextComponent textComponent = new TextComponentString("Dry streak broken! Mythic found!");
-            textComponent.getStyle()
-                    .setColor(TextFormatting.DARK_PURPLE)
-                    .setBold(true);
-
-            McIf.player().sendMessage(textComponent);
+            SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("mythicFound"),
+                    true, false, false, false, true, false);
             break;
         }
-
-        if (!foundMythic)
-            UtilitiesConfig.INSTANCE.dryStreakCount += 1;
-
-        UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
     }
 }
