@@ -20,9 +20,11 @@ import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.core.utils.reference.RequirementSymbols;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
+import com.wynntils.modules.core.instances.OtherPlayerProfile;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
+import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.configs.SoundEffectsConfig;
@@ -59,9 +61,12 @@ import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -110,6 +115,8 @@ public class ClientEvents implements Listener {
     private static boolean priceInput = false;
 
     private static final Pattern CRAFTED_USES = Pattern.compile(".* \\[(\\d)/\\d\\]");
+
+    private static Vec3i lastPlayerLocation = null;
 
     @SubscribeEvent
     public void onMoveEvent(InputEvent.MouseInputEvent e) {
@@ -161,6 +168,13 @@ public class ClientEvents implements Listener {
         if (!Reference.onWorld) return;
 
         DailyReminderManager.checkDailyReminder(McIf.player());
+
+        EntityPlayerSP player = McIf.player();
+        if (player != null) {
+            Entity lowestEntity = player.getLowestRidingEntity();
+
+            lastPlayerLocation = new Vec3i(lowestEntity.posX, lowestEntity.posY, lowestEntity.posZ);
+        }
 
         if (!UtilitiesConfig.AfkProtection.INSTANCE.afkProtection) return;
 
@@ -1124,5 +1138,17 @@ public class ClientEvents implements Listener {
 
         newLore.add(purchaseString);
         ItemUtils.replaceLore(is, newLore);
+    }
+
+    @SubscribeEvent
+    public void onPlayerDeath(GameEvent.PlayerDeath e) {
+        if (lastPlayerLocation == null || !UtilitiesConfig.INSTANCE.deathMessageWithCoords) return;
+
+        ITextComponent textComponent = new TextComponentString(String.format("You died at X: %d Y: %d Z: %d. Click here to set your waypoint there.", lastPlayerLocation.getX(), lastPlayerLocation.getY(), lastPlayerLocation.getZ()));
+        textComponent.getStyle()
+                .setColor(TextFormatting.DARK_RED)
+                .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/compass " + lastPlayerLocation.getX() + " " + lastPlayerLocation.getY() + " " + lastPlayerLocation.getZ()));
+
+        McIf.player().sendMessage(textComponent);
     }
 }
