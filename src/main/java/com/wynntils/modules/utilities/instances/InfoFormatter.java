@@ -16,6 +16,7 @@ import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.managers.PingManager;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.interfaces.InfoModule;
 import com.wynntils.modules.utilities.managers.AreaDPSManager;
 import com.wynntils.modules.utilities.managers.ServerListManager;
@@ -457,6 +458,11 @@ public class InfoFormatter {
         registerFormatter((input) ->
                 Reference.inStream ? "-" : ServerListManager.getUptimeMinutes(Reference.getUserWorld()),
                 "uptime_m");
+
+        //Dry streak counter
+        registerFormatter((input) ->
+                !UtilitiesConfig.INSTANCE.enableDryStreak ? "-" : String.valueOf(UtilitiesConfig.INSTANCE.dryStreakCount),
+                "dry_streak");
     }
 
     private void registerFormatter(InfoModule formatter, String... vars) {
