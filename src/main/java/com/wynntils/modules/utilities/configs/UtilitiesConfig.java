@@ -53,7 +53,7 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Prevent Clicking on Pouches in Loot Chests", description = "Should opening ingredient and emerald pouches be blocked in loot chests?")
     public boolean preventOpeningPouchesChest = true;
 
-    @Setting(displayName = "Count dry steak", description = "Should the number of chests since last mythic found in a chest counted?", order = 0)
+    @Setting(displayName = "Count Dry Streak", description = "Should the number of chests since last mythic found in a chest counted?", order = 0)
     public boolean enableDryStreak = true;
 
     @Setting
