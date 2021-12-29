@@ -336,6 +336,7 @@ public class ClientEvents implements Listener {
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectIngredientPouch && ingredientMatcher.matches()) {
             e.setCanceled(true);
             GameUpdateOverlay.queueMessage(message);
+            return;
         }
 
         Matcher emeraldMatcher = Pattern.compile("§a\\+(\\d+)§7 Emeralds? §ato pouch").matcher(message);
