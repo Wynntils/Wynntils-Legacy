@@ -67,15 +67,15 @@ public class MapConfig extends SettingsClass {
     @Setting(displayName = "Map Blur", description = "Should the map be rendered using linear textures to avoid aliasing issues?", order = 12)
     public boolean renderUsingLinear = true;
 
-    @Setting(displayName = "Minimap Icons Size", description = "How big should minimap icons be?", order = 16)
+    @Setting(displayName = "Minimap Icons Size", description = "How big should minimap icons be?", order = 13)
     @Setting.Limitations.FloatLimit(min = 0.5f, max = 2f)
     public float minimapIconSizeMultiplier = 1f;
 
-    @Setting(displayName = "Minimap Zoom", description = "How zoomed out should the minimap be?", order = 17)
+    @Setting(displayName = "Minimap Zoom", description = "How zoomed out should the minimap be?", order = 14)
     @Setting.Limitations.IntLimit(min = MiniMapOverlay.MIN_ZOOM, max = MiniMapOverlay.MAX_ZOOM, precision = 1)
     public int mapZoom = 30;
 
-    @Setting(displayName = "Hide in Non-Mapped Areas", description = "Should the minimap be hidden if the player is outside the map?", order = 18)
+    @Setting(displayName = "Hide in Non-Mapped Areas", description = "Should the minimap be hidden if the player is outside the map?", order = 15)
     public boolean hideMinimapOutOfBounds = true;
 
     @Setting
