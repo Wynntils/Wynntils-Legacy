@@ -1206,6 +1206,7 @@ public class ClientEvents implements Listener {
                 UtilitiesConfig.INSTANCE.dryStreakCount += 1;
 
             UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
+            return;
         }
 
         //Mythic found sfx for daily rewards and objective rewards
