@@ -634,7 +634,9 @@ public class OverlayConfig extends SettingsClass {
             PARTY_OWNER("Owner of the current party"),
             UNPROCESSED("Current amount of unprocessed materials"),
             UNPROCESSED_MAX("Max amount of unprocessed materials"),
-            ADPS("Current area damage per second");
+            ADPS("Current area damage per second"),
+            DRY_STREAK("Number of opened chests since last mythic finding in chest."),
+            DRY_BOXES("Number of item boxes found since last mythic finding in chest.");
 
             public final String displayName;
             public final String value;

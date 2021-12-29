@@ -20,9 +20,11 @@ import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.core.utils.reference.RequirementSymbols;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
+import com.wynntils.modules.core.instances.OtherPlayerProfile;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
+import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.configs.SoundEffectsConfig;
@@ -57,11 +59,15 @@ import net.minecraft.network.play.client.CPacketPlayerDigging.Action;
 import net.minecraft.network.play.server.SPacketEntityMetadata;
 import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.network.play.server.SPacketTitle;
+import net.minecraft.network.play.server.SPacketWindowItems;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -108,6 +114,9 @@ public class ClientEvents implements Listener {
     private static boolean priceInput = false;
 
     private static final Pattern CRAFTED_USES = Pattern.compile(".* \\[(\\d)/\\d\\]");
+
+    private static Vec3i lastPlayerLocation = null;
+    private static ChestReplacer lastOpenedChest = null;
 
     @SubscribeEvent
     public void onMoveEvent(InputEvent.MouseInputEvent e) {
@@ -159,6 +168,13 @@ public class ClientEvents implements Listener {
         if (!Reference.onWorld) return;
 
         DailyReminderManager.checkDailyReminder(McIf.player());
+
+        EntityPlayerSP player = McIf.player();
+        if (player != null) {
+            Entity lowestEntity = player.getLowestRidingEntity();
+
+            lastPlayerLocation = new Vec3i(lowestEntity.posX, lowestEntity.posY, lowestEntity.posZ);
+        }
 
         if (!UtilitiesConfig.AfkProtection.INSTANCE.afkProtection) return;
 
@@ -1184,5 +1200,59 @@ public class ClientEvents implements Listener {
 
         nbt.setBoolean("groupedItems", true);
         ItemUtils.replaceLore(itemStack, groupedItemLore);
+
+    public void onPlayerDeath(GameEvent.PlayerDeath e) {
+        if (lastPlayerLocation == null || !UtilitiesConfig.INSTANCE.deathMessageWithCoords) return;
+
+        ITextComponent textComponent = new TextComponentString(String.format("You have died at X: %d Y: %d Z: %d. Click here to set your waypoint there.", lastPlayerLocation.getX(), lastPlayerLocation.getY(), lastPlayerLocation.getZ()));
+        textComponent.getStyle()
+                .setColor(TextFormatting.DARK_RED)
+                .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/compass " + lastPlayerLocation.getX() + " " + lastPlayerLocation.getY() + " " + lastPlayerLocation.getZ()));
+
+        McIf.player().sendMessage(textComponent);
+    }
+
+    //Dry streak counter
+    @SubscribeEvent
+    public void onMythicFound(PacketEvent<SPacketWindowItems> e) {
+        if (McIf.mc().currentScreen == null) return;
+        if (!(McIf.mc().currentScreen instanceof ChestReplacer)) return;
+        if (!UtilitiesConfig.INSTANCE.enableDryStreak) return;
+
+        ChestReplacer chest = (ChestReplacer) McIf.mc().currentScreen;
+        if (!chest.getLowerInv().getName().contains("Loot Chest")) return;
+
+        //Only run at first time we get items, don't care about updating
+        if (chest == lastOpenedChest) return;
+
+        lastOpenedChest = chest;
+
+        boolean foundMythic = false;
+        int size = Math.min(chest.getLowerInv().getSizeInventory(), e.getPacket().getItemStacks().size());
+        for (int i = 0; i < size; i++) {
+            ItemStack stack = e.getPacket().getItemStacks().get(i);
+            if (stack.isEmpty() || !stack.hasDisplayName()) continue;
+            if (!stack.getDisplayName().contains("Unidentified")) continue;
+
+            UtilitiesConfig.INSTANCE.dryStreakBoxes += 1;
+
+            if (!stack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString())) continue;
+
+            foundMythic = true;
+            UtilitiesConfig.INSTANCE.dryStreakCount = 0;
+            UtilitiesConfig.INSTANCE.dryStreakBoxes = 0;
+            ITextComponent textComponent = new TextComponentString("Dry streak broken! Mythic found!");
+            textComponent.getStyle()
+                    .setColor(TextFormatting.DARK_PURPLE)
+                    .setBold(true);
+
+            McIf.player().sendMessage(textComponent);
+            break;
+        }
+
+        if (!foundMythic)
+            UtilitiesConfig.INSTANCE.dryStreakCount += 1;
+
+        UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
     }
 }
