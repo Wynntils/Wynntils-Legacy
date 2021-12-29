@@ -100,7 +100,7 @@ public class ClientEvents implements Listener {
     private IInventory currentLootChest;
 
     private static final Pattern PRICE_REPLACER = Pattern.compile("§6 - §a. §f([1-9]\\d*)§7" + EmeraldSymbols.E_STRING);
-    private static final Pattern INGREDIENT_SPLIT_PATTERN = Pattern.compile("(\\d+) x (.+)");
+    private static final Pattern INGREDIENT_SPLIT_PATTERN = Pattern.compile("§f(\\d+) x (.+)");
 
     public static boolean isAwaitingHorseMount = false;
     private static int lastHorseId = -1;
@@ -1140,15 +1140,20 @@ public class ClientEvents implements Listener {
 
         HashMap<String, Integer> itemCounts = new HashMap<>();
 
-        for (int i = 4; i < lore.size(); i++) {
-            String line = lore.get(i);
-
+        boolean foundFirstItem = false;
+        for (String line : lore) {
             if (line == null)
                 return;
 
             Matcher matcher = INGREDIENT_SPLIT_PATTERN.matcher(line);
-            if (!matcher.find())
-                return;
+
+            //Account for ironman
+            if (!matcher.matches() && foundFirstItem)
+                break;
+            else if (!matcher.matches())
+                continue;
+
+            foundFirstItem = true;
 
             int itemCount = Integer.parseInt(matcher.group(1));
             String itemName = matcher.group(2);
@@ -1162,8 +1167,15 @@ public class ClientEvents implements Listener {
 
         List<String> groupedItemLore = new ArrayList<>();
 
-        for (int i = 0; i < 4; i++) {
-            groupedItemLore.add(lore.get(i));
+        //Account for +2 lines when using ironman
+        for (int i = 0; i < 6 && i < lore.size(); i++) {
+            String line = lore.get(i);
+            Matcher matcher = INGREDIENT_SPLIT_PATTERN.matcher(line);
+
+            if (matcher.matches())
+                break;
+
+            groupedItemLore.add(line);
         }
 
         for (Map.Entry<String, Integer> line : itemCounts.entrySet()) {
