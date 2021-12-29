@@ -97,6 +97,10 @@ public class WorldMapUI extends GuiMovementScreen {
             territories.put(territory.getFriendlyName(), new MapTerritory(territory).setRenderer(renderer));
         }
 
+        //Only set if there is no animation, otherwise it is handled by handleOpenAnimation()
+        if (!MapConfig.WorldMap.INSTANCE.openAnimation)
+            zoom = MapConfig.WorldMap.INSTANCE.defaultMapZoom;
+
         // Also creates icons
         createIcons();
         this.centerPositionX = startX; this.centerPositionZ = startZ;
