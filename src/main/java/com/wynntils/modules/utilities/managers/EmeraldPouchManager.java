@@ -12,6 +12,7 @@ public class EmeraldPouchManager {
 
     private static final Pattern POUCH_CAPACITY_PATTERN = Pattern.compile("\\(([0-9]+)(" + EmeraldSymbols.BLOCKS + "|" + EmeraldSymbols.LE + "|stx) Total\\)");
     private static final Pattern POUCH_USAGE_PATTERN = Pattern.compile("§6§l([0-9]* ?[0-9]* ?[0-9]*)" + EmeraldSymbols.E_STRING);
+    private static final Pattern POUCH_TIER_PATTERN = Pattern.compile("§aEmerald Pouch§2 \\[Tier ([XIV]{1,4})]");
 
 
     public static boolean isEmeraldPouch(ItemStack i) {
@@ -32,9 +33,21 @@ public class EmeraldPouchManager {
     public static int getPouchUsage(ItemStack i) {
         Matcher usageMatcher = POUCH_USAGE_PATTERN.matcher(ItemUtils.getStringLore(i));
         if (!usageMatcher.find()) {
+            if (ItemUtils.getStringLore(i).contains("§7Empty")) { // We might just have an valid, empty pouch
+                return 0;
+            }
+
             return -1;
         }
         return Integer.parseInt(usageMatcher.group(1).replaceAll("\\s", ""));
+    }
+
+    public static String getPouchTier(ItemStack i) {
+        Matcher tierMatcher = POUCH_TIER_PATTERN.matcher(i.getDisplayName());
+        if (!tierMatcher.find()) {
+            return null;
+        }
+        return tierMatcher.group(1);
     }
 
 }

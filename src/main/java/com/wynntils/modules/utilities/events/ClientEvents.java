@@ -11,16 +11,20 @@ import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.instances.GuiParentedYesNo;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
+import com.wynntils.core.framework.instances.data.InventoryData;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
+import com.wynntils.core.utils.reference.RequirementSymbols;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
+import com.wynntils.modules.music.configs.MusicConfig;
+import com.wynntils.modules.music.managers.SoundTrackManager;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.configs.SoundEffectsConfig;
@@ -52,29 +56,31 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.client.CPacketPlayerDigging.Action;
-import net.minecraft.network.play.server.SPacketEntityMetadata;
-import net.minecraft.network.play.server.SPacketSetSlot;
-import net.minecraft.network.play.server.SPacketTitle;
+import net.minecraft.network.play.server.*;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import org.lwjgl.input.Keyboard;
 
 import java.sql.Timestamp;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -96,17 +102,24 @@ public class ClientEvents implements Listener {
     private Timestamp emeraldPouchLastPickup = new Timestamp(0);
     private GameUpdateOverlay.MessageContainer emeraldPouchMessage;
     private IInventory currentLootChest;
-    private static final String EB = EmeraldSymbols.E_STRING + EmeraldSymbols.B_STRING;
-    private static final String LE = EmeraldSymbols.L_STRING + EmeraldSymbols.E_STRING;
-    private static final Pattern POUCH_CAPACITY_PATTERN = Pattern.compile("\\(([0-9]+)(" + EB + "|" + LE + "|stx) Total\\)");
-    private static final Pattern POUCH_USAGE_PATTERN = Pattern.compile("§6§l([0-9]* ?[0-9]* ?[0-9]*)" + EmeraldSymbols.E_STRING);
+
+    private static final Pattern PRICE_REPLACER = Pattern.compile("§6 - §a. §f([1-9]\\d*)§7" + EmeraldSymbols.E_STRING);
+    private static final Pattern INGREDIENT_SPLIT_PATTERN = Pattern.compile("§f(\\d+) x (.+)");
+    private static final Pattern WAR_CHAT_MESSAGE_PATTERN = Pattern.compile("§3\\[WAR§3\\] The war for (.+) will start in \\d+ minutes.");
 
     public static boolean isAwaitingHorseMount = false;
     private static int lastHorseId = -1;
 
     private static boolean priceInput = false;
 
-    private static Pattern CRAFTED_USES = Pattern.compile(".* \\[(\\d)/\\d\\]");
+    private static final Pattern CRAFTED_USES = Pattern.compile(".* \\[(\\d)/\\d\\]");
+
+    private static Vec3i lastPlayerLocation = null;
+    private static int lastProcessedOpenedChest = -1;
+    private int lastOpenedChestWindowId = -1;
+    private int lastOpenedRewardWindowId = -1;
+    private Boolean isInInteractionDialogue = false;
+
 
     @SubscribeEvent
     public void onMoveEvent(InputEvent.MouseInputEvent e) {
@@ -121,6 +134,11 @@ public class ClientEvents implements Listener {
         if (currentTime <= lastAfkRequested + 500) return;
 
         lastUserInput = currentTime;
+
+        // Manually send a hotbar packet if we're in dialogue + the user presses the already selected hotbar slot
+        if (isInInteractionDialogue && Keyboard.getEventKeyState() && Keyboard.getEventKey() - 2 == McIf.player().inventory.currentItem) { // -2 because KEY_1 is 0x02, and hotbar is 0-8
+            McIf.mc().getConnection().sendPacket(new CPacketHeldItemChange(McIf.player().inventory.currentItem));
+        }
     }
 
     @SubscribeEvent
@@ -158,6 +176,13 @@ public class ClientEvents implements Listener {
         if (!Reference.onWorld) return;
 
         DailyReminderManager.checkDailyReminder(McIf.player());
+
+        EntityPlayerSP player = McIf.player();
+        if (player != null) {
+            Entity lowestEntity = player.getLowestRidingEntity();
+
+            lastPlayerLocation = new Vec3i(lowestEntity.posX, lowestEntity.posY, lowestEntity.posZ);
+        }
 
         if (!UtilitiesConfig.AfkProtection.INSTANCE.afkProtection) return;
 
@@ -245,14 +270,20 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
+    public void onKill(GameEvent.KillEntity ignored) {
+        KillsManager.addKill();
+   }
+
+    @SubscribeEvent
     public void onGUIOpen(GuiOpenEvent e) {
         // Store the original opened chest so we can check itemstacks later
-        if (e.getGui() instanceof ChestReplacer && ((ChestReplacer) e.getGui()).getLowerInv().getDisplayName().toString().contains("Loot Chest")) {
+        // Make sure this check is not spoofed by checking inventory size
+        if (e.getGui() instanceof ChestReplacer && ((ChestReplacer) e.getGui()).getLowerInv().getDisplayName().getUnformattedText().startsWith("Loot Chest") && ((ChestReplacer) e.getGui()).getLowerInv().getSizeInventory() == 27) {
             currentLootChest = ((ChestReplacer) e.getGui()).getLowerInv();
         }
     }
 
-    @SubscribeEvent
+  @SubscribeEvent
     public void onGUIClose(GuiOpenEvent e) {
         if (e.getGui() == null) {
             afkProtectionBlocked = false;
@@ -289,6 +320,18 @@ public class ClientEvents implements Listener {
                 scheduledGuiScreen = new ChatGUI();
             }
         }
+
+        Matcher warMatcher = WAR_CHAT_MESSAGE_PATTERN.matcher(McIf.getUnformattedText(e.getMessage()));
+        if (warMatcher.matches()) {
+            String territory = warMatcher.group(1);
+            ITextComponent m = new TextComponentString("Click here to set your waypoint to " + territory + ".");
+            m.getStyle()
+                .setColor(TextFormatting.BLUE)
+                .setUnderlined(true)
+                .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/territory " + territory))
+                .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Set waypoint to: " + territory)));
+            McIf.player().sendMessage(m);
+        }
     }
 
     @SubscribeEvent
@@ -313,43 +356,56 @@ public class ClientEvents implements Listener {
         if (e.isCanceled() || e.getType() == ChatType.GAME_INFO) return;
 
         String msg = McIf.getUnformattedText(e.getMessage());
+        String fMsg = McIf.getFormattedText(e.getMessage());
         if (msg.startsWith("[Daily Rewards:")) {
             DailyReminderManager.openedDaily();
         }
+
+        isInInteractionDialogue = fMsg.contains("§r§7Select §r§fan option §r§7to continue§r") ||
+                fMsg.contains("§r§4Select §r§can option §r§4to continue§r") ||
+                fMsg.contains("§r§fCLICK §r§7an option to continue§r") ||
+                fMsg.contains("§r§cCLICK §r§4an option to continue§r");
     }
 
     @SubscribeEvent
     public void onTitle(PacketEvent<SPacketTitle> e) {
-        if (!OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectIngredientPouch && !OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch)
+        if (!OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectIngredientPouch
+                && !OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch
+                && !OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectPotionStack)
             return;
 
         SPacketTitle packet = e.getPacket();
         if (packet.getType() != SPacketTitle.Type.SUBTITLE) return;
+        String message = McIf.getUnformattedText(packet.getMessage());
 
-        if (McIf.getUnformattedText(packet.getMessage()).matches("^§a\\+\\d+ §7.+§a to pouch$")) {
-            if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectIngredientPouch) {
-                e.setCanceled(true);
-                GameUpdateOverlay.queueMessage(McIf.getFormattedText(packet.getMessage()));
-            }
+        Matcher ingredientMatcher = Pattern.compile("^§a\\+\\d+ §7.+§a to pouch$").matcher(message);
+        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectIngredientPouch && ingredientMatcher.matches()) {
+            e.setCanceled(true);
+            GameUpdateOverlay.queueMessage(message);
+            return;
         }
 
-        Matcher m = Pattern.compile("§a\\+(\\d+)§7 Emeralds? §ato pouch").matcher(McIf.getUnformattedText(packet.getMessage()));
-        if (m.matches()) {
-            if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
-                e.setCanceled(true);
-                if (new Timestamp(System.currentTimeMillis() - 3000).before(emeraldPouchLastPickup)) {
-                    // If the last emerald pickup event was less than 3 seconds ago, assume Wynn has relayed us an "updated" emerald title
-                    // Edit the first message it gave us with the new amount
-                    // editMessage doesn't return the new MessageContainer, so we can just keep re-using the first one
-                    int currentEmeralds = Integer.parseInt(m.group(1));
-                    GameUpdateOverlay.editMessage(emeraldPouchMessage, "§a+" + currentEmeralds + "§7 Emeralds §ato pouch");
-                    emeraldPouchLastPickup = new Timestamp(System.currentTimeMillis());
-                    return;
-                }
-                // First time we've picked up emeralds in 3 seconds, set new MessageContainer and start the timer
-                emeraldPouchMessage = GameUpdateOverlay.queueMessage(McIf.getFormattedText(packet.getMessage()));
+        Matcher emeraldMatcher = Pattern.compile("§a\\+(\\d+)§7 Emeralds? §ato pouch").matcher(message);
+        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch && emeraldMatcher.matches()) {
+            e.setCanceled(true);
+            if (new Timestamp(System.currentTimeMillis() - 3000).before(emeraldPouchLastPickup)) {
+                // If the last emerald pickup event was less than 3 seconds ago, assume Wynn has relayed us an "updated" emerald title
+                // Edit the first message it gave us with the new amount
+                // editMessage doesn't return the new MessageContainer, so we can just keep re-using the first one
+                int currentEmeralds = Integer.parseInt(emeraldMatcher.group(1));
+                GameUpdateOverlay.editMessage(emeraldPouchMessage, "§a+" + currentEmeralds + "§7 Emeralds §ato pouch");
                 emeraldPouchLastPickup = new Timestamp(System.currentTimeMillis());
+                return;
             }
+            // First time we've picked up emeralds in 3 seconds, set new MessageContainer and start the timer
+            emeraldPouchMessage = GameUpdateOverlay.queueMessage(message);
+            emeraldPouchLastPickup = new Timestamp(System.currentTimeMillis());
+        }
+
+        Matcher potionMatcher = Pattern.compile("§a\\+(\\d+)§7 potion §acharges?").matcher(message);
+        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectPotionStack && potionMatcher.matches()) {
+            e.setCanceled(true);
+            GameUpdateOverlay.queueMessage(message);
         }
     }
 
@@ -516,6 +572,7 @@ public class ClientEvents implements Listener {
             return;
         }
 
+
         if (e.getKeyCode() == McIf.mc().gameSettings.keyBindDrop.getKeyCode() && e.getGui().getSlotUnderMouse() != null && McIf.player().inventory == e.getGui().getSlotUnderMouse().inventory) {
             if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId()))
                 return;
@@ -572,6 +629,7 @@ public class ClientEvents implements Listener {
             ItemScreenshotManager.takeScreenshot();
             return;
         }
+
 
         if (e.getKeyCode() == McIf.mc().gameSettings.keyBindDrop.getKeyCode() && e.getGui().getSlotUnderMouse() != null && McIf.player().inventory == e.getGui().getSlotUnderMouse().inventory) {
             if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId()))
@@ -638,8 +696,6 @@ public class ClientEvents implements Listener {
                 if (openSlot == 0) return; // no open slots, cannot move accessory anywhere
                 accessoryDestinationSlot = openSlot;
 
-                e.setCanceled(true);
-
             } else { // putting on accessory
                 // verify it's an accessory
                 ItemType item = ItemUtils.getItemType(e.getSlotIn().getStack());
@@ -668,8 +724,8 @@ public class ClientEvents implements Listener {
                 if (openSlot == 0) return;
                 accessoryDestinationSlot = openSlot;
 
-                e.setCanceled(true); // only cancel after finding open slot
             }
+            e.setCanceled(true); // only cancel after finding open slot
 
             // pick up accessory
             CPacketClickWindow packet = new CPacketClickWindow(e.getGui().inventorySlots.windowId, e.getSlotId(), 0, ClickType.PICKUP, e.getSlotIn().getStack(), e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
@@ -708,11 +764,10 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void clickOnChest(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
-
         if (e.getSlotIn() == null) return;
 
         // Queue messages into game update ticker when clicking on emeralds in loot chest
-        if (e.getGui().getLowerInv().getDisplayName().getUnformattedText().contains("Loot Chest") && OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
+        if (e.getGui().getLowerInv().getDisplayName().getUnformattedText().startsWith("Loot Chest") && OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
             // Check if item is actually an emerald, if we're left clicking, and make sure we're not shift clicking
             if (currentLootChest.getStackInSlot(e.getSlotId()).getDisplayName().equals("§aEmerald") && e.getMouseButton() == 0 && !GuiScreen.isShiftKeyDown()) {
                 // Find all emerald pouches in inventory
@@ -752,12 +807,23 @@ public class ClientEvents implements Listener {
             int mappedSlot = e.getSlotId();
             if (e.getSlotId() > 54) mappedSlot -= 54;
             if (e.getSlotId() > 31 && e.getSlotId() < 54) mappedSlot -= 18;
-            if (e.getGui().getUpperInv().getStackInSlot(mappedSlot).getDisplayName().startsWith("§aEmerald Pouch§2 [Tier ") && e.getSlotId() > 26) {
+            if (EmeraldPouchManager.isEmeraldPouch(e.getGui().getUpperInv().getStackInSlot(mappedSlot)) && e.getSlotId() > 26) {
                 e.setCanceled(true);
                 return;
             }
         }
 
+
+        // Bulk buy functionality
+        // The title for the shops are in slot 4
+        if (UtilitiesConfig.INSTANCE.shiftBulkBuy && isBulkShopConsumable(e.getGui().getLowerInv().getStackInSlot(e.getSlotId())) && GuiScreen.isShiftKeyDown()) {
+            CPacketClickWindow packet = new CPacketClickWindow(e.getGui().inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), e.getSlotIn().getStack(), e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
+            for (int i = 1; i < UtilitiesConfig.INSTANCE.bulkBuyAmount; i++) { // int i is 1 by default because the user's original click is not cancelled
+                McIf.mc().getConnection().sendPacket(packet);
+            }
+        }
+
+        // Bank dump confirm
         if (e.getSlotIn().getStack().getDisplayName().equals("§dDump Inventory")) {
             switch (UtilitiesConfig.INSTANCE.bankDumpButton) {
                 case Default:
@@ -777,6 +843,7 @@ public class ClientEvents implements Listener {
             }
         }
 
+        // Bank quick stash confirm
         if (e.getSlotIn().getStack().getDisplayName().equals("§dQuick Stash")) {
             switch (UtilitiesConfig.INSTANCE.bankStashButton) {
                 case Default:
@@ -1060,4 +1127,219 @@ public class ClientEvents implements Listener {
         }
     }
 
+    private static boolean isBulkShopConsumable(ItemStack is) {
+        String itemName = is.getDisplayName();
+        return (itemName.endsWith(" Teleport Scroll") ||
+                itemName.contains("Potion of ") || // We're using .contains here because we check for skill point potions which are different colors/symbols
+                itemName.endsWith("Speed Surge [1/1]") ||
+                itemName.endsWith("Bipedal Spring [1/1]"))
+
+                && ItemUtils.getStringLore(is).contains("§6Price:")
+                && !ItemUtils.getStringLore(is).contains(" x "); // Make sure we're not in trade market
+        // Normal shops don't have a string with " x " whereas TM uses it for the amount of the item being sold
+    }
+
+    @SubscribeEvent
+    public void onItemHovered(ItemTooltipEvent e) {
+        // If the shift to bulk buy setting is on and is applicable to the hovered item, add bulk prices
+        if (!UtilitiesConfig.INSTANCE.shiftBulkBuy || !isBulkShopConsumable(e.getItemStack())) return;
+
+        ItemStack is = e.getItemStack();
+        List<String> newLore = new ArrayList<>();
+        NBTTagCompound nbt = is.getTagCompound();
+
+        for (String loreLine : ItemUtils.getLore(is)) {
+            if (!loreLine.contains("§aPurchasing ") && !loreLine.contains("§aShift-click to purchase ")) { // Do not add the last bit of info text
+                newLore.add(loreLine);
+            }
+
+            if (!nbt.hasKey("wynntilsBulkPrice")) {
+                Matcher priceMatcher = PRICE_REPLACER.matcher(loreLine);
+                if (priceMatcher.matches()) { // Determine if we have enough money to buy the bulk amount and add lore
+                    int singularPrice = Integer.parseInt(priceMatcher.group(1));
+                    int bulkPrice = singularPrice * UtilitiesConfig.INSTANCE.bulkBuyAmount;
+                    int availMoney = PlayerInfo.get(InventoryData.class).getMoney(); // this value includes both raw emeralds and pouches
+
+                    String moneySymbol = (bulkPrice > availMoney) ? TextFormatting.RED + RequirementSymbols.XMARK_STRING : TextFormatting.GREEN + RequirementSymbols.CHECKMARK_STRING;
+                    String loreString = "§6 - " + moneySymbol + " §f" + bulkPrice + "§7" + EmeraldSymbols.E_STRING + " (" + UtilitiesConfig.INSTANCE.bulkBuyAmount + "x)";
+
+                    newLore.add(loreString);
+                    nbt.setBoolean("wynntilsBulkPrice", true);
+                }
+            }
+        }
+
+        if (!nbt.hasKey("wynntilsBulkShiftSpacer")) { // Only add the spacer once
+            newLore.add(" ");
+            nbt.setBoolean("wynntilsBulkShiftSpacer", true);
+        }
+
+        // If user is holding shift, just tell them they're already buying x amount
+        String purchaseString = "§a" + (Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) ? "Purchasing " : "Shift-click to purchase ") + UtilitiesConfig.INSTANCE.bulkBuyAmount;
+
+        newLore.add(purchaseString);
+        ItemUtils.replaceLore(is, newLore);
+    }
+
+    @SubscribeEvent
+    public void onPlayerDeath(GameEvent.PlayerDeath e) {
+        if (lastPlayerLocation == null || !UtilitiesConfig.INSTANCE.deathMessageWithCoords) return;
+
+        ITextComponent textComponent = new TextComponentString("You have died at ");
+        ITextComponent textComponentCoords = new TextComponentString(String.format("X: %d Y: %d Z: %d.", lastPlayerLocation.getX(), lastPlayerLocation.getY(), lastPlayerLocation.getZ()));
+
+        textComponent.getStyle()
+                .setColor(TextFormatting.DARK_RED);
+        textComponentCoords.getStyle()
+                .setColor(TextFormatting.DARK_RED)
+                .setUnderlined(true)
+                .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/compass " + lastPlayerLocation.getX() + " " + lastPlayerLocation.getY() + " " + lastPlayerLocation.getZ()));
+
+        McIf.player().sendMessage(textComponent.appendSibling(textComponentCoords));
+    }
+
+    @SubscribeEvent
+    public void onWindowOpen(PacketEvent<SPacketOpenWindow> e){
+        //System.out.println("Opened window with windowId: " + e.getPacket().getWindowId());
+        if (e.getPacket().getWindowTitle().getUnformattedText().startsWith("Loot Chest"))
+            lastOpenedChestWindowId = e.getPacket().getWindowId();
+        if (e.getPacket().getWindowTitle().toString().contains("Daily Rewards") || e.getPacket().getWindowTitle().toString().contains("Objective Rewards"))
+            lastOpenedRewardWindowId = e.getPacket().getWindowId();
+    }
+
+    //Dry streak counter, mythic music event
+    @SubscribeEvent
+    public void onMythicFound(PacketEvent<SPacketWindowItems> e) {
+        if (lastOpenedChestWindowId != e.getPacket().getWindowId() && lastOpenedRewardWindowId != e.getPacket().getWindowId()) return;
+
+        //Get items in chest, return if there is not enough items
+        if (e.getPacket().getItemStacks().size() < 27)
+            return;
+
+        //Only run at first time we get items, don't care about updating
+        if (e.getPacket().getWindowId() == lastProcessedOpenedChest) return;
+
+        lastProcessedOpenedChest = e.getPacket().getWindowId();
+
+        //Dry streak counter and sound sfx
+        if (UtilitiesConfig.INSTANCE.enableDryStreak && lastOpenedChestWindowId == e.getPacket().getWindowId()) {
+            boolean foundMythic = false;
+            int size = e.getPacket().getItemStacks().size();
+            for (int i = 0; i < size; i++) {
+                ItemStack stack = e.getPacket().getItemStacks().get(i);
+                if (stack.isEmpty() || !stack.hasDisplayName()) continue;
+                if (!stack.getDisplayName().contains("Unidentified")) continue;
+
+                UtilitiesConfig.INSTANCE.dryStreakBoxes += 1;
+
+                if (!stack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString())) continue;
+
+                if (MusicConfig.SoundEffects.INSTANCE.mythicFound)
+                SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("mythicFound"),
+                        true, false, false, false, true, false);
+
+                if (UtilitiesConfig.INSTANCE.enableDryStreak) {
+                    ITextComponent textComponent = new TextComponentString(UtilitiesConfig.INSTANCE.dryStreakCount + " long dry streak broken! Mythic found! Found boxes since last mythic: " + UtilitiesConfig.INSTANCE.dryStreakBoxes);
+                    textComponent.getStyle()
+                            .setColor(TextFormatting.DARK_PURPLE)
+                            .setBold(true);
+                    McIf.player().sendMessage(textComponent);
+                }
+
+                foundMythic = true;
+                UtilitiesConfig.INSTANCE.dryStreakCount = 0;
+                UtilitiesConfig.INSTANCE.dryStreakBoxes = 0;
+
+                break;
+            }
+
+            if (!foundMythic)
+                UtilitiesConfig.INSTANCE.dryStreakCount += 1;
+
+            UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
+            return;
+        }
+
+        //Mythic found sfx for daily rewards and objective rewards
+        if (!MusicConfig.SoundEffects.INSTANCE.mythicFound) return;
+
+        int size = e.getPacket().getItemStacks().size();
+        for (int i = 0; i < size; i++) {
+            ItemStack stack = e.getPacket().getItemStacks().get(i);
+            if (stack.isEmpty() || !stack.hasDisplayName()) continue;
+            if (!stack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString())) continue;
+            if (!stack.getDisplayName().contains("Unidentified")) continue;
+
+            SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("mythicFound"),
+                    true, false, false, false, true, false);
+            break;
+        }
+    }
+
+    @SubscribeEvent
+    public void onIngredientPouchHovered(ItemTooltipEvent e) {
+        // Is item Ingredient Pouch
+        if (!e.getItemStack().getDisplayName().equals("§6Ingredient Pouch"))
+            return;
+
+        ItemStack itemStack = e.getItemStack();
+        NBTTagCompound nbt = itemStack.getTagCompound();
+
+        if (nbt.hasKey("groupedItems"))
+            return;
+
+        List<String> lore = ItemUtils.getLore(itemStack);
+
+        HashMap<String, Integer> itemCounts = new HashMap<>();
+
+        boolean foundFirstItem = false;
+        int[] originalSlots = new int[27];
+        int slot = 0;
+        for (String line : lore) {
+            if (line == null)
+                return;
+
+            Matcher matcher = INGREDIENT_SPLIT_PATTERN.matcher(line);
+
+            //Account for ironman
+            if (!matcher.matches() && foundFirstItem)
+                break;
+            else if (!matcher.matches())
+                continue;
+
+            foundFirstItem = true;
+
+            int itemCount = Integer.parseInt(matcher.group(1));
+            String itemName = matcher.group(2);
+
+            if (!itemCounts.containsKey(itemName)) {
+                itemCounts.put(itemName, itemCount);
+            } else {
+                itemCounts.replace(itemName, itemCount + itemCounts.get(itemName));
+            }
+            originalSlots[slot] = itemCount;
+            slot += 1;
+        }
+
+        List<String> groupedItemLore = new ArrayList<>();
+
+        //Account for +2 lines when using ironman
+        for (int i = 0; i < 6 && i < lore.size(); i++) {
+            String line = lore.get(i);
+            Matcher matcher = INGREDIENT_SPLIT_PATTERN.matcher(line);
+
+            if (matcher.matches())
+                break;
+
+            groupedItemLore.add(line);
+        }
+
+        for (Map.Entry<String, Integer> line : itemCounts.entrySet()) {
+            groupedItemLore.add("§f" + line.getValue() + " x " + line.getKey());
+        }
+
+        nbt.setBoolean("groupedItems", true);
+        nbt.setIntArray("originalItems", originalSlots);
+        ItemUtils.replaceLore(itemStack, groupedItemLore);
+    }
 }

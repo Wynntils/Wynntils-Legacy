@@ -4,14 +4,10 @@
 
 package com.wynntils.modules.utilities.overlays.inventories;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
-import com.wynntils.core.framework.enums.SkillPoint;
 import com.wynntils.core.framework.enums.Powder;
+import com.wynntils.core.framework.enums.SkillPoint;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -21,6 +17,8 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import com.wynntils.modules.utilities.managers.CorkianAmplifierManager;
+import com.wynntils.modules.utilities.managers.EmeraldPouchManager;
 import com.wynntils.webapi.profiles.item.enums.ItemType;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -29,6 +27,11 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ItemSpecificationOverlay implements Listener {
 
@@ -70,7 +73,7 @@ public class ItemSpecificationOverlay implements Listener {
                         RenderHelper.disableStandardItemLighting();
                         float scaleFactor = 0.75f;
                         ScreenRenderer.scale(scaleFactor);
-                        renderer.drawRect(Textures.UIs.hud_overlays, (int)((gui.getGuiLeft() + s.xPos) / scaleFactor) + 3, (int)((gui.getGuiTop() + s.yPos) / scaleFactor) + 3 , type.getTextureX(), type.getTextureY(), 16, 16);
+                        renderer.drawRect(Textures.UIs.hud_overlays, (int) ((gui.getGuiLeft() + s.xPos) / scaleFactor) + 3, (int) ((gui.getGuiTop() + s.yPos) / scaleFactor) + 3, type.getTextureX(), type.getTextureY(), 16, 16);
                         ScreenRenderer.endGL();
                     } else {
                         // This is an un-id:ed but named item
@@ -142,53 +145,41 @@ public class ItemSpecificationOverlay implements Listener {
                 }
             }
 
-            if (UtilitiesConfig.Items.INSTANCE.amplifierSpecification) {
-                Pattern amp = ItemLevelOverlay.CORKIAN_AMPLIFIER_PATTERN;
-                Matcher m = amp.matcher(name);
+            if (UtilitiesConfig.Items.INSTANCE.powderSpecification) {
+                Pattern powder = Powder.POWDER_NAME_PATTERN;
+                Matcher m = powder.matcher(StringUtils.normalizeBadString(name));
                 if (m.matches()) {
-                    destinationName = m.group(1);
+                    if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
+                        destinationName = m.group(2);
+                    } else {
+                        destinationName = ItemLevelOverlay.romanToArabic(m.group(2));
+                    }
+                    color = Powder.determineChatColor(m.group(1));
+                    xOffset = -1;
+                    scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;
+                }
+            }
+
+            if (UtilitiesConfig.Items.INSTANCE.amplifierSpecification) {
+                if (CorkianAmplifierManager.isAmplifier(stack)) {
+                    if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
+                        destinationName = CorkianAmplifierManager.getAmplifierTier(stack);
+                    } else {
+                        destinationName = ItemLevelOverlay.romanToArabic(CorkianAmplifierManager.getAmplifierTier(stack));
+                    }
                     color = MinecraftChatColors.AQUA;
                     xOffset = -1;
                     scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;
                 }
             }
 
-            if (UtilitiesConfig.Items.INSTANCE.powderSpecification) {
-                Pattern powder = Powder.POWDER_NAME_PATTERN;
-                Matcher m = powder.matcher(StringUtils.normalizeBadString(name));
-                if (m.matches()) {
-                    destinationName = m.group(2);
-                    switch (m.group(1)) {
-                        case "Earth":
-                            color = MinecraftChatColors.fromTextFormatting(Powder.EARTH.getRawColor());
-                            break;
-                        case "Thunder":
-                            color = MinecraftChatColors.fromTextFormatting(Powder.THUNDER.getRawColor());
-                            break;
-                        case "Water":
-                            color = MinecraftChatColors.fromTextFormatting(Powder.WATER.getRawColor());
-                            break;
-                        case "Fire":
-                            color = MinecraftChatColors.fromTextFormatting(Powder.FIRE.getRawColor());
-                            break;
-                        case "Air":
-                            color = MinecraftChatColors.fromTextFormatting(Powder.AIR.getRawColor());
-                            break;
-                        case "Blank":
-                            // Powder enum doesn't have blank
-                            color = MinecraftChatColors.GRAY; // Dark gray is too hard to see, use normal instead
-                            break;
-                    }
-                    xOffset = -1;
-                    scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;
-                }
-            }
-
             if (UtilitiesConfig.Items.INSTANCE.emeraldPouchSpecification) {
-                Pattern emeraldPouch = ItemLevelOverlay.EMERALD_POUCH_PATTERN;
-                Matcher m = emeraldPouch.matcher(name);
-                if (m.matches()) {
-                    destinationName = m.group(1);
+                if (EmeraldPouchManager.isEmeraldPouch(stack)) {
+                    if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
+                        destinationName = EmeraldPouchManager.getPouchTier(stack);
+                    } else {
+                        destinationName = ItemLevelOverlay.romanToArabic(EmeraldPouchManager.getPouchTier(stack));
+                    }
                     color = MinecraftChatColors.GREEN;
                     xOffset = -1;
                     scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;
@@ -196,14 +187,14 @@ public class ItemSpecificationOverlay implements Listener {
             }
 
             if (destinationName != null) {
-                ScreenRenderer.beginGL((int) (gui.getGuiLeft()/scale), (int) (gui.getGuiTop()/scale));
+                ScreenRenderer.beginGL((int) (gui.getGuiLeft() / scale), (int) (gui.getGuiTop() / scale));
                 GlStateManager.translate(0, 0, 260);
                 GlStateManager.scale(scale, scale, 1);
                 RenderHelper.disableStandardItemLighting();
                 // Make a modifiable copy
                 color = new CustomColor(color);
                 color.setA(0.8f);
-                renderer.drawString(destinationName, (s.xPos + xOffset)/scale, (s.yPos + 1)/scale, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
+                renderer.drawString(destinationName, (s.xPos + xOffset) / scale, (s.yPos + 1) / scale, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
                 ScreenRenderer.endGL();
             }
         }

@@ -113,6 +113,37 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Opening Animation Length", description = "How long should be the opening animation")
         @Setting.Limitations.IntLimit(min = 50, max = 1000)
         public int animationLength = 250;
+
+        @Setting(displayName = "Default Map Zoom", description = "Default zoom value when a map is opened.")
+        @Setting.Limitations.IntLimit(min = -10, max = 300)
+        public int defaultMapZoom = 0;
+
+        @Setting(displayName = "Map Center X if in war", description = "Map center X coordinate will be this value when player is in war.")
+        public String mapDefaultXString = "-200";
+
+        @Setting
+        public int mapDefaultX = -200;
+
+        @Setting(displayName = "Map Center Z if in war", description = "Map center Z coordinate will be this value when player is in war.")
+        public String mapDefaultZString = "-3300";
+
+        @Setting
+        public int mapDefaultZ = -3300;
+
+        @Override
+        public void onSettingChanged(String name) {
+            super.onSettingChanged(name);
+
+            if (name.equals("mapDefaultXString")) {
+                try {
+                    mapDefaultX = Integer.parseInt(mapDefaultXString);
+                } catch (NumberFormatException ignored) { }
+            } else if (name.equals("mapDefaultZString")) {
+                try {
+                    mapDefaultZ = Integer.parseInt(mapDefaultZString);
+                } catch (NumberFormatException ignored) { }
+            }
+        }
     }
 
     @SettingsInfo(name = "map_textures", displayPath = "Map/Textures")

@@ -18,26 +18,26 @@ To set up the workspace, just import the project as a gradle project into your I
 
 You can also setup a test environment. Run the task for generating run configurations for your IDE
 
-* Eclipse - `genEclipseRuns` 
+* Eclipse - `genEclipseRuns`
 * Intellij - `genIntellijRuns`
 * VSCode - `genVSCodeRuns`
 
-When launching a run configuration use the run configuration for your IDE
+When launching a run configuration use the generated run configuration
 
-* Eclipse - `runEclipseClient`
-* Intellij - `runIntellijClient`
+* All IDEs - `runClient`
 
-two input boxes will appear
+You will need to edit your `GRADLE_HOME/gradle.properties`,
 
-1.  Email that you use to log into your mojang account
-2.  Password that you use to log into your mojang account
+* Windows - `C:\Users\<your username>\.gradle\gradle.properties`
+* Unix - `~/.gradle/gradle.properties`
 
-If you want to have atleast some of your information preentered or you are using VSCode edit the `gradle.properties` in the `.gradle` directory in your user directory and add either or both:
+to include your UUID, username, and access token.
 
-* `minecraftEmailUsername=` then your email that you use to login to your mojang account
-* `minecraftPassword=` then your password that you use to login to your mojang account 
+* `mc_uuid=` is your minecraft uuid, trimmed / without the dashes
+* `mc_username=` is your minecraft username, not email
+* `mc_accessToken=` is your access token, you may be able to find it at `.minecraft/launcher_accounts.json` or `.minecraft/launcher_profiles.json`
 
- 
+
 Pull Request
 ========
 All pull requests are welcome. We'll analyse it and if we determine it should a part of the mod, we'll implement it.

@@ -28,7 +28,7 @@ public enum ReflectionFields {
     Entity_CUSTOM_NAME(Entity.class, "CUSTOM_NAME", "field_184242_az"),
     Entity_CUSTOM_NAME_VISIBLE(Entity.class, "CUSTOM_NAME_VISIBLE", "field_184233_aA"),
     EntityItemFrame_ITEM(EntityItemFrame.class, "ITEM", "field_184525_c"),
-    Event_phase(Event.class, "phase"),
+    Event_phase(Event.class, "phase", null),
     GuiScreen_buttonList(GuiScreen.class, "buttonList", "field_146292_n"),
     GuiScreenHorseInventory_horseEntity(GuiScreenHorseInventory.class, "horseEntity", "field_147034_x"),
     GuiScreenHorseInventory_horseInventory(GuiScreenHorseInventory.class, "horseInventory", "field_147029_w"),
@@ -51,8 +51,8 @@ public enum ReflectionFields {
 
     final Field field;
 
-    ReflectionFields(Class<?> holdingClass, String... values) {
-        this.field = ReflectionHelper.findField(holdingClass, values);
+    ReflectionFields(Class<?> holdingClass, String deobf, String obf) {
+        this.field = ReflectionHelper.findField(holdingClass, deobf, obf);
     }
 
     public <T> T getValue(Object parent) {

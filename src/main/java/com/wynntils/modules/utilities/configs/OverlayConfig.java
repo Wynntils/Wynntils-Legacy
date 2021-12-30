@@ -361,6 +361,9 @@ public class OverlayConfig extends SettingsClass {
             @Setting(displayName = "Redirect Emerald Pouch Messages", description = "Should messages about emeralds being added to your pouch be redirected to the game update ticker?")
             public boolean redirectEmeraldPouch = true;
 
+            @Setting(displayName = "Redirect Potion Stack Messages", description = "Should messages about potions being added to your potion stack be redirected to the game update ticker?")
+            public boolean redirectPotionStack = true;
+
             @Setting(displayName = "Redirect Gathering Tool Messages", description = "Should messages about your gathering tool durability be redirected to the game update ticker?")
             public boolean redirectGatheringDura = true;
 
@@ -545,7 +548,9 @@ public class OverlayConfig extends SettingsClass {
             PING("Ping", "%ping%ms/15s"),
             BLOCKSPERSECOND("Blocks Per Second", "%bps% bps"),
             BLOCKSPERMINUTE("Blocks Per Minute", "%bpm% bpm"),
-            AREA_DPS("Area Damage Per Second", "Area DPS: ❤ %adps%");
+            AREA_DPS("Area Damage Per Second", "Area DPS: ❤ %adps%"),
+            LEVELING("XP per Minute", "XPPM: %xpm% XP (%xppm%\\%)"),
+            KILLS("Kills per Minute and Damage", "KPM: %kpm%, ADPS: ❤ %adps%");
 
             public final String displayName;
             public final String value;
@@ -634,7 +639,14 @@ public class OverlayConfig extends SettingsClass {
             PARTY_OWNER("Owner of the current party"),
             UNPROCESSED("Current amount of unprocessed materials"),
             UNPROCESSED_MAX("Max amount of unprocessed materials"),
-            ADPS("Current area damage per second");
+            ADPS("Current area damage per second"),
+            DRY_STREAK("Number of opened chests since last mythic finding in chest."),
+            DRY_BOXES("Number of item boxes found since last mythic finding in chest."),
+            XPM_RAW("Current XP per Minute (Raw)"),
+            XPM("Current XP per Minute (Formatted)"),
+            XPPM("Current XP Percent per Minute"),
+            KPM_RAW("Kills per Minute (Raw)"),
+            KPM("Kills per Minute (Formatted)");
 
             public final String displayName;
             public final String value;

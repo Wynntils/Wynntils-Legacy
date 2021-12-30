@@ -4,10 +4,13 @@
 
 package com.wynntils.modules.utilities.configs;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
+import com.wynntils.core.framework.settings.ui.SettingsUI;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.events.ServerEvents;
 import com.wynntils.modules.utilities.instances.SkillPointAllocation;
 import com.wynntils.modules.utilities.managers.WindowIconManager;
@@ -17,11 +20,7 @@ import com.wynntils.webapi.profiles.item.enums.ItemTier;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @SettingsInfo(name = "main", displayPath = "Utilities")
 public class UtilitiesConfig extends SettingsClass {
@@ -56,6 +55,15 @@ public class UtilitiesConfig extends SettingsClass {
 
     @Setting(displayName = "Prevent Clicking on Pouches in Loot Chests", description = "Should opening ingredient and emerald pouches be blocked in loot chests?")
     public boolean preventOpeningPouchesChest = true;
+
+    @Setting(displayName = "Count Dry Streak", description = "Should the number of chests since last mythic found in a chest counted?", order = 0)
+    public boolean enableDryStreak = true;
+
+    @Setting
+    public int dryStreakCount = 0;
+
+    @Setting
+    public int dryStreakBoxes = 0;
 
     @Setting(displayName = "Prevent Clicking on Locked Items", description = "Should moving items to and from locked inventory slots be blocked?")
     public boolean preventSlotClicking = false;
@@ -101,6 +109,16 @@ public class UtilitiesConfig extends SettingsClass {
 
     @Setting(displayName = "Prevent Trades/Duels in Combat", description = "Should trade and duel requests be disabled while holding an item?")
     public boolean preventTradesDuels = false;
+
+    @Setting(displayName = "Bulk Buy on Shift-click", description = "Should the option to bulk buy items (scrolls, potions) while holding shift be available?")
+    public boolean shiftBulkBuy = true;
+
+    @Setting.Limitations.IntLimit(min = 2, max = 16)
+    @Setting(displayName = "Bulk Buy Amount", description = "How many items should be bought in bulk?")
+    public int bulkBuyAmount = 3;
+
+    @Setting(displayName = "Show Death Message with Coordinates", description = "Should there be a message with your death coordinates?")
+    public boolean deathMessageWithCoords = true;
 
     @Setting(upload = false)
     public String lastServerResourcePack = "";
@@ -280,6 +298,9 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting.Limitations.FloatLimit(min = 0.5f, max = 1, precision = 0.1f)
         public float specificationTierSize = 1;
 
+        @Setting(displayName = "Emerald Pouch Usage Arc", description = "Should emerald pouch usage be shown with an arc?", order = 16)
+        public boolean emeraldPouchArc = true;
+
         @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted according to rarity in remote containers?\n\n§8Remote containers are items such as chests and banks.", order = 17)
         public boolean mainHighlightChest = true;
 
@@ -350,7 +371,7 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Minimum Powder Tier Highlight", description = "What should the minimum tier of powders be for it to be highlighted?\n\n§8Set to 0 to disable.", order = 42)
         @Setting.Limitations.IntLimit(min = 0, max = 6)
         public int minPowderTier = 4;
-        
+
         @Setting(displayName = "Profession Filter Highlight Colour", description = "What colour should the highlight for filtered ingredients be?\n\n§aClick the coloured box to open the colour wheel.", order = 50)
         public CustomColor professionFilterHighlightColor = new CustomColor(0.078f, 0.35f, 0.8f);
 
@@ -407,7 +428,7 @@ public class UtilitiesConfig extends SettingsClass {
         public boolean displayInCustomFormat = true;
 
         @Setting(displayName = "Market Prices Format", description = "What format should market prices be displayed in?\n\n§8Brackets indicate all parameters inside must not be 0.")
-        @Setting.Features.StringParameters(parameters = { "les", "ebs", "es", "stx", "le", "eb", "e" })
+        @Setting.Features.StringParameters(parameters = {"les", "ebs", "es", "stx", "le", "eb", "e"})
         public String customFormat = "(%stx%stx )(%le%%les% )(%eb%%ebs% )(%e%%es%)";
 
         @Setting(displayName = "Open Chat", description = "Should the chat open when the trade market asks you to type a response?")
@@ -468,6 +489,64 @@ public class UtilitiesConfig extends SettingsClass {
 
         @Setting
         public int maxPages = 1;
+    }
+
+    @SettingsInfo(name = "Command Keybinds", displayPath = "Utilities/Command keybinds")
+    public static class CommandKeybinds extends SettingsClass {
+        public static CommandKeybinds INSTANCE;
+
+        @Setting(displayName = "Command Keybind 1", description = "Command that runs upon pressing command keybind 1 key.", order = 1)
+        public String cKeyBind1 = "";
+
+        @Setting(displayName = "Command Keybind 2", description = "Command that runs upon pressing command keybind 2 key.", order = 2)
+        public String cKeyBind2 = "";
+
+        @Setting(displayName = "Command Keybind 3", description = "Command that runs upon pressing command keybind 3 key.", order = 3)
+        public String cKeyBind3 = "";
+
+        @Setting(displayName = "Command Keybind 4", description = "Command that runs upon pressing command keybind 4 key.", order = 4)
+        public String cKeyBind4 = "";
+
+        @Setting(displayName = "Command Keybind 5", description = "Command that runs upon pressing command keybind 5 key.", order = 5)
+        public String cKeyBind5 = "";
+
+        @Setting(displayName = "Command Keybind 6", description = "Command that runs upon pressing command keybind 6 key.", order = 6)
+        public String cKeyBind6 = "";
+
+        @Setting(displayName = "Presets", description = "Click on the button below to cycle through various command presets. The commands will automatically be copied to your clipboard for you to paste in the above fields.", upload = false, order = 9)
+        public Presets preset = Presets.CLICK_ME;
+
+        @Override
+        public void onSettingChanged(String name) {
+            if (name.contentEquals("preset")) {
+                if (!(McIf.mc().currentScreen instanceof SettingsUI)) {
+                    preset = Presets.CLICK_ME;
+                } else if (preset.value != null) {
+                    Utils.copyToClipboard(preset.value);
+                }
+            }
+        }
+
+        public enum Presets {
+            CLICK_ME("Click me to copy to clipboard", null),
+            MANAGE_CURRENT_TERRITORY("Manage the current territory", "guild territory"),
+            ATTACK_CURRENT_TERRITORY("Attack the current territory", "guild attack"),
+            MANAGE_GUILD("Open the guild manage menu", "guild manage"),
+            HOUSING_EDIT_TOGGLE("Toggle edit mode while in housing", "housing edit"),
+            OPEN_CLASS_MENU("Open character selection menu", "class"),
+            OPEN_PARTYFINDER_MENU("Open partyfinder menu", "partyfinder"),
+            OPEN_PETS("Open pets menu", "pets"),
+            OPEN_USE_MENU("Open use menu", "use"),
+            OPEN_CRATES_MENU("Open crates menu", "crates");
+
+            public final String displayName;
+            public final String value;
+
+            Presets(String displayName, String value) {
+                this.displayName = displayName;
+                this.value = value;
+            }
+        }
     }
 
     @Override

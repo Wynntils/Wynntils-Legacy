@@ -33,6 +33,7 @@ import net.minecraft.util.math.MathHelper;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
 
 import java.awt.*;
 import java.io.IOException;
@@ -43,6 +44,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import static com.wynntils.modules.map.configs.MapConfig.INSTANCE;
 import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class WorldMapUI extends GuiMovementScreen {
@@ -95,6 +97,10 @@ public class WorldMapUI extends GuiMovementScreen {
             territories.put(territory.getFriendlyName(), new MapTerritory(territory).setRenderer(renderer));
         }
 
+        //Only set if there is no animation, otherwise it is handled by handleOpenAnimation()
+        if (!MapConfig.WorldMap.INSTANCE.openAnimation)
+            zoom = MapConfig.WorldMap.INSTANCE.defaultMapZoom;
+
         // Also creates icons
         createIcons();
         this.centerPositionX = startX; this.centerPositionZ = startZ;
@@ -128,7 +134,7 @@ public class WorldMapUI extends GuiMovementScreen {
 
     protected void createIcons() {
         // HeyZeer0: Handles MiniMap markers provided by Wynn API
-        List<MapIcon> apiMapIcons = MapIcon.getApiMarkers(MapConfig.INSTANCE.iconTexture);
+        List<MapIcon> apiMapIcons = MapIcon.getApiMarkers(INSTANCE.iconTexture);
         // Handles map labels from map.wynncraft.com
         List<MapIcon> mapLabels = MapIcon.getLabels();
         // Handles all waypoints
@@ -272,10 +278,9 @@ public class WorldMapUI extends GuiMovementScreen {
             color(1, 1, 1, 1f);
             enableTexture2D();
 
-            map.bindTexture();  // <--- binds the texture
-            glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL11.GL_CLAMP);
-            glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL11.GL_CLAMP);
-
+            map.bindTexture();
+            glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T, GL13.GL_CLAMP_TO_BORDER);
+            glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S, GL13.GL_CLAMP_TO_BORDER);
             glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 
             Tessellator tessellator = Tessellator.getInstance();
@@ -394,7 +399,7 @@ public class WorldMapUI extends GuiMovementScreen {
         float invertedProgress = (animationEnd - System.currentTimeMillis()) / (float) MapConfig.WorldMap.INSTANCE.animationLength;
         double radians = (Math.PI / 2f) * invertedProgress;
 
-        zoom = (float) (25 * Math.sin(radians));
+        zoom = (float) (25 * Math.sin(radians)) + (float) MapConfig.WorldMap.INSTANCE.defaultMapZoom;
         updateCenterPosition(centerPositionX, centerPositionZ);
     }
 
