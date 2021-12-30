@@ -25,6 +25,7 @@ import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
 import com.wynntils.modules.map.managers.LootRunManager;
+import com.wynntils.modules.music.configs.MusicConfig;
 import com.wynntils.modules.music.managers.SoundTrackManager;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
@@ -1205,11 +1206,10 @@ public class ClientEvents implements Listener {
     public void onMythicFound(PacketEvent<SPacketWindowItems> e) {
         if (McIf.mc().currentScreen == null) return;
         if (!(McIf.mc().currentScreen instanceof ChestReplacer)) return;
-        if (!UtilitiesConfig.INSTANCE.enableDryStreak) return;
 
         ChestReplacer chest = (ChestReplacer) McIf.mc().currentScreen;
         //Dry streak counter and sound sfx
-        if (chest.getLowerInv().getName().contains("Loot Chest")) {
+        if (UtilitiesConfig.INSTANCE.enableDryStreak && chest.getLowerInv().getName().contains("Loot Chest")) {
             //Only run at first time we get items, don't care about updating
             if (chest == lastOpenedChest) return;
 
@@ -1230,6 +1230,7 @@ public class ClientEvents implements Listener {
                 UtilitiesConfig.INSTANCE.dryStreakCount = 0;
                 UtilitiesConfig.INSTANCE.dryStreakBoxes = 0;
 
+                if (MusicConfig.SoundEffects.INSTANCE.mythicFound)
                 SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("mythicFound"),
                         true, false, false, false, true, false);
 
@@ -1250,7 +1251,7 @@ public class ClientEvents implements Listener {
         }
 
         //Mythic found sfx for daily rewards and objective rewards
-        if (!chest.getLowerInv().getName().contains("Daily Rewards") && !chest.getLowerInv().getName().contains("Objective Rewards")) return;
+        if (!MusicConfig.SoundEffects.INSTANCE.mythicFound && !chest.getLowerInv().getName().contains("Daily Rewards") && !chest.getLowerInv().getName().contains("Objective Rewards")) return;
 
         int size = Math.min(chest.getLowerInv().getSizeInventory(), e.getPacket().getItemStacks().size());
         for (int i = 0; i < size; i++) {
@@ -1264,7 +1265,7 @@ public class ClientEvents implements Listener {
             break;
         }
     }
-      
+
     @SubscribeEvent
     public void onIngredientPouchHovered(ItemTooltipEvent e) {
         // Is item Ingredient Pouch
