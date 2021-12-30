@@ -1244,7 +1244,7 @@ public class ClientEvents implements Listener {
                 }
 
 
-                if (UtilitiesConfig.INSTANCE.enableDryStreak) {
+                if (UtilitiesConfig.INSTANCE.enableDryStreak && UtilitiesConfig.INSTANCE.dryStreakEndedMessage) {
                     ITextComponent textComponent = new TextComponentString(UtilitiesConfig.INSTANCE.dryStreakCount + " long dry streak broken! Mythic found! Found boxes since last mythic: " + UtilitiesConfig.INSTANCE.dryStreakBoxes);
                     textComponent.getStyle()
                             .setColor(TextFormatting.DARK_PURPLE)
