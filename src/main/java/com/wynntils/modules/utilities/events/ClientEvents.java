@@ -1226,21 +1226,22 @@ public class ClientEvents implements Listener {
 
                 if (!stack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString())) continue;
 
-                foundMythic = true;
-                UtilitiesConfig.INSTANCE.dryStreakCount = 0;
-                UtilitiesConfig.INSTANCE.dryStreakBoxes = 0;
-
                 if (MusicConfig.SoundEffects.INSTANCE.mythicFound)
                 SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("mythicFound"),
                         true, false, false, false, true, false);
 
                 if (UtilitiesConfig.INSTANCE.enableDryStreak) {
-                    ITextComponent textComponent = new TextComponentString("Dry streak broken! Mythic found!");
+                    ITextComponent textComponent = new TextComponentString(UtilitiesConfig.INSTANCE.dryStreakCount + " long dry streak broken! Mythic found! Found boxes since last mythic: " + UtilitiesConfig.INSTANCE.dryStreakBoxes);
                     textComponent.getStyle()
                             .setColor(TextFormatting.DARK_PURPLE)
                             .setBold(true);
                     McIf.player().sendMessage(textComponent);
                 }
+
+                foundMythic = true;
+                UtilitiesConfig.INSTANCE.dryStreakCount = 0;
+                UtilitiesConfig.INSTANCE.dryStreakBoxes = 0;
+
                 break;
             }
 
