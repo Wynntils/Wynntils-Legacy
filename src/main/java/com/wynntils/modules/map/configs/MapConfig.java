@@ -119,12 +119,31 @@ public class MapConfig extends SettingsClass {
         public int defaultMapZoom = 0;
 
         @Setting(displayName = "Map Center X if in war", description = "Map center X coordinate will be this value when player is in war.")
-        @Setting.Limitations.IntLimit(min = -10000, max = +10000)
+        public String mapDefaultXString = "-200";
+
+        @Setting
         public int mapDefaultX = -200;
 
         @Setting(displayName = "Map Center Z if in war", description = "Map center Z coordinate will be this value when player is in war.")
-        @Setting.Limitations.IntLimit(min = -10000, max = +10000)
+        public String mapDefaultZString = "-3300";
+
+        @Setting
         public int mapDefaultZ = -3300;
+
+        @Override
+        public void onSettingChanged(String name) {
+            super.onSettingChanged(name);
+
+            if (name.equals("mapDefaultXString")) {
+                try {
+                    mapDefaultX = Integer.parseInt(mapDefaultXString);
+                } catch (NumberFormatException ignored) { }
+            } else if (name.equals("mapDefaultZString")) {
+                try {
+                    mapDefaultZ = Integer.parseInt(mapDefaultZString);
+                } catch (NumberFormatException ignored) { }
+            }
+        }
     }
 
     @SettingsInfo(name = "map_textures", displayPath = "Map/Textures")
