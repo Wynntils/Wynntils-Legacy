@@ -90,6 +90,7 @@ public class UtilitiesModule extends Module {
         registerSettings(UtilitiesConfig.Market.class);
         registerSettings(UtilitiesConfig.Bank.class);
         registerSettings(UtilitiesConfig.Identifications.class);
+        registerSettings(UtilitiesConfig.CommandKeybinds.class);
 
         registerSettings(TranslationConfig.class);
 

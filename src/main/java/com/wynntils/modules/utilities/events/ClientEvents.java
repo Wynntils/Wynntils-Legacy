@@ -59,9 +59,9 @@ import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.*;
+import net.minecraft.util.text.event.ClickEvent;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
@@ -101,6 +101,7 @@ public class ClientEvents implements Listener {
 
     private static final Pattern PRICE_REPLACER = Pattern.compile("§6 - §a. §f([1-9]\\d*)§7" + EmeraldSymbols.E_STRING);
     private static final Pattern INGREDIENT_SPLIT_PATTERN = Pattern.compile("§f(\\d+) x (.+)");
+    private static final Pattern WAR_CHAT_MESSAGE_PATTERN = Pattern.compile("§3\\[WAR§3\\] The war for (.+) will start in \\d+ minutes.");
 
     public static boolean isAwaitingHorseMount = false;
     private static int lastHorseId = -1;
@@ -108,6 +109,8 @@ public class ClientEvents implements Listener {
     private static boolean priceInput = false;
 
     private static final Pattern CRAFTED_USES = Pattern.compile(".* \\[(\\d)/\\d\\]");
+
+    private Boolean isInInteractionDialogue = false;
 
     @SubscribeEvent
     public void onMoveEvent(InputEvent.MouseInputEvent e) {
@@ -122,6 +125,11 @@ public class ClientEvents implements Listener {
         if (currentTime <= lastAfkRequested + 500) return;
 
         lastUserInput = currentTime;
+
+        // Manually send a hotbar packet if we're in dialogue + the user presses the already selected hotbar slot
+        if (isInInteractionDialogue && Keyboard.getEventKeyState() && Keyboard.getEventKey() - 2 == McIf.player().inventory.currentItem) { // -2 because KEY_1 is 0x02, and hotbar is 0-8
+            McIf.mc().getConnection().sendPacket(new CPacketHeldItemChange(McIf.player().inventory.currentItem));
+        }
     }
 
     @SubscribeEvent
@@ -290,6 +298,18 @@ public class ClientEvents implements Listener {
                 scheduledGuiScreen = new ChatGUI();
             }
         }
+
+        Matcher warMatcher = WAR_CHAT_MESSAGE_PATTERN.matcher(McIf.getUnformattedText(e.getMessage()));
+        if (warMatcher.matches()) {
+            String territory = warMatcher.group(1);
+            ITextComponent m = new TextComponentString("Click here to set your waypoint to " + territory + ".");
+            m.getStyle()
+                .setColor(TextFormatting.BLUE)
+                .setUnderlined(true)
+                .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/territory " + territory))
+                .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Set waypoint to: " + territory)));
+            McIf.player().sendMessage(m);
+        }
     }
 
     @SubscribeEvent
@@ -314,43 +334,56 @@ public class ClientEvents implements Listener {
         if (e.isCanceled() || e.getType() == ChatType.GAME_INFO) return;
 
         String msg = McIf.getUnformattedText(e.getMessage());
+        String fMsg = McIf.getFormattedText(e.getMessage());
         if (msg.startsWith("[Daily Rewards:")) {
             DailyReminderManager.openedDaily();
         }
+
+        isInInteractionDialogue = fMsg.contains("§r§7Select §r§fan option §r§7to continue§r") ||
+                fMsg.contains("§r§4Select §r§can option §r§4to continue§r") ||
+                fMsg.contains("§r§fCLICK §r§7an option to continue§r") ||
+                fMsg.contains("§r§cCLICK §r§4an option to continue§r");
     }
 
     @SubscribeEvent
     public void onTitle(PacketEvent<SPacketTitle> e) {
-        if (!OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectIngredientPouch && !OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch)
+        if (!OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectIngredientPouch
+                && !OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch
+                && !OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectPotionStack)
             return;
 
         SPacketTitle packet = e.getPacket();
         if (packet.getType() != SPacketTitle.Type.SUBTITLE) return;
+        String message = McIf.getUnformattedText(packet.getMessage());
 
-        if (McIf.getUnformattedText(packet.getMessage()).matches("^§a\\+\\d+ §7.+§a to pouch$")) {
-            if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectIngredientPouch) {
-                e.setCanceled(true);
-                GameUpdateOverlay.queueMessage(McIf.getFormattedText(packet.getMessage()));
-            }
+        Matcher ingredientMatcher = Pattern.compile("^§a\\+\\d+ §7.+§a to pouch$").matcher(message);
+        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectIngredientPouch && ingredientMatcher.matches()) {
+            e.setCanceled(true);
+            GameUpdateOverlay.queueMessage(message);
+            return;
         }
 
-        Matcher m = Pattern.compile("§a\\+(\\d+)§7 Emeralds? §ato pouch").matcher(McIf.getUnformattedText(packet.getMessage()));
-        if (m.matches()) {
-            if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
-                e.setCanceled(true);
-                if (new Timestamp(System.currentTimeMillis() - 3000).before(emeraldPouchLastPickup)) {
-                    // If the last emerald pickup event was less than 3 seconds ago, assume Wynn has relayed us an "updated" emerald title
-                    // Edit the first message it gave us with the new amount
-                    // editMessage doesn't return the new MessageContainer, so we can just keep re-using the first one
-                    int currentEmeralds = Integer.parseInt(m.group(1));
-                    GameUpdateOverlay.editMessage(emeraldPouchMessage, "§a+" + currentEmeralds + "§7 Emeralds §ato pouch");
-                    emeraldPouchLastPickup = new Timestamp(System.currentTimeMillis());
-                    return;
-                }
-                // First time we've picked up emeralds in 3 seconds, set new MessageContainer and start the timer
-                emeraldPouchMessage = GameUpdateOverlay.queueMessage(McIf.getFormattedText(packet.getMessage()));
+        Matcher emeraldMatcher = Pattern.compile("§a\\+(\\d+)§7 Emeralds? §ato pouch").matcher(message);
+        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch && emeraldMatcher.matches()) {
+            e.setCanceled(true);
+            if (new Timestamp(System.currentTimeMillis() - 3000).before(emeraldPouchLastPickup)) {
+                // If the last emerald pickup event was less than 3 seconds ago, assume Wynn has relayed us an "updated" emerald title
+                // Edit the first message it gave us with the new amount
+                // editMessage doesn't return the new MessageContainer, so we can just keep re-using the first one
+                int currentEmeralds = Integer.parseInt(emeraldMatcher.group(1));
+                GameUpdateOverlay.editMessage(emeraldPouchMessage, "§a+" + currentEmeralds + "§7 Emeralds §ato pouch");
                 emeraldPouchLastPickup = new Timestamp(System.currentTimeMillis());
+                return;
             }
+            // First time we've picked up emeralds in 3 seconds, set new MessageContainer and start the timer
+            emeraldPouchMessage = GameUpdateOverlay.queueMessage(message);
+            emeraldPouchLastPickup = new Timestamp(System.currentTimeMillis());
+        }
+
+        Matcher potionMatcher = Pattern.compile("§a\\+(\\d+)§7 potion §acharges?").matcher(message);
+        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectPotionStack && potionMatcher.matches()) {
+            e.setCanceled(true);
+            GameUpdateOverlay.queueMessage(message);
         }
     }
 
@@ -1076,10 +1109,12 @@ public class ClientEvents implements Listener {
         String itemName = is.getDisplayName();
         return (itemName.endsWith(" Teleport Scroll") ||
                 itemName.contains("Potion of ") || // We're using .contains here because we check for skill point potions which are different colors/symbols
-                itemName.endsWith("Speed Surge") ||
-                itemName.endsWith("Bipedal Spring"))
+                itemName.endsWith("Speed Surge [1/1]") ||
+                itemName.endsWith("Bipedal Spring [1/1]"))
 
-                && ItemUtils.getStringLore(is).contains("§6Price:");
+                && ItemUtils.getStringLore(is).contains("§6Price:")
+                && !ItemUtils.getStringLore(is).contains(" x "); // Make sure we're not in trade market
+        // Normal shops don't have a string with " x " whereas TM uses it for the amount of the item being sold
     }
 
     @SubscribeEvent

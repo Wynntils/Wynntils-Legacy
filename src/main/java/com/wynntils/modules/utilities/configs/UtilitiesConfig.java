@@ -356,7 +356,7 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Minimum Powder Tier Highlight", description = "What should the minimum tier of powders be for it to be highlighted?\n\n§8Set to 0 to disable.", order = 42)
         @Setting.Limitations.IntLimit(min = 0, max = 6)
         public int minPowderTier = 4;
-        
+
         @Setting(displayName = "Profession Filter Highlight Colour", description = "What colour should the highlight for filtered ingredients be?\n\n§aClick the coloured box to open the colour wheel.", order = 50)
         public CustomColor professionFilterHighlightColor = new CustomColor(0.078f, 0.35f, 0.8f);
 
@@ -474,6 +474,29 @@ public class UtilitiesConfig extends SettingsClass {
 
         @Setting
         public int maxPages = 1;
+    }
+
+    @SettingsInfo(name = "Command Keybinds", displayPath = "Utilities/Command keybinds")
+    public static class CommandKeybinds extends SettingsClass {
+        public static CommandKeybinds INSTANCE;
+
+        @Setting(displayName = "Command Keybind 1", description = "Command that runs upon pressing command keybind 1 key.", order = 1)
+        public String cKeyBind1 = "";
+
+        @Setting(displayName = "Command Keybind 2", description = "Command that runs upon pressing command keybind 2 key.", order = 2)
+        public String cKeyBind2 = "";
+
+        @Setting(displayName = "Command Keybind 3", description = "Command that runs upon pressing command keybind 3 key.", order = 3)
+        public String cKeyBind3 = "";
+
+        @Setting(displayName = "Command Keybind 4", description = "Command that runs upon pressing command keybind 4 key.", order = 4)
+        public String cKeyBind4 = "";
+
+        @Setting(displayName = "Command Keybind 5", description = "Command that runs upon pressing command keybind 5 key.", order = 5)
+        public String cKeyBind5 = "";
+
+        @Setting(displayName = "Command Keybind 6", description = "Command that runs upon pressing command keybind 6 key.", order = 6)
+        public String cKeyBind6 = "";
     }
 
     @Override
