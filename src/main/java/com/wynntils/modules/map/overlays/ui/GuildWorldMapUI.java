@@ -44,6 +44,11 @@ public class GuildWorldMapUI extends WorldMapUI {
         super((float) McIf.player().posX, (float) McIf.player().posZ);
     }
 
+    public GuildWorldMapUI(float startX, float startZ) {
+        super(startX, startZ);
+
+    }
+
     @Override
     public void initGui() {
         super.initGui();

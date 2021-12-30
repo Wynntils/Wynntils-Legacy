@@ -23,10 +23,15 @@ import com.wynntils.modules.map.overlays.OverlayEvents;
 import com.wynntils.modules.map.overlays.ui.GuildWorldMapUI;
 import com.wynntils.modules.map.overlays.ui.MainWorldMapUI;
 import com.wynntils.modules.map.overlays.ui.WaypointCreationMenu;
+import com.wynntils.modules.map.overlays.ui.WorldMapUI;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.WebReader;
+import net.minecraft.scoreboard.Score;
+import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import org.lwjgl.input.Keyboard;
+
+import java.util.Collection;
 
 @ModuleInfo(name = "map", displayName = "Map")
 public class MapModule extends Module {
@@ -73,7 +78,7 @@ public class MapModule extends Module {
                 if (WebManager.getApiUrls() == null) {
                     WebManager.tryReloadApiUrls(true);
                 } else {
-                    Utils.displayGuiScreen(new MainWorldMapUI());
+                    openMap(false);
                 }
             }
         });
@@ -83,10 +88,49 @@ public class MapModule extends Module {
                 if (WebManager.getApiUrls() == null) {
                     WebManager.tryReloadApiUrls(true);
                 } else {
-                    Utils.displayGuiScreen(new GuildWorldMapUI());
+                    openMap(true);
                 }
             }
         });
+    }
+
+    private void openMap(boolean guildMap) {
+        //Check if in war using scoreboard
+        boolean inWar = isPlayerInWar();
+
+        WorldMapUI map;
+
+        if (inWar) {
+            if (guildMap)
+                map = new GuildWorldMapUI(MapConfig.WorldMap.INSTANCE.mapDefaultX, MapConfig.WorldMap.INSTANCE.mapDefaultZ);
+            else
+                map = new MainWorldMapUI(MapConfig.WorldMap.INSTANCE.mapDefaultX, MapConfig.WorldMap.INSTANCE.mapDefaultZ);
+        }
+        else {
+            if (guildMap)
+                map = new GuildWorldMapUI();
+            else
+                map = new MainWorldMapUI();
+        }
+
+        Utils.displayGuiScreen(map);
+    }
+
+    private boolean isPlayerInWar() {
+        boolean inWar = false;
+
+        ScoreObjective objective = McIf.world().getScoreboard().getObjectiveInDisplaySlot(1);
+        if (objective != null) {
+            Collection<Score> objectiveList = objective.getScoreboard().getSortedScores(objective);
+            for (Score score : objectiveList) {
+                if (score.getPlayerName().equals("§4§lWar:"))
+                {
+                    inWar = true;
+                    break;
+                }
+            }
+        }
+        return inWar;
     }
 
     public static MapModule getModule() {

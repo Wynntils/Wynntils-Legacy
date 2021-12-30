@@ -1282,6 +1282,7 @@ public class ClientEvents implements Listener {
             } catch (Exception exception) {
                 exception.printStackTrace();
             }
+
             break;
         }
     }

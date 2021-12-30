@@ -4,10 +4,13 @@
 
 package com.wynntils.modules.utilities.configs;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
+import com.wynntils.core.framework.settings.ui.SettingsUI;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.events.ServerEvents;
 import com.wynntils.modules.utilities.instances.SkillPointAllocation;
 import com.wynntils.modules.utilities.managers.WindowIconManager;
@@ -512,6 +515,41 @@ public class UtilitiesConfig extends SettingsClass {
 
         @Setting(displayName = "Command Keybind 6", description = "Command that runs upon pressing command keybind 6 key.", order = 6)
         public String cKeyBind6 = "";
+
+        @Setting(displayName = "Presets", description = "Click on the button below to cycle through various command presets. The commands will automatically be copied to your clipboard for you to paste in the above fields.", upload = false, order = 9)
+        public Presets preset = Presets.CLICK_ME;
+
+        @Override
+        public void onSettingChanged(String name) {
+            if (name.contentEquals("preset")) {
+                if (!(McIf.mc().currentScreen instanceof SettingsUI)) {
+                    preset = Presets.CLICK_ME;
+                } else if (preset.value != null) {
+                    Utils.copyToClipboard(preset.value);
+                }
+            }
+        }
+
+        public enum Presets {
+            CLICK_ME("Click me to copy to clipboard", null),
+            MANAGE_CURRENT_TERRITORY("Manage the current territory", "guild territory"),
+            ATTACK_CURRENT_TERRITORY("Attack the current territory", "guild attack"),
+            MANAGE_GUILD("Open the guild manage menu", "guild manage"),
+            HOUSING_EDIT_TOGGLE("Toggle edit mode while in housing", "housing edit"),
+            OPEN_CLASS_MENU("Open character selection menu", "class"),
+            OPEN_PARTYFINDER_MENU("Open partyfinder menu", "partyfinder"),
+            OPEN_PETS("Open pets menu", "pets"),
+            OPEN_USE_MENU("Open use menu", "use"),
+            OPEN_CRATES_MENU("Open crates menu", "crates");
+
+            public final String displayName;
+            public final String value;
+
+            Presets(String displayName, String value) {
+                this.displayName = displayName;
+                this.value = value;
+            }
+        }
     }
 
     @Override
