@@ -641,7 +641,7 @@ public class OverlayConfig extends SettingsClass {
             UNPROCESSED_MAX("Max amount of unprocessed materials"),
             ADPS("Current area damage per second"),
             DRY_STREAK("Number of opened chests since last mythic finding in chest."),
-            DRY_BOXES("Number of item boxes found since last mythic finding in chest.");
+            DRY_BOXES("Number of item boxes found since last mythic finding in chest."),
             XPM_RAW("Current XP per Minute (Raw)"),
             XPM("Current XP per Minute (Formatted)"),
             XPPM("Current XP Percent per Minute"),
