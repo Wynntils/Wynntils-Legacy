@@ -1234,11 +1234,17 @@ public class ClientEvents implements Listener {
 
                 if (!stack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString())) continue;
 
-                if (MusicConfig.SoundEffects.INSTANCE.mythicFound)
-                SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("mythicFound"),
-                        true, false, false, false, true, false);
+                if (MusicConfig.SoundEffects.INSTANCE.mythicFound) {
+                    try {
+                        SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("mythicFound"),
+                                true, false, false, false, true, false);
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                }
 
-                if (UtilitiesConfig.INSTANCE.enableDryStreak) {
+
+                if (UtilitiesConfig.INSTANCE.enableDryStreak && UtilitiesConfig.INSTANCE.dryStreakEndedMessage) {
                     ITextComponent textComponent = new TextComponentString(UtilitiesConfig.INSTANCE.dryStreakCount + " long dry streak broken! Mythic found! Found boxes since last mythic: " + UtilitiesConfig.INSTANCE.dryStreakBoxes);
                     textComponent.getStyle()
                             .setColor(TextFormatting.DARK_PURPLE)
@@ -1270,8 +1276,13 @@ public class ClientEvents implements Listener {
             if (!stack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString())) continue;
             if (!stack.getDisplayName().contains("Unidentified")) continue;
 
-            SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("mythicFound"),
-                    true, false, false, false, true, false);
+            try {
+                SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("mythicFound"),
+                        true, false, false, false, true, false);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+
             break;
         }
     }
