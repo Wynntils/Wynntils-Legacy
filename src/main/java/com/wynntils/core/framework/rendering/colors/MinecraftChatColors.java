@@ -34,17 +34,17 @@ public class MinecraftChatColors extends CustomColor.SetBase {
     public static final MinecraftChatColors WHITE = new MinecraftChatColors(0xFFFFFF);
 
     private static final MinecraftChatColors[] colors = {
-        BLACK,     DARK_BLUE,    DARK_GREEN, DARK_AQUA,
-        DARK_RED,  DARK_PURPLE,  GOLD,       GRAY,
-        DARK_GRAY, BLUE,         GREEN,      AQUA,
-        RED,       LIGHT_PURPLE, YELLOW,     WHITE
+            BLACK,     DARK_BLUE,    DARK_GREEN, DARK_AQUA,
+            DARK_RED,  DARK_PURPLE,  GOLD,       GRAY,
+            DARK_GRAY, BLUE,         GREEN,      AQUA,
+            RED,       LIGHT_PURPLE, YELLOW,     WHITE
     };
 
     private static final String[] names = {
-        "BLACK",     "DARK_BLUE",    "DARK_GREEN", "DARK_AQUA",
-        "DARK_RED",  "DARK_PURPLE",  "GOLD",       "GRAY",
-        "DARK_GRAY", "BLUE",         "GREEN",      "AQUA",
-        "RED",       "LIGHT_PURPLE", "YELLOW",     "WHITE"
+            "BLACK",     "DARK_BLUE",    "DARK_GREEN", "DARK_AQUA",
+            "DARK_RED",  "DARK_PURPLE",  "GOLD",       "GRAY",
+            "DARK_GRAY", "BLUE",         "GREEN",      "AQUA",
+            "RED",       "LIGHT_PURPLE", "YELLOW",     "WHITE"
     };
 
     private static final Map<String, MinecraftChatColors> aliases = new HashMap<>();
@@ -72,6 +72,20 @@ public class MinecraftChatColors extends CustomColor.SetBase {
 
     public static MinecraftChatColors fromTextFormatting(TextFormatting textFormatting) {
         return set.fromName(textFormatting.name());
+    }
+
+    /*
+    Function from org.bukkit.ChatColor
+     */
+    public static String translateAlternateColorCodes(char altColorChar, String textToTranslate) {
+        char[] b = textToTranslate.toCharArray();
+        for (int i = 0; i < b.length - 1; ++i) {
+            if (b[i] == altColorChar && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i + 1]) > -1) {
+                b[i] = 167;
+                b[i + 1] = Character.toLowerCase(b[i + 1]);
+            }
+        }
+        return new String(b);
     }
 
 }

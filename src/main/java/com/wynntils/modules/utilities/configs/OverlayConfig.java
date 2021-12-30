@@ -361,6 +361,9 @@ public class OverlayConfig extends SettingsClass {
             @Setting(displayName = "Redirect Emerald Pouch Messages", description = "Should messages about emeralds being added to your pouch be redirected to the game update ticker?")
             public boolean redirectEmeraldPouch = true;
 
+            @Setting(displayName = "Redirect Potion Stack Messages", description = "Should messages about potions being added to your potion stack be redirected to the game update ticker?")
+            public boolean redirectPotionStack = true;
+
             @Setting(displayName = "Redirect Gathering Tool Messages", description = "Should messages about your gathering tool durability be redirected to the game update ticker?")
             public boolean redirectGatheringDura = true;
 
