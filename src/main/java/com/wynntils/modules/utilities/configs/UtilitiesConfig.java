@@ -56,6 +56,15 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Prevent Clicking on Pouches in Loot Chests", description = "Should opening ingredient and emerald pouches be blocked in loot chests?")
     public boolean preventOpeningPouchesChest = true;
 
+    @Setting(displayName = "Count Dry Streak", description = "Should the number of chests since last mythic found in a chest counted?", order = 0)
+    public boolean enableDryStreak = true;
+
+    @Setting
+    public int dryStreakCount = 0;
+
+    @Setting
+    public int dryStreakBoxes = 0;
+
     @Setting(displayName = "Prevent Clicking on Locked Items", description = "Should moving items to and from locked inventory slots be blocked?")
     public boolean preventSlotClicking = false;
 
@@ -107,6 +116,9 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting.Limitations.IntLimit(min = 2, max = 16)
     @Setting(displayName = "Bulk Buy Amount", description = "How many items should be bought in bulk?")
     public int bulkBuyAmount = 3;
+
+    @Setting(displayName = "Show Death Message with Coordinates", description = "Should there be a message with your death coordinates?")
+    public boolean deathMessageWithCoords = true;
 
     @Setting(upload = false)
     public String lastServerResourcePack = "";

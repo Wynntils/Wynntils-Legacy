@@ -23,6 +23,8 @@ import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
+import com.wynntils.modules.music.configs.MusicConfig;
+import com.wynntils.modules.music.managers.SoundTrackManager;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.configs.SoundEffectsConfig;
@@ -54,12 +56,14 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.client.CPacketPlayerDigging.Action;
-import net.minecraft.network.play.server.SPacketEntityMetadata;
-import net.minecraft.network.play.server.SPacketSetSlot;
-import net.minecraft.network.play.server.SPacketTitle;
+import net.minecraft.network.play.server.*;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.*;
+import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.text.ChatType;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.event.*;
@@ -110,7 +114,12 @@ public class ClientEvents implements Listener {
 
     private static final Pattern CRAFTED_USES = Pattern.compile(".* \\[(\\d)/\\d\\]");
 
+    private static Vec3i lastPlayerLocation = null;
+    private static int lastProcessedOpenedChest = -1;
+    private int lastOpenedChestWindowId = -1;
+    private int lastOpenedRewardWindowId = -1;
     private Boolean isInInteractionDialogue = false;
+
 
     @SubscribeEvent
     public void onMoveEvent(InputEvent.MouseInputEvent e) {
@@ -167,6 +176,13 @@ public class ClientEvents implements Listener {
         if (!Reference.onWorld) return;
 
         DailyReminderManager.checkDailyReminder(McIf.player());
+
+        EntityPlayerSP player = McIf.player();
+        if (player != null) {
+            Entity lowestEntity = player.getLowestRidingEntity();
+
+            lastPlayerLocation = new Vec3i(lowestEntity.posX, lowestEntity.posY, lowestEntity.posZ);
+        }
 
         if (!UtilitiesConfig.AfkProtection.INSTANCE.afkProtection) return;
 
@@ -261,7 +277,8 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void onGUIOpen(GuiOpenEvent e) {
         // Store the original opened chest so we can check itemstacks later
-        if (e.getGui() instanceof ChestReplacer && ((ChestReplacer) e.getGui()).getLowerInv().getDisplayName().toString().contains("Loot Chest")) {
+        // Make sure this check is not spoofed by checking inventory size
+        if (e.getGui() instanceof ChestReplacer && ((ChestReplacer) e.getGui()).getLowerInv().getDisplayName().getUnformattedText().startsWith("Loot Chest") && ((ChestReplacer) e.getGui()).getLowerInv().getSizeInventory() == 27) {
             currentLootChest = ((ChestReplacer) e.getGui()).getLowerInv();
         }
     }
@@ -750,7 +767,7 @@ public class ClientEvents implements Listener {
         if (e.getSlotIn() == null) return;
 
         // Queue messages into game update ticker when clicking on emeralds in loot chest
-        if (e.getGui().getLowerInv().getDisplayName().getUnformattedText().contains("Loot Chest") && OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
+        if (e.getGui().getLowerInv().getDisplayName().getUnformattedText().startsWith("Loot Chest") && OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
             // Check if item is actually an emerald, if we're left clicking, and make sure we're not shift clicking
             if (currentLootChest.getStackInSlot(e.getSlotId()).getDisplayName().equals("§aEmerald") && e.getMouseButton() == 0 && !GuiScreen.isShiftKeyDown()) {
                 // Find all emerald pouches in inventory
@@ -1162,6 +1179,101 @@ public class ClientEvents implements Listener {
 
         newLore.add(purchaseString);
         ItemUtils.replaceLore(is, newLore);
+    }
+
+    @SubscribeEvent
+    public void onPlayerDeath(GameEvent.PlayerDeath e) {
+        if (lastPlayerLocation == null || !UtilitiesConfig.INSTANCE.deathMessageWithCoords) return;
+
+        ITextComponent textComponent = new TextComponentString("You have died at ");
+        ITextComponent textComponentCoords = new TextComponentString(String.format("X: %d Y: %d Z: %d.", lastPlayerLocation.getX(), lastPlayerLocation.getY(), lastPlayerLocation.getZ()));
+
+        textComponent.getStyle()
+                .setColor(TextFormatting.DARK_RED);
+        textComponentCoords.getStyle()
+                .setColor(TextFormatting.DARK_RED)
+                .setUnderlined(true)
+                .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/compass " + lastPlayerLocation.getX() + " " + lastPlayerLocation.getY() + " " + lastPlayerLocation.getZ()));
+
+        McIf.player().sendMessage(textComponent.appendSibling(textComponentCoords));
+    }
+
+    @SubscribeEvent
+    public void onWindowOpen(PacketEvent<SPacketOpenWindow> e){
+        //System.out.println("Opened window with windowId: " + e.getPacket().getWindowId());
+        if (e.getPacket().getWindowTitle().getUnformattedText().startsWith("Loot Chest"))
+            lastOpenedChestWindowId = e.getPacket().getWindowId();
+        if (e.getPacket().getWindowTitle().toString().contains("Daily Rewards") || e.getPacket().getWindowTitle().toString().contains("Objective Rewards"))
+            lastOpenedRewardWindowId = e.getPacket().getWindowId();
+    }
+
+    //Dry streak counter, mythic music event
+    @SubscribeEvent
+    public void onMythicFound(PacketEvent<SPacketWindowItems> e) {
+        if (lastOpenedChestWindowId != e.getPacket().getWindowId() && lastOpenedRewardWindowId != e.getPacket().getWindowId()) return;
+
+        //Get items in chest, return if there is not enough items
+        if (e.getPacket().getItemStacks().size() < 27)
+            return;
+
+        //Only run at first time we get items, don't care about updating
+        if (e.getPacket().getWindowId() == lastProcessedOpenedChest) return;
+
+        lastProcessedOpenedChest = e.getPacket().getWindowId();
+
+        //Dry streak counter and sound sfx
+        if (UtilitiesConfig.INSTANCE.enableDryStreak && lastOpenedChestWindowId == e.getPacket().getWindowId()) {
+            boolean foundMythic = false;
+            int size = e.getPacket().getItemStacks().size();
+            for (int i = 0; i < size; i++) {
+                ItemStack stack = e.getPacket().getItemStacks().get(i);
+                if (stack.isEmpty() || !stack.hasDisplayName()) continue;
+                if (!stack.getDisplayName().contains("Unidentified")) continue;
+
+                UtilitiesConfig.INSTANCE.dryStreakBoxes += 1;
+
+                if (!stack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString())) continue;
+
+                if (MusicConfig.SoundEffects.INSTANCE.mythicFound)
+                SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("mythicFound"),
+                        true, false, false, false, true, false);
+
+                if (UtilitiesConfig.INSTANCE.enableDryStreak) {
+                    ITextComponent textComponent = new TextComponentString(UtilitiesConfig.INSTANCE.dryStreakCount + " long dry streak broken! Mythic found! Found boxes since last mythic: " + UtilitiesConfig.INSTANCE.dryStreakBoxes);
+                    textComponent.getStyle()
+                            .setColor(TextFormatting.DARK_PURPLE)
+                            .setBold(true);
+                    McIf.player().sendMessage(textComponent);
+                }
+
+                foundMythic = true;
+                UtilitiesConfig.INSTANCE.dryStreakCount = 0;
+                UtilitiesConfig.INSTANCE.dryStreakBoxes = 0;
+
+                break;
+            }
+
+            if (!foundMythic)
+                UtilitiesConfig.INSTANCE.dryStreakCount += 1;
+
+            UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
+            return;
+        }
+
+        //Mythic found sfx for daily rewards and objective rewards
+        if (!MusicConfig.SoundEffects.INSTANCE.mythicFound) return;
+
+        int size = e.getPacket().getItemStacks().size();
+        for (int i = 0; i < size; i++) {
+            ItemStack stack = e.getPacket().getItemStacks().get(i);
+            if (stack.isEmpty() || !stack.hasDisplayName()) continue;
+            if (!stack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString())) continue;
+            if (!stack.getDisplayName().contains("Unidentified")) continue;
+
+            SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("mythicFound"),
+                    true, false, false, false, true, false);
+            break;
+        }
     }
 
     @SubscribeEvent
