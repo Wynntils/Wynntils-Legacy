@@ -1234,12 +1234,13 @@ public class ClientEvents implements Listener {
                 SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("mythicFound"),
                         true, false, false, false, true, false);
 
-                ITextComponent textComponent = new TextComponentString("Dry streak broken! Mythic found!");
-                textComponent.getStyle()
-                        .setColor(TextFormatting.DARK_PURPLE)
-                        .setBold(true);
-
-                McIf.player().sendMessage(textComponent);
+                if (UtilitiesConfig.INSTANCE.enableDryStreak) {
+                    ITextComponent textComponent = new TextComponentString("Dry streak broken! Mythic found!");
+                    textComponent.getStyle()
+                            .setColor(TextFormatting.DARK_PURPLE)
+                            .setBold(true);
+                    McIf.player().sendMessage(textComponent);
+                }
                 break;
             }
 
