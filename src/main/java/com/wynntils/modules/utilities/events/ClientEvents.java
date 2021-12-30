@@ -115,7 +115,7 @@ public class ClientEvents implements Listener {
     private static final Pattern CRAFTED_USES = Pattern.compile(".* \\[(\\d)/\\d\\]");
 
     private static Vec3i lastPlayerLocation = null;
-    private static int lastProcessedOpenedLootchest = -1;
+    private static int lastProcessedOpenedChest = -1;
     private int lastOpenedChestWindowId = -1;
     private int lastOpenedRewardWindowId = -1;
     private Boolean isInInteractionDialogue = false;
@@ -1201,7 +1201,7 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void onWindowOpen(PacketEvent<SPacketOpenWindow> e){
         //System.out.println("Opened window with windowId: " + e.getPacket().getWindowId());
-        if (e.getPacket().getWindowTitle().getFormattedText().startsWith("Loot Chest"))
+        if (e.getPacket().getWindowTitle().getUnformattedText().startsWith("Loot Chest"))
             lastOpenedChestWindowId = e.getPacket().getWindowId();
         if (e.getPacket().getWindowTitle().toString().contains("Daily Rewards") || e.getPacket().getWindowTitle().toString().contains("Objective Rewards"))
             lastOpenedRewardWindowId = e.getPacket().getWindowId();
@@ -1216,13 +1216,13 @@ public class ClientEvents implements Listener {
         if (e.getPacket().getItemStacks().size() < 27)
             return;
 
+        //Only run at first time we get items, don't care about updating
+        if (e.getPacket().getWindowId() == lastProcessedOpenedChest) return;
+
+        lastProcessedOpenedChest = e.getPacket().getWindowId();
+
         //Dry streak counter and sound sfx
         if (UtilitiesConfig.INSTANCE.enableDryStreak && lastOpenedChestWindowId == e.getPacket().getWindowId()) {
-            //Only run at first time we get items, don't care about updating
-            if (e.getPacket().getWindowId() == lastProcessedOpenedLootchest) return;
-
-            lastProcessedOpenedLootchest = e.getPacket().getWindowId();
-
             boolean foundMythic = false;
             int size = e.getPacket().getItemStacks().size();
             for (int i = 0; i < size; i++) {
