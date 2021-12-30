@@ -588,9 +588,9 @@ public class ClientEvents implements Listener {
         if (UtilitiesConfig.INSTANCE.preventMythicChestClose || UtilitiesConfig.INSTANCE.preventFavoritedChestClose) {
             if (e.getKeyCode() == 1 || e.getKeyCode() == McIf.mc().gameSettings.keyBindInventory.getKeyCode()) {
                 IInventory inv = e.getGui().getLowerInv();
-                if (McIf.getUnformattedText(inv.getDisplayName()).contains("Loot Chest") ||
+                if ((McIf.getUnformattedText(inv.getDisplayName()).startsWith("Loot Chest") ||
                         McIf.getUnformattedText(inv.getDisplayName()).contains("Daily Rewards") ||
-                        McIf.getUnformattedText(inv.getDisplayName()).contains("Objective Rewards")) {
+                        McIf.getUnformattedText(inv.getDisplayName()).contains("Objective Rewards")) || inv.getSizeInventory() <= 27) {
                     for (int i = 0; i < inv.getSizeInventory(); i++) {
                         ItemStack stack = inv.getStackInSlot(i);
 
