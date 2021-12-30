@@ -548,7 +548,9 @@ public class OverlayConfig extends SettingsClass {
             PING("Ping", "%ping%ms/15s"),
             BLOCKSPERSECOND("Blocks Per Second", "%bps% bps"),
             BLOCKSPERMINUTE("Blocks Per Minute", "%bpm% bpm"),
-            AREA_DPS("Area Damage Per Second", "Area DPS: ❤ %adps%");
+            AREA_DPS("Area Damage Per Second", "Area DPS: ❤ %adps%"),
+            LEVELING("XP per Minute", "XPPM: %xpm% XP (%xppm%\\%)"),
+            KILLS("Kills per Minute and Damage", "KPM: %kpm%, ADPS: ❤ %adps%");
 
             public final String displayName;
             public final String value;
@@ -640,6 +642,11 @@ public class OverlayConfig extends SettingsClass {
             ADPS("Current area damage per second"),
             DRY_STREAK("Number of opened chests since last mythic finding in chest."),
             DRY_BOXES("Number of item boxes found since last mythic finding in chest.");
+            XPM_RAW("Current XP per Minute (Raw)"),
+            XPM("Current XP per Minute (Formatted)"),
+            XPPM("Current XP Percent per Minute"),
+            KPM_RAW("Kills per Minute (Raw)"),
+            KPM("Kills per Minute (Formatted)");
 
             public final String displayName;
             public final String value;

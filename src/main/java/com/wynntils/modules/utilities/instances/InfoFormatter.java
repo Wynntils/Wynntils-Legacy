@@ -19,6 +19,8 @@ import com.wynntils.modules.core.managers.PingManager;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.interfaces.InfoModule;
 import com.wynntils.modules.utilities.managers.AreaDPSManager;
+import com.wynntils.modules.utilities.managers.KillsManager;
+import com.wynntils.modules.utilities.managers.LevelingManager;
 import com.wynntils.modules.utilities.managers.ServerListManager;
 import com.wynntils.modules.utilities.managers.SpeedometerManager;
 import com.wynntils.webapi.WebManager;
@@ -449,6 +451,26 @@ public class InfoFormatter {
         registerFormatter((input) ->
                 String.valueOf(AreaDPSManager.getCurrentDPS()),
                 "adps", "areadps");
+
+        registerFormatter((input ->
+                StringUtils.integerToShortString(LevelingManager.getXpPerMinute())),
+                "xpm");
+
+        registerFormatter((input ->
+                String.valueOf(LevelingManager.getXpPerMinute())),
+                "xpm_raw");
+
+        registerFormatter((input ->
+                LevelingManager.getXpPercentPerMinute()),
+                "xppm");
+
+        registerFormatter((input ->
+                StringUtils.integerToShortString(KillsManager.getKillsPerMinute())),
+                "kpm");
+
+        registerFormatter((input ->
+                String.valueOf(KillsManager.getKillsPerMinute())),
+                "kpm_raw");
 
         // Uptime variables
         registerFormatter((input) ->
