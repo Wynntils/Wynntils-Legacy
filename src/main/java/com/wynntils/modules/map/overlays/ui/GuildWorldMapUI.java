@@ -203,10 +203,8 @@ public class GuildWorldMapUI extends WorldMapUI {
 
     @Override
     public void handleMouseInput() throws IOException {
-        clicking[1] = Mouse.isButtonDown(1);
-
         //Check for shift + left click
-        if (!territoryManageShortcut || !clicking[1] || !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+        if (!territoryManageShortcut || !Mouse.isButtonDown(1) || !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
             super.handleMouseInput();
             return;
         }
@@ -217,7 +215,7 @@ public class GuildWorldMapUI extends WorldMapUI {
 
             //Close map and open territory management menu
             Utils.displayGuiScreen(null);
-            McIf.player().sendChatMessage("/guild territory "+territory.getTerritory().getName());
+            McIf.player().sendChatMessage("/guild territory " + territory.getTerritory().getName());
             return;
         }
 
