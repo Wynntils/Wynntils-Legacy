@@ -27,8 +27,11 @@ public class ChatEvent extends Event {
 
     public static class Pre extends ChatEvent {
 
-        public Pre(ITextComponent message, int chatLineId) {
+        private final boolean isDialogue;
+
+        public Pre(ITextComponent message, int chatLineId, boolean isDialogue) {
             super(message, chatLineId);
+            this.isDialogue = isDialogue;
         }
 
         @Override
@@ -44,6 +47,9 @@ public class ChatEvent extends Event {
             this.chatLineId = newChatLineId;
         }
 
+        public boolean isDialogue() {
+            return isDialogue;
+        }
     }
 
     public static class Post extends ChatEvent {

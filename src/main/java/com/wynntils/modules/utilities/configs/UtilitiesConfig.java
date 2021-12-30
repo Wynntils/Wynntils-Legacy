@@ -17,11 +17,7 @@ import com.wynntils.webapi.profiles.item.enums.ItemTier;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @SettingsInfo(name = "main", displayPath = "Utilities")
 public class UtilitiesConfig extends SettingsClass {
@@ -60,6 +56,12 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Prevent Clicking on Locked Items", description = "Should moving items to and from locked inventory slots be blocked?")
     public boolean preventSlotClicking = false;
 
+    @Setting(displayName = "Bank Dump Button Behaviour", description = "What should happen when the bank inventory dump button is clicked?")
+    public BankButtonSetting bankDumpButton = BankButtonSetting.Confirm;
+
+    @Setting(displayName = "Bank Quick Stash Button Behaviour", description = "What should happen when the bank quick stash button is clicked?")
+    public BankButtonSetting bankStashButton = BankButtonSetting.Confirm;
+
     @Setting(displayName = "FOV Scaling Function", description = "What scaling function should be used for speed-based FOV changes?")
     public FovScalingFunction fovScalingFunction = FovScalingFunction.Vanilla;
 
@@ -96,6 +98,13 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Prevent Trades/Duels in Combat", description = "Should trade and duel requests be disabled while holding an item?")
     public boolean preventTradesDuels = false;
 
+    @Setting(displayName = "Bulk Buy on Shift-click", description = "Should the option to bulk buy items (scrolls, potions) while holding shift be available?")
+    public boolean shiftBulkBuy = true;
+
+    @Setting.Limitations.IntLimit(min = 2, max = 16)
+    @Setting(displayName = "Bulk Buy Amount", description = "How many items should be bought in bulk?")
+    public int bulkBuyAmount = 3;
+
     @Setting(upload = false)
     public String lastServerResourcePack = "";
 
@@ -116,6 +125,12 @@ public class UtilitiesConfig extends SettingsClass {
         Arctangent,
         Sprint_Only,
         None
+    }
+
+    public enum BankButtonSetting {
+        Default,
+        Confirm,
+        Block
     }
 
     @SettingsInfo(name = "identifications", displayPath = "Utilities/Identifications")
@@ -234,10 +249,13 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Show Average Unidentified Level", description = "Should the average level of an unidentified item be shown instead of the entire range?", order = 3)
         public boolean averageUnidentifiedLevel = true;
 
-        @Setting(displayName = "Roman Numeral Powder Tier", description = "Should the tier of powders be displayed using roman numerals?", order = 4)
-        public boolean romanNumeralPowderTier = true;
+        @Setting(displayName = "Show Levels Key Also Shows Item Tiers", description = "Should the tier of items (powders, amplifiers, pouches) be shown when pressing the show item level key?", order = 5)
+        public boolean levelKeyShowsItemTiers = false;
 
-        @Setting(displayName = "Item Levels Outside GUIs", description = "Should the item level overlay key be enabled even when no GUI is open?", order = 5)
+        @Setting(displayName = "Roman Numeral Item Tiers", description = "Should the tier of items (powders, amplifiers, pouches) be displayed using roman numerals?", order = 6)
+        public boolean romanNumeralItemTier = true;
+
+        @Setting(displayName = "Item Levels Outside GUIs", description = "Should the item level overlay key be enabled even when no GUI is open?", order = 7)
         public boolean itemLevelOverlayOutsideGui = false;
 
         @Setting(displayName = "Dungeon Key Specification", description = "Should a letter indicating the destination of dungeon keys be displayed?", order = 8)
@@ -252,43 +270,56 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Transportation Item Specification", description = "Should a letter indicating the destination of teleport scrolls and boat passes be displayed?", order = 11)
         public boolean transportationSpecification = true;
 
-        @Setting(displayName = "Amplifier Specification", description = "Should the tier of a Corkian Amplifier be displayed?", order = 12)
+        @Setting(displayName = "Corkian Amplifier Specification", description = "Should the tier of a Corkian Amplifier be displayed?", order = 12)
         public boolean amplifierSpecification = true;
 
-        @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted according to rarity in remote containers?\n\n§8Remote containers are items such as chests and banks.", order = 15)
+        @Setting(displayName = "Powder Specification", description = "Should the tier of powders be displayed?", order = 13)
+        public boolean powderSpecification = true;
+
+        @Setting(displayName = "Emerald Pouch Specification", description = "Should the tier of emerald pouches be displayed?", order = 14)
+        public boolean emeraldPouchSpecification = true;
+
+        @Setting(displayName = "Tier Overlay Size", description = "How large should the tier overlays (emerald pouches, powders, amplifiers) be?", order = 15)
+        @Setting.Limitations.FloatLimit(min = 0.5f, max = 1, precision = 0.1f)
+        public float specificationTierSize = 1;
+
+        @Setting(displayName = "Emerald Pouch Usage Arc", description = "Should emerald pouch usage be shown with an arc?", order = 16)
+        public boolean emeraldPouchArc = true;
+
+        @Setting(displayName = "Item Highlights in Containers", description = "Should items be highlighted according to rarity in remote containers?\n\n§8Remote containers are items such as chests and banks.", order = 17)
         public boolean mainHighlightChest = true;
 
-        @Setting(displayName = "Item Highlights in Inventory", description = "Should items be highlighted according to rarity in your inventory?", order = 16)
+        @Setting(displayName = "Item Highlights in Inventory", description = "Should items be highlighted according to rarity in your inventory?", order = 18)
         public boolean mainHighlightInventory = true;
 
-        @Setting(displayName = "Accessories Highlight", description = "Should your worn accessories be highlighted according to rarity?", order = 17)
+        @Setting(displayName = "Accessories Highlight", description = "Should your worn accessories be highlighted according to rarity?", order = 19)
         public boolean accesoryHighlight = true;
 
-        @Setting(displayName = "Highlight Hotbar Items", description = "Should the items in your hotbar be highlighted according to rarity?", order = 18)
+        @Setting(displayName = "Highlight Hotbar Items", description = "Should the items in your hotbar be highlighted according to rarity?", order = 20)
         public boolean hotbarHighlight = true;
 
-        @Setting(displayName = "Highlight Armour Items", description = "Should your worn armour be highlighted according to rarity?", order = 19)
+        @Setting(displayName = "Highlight Armour Items", description = "Should your worn armour be highlighted according to rarity?", order = 21)
         public boolean armorHighlight = true;
 
-        @Setting(displayName = "Highlight Mythics", description = "Should mythic items be highlighted?", order = 20)
+        @Setting(displayName = "Highlight Mythics", description = "Should mythic items be highlighted?", order = 22)
         public boolean mythicHighlight = true;
 
-        @Setting(displayName = "Highlight Fabled", description = "Should fabled items be highlighted?", order = 21)
+        @Setting(displayName = "Highlight Fabled", description = "Should fabled items be highlighted?", order = 23)
         public boolean fabledHighlight = true;
 
-        @Setting(displayName = "Highlight Legendaries", description = "Should legendary items be highlighted?", order = 22)
+        @Setting(displayName = "Highlight Legendaries", description = "Should legendary items be highlighted?", order = 24)
         public boolean legendaryHighlight = true;
 
-        @Setting(displayName = "Highlight Rares", description = "Should rare items be highlighted?", order = 23)
+        @Setting(displayName = "Highlight Rares", description = "Should rare items be highlighted?", order = 25)
         public boolean rareHighlight = true;
 
-        @Setting(displayName = "Highlight Uniques", description = "Should unique items be highlighted?", order = 24)
+        @Setting(displayName = "Highlight Uniques", description = "Should unique items be highlighted?", order = 26)
         public boolean uniqueHighlight = true;
 
-        @Setting(displayName = "Highlight Set Items", description = "Should set items be highlighted?", order = 25)
+        @Setting(displayName = "Highlight Set Items", description = "Should set items be highlighted?", order = 27)
         public boolean setHighlight = true;
 
-        @Setting(displayName = "Highlight Normal Items", description = "Should normal items be highlighted?", order = 26)
+        @Setting(displayName = "Highlight Normal Items", description = "Should normal items be highlighted?", order = 28)
         public boolean normalHighlight = false;
 
         @Setting(displayName = "Highlight Black Market Cosmetics", description = "Should black market cosmetic items be highlighted?", order = 30)
@@ -326,46 +357,52 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting.Limitations.IntLimit(min = 0, max = 6)
         public int minPowderTier = 4;
 
-        @Setting(displayName = "Normal Item Highlight Colour", description = "What colour should the highlight for normal items be?\n\n§aClick the coloured box to open the colour wheel.", order = 50)
+        @Setting(displayName = "Profession Filter Highlight Colour", description = "What colour should the highlight for filtered ingredients be?\n\n§aClick the coloured box to open the colour wheel.", order = 50)
+        public CustomColor professionFilterHighlightColor = new CustomColor(0.078f, 0.35f, 0.8f);
+
+        @Setting(displayName = "Normal Item Highlight Colour", description = "What colour should the highlight for normal items be?\n\n§aClick the coloured box to open the colour wheel.", order = 51)
         public CustomColor normalHighlightColor = ItemTier.NORMAL.getDefaultHighlightColor();
 
-        @Setting(displayName = "Unique Item Highlight Colour", description = "What colour should the highlight for unique items be?\n\n§aClick the coloured box to open the colour wheel.", order = 51)
+        @Setting(displayName = "Unique Item Highlight Colour", description = "What colour should the highlight for unique items be?\n\n§aClick the coloured box to open the colour wheel.", order = 52)
         public CustomColor uniqueHighlightColor = ItemTier.UNIQUE.getDefaultHighlightColor();
 
-        @Setting(displayName = "Rare Item Highlight Colour", description = "What colour should the highlight for rare items be?\n\n§aClick the coloured box to open the colour wheel.", order = 52)
+        @Setting(displayName = "Rare Item Highlight Colour", description = "What colour should the highlight for rare items be?\n\n§aClick the coloured box to open the colour wheel.", order = 53)
         public CustomColor rareHighlightColor = ItemTier.RARE.getDefaultHighlightColor();
 
-        @Setting(displayName = "Set Item Highlight Colour", description = "What colour should the highlight for set items be?\n\n§aClick the coloured box to open the colour wheel.", order = 53)
+        @Setting(displayName = "Set Item Highlight Colour", description = "What colour should the highlight for set items be?\n\n§aClick the coloured box to open the colour wheel.", order = 54)
         public CustomColor setHighlightColor = ItemTier.SET.getDefaultHighlightColor();
 
-        @Setting(displayName = "Legendary Item Highlight Colour", description = "What colour should the highlight for legendary items be?\n\n§aClick the coloured box to open the colour wheel.", order = 54)
+        @Setting(displayName = "Legendary Item Highlight Colour", description = "What colour should the highlight for legendary items be?\n\n§aClick the coloured box to open the colour wheel.", order = 55)
         public CustomColor legendaryHighlightColor = ItemTier.LEGENDARY.getDefaultHighlightColor();
 
-        @Setting(displayName = "Fabled Item Highlight Colour", description = "What colour should the highlight for fabled items be?\n\n§aClick the coloured box to open the colour wheel.", order = 55)
+        @Setting(displayName = "Fabled Item Highlight Colour", description = "What colour should the highlight for fabled items be?\n\n§aClick the coloured box to open the colour wheel.", order = 56)
         public CustomColor fabledHighlightColor = ItemTier.FABLED.getDefaultHighlightColor();
 
-        @Setting(displayName = "Mythic Item Highlight Colour", description = "What colour should the highlight for mythic items be?\n\n§aClick the coloured box to open the colour wheel.", order = 56)
+        @Setting(displayName = "Mythic Item Highlight Colour", description = "What colour should the highlight for mythic items be?\n\n§aClick the coloured box to open the colour wheel.", order = 57)
         public CustomColor mythicHighlightColor = ItemTier.MYTHIC.getDefaultHighlightColor();
 
-        @Setting(displayName = "Crafted Armour & Weapon Highlight Colour", description = "What colour should the highlight for crafted armour and weapons be?\n\n§aClick the coloured box to open the colour wheel.", order = 57)
+        @Setting(displayName = "Crafted Armour & Weapon Highlight Colour", description = "What colour should the highlight for crafted armour and weapons be?\n\n§aClick the coloured box to open the colour wheel.", order = 58)
         public CustomColor craftedHighlightColor = ItemTier.CRAFTED.getDefaultHighlightColor();
 
-        @Setting(displayName = "Ingredient Highlight Colour (1 star)", description = "What colour should the highlight for ingredients with one star be?\n\n§aClick the coloured box to open the colour wheel.", order = 58)
+        @Setting(displayName = "Ingredient Highlight Colour (1 star)", description = "What colour should the highlight for ingredients with one star be?\n\n§aClick the coloured box to open the colour wheel.", order = 59)
         public CustomColor ingredientOneHighlightColor = new CustomColor(1, 0.97f, 0.6f);
 
-        @Setting(displayName = "Ingredient Highlight Colour (2 stars)", description = "What colour should the highlight for ingredients with two stars be?\n\n§aClick the coloured box to open the colour wheel.", order = 59)
+        @Setting(displayName = "Ingredient Highlight Colour (2 stars)", description = "What colour should the highlight for ingredients with two stars be?\n\n§aClick the coloured box to open the colour wheel.", order = 60)
         public CustomColor ingredientTwoHighlightColor = new CustomColor(1f, 1f, 0f);
 
-        @Setting(displayName = "Ingredient Highlight Colour (3 stars)", description = "What colour should the highlight for ingredients with three stars be?\n\n§aClick the coloured box to open the colour wheel.", order = 60)
+        @Setting(displayName = "Ingredient Highlight Colour (3 stars)", description = "What colour should the highlight for ingredients with three stars be?\n\n§aClick the coloured box to open the colour wheel.", order = 61)
         public CustomColor ingredientThreeHighlightColor = new CustomColor(0.9f, .3f, 0);
 
-        @Setting(displayName = "Inventory Item Highlight Opacity %", description = "How opaque should highlights in your inventory be? (As a percentage)", order = 61)
+        @Setting(displayName = "Inventory Item Highlight Opacity %", description = "How opaque should highlights in your inventory be? (As a percentage)", order = 62)
         @Setting.Limitations.FloatLimit(min = 0, max = 100, precision = 0.5f)
         public float inventoryAlpha = 100;
 
-        @Setting(displayName = "Hotbar Item Highlight Opacity %", description = "Should the highlight of item rarities be displayed on the hotbar?\n\n§8Set to 0 to disable.", order = 62)
+        @Setting(displayName = "Hotbar Item Highlight Opacity %", description = "Should the highlight of item rarities be displayed on the hotbar?\n\n§8Set to 0 to disable.", order = 63)
         @Setting.Limitations.FloatLimit(min = 0, max = 100, precision = 0.5f)
         public float hotbarAlpha = 30;
+
+        @Setting(displayName = "Color Number of Skillpoints", description = "Should the number of skillpoints be colored??")
+        public boolean colorSkillPointNumberOverlay = true;
     }
 
     @SettingsInfo(name = "market", displayPath = "Utilities/Market")
@@ -376,7 +413,7 @@ public class UtilitiesConfig extends SettingsClass {
         public boolean displayInCustomFormat = true;
 
         @Setting(displayName = "Market Prices Format", description = "What format should market prices be displayed in?\n\n§8Brackets indicate all parameters inside must not be 0.")
-        @Setting.Features.StringParameters(parameters = { "les", "ebs", "es", "stx", "le", "eb", "e" })
+        @Setting.Features.StringParameters(parameters = {"les", "ebs", "es", "stx", "le", "eb", "e"})
         public String customFormat = "(%stx%stx )(%le%%les% )(%eb%%ebs% )(%e%%es%)";
 
         @Setting(displayName = "Open Chat", description = "Should the chat open when the trade market asks you to type a response?")
@@ -437,6 +474,29 @@ public class UtilitiesConfig extends SettingsClass {
 
         @Setting
         public int maxPages = 1;
+    }
+
+    @SettingsInfo(name = "Command Keybinds", displayPath = "Utilities/Command keybinds")
+    public static class CommandKeybinds extends SettingsClass {
+        public static CommandKeybinds INSTANCE;
+
+        @Setting(displayName = "Command Keybind 1", description = "Command that runs upon pressing command keybind 1 key.", order = 1)
+        public String cKeyBind1 = "";
+
+        @Setting(displayName = "Command Keybind 2", description = "Command that runs upon pressing command keybind 2 key.", order = 2)
+        public String cKeyBind2 = "";
+
+        @Setting(displayName = "Command Keybind 3", description = "Command that runs upon pressing command keybind 3 key.", order = 3)
+        public String cKeyBind3 = "";
+
+        @Setting(displayName = "Command Keybind 4", description = "Command that runs upon pressing command keybind 4 key.", order = 4)
+        public String cKeyBind4 = "";
+
+        @Setting(displayName = "Command Keybind 5", description = "Command that runs upon pressing command keybind 5 key.", order = 5)
+        public String cKeyBind5 = "";
+
+        @Setting(displayName = "Command Keybind 6", description = "Command that runs upon pressing command keybind 6 key.", order = 6)
+        public String cKeyBind6 = "";
     }
 
     @Override

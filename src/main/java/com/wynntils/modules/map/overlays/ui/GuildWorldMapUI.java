@@ -7,6 +7,7 @@ package com.wynntils.modules.map.overlays.ui;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.instances.GuildResourceContainer;
 import com.wynntils.modules.map.instances.MapProfile;
@@ -37,6 +38,7 @@ public class GuildWorldMapUI extends WorldMapUI {
     private boolean showOwners = false;
     private boolean resourceColors = false;
     private boolean showTradeRoutes = true;
+    private boolean territoryManageShortcut = true;
 
     public GuildWorldMapUI() {
         super((float) McIf.player().posX, (float) McIf.player().posZ);
@@ -72,6 +74,13 @@ public class GuildWorldMapUI extends WorldMapUI {
                 GRAY + "Click here to enable/disable",
                 GRAY + "territory trade routes."
         ), (v) -> showTradeRoutes, (i, btn) -> showTradeRoutes = !showTradeRoutes);
+
+        addButton(MapButtonType.PLUS, 3, Arrays.asList(
+                RED + "[>] Shift + Right Click on a territory",
+                RED + "to open management menu.",
+                GRAY + "Click here to enable/disable",
+                GRAY + "territory management shortcut."
+        ), (v) -> territoryManageShortcut, (i, btn) -> territoryManageShortcut = !territoryManageShortcut);
     }
 
     @Override
@@ -192,4 +201,24 @@ public class GuildWorldMapUI extends WorldMapUI {
         super.keyTyped(typedChar, keyCode);
     }
 
+    @Override
+    public void handleMouseInput() throws IOException {
+        //Check for shift + left click
+        if (!territoryManageShortcut || !Mouse.isButtonDown(1) || !Keyboard.isKeyDown(Keyboard.KEY_LSHIFT)) {
+            super.handleMouseInput();
+            return;
+        }
+
+        for (MapTerritory territory : territories.values()) {
+            boolean hovering = territory.isBeingHovered(lastMouseX, lastMouseY);
+            if (!hovering) continue;
+
+            //Close map and open territory management menu
+            Utils.displayGuiScreen(null);
+            McIf.player().sendChatMessage("/guild territory " + territory.getTerritory().getName());
+            return;
+        }
+
+        super.handleMouseInput();
+    }
 }

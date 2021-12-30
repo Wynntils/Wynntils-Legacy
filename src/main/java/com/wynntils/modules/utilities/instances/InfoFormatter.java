@@ -7,7 +7,6 @@ package com.wynntils.modules.utilities.instances;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
-import com.wynntils.core.framework.instances.containers.UnprocessedAmount;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.instances.data.*;
 import com.wynntils.core.utils.ItemUtils;
@@ -21,8 +20,10 @@ import com.wynntils.modules.utilities.interfaces.InfoModule;
 import com.wynntils.modules.utilities.managers.AreaDPSManager;
 import com.wynntils.modules.utilities.managers.KillsManager;
 import com.wynntils.modules.utilities.managers.LevelingManager;
+import com.wynntils.modules.utilities.managers.ServerListManager;
 import com.wynntils.modules.utilities.managers.SpeedometerManager;
 import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.Minecraft;
 
 import java.time.LocalDateTime;
@@ -92,7 +93,7 @@ public class InfoFormatter {
 
         // The world/server number
         registerFormatter((input) ->
-                Reference.getUserWorld(),
+                Reference.inStream ? "WC -" : Reference.getUserWorld(),
                 "world");
 
         // The ping time to the server
@@ -237,7 +238,16 @@ public class InfoFormatter {
         // Current guild that owns current territory
         registerFormatter((input) -> {
                     String territory = PlayerInfo.get(LocationData.class).getLocation();
-                    return territory.isEmpty() ? "" : WebManager.getTerritories().get(territory).getGuild();
+                    if (territory.isEmpty()) return "";
+
+                    TerritoryProfile profile = WebManager.getTerritories().get(territory);
+
+                    if (profile == null) {
+                        Reference.LOGGER.warn(String.format("Invalid territory for %%territory_owner%% %s", territory));
+                        return "?";
+                    }
+
+                    return profile.getGuild();
                 },
                 "territory_owner", "terguild");
 
@@ -245,8 +255,17 @@ public class InfoFormatter {
         // Current guild that owns current territory (prefix)
         registerFormatter((input) -> {
                     String territory = PlayerInfo.get(LocationData.class).getLocation();
-                    return territory.isEmpty() ? "" : WebManager.getTerritories().get(territory).getGuildPrefix();
-                },
+                    if (territory.isEmpty()) return "";
+
+                    TerritoryProfile profile = WebManager.getTerritories().get(territory);
+
+                    if (profile == null) {
+                        Reference.LOGGER.warn(String.format("Invalid territory for %%territory_owner_prefix%% %s", territory));
+                        return "?";
+                    }
+
+                    return profile.getGuildPrefix();
+                    },
                 "territory_owner_prefix", "terguild_pref");
 
         // Distance from compass beacon
@@ -346,10 +365,32 @@ public class InfoFormatter {
             return cache.get("emeralds");
         }, "e", "emeralds");
 
-        // Count of health potions
-        registerFormatter((input) ->
-                Integer.toString(PlayerInfo.get(InventoryData.class).getHealthPotions()),
-                "potions_health", "hp_pot");
+        // health pot charges
+        registerFormatter((input) -> {
+            if (!cache.containsKey("potionchargesremaining")) {
+                cachePotionCharges();
+            }
+
+            return cache.get("potionchargesremaining");
+        },"potions_health_charges", "hp_pot_charges");
+
+        // max health pot charges
+        registerFormatter((input) -> {
+            if (!cache.containsKey("potionchargesmax")) {
+                cachePotionCharges();
+            }
+
+            return cache.get("potionchargesmax");
+        }, "potions_health_max", "hp_pot_max");
+
+        // combined health pot charges
+        registerFormatter((input) -> {
+            if (!cache.containsKey("potionchargescombined")) {
+                cachePotionCharges();
+            }
+
+            return cache.get("potionchargescombined");
+        }, "potions_health_combined", "hp_pot_combined");
 
         // Count of mana potions
         registerFormatter((input) ->
@@ -396,23 +437,6 @@ public class InfoFormatter {
             return cache.get("memorypct");
         }, "mempct", "mem_pct");
 
-        // Current amount of unprocessed materials
-        registerFormatter((input) -> {
-            if(!cache.containsKey("unprocessedcurrent")) {
-                cacheUnprocessed();
-            }
-
-            return cache.get("unprocessedcurrent");
-        }, "unprocessed");
-
-        // Max amount of unprocessed materials
-        registerFormatter((input) -> {
-            if(!cache.containsKey("unprocessedmax")) {
-                cacheUnprocessed();
-            }
-            return cache.get("unprocessedmax");
-        }, "unprocessed_max");
-
         // Number of players in the party
         registerFormatter((input) ->
                 Integer.toString(PlayerInfo.get(SocialData.class).getPlayerParty().getPartyMembers().size()),
@@ -423,8 +447,8 @@ public class InfoFormatter {
                 PlayerInfo.get(SocialData.class).getPlayerParty().getOwner(),
                 "party_owner");
 
-        registerFormatter((input ->
-                String.valueOf(AreaDPSManager.getCurrentDPS())),
+        registerFormatter((input) ->
+                String.valueOf(AreaDPSManager.getCurrentDPS()),
                 "adps", "areadps");
 
         registerFormatter((input ->
@@ -446,6 +470,15 @@ public class InfoFormatter {
         registerFormatter((input ->
                 String.valueOf(KillsManager.getKillsPerMinute())),
                 "kpm_raw");
+
+        // Uptime variables
+        registerFormatter((input) ->
+                Reference.inStream ? "-" : ServerListManager.getUptimeHours(Reference.getUserWorld()),
+                "uptime_h");
+
+        registerFormatter((input) ->
+                Reference.inStream ? "-" : ServerListManager.getUptimeMinutes(Reference.getUserWorld()),
+                "uptime_m");
     }
 
     private void registerFormatter(InfoModule formatter, String... vars) {
@@ -524,6 +557,16 @@ public class InfoFormatter {
         cache.put("money_desc", ItemUtils.describeMoney(total));
     }
 
+    private void cachePotionCharges() {
+        String potionCharges = PlayerInfo.get(InventoryData.class).getHealthPotionCharges();
+        String remainingCharges = potionCharges.split("/")[0];
+        String maxCharges = potionCharges.split("/")[1];
+
+        cache.put("potionchargesremaining", remainingCharges);
+        cache.put("potionchargesmax", maxCharges);
+        cache.put("potionchargescombined", potionCharges);
+    }
+
     private void cacheMemory() {
         long max = Runtime.getRuntime().maxMemory() / (1024 * 1024);
         long used = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / (1024 * 1024);
@@ -564,18 +607,5 @@ public class InfoFormatter {
         cache.put("horsetier", Integer.toString(horse.getTier()));
         cache.put("horselevelmax", Integer.toString(horse.getMaxLevel()));
     }
-
-    private void cacheUnprocessed() {
-        UnprocessedAmount unproc = PlayerInfo.get(InventoryData.class).getUnprocessedAmount();
-
-        if (unproc.getMaximum() == -1) {
-            cache.put("unprocessedmax", "??");
-        } else {
-            cache.put("unprocessedmax", Integer.toString(unproc.getMaximum()));
-        }
-
-        cache.put("unprocessedcurrent", Integer.toString(unproc.getCurrent()));
-    }
-
 }
 

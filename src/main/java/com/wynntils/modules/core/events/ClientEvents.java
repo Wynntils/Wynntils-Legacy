@@ -76,7 +76,12 @@ import java.util.regex.Pattern;
 import static com.wynntils.core.framework.instances.PlayerInfo.get;
 
 public class ClientEvents implements Listener {
+    private static final Pattern GATHERING_STATUS = Pattern.compile("\\[\\+([0-9]*) [ⒸⒷⒿⓀ] (.*?) XP\\] \\[([0-9]*)%\\]");
+    private static final Pattern GATHERING_RESOURCE = Pattern.compile("\\[\\+([0-9]+) (.+)\\]");
+    private static final Pattern MOB_DAMAGE = DamageType.compileDamagePattern();
+
     private final TotemTracker totemTracker = new TotemTracker();
+    private GatheringBake bakeStatus = null;
 
     /**
      * This replace these GUIS into a "provided" format to make it more modular
@@ -123,13 +128,6 @@ public class ClientEvents implements Listener {
             e.setGui(new IngameMenuReplacer());
         }
     }
-
-    public static final Pattern GATHERING_STATUS = Pattern.compile("\\[\\+([0-9]*) [ⒸⒷⒿⓀ] (.*?) XP\\] \\[([0-9]*)%\\]");
-    public static final Pattern GATHERING_RESOURCE = Pattern.compile("\\[\\+([0-9]+) (.+)\\]");
-    public static final Pattern MOB_DAMAGE = DamageType.compileDamagePattern();
-
-    // bake status
-    private GatheringBake bakeStatus = null;
 
     @SubscribeEvent
     public void workAroundWynncraftNPEBug(PacketEvent<SPacketTeams> e) {

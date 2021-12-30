@@ -125,7 +125,7 @@ public class MapTerritory {
         float ppX = getCenterX();
         float ppY = getCenterY();
 
-        boolean hovering = (mouseX > initX && mouseX < endX && mouseY > initY && mouseY < endY);
+        boolean hovering = isBeingHovered(mouseX, mouseY);
 
         if (showHeadquarters) {
             if (!resources.isHeadquarters()) return;
@@ -146,10 +146,13 @@ public class MapTerritory {
     }
 
     public void postDraw(int mouseX, int mouseY, float partialTicks, int width, int height) {
-        boolean hovering = (mouseX > initX && mouseX < endX && mouseY > initY && mouseY < endY);
+        boolean hovering = isBeingHovered(mouseX, mouseY);
         if (!hovering) return;
 
         infoBox.render((int)(width * 0.95), (int)(height * 0.1));
     }
 
+    public boolean isBeingHovered(int mouseX, int mouseY) {
+        return (mouseX > initX && mouseX < endX && mouseY > initY && mouseY < endY);
+    }
 }

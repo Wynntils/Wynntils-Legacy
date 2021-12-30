@@ -20,17 +20,16 @@ import com.wynntils.modules.utilities.managers.MountHorseManager;
 import com.wynntils.modules.utilities.overlays.hud.*;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.enums.ItemTier;
-import net.minecraft.client.Minecraft;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.network.play.server.*;
 import net.minecraft.potion.Potion;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.apache.commons.lang3.StringUtils;
 
 import java.text.DecimalFormat;
 import java.util.Arrays;
@@ -38,17 +37,15 @@ import java.util.EnumMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.StringUtils;
-
 import static net.minecraft.util.text.TextFormatting.*;
 
 public class OverlayEvents implements Listener {
 
-    private static final Pattern CHEST_COOLDOWN_PATTERN = Pattern.compile("Please wait an additional ([0-9]+) minutes? before opening this chest.");
+    private static final Pattern CHEST_COOLDOWN_PATTERN = Pattern.compile("§7Please wait an additional ([0-9]+) minutes? before opening this chest.");
     private static final Pattern GATHERING_COOLDOWN_PATTERN = Pattern.compile("^You need to wait ([0-9]+) seconds after logging in to gather from this resource!");
-    private static final Pattern SERVER_RESTART_PATTERN = Pattern.compile("The server is restarting in ([0-9]+) (minutes?|seconds?)");
+    private static final Pattern SERVER_RESTART_PATTERN = Pattern.compile("§cThis world will restart in ([0-9]+) (minutes?|seconds?)\\.");
 
-    private static boolean wynnExpTimestampNotified = false;
+    //private static boolean wynnExpTimestampNotified = false;
     private long loginTime;
 
     private static String totemName;
@@ -164,6 +161,8 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onChatToRedirect(ChatEvent.Pre e) {
+        if (e.isDialogue()) return;
+
         if (!UtilitiesModule.getModule().getGameUpdateOverlay().active) {
             GameUpdateOverlay.resetMessages();
             return;
@@ -172,6 +171,7 @@ public class OverlayEvents implements Listener {
         if (!Reference.onWorld || McIf.getUnformattedText(e.getMessage()).equals(" ")) return;
         String messageText = McIf.getUnformattedText(e.getMessage());
         String formattedText = McIf.getFormattedText(e.getMessage());
+        /*
         if (messageText.split(" ")[0].matches("\\[\\d+:\\d+\\]")) {
             if (!wynnExpTimestampNotified) {
                 TextComponentString text = new TextComponentString("[" + Reference.NAME + "] WynnExpansion's chat timestamps detected, please use " + Reference.NAME + "' chat timestamps for full compatibility.");
@@ -180,6 +180,9 @@ public class OverlayEvents implements Listener {
                 wynnExpTimestampNotified = true;
             }
         }
+
+         */
+
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectHorse) {
             switch (messageText) {
                 case "There is no room for a horse.":
@@ -314,16 +317,14 @@ public class OverlayEvents implements Listener {
                 }
                 e.setCanceled(true);
                 return;
-            }
-            else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has given you 15% resistance\\.")) {
+            } else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has given you 15% resistance\\.")) {
                 GameUpdateOverlay.queueMessage(AQUA + "+15% resistance " + GRAY + "(" + formattedText.split(" ")[0].replace(RESET.toString(), "") + GRAY + ")");
                 if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
                     ConsumableTimerOverlay.addBasicTimer("War Scream II", 3 * 60);
                 }
                 e.setCanceled(true);
                 return;
-            }
-            else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has given you 20% resistance and 10% strength\\.")) {
+            } else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has given you 20% resistance and 10% strength\\.")) {
                 GameUpdateOverlay.queueMessage(AQUA + "+20% resistance " + GRAY + "& " + AQUA + "+10% strength " + GRAY + "(" + formattedText.split(" ")[0].replace(RESET.toString(), "") + GRAY + ")");
                 if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
                     ConsumableTimerOverlay.addBasicTimer("War Scream III", 4 * 60);
@@ -584,7 +585,7 @@ public class OverlayEvents implements Listener {
 
             if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
                 long timeNow = McIf.getSystemTime();
-                int timeLeft = seconds - (int)(timeNow - loginTime)/1000;
+                int timeLeft = seconds - (int) (timeNow - loginTime) / 1000;
                 if (timeLeft > 0) {
                     ConsumableTimerOverlay.addBasicTimer("Gather cooldown", timeLeft, false);
                 }
@@ -592,7 +593,7 @@ public class OverlayEvents implements Listener {
             return;
         }
 
-        Matcher chestMatcher = CHEST_COOLDOWN_PATTERN.matcher(messageText);
+        Matcher chestMatcher = CHEST_COOLDOWN_PATTERN.matcher(formattedText);
         if (chestMatcher.find()) {
             int minutes = Integer.parseInt(chestMatcher.group(1));
             if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectCooldown) {
@@ -601,13 +602,13 @@ public class OverlayEvents implements Listener {
             }
 
             if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
-                ConsumableTimerOverlay.addBasicTimer("Loot cooldown", minutes*60, true);
+                ConsumableTimerOverlay.addBasicTimer("Loot cooldown", minutes * 60, true);
             }
             return;
         }
 
         // Server restart message handling
-        Matcher restartMatcher = SERVER_RESTART_PATTERN.matcher(messageText);
+        Matcher restartMatcher = SERVER_RESTART_PATTERN.matcher(formattedText);
         if (restartMatcher.find()) {
             if (OverlayConfig.ConsumableTimer.INSTANCE.showServerRestart) { // if you want the timer
                 int seconds = Integer.parseInt(restartMatcher.group(1));
@@ -798,11 +799,9 @@ public class OverlayEvents implements Listener {
 
             if (effect.getAmplifier() == 0) {
                 timerName = "War Scream I";
-            }
-            else if (effect.getAmplifier() == 1) {
+            } else if (effect.getAmplifier() == 1) {
                 timerName = "War Scream II";
-            }
-            else if (effect.getAmplifier() == 2) {
+            } else if (effect.getAmplifier() == 2) {
                 timerName = "War Scream III";
             } else {
                 return;

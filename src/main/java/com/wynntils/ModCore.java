@@ -13,14 +13,15 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.ModuleRegistry;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
+import com.wynntils.modules.core.overlays.ui.ForgeConflictScreen;
 import com.wynntils.modules.core.overlays.ui.ModConflictScreen;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.overlays.objects.MapApiIcon;
 import com.wynntils.webapi.WebManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import net.minecraft.launchwrapper.Launch;
+import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.fml.common.*;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -42,11 +43,14 @@ public class ModCore {
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent e) {
+        if (ForgeVersion.getBuildVersion() < 2856) throw new ForgeConflictScreen();
+
         Reference.VERSION = e.getModMetadata().version;
         String[] splitDescription = e.getModMetadata().description.split(" ");
         try {
             Reference.BUILD_NUMBER = Integer.parseInt(splitDescription[splitDescription.length - 1]);
-        } catch (NumberFormatException ignored) {}
+        } catch (NumberFormatException ignored) {
+        }
 
         jarFile = e.getSourceFile();
 
@@ -85,7 +89,7 @@ public class ModCore {
 
         // HeyZeer0: This will reload our cache if a texture or similar is applied
         // This also immediately loads it
-        ((SimpleReloadableResourceManager)McIf.mc().getResourceManager()).registerReloadListener(resourceManager -> {
+        ((SimpleReloadableResourceManager) McIf.mc().getResourceManager()).registerReloadListener(resourceManager -> {
             Textures.loadTextures();
             Mappings.loadMappings();
             MapApiIcon.resetApiMarkers();

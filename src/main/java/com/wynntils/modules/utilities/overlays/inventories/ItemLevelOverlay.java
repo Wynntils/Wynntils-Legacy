@@ -6,24 +6,60 @@ package com.wynntils.modules.utilities.overlays.inventories;
 
 import com.wynntils.McIf;
 import com.wynntils.core.events.custom.RenderEvent;
+import com.wynntils.core.framework.enums.Powder;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.IntRange;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import com.wynntils.modules.utilities.managers.CorkianAmplifierManager;
+import com.wynntils.modules.utilities.managers.EmeraldPouchManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ItemLevelOverlay implements Listener {
 
-    private static final Pattern POWDER_NAME_PATTERN = Pattern.compile("(?:Earth|Thunder|Water|Fire|Air|Blank) Powder (VI|IV|V|I{1,3})");
+    public static String romanToArabic(String romanNumeral) {
+        String num = "0";
+        switch (romanNumeral) {
+            case "I":
+                num = "1";
+                break;
+            case "II":
+                num = "2";
+                break;
+            case "III":
+                num = "3";
+                break;
+            case "IV":
+                num = "4";
+                break;
+            case "V":
+                num = "5";
+                break;
+            case "VI":
+                num = "6";
+                break;
+            case "VII":
+                num = "7";
+                break;
+            case "VIII":
+                num = "8";
+                break;
+            case "IX":
+                num = "9";
+                break;
+            case "X":
+                num = "10";
+                break;
+        }
+        return num;
+    }
 
     @SubscribeEvent
     public void onItemOverlay(RenderEvent.DrawItemOverlay event) {
@@ -36,36 +72,37 @@ public class ItemLevelOverlay implements Listener {
 
         // powder tier
         if (item == Items.DYE || item == Items.GUNPOWDER || item == Items.CLAY_BALL || item == Items.SUGAR) {
-            Matcher powderMatcher = POWDER_NAME_PATTERN.matcher(StringUtils.normalizeBadString(name));
+            Matcher powderMatcher = Powder.POWDER_NAME_PATTERN.matcher(StringUtils.normalizeBadString(name));
             if (powderMatcher.find()) {
-                if (UtilitiesConfig.Items.INSTANCE.romanNumeralPowderTier) {
+                if (!UtilitiesConfig.Items.INSTANCE.levelKeyShowsItemTiers) return;
+                if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
                     event.setOverlayText(powderMatcher.group(1));
                     return;
                 }
-                int tier = 0;
-                switch (powderMatcher.group(1)) {
-                    case "I":
-                        tier = 1;
-                        break;
-                    case "II":
-                        tier = 2;
-                        break;
-                    case "III":
-                        tier = 3;
-                        break;
-                    case "IV":
-                        tier = 4;
-                        break;
-                    case "V":
-                        tier = 5;
-                        break;
-                    case "VI":
-                        tier = 6;
-                        break;
-                }
-                event.setOverlayText(Integer.toString(tier));
+                event.setOverlayText(romanToArabic(powderMatcher.group(1)));
                 return;
             }
+        }
+
+        // emerald pouch tier
+        if (EmeraldPouchManager.isEmeraldPouch(stack)) {
+            if (!UtilitiesConfig.Items.INSTANCE.levelKeyShowsItemTiers) return;
+            if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
+                event.setOverlayText(EmeraldPouchManager.getPouchTier(stack));
+                return;
+            }
+            event.setOverlayText(romanToArabic(EmeraldPouchManager.getPouchTier(stack)));
+            return;
+        }
+
+        // cork amp tier
+        if (CorkianAmplifierManager.isAmplifier(stack)) {
+            if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
+                event.setOverlayText(CorkianAmplifierManager.getAmplifierTier(stack));
+                return;
+            }
+            event.setOverlayText(romanToArabic(CorkianAmplifierManager.getAmplifierTier(stack)));
+            return;
         }
 
         String lore = ItemUtils.getStringLore(stack);

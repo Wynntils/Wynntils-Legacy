@@ -32,6 +32,13 @@ public class Reference {
     private static String userWorld = null;
 
     public static synchronized void setUserWorld(String uw) {
+        if ("-".equals(uw)) {
+            inStream = true;
+            return;
+        }
+
+        inStream = false;
+
         ServerData currentServer = McIf.mc().getCurrentServerData();
         String lowerIP = currentServer == null || currentServer.serverIP == null ? null : currentServer.serverIP.toLowerCase(Locale.ROOT);
         onServer = !McIf.mc().isSingleplayer() && lowerIP != null && !currentServer.isOnLAN() && lowerIP.contains("wynncraft");
@@ -39,7 +46,6 @@ public class Reference {
         userWorld = uw;
 
         onWorld = onServer && userWorld != null;
-        onNether = onWorld && userWorld.contains("N");
         onWars = onWorld && userWorld.contains("WAR");
         onBeta = onWorld && userWorld.contains("HB") || onServer && lowerIP.startsWith("beta.");
         onLobby = onServer && !onWorld;
@@ -56,10 +62,11 @@ public class Reference {
     public static boolean onServer = false;
 
     public static boolean onWorld = false;
-    public static boolean onNether = false;
     public static boolean onWars = false;
     public static boolean onBeta = false;
     public static boolean onLobby = false;
+
+    public static boolean inStream = false;
 
     public static boolean developmentEnvironment = false;
 

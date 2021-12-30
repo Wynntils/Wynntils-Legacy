@@ -355,8 +355,14 @@ public class OverlayConfig extends SettingsClass {
             @Setting(displayName = "Redirect AFK Messages", description = "Should messages about AFK Protection be redirected to the game update ticker?")
             public boolean redirectAfk = true;
 
-            @Setting(displayName = "Redirect pouch Messages", description = "Should messages about ingredients being added to your pouch be redirected to the game update ticker?")
-            public boolean redirectPouch = true;
+            @Setting(displayName = "Redirect Ingredient Pouch Messages", description = "Should messages about ingredients being added to your pouch be redirected to the game update ticker?")
+            public boolean redirectIngredientPouch = true;
+
+            @Setting(displayName = "Redirect Emerald Pouch Messages", description = "Should messages about emeralds being added to your pouch be redirected to the game update ticker?")
+            public boolean redirectEmeraldPouch = true;
+
+            @Setting(displayName = "Redirect Potion Stack Messages", description = "Should messages about potions being added to your potion stack be redirected to the game update ticker?")
+            public boolean redirectPotionStack = true;
 
             @Setting(displayName = "Redirect Gathering Tool Messages", description = "Should messages about your gathering tool durability be redirected to the game update ticker?")
             public boolean redirectGatheringDura = true;
@@ -606,6 +612,9 @@ public class OverlayConfig extends SettingsClass {
             INV_SLOTS("Number of used slots in the inventory"),
             LOCATION("Current location"),
             LEVEL("Current level"),
+            TERRITORY_OWNER("Current guild that owns current territory"),
+            TERRITORY_OWNER_PREFIX("Current guild that owns territory's prefix"),
+            BEACON_DISTANCE("Distance from compass beacon"),
             SP_TIMER("Time until next soul point (Formatted)"),
             SP_TIMER_M("Time until next soul point (Minutes only)"),
             SP_TIMER_S("Time until next soul point (Seconds only)"),
