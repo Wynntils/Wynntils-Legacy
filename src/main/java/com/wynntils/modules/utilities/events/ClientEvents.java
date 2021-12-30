@@ -256,6 +256,11 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
+    public void onKill(GameEvent.KillEntity ignored) {
+        KillsManager.addKill();
+   }
+
+    @SubscribeEvent
     public void onGUIOpen(GuiOpenEvent e) {
         // Store the original opened chest so we can check itemstacks later
         if (e.getGui() instanceof ChestReplacer && ((ChestReplacer) e.getGui()).getLowerInv().getDisplayName().toString().contains("Loot Chest")) {
@@ -263,7 +268,7 @@ public class ClientEvents implements Listener {
         }
     }
 
-    @SubscribeEvent
+  @SubscribeEvent
     public void onGUIClose(GuiOpenEvent e) {
         if (e.getGui() == null) {
             afkProtectionBlocked = false;

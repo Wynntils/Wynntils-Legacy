@@ -20,6 +20,7 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
+import com.wynntils.core.utils.objects.TimedSet;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.instances.GatheringBake;
 import com.wynntils.modules.core.instances.MainMenuButtons;
@@ -31,6 +32,8 @@ import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
+import com.wynntils.modules.utilities.managers.KillsManager;
+import com.wynntils.modules.utilities.managers.LevelingManager;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiIngameMenu;
@@ -64,9 +67,9 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -282,6 +285,25 @@ public class ClientEvents implements Listener {
         FrameworkManager.getEventBus().post(new GameEvent.DamageEntity(damageList, i));
     }
 
+    // We need to keep track of UUIDs, because the Kill Labels are visible for so long that they
+    // send multiple events if we dont deduplicate them
+    private TimedSet<UUID> killLabelSet = new TimedSet<>(10, TimeUnit.SECONDS);
+    @SubscribeEvent
+    public void checkKillLabelFound(LocationEvent.LabelFoundEvent event) {
+        String value = TextFormatting.getTextWithoutFormattingCodes(event.getLabel());
+        Entity i = event.getEntity();
+        UUID id = i.getUniqueID();
+        killLabelSet.releaseEntries();
+        for (UUID setUuid : killLabelSet) {
+            if (id.equals(setUuid)) return;
+        }
+        killLabelSet.put(id);
+        String expected = "[" + McIf.mc().player.getName() + "]";
+        if (expected.equals(value)) {
+            FrameworkManager.getEventBus().post(new GameEvent.KillEntity(i));
+        }
+    }
+
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void updateActionBar(PacketEvent<SPacketChat> e) {
         if (!Reference.onServer || e.getPacket().getType() != ChatType.GAME_INFO) return;
@@ -322,6 +344,27 @@ public class ClientEvents implements Listener {
 
         EntityManager.tickEntities();
     }
+
+    private int xpTickCount = 0;
+
+    @SubscribeEvent
+    public void onXpChangeInterval(TickEvent.ClientTickEvent e) {
+        if (Reference.onWorld && xpTickCount % 10 == 0) {
+            LevelingManager.update();
+        }
+        xpTickCount++;
+    }
+
+    private int killTickCount = 0;
+
+    @SubscribeEvent
+    public void onKillsUpdateInterval(TickEvent.ClientTickEvent e) {
+        if (Reference.onWorld && killTickCount % (10) == 0) {
+            KillsManager.update();
+        }
+        killTickCount++;
+    }
+
 
     GuiScreen lastScreen = null;
 
