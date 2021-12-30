@@ -4,12 +4,13 @@ import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
+import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Location;
 
-import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
+import net.minecraft.util.text.TextFormatting;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
@@ -48,6 +49,7 @@ public class LootRunNote {
         if (McIf.player().getDistanceSq(location.x, location.y, location.z) > 4096f)
             return; // only draw nametag when close
 
+        String note = MinecraftChatColors.translateAlternateColorCodes('&', this.note);
         String[] lines = StringUtils.wrapTextBySize(note, 200);
         int offsetY = -(fr.FONT_HEIGHT * lines.length) / 2;
 
@@ -58,6 +60,7 @@ public class LootRunNote {
     }
 
     private static void drawNametag(String input, CustomColor color, float x, float y, float z, int verticalShift, float viewerYaw, float viewerPitch, boolean isThirdPersonFrontal) {
+        pushAttrib();
         pushMatrix();
         {
             ScreenRenderer.beginGL(0, 0); // we set to 0 because we don't want the ScreenRender to handle this thing
@@ -70,7 +73,7 @@ public class LootRunNote {
                 scale(-0.025F, -0.025F, 0.025F);
                 disableLighting();
 
-                int middlePos = (int) renderer.getStringWidth(input) / 2;
+                int middlePos = (int) renderer.getStringWidth(TextFormatting.getTextWithoutFormattingCodes(input)) / 2;
 
                 // draws the label
                 renderer.drawString(input, -middlePos, verticalShift, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
@@ -88,6 +91,7 @@ public class LootRunNote {
             ScreenRenderer.endGL();
         }
         popMatrix();
+        popAttrib();
     }
 
 }
