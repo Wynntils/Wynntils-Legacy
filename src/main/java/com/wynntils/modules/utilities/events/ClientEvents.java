@@ -590,7 +590,7 @@ public class ClientEvents implements Listener {
                 IInventory inv = e.getGui().getLowerInv();
                 if ((McIf.getUnformattedText(inv.getDisplayName()).startsWith("Loot Chest") ||
                         McIf.getUnformattedText(inv.getDisplayName()).contains("Daily Rewards") ||
-                        McIf.getUnformattedText(inv.getDisplayName()).contains("Objective Rewards")) || inv.getSizeInventory() <= 27) {
+                        McIf.getUnformattedText(inv.getDisplayName()).contains("Objective Rewards")) && inv.getSizeInventory() <= 27) {
                     for (int i = 0; i < inv.getSizeInventory(); i++) {
                         ItemStack stack = inv.getStackInSlot(i);
 
