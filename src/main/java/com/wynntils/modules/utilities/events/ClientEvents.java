@@ -323,36 +323,43 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onTitle(PacketEvent<SPacketTitle> e) {
-        if (!OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectIngredientPouch && !OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch)
+        if (!OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectIngredientPouch
+                && !OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch
+                && !OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectPotionStack)
             return;
 
         SPacketTitle packet = e.getPacket();
         if (packet.getType() != SPacketTitle.Type.SUBTITLE) return;
+        String message = McIf.getUnformattedText(packet.getMessage());
 
-        if (McIf.getUnformattedText(packet.getMessage()).matches("^§a\\+\\d+ §7.+§a to pouch$")) {
-            if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectIngredientPouch) {
-                e.setCanceled(true);
-                GameUpdateOverlay.queueMessage(McIf.getFormattedText(packet.getMessage()));
-            }
+        Matcher ingredientMatcher = Pattern.compile("^§a\\+\\d+ §7.+§a to pouch$").matcher(message);
+        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectIngredientPouch && ingredientMatcher.matches()) {
+            e.setCanceled(true);
+            GameUpdateOverlay.queueMessage(message);
+            return;
         }
 
-        Matcher m = Pattern.compile("§a\\+(\\d+)§7 Emeralds? §ato pouch").matcher(McIf.getUnformattedText(packet.getMessage()));
-        if (m.matches()) {
-            if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
-                e.setCanceled(true);
-                if (new Timestamp(System.currentTimeMillis() - 3000).before(emeraldPouchLastPickup)) {
-                    // If the last emerald pickup event was less than 3 seconds ago, assume Wynn has relayed us an "updated" emerald title
-                    // Edit the first message it gave us with the new amount
-                    // editMessage doesn't return the new MessageContainer, so we can just keep re-using the first one
-                    int currentEmeralds = Integer.parseInt(m.group(1));
-                    GameUpdateOverlay.editMessage(emeraldPouchMessage, "§a+" + currentEmeralds + "§7 Emeralds §ato pouch");
-                    emeraldPouchLastPickup = new Timestamp(System.currentTimeMillis());
-                    return;
-                }
-                // First time we've picked up emeralds in 3 seconds, set new MessageContainer and start the timer
-                emeraldPouchMessage = GameUpdateOverlay.queueMessage(McIf.getFormattedText(packet.getMessage()));
+        Matcher emeraldMatcher = Pattern.compile("§a\\+(\\d+)§7 Emeralds? §ato pouch").matcher(message);
+        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch && emeraldMatcher.matches()) {
+            e.setCanceled(true);
+            if (new Timestamp(System.currentTimeMillis() - 3000).before(emeraldPouchLastPickup)) {
+                // If the last emerald pickup event was less than 3 seconds ago, assume Wynn has relayed us an "updated" emerald title
+                // Edit the first message it gave us with the new amount
+                // editMessage doesn't return the new MessageContainer, so we can just keep re-using the first one
+                int currentEmeralds = Integer.parseInt(emeraldMatcher.group(1));
+                GameUpdateOverlay.editMessage(emeraldPouchMessage, "§a+" + currentEmeralds + "§7 Emeralds §ato pouch");
                 emeraldPouchLastPickup = new Timestamp(System.currentTimeMillis());
+                return;
             }
+            // First time we've picked up emeralds in 3 seconds, set new MessageContainer and start the timer
+            emeraldPouchMessage = GameUpdateOverlay.queueMessage(message);
+            emeraldPouchLastPickup = new Timestamp(System.currentTimeMillis());
+        }
+
+        Matcher potionMatcher = Pattern.compile("§a\\+(\\d+)§7 potion §acharges?").matcher(message);
+        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectPotionStack && potionMatcher.matches()) {
+            e.setCanceled(true);
+            GameUpdateOverlay.queueMessage(message);
         }
     }
 
