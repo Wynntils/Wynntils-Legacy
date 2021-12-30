@@ -23,6 +23,7 @@ import com.wynntils.modules.map.overlays.OverlayEvents;
 import com.wynntils.modules.map.overlays.ui.GuildWorldMapUI;
 import com.wynntils.modules.map.overlays.ui.MainWorldMapUI;
 import com.wynntils.modules.map.overlays.ui.WaypointCreationMenu;
+import com.wynntils.modules.map.overlays.ui.WorldMapUI;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.WebReader;
 import net.minecraft.scoreboard.Score;
@@ -77,13 +78,7 @@ public class MapModule extends Module {
                 if (WebManager.getApiUrls() == null) {
                     WebManager.tryReloadApiUrls(true);
                 } else {
-                    //Check if in war using scoreboard
-                    boolean inWar = isPlayerInWar();
-
-                    if (inWar)
-                        Utils.displayGuiScreen(new MainWorldMapUI(MapConfig.WorldMap.INSTANCE.mapDefaultX, MapConfig.WorldMap.INSTANCE.mapDefaultZ));
-                    else
-                        Utils.displayGuiScreen(new MainWorldMapUI());
+                    openMap(false);
                 }
             }
         });
@@ -93,16 +88,32 @@ public class MapModule extends Module {
                 if (WebManager.getApiUrls() == null) {
                     WebManager.tryReloadApiUrls(true);
                 } else {
-                    //Check if in war using scoreboard
-                    boolean inWar = isPlayerInWar();
-
-                    if (inWar)
-                        Utils.displayGuiScreen(new GuildWorldMapUI(MapConfig.WorldMap.INSTANCE.mapDefaultX, MapConfig.WorldMap.INSTANCE.mapDefaultZ));
-                    else
-                        Utils.displayGuiScreen(new GuildWorldMapUI());
+                    openMap(true);
                 }
             }
         });
+    }
+
+    private void openMap(boolean guildMap) {
+        //Check if in war using scoreboard
+        boolean inWar = isPlayerInWar();
+
+        WorldMapUI map;
+
+        if (inWar) {
+            if (guildMap)
+                map = new GuildWorldMapUI(MapConfig.WorldMap.INSTANCE.mapDefaultX, MapConfig.WorldMap.INSTANCE.mapDefaultZ);
+            else
+                map = new MainWorldMapUI(MapConfig.WorldMap.INSTANCE.mapDefaultX, MapConfig.WorldMap.INSTANCE.mapDefaultZ);
+        }
+        else {
+            if (guildMap)
+                map = new GuildWorldMapUI();
+            else
+                map = new MainWorldMapUI();
+        }
+
+        Utils.displayGuiScreen(map);
     }
 
     private boolean isPlayerInWar() {
