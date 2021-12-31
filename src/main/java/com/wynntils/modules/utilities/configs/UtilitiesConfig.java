@@ -356,7 +356,7 @@ public class UtilitiesConfig extends SettingsClass {
         public boolean commonEffectsHighlight = true;
 
         // TODO: move these 3 configs
-        @Setting(displayName = "Show Emerald Count in Containers", description = "Should your emerald count be displayed in remote containers?\n\n§8Remote containers are items such as chests and banks.", order = 101)
+        @Setting(displayName = "Show Emerald Count in Containers", description = "Should your emerald count be displayed in remote containers?\n\n§8Remote containers are items such as chests, banks and emerald pouches.", order = 101)
         public boolean emeraldCountChest = true;
 
         @Setting(displayName = "Show Emerald Count in Inventory", description = "Should your emerald count be displayed in your inventory?", order = 102)
