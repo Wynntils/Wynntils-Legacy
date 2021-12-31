@@ -47,12 +47,18 @@ public class QuickCastManager {
     private static final Pattern COMBAT_LVL_REQ_OK_PATTERN = Pattern.compile("§a✔§7 Combat Lv. Min:.+");
     private static final Pattern SPELL_POINT_MIN_NOT_REACHED_PATTERN = Pattern.compile("§c✖§7 (.+) Min: (\\d+)");
 
+    public static final boolean[] NO_SPELL = new boolean[0];
+
+    //Fixes bug when user spams quickcast hotkeys
+    public static boolean[] spellInProgress = NO_SPELL;
+
     private static void queueSpell(int spellNumber, boolean a, boolean b, boolean c) {
         if (!canCastSpell(spellNumber)) return;
 
         int level = PlayerInfo.get(CharacterData.class).getLevel();
         boolean isLowLevel = level <= 11;
         Class<?> packetClass = isLowLevel ? SPacketTitle.class : SPacketChat.class;
+        spellInProgress = new boolean[]{a, b, c};
         PacketQueue.queueComplexPacket(a == SPELL_LEFT ? leftClick : rightClick, packetClass, e -> checkKey(e, 0, a, isLowLevel));
         PacketQueue.queueComplexPacket(b == SPELL_LEFT ? leftClick : rightClick, packetClass, e -> checkKey(e, 1, b, isLowLevel));
         PacketQueue.queueComplexPacket(c == SPELL_LEFT ? leftClick : rightClick, packetClass, e -> checkKey(e, 2, c, isLowLevel));
@@ -191,6 +197,17 @@ public class QuickCastManager {
             return false;
         }
 
+        //If there is spell casting in progress, don't interfere
+        int lastSpellLength = PlayerInfo.get(SpellData.class).getLastSpell().length;
+        //FIXME: Add SpellEvent.OutOfMana to correctly reset spellInProgress
+        if ((lastSpellLength != 0 && lastSpellLength != 3) || spellInProgress.length != 0)
+        {
+            McIf.player().sendMessage(new TextComponentString(
+                    TextFormatting.GRAY + "Cannot start casting a spell while another spell cast is in progress."
+            ));
+            return false;
+        }
+
         return true;
     }
 
@@ -207,12 +224,17 @@ public class QuickCastManager {
             SPacketChat title = (SPacketChat) input;
             if (title.getType() != ChatType.GAME_INFO) return false;
 
+            System.out.println(McIf.getUnformattedText(title.getChatComponent()));
+
             PlayerInfo.get(ActionBarData.class).updateActionBar(McIf.getUnformattedText(title.getChatComponent()));
 
             spell = data.getLastSpell();
+
+            for (boolean b : spell) {
+                System.out.println(b);
+            }
         }
 
         return pos < spell.length && spell[pos] == clickType;
     }
-
 }

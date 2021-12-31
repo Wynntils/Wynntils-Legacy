@@ -4,6 +4,7 @@
 
 package com.wynntils.core.framework.instances.data;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.containers.PlayerData;
 import com.wynntils.core.utils.StringUtils;
@@ -58,7 +59,7 @@ public class ActionBarData extends PlayerData {
                         lastSpell[i] = match.group(i + 3).charAt(0) == 'R' ? SpellData.SPELL_RIGHT : SpellData.SPELL_LEFT;
                     }
 
-                    spellData.setLastSpell(lastSpell);
+                    spellData.setLastSpell(lastSpell, McIf.player().inventory.currentItem);
                 }
             }
         }
