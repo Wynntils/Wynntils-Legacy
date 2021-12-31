@@ -42,9 +42,9 @@ public class EmeraldCountOverlay implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onPlayerInventory(GuiOverlapEvent.InventoryOverlap.DrawGuiContainerForegroundLayer e) {
-        if (!Reference.onWorld || !UtilitiesConfig.Items.INSTANCE.emeraldCountInventory) return;
+        if (!Reference.onWorld || !UtilitiesConfig.INSTANCE.emeraldCountInventory) return;
 
-        if (UtilitiesConfig.Items.INSTANCE.emeraldCountText) {
+        if (UtilitiesConfig.INSTANCE.emeraldCountText) {
             drawTextMoneyAmount(170, -10, PlayerInfo.get(InventoryData.class).getMoney(), renderer, CommonColors.WHITE);
             return;
         }
@@ -53,7 +53,7 @@ public class EmeraldCountOverlay implements Listener {
 
     @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawGuiContainerForegroundLayer e) {
-        if (!Reference.onWorld || !(UtilitiesConfig.Items.INSTANCE.emeraldCountInventory || UtilitiesConfig.Items.INSTANCE.emeraldCountChest)) return;
+        if (!Reference.onWorld || !(UtilitiesConfig.INSTANCE.emeraldCountInventory || UtilitiesConfig.INSTANCE.emeraldCountChest)) return;
 
         //For some reason they are swapped?
         IInventory container = e.getGui().getLowerInv();
@@ -63,27 +63,27 @@ public class EmeraldCountOverlay implements Listener {
 
         boolean emeraldPouch = container.getName().equals("EmeraldÀÀÀÀPouchÀ");
 
-        if (UtilitiesConfig.Items.INSTANCE.emeraldCountText) {
-            if (UtilitiesConfig.Items.INSTANCE.emeraldCountChest)
+        if (UtilitiesConfig.INSTANCE.emeraldCountText) {
+            if (UtilitiesConfig.INSTANCE.emeraldCountChest)
                 drawTextMoneyAmount(170, 5, ItemUtils.countMoney(container), renderer, textColor);
-            if (UtilitiesConfig.Items.INSTANCE.emeraldCountInventory)
+            if (UtilitiesConfig.INSTANCE.emeraldCountInventory)
                 drawTextMoneyAmount(170, 2 * (container.getSizeInventory() + 10), ItemUtils.countMoney(inventory), renderer, textColor);
             return;
         }
 
-        if (UtilitiesConfig.Items.INSTANCE.emeraldCountChest)
+        if (UtilitiesConfig.INSTANCE.emeraldCountChest)
             drawIconsMoneyAmount(178, 0, ItemUtils.countMoney(container), renderer);
-        if (UtilitiesConfig.Items.INSTANCE.emeraldCountInventory && !emeraldPouch)
+        if (UtilitiesConfig.INSTANCE.emeraldCountInventory && !emeraldPouch)
             drawIconsMoneyAmount(178, 2 * (container.getSizeInventory() + 10), ItemUtils.countMoney(inventory), renderer);
     }
 
     @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.HorseOverlap.DrawGuiContainerForegroundLayer e) {
-        if (!Reference.onWorld || !UtilitiesConfig.Items.INSTANCE.emeraldCountInventory) return;
+        if (!Reference.onWorld || !UtilitiesConfig.INSTANCE.emeraldCountInventory) return;
 
         IInventory lowerInv = e.getGui().getLowerInv();
 
-        if (UtilitiesConfig.Items.INSTANCE.emeraldCountText) {
+        if (UtilitiesConfig.INSTANCE.emeraldCountText) {
             drawTextMoneyAmount(170, 7, ItemUtils.countMoney(lowerInv), renderer, textColor);
             return;
         }

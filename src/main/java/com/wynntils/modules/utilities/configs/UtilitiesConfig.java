@@ -123,6 +123,15 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Show Death Message with Coordinates", description = "Should there be a message with your death coordinates?")
     public boolean deathMessageWithCoords = true;
 
+    @Setting(displayName = "Show Emerald Count in Containers", description = "Should your emerald count be displayed in remote containers?\n\n§8Remote containers are items such as chests, banks and emerald pouches.", order = 101)
+    public boolean emeraldCountChest = true;
+
+    @Setting(displayName = "Show Emerald Count in Inventory", description = "Should your emerald count be displayed in your inventory?", order = 102)
+    public boolean emeraldCountInventory = true;
+
+    @Setting(displayName = "Show Emerald Count as Text", description = "Should your emerald count be displayed as text instead of icons?", order = 103)
+    public boolean emeraldCountText = false;
+
     @Setting(upload = false)
     public String lastServerResourcePack = "";
 
@@ -354,16 +363,6 @@ public class UtilitiesConfig extends SettingsClass {
 
         @Setting(displayName = "Highlight Common Cosmetics", description = "Should common cosmetic items be highlighted?", order = 34)
         public boolean commonEffectsHighlight = true;
-
-        // TODO: move these 3 configs
-        @Setting(displayName = "Show Emerald Count in Containers", description = "Should your emerald count be displayed in remote containers?\n\n§8Remote containers are items such as chests, banks and emerald pouches.", order = 101)
-        public boolean emeraldCountChest = true;
-
-        @Setting(displayName = "Show Emerald Count in Inventory", description = "Should your emerald count be displayed in your inventory?", order = 102)
-        public boolean emeraldCountInventory = true;
-
-        @Setting(displayName = "Show Emerald Count as Text", description = "Should your emerald count be displayed as text instead of icons?", order = 103)
-        public boolean emeraldCountText = false;
 
         @Setting(displayName = "Highlight Crafting Ingredients", description = "Should crafting ingredients be highlighted according to their tier?", order = 40)
         public boolean ingredientHighlight = true;
