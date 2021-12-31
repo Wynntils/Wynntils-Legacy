@@ -1224,7 +1224,8 @@ public class ClientEvents implements Listener {
         //Dry streak counter and sound sfx
         if (UtilitiesConfig.INSTANCE.enableDryStreak && lastOpenedChestWindowId == e.getPacket().getWindowId()) {
             boolean foundMythic = false;
-            int size = e.getPacket().getItemStacks().size();
+            //Size should be at least 27, checked for it earlier
+            int size = 27;
             for (int i = 0; i < size; i++) {
                 ItemStack stack = e.getPacket().getItemStacks().get(i);
                 if (stack.isEmpty() || !stack.hasDisplayName()) continue;
@@ -1269,7 +1270,8 @@ public class ClientEvents implements Listener {
         //Mythic found sfx for daily rewards and objective rewards
         if (!MusicConfig.SoundEffects.INSTANCE.mythicFound) return;
 
-        int size = e.getPacket().getItemStacks().size();
+        //Size should be at least 27, checked for it earlier
+        int size = 27;
         for (int i = 0; i < size; i++) {
             ItemStack stack = e.getPacket().getItemStacks().get(i);
             if (stack.isEmpty() || !stack.hasDisplayName()) continue;
