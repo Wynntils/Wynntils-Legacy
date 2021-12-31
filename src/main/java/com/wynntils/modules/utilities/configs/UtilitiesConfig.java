@@ -499,7 +499,7 @@ public class UtilitiesConfig extends SettingsClass {
         public static CommandKeybinds INSTANCE;
 
         @Setting(displayName = "Command Keybind 1", description = "Command that runs upon pressing command keybind 1 key.", order = 1)
-        public String cKeyBind1 = "";
+        public String cKeyBind1 = "totem";
 
         @Setting(displayName = "Command Keybind 2", description = "Command that runs upon pressing command keybind 2 key.", order = 2)
         public String cKeyBind2 = "";

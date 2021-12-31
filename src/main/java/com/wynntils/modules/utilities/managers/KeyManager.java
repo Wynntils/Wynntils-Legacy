@@ -80,7 +80,7 @@ public class KeyManager {
     }
 
     private static void RegisterCustomCommandKeybinds() {
-        CoreModule.getModule().registerKeyBinding("Command Keybind 1", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+        CoreModule.getModule().registerKeyBinding("Command Keybind 1", Keyboard.KEY_J, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
             String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind1;
             if (cKeyBind.isEmpty())
                 return;
