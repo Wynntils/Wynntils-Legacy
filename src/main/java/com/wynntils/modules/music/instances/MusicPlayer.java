@@ -13,7 +13,6 @@ import javazoom.jl.player.JavaSoundAudioDevice;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.SoundCategory;
 import org.lwjgl.opengl.Display;
 
@@ -28,23 +27,32 @@ public class MusicPlayer {
     Thread musicThread = null;
     AdvancedPlayer player = null;
 
-    public void play(File f, boolean fadeIn, boolean fadeOut, boolean fastSwitch, boolean repeat, boolean lockQueue, boolean quiet) {
+    public void play(File f, boolean fadeIn, boolean fadeOut, boolean fastSwitch, boolean repeat, boolean lockQueue, boolean quiet, boolean force) {
+        if (!force && STATUS.isPauseAfter()) return; // make sure the normal music won't start playing in case of a special sound when player was paused
+        STATUS.setPauseAfter(force && STATUS.isPaused()); // if this is a forced song and the player is currently paused then pause again after
         QueuedTrack track = new QueuedTrack(f, fadeIn, fadeOut, fastSwitch, repeat, lockQueue, quiet);
         if (STATUS.getCurrentSong() != null && (STATUS.getCurrentSong().isLockQueue() || STATUS.getCurrentSong().equals(track))) return;
         if (STATUS.getNextSong() != null && STATUS.getNextSong().equals(track)) return;
 
         STATUS.setStopping(false);
-        STATUS.setNextSong(track);
+        if (force) {
+            STATUS.setCurrentSong(track);
+            STATUS.setNextSong(null);
+            STATUS.setPaused(false);
+            initialize();
+        } else {
+            STATUS.setNextSong(track);
+        }
 
-        FrameworkManager.getEventBus().post(new MusicPlayerEvent.Playback.Start(track.getName()));
+        FrameworkManager.getEventBus().post(new MusicPlayerEvent.Playback.Start(track.getName(), force));
     }
 
     public void play(File f, boolean fastSwitch) {
-        play(f, true, true, fastSwitch, true, false, false);
+        play(f, true, true, fastSwitch, true, false, false, false);
     }
 
     public void play(File f, boolean fastSwitch, boolean lockQueue) {
-        play(f, true, true, fastSwitch, true, lockQueue, false);
+        play(f, true, true, fastSwitch, true, lockQueue, false, false);
     }
 
     public void update() {
@@ -53,7 +61,7 @@ public class MusicPlayer {
             return;
         }
 
-        // stopping the player if the player is not not inside a world
+        // stopping the player if the player is not inside a world
         if (!Reference.onWorld && !STATUS.isStopping()) {
             stop();
         }
@@ -143,8 +151,6 @@ public class MusicPlayer {
         if (player != null) kill();
         if (STATUS.isPaused() || STATUS.getCurrentSong() == null) return; // we don't want the player to play if paused
 
-
-
         musicThread = new Thread(() -> {
             try {
                 FileInputStream fis = new FileInputStream(STATUS.getCurrentSong().getTrack());
@@ -159,6 +165,10 @@ public class MusicPlayer {
                     // handles the replay
                     public void playbackFinished(PlaybackEvent var1) {
                         FrameworkManager.getEventBus().post(new MusicPlayerEvent.Playback.End(STATUS.getCurrentSong().getName()));
+                        if (STATUS.isPauseAfter()) {
+                            STATUS.setPaused(true);
+                            STATUS.setPauseAfter(false);
+                        }
                         if (!STATUS.getCurrentSong().isRepeat() || STATUS.isPaused()) {
                             STATUS.setCurrentSong(null);
                             return;

@@ -75,9 +75,10 @@ public class SoundTrackManager {
      * @param repeat if the song should repeat until changed
      * @param lockQueue no more songs will be allowed until the provided ends
      * @param quiet if the song should use default or offocus volume
+     * @param force if the song should be played even if the player is paused
      */
-    private static void playSong(MusicProfile song, boolean fastSwitch, boolean fadeIn, boolean fadeOut, boolean repeat, boolean lockQueue, boolean quiet) {
-        if (!MusicConfig.INSTANCE.enabled || song == null) return;
+    private static void playSong(MusicProfile song, boolean fastSwitch, boolean fadeIn, boolean fadeOut, boolean repeat, boolean lockQueue, boolean quiet, boolean force) {
+        if (!force && !MusicConfig.INSTANCE.enabled || song == null) return;
 
         // updates the song list if possible
         if (!isListUpdated) {
@@ -90,7 +91,7 @@ public class SoundTrackManager {
             Optional<File> songFile = downloadedMusics.get(song.getAsHash()).getFile();
             if (!songFile.isPresent()) return; // available to play (downloaded)
 
-            player.play(songFile.get(), fadeIn, fadeOut, fastSwitch, repeat, lockQueue, quiet);
+            player.play(songFile.get(), fadeIn, fadeOut, fastSwitch, repeat, lockQueue, quiet, force);
             return;
         }
 
@@ -101,7 +102,7 @@ public class SoundTrackManager {
             if (!success) return;
 
             downloadedMusics.replace(toDownload.getAsHash(), new MusicProfile(new File(musicFolder, toDownload.getName())));
-            playSong(song, fastSwitch, fadeIn, fadeOut, repeat, lockQueue, quiet);
+            playSong(song, fastSwitch, fadeIn, fadeOut, repeat, lockQueue, quiet, force);
         });
     }
 
@@ -115,9 +116,10 @@ public class SoundTrackManager {
      * @param repeat if the song should repeat until changed
      * @param lockQueue no more songs will be allowed until the provided ends
      * @param quiet if the song should use default or offocus volume
+     * @param force if the song should be played even if the player is paused
      */
-    public static void findTrack(String fullName, boolean fastSwitch, boolean fadeIn, boolean fadeOut, boolean repeat, boolean lockQueue, boolean quiet) {
-        if (!MusicConfig.INSTANCE.enabled || fullName == null) return;
+    public static void findTrack(String fullName, boolean fastSwitch, boolean fadeIn, boolean fadeOut, boolean repeat, boolean lockQueue, boolean quiet, boolean force) {
+        if (!force && !MusicConfig.INSTANCE.enabled || fullName == null) return;
 
         MusicProfile selected = null;
         for (MusicProfile mp : availableMusics.values()) {
@@ -127,7 +129,7 @@ public class SoundTrackManager {
             break;
         }
 
-        playSong(selected, fastSwitch, fadeIn, fadeOut, repeat, lockQueue, quiet);
+        playSong(selected, fastSwitch, fadeIn, fadeOut, repeat, lockQueue, quiet, force);
     }
 
     /**
@@ -137,7 +139,7 @@ public class SoundTrackManager {
      * @param fastSwitch if it should fast switch to the song
      */
     public static void findTrack(String fullName, boolean fastSwitch) {
-        findTrack(fullName, fastSwitch, true, true, true, false, false);
+        findTrack(fullName, fastSwitch, true, true, true, false, false, false);
     }
 
     /**
@@ -148,7 +150,7 @@ public class SoundTrackManager {
      * @param quiet if the song should use default or offocus volume
      */
     public static void findTrack(String fullName, boolean fastSwitch, boolean quiet) {
-        findTrack(fullName, fastSwitch, true, true, true, false, quiet);
+        findTrack(fullName, fastSwitch, true, true, true, false, quiet, false);
     }
 
 
@@ -201,7 +203,7 @@ public class SoundTrackManager {
         } else if (firstWord.isPresent()) { selected = firstWord.get();
         } else if (lessPossible.isPresent()) { selected = lessPossible.get(); }
 
-       playSong(selected, false, false, true, true, false, false);
+       playSong(selected, false, false, true, true, false, false, false);
     }
 
     /**
