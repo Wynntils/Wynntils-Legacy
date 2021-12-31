@@ -540,6 +540,7 @@ public class UtilitiesConfig extends SettingsClass {
             OPEN_PARTYFINDER_MENU("Open partyfinder menu", "partyfinder"),
             OPEN_PETS("Open pets menu", "pets"),
             OPEN_USE_MENU("Open use menu", "use"),
+            OPEN_TOTEM_MENU("Open totem menu", "totem"),
             OPEN_CRATES_MENU("Open crates menu", "crates");
 
             public final String displayName;
