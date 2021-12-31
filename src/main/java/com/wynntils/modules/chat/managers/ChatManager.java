@@ -38,8 +38,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -114,7 +112,7 @@ public class ChatManager {
         }
 
         // popup sound
-        if (McIf.getUnformattedText(in).contains(" requires your ") && McIf.getUnformattedText(in).contains(" skill to be at least "))
+        if (McIf.getFormattedText(in).contains("§4 requires your ") && McIf.getUnformattedText(in).contains(" skill to be at least "))
             McIf.player().playSound(popOffSound, 1f, 1f);
 
         // wynnic and gavellian translator
