@@ -499,7 +499,7 @@ public class UtilitiesConfig extends SettingsClass {
         public static CommandKeybinds INSTANCE;
 
         @Setting(displayName = "Command Keybind 1", description = "Command that runs upon pressing command keybind 1 key.", order = 1)
-        public String cKeyBind1 = "";
+        public String cKeyBind1 = "totem";
 
         @Setting(displayName = "Command Keybind 2", description = "Command that runs upon pressing command keybind 2 key.", order = 2)
         public String cKeyBind2 = "";
@@ -540,6 +540,7 @@ public class UtilitiesConfig extends SettingsClass {
             OPEN_PARTYFINDER_MENU("Open partyfinder menu", "partyfinder"),
             OPEN_PETS("Open pets menu", "pets"),
             OPEN_USE_MENU("Open use menu", "use"),
+            OPEN_TOTEM_MENU("Open totem menu", "totem"),
             OPEN_CRATES_MENU("Open crates menu", "crates");
 
             public final String displayName;
