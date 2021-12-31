@@ -57,21 +57,25 @@ public class EmeraldCountOverlay implements Listener {
 
         //For some reason they are swapped?
         IInventory container = e.getGui().getLowerInv();
-        if (container.getName().contains("Quests") || container.getName().contains("points")) return;
+        String containerName = container.getName();
+        if (containerName.contains("Quests") || containerName.contains("points")) return;
 
         IInventory inventory = e.getGui().getUpperInv();
 
-        boolean emeraldPouch = container.getName().equals("EmeraldÀÀÀÀPouchÀ");
+        boolean emeraldPouch = containerName.equals("EmeraldÀÀÀÀPouchÀ");
+
+        //List of containers that should not have their emerald count rendered
+        boolean shouldContainerRenderEmeraldCount = !containerName.equals("Trade Market") && !containerName.equals("Trade Overview") && !containerName.equals("Search Results") && !containerName.endsWith("Filter Items");
 
         if (UtilitiesConfig.INSTANCE.emeraldCountText) {
-            if (UtilitiesConfig.INSTANCE.emeraldCountChest)
+            if (UtilitiesConfig.INSTANCE.emeraldCountChest && shouldContainerRenderEmeraldCount)
                 drawTextMoneyAmount(170, 5, ItemUtils.countMoney(container), renderer, textColor);
             if (UtilitiesConfig.INSTANCE.emeraldCountInventory)
                 drawTextMoneyAmount(170, 2 * (container.getSizeInventory() + 10), ItemUtils.countMoney(inventory), renderer, textColor);
             return;
         }
 
-        if (UtilitiesConfig.INSTANCE.emeraldCountChest)
+        if (UtilitiesConfig.INSTANCE.emeraldCountChest && shouldContainerRenderEmeraldCount)
             drawIconsMoneyAmount(178, 0, ItemUtils.countMoney(container), renderer);
         if (UtilitiesConfig.INSTANCE.emeraldCountInventory && !emeraldPouch)
             drawIconsMoneyAmount(178, 2 * (container.getSizeInventory() + 10), ItemUtils.countMoney(inventory), renderer);
