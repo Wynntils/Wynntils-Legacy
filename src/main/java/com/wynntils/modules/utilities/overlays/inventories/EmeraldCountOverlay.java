@@ -58,27 +58,27 @@ public class EmeraldCountOverlay implements Listener {
         //For some reason they are swapped?
         IInventory container = e.getGui().getLowerInv();
         String containerName = container.getName();
-        if (containerName.contains("Quests") || containerName.contains("points")) return;
 
         IInventory inventory = e.getGui().getUpperInv();
 
         boolean emeraldPouch = containerName.equals("EmeraldÀÀÀÀPouchÀ");
 
-        //List of containers that should not have their emerald count rendered
-        boolean shouldContainerRenderEmeraldCount = !containerName.equals("Trade Market") && !containerName.equals("Trade Overview") && !containerName.equals("Search Results") && !containerName.endsWith("Filter Items");
+        //Only render text and icons if there are emeralds in the container, fixes a lot of overlapping issues in containers, where emerald count is irrelevant, but we don't filter them manually
+        int containerMoneyAmount = ItemUtils.countMoney(container);
+        int inventoryMoneyAmount = ItemUtils.countMoney(inventory);
 
         if (UtilitiesConfig.INSTANCE.emeraldCountText) {
-            if (UtilitiesConfig.INSTANCE.emeraldCountChest && shouldContainerRenderEmeraldCount)
-                drawTextMoneyAmount(170, 5, ItemUtils.countMoney(container), renderer, textColor);
+            if (UtilitiesConfig.INSTANCE.emeraldCountChest && containerMoneyAmount > 0)
+                drawTextMoneyAmount(170, 5, containerMoneyAmount, renderer, textColor);
             if (UtilitiesConfig.INSTANCE.emeraldCountInventory)
-                drawTextMoneyAmount(170, 2 * (container.getSizeInventory() + 10), ItemUtils.countMoney(inventory), renderer, textColor);
+                drawTextMoneyAmount(170, 2 * (container.getSizeInventory() + 10), inventoryMoneyAmount, renderer, textColor);
             return;
         }
 
-        if (UtilitiesConfig.INSTANCE.emeraldCountChest && shouldContainerRenderEmeraldCount)
-            drawIconsMoneyAmount(178, 0, ItemUtils.countMoney(container), renderer);
+        if (UtilitiesConfig.INSTANCE.emeraldCountChest && containerMoneyAmount > 0)
+            drawIconsMoneyAmount(178, 0, containerMoneyAmount, renderer);
         if (UtilitiesConfig.INSTANCE.emeraldCountInventory && !emeraldPouch)
-            drawIconsMoneyAmount(178, 2 * (container.getSizeInventory() + 10), ItemUtils.countMoney(inventory), renderer);
+            drawIconsMoneyAmount(178, 2 * (container.getSizeInventory() + 10), inventoryMoneyAmount, renderer);
     }
 
     @SubscribeEvent
