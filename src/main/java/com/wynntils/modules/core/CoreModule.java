@@ -36,7 +36,6 @@ public class CoreModule extends Module {
         registerCommand(new CommandTerritory());
         registerCommand(new CommandToken());
         registerCommand(new CommandWynntils());
-        registerCommand(new CommandResetDryStreak());
 
         TabManager.replaceTabOrderer();
 
