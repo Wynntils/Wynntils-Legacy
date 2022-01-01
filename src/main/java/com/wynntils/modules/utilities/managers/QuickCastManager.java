@@ -231,8 +231,17 @@ public class QuickCastManager {
 
         boolean successful = pos < spell.length && spell[pos] == clickType;
 
-        //If we successfully casted the last part of the spell, reset the boolean, allowing the keybind to cast spells again
-        if (successful && pos == 2) {
+        //If we sent the last part of the spell, reset the boolean, allowing the keybind to cast spells again
+        /*
+        Bolyai:
+        This might not be 100% safe without checking if successful is true,
+        as user interference during spell casting happens and we need to reset spellInProgress or it will get stuck,
+        this case it should be fine, as there are other checks to make sure we don't spam spells.
+
+        If spell casting is still very spammy, the if statement below should be changed to: if ((successful && pos == 2) || isThisLastResend)
+        isThisLastResend should be true if PacketResponse's tries >= maxTries (or by simply counting retries and assuming maxTries was not changed).
+        */
+        if (pos == 2) {
             spellInProgress = NO_SPELL;
         }
         return successful;

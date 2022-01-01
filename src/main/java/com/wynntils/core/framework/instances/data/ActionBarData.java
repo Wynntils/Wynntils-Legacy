@@ -61,6 +61,8 @@ public class ActionBarData extends PlayerData {
 
                     spellData.setLastSpell(lastSpell, McIf.player().inventory.currentItem);
                 }
+                else if (spellData.getLastSpell() != SpellData.NO_SPELL)
+                    spellData.setLastSpell(SpellData.NO_SPELL, -1);
             }
         }
 

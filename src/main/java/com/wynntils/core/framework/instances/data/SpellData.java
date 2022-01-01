@@ -22,7 +22,7 @@ public class SpellData extends PlayerData {
 
     private static final Pattern LEVEL_1_SPELL_PATTERN = Pattern.compile("^(Left|Right|\\?)-(Left|Right|\\?)-(Left|Right|\\?)$");
     private static final Pattern LOW_LEVEL_SPELL_PATTERN = Pattern.compile("^([LR?])-([LR?])-([LR?])$");
-    private static final boolean[] NO_SPELL = new boolean[0];
+    public static final boolean[] NO_SPELL = new boolean[0];
 
     /** Represents `L` in the currently casting spell */
     public static final boolean SPELL_LEFT = false;
@@ -31,14 +31,10 @@ public class SpellData extends PlayerData {
 
     private String lastParsedTitle = null;
     private boolean[] lastSpell = NO_SPELL;
-    private int lastSpellWeaponSlot = -1;
+    public int lastSpellWeaponSlot = -1;
 
     public SpellData() {
-        FrameworkManager.getEventBus().register(this);
-    }
 
-    protected void finalize() {
-        FrameworkManager.getEventBus().unregister(this);
     }
 
     public boolean[] parseSpellFromTitle(String subtitle) {
@@ -88,23 +84,11 @@ public class SpellData extends PlayerData {
             return parseSpellFromTitle(subtitle);
         }
 
-
         return lastSpell;
     }
 
     public void setLastSpell(boolean[] lastSpell, int heldItemSlot) {
         this.lastSpell = lastSpell;
         this.lastSpellWeaponSlot = heldItemSlot;
-    }
-
-    //Make sure we don't get into a stuck phase where spells can't be cast until the player casts one manually
-    @SubscribeEvent
-    public void onWeaponChange(PacketEvent<CPacketHeldItemChange> e) {
-        if (!Reference.onWorld) return;
-
-        if (e.getPacket().getSlotId() != this.lastSpellWeaponSlot) {
-            this.lastSpellWeaponSlot = -1;
-            this.lastSpell = NO_SPELL;
-        }
     }
 }
