@@ -193,7 +193,7 @@ public class QuickCastManager {
 
         if (notReachedSpellPointRequirements != null) {
             McIf.player().sendMessage(new TextComponentString(
-                    TextFormatting.GRAY + "The current class does not have enough " + notReachedSpellPointRequirements + " to use the held weapon."
+                    TextFormatting.GRAY + "The current class does not have enough " + notReachedSpellPointRequirements + " assigned to use the held weapon."
             ));
             return false;
         }
