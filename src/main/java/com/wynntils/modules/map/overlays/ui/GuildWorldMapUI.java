@@ -35,7 +35,7 @@ public class GuildWorldMapUI extends WorldMapUI {
     private boolean holdingMapKey = false;
     private boolean holdingDecided = false;
 
-    //Only updated if MapConfig.INSTANCE.autoCloseMapOnMovement is true, don't rely on this for anything else
+    //Only updated if MapConfig.WorldMap.INSTANCE.autoCloseMapOnMovement is true, don't rely on this for anything else
     private double lastPlayerX = Double.MAX_VALUE;
     private double lastPlayerZ = Double.MAX_VALUE;
 
@@ -108,7 +108,7 @@ public class GuildWorldMapUI extends WorldMapUI {
             return;
         }
 
-        if (MapConfig.INSTANCE.autoCloseMapOnMovement) {
+        if (MapConfig.WorldMap.INSTANCE.autoCloseMapOnMovement) {
             double currentPosX = McIf.player().posX;
             double currentPosZ = McIf.player().posZ;
 

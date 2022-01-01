@@ -78,9 +78,6 @@ public class MapConfig extends SettingsClass {
     @Setting(displayName = "Hide in Non-Mapped Areas", description = "Should the minimap be hidden if the player is outside the map?", order = 15)
     public boolean hideMinimapOutOfBounds = true;
 
-    @Setting(displayName = "Auto close map on movement", description = "Should the map close when the user starts moving? If the user opened the map by holding the keybind, the map will stay open until the key is released.", order = 16)
-    public boolean autoCloseMapOnMovement = true;
-
     @Setting
     public Map<String, Boolean> enabledMapIcons = resetMapIcons(false);
 
@@ -90,6 +87,9 @@ public class MapConfig extends SettingsClass {
     @SettingsInfo(name = "map_worldmap", displayPath = "Map/World Map")
     public static class WorldMap extends SettingsClass {
         public static WorldMap INSTANCE;
+
+        @Setting(displayName = "Auto close map on movement", description = "Should the map close when the user starts moving? If the user opened the map by holding the keybind, the map will stay open until the key is released.")
+        public boolean autoCloseMapOnMovement = true;
 
         @Setting(displayName = "Keep Territory Visible", description = "Should territory names always be displayed rather than only when you hold CTRL?")
         public boolean keepTerritoryVisible = false;
