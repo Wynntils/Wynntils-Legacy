@@ -107,9 +107,6 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Show Leaderboard Badges", description = "Should leaderboard players have a badge above their heads?")
     public boolean renderLeaderboardBadges = true;
 
-    @Setting(displayName = "Shift-click Accessories", description = "Allow accessories to be shift-clicked on and off?")
-    public boolean shiftClickAccessories = true;
-
     @Setting(displayName = "Prevent Trades/Duels in Combat", description = "Should trade and duel requests be disabled while holding an item?")
     public boolean preventTradesDuels = false;
 
