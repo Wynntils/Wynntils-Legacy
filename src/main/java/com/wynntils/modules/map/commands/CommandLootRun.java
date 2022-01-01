@@ -362,9 +362,10 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
             case "help":
             case "record":
             case "undo":
+            case "resetdry":
             default:
                 if (args.length > 1) return Collections.emptyList();
-                return getListOfStringsMatchingLastWord(args, "load", "save", "delete", "rename", "record", "list", "folder", "clear", "help", "undo");
+                return getListOfStringsMatchingLastWord(args, "load", "save", "delete", "rename", "record", "list", "folder", "clear", "help", "undo", "resetdry");
         }
     }
 
