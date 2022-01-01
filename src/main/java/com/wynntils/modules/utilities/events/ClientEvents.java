@@ -278,7 +278,8 @@ public class ClientEvents implements Listener {
     public void onGUIOpen(GuiOpenEvent e) {
         // Store the original opened chest so we can check itemstacks later
         // Make sure this check is not spoofed by checking inventory size
-        if (e.getGui() instanceof ChestReplacer && ((ChestReplacer) e.getGui()).getLowerInv().getDisplayName().getUnformattedText().startsWith("Loot Chest") && ((ChestReplacer) e.getGui()).getLowerInv().getSizeInventory() == 27) {
+        if (e.getGui() instanceof ChestReplacer && TextFormatting.getTextWithoutFormattingCodes(((ChestReplacer) e.getGui()).getLowerInv().getName()).startsWith("Loot Chest")
+                && ((ChestReplacer) e.getGui()).getLowerInv().getSizeInventory() == 27) {
             currentLootChest = ((ChestReplacer) e.getGui()).getLowerInv();
         }
     }
@@ -683,7 +684,7 @@ public class ClientEvents implements Listener {
         if (e.getSlotIn() == null) return;
 
         // Queue messages into game update ticker when clicking on emeralds in loot chest
-        if (e.getGui().getLowerInv().getDisplayName().getUnformattedText().startsWith("Loot Chest") && OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
+        if (TextFormatting.getTextWithoutFormattingCodes(e.getGui().getLowerInv().getName()).startsWith("Loot Chest") && OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
             // Check if item is actually an emerald, if we're left clicking, and make sure we're not shift clicking
             if (currentLootChest.getStackInSlot(e.getSlotId()).getDisplayName().equals("§aEmerald") && e.getMouseButton() == 0 && !GuiScreen.isShiftKeyDown()) {
                 // Find all emerald pouches in inventory
@@ -713,7 +714,7 @@ public class ClientEvents implements Listener {
 
 
         // Prevent accidental ingredient/emerald pouch clicks in loot chests
-        if (e.getGui().getLowerInv().getDisplayName().getUnformattedText().contains("Loot Chest") && UtilitiesConfig.INSTANCE.preventOpeningPouchesChest) {
+        if (TextFormatting.getTextWithoutFormattingCodes(e.getGui().getLowerInv().getName()).startsWith("Loot Chest") && UtilitiesConfig.INSTANCE.preventOpeningPouchesChest) {
             // Ingredient pouch
             if (e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() == 4) {
                 e.setCanceled(true);
@@ -1116,8 +1117,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onWindowOpen(PacketEvent<SPacketOpenWindow> e){
-        //System.out.println("Opened window with windowId: " + e.getPacket().getWindowId());
-        if (e.getPacket().getWindowTitle().getUnformattedText().startsWith("Loot Chest"))
+        if (TextFormatting.getTextWithoutFormattingCodes(e.getPacket().getWindowTitle().getUnformattedText()).startsWith("Loot Chest"))
             lastOpenedChestWindowId = e.getPacket().getWindowId();
         if (e.getPacket().getWindowTitle().toString().contains("Daily Rewards") || e.getPacket().getWindowTitle().toString().contains("Objective Rewards"))
             lastOpenedRewardWindowId = e.getPacket().getWindowId();
