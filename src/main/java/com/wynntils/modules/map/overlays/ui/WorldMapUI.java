@@ -60,7 +60,7 @@ public class WorldMapUI extends GuiMovementScreen {
     protected float centerPositionZ;
 
     // Zoom
-    protected float zoom = 0;  // Zoom goes from 300 (whole world) to -10 (max details)
+    protected float zoom = 0;  // Zoom goes from 500 (whole world) to -10 (max details)
     protected float zoomInitial = 0;
     protected float zoomTarget = 0;
     protected float zoomEnd = 0;

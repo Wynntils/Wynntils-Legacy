@@ -118,7 +118,7 @@ public class MapConfig extends SettingsClass {
         public int animationLength = 250;
 
         @Setting(displayName = "Default Map Zoom", description = "Default zoom value when a map is opened.")
-        @Setting.Limitations.IntLimit(min = -10, max = 300)
+        @Setting.Limitations.IntLimit(min = -10, max = 500)
         public int defaultMapZoom = 0;
 
         @Setting(displayName = "Map Center X if in war", description = "Map center X coordinate will be this value when player is in war.")
