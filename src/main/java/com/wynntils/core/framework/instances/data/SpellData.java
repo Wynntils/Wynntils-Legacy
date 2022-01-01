@@ -103,7 +103,6 @@ public class SpellData extends PlayerData {
         if (!Reference.onWorld) return;
 
         if (e.getPacket().getSlotId() != this.lastSpellWeaponSlot) {
-            System.out.println("Weapon changed");
             this.lastSpellWeaponSlot = -1;
             this.lastSpell = NO_SPELL;
         }
