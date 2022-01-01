@@ -49,16 +49,17 @@ public class QuickCastManager {
 
     public static final boolean[] NO_SPELL = new boolean[0];
 
-    //Fixes bug when user spams quickcast hotkeys
+    //Fixes most bugs when user spams quickcast hotkeys, by not allowing them to start spell casting until the current one is finished
     public static boolean[] spellInProgress = NO_SPELL;
 
     private static void queueSpell(int spellNumber, boolean a, boolean b, boolean c) {
         if (!canCastSpell(spellNumber)) return;
 
+        spellInProgress = new boolean[]{a, b, c};
+
         int level = PlayerInfo.get(CharacterData.class).getLevel();
         boolean isLowLevel = level <= 11;
         Class<?> packetClass = isLowLevel ? SPacketTitle.class : SPacketChat.class;
-        spellInProgress = new boolean[]{a, b, c};
         PacketQueue.queueComplexPacket(a == SPELL_LEFT ? leftClick : rightClick, packetClass, e -> checkKey(e, 0, a, isLowLevel));
         PacketQueue.queueComplexPacket(b == SPELL_LEFT ? leftClick : rightClick, packetClass, e -> checkKey(e, 1, b, isLowLevel));
         PacketQueue.queueComplexPacket(c == SPELL_LEFT ? leftClick : rightClick, packetClass, e -> checkKey(e, 2, c, isLowLevel));
@@ -192,14 +193,13 @@ public class QuickCastManager {
 
         if (notReachedSpellPointRequirements != null) {
             McIf.player().sendMessage(new TextComponentString(
-                    TextFormatting.GRAY + "The current class does not have enough "+notReachedSpellPointRequirements+" to use the held weapon."
+                    TextFormatting.GRAY + "The current class does not have enough " + notReachedSpellPointRequirements + " to use the held weapon."
             ));
             return false;
         }
 
         //If there is spell casting in progress, don't interfere
         int lastSpellLength = PlayerInfo.get(SpellData.class).getLastSpell().length;
-        //FIXME: Add SpellEvent.OutOfMana to correctly reset spellInProgress
         if ((lastSpellLength != 0 && lastSpellLength != 3) || spellInProgress.length != 0)
         {
             McIf.player().sendMessage(new TextComponentString(
@@ -224,17 +224,17 @@ public class QuickCastManager {
             SPacketChat title = (SPacketChat) input;
             if (title.getType() != ChatType.GAME_INFO) return false;
 
-            System.out.println(McIf.getUnformattedText(title.getChatComponent()));
-
             PlayerInfo.get(ActionBarData.class).updateActionBar(McIf.getUnformattedText(title.getChatComponent()));
 
             spell = data.getLastSpell();
-
-            for (boolean b : spell) {
-                System.out.println(b);
-            }
         }
 
-        return pos < spell.length && spell[pos] == clickType;
+        boolean successful = pos < spell.length && spell[pos] == clickType;
+
+        //If we successfully casted the last part of the spell, reset the boolean, allowing the keybind to cast spells again
+        if (successful && pos == 2) {
+            spellInProgress = NO_SPELL;
+        }
+        return successful;
     }
 }

@@ -1353,13 +1353,4 @@ public class ClientEvents implements Listener {
         nbt.setIntArray("originalItems", originalSlots);
         ItemUtils.replaceLore(itemStack, groupedItemLore);
     }
-
-    //If we successfully casted the last part of the spell, reset the boolean, allowing the keybind to cast spells again
-    @SubscribeEvent
-    public void onSpellCast(SpellEvent.Cast e) {
-        String spell = e.getSpell();
-        System.out.println("Casted: " + spell);
-        //TODO: Check if this is the correct spell before reset
-        QuickCastManager.spellInProgress = QuickCastManager.NO_SPELL;
-    }
 }
