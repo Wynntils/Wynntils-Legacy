@@ -18,6 +18,7 @@ import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
+import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.map.overlays.enums.MapButtonType;
 import com.wynntils.modules.map.overlays.objects.*;
@@ -161,6 +162,23 @@ public class WorldMapUI extends GuiMovementScreen {
                 WorldMapIcon icon;
                 if (i instanceof MapLabel) {
                     icon = new WorldMapLabel((MapLabel) i);
+                } else if (i instanceof MapWaypointIcon) {
+                    icon = new WorldMapIcon(i);
+                    WaypointProfile waypointProfile = ((MapWaypointIcon) i).getWaypointProfile();
+                    switch (waypointProfile.getType().getDisplayName()) {
+                        case "Chest (T1)":
+                            waypointProfile.setZoomNeeded(MapConfig.WorldMap.INSTANCE.lootChestTier1MinZoom);
+                            break;
+                        case "Chest (T2)":
+                            waypointProfile.setZoomNeeded(MapConfig.WorldMap.INSTANCE.lootChestTier2MinZoom);
+                            break;
+                        case "Chest (T3)":
+                            waypointProfile.setZoomNeeded(MapConfig.WorldMap.INSTANCE.lootChestTier3MinZoom);
+                            break;
+                        case "Chest (T4)":
+                            waypointProfile.setZoomNeeded(MapConfig.WorldMap.INSTANCE.lootChestTier4MinZoom);
+                            break;
+                    }
                 } else {
                     icon = new WorldMapIcon(i);
                 }

@@ -113,6 +113,22 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Open Animation", description = "Should the world map have an opening animation?")
         public boolean openAnimation = true;
 
+        @Setting(displayName = "Minimum Zoom for Loot Chest I", description = "What is the minimum zoom level for tier 1 loot chest to show on the map?")
+        @Setting.Limitations.IntLimit(min = -10, max = 500)
+        public int lootChestTier1MinZoom = 500;
+
+        @Setting(displayName = "Minimum Zoom for Loot Chest II", description = "What is the minimum zoom level for tier 2 loot chest to show on the map?")
+        @Setting.Limitations.IntLimit(min = -10, max = 500)
+        public int lootChestTier2MinZoom = 500;
+
+        @Setting(displayName = "Minimum Zoom for Loot Chest III", description = "What is the minimum zoom level for tier 3 loot chest to show on the map?")
+        @Setting.Limitations.IntLimit(min = -10, max = 500)
+        public int lootChestTier3MinZoom = 500;
+
+        @Setting(displayName = "Minimum Zoom for Loot Chest IV", description = "What is the minimum zoom level for tier 4 loot chest to show on the map?")
+        @Setting.Limitations.IntLimit(min = -10, max = 500)
+        public int lootChestTier4MinZoom = 500;
+
         @Setting(displayName = "Opening Animation Length", description = "How long should be the opening animation")
         @Setting.Limitations.IntLimit(min = 50, max = 1000)
         public int animationLength = 250;

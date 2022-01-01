@@ -55,6 +55,11 @@ public class WaypointProfile {
         return zoomNeeded;
     }
 
+    public void setZoomNeeded(int zoomNeeded)
+    {
+        this.zoomNeeded = zoomNeeded;
+    }
+
     public WaypointType getType() {
         if (type == null) type = WaypointType.FLAG;
         return type;
