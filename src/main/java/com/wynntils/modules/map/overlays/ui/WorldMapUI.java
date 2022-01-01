@@ -164,20 +164,23 @@ public class WorldMapUI extends GuiMovementScreen {
                     icon = new WorldMapLabel((MapLabel) i);
                 } else if (i instanceof MapWaypointIcon) {
                     icon = new WorldMapIcon(i);
-                    WaypointProfile waypointProfile = ((MapWaypointIcon) i).getWaypointProfile();
-                    switch (waypointProfile.getType().getDisplayName()) {
-                        case "Chest (T1)":
-                            waypointProfile.setZoomNeeded(MapConfig.WorldMap.INSTANCE.lootChestTier1MinZoom);
-                            break;
-                        case "Chest (T2)":
-                            waypointProfile.setZoomNeeded(MapConfig.WorldMap.INSTANCE.lootChestTier2MinZoom);
-                            break;
-                        case "Chest (T3)":
-                            waypointProfile.setZoomNeeded(MapConfig.WorldMap.INSTANCE.lootChestTier3MinZoom);
-                            break;
-                        case "Chest (T4)":
-                            waypointProfile.setZoomNeeded(MapConfig.WorldMap.INSTANCE.lootChestTier4MinZoom);
-                            break;
+                    //Make sure this waypoint is named a Loot Chest, and uses the correct icons
+                    if (icon.getInfo().getName().startsWith("Loot Chest")) {
+                        WaypointProfile waypointProfile = ((MapWaypointIcon) i).getWaypointProfile();
+                        switch (waypointProfile.getType().getDisplayName()) {
+                            case "Chest (T1)":
+                                waypointProfile.setZoomNeeded(MapConfig.WorldMap.INSTANCE.lootChestTier1MinZoom);
+                                break;
+                            case "Chest (T2)":
+                                waypointProfile.setZoomNeeded(MapConfig.WorldMap.INSTANCE.lootChestTier2MinZoom);
+                                break;
+                            case "Chest (T3)":
+                                waypointProfile.setZoomNeeded(MapConfig.WorldMap.INSTANCE.lootChestTier3MinZoom);
+                                break;
+                            case "Chest (T4)":
+                                waypointProfile.setZoomNeeded(MapConfig.WorldMap.INSTANCE.lootChestTier4MinZoom);
+                                break;
+                        }
                     }
                 } else {
                     icon = new WorldMapIcon(i);
