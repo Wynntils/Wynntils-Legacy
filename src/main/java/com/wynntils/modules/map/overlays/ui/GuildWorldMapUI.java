@@ -9,6 +9,7 @@ import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.map.MapModule;
+import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.GuildResourceContainer;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.managers.GuildResourceManager;
@@ -32,6 +33,11 @@ public class GuildWorldMapUI extends WorldMapUI {
 
     private final long creationTime = System.currentTimeMillis();
     private boolean holdingMapKey = false;
+    private boolean holdingDecided = false;
+
+    //Only updated if MapConfig.INSTANCE.autoCloseMapOnMovement is true, don't rely on this for anything else
+    private double lastPlayerX = Double.MAX_VALUE;
+    private double lastPlayerZ = Double.MAX_VALUE;
 
     // Properties
     private boolean showTerritory = true;
@@ -91,12 +97,28 @@ public class GuildWorldMapUI extends WorldMapUI {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         // HeyZeer0: This detects if the user is holding the map key;
-        if (!holdingMapKey && (System.currentTimeMillis() - creationTime >= 150) && isHoldingMapKey()) holdingMapKey = true;
-
+        if (!holdingDecided && (System.currentTimeMillis() - creationTime >= 150)) {
+            holdingDecided = true;
+            if (isHoldingMapKey())
+                holdingMapKey = true;
+        }
         // HeyZeer0: This close the map if the user was pressing the map key and after a moment dropped it
         if (holdingMapKey && !isHoldingMapKey()) {
             McIf.mc().displayGuiScreen(null);
             return;
+        }
+
+        if (MapConfig.INSTANCE.autoCloseMapOnMovement) {
+            double currentPosX = McIf.player().posX;
+            double currentPosZ = McIf.player().posZ;
+
+            if (holdingDecided && !holdingMapKey && (lastPlayerX != Double.MAX_VALUE && lastPlayerZ != Double.MAX_VALUE) && (currentPosX != lastPlayerX || currentPosZ != lastPlayerZ)) {
+                McIf.mc().displayGuiScreen(null);
+                return;
+            }
+
+            lastPlayerX = currentPosX;
+            lastPlayerZ = currentPosZ;
         }
 
         if (!Mouse.isButtonDown(1)) {

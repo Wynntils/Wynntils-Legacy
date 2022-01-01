@@ -78,6 +78,9 @@ public class MapConfig extends SettingsClass {
     @Setting(displayName = "Hide in Non-Mapped Areas", description = "Should the minimap be hidden if the player is outside the map?", order = 15)
     public boolean hideMinimapOutOfBounds = true;
 
+    @Setting(displayName = "Auto close map on movement", description = "Should the map close when the user starts moving? If the user opened the map by holding the keybind, the map will stay open until the key is released.", order = 16)
+    public boolean autoCloseMapOnMovement = true;
+
     @Setting
     public Map<String, Boolean> enabledMapIcons = resetMapIcons(false);
 
