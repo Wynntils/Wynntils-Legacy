@@ -1123,24 +1123,25 @@ public class ClientEvents implements Listener {
             lastOpenedRewardWindowId = e.getPacket().getWindowId();
     }
 
-    //Dry streak counter, mythic music event
+    // Dry streak counter, mythic music event
     @SubscribeEvent
     public void onMythicFound(PacketEvent<SPacketWindowItems> e) {
         if (lastOpenedChestWindowId != e.getPacket().getWindowId() && lastOpenedRewardWindowId != e.getPacket().getWindowId()) return;
 
-        //Get items in chest, return if there is not enough items
-        if (e.getPacket().getItemStacks().size() < 27)
+        // Get items in chest, return if there is not enough or too many items
+        // 63 is the size of a chest (27) + player inventory
+        if (e.getPacket().getItemStacks().size() != 63)
             return;
 
-        //Only run at first time we get items, don't care about updating
+        // Only run at first time we get items, don't care about updating
         if (e.getPacket().getWindowId() == lastProcessedOpenedChest) return;
 
         lastProcessedOpenedChest = e.getPacket().getWindowId();
 
-        //Dry streak counter and sound sfx
+        // Dry streak counter and sound sfx
         if (UtilitiesConfig.INSTANCE.enableDryStreak && lastOpenedChestWindowId == e.getPacket().getWindowId()) {
             boolean foundMythic = false;
-            //Size should be at least 27, checked for it earlier
+            // Size should be at least 27, checked for it earlier
             int size = 27;
             for (int i = 0; i < size; i++) {
                 ItemStack stack = e.getPacket().getItemStacks().get(i);
@@ -1183,10 +1184,10 @@ public class ClientEvents implements Listener {
             return;
         }
 
-        //Mythic found sfx for daily rewards and objective rewards
+        // Mythic found sfx for daily rewards and objective rewards
         if (!MusicConfig.SoundEffects.INSTANCE.mythicFound) return;
 
-        //Size should be at least 27, checked for it earlier
+        // Size should be at least 27, checked for it earlier
         int size = 27;
         for (int i = 0; i < size; i++) {
             ItemStack stack = e.getPacket().getItemStacks().get(i);
