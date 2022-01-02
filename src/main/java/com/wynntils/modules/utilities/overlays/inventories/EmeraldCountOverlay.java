@@ -42,10 +42,10 @@ public class EmeraldCountOverlay implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onPlayerInventory(GuiOverlapEvent.InventoryOverlap.DrawGuiContainerForegroundLayer e) {
-        if (!Reference.onWorld || !UtilitiesConfig.Items.INSTANCE.emeraldCountInventory) return;
+        if (!Reference.onWorld || !UtilitiesConfig.INSTANCE.emeraldCountInventory) return;
 
-        if (UtilitiesConfig.Items.INSTANCE.emeraldCountText) {
-            drawTextMoneyAmount(170, 7, PlayerInfo.get(InventoryData.class).getMoney(), renderer, textColor);
+        if (UtilitiesConfig.INSTANCE.emeraldCountText) {
+            drawTextMoneyAmount(170, -10, PlayerInfo.get(InventoryData.class).getMoney(), renderer, CommonColors.WHITE);
             return;
         }
         drawIconsMoneyAmount(178, 0, PlayerInfo.get(InventoryData.class).getMoney(), renderer);
@@ -53,33 +53,41 @@ public class EmeraldCountOverlay implements Listener {
 
     @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawGuiContainerForegroundLayer e) {
-        if (!Reference.onWorld || !(UtilitiesConfig.Items.INSTANCE.emeraldCountInventory || UtilitiesConfig.Items.INSTANCE.emeraldCountChest)) return;
+        if (!Reference.onWorld || !(UtilitiesConfig.INSTANCE.emeraldCountInventory || UtilitiesConfig.INSTANCE.emeraldCountChest)) return;
 
-        IInventory lowerInv = e.getGui().getLowerInv();
-        if (lowerInv.getName().contains("Quests") || lowerInv.getName().contains("points")) return;
+        //For some reason they are swapped?
+        IInventory container = e.getGui().getLowerInv();
+        String containerName = container.getName();
 
-        IInventory upperInv = e.getGui().getUpperInv();
+        IInventory inventory = e.getGui().getUpperInv();
 
-        if (UtilitiesConfig.Items.INSTANCE.emeraldCountText) {
-            if (UtilitiesConfig.Items.INSTANCE.emeraldCountInventory)
-                drawTextMoneyAmount(170, -10, ItemUtils.countMoney(lowerInv), renderer, CommonColors.WHITE);
-            if (UtilitiesConfig.Items.INSTANCE.emeraldCountChest)
-                drawTextMoneyAmount(170, 2 * (lowerInv.getSizeInventory() + 10), ItemUtils.countMoney(upperInv), renderer, textColor);
+        boolean emeraldPouch = containerName.equals("EmeraldÀÀÀÀPouchÀ");
+
+        //Only render text and icons if there are emeralds in the container, fixes a lot of overlapping issues in containers, where emerald count is irrelevant, but we don't filter them manually
+        int containerMoneyAmount = ItemUtils.countMoney(container);
+        int inventoryMoneyAmount = ItemUtils.countMoney(inventory);
+
+        if (UtilitiesConfig.INSTANCE.emeraldCountText) {
+            if (UtilitiesConfig.INSTANCE.emeraldCountChest && containerMoneyAmount > 0)
+                drawTextMoneyAmount(170, 5, containerMoneyAmount, renderer, textColor);
+            if (UtilitiesConfig.INSTANCE.emeraldCountInventory)
+                drawTextMoneyAmount(170, 2 * (container.getSizeInventory() + 10), inventoryMoneyAmount, renderer, textColor);
             return;
         }
-        if (UtilitiesConfig.Items.INSTANCE.emeraldCountInventory)
-            drawIconsMoneyAmount(178, 0, ItemUtils.countMoney(lowerInv), renderer);
-        if (UtilitiesConfig.Items.INSTANCE.emeraldCountChest)
-            drawIconsMoneyAmount(178, 2 * (lowerInv.getSizeInventory() + 10), ItemUtils.countMoney(upperInv), renderer);
+
+        if (UtilitiesConfig.INSTANCE.emeraldCountChest && containerMoneyAmount > 0)
+            drawIconsMoneyAmount(178, 0, containerMoneyAmount, renderer);
+        if (UtilitiesConfig.INSTANCE.emeraldCountInventory && !emeraldPouch)
+            drawIconsMoneyAmount(178, 2 * (container.getSizeInventory() + 10), inventoryMoneyAmount, renderer);
     }
 
     @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.HorseOverlap.DrawGuiContainerForegroundLayer e) {
-        if (!Reference.onWorld || !UtilitiesConfig.Items.INSTANCE.emeraldCountInventory) return;
+        if (!Reference.onWorld || !UtilitiesConfig.INSTANCE.emeraldCountInventory) return;
 
         IInventory lowerInv = e.getGui().getLowerInv();
 
-        if (UtilitiesConfig.Items.INSTANCE.emeraldCountText) {
+        if (UtilitiesConfig.INSTANCE.emeraldCountText) {
             drawTextMoneyAmount(170, 7, ItemUtils.countMoney(lowerInv), renderer, textColor);
             return;
         }
