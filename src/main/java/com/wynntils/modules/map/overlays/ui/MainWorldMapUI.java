@@ -36,7 +36,7 @@ public class MainWorldMapUI extends WorldMapUI {
     private long lastClickTime = Integer.MAX_VALUE;
     private static final long doubleClickTime = Utils.getDoubleClickTime();
 
-    //Only updated if MapConfig.WorldMap.INSTANCE.autoCloseMapOnMovement is true, don't rely on this for anything else
+    // Only updated if MapConfig.WorldMap.INSTANCE.autoCloseMapOnMovement is true, don't rely on this for anything else
     private double lastPlayerX = Double.MAX_VALUE;
     private double lastPlayerZ = Double.MAX_VALUE;
 
