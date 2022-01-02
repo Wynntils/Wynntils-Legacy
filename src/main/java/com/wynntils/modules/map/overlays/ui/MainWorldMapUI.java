@@ -106,7 +106,7 @@ public class MainWorldMapUI extends WorldMapUI {
             if (easterEggClicks == 20) {
                 i.getHoverLore().set(1, RED + "Alright you asked for it...");
                 SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("easterEgg1"),
-                        true, true, true, false, true, false);
+                        true, true, true, false, true, false, true);
             } else if (easterEggClicks == 15) {
                 i.getHoverLore().set(1, RED + "Are you really sure you want this?");
                 i.getHoverLore().remove(2);

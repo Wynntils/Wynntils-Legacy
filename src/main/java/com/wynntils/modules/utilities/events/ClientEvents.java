@@ -1154,7 +1154,7 @@ public class ClientEvents implements Listener {
                 if (MusicConfig.SoundEffects.INSTANCE.mythicFound) {
                     try {
                         SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("mythicFound"),
-                                true, false, false, false, true, false);
+                                true, false, false, false, true, false, true);
                     } catch (Exception exception) {
                         exception.printStackTrace();
                     }
@@ -1196,7 +1196,7 @@ public class ClientEvents implements Listener {
 
             try {
                 SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("mythicFound"),
-                        true, false, false, false, true, false);
+                        true, false, false, false, true, false, true);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }

@@ -22,8 +22,15 @@ public class MusicPlayerEvent extends Event {
 
         public static class Start extends Playback {
 
-            public Start(String songName) {
+            boolean force;
+
+            public boolean isForce() {
+                return force;
+            }
+
+            public Start(String songName, boolean force) {
                 super(songName);
+                this.force = force;
             }
 
         }
