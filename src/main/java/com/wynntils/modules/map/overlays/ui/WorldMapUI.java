@@ -427,7 +427,7 @@ public class WorldMapUI extends GuiMovementScreen {
     protected void handleZoomAcceleration(float partialTicks) {
         if (McIf.getSystemTime() > zoomEnd) return;
 
-        float percentage = Math.min(1f, 1f - (zoomEnd - McIf.getSystemTime()) / ZOOM_RESISTANCE);
+        float percentage = MathHelper.clamp(1f - (zoomEnd - McIf.getSystemTime()) / ZOOM_RESISTANCE, 0f, 1f);
         double toIncrease = (zoomTarget - zoomInitial) * Math.sin((Math.PI / 2f) * percentage);
 
         zoom = zoomInitial + (float) toIncrease;
