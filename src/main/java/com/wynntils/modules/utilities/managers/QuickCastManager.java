@@ -27,6 +27,7 @@ import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -53,16 +54,20 @@ public class QuickCastManager {
     public static boolean[] spellInProgress = NO_SPELL;
 
     private static void queueSpell(int spellNumber, boolean a, boolean b, boolean c) {
-        if (!canCastSpell(spellNumber)) return;
+        boolean[] spell = new boolean[]{a, b, c};
+        boolean[] maybeHalfSpell = canCastSpell(spellNumber, spell);
+        if (maybeHalfSpell.length == 0) return;
 
-        spellInProgress = new boolean[]{a, b, c};
+        spellInProgress = spell;
 
         int level = PlayerInfo.get(CharacterData.class).getLevel();
         boolean isLowLevel = level <= 11;
         Class<?> packetClass = isLowLevel ? SPacketTitle.class : SPacketChat.class;
-        PacketQueue.queueComplexPacket(a == SPELL_LEFT ? leftClick : rightClick, packetClass, e -> checkKey(e, 0, a, isLowLevel));
-        PacketQueue.queueComplexPacket(b == SPELL_LEFT ? leftClick : rightClick, packetClass, e -> checkKey(e, 1, b, isLowLevel));
-        PacketQueue.queueComplexPacket(c == SPELL_LEFT ? leftClick : rightClick, packetClass, e -> checkKey(e, 2, c, isLowLevel));
+        int offset = 3 - maybeHalfSpell.length;
+        for (int i = 0; i < maybeHalfSpell.length; i++) {
+            final int finalI = i;
+            PacketQueue.queueComplexPacket(maybeHalfSpell[i] == SPELL_LEFT ? leftClick : rightClick, packetClass, e -> checkKey(e, finalI + offset, maybeHalfSpell[finalI], isLowLevel));
+        }
     }
 
     public static void castFirstSpell() {
@@ -101,23 +106,23 @@ public class QuickCastManager {
         queueSpell(4, SPELL_RIGHT, SPELL_RIGHT, SPELL_LEFT);
     }
 
-    private static boolean canCastSpell(int spell) {
+    private static boolean[] canCastSpell(int spell, boolean[] checkedSpell) {
         if (!Reference.onWorld || !PlayerInfo.get(CharacterData.class).isLoaded()) {
-            return false;
+            return NO_SPELL;
         }
 
         if (PlayerInfo.get(CharacterData.class).getLevel() < spellUnlock[spell - 1]) {
             McIf.player().sendMessage(new TextComponentString(
                     TextFormatting.GRAY + "You have not yet unlocked this spell! You need to be level " + spellUnlock[spell - 1]
             ));
-            return false;
+            return NO_SPELL;
         }
 
         if (PlayerInfo.get(CharacterData.class).getCurrentMana() == 0) {
             McIf.player().sendMessage(new TextComponentString(
                     TextFormatting.GRAY + "You do not have enough mana to cast this spell!"
             ));
-            return false;
+            return NO_SPELL;
         }
 
         ItemStack heldItem = McIf.player().getHeldItemMainhand();
@@ -147,7 +152,7 @@ public class QuickCastManager {
             McIf.player().sendMessage(new TextComponentString(
                     TextFormatting.GRAY + "The held item is not a weapon."
             ));
-            return false;
+            return NO_SPELL;
         }
 
         for (; i < lore.size(); i++) {
@@ -163,7 +168,7 @@ public class QuickCastManager {
             McIf.player().sendMessage(new TextComponentString(
                     TextFormatting.GRAY + "The held weapon is not for this class."
             ));
-            return false;
+            return NO_SPELL;
         }
 
         for (; i < lore.size(); i++) {
@@ -179,7 +184,7 @@ public class QuickCastManager {
             McIf.player().sendMessage(new TextComponentString(
                     TextFormatting.GRAY + "The current class level is too low to use the held weapon."
             ));
-            return false;
+            return NO_SPELL;
         }
 
         for (; i < lore.size(); i++) {
@@ -195,20 +200,36 @@ public class QuickCastManager {
             McIf.player().sendMessage(new TextComponentString(
                     TextFormatting.GRAY + "The current class does not have enough " + notReachedSpellPointRequirements + " assigned to use the held weapon."
             ));
-            return false;
+            return NO_SPELL;
         }
 
         //If there is spell casting in progress, don't interfere
-        int lastSpellLength = PlayerInfo.get(SpellData.class).getLastSpell().length;
+        boolean[] lastSpell = PlayerInfo.get(SpellData.class).getLastSpell();
+        int lastSpellLength = lastSpell.length;
         if ((lastSpellLength != 0 && lastSpellLength != 3) || spellInProgress.length != 0)
         {
+            if (lastSpellLength != 0 && lastSpellLength != 3 && spellInProgress.length == 0) {
+                for (int i1 = 0; i1 < lastSpellLength; i1++) {
+                    if (lastSpell[i1] != checkedSpell[i1]) {
+                        McIf.player().sendMessage(new TextComponentString(
+                                TextFormatting.GRAY + "Cannot start casting a spell while another spell cast is in progress."
+                        ));
+                        return NO_SPELL;
+                    }
+                }
+
+                boolean[] halfSpell = new boolean[checkedSpell.length - lastSpellLength];
+                System.arraycopy(checkedSpell, lastSpellLength, halfSpell, 0, halfSpell.length);
+                return halfSpell;
+            }
+
             McIf.player().sendMessage(new TextComponentString(
                     TextFormatting.GRAY + "Cannot start casting a spell while another spell cast is in progress."
             ));
-            return false;
+            return NO_SPELL;
         }
 
-        return true;
+        return checkedSpell;
     }
 
     private static boolean checkKey(Packet<?> input, int pos, boolean clickType, boolean isLowLevel) {
