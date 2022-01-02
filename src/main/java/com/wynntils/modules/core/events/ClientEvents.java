@@ -16,6 +16,7 @@ import com.wynntils.core.framework.enums.professions.ProfessionType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.ActionBarData;
 import com.wynntils.core.framework.instances.data.CharacterData;
+import com.wynntils.core.framework.instances.data.SpellData;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.Utils;
@@ -34,6 +35,7 @@ import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.managers.KillsManager;
 import com.wynntils.modules.utilities.managers.LevelingManager;
+import com.wynntils.modules.utilities.managers.QuickCastManager;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiIngameMenu;
@@ -525,6 +527,29 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void onWeaponChange(PacketEvent<CPacketHeldItemChange> e) {
         totemTracker.onWeaponChange(e);
+
+        //Make sure we don't get into a stuck phase where spells can't be cast until the player casts one manually
+        if (!Reference.onWorld) return;
+
+        SpellData spellData = PlayerInfo.get(SpellData.class);
+
+        if (spellData == null) return;
+
+        if (e.getPacket().getSlotId() != spellData.lastSpellWeaponSlot) {
+            spellData.setLastSpell(SpellData.NO_SPELL, -1);
+        }
     }
 
+
+    @SubscribeEvent
+    public void onClassChange(WynnClassChangeEvent e) {
+        if (!Reference.onWorld) return;
+
+        SpellData spellData = PlayerInfo.get(SpellData.class);
+
+        if (spellData == null) return;
+
+        spellData.setLastSpell(SpellData.NO_SPELL, -1);
+        QuickCastManager.spellInProgress = QuickCastManager.NO_SPELL;
+    }
 }
