@@ -89,7 +89,7 @@ public class MapConfig extends SettingsClass {
         public static WorldMap INSTANCE;
 
         @Setting(displayName = "Auto Close Map On Movement", description = "Should the map close when the user starts moving? If the user opened the map by holding the keybind, the map will stay open until the key is released.")
-        public boolean autoCloseMapOnMovement = true;
+        public boolean autoCloseMapOnMovement = false;
 
         @Setting(displayName = "Keep Territory Visible", description = "Should territory names always be displayed rather than only when you hold CTRL?")
         public boolean keepTerritoryVisible = false;
