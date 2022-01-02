@@ -167,17 +167,17 @@ public class WorldMapUI extends GuiMovementScreen {
                     //Make sure this waypoint is named a Loot Chest, and uses the correct icons
                     if (icon.getInfo().getName().startsWith("Loot Chest")) {
                         WaypointProfile waypointProfile = ((MapWaypointIcon) i).getWaypointProfile();
-                        switch (waypointProfile.getType().getDisplayName()) {
-                            case "Chest (T1)":
+                        switch (waypointProfile.getType()) {
+                            case LOOTCHEST_T1:
                                 waypointProfile.setZoomNeeded(MapConfig.WorldMap.INSTANCE.lootChestTier1MinZoom);
                                 break;
-                            case "Chest (T2)":
+                            case LOOTCHEST_T2:
                                 waypointProfile.setZoomNeeded(MapConfig.WorldMap.INSTANCE.lootChestTier2MinZoom);
                                 break;
-                            case "Chest (T3)":
+                            case LOOTCHEST_T3:
                                 waypointProfile.setZoomNeeded(MapConfig.WorldMap.INSTANCE.lootChestTier3MinZoom);
                                 break;
-                            case "Chest (T4)":
+                            case LOOTCHEST_T4:
                                 waypointProfile.setZoomNeeded(MapConfig.WorldMap.INSTANCE.lootChestTier4MinZoom);
                                 break;
                         }
