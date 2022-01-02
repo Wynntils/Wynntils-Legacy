@@ -18,8 +18,12 @@ import com.wynntils.modules.map.overlays.enums.MapButtonType;
 import com.wynntils.modules.map.overlays.objects.MapButton;
 import com.wynntils.modules.music.managers.SoundTrackManager;
 import com.wynntils.webapi.WebManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.settings.GameSettings;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.init.SoundEvents;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -35,10 +39,6 @@ public class MainWorldMapUI extends WorldMapUI {
     private final long creationTime = System.currentTimeMillis();
     private long lastClickTime = Integer.MAX_VALUE;
     private static final long doubleClickTime = Utils.getDoubleClickTime();
-
-    // Only updated if MapConfig.WorldMap.INSTANCE.autoCloseMapOnMovement is true, don't rely on this for anything else
-    private double lastPlayerX = Double.MAX_VALUE;
-    private double lastPlayerZ = Double.MAX_VALUE;
 
     private int easterEggClicks = 0;
 
@@ -151,17 +151,13 @@ public class MainWorldMapUI extends WorldMapUI {
             return;
         }
 
-        if (MapConfig.WorldMap.INSTANCE.autoCloseMapOnMovement) {
-            double currentPosX = McIf.player().posX;
-            double currentPosZ = McIf.player().posZ;
-
-            if (holdingDecided && !holdingMapKey && (lastPlayerX != Double.MAX_VALUE && lastPlayerZ != Double.MAX_VALUE) && (currentPosX != lastPlayerX || currentPosZ != lastPlayerZ)) {
+        if (MapConfig.WorldMap.INSTANCE.autoCloseMapOnMovement)
+        {
+            if (checkForPlayerMovement(holdingDecided, holdingMapKey))
+            {
                 McIf.mc().displayGuiScreen(null);
                 return;
             }
-
-            lastPlayerX = currentPosX;
-            lastPlayerZ = currentPosZ;
         }
 
         if (!Mouse.isButtonDown(1)) {

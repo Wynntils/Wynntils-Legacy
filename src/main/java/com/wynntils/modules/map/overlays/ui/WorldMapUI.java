@@ -29,6 +29,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.input.Keyboard;
@@ -533,6 +534,16 @@ public class WorldMapUI extends GuiMovementScreen {
         }
 
         super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    protected boolean checkForPlayerMovement(boolean holdingDecided, boolean holdingMapKey) {
+        GameSettings gameSettings = McIf.mc().gameSettings;
+
+        if (holdingDecided && !holdingMapKey) {
+            return gameSettings.keyBindForward.isKeyDown() || gameSettings.keyBindBack.isKeyDown() || gameSettings.keyBindLeft.isKeyDown() || gameSettings.keyBindRight.isKeyDown();
+        }
+
+        return false;
     }
 
 }
