@@ -29,6 +29,13 @@ public class IdentificationContainer {
         calculateMinMax();
     }
 
+    public IdentificationContainer(IdentificationModifier type, int min, int max) {
+        this.type = type;
+        this.min = min;
+        this.max = max;
+        this.isFixed = min == max;
+    }
+
     public void calculateMinMax() {
         if (isFixed || (-1 <= baseValue && baseValue <= 1)) {
             min = max = baseValue;

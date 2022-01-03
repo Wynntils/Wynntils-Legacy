@@ -18,6 +18,7 @@ import com.wynntils.modules.map.overlays.objects.SeaskipperLocation;
 import com.wynntils.webapi.account.WynntilsAccount;
 import com.wynntils.webapi.profiles.*;
 import com.wynntils.webapi.profiles.guild.GuildProfile;
+import com.wynntils.webapi.profiles.ingredient.IngredientProfile;
 import com.wynntils.webapi.profiles.item.IdentificationOrderer;
 import com.wynntils.webapi.profiles.item.ItemGuessProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
@@ -65,6 +66,10 @@ public class WebManager {
     private static HashMap<ItemType, String[]> materialTypes = new HashMap<>();
     private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
     private static HashMap<String, MajorIdentification> majorIds = new HashMap<>();
+
+    private static HashMap<String, IngredientProfile> ingredients = new HashMap<>();
+    private static Collection<IngredientProfile> directIngredients = new ArrayList<>();
+    private static HashMap<String, String> ingredientHeadTextures = new HashMap<>();
 
     private static ArrayList<MapMarkerProfile> mapMarkers = new ArrayList<>();
     private static ArrayList<MapLabelProfile> mapLabels = new ArrayList<>();
@@ -118,6 +123,7 @@ public class WebManager {
 
         updateTerritories(handler);
         updateItemList(handler);
+        updateIngredientList(handler);
         updateMapLocations(handler);
         updateItemGuesses(handler);
         updatePlayerProfile(handler);
@@ -228,6 +234,18 @@ public class WebManager {
 
     public static ArrayList<SeaskipperProfile> getSeaskipperLocations() {
         return seaskipperLocations;
+    }
+
+    public static Map<String, IngredientProfile> getIngredients() {
+        return ingredients;
+    }
+
+    public static Collection<IngredientProfile> getDirectIngredients() {
+        return directIngredients;
+    }
+
+    public HashMap<String, String> getIngredientHeadTextures() {
+        return ingredientHeadTextures;
     }
 
     public static String getTranslatedItemName(String name) {
@@ -474,6 +492,34 @@ public class WebManager {
 
                 return true;
             })
+        );
+    }
+
+    /**
+     * Update all Wynn ingredients on the {@link HashMap} ingredients
+     */
+    public static void updateIngredientList(RequestHandler handler) {
+        if (apiUrls == null) return;
+        String url = apiUrls.get("Athena") + "/cache/get/ingredientList";
+        handler.addRequest(new Request(url, "ingredientList")
+                .cacheTo(new File(API_CACHE_ROOT, "ingredient_list.json"))
+                .cacheMD5Validator(() -> getAccount().getMD5Verification("ingredientList"))
+                .handleJsonObject(j -> {
+                    ingredientHeadTextures = gson.fromJson(j.getAsJsonObject("headTextures"), HashMap.class);
+
+                    IngredientProfile[] gItems = gson.fromJson(j.getAsJsonArray("ingredients"), IngredientProfile[].class);
+                    HashMap<String, IngredientProfile> cingredients = new HashMap<>();
+
+                    for (IngredientProfile prof : gItems) {
+                        prof.postParse();
+                        cingredients.put(prof.getDisplayName(), prof);
+                    }
+
+                    ingredients = cingredients;
+                    directIngredients = cingredients.values();
+
+                    return true;
+                })
         );
     }
 
