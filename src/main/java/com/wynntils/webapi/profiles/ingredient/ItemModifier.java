@@ -1,7 +1,7 @@
 package com.wynntils.webapi.profiles.ingredient;
 
-import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.webapi.profiles.ingredient.enums.ItemModifierType;
+import net.minecraft.util.text.TextFormatting;
 
 public class ItemModifier {
     ItemModifierType type;
@@ -15,12 +15,12 @@ public class ItemModifier {
     public String getFormattedModifierText() {
         if (type == ItemModifierType.DURATION || type == ItemModifierType.CHARGES || type == ItemModifierType.DURABILITY)
             if (modifierValue > 0)
-                return MinecraftChatColors.GREEN + "+" + modifierValue + " " + type.getEffectString();
+                return TextFormatting.GREEN + "+" + modifierValue + " " + type.getEffectString();
             else
-                return MinecraftChatColors.RED + "-" + modifierValue + " " + type.getEffectString();
+                return TextFormatting.RED.toString() + modifierValue + " " + type.getEffectString();
         else if (modifierValue > 0)
-            return MinecraftChatColors.RED + "+" + modifierValue + " " + type.getEffectString();
+            return TextFormatting.RED + "+" + modifierValue + " " + type.getEffectString();
 
-        return MinecraftChatColors.GREEN + "-" + modifierValue + " " + type.getEffectString();
+        return TextFormatting.GREEN.toString() + modifierValue + " " + type.getEffectString();
     }
 }

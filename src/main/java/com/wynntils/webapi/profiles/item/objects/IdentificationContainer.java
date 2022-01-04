@@ -16,9 +16,9 @@ public class IdentificationContainer {
 
     private static Map<String, IdentificationModifier> typeMap = new HashMap<>();
 
-    private IdentificationModifier type;
+    protected IdentificationModifier type;
     private int baseValue;
-    private boolean isFixed;
+    protected boolean isFixed;
 
     private transient int min, max;
     private transient Fraction minChance;
@@ -29,11 +29,7 @@ public class IdentificationContainer {
         calculateMinMax();
     }
 
-    public IdentificationContainer(IdentificationModifier type, int min, int max) {
-        this.type = type;
-        this.min = min;
-        this.max = max;
-        this.isFixed = min == max;
+    public IdentificationContainer() {
     }
 
     public void calculateMinMax() {
@@ -76,6 +72,9 @@ public class IdentificationContainer {
     }
 
     public static String getAsLongName(String shortName) {
+        if (shortName.equals("gatherXPBonus"))
+            return "Gather XP Bonus";
+
         if (shortName.startsWith("raw")) {
             shortName = shortName.substring(3);
             shortName = Character.toLowerCase(shortName.charAt(0)) + shortName.substring(1);

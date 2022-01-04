@@ -2,6 +2,7 @@ package com.wynntils.webapi.profiles.ingredient;
 
 import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.webapi.profiles.ingredient.enums.IngredientModifierType;
+import net.minecraft.util.text.TextFormatting;
 
 public class IngredientModifier {
     IngredientModifierType type;
@@ -14,8 +15,8 @@ public class IngredientModifier {
 
     public String[] getLoreLines() {
         return new String[] {
-                MinecraftChatColors.GREEN.toString() + modifierValue + "%" + MinecraftChatColors.GRAY + " Ingredient Effectiveness",
-                MinecraftChatColors.GRAY + "(To ingredients " + type.getDisplayValue() + " this one)"
+                TextFormatting.GREEN.toString() + modifierValue + "%" + TextFormatting.GRAY + " Ingredient Effectiveness",
+                TextFormatting.GRAY + "(To ingredients " + type.getDisplayValue() + " this one)"
         };
     }
 }

@@ -1,18 +1,18 @@
 package com.wynntils.webapi.profiles.ingredient.enums;
 
-import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
+import net.minecraft.util.text.TextFormatting;
 
 public enum IngredientTier {
-    TIER_0(0, MinecraftChatColors.GRAY, MinecraftChatColors.DARK_GRAY),
-    TIER_1(1, MinecraftChatColors.YELLOW, MinecraftChatColors.GOLD),
-    TIER_2(2, MinecraftChatColors.LIGHT_PURPLE, MinecraftChatColors.DARK_PURPLE),
-    TIER_3(3, MinecraftChatColors.AQUA, MinecraftChatColors.DARK_AQUA);
+    TIER_0(0, TextFormatting.DARK_GRAY, TextFormatting.GRAY),
+    TIER_1(1, TextFormatting.YELLOW, TextFormatting.GOLD),
+    TIER_2(2, TextFormatting.LIGHT_PURPLE, TextFormatting.DARK_PURPLE),
+    TIER_3(3, TextFormatting.AQUA, TextFormatting.DARK_AQUA);
 
     private final int tierInt;
-    private final MinecraftChatColors starColor;
-    private final MinecraftChatColors bracketColor;
+    private final TextFormatting starColor;
+    private final TextFormatting bracketColor;
 
-    IngredientTier(int tierInt, MinecraftChatColors starColor, MinecraftChatColors bracketColor) {
+    IngredientTier(int tierInt, TextFormatting starColor, TextFormatting bracketColor) {
         this.tierInt = tierInt;
         this.starColor = starColor;
         this.bracketColor = bracketColor;
@@ -22,11 +22,11 @@ public enum IngredientTier {
         return tierInt;
     }
 
-    public MinecraftChatColors getStarColor() {
+    public TextFormatting getStarColor() {
         return starColor;
     }
 
-    public MinecraftChatColors getBracketColor() {
+    public TextFormatting getBracketColor() {
         return bracketColor;
     }
 
