@@ -3,13 +3,18 @@ package com.wynntils.webapi.profiles.ingredient;
 import com.wynntils.core.framework.ui.elements.UIEList;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.questbook.overlays.ui.IngredientPage;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.ingredient.enums.IngredientModifierType;
 import com.wynntils.webapi.profiles.ingredient.enums.IngredientTier;
 import com.wynntils.webapi.profiles.ingredient.enums.ItemModifierType;
 import com.wynntils.webapi.profiles.ingredient.enums.ProfessionType;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
+import net.minecraft.block.Block;
+import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.nbt.NBTTagString;
@@ -68,20 +73,37 @@ public class IngredientProfile {
     }
 
     public String getIngredientStringFormatted() {
-        return TextFormatting.GRAY + name + ingredientTier.getBracketColor() + " [" + ingredientTier.getStarColor() + "✫✫✫" + ingredientTier.getBracketColor() + "]";
+        StringBuilder builder = new StringBuilder(TextFormatting.DARK_GRAY + name + ingredientTier.getBracketColor() + " [" + ingredientTier.getStarColor());
+
+        for (int i = 0; i < tier; i++) {
+            builder.append("✫");
+        }
+
+        builder.append(TextFormatting.GRAY);
+
+        for (int i = 0; i < 3 - tier; i++) {
+            builder.append("✫");
+        }
+
+        builder.append(ingredientTier.getBracketColor()).append("]");
+
+        return builder.toString();
     }
 
     public String getDisplayName() {
         return name;
     }
 
-    //TODO: Add favorited
     public boolean isFavorited() {
-        return false;
+        return UtilitiesConfig.INSTANCE.favoriteIngredients.contains(name);
     }
 
     public ItemStack getGuideStack() {
         return guideStack != null ? guideStack : generateStack();
+    }
+
+    public IngredientTier getTier() {
+        return ingredientTier;
     }
 
     private ItemStack generateStack() {
@@ -142,7 +164,14 @@ public class IngredientProfile {
         else if (duration != null)
             itemLore.add(duration.getFormattedModifierText());
 
-        itemLore.add("");
+        for (ItemModifier itemModifier : itemModifiersList) {
+            if (itemModifier.type == ItemModifierType.DURABILITY || itemModifier.type == ItemModifierType.DURATION) continue;
+
+            itemLore.add(itemModifier.getFormattedModifierText());
+        }
+
+        if (durability != null || duration != null || itemModifiersList.size() > 0)
+            itemLore.add("");
 
         // Bolyai, 2022.01.04: As of the date, untradeable ingredients don't exist, adding this for future
         // untradeable
@@ -152,7 +181,7 @@ public class IngredientProfile {
         itemLore.add(TextFormatting.GRAY + "Crafting Lv. Min: " + level);
 
         for (ProfessionType profession : professions) {
-            itemLore.add(profession.getProfessionIconChar() + TextFormatting.GRAY + profession.getDisplayName());
+            itemLore.add("  " + profession.getProfessionIconChar() + " " + TextFormatting.GRAY + profession.getDisplayName());
         }
 
         // updating lore
@@ -169,8 +198,36 @@ public class IngredientProfile {
             tag.setTag("display", display);
             tag.setBoolean("Unbreakable", true);  // this allow items to have damage
 
+
+            //FIXME: Fix item head textures
+            if (stack.getItem() == Items.SKULL) {
+                HashMap<String, String> ingredientHeadTextures = WebManager.getIngredientHeadTextures();
+
+                if (ingredientHeadTextures.containsKey(name))
+                {
+                    NBTTagCompound skullOwner = new NBTTagCompound();
+
+                    NBTTagCompound propertiesTag = new NBTTagCompound();
+
+                    NBTTagList texturesTag = new NBTTagList();
+
+                    NBTTagCompound valueTag = new NBTTagCompound();
+
+                    valueTag.setString("Value", ingredientHeadTextures.get(name));
+
+                    texturesTag.appendTag(valueTag);
+
+                    propertiesTag.setTag("textures", texturesTag);
+
+                    skullOwner.setTag("Properties", propertiesTag);
+
+                    tag.setTag("SkullOwner", skullOwner);
+                }
+            }
+
             stack.setTagCompound(tag);
         }
+
 
         return guideStack = stack;
     }

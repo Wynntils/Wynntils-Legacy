@@ -14,9 +14,15 @@ public class IngredientModifier {
     }
 
     public String[] getLoreLines() {
-        return new String[] {
-                TextFormatting.GREEN.toString() + modifierValue + "%" + TextFormatting.GRAY + " Ingredient Effectiveness",
-                TextFormatting.GRAY + "(To ingredients " + type.getDisplayValue() + " this one)"
-        };
+        if (modifierValue > 0)
+            return new String[] {
+                    TextFormatting.GREEN + "+" + modifierValue + "%" + TextFormatting.GRAY + " Ingredient Effectiveness",
+                    TextFormatting.GRAY + "(To ingredients " + type.getDisplayValue() + " this one)"
+            };
+        else
+            return new String[] {
+                    TextFormatting.RED.toString() + modifierValue + "%" + TextFormatting.GRAY + " Ingredient Effectiveness",
+                    TextFormatting.GRAY + "(To ingredients " + type.getDisplayValue() + " this one)"
+            };
     }
 }

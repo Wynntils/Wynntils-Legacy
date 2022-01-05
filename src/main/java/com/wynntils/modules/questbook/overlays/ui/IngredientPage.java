@@ -8,21 +8,14 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.Utils;
-import com.wynntils.core.utils.helpers.ItemFilter;
-import com.wynntils.core.utils.helpers.ItemSearchState;
-import com.wynntils.modules.questbook.QuestBookModule;
-import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookListPage;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.ingredient.IngredientProfile;
-import com.wynntils.webapi.profiles.item.ItemProfile;
-import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -31,11 +24,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class IngredientPage extends QuestBookListPage<IngredientProfile> {
-
-    private String searchError;
 
     public IngredientPage() {
         super("Ingredient Guide", true, IconContainer.itemGuideIcon);
@@ -49,6 +41,18 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
     @Override
     protected void drawEntry(IngredientProfile entryInfo, int index, boolean hovered) {
         CustomColor color = new CustomColor(0, 0, 0);
+
+        switch (entryInfo.getTier()) {
+            case TIER_1:
+                color = UtilitiesConfig.Items.INSTANCE.ingredientOneHighlightColor;
+                break;
+            case TIER_2:
+                color = UtilitiesConfig.Items.INSTANCE.ingredientTwoHighlightColor;
+                break;
+            case TIER_3:
+                color = UtilitiesConfig.Items.INSTANCE.ingredientThreeHighlightColor;
+                break;
+        }
 
         int currentX = index % 7;
         int currentY = (index - currentX)/7;
@@ -84,10 +88,15 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
     }
 
     @Override
+    public List<String> getHoveredDescription() {
+        return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Ingredient Guide", TextFormatting.GRAY + "See all ingredients", TextFormatting.GRAY + "currently available", TextFormatting.GRAY + "in the game.", "", TextFormatting.GREEN + "Left click to select");
+    }
+
+    @Override
     protected List<List<IngredientProfile>> getSearchResults(String currentText) {
         List<IngredientProfile> ingredients;
 
-        ingredients = new ArrayList<>(WebManager.getDirectIngredients());
+        ingredients = WebManager.getDirectIngredients().stream().filter(i -> i.getDisplayName().toLowerCase(Locale.ROOT).contains(currentText.toLowerCase(Locale.ROOT))).sorted((o1, o2) -> o1.getDisplayName().compareToIgnoreCase(o2.getDisplayName())).collect(Collectors.toList());
 
         return getListSplitIntoParts(ingredients, 42);
     }
@@ -105,23 +114,11 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
         int y = height / 2;
         int posX = (x - mouseX);
         int posY = (y - mouseY);
-        // search mode toggle button
-        if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) {
-            hoveredText = Arrays.asList("Switch Search Mode", TextFormatting.GRAY + "Toggles between the basic and", TextFormatting.GRAY + "advanced ingredient search modes.");
-            render.drawRect(Textures.UIs.quest_book, x + 147, y - 99, x + 158, y - 88, 218, 281, 240, 303);
-        } else {
-            render.drawRect(Textures.UIs.quest_book, x + 147, y - 99, x + 158, y - 88, 240, 281, 262, 303);
-        }
 
         // back to menu button
         drawMenuButton(x, y, posX, posY);
 
-        // title text (or search error text, if any)
-        if (searchError != null) {
-            render.drawString(searchError, x + 80, y - 78, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-        } else {
-            render.drawString("Available Items", x + 80, y - 78, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-        }
+        render.drawString("Available Items", x + 80, y - 78, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
     }
 
     @Override
@@ -157,28 +154,6 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
 
         checkMenuButton(posX, posY);
 
-//        if (posX >= -157 && posX <= -147 && posY >= 89 && posY <= 99) { // search mode toggle button
-//            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-//            if (QuestBookConfig.INSTANCE.advancedItemSearch) {
-//                QuestBookConfig.INSTANCE.advancedItemSearch = false;
-//                initBasicSearch();
-//                String searchText = ItemPage.BasicSearchHandler.INSTANCE.inheritSearchState(searchState);
-//                textField.setText(searchText != null ? searchText : "");
-//            } else {
-//                textField.setMaxStringLength(ADV_SEARCH_MAX_LEN);
-//                QuestBookConfig.INSTANCE.advancedItemSearch = true;
-//                initAdvancedSearch();
-//                textField.setText(searchState != null ? searchState.toSearchString() : "");
-//            }
-//            QuestBookConfig.INSTANCE.saveSettings(QuestBookModule.getModule());
-//            updateSearch();
-//            return;
-//        }
-//        if (getSearchHandler().handleClick(mouseX, mouseY, mouseButton, selected)) { // delegate rest of click behaviour to search handler
-//            updateSearch();
-//            return;
-//        }
-
         super.mouseClicked(mouseX, mouseY, mouseButton);
     }
 
@@ -187,13 +162,13 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
         if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) return;
         if (selected >= search.get(currentPage - 1).size() || selected < 0) return;
 
-        IngredientProfile item = search.get(currentPage - 1).get(selected);
+        IngredientProfile ingredient = search.get(currentPage - 1).get(selected);
 
         if (mouseButton == 0) { // left click
-            if (item.isFavorited())
-                UtilitiesConfig.INSTANCE.favoriteItems.remove(item.getDisplayName());
+            if (ingredient.isFavorited())
+                UtilitiesConfig.INSTANCE.favoriteIngredients.remove(ingredient.getDisplayName());
             else
-                UtilitiesConfig.INSTANCE.favoriteItems.add(item.getDisplayName());
+                UtilitiesConfig.INSTANCE.favoriteIngredients.add(ingredient.getDisplayName());
             UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
 
             updateSearch();
@@ -201,7 +176,7 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
         }
 
         if (mouseButton == 1) { // right click
-            Utils.openUrl("https://www.wynndata.tk/i/" + Utils.encodeUrl(item.getDisplayName()));
+            Utils.openUrl("https://www.wynndata.tk/i/" + Utils.encodeUrl(ingredient.getDisplayName()));
             return;
         }
     }

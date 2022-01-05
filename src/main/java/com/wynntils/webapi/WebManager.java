@@ -244,7 +244,7 @@ public class WebManager {
         return directIngredients;
     }
 
-    public HashMap<String, String> getIngredientHeadTextures() {
+    public static HashMap<String, String> getIngredientHeadTextures() {
         return ingredientHeadTextures;
     }
 
