@@ -73,7 +73,7 @@ public class IngredientProfile {
     }
 
     public String getIngredientStringFormatted() {
-        StringBuilder builder = new StringBuilder(TextFormatting.DARK_GRAY + name + ingredientTier.getBracketColor() + " [" + ingredientTier.getStarColor());
+        StringBuilder builder = new StringBuilder(TextFormatting.GRAY + name + ingredientTier.getBracketColor() + " [" + ingredientTier.getStarColor());
 
         for (int i = 0; i < tier; i++) {
             builder.append("✫");
