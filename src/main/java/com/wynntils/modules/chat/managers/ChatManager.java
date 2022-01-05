@@ -78,9 +78,7 @@ public class ChatManager {
     private static final String nonTranslatable = "[^a-zA-Z.!?]";
     private static final String optionalTranslatable = "[.!?]";
 
-    private static final Pattern inviteReg = Pattern.compile("((" + TextFormatting.GOLD + "|" + TextFormatting.AQUA + ")/(party|guild) join [a-zA-Z0-9._\\- ]+)");
-    private static final Pattern tradeReg = Pattern.compile("[\\w ]+ would like to trade! Type /trade [\\w ]+ to accept\\.");
-    private static final Pattern duelReg = Pattern.compile("[\\w ]+ \\[Lv\\. \\d+] would like to duel! Type /duel [\\w ]+ to accept\\.");
+    private static final Pattern duelReg = Pattern.compile("[\\w ]+ would like to duel! Type (/duel [\\w ]+) to accept\\.");
     private static final Pattern coordinateReg = Pattern.compile("(-?\\d{1,5}[ ,]{1,2})(\\d{1,3}[ ,]{1,2})?(-?\\d{1,5})");
 
     private static boolean discoveriesLoaded = false;
@@ -237,37 +235,12 @@ public class ChatManager {
             }
         }
 
-        // clickable party invites
-        if (ChatConfig.INSTANCE.clickablePartyInvites && inviteReg.matcher(McIf.getFormattedText(in)).find()) {
-            for (ITextComponent textComponent : in.getSiblings()) {
-                if (textComponent.getUnformattedComponentText().startsWith("/")) {
-                    String command = textComponent.getUnformattedComponentText();
-                    textComponent.getStyle()
-                            .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
-                            .setUnderlined(true)
-                            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Join!")));
-                }
-            }
-        }
-
-        // clickable trade messages
-        if (ChatConfig.INSTANCE.clickableTradeMessage && tradeReg.matcher(McIf.getUnformattedText(in)).find()) {
-            for (ITextComponent textComponent : in.getSiblings()) {
-                if (textComponent.getUnformattedComponentText().startsWith("/")) {
-                    String command = textComponent.getUnformattedComponentText();
-                    textComponent.getStyle()
-                            .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
-                            .setUnderlined(true)
-                            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Trade!")));
-                }
-            }
-        }
-
         // clickable duel messages
-        if (ChatConfig.INSTANCE.clickableDuelMessage && duelReg.matcher(McIf.getUnformattedText(in)).find()) {
+        Matcher duelMatcher = duelReg.matcher(McIf.getUnformattedText(in));
+        if (ChatConfig.INSTANCE.clickableDuelMessage && duelMatcher.find()) {
+            String command = duelMatcher.group(1);
             for (ITextComponent textComponent : in.getSiblings()) {
-                if (McIf.getUnformattedText(textComponent).startsWith("/")) {
-                    String command = textComponent.getUnformattedComponentText();
+                if (McIf.getUnformattedText(textComponent).contains("/duel")) {
                     textComponent.getStyle()
                             .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
                             .setUnderlined(true)
