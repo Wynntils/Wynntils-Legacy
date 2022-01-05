@@ -83,6 +83,9 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Clickable Duel Requests", description = "Should duel requests provide a clickable command?", order = 19)
     public boolean clickableDuelMessage = true;
 
+    @Setting(displayName = "Right Click for Dialogue", description = "Should dialogue progress when you right click the NPC?\n\n§8This may not work on every NPC.", order = 20)
+    public boolean rightClickDialogue = false;
+
     public enum Presets {
         a,
         b,
