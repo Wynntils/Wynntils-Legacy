@@ -108,7 +108,7 @@ public class ChatManager {
 
         // timestamps
         if (ChatConfig.INSTANCE.addTimestampsToChat) {
-            addTimestamp(in);
+            in = addTimestamp(in);
         }
 
         // popup sound
@@ -984,13 +984,13 @@ public class ChatManager {
 
                 // most recent message
                 ITextComponent newMessage = siblings.get(siblings.size() - lineCount - 1);
-                // filter out info messages because they wont be caught through the normal checks
-                if (!newMessage.getUnformattedText().startsWith("[Info] ") || !ChatConfig.INSTANCE.filterWynncraftInfo) {
+                // filter out any disabled messages
+                if (ForgeEventFactory.onClientChat(ChatType.SYSTEM, newMessage) != null) {
                     if (dialogueChat == null) {
                         dialogueChat = newMessage;
                     } else {
                         if (ChatConfig.INSTANCE.addTimestampsToChat) {
-                            addTimestamp(newMessage); // add timestamps to new lines for consistency
+                            newMessage = addTimestamp(newMessage); // add timestamps to new lines for consistency
                         }
                         dialogueChat.appendSibling(newMessage);
                     }
@@ -1019,7 +1019,7 @@ public class ChatManager {
         ChatOverlay.getChat().deleteChatLine(ChatOverlay.WYNN_DIALOGUE_ID);
     }
 
-    private static void addTimestamp(ITextComponent in) {
+    private static ITextComponent addTimestamp(ITextComponent in) {
         if (dateFormat == null || !validDateFormat) {
             try {
                 dateFormat = new SimpleDateFormat(ChatConfig.INSTANCE.timestampFormat);
@@ -1029,10 +1029,10 @@ public class ChatManager {
             }
         }
 
-        List<ITextComponent> timeStamp = new ArrayList<>();
+        ITextComponent timeStamp = new TextComponentString("");
         ITextComponent startBracket = new TextComponentString("[");
         startBracket.getStyle().setColor(TextFormatting.DARK_GRAY);
-        timeStamp.add(startBracket);
+        timeStamp.appendSibling(startBracket);
         ITextComponent time;
         if (validDateFormat) {
             time = new TextComponentString(dateFormat.format(new Date()));
@@ -1041,11 +1041,13 @@ public class ChatManager {
             time = new TextComponentString("Invalid Format");
             time.getStyle().setColor(TextFormatting.RED);
         }
-        timeStamp.add(time);
+        timeStamp.appendSibling(time);
         ITextComponent endBracket = new TextComponentString("] ");
         endBracket.getStyle().setColor(TextFormatting.DARK_GRAY);
-        timeStamp.add(endBracket);
-        in.getSiblings().addAll(0, timeStamp);
+        timeStamp.appendSibling(endBracket);
+
+        timeStamp.appendSibling(in);
+        return timeStamp;
     }
 
     public static void setDiscoveriesLoaded(boolean discoveriesLoaded) {
