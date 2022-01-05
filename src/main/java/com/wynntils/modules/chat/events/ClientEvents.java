@@ -144,8 +144,6 @@ public class ClientEvents implements Listener {
         }
     }
 
-    private boolean outgoingSneak = false;
-
     @SubscribeEvent
     public void onClickNPC(PacketEvent<CPacketUseEntity> e) {
         if (!ChatConfig.INSTANCE.rightClickDialogue) return;
@@ -159,23 +157,7 @@ public class ClientEvents implements Listener {
         String name = clicked.getName();
         if (!name.contains("NPC") && !name.contains("\u0001")) return; // (probably) not an NPC
 
-        if (outgoingSneak) return;
-        outgoingSneak = true; // stop multiple packets from being sent at once
-
-        // send the sneak packet, then stop sneaking once the dialogue progresses
-        CPacketEntityAction sneakPacket = new CPacketEntityAction(player, CPacketEntityAction.Action.START_SNEAKING);
-        PacketQueue.queueComplexPacket(sneakPacket, SPacketCustomSound.class, p -> verifyDialogue(((SPacketCustomSound) p)));
-    }
-
-    private boolean verifyDialogue(SPacketCustomSound p) {
-        boolean success = p.getSoundName().equals("block.lava.pop"); // dialogue progression sound
-        if (success) {
-            outgoingSneak = false;
-            // immediately send the unsneak packet, no need to queue it
-            CPacketEntityAction unsneakPacket = new CPacketEntityAction(McIf.player(), CPacketEntityAction.Action.STOP_SNEAKING);
-            McIf.mc().getConnection().sendPacket(unsneakPacket);
-        }
-        return success;
+        ChatManager.progressDialogue();
     }
 
 }

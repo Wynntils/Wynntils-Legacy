@@ -12,6 +12,7 @@ import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.chat.configs.ChatConfig;
 import com.wynntils.modules.chat.language.WynncraftLanguage;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
+import com.wynntils.modules.core.managers.PacketQueue;
 import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.instances.DiscoveryInfo;
 import com.wynntils.modules.questbook.managers.QuestManager;
@@ -22,6 +23,8 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Slot;
+import net.minecraft.network.play.client.CPacketEntityAction;
+import net.minecraft.network.play.server.SPacketCustomSound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.*;
@@ -72,6 +75,8 @@ public class ChatManager {
     private static final int WYNN_DIALOGUE_NEW_MESSAGES_ID = "wynn_dialogue_new_messages".hashCode();
     private static int lineCount = -1;
     private static ITextComponent dialogueChat = null;
+
+    private static boolean outgoingSneak = false;
 
     private static final SoundEvent popOffSound = new SoundEvent(new ResourceLocation("minecraft", "entity.blaze.hurt"));
 
@@ -910,11 +915,13 @@ public class ChatManager {
                     ChatOverlay.getChat().printChatMessage(line);
                 }
             }
+            // reset everything
             newMessageCount = 0;
             lastChat = null;
             lineCount = -1;
             dialogueChat = null;
-            ChatOverlay.getChat().deleteChatLine(WYNN_DIALOGUE_NEW_MESSAGES_ID);
+            ChatOverlay.getChat().deleteChatLine(WYNN_DIALOGUE_NEW_MESSAGES_ID); // clear dialogue messages
+            finishSneak(); // make sure dialogue progression is canceled in case it wasn't
             return new Pair<>(true, null);
         }
 
@@ -982,6 +989,31 @@ public class ChatManager {
             return new Pair<>(true, newComponent);
         }
         return new Pair<>(false, component);
+    }
+
+    public static void progressDialogue() {
+        if (!inDialogue) return; // nothing to progress
+        if (outgoingSneak) return; // do not send multiple sneak packets
+        outgoingSneak = true;
+
+        // send the sneak packet, then stop sneaking once the dialogue progresses
+        CPacketEntityAction sneakPacket = new CPacketEntityAction(McIf.player(), CPacketEntityAction.Action.START_SNEAKING);
+        PacketQueue.queueComplexPacket(sneakPacket, SPacketCustomSound.class, p -> verifyDialogue(((SPacketCustomSound) p)));
+    }
+
+    private static boolean verifyDialogue(SPacketCustomSound p) {
+        boolean success = p.getSoundName().equals("block.lava.pop"); // dialogue progression sound
+        if (success) finishSneak();
+        return success;
+    }
+
+    public static void finishSneak() {
+        if (!outgoingSneak) return; // nothing to finish
+        outgoingSneak = false;
+
+        // immediately send the unsneak packet, no need to queue it
+        CPacketEntityAction unsneakPacket = new CPacketEntityAction(McIf.player(), CPacketEntityAction.Action.STOP_SNEAKING);
+        McIf.mc().getConnection().sendPacket(unsneakPacket);
     }
 
     public static void onLeave() {
