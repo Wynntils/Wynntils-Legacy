@@ -113,7 +113,6 @@ public class IngredientProfile {
 
         ItemStack stack;
 
-        //FIXME: Use correct head textures
         if (material.matches("(.*\\d.*)")) {
             String[] split = material.split(":");
 
