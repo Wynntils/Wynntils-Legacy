@@ -962,12 +962,14 @@ public class ChatManager {
                 }
             }
             chat = siblings.subList(0, siblings.size() - lineCount).stream().map(McIf::getUnformattedText).collect(Collectors.joining());
+            chat = TextFormatting.getTextWithoutFormattingCodes(chat);
             chat = chat.substring(0, chat.length() - 1);
         } else if (inDialogue) {
             if (siblings.size() < lineCount) {
                 return new Pair<>(false, component);
             }
             chat = siblings.subList(0, siblings.size() - lineCount).stream().map(McIf::getUnformattedText).collect(Collectors.joining());
+            chat = TextFormatting.getTextWithoutFormattingCodes(chat);
             if (!chat.isEmpty()) chat = chat.substring(0, chat.length() - 1);
             dialogue = new ArrayList<>(siblings.subList(siblings.size() - lineCount, siblings.size()));
             if (!chat.equals(lastChat) && !dialogue.equals(last)) {
