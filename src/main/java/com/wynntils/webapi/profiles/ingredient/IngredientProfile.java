@@ -163,7 +163,7 @@ public class IngredientProfile {
         // Bolyai, 2022.01.04: As of the date, untradeable ingredients don't exist, adding this for future
         // untradeable
         if (untradeable)
-            itemLore.add(TextFormatting.RED + "Untradeable");
+            itemLore.add(TextFormatting.RED + "Untradeable item");
 
         itemLore.add(TextFormatting.GRAY + "Crafting Lv. Min: " + level);
 
