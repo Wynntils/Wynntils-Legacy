@@ -29,9 +29,6 @@ public class IdentificationContainer {
         calculateMinMax();
     }
 
-    public IdentificationContainer() {
-    }
-
     public void calculateMinMax() {
         if (isFixed || (-1 <= baseValue && baseValue <= 1)) {
             min = max = baseValue;
@@ -72,9 +69,6 @@ public class IdentificationContainer {
     }
 
     public static String getAsLongName(String shortName) {
-        if (shortName.equals("gatherXPBonus"))
-            return "Gather XP Bonus";
-
         if (shortName.startsWith("raw")) {
             shortName = shortName.substring(3);
             shortName = Character.toLowerCase(shortName.charAt(0)) + shortName.substring(1);

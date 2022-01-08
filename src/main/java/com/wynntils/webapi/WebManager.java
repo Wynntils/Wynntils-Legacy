@@ -511,7 +511,6 @@ public class WebManager {
                     HashMap<String, IngredientProfile> cingredients = new HashMap<>();
 
                     for (IngredientProfile prof : gItems) {
-                        prof.postParse();
                         cingredients.put(prof.getDisplayName(), prof);
                     }
 

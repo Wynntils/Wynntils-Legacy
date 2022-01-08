@@ -1,10 +1,10 @@
 package com.wynntils.webapi.profiles.ingredient;
 
+import com.google.gson.annotations.SerializedName;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.ingredient.enums.IngredientModifierType;
 import com.wynntils.webapi.profiles.ingredient.enums.IngredientTier;
-import com.wynntils.webapi.profiles.ingredient.enums.ItemModifierType;
 import com.wynntils.webapi.profiles.ingredient.enums.ProfessionType;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 import net.minecraft.init.Items;
@@ -20,52 +20,26 @@ import java.util.*;
 public class IngredientProfile {
 
     String name;
-    int tier;
+
+    @SerializedName("tier")
+    IngredientTier ingredientTier;
+
     boolean untradeable;
     int level;
     String material;
     List<ProfessionType> professions = new ArrayList<>();
     Map<String, IngredientIdentificationContainer> statuses = new HashMap<>();
-    Map<String, Integer> itemModifiers = new HashMap<>();
-    Map<String, Integer> ingredientModifiers = new HashMap<>();
+    IngredientItemModifiers itemModifiers = new IngredientItemModifiers();
+    IngredientModifiers ingredientModifiers = new IngredientModifiers();
 
-    transient IngredientTier ingredientTier;
-    //transient List<ItemModifier> itemModifiersList = new ArrayList<>();
-    //transient List<IngredientModifier> ingredientModifiersList = new ArrayList<>();
-    transient Map<ItemModifierType, ItemModifier> itemModifiersTypeMap = new HashMap<>();
     transient ItemStack guideStack;
 
     public IngredientProfile(String name, IngredientTier tier, int level, boolean untradeable, String material,
                              ArrayList<ProfessionType> professions, Map<String, IdentificationContainer> statuses,
-                             Map<String, Integer> itemModifiers, Map<String, Integer> ingredientModifiers) {}
-
-    public void postParse() {
-        ingredientTier = IngredientTier.fromInteger(tier);
-
-        itemModifiersTypeMap = new HashMap<>();
-        for (String key : itemModifiers.keySet()) {
-            ItemModifierType type = ItemModifierType.valueOf(key.toUpperCase(Locale.ROOT));
-            ItemModifier itemModifier = new ItemModifier(type, itemModifiers.get(key));
-            itemModifiersTypeMap.put(type, itemModifier);
-        }
-    }
+                             IngredientItemModifiers itemModifiers, IngredientModifiers ingredientModifiers) {}
 
     public String getIngredientStringFormatted() {
-        StringBuilder builder = new StringBuilder(TextFormatting.GRAY + name + ingredientTier.getBracketColor() + " [" + ingredientTier.getStarColor());
-
-        for (int i = 0; i < tier; i++) {
-            builder.append("✫");
-        }
-
-        builder.append(TextFormatting.GRAY);
-
-        for (int i = 0; i < 3 - tier; i++) {
-            builder.append("✫");
-        }
-
-        builder.append(ingredientTier.getBracketColor()).append("]");
-
-        return builder.toString();
+        return TextFormatting.GRAY + name + " " + ingredientTier.getTierString();
     }
 
     public String getDisplayName() {
@@ -98,8 +72,9 @@ public class IngredientProfile {
             if (split.length <= 1) return guideStack = stack;
 
             stack.setItemDamage(Integer.parseInt(split[1]));
-        } else
+        } else {
             stack = new ItemStack(Item.getByNameOrId(material));
+        }
 
         List<String> itemLore = new ArrayList<>();
 
@@ -124,46 +99,65 @@ public class IngredientProfile {
         if (statuses.size() > 0)
             itemLore.add("");
 
-        for (String key : ingredientModifiers.keySet()) {
-            IngredientModifierType type;
-            if (key.equals("notTouching"))
-                type = IngredientModifierType.NOT_TOUCHING;
-            else
-                type = IngredientModifierType.valueOf(key.toUpperCase(Locale.ROOT));
+        int left = ingredientModifiers.getLeft();
+        int right = ingredientModifiers.getRight();
+        int above = ingredientModifiers.getAbove();
+        int under = ingredientModifiers.getUnder();
+        int touching = ingredientModifiers.getTouching();
+        int notTouching = ingredientModifiers.getNotTouching();
 
-            itemLore.addAll(Arrays.asList(new IngredientModifier(type, ingredientModifiers.get(key)).getLoreLines()));
-        }
+        if (left != 0)
+            itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("left", left)));
+        if (right != 0)
+            itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("right", right)));
+        if (above != 0)
+            itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("above", above)));
+        if (under != 0)
+            itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("under", under)));
+        if (touching != 0)
+            itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("touching", touching)));
+        if (notTouching != 0)
+            itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("notTouching", notTouching)));
 
-        if (ingredientModifiers.size() > 0)
+        if (ingredientModifiers.anyExists())
             itemLore.add("");
 
-        ItemModifier durability = itemModifiersTypeMap.get(ItemModifierType.DURABILITY);
-        ItemModifier duration = itemModifiersTypeMap.get(ItemModifierType.DURATION);
+        int durability = itemModifiers.getDurability();
+        int duration = itemModifiers.getDuration();
+        int charges = itemModifiers.getCharges();
+        int strength = itemModifiers.getStrength();
+        int dexterity = itemModifiers.getDexterity();
+        int intelligence = itemModifiers.getIntelligence();
+        int defense = itemModifiers.getDefense();
+        int agility = itemModifiers.getAgility();
 
-        if (durability != null && duration != null)
-            itemLore.add(durability.getFormattedModifierText() + TextFormatting.GRAY + " or " + duration.getFormattedModifierText());
-        else if (durability != null)
-            itemLore.add(durability.getFormattedModifierText());
-        else if (duration != null)
-            itemLore.add(duration.getFormattedModifierText());
+        if (durability != 0 && duration != 0)
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("durability", durability) + TextFormatting.GRAY + " or " + IngredientItemModifiers.getFormattedModifierText("duration", duration));
+        else if (durability != 0)
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("durability", durability));
+        else if (duration != 0)
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("duration", duration));
 
+        if (charges != 0)
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("charges", charges));
+        if (strength != 0)
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("strength", strength));
+        if (dexterity != 0)
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("dexterity", dexterity));
+        if (intelligence != 0)
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("intelligence", intelligence));
+        if (defense != 0)
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("defense", defense));
+        if (agility != 0)
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("agility", agility));
 
-        for (String key : itemModifiers.keySet()) {
-            ItemModifierType type = ItemModifierType.valueOf(key.toUpperCase(Locale.ROOT));
-            ItemModifier itemModifier = new ItemModifier(type, itemModifiers.get(key));
-
-            if (itemModifier.type == ItemModifierType.DURABILITY || itemModifier.type == ItemModifierType.DURATION) continue;
-
-            itemLore.add(itemModifier.getFormattedModifierText());
-        }
-
-        if (durability != null || duration != null || itemModifiers.size() > 0)
+        if (itemModifiers.anyExists())
             itemLore.add("");
 
         // Bolyai, 2022.01.04: As of the date, untradeable ingredients don't exist, adding this for future
         // untradeable
         if (untradeable)
-            itemLore.add(TextFormatting.RED + "Untradeable item");
+            itemLore.add(TextFormatting.RED + "Untradeable Item");
 
         itemLore.add(TextFormatting.GRAY + "Crafting Lv. Min: " + level);
 
@@ -171,42 +165,38 @@ public class IngredientProfile {
             itemLore.add("  " + profession.getProfessionIconChar() + " " + TextFormatting.GRAY + profession.getDisplayName());
         }
 
-        // updating lore
-        {
-            NBTTagCompound tag = new NBTTagCompound();
+        // set lore
+        NBTTagCompound tag = new NBTTagCompound();
 
-            NBTTagCompound display = new NBTTagCompound();
-            NBTTagList loreList = new NBTTagList();
-            itemLore.forEach(c -> loreList.appendTag(new NBTTagString(c)));
+        NBTTagCompound display = new NBTTagCompound();
+        NBTTagList loreList = new NBTTagList();
+        itemLore.forEach(c -> loreList.appendTag(new NBTTagString(c)));
 
-            display.setTag("Lore", loreList);
-            display.setString("Name", getIngredientStringFormatted());
+        display.setTag("Lore", loreList);
+        display.setString("Name", getIngredientStringFormatted());
 
-            tag.setTag("display", display);
-            tag.setBoolean("Unbreakable", true);  // this allow items to have damage
+        tag.setTag("display", display);
+        tag.setBoolean("Unbreakable", true);  // this allow items to have damage
 
-            if (stack.getItem() == Items.SKULL) {
-                HashMap<String, String> ingredientHeadTextures = WebManager.getIngredientHeadTextures();
+        if (stack.getItem() == Items.SKULL) {
+            HashMap<String, String> ingredientHeadTextures = WebManager.getIngredientHeadTextures();
 
-                if (ingredientHeadTextures.containsKey(name))
-                {
-                    NBTTagCompound skullData = new NBTTagCompound();
-                    skullData.setTag("Id", new NBTTagString(UUID.randomUUID().toString()));
+            if (ingredientHeadTextures.containsKey(name)) {
+                NBTTagCompound skullData = new NBTTagCompound();
+                skullData.setTag("Id", new NBTTagString(UUID.randomUUID().toString()));
 
-                    NBTTagCompound properties = new NBTTagCompound();
-                    NBTTagList textures = new NBTTagList();
-                    NBTTagCompound textureEntry = new NBTTagCompound();
-                    textureEntry.setTag("Value", new NBTTagString(ingredientHeadTextures.get(name)));
-                    textures.appendTag(textureEntry);
-                    properties.setTag("textures", textures);
-                    skullData.setTag("Properties", properties);
+                NBTTagCompound properties = new NBTTagCompound();
+                NBTTagList textures = new NBTTagList();
+                NBTTagCompound textureEntry = new NBTTagCompound();
+                textureEntry.setTag("Value", new NBTTagString(ingredientHeadTextures.get(name)));
+                textures.appendTag(textureEntry);
+                properties.setTag("textures", textures);
+                skullData.setTag("Properties", properties);
 
-                    tag.setTag("SkullOwner", skullData);
-                }
+                tag.setTag("SkullOwner", skullData);
             }
-
-            stack.setTagCompound(tag);
         }
+        stack.setTagCompound(tag);
 
         return guideStack = stack;
     }
