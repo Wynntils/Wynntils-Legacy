@@ -77,17 +77,14 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Use brackets for translation", description = "Should text be translated to Wynnic and Gavellian using a button or curly brackets for Wynnic and angle brackets for gavellian?", order = 15)
     public boolean useBrackets = false;
 
-    @Setting(displayName = "Clickable Party Invites", description = "Should party invites provide a clickable command?", order = 16)
-    public boolean clickablePartyInvites = true;
-
     @Setting(displayName = "Clickable Coordinates", description = "Should coordinates that are displayed in chat be clickable as a '/compass' command?", order = 17)
     public boolean clickableCoordinates = true;
 
-    @Setting(displayName = "Clickable Trade Requests", description = "Should trade requests provide a clickable command?", order = 18)
-    public boolean clickableTradeMessage = true;
-
     @Setting(displayName = "Clickable Duel Requests", description = "Should duel requests provide a clickable command?", order = 19)
     public boolean clickableDuelMessage = true;
+
+    @Setting(displayName = "Right Click for Dialogue", description = "Should dialogue progress when you right click the NPC?\n\n§8This may not work on every NPC.", order = 20)
+    public boolean rightClickDialogue = false;
 
     public enum Presets {
         a,
