@@ -25,25 +25,25 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Transparent Chat", description = "Should the chat window be transparent?", order = 2)
     public boolean transparent = false;
 
-    @Setting(displayName = "Chat Timestamp Format", description = "How should the timestamps be displayed?\n\n§8This has no effect if chat timestamps are disabled.", order = 6)
+    @Setting(displayName = "Chat Timestamp Format", description = "How should timestamps be displayed?\n\n§8This setting has no effect if Chat Timestamps is disabled.", order = 6)
     public String timestampFormat = "HH:mm:ss";
 
-    @Setting(displayName = "Chat Mentions", description = "Should a sound play when your username appears in chat?", order = 3)
+    @Setting(displayName = "Chat Mentions", description = "Should a sound play when your username is mentioned in a message?", order = 3)
     public boolean allowChatMentions = true;
 
-    @Setting(displayName = "Chat Mentions Nicknames", description = "Besides your username, what other names should trigger chat mentions?\n\n§8Multiple nicknames can be added by using commas as separators.", order = 4)
+    @Setting(displayName = "Chat Mentions Nicknames", description = "Besides your username, what other names should trigger Chat Mentions?\n\n§8Multiple nicknames can be added by using commas as separators.", order = 4)
     public String mentionNames = "";
 
     @Setting(displayName = "Chat Spam Filter", description = "Should repeating messages stack?", order = 7)
     public boolean blockChatSpamFilter = true;
 
-    @Setting(displayName = "Filter Info Messages", description = "Should Wynncraft Info messages be filtered?\n\n§8Messages starting with §4[Info]§8 will no longer appear in chat.", order = 8)
+    @Setting(displayName = "Filter Info Messages", description = "Should Wynncraft info messages be hidden from chat?\n\n§8Messages starting with §4[Info]§8 will no longer appear in chat.", order = 8)
     public boolean filterWynncraftInfo = true;
 
-    @Setting(displayName = "Filter Join Messagse", description = "Should Wynncraft Join messages be filtered?", order = 9)
+    @Setting(displayName = "Filter Join Messagse", description = "Should Wynncraft join messages be hidden from chat?", order = 9)
     public boolean filterJoinMessages = false;
 
-    @Setting(displayName = "Filter Territory Enter", description = "Should territory enter messages be displayed in chat?\n\n§8Territory enter messages look like §7[You are now entering Detlas]§8.", order = 10)
+    @Setting(displayName = "Filter Territory Enter", description = "Should territory enter messages be hidden from chat?\n\n§8Territory enter messages look like §7[You are now entering Detlas]§8.", order = 10)
     public boolean filterTerritoryEnter = true;
 
     @Setting(displayName = "Improved Powder Manual", description = "Should the powder manual be replaced with a cleaner menu?", order = 11)
@@ -65,16 +65,16 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Alter Chat Tab by Presets", description = "Which premade selection of chat tabs should be used?\n\na - Global, Guild, Party\n\nb - Global, Shouts, Guild/Party, PMs\n\nvanilla - All", order = 0)
     public Presets preset = Presets.vanilla;
 
-    @Setting(displayName = "Wynnic Translation Condition", description = "What is the condition for translating Wynnic and Gavellian be translated?\n\n§8Discovery - The discovery for the transcriber has been discovered\n\n§8Book - The transcriber is in the player's inventory", order = 12)
+    @Setting(displayName = "Wynnic Translation Condition", description = "When should Wynnic and Gavellian be translated?\n\nDiscovery: The discovery for the transcriber has been discovered.\n\nBook: The transcriber is in your inventory.", order = 12)
     public TranslateConditions translateCondition = TranslateConditions.always;
 
-    @Setting(displayName = "Directly Translate Wynnic", description = "Should Ingame languages such as Wynnic be directly replaced with English translations in chat?\n\n§8If this option is disabled, translation tooltips will appear when hovering over messages with Wynnic/Gavellian.", order = 13)
+    @Setting(displayName = "Translate Wynnic", description = "Should in-game languages such as Wynnic be directly replaced with English translations in chat?\n\n§8If this option is disabled, translation tooltips will appear when hovering over messages with Wynnic or Gavellian.", order = 13)
     public boolean translateIntoChat = false;
 
-    @Setting(displayName = "Wynnic Translation Colors", description = "Should Wynnic be colored green and Gavellian purple?", order = 14)
+    @Setting(displayName = "Wynnic Translation Colors", description = "Should Wynnic be coloured green and Gavellian be coloured purple?", order = 14)
     public boolean coloredTranslation = true;
 
-    @Setting(displayName = "Use brackets for translation", description = "Should text be translated to Wynnic and Gavellian using a button or curly brackets for Wynnic and angle brackets for gavellian?", order = 15)
+    @Setting(displayName = "Use Brackets for Translation", description = "How should sent messages be translated to Wynnic and Gavellian?\n\nIf disabled, there will be two buttons next to the message field that allow you to select Wynnic and Gavellian.\n\nIf enabled, you can type in Wynnic using curly brackets ({ }) and in Gavellian using angle brackets (< >).", order = 15)
     public boolean useBrackets = false;
 
     @Setting(displayName = "Clickable Coordinates", description = "Should coordinates that are displayed in chat be clickable as a '/compass' command?", order = 17)
@@ -83,7 +83,7 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Clickable Duel Requests", description = "Should duel requests provide a clickable command?", order = 19)
     public boolean clickableDuelMessage = true;
 
-    @Setting(displayName = "Right Click for Dialogue", description = "Should dialogue progress when you right click the NPC?\n\n§8This may not work on every NPC.", order = 20)
+    @Setting(displayName = "Right Click for Dialogue", description = "Should dialogue progress when you right click an NPC?\n\n§8This may not work on every NPC.", order = 20)
     public boolean rightClickDialogue = false;
 
     public enum Presets {
