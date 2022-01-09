@@ -46,9 +46,6 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Filter Territory Enter", description = "Should territory enter messages be hidden from chat?\n\n§8Territory enter messages look like §7[You are now entering Detlas]§8.", order = 10)
     public boolean filterTerritoryEnter = true;
 
-    @Setting(displayName = "Improved Powder Manual", description = "Should the powder manual be replaced with a cleaner menu?", order = 11)
-    public boolean customPowderManual = true;
-
     @Setting(displayName = "Show Held Item Chat Message", description = "Should details of your compass and soul points be shown in chat while you are holding them?", order = 12)
     public boolean heldItemChat = true;
 

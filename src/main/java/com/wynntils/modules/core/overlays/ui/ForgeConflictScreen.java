@@ -41,10 +41,17 @@ public class ForgeConflictScreen extends CustomModLoadingErrorDisplayException {
                 errorScreen.height / 2 - 10,
                 0xFFFFFF
         );
-        errorScreen.drawCenteredString(fontRenderer,
-                "§cPlease update your Forge version to stay safe.",
+        errorScreen.drawCenteredString(
+                fontRenderer,
+                "For your safety, we prevent loading with vulnerable versions of Forge.",
                 errorScreen.width / 2,
-                errorScreen.height / 2 + 10,
+                errorScreen.height / 2,
+                0xFFFFFF
+        );
+        errorScreen.drawCenteredString(fontRenderer,
+                "§cPlease update your Forge 1.12.2 version.",
+                errorScreen.width / 2,
+                errorScreen.height / 2 + 20,
                 0xFFFFFF);
     }
 
