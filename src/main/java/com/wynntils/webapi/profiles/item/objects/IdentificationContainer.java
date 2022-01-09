@@ -80,7 +80,7 @@ public class IdentificationContainer {
             else nameBuilder.append(c);
         }
 
-        return StringUtils.capitalizeFirst(nameBuilder.toString());
+        return StringUtils.capitalizeFirst(nameBuilder.toString()).replaceAll("\\bXp\\b", "XP");
     }
 
     public static IdentificationModifier getTypeFromName(String name) {
