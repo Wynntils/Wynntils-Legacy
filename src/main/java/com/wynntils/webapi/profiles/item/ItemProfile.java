@@ -207,6 +207,10 @@ public class ItemProfile {
         }
     }
 
+    public int getIdentificationCost() {
+        return this.getTier().getItemIdentificationCost(this.getRequirements().getLevel());
+    }
+
     private ItemStack generateStack() {
         ItemStack stack = itemInfo.asItemStack();
         if (stack.isEmpty()) return guideStack = ItemStack.EMPTY;
