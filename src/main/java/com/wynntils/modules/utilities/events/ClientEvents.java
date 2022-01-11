@@ -104,6 +104,9 @@ public class ClientEvents implements Listener {
     private IInventory currentLootChest;
 
     private boolean isInIdentifier = false;
+    private ItemStack identifierLastItemClicked;
+    private int currentIdentifierCost = 0;
+    private int previousIdentifierCost = 0;
 
     private static final Pattern PRICE_REPLACER = Pattern.compile("§6 - §a. §f([1-9]\\d*)§7" + EmeraldSymbols.E_STRING);
     private static final Pattern INGREDIENT_SPLIT_PATTERN = Pattern.compile("§f(\\d+) x (.+)");
@@ -289,6 +292,8 @@ public class ClientEvents implements Listener {
         if (e.getGui() instanceof ChestReplacer && (((ChestReplacer) e.getGui()).getLowerInv().getName()).contains("Item Identifier")
                 && ((ChestReplacer) e.getGui()).getLowerInv().getSizeInventory() == 9) {
             isInIdentifier = true;
+            currentIdentifierCost = 0;
+            previousIdentifierCost = 0;
         }
     }
 
@@ -692,6 +697,14 @@ public class ClientEvents implements Listener {
     public void clickOnChest(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
         if (e.getSlotIn() == null) return;
 
+        if (isInIdentifier) {
+            identifierLastItemClicked = e.getGui().getSlotUnderMouse().getStack();
+            Matcher identifierCostMatcher = IDENTIFIER_PRICE_PATTERN.matcher(ItemUtils.getStringLore(e.getGui().getLowerInv().getStackInSlot(8)));
+            if (identifierCostMatcher.matches()) {
+                previousIdentifierCost = Integer.parseInt(identifierCostMatcher.group(1).replaceAll("\\s", ""));
+            }
+        }
+
         // Queue messages into game update ticker when clicking on emeralds in loot chest
         if (TextFormatting.getTextWithoutFormattingCodes(e.getGui().getLowerInv().getName()).startsWith("Loot Chest") && OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
             // Check if item is actually an emerald, if we're left clicking, and make sure we're not shift clicking
@@ -817,7 +830,21 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onSetSlot(PacketEvent<SPacketSetSlot> event) {
-        if (bankPageConfirmed && event.getPacket().getSlot() == 8) {
+        SPacketSetSlot p = event.getPacket();
+
+        if (isInIdentifier) {
+            if (p.getStack().getDisplayName().contains("Unidentified")) {
+                // TODO: Logic for removing favourite tag here
+            } else if (p.getStack().getDisplayName().contains("Confirm Identification")) {
+                Matcher currentPriceMatcher = IDENTIFIER_PRICE_PATTERN.matcher(ItemUtils.getStringLore(p.getStack()));
+                if (currentPriceMatcher.matches()) {
+                    currentIdentifierCost = Integer.parseInt(currentPriceMatcher.group(1).replaceAll("\\s", ""));
+                }
+            }
+        }
+
+
+        if (bankPageConfirmed && p.getSlot() == 8) {
             bankPageConfirmed = false;
             CPacketClickWindow packet = new CPacketClickWindow(McIf.player().openContainer.windowId, 8, 0, ClickType.PICKUP, event.getPacket().getStack(), McIf.player().openContainer.getNextTransactionID(McIf.player().inventory));
             McIf.mc().getConnection().sendPacket(packet);
