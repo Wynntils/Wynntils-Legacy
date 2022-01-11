@@ -106,6 +106,7 @@ public class ClientEvents implements Listener {
     private static final Pattern PRICE_REPLACER = Pattern.compile("§6 - §a. §f([1-9]\\d*)§7" + EmeraldSymbols.E_STRING);
     private static final Pattern INGREDIENT_SPLIT_PATTERN = Pattern.compile("§f(\\d+) x (.+)");
     private static final Pattern WAR_CHAT_MESSAGE_PATTERN = Pattern.compile("§3\\[WAR§3\\] The war for (.+) will start in \\d+ minutes.");
+    private static final Pattern IDENTIFIER_PRICE_PATTERN = Pattern.compile("^§7Price: §a([0-9]* ?[0-9]*)§2" + EmeraldSymbols.E_STRING + " §8.+");
 
     public static boolean isAwaitingHorseMount = false;
     private static int lastHorseId = -1;
