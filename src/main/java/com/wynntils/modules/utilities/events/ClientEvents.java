@@ -32,8 +32,10 @@ import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.*;
 import com.wynntils.modules.utilities.overlays.hud.ConsumableTimerOverlay;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
+import com.wynntils.modules.utilities.overlays.inventories.ItemIdentificationOverlay;
 import com.wynntils.modules.utilities.overlays.ui.FakeGuiContainer;
 import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.item.ItemProfile;
 import com.wynntils.webapi.profiles.item.enums.ItemType;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -698,7 +700,8 @@ public class ClientEvents implements Listener {
         if (e.getSlotIn() == null) return;
 
         if (isInIdentifier) {
-            identifierLastItemClicked = e.getGui().getSlotUnderMouse().getStack();
+            identifierLastItemClicked = e.getSlotIn().getStack();
+            System.out.println(identifierLastItemClicked);
             Matcher identifierCostMatcher = IDENTIFIER_PRICE_PATTERN.matcher(ItemUtils.getStringLore(e.getGui().getLowerInv().getStackInSlot(8)));
             if (identifierCostMatcher.matches()) {
                 previousIdentifierCost = Integer.parseInt(identifierCostMatcher.group(1).replaceAll("\\s", ""));
@@ -829,16 +832,44 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void onSetSlot(PacketEvent<SPacketSetSlot> event) {
-        SPacketSetSlot p = event.getPacket();
+    public void onSetSlot(PacketEvent<SPacketSetSlot> e) {
+        SPacketSetSlot p = e.getPacket();
 
         if (isInIdentifier) {
+            if (identifierLastItemClicked != null && identifierLastItemClicked.hasTagCompound()) {
+                NBTTagCompound nbat = identifierLastItemClicked.getTagCompound();
+                System.out.println(nbat.getBoolean("wynntilsFavorite"));
+            }
+            /*
             if (p.getStack().getDisplayName().contains("Unidentified")) {
                 // TODO: Logic for removing favourite tag here
-            } else if (p.getStack().getDisplayName().contains("Confirm Identification")) {
+            } else
+             */
+
+            if (p.getStack().getDisplayName().contains("Confirm Identification")) {
                 Matcher currentPriceMatcher = IDENTIFIER_PRICE_PATTERN.matcher(ItemUtils.getStringLore(p.getStack()));
                 if (currentPriceMatcher.matches()) {
                     currentIdentifierCost = Integer.parseInt(currentPriceMatcher.group(1).replaceAll("\\s", ""));
+                }
+
+                NBTTagCompound nbt = identifierLastItemClicked.getTagCompound();
+                System.out.println(identifierLastItemClicked);
+                String items = ItemIdentificationOverlay.getItemsFromBox(identifierLastItemClicked);
+                System.out.println(items);
+                if (items == null) return;
+
+                boolean isRealFavorite = false;
+                for (String possibleItem : items.split(", ")) {
+                    ItemProfile itemProfile = WebManager.getItems().get(possibleItem);
+                    if (itemProfile == null) return;
+                    System.out.println(currentIdentifierCost - previousIdentifierCost);
+
+                    if (itemProfile.isFavorited() && itemProfile.getIdentificationCost() == currentIdentifierCost - previousIdentifierCost) {
+                        isRealFavorite = true;
+                    }
+                }
+                if (!isRealFavorite) {
+                    nbt.setBoolean("wynntilsFavorite", false);
                 }
             }
         }
@@ -846,7 +877,7 @@ public class ClientEvents implements Listener {
 
         if (bankPageConfirmed && p.getSlot() == 8) {
             bankPageConfirmed = false;
-            CPacketClickWindow packet = new CPacketClickWindow(McIf.player().openContainer.windowId, 8, 0, ClickType.PICKUP, event.getPacket().getStack(), McIf.player().openContainer.getNextTransactionID(McIf.player().inventory));
+            CPacketClickWindow packet = new CPacketClickWindow(McIf.player().openContainer.windowId, 8, 0, ClickType.PICKUP, e.getPacket().getStack(), McIf.player().openContainer.getNextTransactionID(McIf.player().inventory));
             McIf.mc().getConnection().sendPacket(packet);
         }
     }
