@@ -297,7 +297,7 @@ public class ClientEvents implements Listener {
         }
     }
 
-  @SubscribeEvent
+    @SubscribeEvent
     public void onGUIClose(GuiOpenEvent e) {
         if (e.getGui() == null) {
             afkProtectionBlocked = false;
