@@ -4,6 +4,12 @@
 
 package com.wynntils.modules.map.overlays;
 
+import java.awt.Point;
+import java.util.function.Consumer;
+
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.overlays.Overlay;
@@ -19,17 +25,13 @@ import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.map.overlays.objects.MapCompassIcon;
 import com.wynntils.modules.map.overlays.objects.MapIcon;
+
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-
-import java.awt.Point;
-import java.util.function.Consumer;
 
 public class MiniMapOverlay extends Overlay {
 

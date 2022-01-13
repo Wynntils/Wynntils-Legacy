@@ -4,15 +4,16 @@
 
 package com.wynntils.modules.questbook.instances;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
-import net.minecraft.client.gui.ScaledResolution;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraft.client.gui.ScaledResolution;
 
 /**
  * Extend this class when a QuestBookPage has a list, contains methods for pages

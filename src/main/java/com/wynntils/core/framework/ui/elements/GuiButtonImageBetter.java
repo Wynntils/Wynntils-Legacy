@@ -5,6 +5,7 @@
 package com.wynntils.core.framework.ui.elements;
 
 import com.wynntils.McIf;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiButtonImage;

@@ -19,6 +19,7 @@ import com.wynntils.modules.core.enums.OverlayRotation;
 import com.wynntils.modules.utilities.overlays.hud.ObjectivesOverlay;
 import com.wynntils.modules.utilities.overlays.hud.ScoreboardOverlay;
 import com.wynntils.modules.utilities.overlays.hud.TerritoryFeedOverlay;
+
 import net.minecraft.util.text.TextFormatting;
 
 @SettingsInfo(name = "overlays", displayPath = "Utilities/Overlays")

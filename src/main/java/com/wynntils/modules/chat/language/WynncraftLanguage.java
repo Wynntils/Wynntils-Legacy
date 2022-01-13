@@ -4,13 +4,14 @@
 
 package com.wynntils.modules.chat.language;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.chat.configs.ChatConfig;
-import net.minecraft.util.text.TextFormatting;
 
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import net.minecraft.util.text.TextFormatting;
 
 public interface WynncraftLanguage {
 

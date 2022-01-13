@@ -10,6 +10,7 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.helpers.LongPress;
 import com.wynntils.modules.utilities.managers.KeyManager;
+
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 public class StopWatchOverlay extends Overlay {

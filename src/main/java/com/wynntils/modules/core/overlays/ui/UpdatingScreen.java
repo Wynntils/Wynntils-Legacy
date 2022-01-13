@@ -4,6 +4,14 @@
 
 package com.wynntils.modules.core.overlays.ui;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLDecoder;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.modules.core.CoreModule;
@@ -14,14 +22,6 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLDecoder;
 
 public class UpdatingScreen extends GuiScreen {
 

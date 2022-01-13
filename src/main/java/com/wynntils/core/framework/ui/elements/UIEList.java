@@ -4,10 +4,10 @@
 
 package com.wynntils.core.framework.ui.elements;
 
-import com.wynntils.core.framework.ui.UIElement;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import com.wynntils.core.framework.ui.UIElement;
 
 public class UIEList extends UIElement {
     public List<UIElement> elements;

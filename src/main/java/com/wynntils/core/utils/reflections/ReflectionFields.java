@@ -4,6 +4,9 @@
 
 package com.wynntils.core.utils.reflections;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.GuiIngame;
@@ -18,9 +21,6 @@ import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.network.play.client.CPacketClientSettings;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 
 public enum ReflectionFields {
 

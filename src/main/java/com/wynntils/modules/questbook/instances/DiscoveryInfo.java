@@ -4,6 +4,11 @@
 
 package com.wynntils.modules.questbook.instances;
 
+import static net.minecraft.util.text.TextFormatting.getTextWithoutFormattingCodes;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.utils.ItemUtils;
@@ -11,13 +16,9 @@ import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.questbook.enums.DiscoveryType;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static net.minecraft.util.text.TextFormatting.getTextWithoutFormattingCodes;
 
 public class DiscoveryInfo {
 
@@ -67,7 +68,7 @@ public class DiscoveryInfo {
             guildTerritory = WebManager.getTerritories().get(apiName);
             if (guildTerritory == null) {
                 guildTerritory = WebManager.getTerritories().get(apiName.replace('\'', '’'));
-            }
+           }
         }
 
         lore.add(0, this.name);

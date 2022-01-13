@@ -4,6 +4,17 @@
 
 package com.wynntils.modules.questbook.overlays.ui;
 
+import static net.minecraft.client.renderer.GlStateManager.disableLighting;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
+
 import com.wynntils.McIf;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
@@ -27,17 +38,12 @@ import com.wynntils.webapi.profiles.DiscoveryProfile;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 import com.wynntils.webapi.request.Request;
 import com.wynntils.webapi.request.RequestHandler;
+
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
 

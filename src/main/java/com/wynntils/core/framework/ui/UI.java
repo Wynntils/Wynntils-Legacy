@@ -4,6 +4,12 @@
 
 package com.wynntils.core.framework.ui;
 
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.ConcurrentModificationException;
+import java.util.List;
+
 import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.MouseButton;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
@@ -12,15 +18,9 @@ import com.wynntils.core.framework.ui.elements.UIEClickZone;
 import com.wynntils.core.framework.ui.elements.UIEColorWheel;
 import com.wynntils.core.framework.ui.elements.UIEList;
 import com.wynntils.core.framework.ui.elements.UIETextBox;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
-
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.ConcurrentModificationException;
-import java.util.List;
 
 public abstract class UI extends GuiScreen {
     private ScreenRenderer screenRenderer = new ScreenRenderer();

@@ -4,11 +4,19 @@
 
 package com.wynntils.modules.core.commands;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
+
 import com.google.common.collect.Lists;
 import com.wynntils.Reference;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.webapi.WebManager;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -19,8 +27,6 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.IClientCommand;
-
-import java.util.*;
 
 
 public class CommandServer extends CommandBase implements IClientCommand {

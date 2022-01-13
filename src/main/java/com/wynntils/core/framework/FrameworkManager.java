@@ -4,6 +4,20 @@
 
 package com.wynntils.core.framework;
 
+import static net.minecraft.client.gui.Gui.ICONS;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+
+import org.apache.logging.log4j.LogManager;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
@@ -23,17 +37,13 @@ import com.wynntils.core.framework.settings.instances.SettingsHolder;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.reflections.ReflectionFields;
+
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraftforge.client.event.GuiScreenEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.Event;
 import net.minecraftforge.fml.common.eventhandler.EventBus;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.apache.logging.log4j.LogManager;
-
-import java.util.*;
-
-import static net.minecraft.client.gui.Gui.ICONS;
 
 public class FrameworkManager {
 

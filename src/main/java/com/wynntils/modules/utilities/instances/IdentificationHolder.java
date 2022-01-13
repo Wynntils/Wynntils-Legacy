@@ -4,11 +4,13 @@
 
 package com.wynntils.modules.utilities.instances;
 
+import static net.minecraft.util.text.TextFormatting.GRAY;
+import static net.minecraft.util.text.TextFormatting.GREEN;
+import static net.minecraft.util.text.TextFormatting.RED;
+
 import com.wynntils.webapi.profiles.item.IdentificationOrderer;
 import com.wynntils.webapi.profiles.item.enums.IdentificationModifier;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
-
-import static net.minecraft.util.text.TextFormatting.*;
 
 /**
  * Used for holding current identifications

@@ -5,11 +5,11 @@
 package com.wynntils.modules.questbook.overlays.hud;
 
 import com.wynntils.core.framework.overlays.Overlay;
-import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.modules.questbook.instances.QuestInfo;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 public class TrackedQuestOverlay extends Overlay {

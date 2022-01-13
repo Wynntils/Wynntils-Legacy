@@ -4,11 +4,16 @@
 
 package com.wynntils.core.framework.instances;
 
-import com.wynntils.core.framework.instances.containers.PlayerData;
-import com.wynntils.core.framework.instances.data.CharacterData;
-import com.wynntils.core.framework.instances.data.*;
-
 import java.util.HashSet;
+
+import com.wynntils.core.framework.instances.containers.PlayerData;
+import com.wynntils.core.framework.instances.data.ActionBarData;
+import com.wynntils.core.framework.instances.data.CharacterData;
+import com.wynntils.core.framework.instances.data.HorseData;
+import com.wynntils.core.framework.instances.data.InventoryData;
+import com.wynntils.core.framework.instances.data.LocationData;
+import com.wynntils.core.framework.instances.data.SocialData;
+import com.wynntils.core.framework.instances.data.SpellData;
 
 public class PlayerInfo {
 

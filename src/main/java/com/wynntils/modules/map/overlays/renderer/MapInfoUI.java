@@ -4,15 +4,18 @@
 
 package com.wynntils.modules.map.overlays.renderer;
 
-import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynntils.core.framework.rendering.SmartFontRenderer;
-import com.wynntils.core.framework.rendering.colors.CommonColors;
-import com.wynntils.core.framework.rendering.textures.Textures;
+import static net.minecraft.client.renderer.GlStateManager.color;
+import static net.minecraft.client.renderer.GlStateManager.popMatrix;
+import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
+import static net.minecraft.client.renderer.GlStateManager.translate;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static net.minecraft.client.renderer.GlStateManager.*;
+import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.framework.rendering.SmartFontRenderer;
+import com.wynntils.core.framework.rendering.colors.CommonColors;
+import com.wynntils.core.framework.rendering.textures.Textures;
 
 public class MapInfoUI {
 

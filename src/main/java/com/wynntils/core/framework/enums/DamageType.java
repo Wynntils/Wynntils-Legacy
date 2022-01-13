@@ -4,9 +4,9 @@
 
 package com.wynntils.core.framework.enums;
 
-import net.minecraft.util.text.TextFormatting;
-
 import java.util.regex.Pattern;
+
+import net.minecraft.util.text.TextFormatting;
 
 public enum DamageType {
 

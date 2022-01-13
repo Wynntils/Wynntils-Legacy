@@ -4,20 +4,20 @@
 
 package com.wynntils.core.framework.instances;
 
-import com.wynntils.McIf;
+import org.apache.logging.log4j.Logger;
+
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.entities.interfaces.EntitySpawnCodition;
 import com.wynntils.core.framework.enums.Priority;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.settings.instances.SettingsHolder;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.command.ICommand;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import org.apache.logging.log4j.Logger;
 
 public abstract class Module {
 

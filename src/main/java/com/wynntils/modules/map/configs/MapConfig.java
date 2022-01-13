@@ -4,6 +4,12 @@
 
 package com.wynntils.modules.map.configs;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -19,8 +25,6 @@ import com.wynntils.modules.map.overlays.MiniMapOverlay;
 import com.wynntils.modules.map.overlays.objects.MapPathWaypointIcon;
 import com.wynntils.modules.map.overlays.objects.MapWaypointIcon;
 import com.wynntils.webapi.profiles.MapMarkerProfile;
-
-import java.util.*;
 
 @SettingsInfo(name = "map", displayPath = "Map")
 public class MapConfig extends SettingsClass {

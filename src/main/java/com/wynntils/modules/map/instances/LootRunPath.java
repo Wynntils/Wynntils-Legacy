@@ -4,21 +4,30 @@
 
 package com.wynntils.modules.map.instances;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.vecmath.Point3d;
+import javax.vecmath.Vector3d;
+
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.utils.objects.CubicSplines;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.map.configs.MapConfig;
+
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.MathHelper;
-
-import javax.vecmath.Point3d;
-import javax.vecmath.Vector3d;
-import java.util.*;
 
 public class LootRunPath {
 

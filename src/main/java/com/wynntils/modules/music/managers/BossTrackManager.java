@@ -4,15 +4,15 @@
 
 package com.wynntils.modules.music.managers;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.wynntils.McIf;
 import com.wynntils.modules.music.instances.QueuedTrack;
 import com.wynntils.webapi.WebManager;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.util.text.TextFormatting;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 public class BossTrackManager {

@@ -4,12 +4,11 @@
 
 package com.wynntils.modules.utilities.instances;
 
-import com.wynntils.McIf;
-import com.wynntils.webapi.profiles.item.enums.IdentificationModifier;
-import net.minecraft.client.Minecraft;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import com.wynntils.McIf;
+import com.wynntils.webapi.profiles.item.enums.IdentificationModifier;
 
 public class ConsumableContainer {
 

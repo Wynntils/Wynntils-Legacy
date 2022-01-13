@@ -4,22 +4,24 @@
 
 package com.wynntils.core.framework.rendering;
 
-import com.wynntils.McIf;
-import com.wynntils.core.framework.rendering.colors.CommonColors;
-import com.wynntils.core.framework.rendering.colors.CustomColor;
-import com.wynntils.core.framework.rendering.math.MatrixMath;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BufferBuilder;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import org.lwjgl.opengl.GL11;
+import java.awt.Color;
+import java.util.Random;
 
 import javax.vecmath.Matrix4f;
 import javax.vecmath.Vector3f;
 import javax.vecmath.Vector4f;
-import java.awt.Color;
-import java.util.Random;
+
+import org.lwjgl.opengl.GL11;
+
+import com.wynntils.McIf;
+import com.wynntils.core.framework.rendering.colors.CommonColors;
+import com.wynntils.core.framework.rendering.colors.CustomColor;
+import com.wynntils.core.framework.rendering.math.MatrixMath;
+
+import net.minecraft.client.renderer.BufferBuilder;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 
 public class SpecialRendering {
 

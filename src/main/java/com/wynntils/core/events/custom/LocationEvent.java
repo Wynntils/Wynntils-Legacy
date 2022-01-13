@@ -5,6 +5,7 @@
 package com.wynntils.core.events.custom;
 
 import com.wynntils.core.utils.objects.Location;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraftforge.fml.common.eventhandler.Event;

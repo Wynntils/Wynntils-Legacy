@@ -8,6 +8,7 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.modules.map.instances.MapProfile;
+
 import net.minecraft.client.renderer.GlStateManager;
 
 public class WorldMapIcon {

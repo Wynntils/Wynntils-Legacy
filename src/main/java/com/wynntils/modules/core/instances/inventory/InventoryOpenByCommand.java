@@ -6,6 +6,7 @@ package com.wynntils.modules.core.instances.inventory;
 
 import com.wynntils.modules.core.interfaces.IInventoryOpenAction;
 import com.wynntils.modules.core.managers.PacketQueue;
+
 import net.minecraft.network.play.client.CPacketChatMessage;
 import net.minecraft.network.play.server.SPacketOpenWindow;
 

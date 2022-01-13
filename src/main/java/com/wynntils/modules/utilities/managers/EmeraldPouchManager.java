@@ -1,11 +1,12 @@
 package com.wynntils.modules.utilities.managers;
 
-import com.wynntils.core.utils.ItemUtils;
-import com.wynntils.core.utils.reference.EmeraldSymbols;
-import net.minecraft.item.ItemStack;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.wynntils.core.utils.ItemUtils;
+import com.wynntils.core.utils.reference.EmeraldSymbols;
+
+import net.minecraft.item.ItemStack;
 
 
 public class EmeraldPouchManager {

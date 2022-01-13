@@ -4,14 +4,6 @@
 
 package com.wynntils.webapi.account;
 
-import com.google.gson.Gson;
-import com.wynntils.Reference;
-import com.wynntils.webapi.WebManager;
-import com.wynntils.webapi.request.PostRequest;
-import com.wynntils.webapi.request.multipart.IMultipartFormPart;
-import com.wynntils.webapi.request.multipart.MultipartFormDataPart;
-import com.wynntils.webapi.request.multipart.MultipartFormFilePart;
-
 import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -22,6 +14,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+
+import com.google.gson.Gson;
+import com.wynntils.Reference;
+import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.request.PostRequest;
+import com.wynntils.webapi.request.multipart.IMultipartFormPart;
+import com.wynntils.webapi.request.multipart.MultipartFormDataPart;
+import com.wynntils.webapi.request.multipart.MultipartFormFilePart;
 
 public class CloudConfigurations {
 

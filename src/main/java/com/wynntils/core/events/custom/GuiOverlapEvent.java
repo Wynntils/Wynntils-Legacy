@@ -4,12 +4,15 @@
 
 package com.wynntils.core.events.custom;
 
+import java.util.List;
+
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
 import com.wynntils.modules.core.overlays.ui.PlayerInfoReplacer;
+
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -17,8 +20,6 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraftforge.fml.common.eventhandler.Cancelable;
 import net.minecraftforge.fml.common.eventhandler.Event;
-
-import java.util.List;
 
 public class GuiOverlapEvent<T extends Gui> extends Event {
 

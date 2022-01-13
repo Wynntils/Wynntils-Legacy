@@ -4,18 +4,20 @@
 
 package com.wynntils;
 
+import java.io.File;
+import java.util.Locale;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.sun.jna.Platform;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.webapi.WebManager;
-import net.minecraft.client.multiplayer.ServerData;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-import java.util.Locale;
+import net.minecraft.client.multiplayer.ServerData;
 
 public class Reference {
 

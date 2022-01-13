@@ -4,6 +4,11 @@
 
 package com.wynntils.modules.map.overlays.objects;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+
 import com.google.gson.JsonObject;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
@@ -17,8 +22,6 @@ import com.wynntils.modules.questbook.instances.QuestInfo;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.MapMarkerProfile;
-
-import java.util.*;
 
 public class MapApiIcon extends MapTextureIcon {
 

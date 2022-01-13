@@ -4,6 +4,10 @@
 
 package com.wynntils.modules.questbook.overlays.ui;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+
 import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.instances.PlayerInfo;
@@ -15,12 +19,9 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.instances.QuestBookPage;
 import com.wynntils.webapi.WebManager;
+
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.util.text.TextFormatting;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
 
 public class MainPage extends QuestBookPage {
 

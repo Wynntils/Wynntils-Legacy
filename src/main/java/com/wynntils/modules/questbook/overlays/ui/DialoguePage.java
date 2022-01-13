@@ -4,6 +4,13 @@
 
 package com.wynntils.modules.questbook.overlays.ui;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -13,15 +20,12 @@ import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookListPage;
 import com.wynntils.modules.questbook.managers.QuestManager;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextFormatting;
-
-import java.io.IOException;
-import java.util.*;
-import java.util.stream.Collectors;
 
 public class DialoguePage extends QuestBookListPage<String> {
 

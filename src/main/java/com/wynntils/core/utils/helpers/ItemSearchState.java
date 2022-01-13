@@ -4,11 +4,15 @@
 
 package com.wynntils.core.utils.helpers;
 
-import com.wynntils.webapi.profiles.item.ItemProfile;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+
+import com.wynntils.webapi.profiles.item.ItemProfile;
 
 public class ItemSearchState implements Predicate<ItemProfile>, Comparator<ItemProfile> {
 

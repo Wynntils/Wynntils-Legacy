@@ -4,6 +4,13 @@
 
 package com.wynntils.modules.utilities.overlays.inventories;
 
+import static net.minecraft.client.renderer.GlStateManager.color;
+import static net.minecraft.client.renderer.GlStateManager.disableLighting;
+
+import java.text.DecimalFormat;
+
+import org.lwjgl.input.Keyboard;
+
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.instances.PlayerInfo;
@@ -18,6 +25,7 @@ import com.wynntils.core.framework.rendering.textures.Texture;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -27,12 +35,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import org.lwjgl.input.Keyboard;
-
-import java.text.DecimalFormat;
-
-import static net.minecraft.client.renderer.GlStateManager.color;
-import static net.minecraft.client.renderer.GlStateManager.disableLighting;
 
 public class EmeraldCountOverlay implements Listener {
 

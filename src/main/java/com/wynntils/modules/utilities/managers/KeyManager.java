@@ -4,6 +4,10 @@
 
 package com.wynntils.modules.utilities.managers;
 
+import java.util.Map;
+
+import org.lwjgl.input.Keyboard;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.wynntils.WynntilsConflictContext;
@@ -17,16 +21,12 @@ import com.wynntils.modules.utilities.events.ClientEvents;
 import com.wynntils.modules.utilities.overlays.hud.StopWatchOverlay;
 import com.wynntils.modules.utilities.overlays.ui.GearViewerUI;
 import com.wynntils.webapi.WebManager;
+
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import org.lwjgl.input.Keyboard;
-
-import java.util.Arrays;
-import java.util.Map;
 
 public class KeyManager {
 

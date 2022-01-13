@@ -6,6 +6,7 @@ package com.wynntils.core.framework.enums.wynntils;
 
 import com.wynntils.McIf;
 import com.wynntils.Reference;
+
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;

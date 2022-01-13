@@ -4,6 +4,13 @@
 
 package com.wynntils.modules.core.instances;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.IntStream;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.PacketEvent;
@@ -12,6 +19,7 @@ import com.wynntils.core.events.custom.WynnClassChangeEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.network.play.client.CPacketHeldItemChange;
@@ -20,13 +28,6 @@ import net.minecraft.network.play.server.SPacketEntityMetadata;
 import net.minecraft.network.play.server.SPacketEntityTeleport;
 import net.minecraft.network.play.server.SPacketSpawnObject;
 import net.minecraftforge.fml.common.eventhandler.Event;
-
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.IntStream;
 
 public class TotemTracker {
     private static final Pattern SHAMAN_TOTEM_TIMER = Pattern.compile("^§c([0-9][0-9]?)s$");

@@ -4,6 +4,11 @@
 
 package com.wynntils.modules.core.managers;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.UUID;
+
 import com.google.gson.JsonObject;
 import com.wynntils.McIf;
 import com.wynntils.modules.core.enums.AccountType;
@@ -12,14 +17,9 @@ import com.wynntils.modules.core.instances.account.WynntilsUser;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.request.PostRequest;
 import com.wynntils.webapi.request.Request;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.ResourceLocation;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.UUID;
 
 public class UserManager {
 

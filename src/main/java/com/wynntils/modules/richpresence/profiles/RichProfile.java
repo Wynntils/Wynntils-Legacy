@@ -4,6 +4,14 @@
 
 package com.wynntils.modules.richpresence.profiles;
 
+import java.io.File;
+import java.nio.charset.StandardCharsets;
+import java.time.OffsetDateTime;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
+
 import com.sun.jna.DefaultTypeMapper;
 import com.sun.jna.Native;
 import com.sun.jna.Platform;
@@ -14,24 +22,52 @@ import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.utils.helpers.MD5Verification;
-import com.wynntils.modules.richpresence.discordgamesdk.*;
+import com.wynntils.modules.richpresence.discordgamesdk.DiscordActivity;
+import com.wynntils.modules.richpresence.discordgamesdk.DiscordActivityAssets;
+import com.wynntils.modules.richpresence.discordgamesdk.DiscordActivityParty;
+import com.wynntils.modules.richpresence.discordgamesdk.DiscordActivitySecrets;
+import com.wynntils.modules.richpresence.discordgamesdk.DiscordActivityTimestamps;
+import com.wynntils.modules.richpresence.discordgamesdk.DiscordCreateParams;
+import com.wynntils.modules.richpresence.discordgamesdk.DiscordGameSDKLibrary;
+import com.wynntils.modules.richpresence.discordgamesdk.DiscordPartySize;
+import com.wynntils.modules.richpresence.discordgamesdk.DiscordUser;
+import com.wynntils.modules.richpresence.discordgamesdk.IDiscordActivityEvents;
+import com.wynntils.modules.richpresence.discordgamesdk.IDiscordActivityManager;
+import com.wynntils.modules.richpresence.discordgamesdk.IDiscordCore;
+import com.wynntils.modules.richpresence.discordgamesdk.IDiscordOverlayEvents;
+import com.wynntils.modules.richpresence.discordgamesdk.IDiscordOverlayManager;
+import com.wynntils.modules.richpresence.discordgamesdk.IDiscordUserEvents;
+import com.wynntils.modules.richpresence.discordgamesdk.IDiscordUserManager;
 import com.wynntils.modules.richpresence.discordgamesdk.converters.EnumConverter;
-import com.wynntils.modules.richpresence.discordgamesdk.enums.*;
+import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordActivityActionType;
+import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordActivityJoinRequestReply;
+import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordActivityPartyPrivacy;
+import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordActivityType;
+import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordCreateFlags;
+import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordEntitlementType;
+import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordImageType;
+import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordInputModeType;
+import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordKeyVariant;
+import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordLobbySearchCast;
+import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordLobbySearchComparison;
+import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordLobbySearchDistance;
+import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordLobbyType;
+import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordLogLevel;
+import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordMouseButton;
+import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordPremiumType;
+import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordRelationshipType;
+import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordResult;
+import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordSkuType;
+import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordStatus;
+import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordUserFlag;
 import com.wynntils.modules.richpresence.events.RPCJoinHandler;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import com.wynntils.webapi.downloader.enums.DownloadAction;
 import com.wynntils.webapi.request.Request;
 import com.wynntils.webapi.request.RequestHandler;
-import net.minecraft.client.gui.GuiScreen;
 
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.time.OffsetDateTime;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.function.Consumer;
+import net.minecraft.client.gui.GuiScreen;
 
 public class RichProfile {
 

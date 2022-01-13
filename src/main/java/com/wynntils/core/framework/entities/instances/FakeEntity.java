@@ -4,13 +4,14 @@
 
 package com.wynntils.core.framework.entities.instances;
 
+import java.util.Random;
+import java.util.UUID;
+
 import com.wynntils.core.utils.objects.Location;
+
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.entity.RenderManager;
-
-import java.util.Random;
-import java.util.UUID;
 
 /**
  * Represents a completely client-side entity

@@ -8,6 +8,7 @@ import com.wynntils.McIf;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.modules.core.instances.inventory.InventoryOpenByItem;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelOutboundHandlerAdapter;
 import io.netty.channel.ChannelPromise;

@@ -4,6 +4,10 @@
 
 package com.wynntils.modules.utilities.overlays.hud;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.overlays.Overlay;
@@ -12,14 +16,10 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.core.managers.TabManager;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class PlayerInfoOverlay extends Overlay {
 

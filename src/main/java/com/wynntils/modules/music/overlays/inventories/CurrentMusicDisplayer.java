@@ -13,6 +13,7 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.music.configs.MusicConfig;
 import com.wynntils.modules.music.managers.SoundTrackManager;
+
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class CurrentMusicDisplayer implements Listener {

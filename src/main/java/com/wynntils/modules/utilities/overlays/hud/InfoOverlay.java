@@ -12,6 +12,7 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.instances.InfoFormatter;
+
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 public abstract class InfoOverlay extends Overlay {

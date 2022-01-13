@@ -4,6 +4,9 @@
 
 package com.wynntils.modules.utilities.overlays.hud;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.PacketEvent;
@@ -18,6 +21,7 @@ import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.configs.SoundEffectsConfig;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
+
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.network.play.server.SPacketTitle.Type;
@@ -25,9 +29,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class WarTimerOverlay extends Overlay {
 

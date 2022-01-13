@@ -4,19 +4,14 @@
 
 package com.wynntils.core.framework.instances.data;
 
-import com.wynntils.McIf;
-import com.wynntils.Reference;
-import com.wynntils.core.events.custom.PacketEvent;
-import com.wynntils.core.framework.FrameworkManager;
-import com.wynntils.core.framework.instances.containers.PlayerData;
-import com.wynntils.core.utils.reflections.ReflectionFields;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.client.CPacketHeldItemChange;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.wynntils.McIf;
+import com.wynntils.core.framework.instances.containers.PlayerData;
+import com.wynntils.core.utils.reflections.ReflectionFields;
+
+import net.minecraft.util.text.TextFormatting;
 
 public class SpellData extends PlayerData {
 

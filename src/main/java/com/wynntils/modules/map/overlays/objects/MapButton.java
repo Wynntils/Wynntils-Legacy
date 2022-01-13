@@ -4,18 +4,21 @@
 
 package com.wynntils.modules.map.overlays.objects;
 
-import com.wynntils.McIf;
-import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynntils.core.framework.rendering.textures.Textures;
-import com.wynntils.modules.map.overlays.enums.MapButtonType;
-import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.init.SoundEvents;
+import static net.minecraft.client.renderer.GlStateManager.color;
+import static net.minecraft.client.renderer.GlStateManager.popMatrix;
+import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
 
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
-import static net.minecraft.client.renderer.GlStateManager.*;
+import com.wynntils.McIf;
+import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.modules.map.overlays.enums.MapButtonType;
+
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.init.SoundEvents;
 
 public class MapButton {
 

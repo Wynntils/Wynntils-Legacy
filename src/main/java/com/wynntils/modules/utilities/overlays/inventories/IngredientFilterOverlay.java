@@ -4,17 +4,18 @@
 
 package com.wynntils.modules.utilities.overlays.inventories;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class IngredientFilterOverlay implements Listener {
 

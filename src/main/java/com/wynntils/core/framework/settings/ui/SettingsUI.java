@@ -4,6 +4,22 @@
 
 package com.wynntils.core.framework.settings.ui;
 
+import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.apache.commons.lang3.StringUtils;
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.FrameworkManager;
@@ -19,21 +35,18 @@ import com.wynntils.core.framework.settings.SettingsContainer;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.ui.UI;
 import com.wynntils.core.framework.ui.UIElement;
-import com.wynntils.core.framework.ui.elements.*;
+import com.wynntils.core.framework.ui.elements.UIEButton;
+import com.wynntils.core.framework.ui.elements.UIEColorWheel;
+import com.wynntils.core.framework.ui.elements.UIEList;
+import com.wynntils.core.framework.ui.elements.UIESlider;
+import com.wynntils.core.framework.ui.elements.UIETextBox;
 import com.wynntils.modules.core.config.CoreDBConfig;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.client.config.GuiUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-
-import java.io.IOException;
-import java.text.DecimalFormat;
-import java.util.*;
 
 public class SettingsUI extends UI {
     private static final SettingsUI INSTANCE = new SettingsUI();

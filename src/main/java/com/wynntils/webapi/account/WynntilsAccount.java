@@ -4,6 +4,17 @@
 
 package com.wynntils.webapi.account;
 
+import java.io.File;
+import java.math.BigInteger;
+import java.security.PublicKey;
+import java.util.HashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+
+import javax.crypto.SecretKey;
+
+import org.apache.commons.codec.binary.Hex;
+
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.google.gson.JsonObject;
 import com.wynntils.McIf;
@@ -16,17 +27,8 @@ import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.request.PostRequest;
 import com.wynntils.webapi.request.Request;
 import com.wynntils.webapi.request.RequestHandler;
+
 import net.minecraft.util.CryptManager;
-import org.apache.commons.codec.binary.Hex;
-
-import javax.crypto.SecretKey;
-
-import java.io.File;
-import java.math.BigInteger;
-import java.security.PublicKey;
-import java.util.HashMap;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 
 public class WynntilsAccount {
 

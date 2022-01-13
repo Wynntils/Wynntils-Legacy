@@ -4,6 +4,9 @@
 
 package com.wynntils.modules.utilities.overlays.hud;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.overlays.Overlay;
@@ -13,12 +16,9 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.instances.Toast;
-import net.minecraft.client.Minecraft;
+
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ToastOverlay extends Overlay {
 

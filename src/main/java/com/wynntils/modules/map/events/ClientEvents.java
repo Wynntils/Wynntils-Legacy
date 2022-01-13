@@ -4,9 +4,16 @@
 
 package com.wynntils.modules.map.events;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
-import com.wynntils.core.events.custom.*;
+import com.wynntils.core.events.custom.GameEvent;
+import com.wynntils.core.events.custom.GuiOverlapEvent;
+import com.wynntils.core.events.custom.LocationEvent;
+import com.wynntils.core.events.custom.PacketEvent;
+import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.framework.enums.DamageType;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -22,6 +29,7 @@ import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.utilities.instances.Toast;
 import com.wynntils.modules.utilities.overlays.hud.ToastOverlay;
 import com.wynntils.webapi.WebManager;
+
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.entity.EntityPlayerSP;
@@ -35,9 +43,6 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ClientEvents implements Listener {
     private static final Pattern MOB_LABEL = Pattern.compile("^.*\\[Lv. [0-9]+\\]$");

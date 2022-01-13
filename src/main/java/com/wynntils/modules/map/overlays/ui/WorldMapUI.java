@@ -4,6 +4,32 @@
 
 package com.wynntils.modules.map.overlays.ui;
 
+import static com.wynntils.modules.map.configs.MapConfig.INSTANCE;
+import static net.minecraft.client.renderer.GlStateManager.color;
+import static net.minecraft.client.renderer.GlStateManager.enableAlpha;
+import static net.minecraft.client.renderer.GlStateManager.enableBlend;
+import static net.minecraft.client.renderer.GlStateManager.enableTexture2D;
+import static net.minecraft.client.renderer.GlStateManager.glTexParameteri;
+import static net.minecraft.client.renderer.GlStateManager.popMatrix;
+import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
+import static net.minecraft.client.renderer.GlStateManager.rotate;
+import static net.minecraft.client.renderer.GlStateManager.scale;
+import static net.minecraft.client.renderer.GlStateManager.translate;
+
+import java.awt.Point;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
+
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL13;
+
 import com.google.common.collect.Iterables;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
@@ -20,32 +46,22 @@ import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.map.overlays.enums.MapButtonType;
-import com.wynntils.modules.map.overlays.objects.*;
+import com.wynntils.modules.map.overlays.objects.MapButton;
+import com.wynntils.modules.map.overlays.objects.MapIcon;
+import com.wynntils.modules.map.overlays.objects.MapLabel;
+import com.wynntils.modules.map.overlays.objects.MapTerritory;
+import com.wynntils.modules.map.overlays.objects.WorldMapIcon;
+import com.wynntils.modules.map.overlays.objects.WorldMapLabel;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
+
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.math.MathHelper;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
-
-import java.awt.*;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
-
-import static com.wynntils.modules.map.configs.MapConfig.INSTANCE;
-import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class WorldMapUI extends GuiMovementScreen {
     private static final int MAX_ZOOM = 500;  // Note that this is the most zoomed out

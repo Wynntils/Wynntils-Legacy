@@ -4,9 +4,13 @@
 
 package com.wynntils.modules.core.overlays.inventories;
 
+import java.io.IOException;
+import java.util.List;
+
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
@@ -14,9 +18,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
-
-import java.io.IOException;
-import java.util.List;
 
 public class InventoryReplacer extends GuiInventory {
 

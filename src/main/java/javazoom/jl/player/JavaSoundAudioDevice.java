@@ -9,11 +9,16 @@
 
 package javazoom.jl.player;
 
+import javax.sound.sampled.AudioFormat;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.DataLine.Info;
+import javax.sound.sampled.FloatControl;
+import javax.sound.sampled.Line;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.SourceDataLine;
+
 import javazoom.jl.decoder.Decoder;
 import javazoom.jl.decoder.JavaLayerException;
-
-import javax.sound.sampled.*;
-import javax.sound.sampled.DataLine.Info;
 
 public class JavaSoundAudioDevice extends AudioDeviceBase {
 

@@ -4,9 +4,25 @@
 
 package com.wynntils.modules.core.events;
 
+import static com.wynntils.core.framework.instances.PlayerInfo.get;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
-import com.wynntils.core.events.custom.*;
+import com.wynntils.core.events.custom.GameEvent;
+import com.wynntils.core.events.custom.GuiOverlapEvent;
+import com.wynntils.core.events.custom.LocationEvent;
+import com.wynntils.core.events.custom.PacketEvent;
+import com.wynntils.core.events.custom.SpellEvent;
+import com.wynntils.core.events.custom.WynnClassChangeEvent;
+import com.wynntils.core.events.custom.WynnSocialEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.entities.EntityManager;
 import com.wynntils.core.framework.enums.ClassType;
@@ -26,8 +42,12 @@ import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.instances.GatheringBake;
 import com.wynntils.modules.core.instances.MainMenuButtons;
 import com.wynntils.modules.core.instances.TotemTracker;
-import com.wynntils.modules.core.managers.*;
+import com.wynntils.modules.core.managers.GuildAndFriendManager;
 import com.wynntils.modules.core.managers.GuildAndFriendManager.As;
+import com.wynntils.modules.core.managers.PacketQueue;
+import com.wynntils.modules.core.managers.PingManager;
+import com.wynntils.modules.core.managers.PlayerEntityManager;
+import com.wynntils.modules.core.managers.UserManager;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
@@ -36,6 +56,7 @@ import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.managers.KillsManager;
 import com.wynntils.modules.utilities.managers.LevelingManager;
 import com.wynntils.modules.utilities.managers.QuickCastManager;
+
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiIngameMenu;
@@ -53,7 +74,14 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketClientSettings;
 import net.minecraft.network.play.client.CPacketHeldItemChange;
-import net.minecraft.network.play.server.*;
+import net.minecraft.network.play.server.SPacketChat;
+import net.minecraft.network.play.server.SPacketDestroyEntities;
+import net.minecraft.network.play.server.SPacketEntityMetadata;
+import net.minecraft.network.play.server.SPacketEntityTeleport;
+import net.minecraft.network.play.server.SPacketEntityVelocity;
+import net.minecraft.network.play.server.SPacketMoveVehicle;
+import net.minecraft.network.play.server.SPacketSpawnObject;
+import net.minecraft.network.play.server.SPacketTeams;
 import net.minecraft.scoreboard.ScorePlayerTeam;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.math.BlockPos;
@@ -68,14 +96,6 @@ import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static com.wynntils.core.framework.instances.PlayerInfo.get;
 
 public class ClientEvents implements Listener {
     private static final Pattern GATHERING_STATUS = Pattern.compile("\\[\\+([0-9]*) [ⒸⒷⒿⓀ] (.*?) XP\\] \\[([0-9]*)%\\]");

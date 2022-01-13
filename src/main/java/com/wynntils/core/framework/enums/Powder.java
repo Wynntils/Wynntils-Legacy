@@ -4,12 +4,13 @@
 
 package com.wynntils.core.framework.enums;
 
-import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
-import net.minecraft.util.text.TextFormatting;
-
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Pattern;
+
+import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
+
+import net.minecraft.util.text.TextFormatting;
 
 public enum Powder {
 

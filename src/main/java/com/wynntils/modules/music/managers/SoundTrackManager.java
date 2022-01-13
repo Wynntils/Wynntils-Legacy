@@ -4,6 +4,13 @@
 
 package com.wynntils.modules.music.managers;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.wynntils.Reference;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.music.configs.MusicConfig;
@@ -13,13 +20,6 @@ import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import com.wynntils.webapi.downloader.enums.DownloadAction;
 import com.wynntils.webapi.profiles.MusicProfile;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class SoundTrackManager {
 

@@ -4,6 +4,8 @@
 
 package com.wynntils.modules.utilities.overlays.inventories;
 
+import java.util.List;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
@@ -12,12 +14,10 @@ import com.wynntils.core.framework.settings.ui.SettingsUI;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
-import java.util.List;
 
 public class MenuButtonsOverlay implements Listener {
 

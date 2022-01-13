@@ -4,10 +4,12 @@
 
 package com.wynntils.modules.core.commands;
 
+import java.util.StringJoiner;
+
 import com.wynntils.McIf;
 import com.wynntils.modules.core.enums.AccountType;
 import com.wynntils.modules.core.managers.UserManager;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -15,8 +17,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.IClientCommand;
-
-import java.util.StringJoiner;
 
 public class CommandAdmin extends CommandBase implements IClientCommand {
 

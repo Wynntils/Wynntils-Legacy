@@ -4,15 +4,16 @@
 
 package com.wynntils.modules.core.overlays.ui;
 
+import javax.annotation.Nullable;
+
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.FrameworkManager;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraft.scoreboard.Scoreboard;
-
-import javax.annotation.Nullable;
 
 public class PlayerInfoReplacer extends GuiPlayerTabOverlay {
 

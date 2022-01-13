@@ -5,6 +5,7 @@
 package com.wynntils.core.events.custom;
 
 import com.wynntils.core.framework.enums.ClassType;
+
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**

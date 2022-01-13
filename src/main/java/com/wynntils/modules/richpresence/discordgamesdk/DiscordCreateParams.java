@@ -1,12 +1,12 @@
 package com.wynntils.modules.richpresence.discordgamesdk;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
 import com.sun.jna.ptr.PointerByReference;
 import com.wynntils.modules.richpresence.discordgamesdk.options.DiscordGameSDKOptions;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * <i>native declaration : line 642</i><br>

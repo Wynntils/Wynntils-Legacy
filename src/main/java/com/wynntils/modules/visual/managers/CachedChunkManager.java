@@ -4,17 +4,6 @@
 
 package com.wynntils.modules.visual.managers;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.wynntils.McIf;
-import com.wynntils.Reference;
-import com.wynntils.modules.visual.configs.VisualConfig;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.network.play.server.SPacketChunkData;
-import net.minecraft.util.math.ChunkPos;
-import org.apache.commons.io.FileUtils;
-
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.util.HashSet;
@@ -25,6 +14,19 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
+
+import org.apache.commons.io.FileUtils;
+
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.wynntils.McIf;
+import com.wynntils.Reference;
+import com.wynntils.modules.visual.configs.VisualConfig;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.play.server.SPacketChunkData;
+import net.minecraft.util.math.ChunkPos;
 
 public class CachedChunkManager {
 

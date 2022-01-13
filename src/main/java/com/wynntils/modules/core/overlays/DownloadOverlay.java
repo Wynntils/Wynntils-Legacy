@@ -12,6 +12,7 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.webapi.downloader.DownloadProfile;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import com.wynntils.webapi.downloader.enums.DownloadPhase;
+
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 public class DownloadOverlay extends Overlay {

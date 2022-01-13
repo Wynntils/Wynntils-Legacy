@@ -4,13 +4,13 @@
 
 package com.wynntils.modules.map.overlays.objects;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.MapLabelProfile;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MapLabel extends MapIcon {
     MapLabelProfile mlp;

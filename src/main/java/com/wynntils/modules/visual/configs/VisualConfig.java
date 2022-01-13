@@ -4,7 +4,6 @@
 
 package com.wynntils.modules.visual.configs;
 
-import com.wynntils.Reference;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;

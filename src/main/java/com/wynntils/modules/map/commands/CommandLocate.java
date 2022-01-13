@@ -4,11 +4,21 @@
 
 package com.wynntils.modules.map.commands;
 
+import static net.minecraft.util.text.TextFormatting.GRAY;
+
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
+
 import com.wynntils.McIf;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.LocationProfile;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -18,10 +28,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.IClientCommand;
-
-import java.util.*;
-
-import static net.minecraft.util.text.TextFormatting.GRAY;
 
 public class CommandLocate extends CommandBase implements IClientCommand {
     Map<String, List<LocationProfile>> mapFeatures = new HashMap<>();

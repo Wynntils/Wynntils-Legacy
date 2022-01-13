@@ -4,15 +4,15 @@
 
 package com.wynntils.core.framework.ui.elements;
 
+import java.util.function.BiConsumer;
+
 import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.MouseButton;
 import com.wynntils.core.framework.ui.UI;
 import com.wynntils.core.framework.ui.UIElement;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.util.SoundEvent;
-
-import java.util.function.BiConsumer;
 
 public class UIEClickZone extends UIElement {
     protected BiConsumer<UI, MouseButton> onClick;

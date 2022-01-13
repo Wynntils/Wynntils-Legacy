@@ -4,6 +4,12 @@
 
 package com.wynntils.core.framework.overlays;
 
+import static com.wynntils.core.framework.rendering.SmartFontRenderer.TextAlignment.LEFT_RIGHT;
+import static com.wynntils.core.framework.rendering.SmartFontRenderer.TextAlignment.MIDDLE;
+import static com.wynntils.core.framework.rendering.SmartFontRenderer.TextAlignment.RIGHT_LEFT;
+
+import java.awt.Point;
+
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.instances.PlayerInfo;
@@ -14,12 +20,9 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.instances.SettingsHolder;
 import com.wynntils.core.utils.objects.Position;
+
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-
-import java.awt.*;
-
-import static com.wynntils.core.framework.rendering.SmartFontRenderer.TextAlignment.*;
 
 public abstract class Overlay extends ScreenRenderer implements SettingsHolder {
 

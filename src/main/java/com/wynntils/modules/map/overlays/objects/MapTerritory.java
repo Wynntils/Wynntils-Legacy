@@ -4,6 +4,9 @@
 
 package com.wynntils.modules.map.overlays.objects;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.wynntils.core.framework.enums.GuildResource;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -18,11 +21,9 @@ import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.managers.GuildResourceManager;
 import com.wynntils.modules.map.overlays.renderer.MapInfoUI;
 import com.wynntils.webapi.profiles.TerritoryProfile;
+
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class MapTerritory {
 

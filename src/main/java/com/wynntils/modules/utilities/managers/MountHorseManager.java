@@ -4,6 +4,8 @@
 
 package com.wynntils.modules.utilities.managers;
 
+import java.util.List;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
@@ -11,6 +13,7 @@ import com.wynntils.core.framework.instances.data.HorseData;
 import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.modules.utilities.events.ClientEvents;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
+
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.Entity;
@@ -19,8 +22,6 @@ import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.TextFormatting;
-
-import java.util.List;
 
 public class MountHorseManager {
 

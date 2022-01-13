@@ -4,15 +4,16 @@
 
 package com.wynntils.modules.core.managers;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.google.common.collect.Ordering;
 import com.wynntils.Reference;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.reflections.ReflectionFields;
+
 import net.minecraft.client.gui.GuiPlayerTabOverlay;
 import net.minecraft.client.network.NetworkPlayerInfo;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class TabManager {
 

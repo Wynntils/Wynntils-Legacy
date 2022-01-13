@@ -4,22 +4,32 @@
 
 package com.wynntils.modules.visual.entities;
 
+import static net.minecraft.client.renderer.GlStateManager.color;
+import static net.minecraft.client.renderer.GlStateManager.depthMask;
+import static net.minecraft.client.renderer.GlStateManager.disableBlend;
+import static net.minecraft.client.renderer.GlStateManager.disableTexture2D;
+import static net.minecraft.client.renderer.GlStateManager.enableAlpha;
+import static net.minecraft.client.renderer.GlStateManager.enableBlend;
+import static net.minecraft.client.renderer.GlStateManager.enableTexture2D;
+import static net.minecraft.client.renderer.GlStateManager.rotate;
+import static net.minecraft.client.renderer.GlStateManager.scale;
+
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import org.lwjgl.opengl.GL11;
+
 import com.wynntils.core.framework.entities.instances.FakeEntity;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.visual.configs.VisualConfig;
+
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.RenderGlobal;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import org.lwjgl.opengl.GL11;
-
-import java.util.Random;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class EntityAsh extends FakeEntity {
 

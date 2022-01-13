@@ -4,16 +4,23 @@
 
 package com.wynntils.modules.cosmetics.layers;
 
+import static net.minecraft.client.renderer.GlStateManager.disableBlend;
+import static net.minecraft.client.renderer.GlStateManager.enableBlend;
+import static net.minecraft.client.renderer.GlStateManager.popMatrix;
+import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
+import static net.minecraft.client.renderer.GlStateManager.rotate;
+import static net.minecraft.client.renderer.GlStateManager.scale;
+import static net.minecraft.client.renderer.GlStateManager.translate;
+
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.instances.account.WynntilsUser;
 import com.wynntils.modules.core.managers.UserManager;
+import com.wynntils.modules.cosmetics.layers.models.EarModelRenderer;
+
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import com.wynntils.modules.cosmetics.layers.models.EarModelRenderer;
-
-import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class LayerFoxEars implements LayerRenderer<AbstractClientPlayer> {
 

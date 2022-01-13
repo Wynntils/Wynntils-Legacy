@@ -4,11 +4,6 @@
 
 package com.wynntils.webapi.request;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import com.wynntils.Reference;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -21,6 +16,12 @@ import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import com.wynntils.Reference;
 
 public class RequestHandler {
 

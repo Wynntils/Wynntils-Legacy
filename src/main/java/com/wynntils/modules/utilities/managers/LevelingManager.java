@@ -1,11 +1,11 @@
 package com.wynntils.modules.utilities.managers;
 
+import java.text.DecimalFormat;
+import java.util.concurrent.TimeUnit;
+
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.utils.objects.TimedSet;
-
-import java.text.DecimalFormat;
-import java.util.concurrent.TimeUnit;
 
 /**
  * Idea: Maybe add a "Time Left" option to see how long leveling up takes at the current XP rate?

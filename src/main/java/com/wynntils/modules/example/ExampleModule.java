@@ -4,10 +4,11 @@
 
 package com.wynntils.modules.example;
 
+import org.lwjgl.input.Keyboard;
+
 import com.wynntils.core.framework.enums.Priority;
 import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
-import org.lwjgl.input.Keyboard;
 
 /** EXAMPLE CLASS
  * ExampleModule shows some of the things that are needed to make

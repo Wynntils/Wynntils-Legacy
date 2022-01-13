@@ -9,12 +9,17 @@
 
 package javazoom.jl.player.advanced;
 
-import javazoom.jl.decoder.*;
+import java.io.InputStream;
+
+import javazoom.jl.decoder.Bitstream;
+import javazoom.jl.decoder.BitstreamException;
+import javazoom.jl.decoder.Decoder;
+import javazoom.jl.decoder.Header;
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.decoder.SampleBuffer;
 import javazoom.jl.player.AudioDevice;
 import javazoom.jl.player.FactoryRegistry;
 import javazoom.jl.player.JavaSoundAudioDevice;
-
-import java.io.InputStream;
 
 public class AdvancedPlayer {
 

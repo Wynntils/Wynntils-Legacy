@@ -4,8 +4,39 @@
 
 package com.wynntils.webapi;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Type;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import com.google.common.reflect.TypeToken;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynnGuildWarEvent;
@@ -14,9 +45,17 @@ import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.overlays.objects.MapApiIcon;
-import com.wynntils.modules.map.overlays.objects.SeaskipperLocation;
 import com.wynntils.webapi.account.WynntilsAccount;
-import com.wynntils.webapi.profiles.*;
+import com.wynntils.webapi.profiles.DiscoveryProfile;
+import com.wynntils.webapi.profiles.LeaderboardProfile;
+import com.wynntils.webapi.profiles.LocationProfile;
+import com.wynntils.webapi.profiles.MapLabelProfile;
+import com.wynntils.webapi.profiles.MapMarkerProfile;
+import com.wynntils.webapi.profiles.MusicProfile;
+import com.wynntils.webapi.profiles.SeaskipperProfile;
+import com.wynntils.webapi.profiles.ServerProfile;
+import com.wynntils.webapi.profiles.TerritoryProfile;
+import com.wynntils.webapi.profiles.UpdateProfile;
 import com.wynntils.webapi.profiles.guild.GuildProfile;
 import com.wynntils.webapi.profiles.item.IdentificationOrderer;
 import com.wynntils.webapi.profiles.item.ItemGuessProfile;
@@ -28,25 +67,8 @@ import com.wynntils.webapi.profiles.music.MusicLocationsProfile;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
 import com.wynntils.webapi.request.Request;
 import com.wynntils.webapi.request.RequestHandler;
-import net.minecraft.util.ResourceLocation;
+
 import net.minecraftforge.fml.common.ProgressManager;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringUtils;
-
-import javax.annotation.Nullable;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.lang.reflect.Type;
-import java.net.URL;
-import java.net.URLConnection;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 public class WebManager {
 

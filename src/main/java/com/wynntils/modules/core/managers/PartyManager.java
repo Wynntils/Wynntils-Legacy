@@ -4,15 +4,15 @@
 
 package com.wynntils.modules.core.managers;
 
+import java.util.regex.Pattern;
+
 import com.wynntils.McIf;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.containers.PartyContainer;
 import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.utils.helpers.CommandResponse;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.text.ITextComponent;
 
-import java.util.regex.Pattern;
+import net.minecraft.util.text.ITextComponent;
 
 public class PartyManager {
 

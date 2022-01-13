@@ -4,6 +4,8 @@
 
 package com.wynntils.modules.utilities.overlays.hud;
 
+import java.text.DecimalFormat;
+
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.overlays.Overlay;
@@ -11,11 +13,10 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
-
-import java.text.DecimalFormat;
 
 public class LevelingOverlay extends Overlay {
 

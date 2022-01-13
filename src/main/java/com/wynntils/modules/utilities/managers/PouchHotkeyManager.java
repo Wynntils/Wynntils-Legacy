@@ -1,16 +1,17 @@
 package com.wynntils.modules.utilities.managers;
 
+import java.util.HashMap;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
+
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketClickWindow;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextFormatting;
-
-import java.util.HashMap;
 
 public class PouchHotkeyManager {
 

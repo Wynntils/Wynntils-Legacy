@@ -4,6 +4,15 @@
 
 package com.wynntils.core.framework.ui.elements;
 
+import java.io.IOException;
+import java.util.function.Consumer;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.text.WordUtils;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
+
 import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.MouseButton;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -12,6 +21,7 @@ import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.framework.ui.UI;
 import com.wynntils.modules.core.config.CoreDBConfig;
+
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiPageButtonList;
@@ -20,14 +30,6 @@ import net.minecraft.client.gui.GuiSlider;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextFormatting;
-import org.apache.commons.lang3.text.WordUtils;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-
-import java.io.IOException;
-import java.util.function.Consumer;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class UIEColorWheel extends UIEClickZone {
 

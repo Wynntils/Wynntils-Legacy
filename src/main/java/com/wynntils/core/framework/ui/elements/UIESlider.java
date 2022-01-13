@@ -4,14 +4,15 @@
 
 package com.wynntils.core.framework.ui.elements;
 
+import java.text.DecimalFormat;
+import java.util.function.BiConsumer;
+
 import com.wynntils.core.framework.enums.MouseButton;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Texture;
 import com.wynntils.core.framework.ui.UI;
-import net.minecraft.util.math.MathHelper;
 
-import java.text.DecimalFormat;
-import java.util.function.BiConsumer;
+import net.minecraft.util.math.MathHelper;
 
 public abstract class UIESlider extends UIEClickZone {
     public float min, max, progress, precision, old;

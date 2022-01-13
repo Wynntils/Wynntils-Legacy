@@ -4,6 +4,11 @@
 
 package com.wynntils.modules.map.instances;
 
+import java.awt.image.BufferedImage;
+import java.io.File;
+
+import javax.imageio.ImageIO;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.utils.helpers.MD5Verification;
@@ -13,12 +18,9 @@ import com.wynntils.webapi.downloader.DownloaderManager;
 import com.wynntils.webapi.downloader.enums.DownloadAction;
 import com.wynntils.webapi.request.Request;
 import com.wynntils.webapi.request.RequestHandler;
+
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureUtil;
-
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
 
 public class MapProfile {
 

@@ -4,6 +4,18 @@
 
 package com.wynntils.modules.chat.overlays;
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+
+import javax.annotation.Nullable;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import com.wynntils.McIf;
 import com.wynntils.core.events.custom.ChatEvent;
 import com.wynntils.core.framework.FrameworkManager;
@@ -13,9 +25,14 @@ import com.wynntils.modules.chat.instances.ChatTab;
 import com.wynntils.modules.chat.language.WynncraftLanguage;
 import com.wynntils.modules.chat.managers.ChatManager;
 import com.wynntils.modules.chat.managers.TabManager;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
-import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.ChatLine;
+import net.minecraft.client.gui.GuiChat;
+import net.minecraft.client.gui.GuiNewChat;
+import net.minecraft.client.gui.GuiUtilRenderComponents;
+import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -23,17 +40,6 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
-import javax.annotation.Nullable;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.function.Function;
-import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 public class ChatOverlay extends GuiNewChat {
 

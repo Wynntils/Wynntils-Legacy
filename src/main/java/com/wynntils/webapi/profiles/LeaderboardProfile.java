@@ -4,10 +4,10 @@
 
 package com.wynntils.webapi.profiles;
 
-import com.wynntils.core.framework.enums.professions.ProfessionType;
-
 import java.util.Map;
 import java.util.Set;
+
+import com.wynntils.core.framework.enums.professions.ProfessionType;
 
 public class LeaderboardProfile {
 

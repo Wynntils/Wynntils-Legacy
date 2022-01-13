@@ -4,6 +4,8 @@
 
 package com.wynntils.modules.core.managers;
 
+import java.util.regex.Pattern;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
@@ -12,8 +14,6 @@ import com.wynntils.core.utils.helpers.CommandResponse;
 import com.wynntils.modules.chat.managers.ChatManager;
 
 import net.minecraft.client.gui.GuiChat;
-
-import java.util.regex.Pattern;
 
 public class PingManager {
 

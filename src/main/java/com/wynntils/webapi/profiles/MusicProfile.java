@@ -4,10 +4,10 @@
 
 package com.wynntils.webapi.profiles;
 
-import com.wynntils.core.utils.StringUtils;
-
 import java.io.File;
 import java.util.Optional;
+
+import com.wynntils.core.utils.StringUtils;
 
 public class MusicProfile {
 

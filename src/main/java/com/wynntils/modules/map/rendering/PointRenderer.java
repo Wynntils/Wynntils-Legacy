@@ -4,6 +4,16 @@
 
 package com.wynntils.modules.map.rendering;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.vecmath.AxisAngle4d;
+import javax.vecmath.Matrix3d;
+import javax.vecmath.Point3d;
+import javax.vecmath.Vector3d;
+
+import org.lwjgl.opengl.GL11;
+
 import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
@@ -11,10 +21,10 @@ import com.wynntils.core.framework.rendering.textures.Texture;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.map.instances.LootRunPath;
+
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
@@ -27,14 +37,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.World;
-import org.lwjgl.opengl.GL11;
-
-import javax.vecmath.AxisAngle4d;
-import javax.vecmath.Matrix3d;
-import javax.vecmath.Point3d;
-import javax.vecmath.Vector3d;
-import java.util.ArrayList;
-import java.util.List;
 
 public class PointRenderer {
 

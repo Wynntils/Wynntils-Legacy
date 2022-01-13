@@ -4,14 +4,15 @@
 
 package com.wynntils.modules.map.managers;
 
+import java.util.HashMap;
+
 import com.wynntils.McIf;
 import com.wynntils.modules.map.instances.GuildResourceContainer;
+
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.FrameType;
 import net.minecraft.network.play.server.SPacketAdvancementInfo;
 import net.minecraft.util.StringUtils;
-
-import java.util.HashMap;
 
 public class GuildResourceManager {
 

@@ -4,22 +4,6 @@
 
 package com.wynntils.modules.utilities.instances;
 
-import com.wynntils.McIf;
-import com.wynntils.Reference;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufInputStream;
-import io.netty.buffer.Unpooled;
-import io.netty.handler.codec.base64.Base64;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ServerData;
-import net.minecraft.client.network.ServerPinger;
-import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
-import org.apache.commons.lang3.Validate;
-
 import java.awt.image.BufferedImage;
 import java.lang.ref.WeakReference;
 import java.net.UnknownHostException;
@@ -29,6 +13,23 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+
+import org.apache.commons.lang3.Validate;
+
+import com.wynntils.McIf;
+import com.wynntils.Reference;
+
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.ByteBufInputStream;
+import io.netty.buffer.Unpooled;
+import io.netty.handler.codec.base64.Base64;
+import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.client.network.ServerPinger;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.client.resources.I18n;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.text.TextFormatting;
 
 public class ServerIcon {
 

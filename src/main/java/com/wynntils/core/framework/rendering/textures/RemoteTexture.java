@@ -4,13 +4,15 @@
 
 package com.wynntils.core.framework.rendering.textures;
 
-import com.wynntils.core.framework.enums.ActionResult;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.texture.TextureUtil;
-
-import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.net.URL;
+
+import javax.imageio.ImageIO;
+
+import com.wynntils.core.framework.enums.ActionResult;
+
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.texture.TextureUtil;
 
 public class RemoteTexture extends Texture {
     // TODO check if this is working

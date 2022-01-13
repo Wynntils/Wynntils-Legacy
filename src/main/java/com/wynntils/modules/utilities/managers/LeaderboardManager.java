@@ -4,12 +4,12 @@
 
 package com.wynntils.modules.utilities.managers;
 
-import com.wynntils.webapi.WebManager;
-import com.wynntils.webapi.profiles.LeaderboardProfile;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.LeaderboardProfile;
 
 public class LeaderboardManager {
 

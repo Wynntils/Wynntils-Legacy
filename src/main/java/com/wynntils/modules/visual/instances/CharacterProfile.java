@@ -4,16 +4,17 @@
 
 package com.wynntils.modules.visual.instances;
 
-import com.wynntils.core.framework.enums.CharacterGameMode;
-import com.wynntils.core.utils.ItemUtils;
-import com.wynntils.core.utils.StringUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextFormatting;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.wynntils.core.framework.enums.CharacterGameMode;
+import com.wynntils.core.utils.ItemUtils;
+import com.wynntils.core.utils.StringUtils;
+
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextFormatting;
 
 public class CharacterProfile {
 

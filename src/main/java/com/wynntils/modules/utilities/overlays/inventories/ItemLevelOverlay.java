@@ -4,6 +4,8 @@
 
 package com.wynntils.modules.utilities.overlays.inventories;
 
+import java.util.regex.Matcher;
+
 import com.wynntils.McIf;
 import com.wynntils.core.events.custom.RenderEvent;
 import com.wynntils.core.framework.enums.Powder;
@@ -15,12 +17,11 @@ import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.CorkianAmplifierManager;
 import com.wynntils.modules.utilities.managers.EmeraldPouchManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
+
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
-import java.util.regex.Matcher;
 
 public class ItemLevelOverlay implements Listener {
 

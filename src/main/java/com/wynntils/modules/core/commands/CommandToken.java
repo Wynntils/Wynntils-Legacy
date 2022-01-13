@@ -5,6 +5,7 @@
 package com.wynntils.modules.core.commands;
 
 import com.wynntils.webapi.WebManager;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;

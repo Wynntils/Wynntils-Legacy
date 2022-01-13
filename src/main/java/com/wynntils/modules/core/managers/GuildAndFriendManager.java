@@ -4,16 +4,16 @@
 
 package com.wynntils.modules.core.managers;
 
-import com.wynntils.McIf;
-import com.wynntils.modules.core.instances.OtherPlayerProfile;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.client.network.NetHandlerPlayClient;
-import net.minecraft.client.network.NetworkPlayerInfo;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+
+import com.wynntils.McIf;
+import com.wynntils.modules.core.instances.OtherPlayerProfile;
+
+import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.client.network.NetworkPlayerInfo;
 
 public class GuildAndFriendManager {
 

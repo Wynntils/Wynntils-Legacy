@@ -4,16 +4,17 @@
 
 package com.wynntils.core.framework.ui.elements;
 
+import java.lang.reflect.Field;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+
+import org.apache.commons.lang3.ArrayUtils;
+
 import com.wynntils.core.framework.enums.MouseButton;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Texture;
 import com.wynntils.core.framework.ui.UI;
-import org.apache.commons.lang3.ArrayUtils;
-
-import java.lang.reflect.Field;
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 public class UIEButton extends UIEClickZone {
 

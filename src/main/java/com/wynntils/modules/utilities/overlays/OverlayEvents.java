@@ -4,9 +4,42 @@
 
 package com.wynntils.modules.utilities.overlays;
 
+import static net.minecraft.util.text.TextFormatting.AQUA;
+import static net.minecraft.util.text.TextFormatting.BOLD;
+import static net.minecraft.util.text.TextFormatting.DARK_AQUA;
+import static net.minecraft.util.text.TextFormatting.DARK_GREEN;
+import static net.minecraft.util.text.TextFormatting.DARK_PURPLE;
+import static net.minecraft.util.text.TextFormatting.DARK_RED;
+import static net.minecraft.util.text.TextFormatting.GOLD;
+import static net.minecraft.util.text.TextFormatting.GRAY;
+import static net.minecraft.util.text.TextFormatting.GREEN;
+import static net.minecraft.util.text.TextFormatting.LIGHT_PURPLE;
+import static net.minecraft.util.text.TextFormatting.RED;
+import static net.minecraft.util.text.TextFormatting.RESET;
+import static net.minecraft.util.text.TextFormatting.WHITE;
+import static net.minecraft.util.text.TextFormatting.YELLOW;
+
+import java.text.DecimalFormat;
+import java.util.Arrays;
+import java.util.EnumMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang3.StringUtils;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
-import com.wynntils.core.events.custom.*;
+import com.wynntils.core.events.custom.ChatEvent;
+import com.wynntils.core.events.custom.GameEvent;
+import com.wynntils.core.events.custom.GuiOverlapEvent;
+import com.wynntils.core.events.custom.MusicPlayerEvent;
+import com.wynntils.core.events.custom.PacketEvent;
+import com.wynntils.core.events.custom.SpellEvent;
+import com.wynntils.core.events.custom.WynnClassChangeEvent;
+import com.wynntils.core.events.custom.WynnGuildWarEvent;
+import com.wynntils.core.events.custom.WynnTerritoryChangeEvent;
+import com.wynntils.core.events.custom.WynnWorldEvent;
+import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
@@ -17,27 +50,30 @@ import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.instances.Toast;
 import com.wynntils.modules.utilities.managers.MountHorseManager;
-import com.wynntils.modules.utilities.overlays.hud.*;
+import com.wynntils.modules.utilities.overlays.hud.ConsumableTimerOverlay;
+import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
+import com.wynntils.modules.utilities.overlays.hud.ObjectivesOverlay;
+import com.wynntils.modules.utilities.overlays.hud.ScoreboardOverlay;
+import com.wynntils.modules.utilities.overlays.hud.TerritoryFeedOverlay;
+import com.wynntils.modules.utilities.overlays.hud.ToastOverlay;
+import com.wynntils.modules.utilities.overlays.hud.WarTimerOverlay;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.enums.ItemTier;
+
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.IInventory;
-import net.minecraft.network.play.server.*;
+import net.minecraft.network.play.server.SPacketDisplayObjective;
+import net.minecraft.network.play.server.SPacketEntityEffect;
+import net.minecraft.network.play.server.SPacketRemoveEntityEffect;
+import net.minecraft.network.play.server.SPacketScoreboardObjective;
+import net.minecraft.network.play.server.SPacketTitle;
+import net.minecraft.network.play.server.SPacketUpdateScore;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.apache.commons.lang3.StringUtils;
-
-import java.text.DecimalFormat;
-import java.util.Arrays;
-import java.util.EnumMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static net.minecraft.util.text.TextFormatting.*;
 
 public class OverlayEvents implements Listener {
 

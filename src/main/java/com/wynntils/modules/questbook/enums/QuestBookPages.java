@@ -4,10 +4,17 @@
 
 package com.wynntils.modules.questbook.enums;
 
-import com.wynntils.modules.questbook.instances.QuestBookPage;
-import com.wynntils.modules.questbook.overlays.ui.*;
-
 import java.util.Arrays;
+
+import com.wynntils.modules.questbook.instances.QuestBookPage;
+import com.wynntils.modules.questbook.overlays.ui.DialoguePage;
+import com.wynntils.modules.questbook.overlays.ui.DiscoveriesPage;
+import com.wynntils.modules.questbook.overlays.ui.HUDConfigPage;
+import com.wynntils.modules.questbook.overlays.ui.ItemPage;
+import com.wynntils.modules.questbook.overlays.ui.LootRunPage;
+import com.wynntils.modules.questbook.overlays.ui.MainPage;
+import com.wynntils.modules.questbook.overlays.ui.QuestsPage;
+import com.wynntils.modules.questbook.overlays.ui.SettingsPage;
 
 public enum QuestBookPages {
 

@@ -4,6 +4,8 @@
 
 package com.wynntils.modules.questbook;
 
+import org.lwjgl.input.Keyboard;
+
 import com.wynntils.core.framework.enums.Priority;
 import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
@@ -13,8 +15,8 @@ import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.events.ClientEvents;
 import com.wynntils.modules.questbook.managers.QuestManager;
 import com.wynntils.modules.questbook.overlays.hud.TrackedQuestOverlay;
+
 import net.minecraftforge.client.settings.KeyConflictContext;
-import org.lwjgl.input.Keyboard;
 
 @ModuleInfo(name = "quest_book", displayName = "Quest Book")
 public class QuestBookModule extends Module {

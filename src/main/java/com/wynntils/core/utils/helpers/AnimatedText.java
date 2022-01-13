@@ -7,8 +7,6 @@ package com.wynntils.core.utils.helpers;
 import com.wynntils.McIf;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 
-import java.lang.Math;
-
 public class AnimatedText {
 
     private static final String[] colors = new String[] {"§c", "§6", "§e", "§a", "§b", "§9", "§d"};

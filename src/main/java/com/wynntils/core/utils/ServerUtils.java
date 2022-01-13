@@ -4,9 +4,13 @@
 
 package com.wynntils.core.utils;
 
+import java.util.Locale;
+import java.util.Objects;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.utils.reflections.ReflectionFields;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiMultiplayer;
@@ -17,9 +21,6 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.client.resources.ResourcePackRepository;
 import net.minecraft.realms.RealmsBridge;
 import net.minecraftforge.fml.client.FMLClientHandler;
-
-import java.util.Locale;
-import java.util.Objects;
 
 public class ServerUtils {
 

@@ -4,6 +4,8 @@
 
 package com.wynntils.modules.utilities.overlays.inventories;
 
+import static net.minecraft.util.text.TextFormatting.getTextWithoutFormattingCodes;
+
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
@@ -21,8 +23,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
-import static net.minecraft.util.text.TextFormatting.*;
 
 public class FavoriteItemsOverlay implements Listener {
 

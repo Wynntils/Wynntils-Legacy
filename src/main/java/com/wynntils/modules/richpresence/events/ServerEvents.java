@@ -4,9 +4,17 @@
 
 package com.wynntils.modules.richpresence.events;
 
+import java.time.OffsetDateTime;
+import java.util.Objects;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
-import com.wynntils.core.events.custom.*;
+import com.wynntils.core.events.custom.PacketEvent;
+import com.wynntils.core.events.custom.WarStageEvent;
+import com.wynntils.core.events.custom.WynnClassChangeEvent;
+import com.wynntils.core.events.custom.WynnTerritoryChangeEvent;
+import com.wynntils.core.events.custom.WynnWorldEvent;
+import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
@@ -16,13 +24,10 @@ import com.wynntils.modules.richpresence.RichPresenceModule;
 import com.wynntils.modules.richpresence.configs.RichPresenceConfig;
 import com.wynntils.modules.utilities.overlays.hud.WarTimerOverlay;
 import com.wynntils.modules.utilities.overlays.hud.WarTimerOverlay.WarStage;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.network.play.server.SPacketSetExperience;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-
-import java.time.OffsetDateTime;
-import java.util.Objects;
 
 public class ServerEvents implements Listener {
 

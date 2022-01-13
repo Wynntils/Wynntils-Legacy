@@ -4,11 +4,12 @@
 
 package com.wynntils.core.framework.rendering.colors;
 
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.util.math.MathHelper;
+import java.util.Arrays;
+
 import org.apache.commons.codec.digest.DigestUtils;
 
-import java.util.Arrays;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.math.MathHelper;
 
 /** CustomColor
  * will represent color or complex colors

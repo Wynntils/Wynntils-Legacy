@@ -4,12 +4,13 @@
 
 package com.wynntils.core.framework.instances.data;
 
+import java.util.List;
+
 import com.wynntils.core.framework.instances.containers.PlayerData;
 import com.wynntils.core.utils.ItemUtils;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
-
-import java.util.List;
 
 public class HorseData extends PlayerData {
 

@@ -14,6 +14,7 @@ import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.events.ClientEvents;
 import com.wynntils.webapi.profiles.item.enums.ItemTier;
+
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;

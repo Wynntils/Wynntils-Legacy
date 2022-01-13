@@ -4,13 +4,14 @@
 
 package com.wynntils.webapi.profiles.item.objects;
 
-import com.wynntils.webapi.profiles.item.enums.ItemDropType;
-import com.wynntils.webapi.profiles.item.enums.ItemType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.wynntils.webapi.profiles.item.enums.ItemDropType;
+import com.wynntils.webapi.profiles.item.enums.ItemType;
+
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 
 public class ItemInfoContainer {
 

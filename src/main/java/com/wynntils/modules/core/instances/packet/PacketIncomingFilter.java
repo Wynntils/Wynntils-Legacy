@@ -6,6 +6,7 @@ package com.wynntils.modules.core.instances.packet;
 
 import com.wynntils.McIf;
 import com.wynntils.core.events.custom.PacketEvent;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import net.minecraft.network.Packet;

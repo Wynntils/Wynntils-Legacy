@@ -5,6 +5,7 @@
 package com.wynntils.modules.example;
 
 import com.wynntils.core.framework.interfaces.Listener;
+
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;

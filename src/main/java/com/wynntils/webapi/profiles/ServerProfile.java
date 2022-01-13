@@ -4,9 +4,9 @@
 
 package com.wynntils.webapi.profiles;
 
-import com.wynntils.core.utils.StringUtils;
-
 import java.util.Set;
+
+import com.wynntils.core.utils.StringUtils;
 
 public class ServerProfile {
 

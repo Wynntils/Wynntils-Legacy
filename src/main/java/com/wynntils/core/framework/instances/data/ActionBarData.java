@@ -4,15 +4,16 @@
 
 package com.wynntils.core.framework.instances.data;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.containers.PlayerData;
 import com.wynntils.core.utils.StringUtils;
+
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.text.TextFormatting;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ActionBarData extends PlayerData {
 

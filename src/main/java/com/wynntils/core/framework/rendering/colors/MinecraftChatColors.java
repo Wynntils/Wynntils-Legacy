@@ -4,11 +4,11 @@
 
 package com.wynntils.core.framework.rendering.colors;
 
-import net.minecraft.util.text.TextFormatting;
-
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import net.minecraft.util.text.TextFormatting;
 
 public class MinecraftChatColors extends CustomColor.SetBase {
 

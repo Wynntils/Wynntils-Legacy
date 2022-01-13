@@ -4,16 +4,17 @@
 
 package com.wynntils.modules.visual.entities.conditions;
 
+import java.util.Random;
+
 import com.wynntils.core.framework.entities.instances.FakeEntity;
 import com.wynntils.core.framework.entities.interfaces.EntitySpawnCodition;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.objects.SquareRegion;
 import com.wynntils.modules.visual.configs.VisualConfig;
 import com.wynntils.modules.visual.entities.EntityFlame;
+
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.world.World;
-
-import java.util.Random;
 
 public class FlameSpawnCondition implements EntitySpawnCodition {
 

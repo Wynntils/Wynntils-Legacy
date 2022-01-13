@@ -4,6 +4,17 @@
 
 package com.wynntils.modules.map.overlays.ui;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.lwjgl.input.Mouse;
+
 import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -14,17 +25,13 @@ import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.configs.MapConfig.IconTexture;
 import com.wynntils.modules.map.overlays.objects.MapApiIcon;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
-import org.apache.commons.lang3.StringUtils;
-import org.lwjgl.input.Mouse;
-
-import java.io.IOException;
-import java.util.*;
 
 public class WorldMapSettingsUI extends GuiScreen {
 

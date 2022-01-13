@@ -4,12 +4,13 @@
 
 package com.wynntils.modules.core.managers;
 
-import com.wynntils.modules.core.instances.packet.PacketResponse;
-import net.minecraft.network.Packet;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
+
+import com.wynntils.modules.core.instances.packet.PacketResponse;
+
+import net.minecraft.network.Packet;
 
 public class PacketQueue {
 

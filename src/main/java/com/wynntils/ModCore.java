@@ -4,6 +4,10 @@
 
 package com.wynntils;
 
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
 import com.wynntils.core.CoreManager;
 import com.wynntils.core.events.custom.ClientEvent;
 import com.wynntils.core.framework.FrameworkManager;
@@ -19,16 +23,17 @@ import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.overlays.objects.MapApiIcon;
 import com.wynntils.webapi.WebManager;
+
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import net.minecraft.launchwrapper.Launch;
 import net.minecraftforge.common.ForgeVersion;
-import net.minecraftforge.fml.common.*;
+import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.common.ICrashCallable;
+import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.ModContainer;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-
-import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 @Mod(
         name = Reference.NAME,

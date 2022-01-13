@@ -4,16 +4,22 @@
 
 package com.wynntils.modules.map.instances;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.google.common.collect.ImmutableMap;
 import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Location;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
-
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class LabelDetector {
 

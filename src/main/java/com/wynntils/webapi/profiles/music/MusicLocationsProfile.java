@@ -4,12 +4,12 @@
 
 package com.wynntils.webapi.profiles.music;
 
-import com.wynntils.core.utils.objects.Location;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.wynntils.core.utils.objects.Location;
 
 public class MusicLocationsProfile {
 

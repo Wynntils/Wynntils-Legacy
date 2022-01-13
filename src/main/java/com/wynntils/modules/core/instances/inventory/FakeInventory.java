@@ -4,12 +4,21 @@
 
 package com.wynntils.modules.core.instances.inventory;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
+import java.util.function.Consumer;
+import java.util.regex.Pattern;
+
 import com.wynntils.McIf;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.core.enums.InventoryResult;
 import com.wynntils.modules.core.interfaces.IInventoryOpenAction;
+
 import net.minecraft.inventory.ClickType;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketClickWindow;
@@ -25,14 +34,6 @@ import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.BiPredicate;
-import java.util.function.Consumer;
-import java.util.regex.Pattern;
 
 /**
  * Used for fake opening inventories that are opened by inventory

@@ -4,19 +4,36 @@
 
 package com.wynntils.modules.chat.overlays.gui;
 
+import static net.minecraft.util.text.TextFormatting.BOLD;
+import static net.minecraft.util.text.TextFormatting.DARK_GRAY;
+import static net.minecraft.util.text.TextFormatting.DARK_RED;
+import static net.minecraft.util.text.TextFormatting.GOLD;
+import static net.minecraft.util.text.TextFormatting.GRAY;
+import static net.minecraft.util.text.TextFormatting.GREEN;
+import static net.minecraft.util.text.TextFormatting.RED;
+import static net.minecraft.util.text.TextFormatting.WHITE;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Pattern;
+
+import org.lwjgl.input.Keyboard;
+
 import com.wynntils.McIf;
 import com.wynntils.core.framework.instances.GuiParentedYesNo;
 import com.wynntils.modules.chat.instances.ChatTab;
 import com.wynntils.modules.chat.managers.TabManager;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
-import net.minecraft.client.gui.*;
-import static net.minecraft.util.text.TextFormatting.*;
-import net.minecraftforge.fml.client.config.GuiCheckBox;
-import org.lwjgl.input.Keyboard;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.regex.Pattern;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiLabel;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
+import net.minecraftforge.fml.client.config.GuiCheckBox;
 
 
 public class TabGUI extends GuiScreen {

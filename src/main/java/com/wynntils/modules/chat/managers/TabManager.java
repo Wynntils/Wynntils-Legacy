@@ -4,13 +4,13 @@
 
 package com.wynntils.modules.chat.managers;
 
-import com.wynntils.modules.chat.ChatModule;
-import com.wynntils.modules.chat.configs.ChatConfig;
-import com.wynntils.modules.chat.instances.ChatTab;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import com.wynntils.modules.chat.ChatModule;
+import com.wynntils.modules.chat.configs.ChatConfig;
+import com.wynntils.modules.chat.instances.ChatTab;
 
 public class TabManager {
 

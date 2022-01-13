@@ -4,16 +4,16 @@
 
 package com.wynntils.modules.core.enums;
 
+import java.util.regex.Pattern;
+
 import com.wynntils.McIf;
 import com.wynntils.core.utils.helpers.CommandResponse;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.util.text.TextComponentBase;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
-
-import java.util.regex.Pattern;
 
 public enum ToggleSetting {
 

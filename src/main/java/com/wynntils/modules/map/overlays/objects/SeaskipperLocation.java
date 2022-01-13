@@ -1,5 +1,9 @@
 package com.wynntils.modules.map.overlays.objects;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /*
  *  * Copyright © Wynntils - 2022.
  */
@@ -15,11 +19,8 @@ import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.overlays.renderer.MapInfoUI;
 import com.wynntils.webapi.profiles.SeaskipperProfile;
-import net.minecraft.util.text.TextFormatting;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import net.minecraft.util.text.TextFormatting;
 
 public class SeaskipperLocation {
 

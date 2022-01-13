@@ -4,12 +4,17 @@
 
 package com.wynntils.core.utils.helpers;
 
+import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import com.wynntils.core.utils.StringUtils;
+
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.event.ClickEvent;
-
-import java.lang.reflect.Constructor;
-import java.util.*;
 
 /**
  * Used to create a {@link ClickEvent} that runs a Runnable.

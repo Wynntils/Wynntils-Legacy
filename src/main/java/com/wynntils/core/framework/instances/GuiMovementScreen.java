@@ -4,13 +4,15 @@
 
 package com.wynntils.core.framework.instances;
 
-import com.wynntils.McIf;
-import com.wynntils.core.framework.enums.wynntils.WynntilsConflictContext;
-import net.minecraft.client.settings.KeyBinding;
+import java.io.IOException;
+
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
-import java.io.IOException;
+import com.wynntils.McIf;
+import com.wynntils.core.framework.enums.wynntils.WynntilsConflictContext;
+
+import net.minecraft.client.settings.KeyBinding;
 
 public abstract class GuiMovementScreen extends GuiTickableScreen {
 

@@ -4,6 +4,10 @@
 
 package com.wynntils.modules.map;
 
+import java.util.Collection;
+
+import org.lwjgl.input.Keyboard;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.Priority;
@@ -26,12 +30,10 @@ import com.wynntils.modules.map.overlays.ui.WaypointCreationMenu;
 import com.wynntils.modules.map.overlays.ui.WorldMapUI;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.WebReader;
+
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
 import net.minecraftforge.client.settings.KeyConflictContext;
-import org.lwjgl.input.Keyboard;
-
-import java.util.Collection;
 
 @ModuleInfo(name = "map", displayName = "Map")
 public class MapModule extends Module {

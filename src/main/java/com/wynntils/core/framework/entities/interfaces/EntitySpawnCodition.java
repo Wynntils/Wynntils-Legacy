@@ -4,12 +4,13 @@
 
 package com.wynntils.core.framework.entities.interfaces;
 
+import java.util.Random;
+
 import com.wynntils.core.framework.entities.instances.FakeEntity;
 import com.wynntils.core.utils.objects.Location;
+
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.world.World;
-
-import java.util.Random;
 
 public interface EntitySpawnCodition {
 

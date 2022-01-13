@@ -4,21 +4,22 @@
 
 package com.wynntils.modules.utilities.managers;
 
-import com.wynntils.McIf;
-import com.wynntils.Reference;
-import com.wynntils.modules.utilities.UtilitiesModule;
-import com.wynntils.modules.utilities.configs.UtilitiesConfig;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ServerData;
-import net.minecraft.client.resources.IResourcePack;
-import net.minecraft.network.play.server.SPacketResourcePackSend;
-import org.apache.commons.codec.digest.DigestUtils;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ExecutionException;
+
+import org.apache.commons.codec.digest.DigestUtils;
+
+import com.wynntils.McIf;
+import com.wynntils.Reference;
+import com.wynntils.modules.utilities.UtilitiesModule;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+
+import net.minecraft.client.multiplayer.ServerData;
+import net.minecraft.client.resources.IResourcePack;
+import net.minecraft.network.play.server.SPacketResourcePackSend;
 
 public class ServerResourcePackManager {
 

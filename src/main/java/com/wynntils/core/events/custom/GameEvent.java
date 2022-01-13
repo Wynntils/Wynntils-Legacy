@@ -4,14 +4,15 @@
 
 package com.wynntils.core.events.custom;
 
+import java.util.Map;
+
 import com.wynntils.core.framework.enums.DamageType;
 import com.wynntils.core.framework.enums.professions.GatheringMaterial;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
 import com.wynntils.core.utils.objects.Location;
+
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.eventhandler.Event;
-
-import java.util.Map;
 
 /**
  * Called when something related to the game happens

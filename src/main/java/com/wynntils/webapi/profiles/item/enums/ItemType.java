@@ -4,12 +4,13 @@
 
 package com.wynntils.webapi.profiles.item.enums;
 
+import java.util.Locale;
+
 import com.wynntils.core.utils.ItemUtils;
+
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NBTTagCompound;
-
-import java.util.Locale;
 
 public enum ItemType {
 

@@ -4,11 +4,11 @@
 
 package com.wynntils.modules.map.instances;
 
-import com.wynntils.core.framework.rendering.colors.CustomColor;
-import com.wynntils.core.utils.StringUtils;
-import com.wynntils.modules.map.overlays.objects.MapWaypointIcon;
+import static com.wynntils.core.utils.EncodingUtils.decodeDouble;
+import static com.wynntils.core.utils.EncodingUtils.decodeInt;
+import static com.wynntils.core.utils.EncodingUtils.encodeDouble;
+import static com.wynntils.core.utils.EncodingUtils.encodeInt;
 
-import javax.annotation.Nullable;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -16,7 +16,11 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 
-import static com.wynntils.core.utils.EncodingUtils.*;
+import javax.annotation.Nullable;
+
+import com.wynntils.core.framework.rendering.colors.CustomColor;
+import com.wynntils.core.utils.StringUtils;
+import com.wynntils.modules.map.overlays.objects.MapWaypointIcon;
 
 public class WaypointProfile {
 

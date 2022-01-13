@@ -4,15 +4,15 @@
 
 package com.wynntils.webapi.profiles;
 
-import com.wynntils.core.utils.StringUtils;
-import com.wynntils.webapi.WebReader;
-import com.wynntils.webapi.downloader.DownloaderManager;
-import com.wynntils.webapi.downloader.enums.DownloadAction;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import com.wynntils.core.utils.StringUtils;
+import com.wynntils.webapi.WebReader;
+import com.wynntils.webapi.downloader.DownloaderManager;
+import com.wynntils.webapi.downloader.enums.DownloadAction;
 
 public class FileUpdater {
 

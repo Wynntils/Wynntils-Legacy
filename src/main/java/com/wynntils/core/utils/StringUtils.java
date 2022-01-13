@@ -4,13 +4,6 @@
 
 package com.wynntils.core.utils;
 
-import com.google.common.collect.Iterators;
-import com.google.common.collect.PeekingIterator;
-import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynntils.core.framework.rendering.SmartFontRenderer;
-import com.wynntils.core.framework.rendering.colors.CustomColor;
-import com.wynntils.core.utils.helpers.MD5Verification;
-
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.HashMap;
@@ -19,6 +12,13 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.CRC32;
+
+import com.google.common.collect.Iterators;
+import com.google.common.collect.PeekingIterator;
+import com.wynntils.core.framework.rendering.ScreenRenderer;
+import com.wynntils.core.framework.rendering.SmartFontRenderer;
+import com.wynntils.core.framework.rendering.colors.CustomColor;
+import com.wynntils.core.utils.helpers.MD5Verification;
 
 public class StringUtils {
 

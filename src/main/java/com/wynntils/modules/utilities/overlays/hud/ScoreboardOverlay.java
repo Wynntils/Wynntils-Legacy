@@ -4,6 +4,9 @@
 
 package com.wynntils.modules.utilities.overlays.hud;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.wynntils.McIf;
@@ -12,6 +15,7 @@ import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.scoreboard.Score;
 import net.minecraft.scoreboard.ScoreObjective;
@@ -20,9 +24,6 @@ import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.GuiIngameForge;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class ScoreboardOverlay extends Overlay {
 

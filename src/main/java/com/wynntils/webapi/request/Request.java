@@ -4,15 +4,6 @@
 
 package com.wynntils.webapi.request;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.wynntils.Reference;
-import com.wynntils.core.utils.helpers.MD5Verification;
-import com.wynntils.core.utils.objects.ThrowingBiPredicate;
-import com.wynntils.webapi.WebReader;
-
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -24,6 +15,15 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.wynntils.Reference;
+import com.wynntils.core.utils.helpers.MD5Verification;
+import com.wynntils.core.utils.objects.ThrowingBiPredicate;
+import com.wynntils.webapi.WebReader;
 
 public class Request {
 

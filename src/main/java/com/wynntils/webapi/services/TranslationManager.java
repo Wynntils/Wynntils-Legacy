@@ -4,12 +4,13 @@
 
 package com.wynntils.webapi.services;
 
-import com.wynntils.core.utils.Utils;
-import com.wynntils.modules.utilities.configs.TranslationConfig;
-import net.minecraft.util.text.TextFormatting;
-
 import java.lang.reflect.Constructor;
 import java.util.function.Consumer;
+
+import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.utilities.configs.TranslationConfig;
+
+import net.minecraft.util.text.TextFormatting;
 
 public class TranslationManager {
 

@@ -4,6 +4,13 @@
 
 package com.wynntils.modules.utilities.managers;
 
+import static com.wynntils.core.framework.instances.data.SpellData.SPELL_LEFT;
+import static com.wynntils.core.framework.instances.data.SpellData.SPELL_RIGHT;
+
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.ClassType;
@@ -13,6 +20,7 @@ import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.instances.data.SpellData;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.modules.core.managers.PacketQueue;
+
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketAnimation;
@@ -26,14 +34,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static com.wynntils.core.framework.instances.data.SpellData.SPELL_LEFT;
-import static com.wynntils.core.framework.instances.data.SpellData.SPELL_RIGHT;
 
 public class QuickCastManager {
 

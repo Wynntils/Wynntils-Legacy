@@ -4,18 +4,20 @@
 
 package com.wynntils.modules.utilities.managers;
 
+import java.awt.image.BufferedImage;
+import java.nio.ByteBuffer;
+
+import org.lwjgl.opengl.Display;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.utils.reflections.ReflectionMethods;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.instances.ServerIcon;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.util.Util;
-import org.lwjgl.opengl.Display;
-
-import java.awt.image.BufferedImage;
-import java.nio.ByteBuffer;
 
 public class WindowIconManager {
 

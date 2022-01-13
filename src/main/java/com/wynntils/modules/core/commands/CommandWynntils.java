@@ -4,6 +4,9 @@
 
 package com.wynntils.modules.core.commands;
 
+import java.util.Collections;
+import java.util.List;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.textures.Textures;
@@ -16,7 +19,7 @@ import com.wynntils.modules.richpresence.RichPresenceModule;
 import com.wynntils.modules.richpresence.profiles.RichProfile;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -29,9 +32,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.IClientCommand;
-
-import java.util.Collections;
-import java.util.List;
 
 public class CommandWynntils extends CommandBase implements IClientCommand {
 

@@ -4,6 +4,21 @@
 
 package com.wynntils.modules.map.overlays.ui;
 
+import static net.minecraft.util.text.TextFormatting.AQUA;
+import static net.minecraft.util.text.TextFormatting.BLUE;
+import static net.minecraft.util.text.TextFormatting.DARK_GREEN;
+import static net.minecraft.util.text.TextFormatting.GOLD;
+import static net.minecraft.util.text.TextFormatting.GRAY;
+import static net.minecraft.util.text.TextFormatting.LIGHT_PURPLE;
+import static net.minecraft.util.text.TextFormatting.RED;
+import static net.minecraft.util.text.TextFormatting.YELLOW;
+
+import java.io.IOException;
+import java.util.Arrays;
+
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+
 import com.google.common.collect.Lists;
 import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
@@ -17,15 +32,9 @@ import com.wynntils.modules.map.overlays.enums.MapButtonType;
 import com.wynntils.modules.map.overlays.objects.MapButton;
 import com.wynntils.modules.music.managers.SoundTrackManager;
 import com.wynntils.webapi.WebManager;
+
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-
-import java.io.IOException;
-import java.util.Arrays;
-
-import static net.minecraft.util.text.TextFormatting.*;
 
 public class MainWorldMapUI extends WorldMapUI {
 

@@ -4,8 +4,13 @@
 
 package com.wynntils.modules.utilities.managers;
 
+import java.util.List;
+
+import org.lwjgl.input.Mouse;
+
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -13,9 +18,6 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraftforge.client.event.RenderTooltipEvent;
-import org.lwjgl.input.Mouse;
-
-import java.util.List;
 
 public class TooltipScrollManager {
     private static GuiScreen lastGuiScreen = null;

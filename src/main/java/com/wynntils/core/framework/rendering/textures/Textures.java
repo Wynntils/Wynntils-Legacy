@@ -4,13 +4,14 @@
 
 package com.wynntils.core.framework.rendering.textures;
 
-import com.wynntils.Reference;
-import net.minecraft.util.ResourceLocation;
-
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+
+import com.wynntils.Reference;
+
+import net.minecraft.util.ResourceLocation;
 
 public class Textures {
 

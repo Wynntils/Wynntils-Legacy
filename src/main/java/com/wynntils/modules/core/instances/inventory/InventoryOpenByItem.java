@@ -7,7 +7,7 @@ package com.wynntils.modules.core.instances.inventory;
 import com.wynntils.McIf;
 import com.wynntils.modules.core.interfaces.IInventoryOpenAction;
 import com.wynntils.modules.core.managers.PacketQueue;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketHeldItemChange;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItem;

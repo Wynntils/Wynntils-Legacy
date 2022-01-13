@@ -4,15 +4,15 @@
 
 package com.wynntils.core.events.custom;
 
+import java.util.Collection;
+import java.util.Set;
+
 import com.wynntils.McIf;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.containers.PartyContainer;
 import com.wynntils.core.framework.instances.data.SocialData;
-import net.minecraft.client.Minecraft;
-import net.minecraftforge.fml.common.eventhandler.Event;
 
-import java.util.Collection;
-import java.util.Set;
+import net.minecraftforge.fml.common.eventhandler.Event;
 
 /**
  * Triggered for Wynncraft Social Events

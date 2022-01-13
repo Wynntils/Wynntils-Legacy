@@ -16,7 +16,7 @@ import com.wynntils.modules.chat.configs.ChatConfig;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.map.overlays.ui.MainWorldMapUI;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;

@@ -4,15 +4,15 @@
 
 package com.wynntils.webapi.request;
 
-import com.google.gson.JsonElement;
-import com.wynntils.core.utils.objects.ThrowingConsumer;
-import com.wynntils.webapi.request.multipart.IMultipartFormPart;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
+
+import com.google.gson.JsonElement;
+import com.wynntils.core.utils.objects.ThrowingConsumer;
+import com.wynntils.webapi.request.multipart.IMultipartFormPart;
 
 public class PostRequest extends Request {
 

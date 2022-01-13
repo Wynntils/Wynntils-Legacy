@@ -4,14 +4,15 @@
 
 package com.wynntils.modules.questbook.overlays.ui;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.wynntils.McIf;
 import com.wynntils.core.framework.settings.ui.SettingsUI;
 import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookPage;
-import net.minecraft.util.text.TextFormatting;
 
-import java.util.Arrays;
-import java.util.List;
+import net.minecraft.util.text.TextFormatting;
 
 public class SettingsPage extends QuestBookPage {
     public SettingsPage() {

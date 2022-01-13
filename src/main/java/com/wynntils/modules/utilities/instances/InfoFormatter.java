@@ -4,11 +4,22 @@
 
 package com.wynntils.modules.utilities.instances;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
-import com.wynntils.core.framework.instances.data.*;
+import com.wynntils.core.framework.instances.data.HorseData;
+import com.wynntils.core.framework.instances.data.InventoryData;
+import com.wynntils.core.framework.instances.data.LocationData;
+import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.Utils;
@@ -25,15 +36,8 @@ import com.wynntils.modules.utilities.managers.ServerListManager;
 import com.wynntils.modules.utilities.managers.SpeedometerManager;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
-import net.minecraft.client.Minecraft;
 
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import net.minecraft.client.Minecraft;
 
 public class InfoFormatter {
 

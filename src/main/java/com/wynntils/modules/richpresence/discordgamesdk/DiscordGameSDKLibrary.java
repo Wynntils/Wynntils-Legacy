@@ -1,12 +1,16 @@
 package com.wynntils.modules.richpresence.discordgamesdk;
 
-import com.sun.jna.*;
+import java.util.Collections;
+import java.util.Map;
+
+import com.sun.jna.Callback;
+import com.sun.jna.Library;
+import com.sun.jna.Native;
+import com.sun.jna.NativeLibrary;
+import com.sun.jna.TypeMapper;
 import com.sun.jna.ptr.PointerByReference;
 import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordResult;
 import com.wynntils.modules.richpresence.profiles.RichProfile;
-
-import java.util.Collections;
-import java.util.Map;
 
 /**
  * JNA Wrapper for library <b>DiscordGameSDK</b><br>

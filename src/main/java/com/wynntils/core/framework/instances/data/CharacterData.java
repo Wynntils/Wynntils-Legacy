@@ -4,15 +4,16 @@
 
 package com.wynntils.core.framework.instances.data;
 
+import java.text.DecimalFormat;
+
 import com.wynntils.core.events.custom.WynnClassChangeEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.containers.PlayerData;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
-import net.minecraft.client.entity.EntityPlayerSP;
 
-import java.text.DecimalFormat;
+import net.minecraft.client.entity.EntityPlayerSP;
 
 public class CharacterData extends PlayerData {
 

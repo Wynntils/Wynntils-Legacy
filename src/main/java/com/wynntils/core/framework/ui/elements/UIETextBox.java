@@ -4,13 +4,14 @@
 
 package com.wynntils.core.framework.ui.elements;
 
+import java.util.function.BiConsumer;
+
 import com.wynntils.core.framework.enums.MouseButton;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.ui.UI;
-import net.minecraft.client.gui.GuiTextField;
 
-import java.util.function.BiConsumer;
+import net.minecraft.client.gui.GuiTextField;
 
 public class UIETextBox extends UIEClickZone {
     public GuiTextField textField;

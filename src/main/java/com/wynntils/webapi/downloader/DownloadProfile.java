@@ -4,10 +4,10 @@
 
 package com.wynntils.webapi.downloader;
 
-import com.wynntils.webapi.downloader.enums.DownloadAction;
-
 import java.io.File;
 import java.util.function.Consumer;
+
+import com.wynntils.webapi.downloader.enums.DownloadAction;
 
 public class DownloadProfile {
 

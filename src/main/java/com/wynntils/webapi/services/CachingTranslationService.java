@@ -4,12 +4,6 @@
 
 package com.wynntils.webapi.services;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import com.wynntils.Reference;
-import com.wynntils.core.utils.Utils;
-import org.apache.commons.io.FileUtils;
-
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -17,6 +11,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+
+import org.apache.commons.io.FileUtils;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import com.wynntils.Reference;
+import com.wynntils.core.utils.Utils;
 
 
 public abstract class CachingTranslationService implements TranslationService {

@@ -4,6 +4,13 @@
 
 package com.wynntils.modules.map.overlays.objects;
 
+import java.nio.FloatBuffer;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.lwjgl.BufferUtils;
+import org.lwjgl.opengl.GL11;
+
 import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
@@ -12,14 +19,8 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.map.instances.WaypointProfile.WaypointType;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.math.MathHelper;
-import org.lwjgl.BufferUtils;
-import org.lwjgl.opengl.GL11;
 
-import java.nio.FloatBuffer;
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraft.util.math.MathHelper;
 
 public class MapWaypointIcon extends MapTextureIcon {
 

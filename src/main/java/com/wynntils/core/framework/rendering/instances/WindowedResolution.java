@@ -4,9 +4,10 @@
 
 package com.wynntils.core.framework.rendering.instances;
 
+import org.lwjgl.opengl.Display;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScaledResolution;
-import org.lwjgl.opengl.Display;
 
 public class WindowedResolution {
 

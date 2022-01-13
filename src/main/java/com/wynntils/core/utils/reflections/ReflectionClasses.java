@@ -4,10 +4,10 @@
 
 package com.wynntils.core.utils.reflections;
 
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public enum ReflectionClasses {
 

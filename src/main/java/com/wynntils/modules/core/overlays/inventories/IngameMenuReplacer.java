@@ -4,13 +4,14 @@
 
 package com.wynntils.modules.core.overlays.inventories;
 
-import com.wynntils.core.events.custom.GuiOverlapEvent;
-import com.wynntils.core.framework.FrameworkManager;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiIngameMenu;
-
 import java.io.IOException;
 import java.util.List;
+
+import com.wynntils.core.events.custom.GuiOverlapEvent;
+import com.wynntils.core.framework.FrameworkManager;
+
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiIngameMenu;
 
 public class IngameMenuReplacer extends GuiIngameMenu {
 

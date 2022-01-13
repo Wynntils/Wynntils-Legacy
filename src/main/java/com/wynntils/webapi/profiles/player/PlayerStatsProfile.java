@@ -4,10 +4,6 @@
 
 package com.wynntils.webapi.profiles.player;
 
-import com.google.common.reflect.TypeToken;
-import com.google.gson.*;
-import com.wynntils.Reference;
-
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,6 +11,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.wynntils.Reference;
 
 public class PlayerStatsProfile {
 

@@ -14,6 +14,7 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 

@@ -4,6 +4,8 @@
 
 package com.wynntils.modules.core.instances;
 
+import java.util.List;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.textures.Textures;
@@ -13,6 +15,7 @@ import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.modules.core.overlays.ui.UpdateAvailableScreen;
 import com.wynntils.modules.utilities.instances.ServerIcon;
 import com.wynntils.webapi.WebManager;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiButton;
@@ -24,8 +27,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.FMLClientHandler;
-
-import java.util.List;
 
 public class MainMenuButtons {
 

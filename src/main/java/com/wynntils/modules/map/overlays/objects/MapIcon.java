@@ -4,10 +4,10 @@
 
 package com.wynntils.modules.map.overlays.objects;
 
+import java.util.List;
+
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.modules.map.configs.MapConfig;
-
-import java.util.List;
 
 /**
  * Represents something drawn on the main map or minimap

@@ -4,11 +4,11 @@
 
 package com.wynntils.core.framework.instances.data;
 
-import com.wynntils.core.framework.instances.containers.PartyContainer;
-import com.wynntils.core.framework.instances.containers.PlayerData;
-
 import java.util.HashSet;
 import java.util.Set;
+
+import com.wynntils.core.framework.instances.containers.PartyContainer;
+import com.wynntils.core.framework.instances.containers.PlayerData;
 
 public class SocialData extends PlayerData {
 

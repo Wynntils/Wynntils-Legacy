@@ -4,13 +4,13 @@
 
 package com.wynntils.core.utils.objects;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
-
 import javax.vecmath.Point3d;
 import javax.vecmath.Tuple3d;
 import javax.vecmath.Tuple3f;
 import javax.vecmath.Tuple3i;
+
+import net.minecraft.entity.Entity;
+import net.minecraft.util.math.BlockPos;
 
 public class Location extends Point3d {
 

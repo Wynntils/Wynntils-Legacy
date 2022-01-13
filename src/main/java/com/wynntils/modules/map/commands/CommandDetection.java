@@ -4,10 +4,20 @@
 
 package com.wynntils.modules.map.commands;
 
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.map.instances.LabelDetector;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.LocationProfile;
+
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -15,10 +25,6 @@ import net.minecraft.command.WrongUsageException;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraftforge.client.IClientCommand;
-
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
-import java.util.*;
 
 public class CommandDetection extends CommandBase implements IClientCommand {
     Map<String, List<LocationProfile>> mapFeatures = new HashMap<>();

@@ -4,11 +4,11 @@
 
 package com.wynntils.modules.utilities.managers;
 
-import com.wynntils.webapi.WebManager;
-import com.wynntils.webapi.profiles.ServerProfile;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.ServerProfile;
 
 public class ServerListManager {
 

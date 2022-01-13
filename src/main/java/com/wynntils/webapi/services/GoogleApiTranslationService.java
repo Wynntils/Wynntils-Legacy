@@ -4,14 +4,14 @@
 
 package com.wynntils.webapi.services;
 
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.webapi.request.Request;
 import com.wynntils.webapi.request.RequestHandler;
-
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 
 /**
  * A TranslationService that uses the free googleapi translation API. This service is free but is severely

@@ -4,6 +4,14 @@
 
 package com.wynntils.modules.utilities.configs;
 
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
@@ -17,10 +25,6 @@ import com.wynntils.modules.utilities.managers.WindowIconManager;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 import com.wynntils.webapi.profiles.item.enums.ItemTier;
-
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
-import java.util.*;
 
 @SettingsInfo(name = "main", displayPath = "Utilities")
 public class UtilitiesConfig extends SettingsClass {

@@ -4,15 +4,15 @@
 
 package com.wynntils.modules.core.instances.packet;
 
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+
 import com.wynntils.McIf;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.managers.PingManager;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.Packet;
-
-import java.util.function.BiConsumer;
-import java.util.function.Function;
 
 public class PacketResponse {
 

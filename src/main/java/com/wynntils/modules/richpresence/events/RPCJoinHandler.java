@@ -4,6 +4,9 @@
 
 package com.wynntils.modules.richpresence.events;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.sun.jna.Pointer;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
@@ -22,6 +25,7 @@ import com.wynntils.modules.richpresence.discordgamesdk.IDiscordActivityEvents;
 import com.wynntils.modules.richpresence.profiles.SecretContainer;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile.PlayerTag;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.inventory.ClickType;
@@ -31,9 +35,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_callback {
 

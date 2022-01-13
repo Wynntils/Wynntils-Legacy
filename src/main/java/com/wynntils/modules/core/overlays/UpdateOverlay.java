@@ -4,6 +4,11 @@
 
 package com.wynntils.modules.core.overlays;
 
+import java.io.File;
+import java.io.IOException;
+
+import org.lwjgl.input.Keyboard;
+
 import com.wynntils.McIf;
 import com.wynntils.ModCore;
 import com.wynntils.Reference;
@@ -18,14 +23,11 @@ import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.downloader.DownloaderManager;
 import com.wynntils.webapi.downloader.enums.DownloadAction;
+
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.lwjgl.input.Keyboard;
-
-import java.io.File;
-import java.io.IOException;
 
 public class UpdateOverlay extends Overlay {
 

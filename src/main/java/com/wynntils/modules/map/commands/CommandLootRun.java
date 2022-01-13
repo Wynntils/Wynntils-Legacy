@@ -4,6 +4,21 @@
 
 package com.wynntils.modules.map.commands;
 
+import static net.minecraft.util.text.TextFormatting.AQUA;
+import static net.minecraft.util.text.TextFormatting.DARK_GRAY;
+import static net.minecraft.util.text.TextFormatting.GOLD;
+import static net.minecraft.util.text.TextFormatting.GRAY;
+import static net.minecraft.util.text.TextFormatting.GREEN;
+import static net.minecraft.util.text.TextFormatting.RED;
+import static net.minecraft.util.text.TextFormatting.YELLOW;
+
+import java.net.URI;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+
 import com.wynntils.McIf;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.helpers.Delay;
@@ -13,6 +28,7 @@ import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -26,11 +42,6 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.IClientCommand;
-
-import java.net.URI;
-import java.util.*;
-
-import static net.minecraft.util.text.TextFormatting.*;
 
 public class CommandLootRun extends CommandBase implements IClientCommand {
 

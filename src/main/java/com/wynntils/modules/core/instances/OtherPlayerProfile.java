@@ -4,22 +4,22 @@
 
 package com.wynntils.modules.core.instances;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import com.wynntils.McIf;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.modules.core.managers.GuildAndFriendManager;
 import com.wynntils.modules.core.managers.PlayerEntityManager;
 import com.wynntils.modules.map.overlays.objects.MapPlayerIcon;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EnumPlayerModelParts;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 public class OtherPlayerProfile {
 

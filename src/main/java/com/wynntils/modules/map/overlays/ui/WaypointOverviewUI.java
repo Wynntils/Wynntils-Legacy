@@ -4,6 +4,16 @@
 
 package com.wynntils.modules.map.overlays.ui;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import org.lwjgl.input.Mouse;
+
 import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.ui.elements.GuiButtonImageBetter;
@@ -14,16 +24,12 @@ import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.map.overlays.objects.MapWaypointIcon;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiButtonImage;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
-import org.lwjgl.input.Mouse;
-
-import java.io.IOException;
-import java.util.*;
 
 public class WaypointOverviewUI extends GuiScreen {
 

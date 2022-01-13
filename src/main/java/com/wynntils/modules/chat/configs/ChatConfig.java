@@ -4,16 +4,16 @@
 
 package com.wynntils.modules.chat.configs;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
 import com.wynntils.modules.chat.instances.ChatTab;
 import com.wynntils.modules.chat.managers.ChatManager;
 import com.wynntils.modules.chat.managers.TabManager;
-
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
 
 @SettingsInfo(name = "chat", displayPath = "Chat")
 public class ChatConfig extends SettingsClass {

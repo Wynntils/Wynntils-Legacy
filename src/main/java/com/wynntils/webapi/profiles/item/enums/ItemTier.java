@@ -4,13 +4,14 @@
 
 package com.wynntils.webapi.profiles.item.enums;
 
+import java.util.concurrent.Callable;
+
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
-import net.minecraft.util.text.TextFormatting;
 
-import java.util.concurrent.Callable;
+import net.minecraft.util.text.TextFormatting;
 
 public enum ItemTier {
     NORMAL    (0, TextFormatting.WHITE,        MinecraftChatColors.WHITE,        new CustomColor(1f, 1f, 1f),      () -> UtilitiesConfig.Items.INSTANCE.normalHighlightColor,     0,  1.0f),

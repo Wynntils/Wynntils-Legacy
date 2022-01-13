@@ -4,19 +4,21 @@
 
 package com.wynntils.modules.map.overlays.objects;
 
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.lwjgl.opengl.GL11;
+
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.PathWaypointProfile;
 import com.wynntils.modules.map.instances.PathWaypointProfile.PathPoint;
-import net.minecraft.client.renderer.GlStateManager;
-import org.lwjgl.opengl.GL11;
 
-import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import net.minecraft.client.renderer.GlStateManager;
 
 public class MapPathWaypointIcon extends MapIcon {
     private static final float pathWidth = 1.5f;

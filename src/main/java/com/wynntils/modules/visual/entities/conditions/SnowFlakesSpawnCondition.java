@@ -4,18 +4,19 @@
 
 package com.wynntils.modules.visual.entities.conditions;
 
+import java.util.Random;
+
 import com.wynntils.core.framework.entities.instances.FakeEntity;
 import com.wynntils.core.framework.entities.interfaces.EntitySpawnCodition;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.objects.SquareRegion;
 import com.wynntils.modules.visual.configs.VisualConfig;
 import com.wynntils.modules.visual.entities.EntitySnowFlake;
+
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.init.Biomes;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-
-import java.util.Random;
 
 public class SnowFlakesSpawnCondition implements EntitySpawnCodition {
 

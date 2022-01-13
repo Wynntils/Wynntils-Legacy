@@ -1,12 +1,13 @@
 package com.wynntils.core.framework.instances;
 
+import java.io.IOException;
+
 import com.wynntils.core.utils.Utils;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiYesNo;
 import net.minecraft.client.gui.GuiYesNoCallback;
-
-import java.io.IOException;
 
 public class GuiParentedYesNo extends GuiYesNo {
 

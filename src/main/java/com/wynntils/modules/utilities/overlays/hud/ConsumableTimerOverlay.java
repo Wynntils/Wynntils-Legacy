@@ -4,6 +4,21 @@
 
 package com.wynntils.modules.utilities.overlays.hud;
 
+import static net.minecraft.util.text.TextFormatting.AQUA;
+import static net.minecraft.util.text.TextFormatting.DARK_AQUA;
+import static net.minecraft.util.text.TextFormatting.GOLD;
+import static net.minecraft.util.text.TextFormatting.GRAY;
+import static net.minecraft.util.text.TextFormatting.LIGHT_PURPLE;
+import static net.minecraft.util.text.TextFormatting.YELLOW;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.SkillPoint;
 import com.wynntils.core.framework.enums.SpellType;
@@ -16,17 +31,11 @@ import com.wynntils.modules.utilities.instances.ConsumableContainer;
 import com.wynntils.modules.utilities.instances.IdentificationHolder;
 import com.wynntils.modules.utilities.overlays.inventories.ItemIdentificationOverlay;
 import com.wynntils.webapi.profiles.item.enums.IdentificationModifier;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-
-import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static net.minecraft.util.text.TextFormatting.*;
 
 public class ConsumableTimerOverlay extends Overlay {
 

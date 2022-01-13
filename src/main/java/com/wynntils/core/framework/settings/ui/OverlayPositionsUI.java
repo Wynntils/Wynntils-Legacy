@@ -4,6 +4,12 @@
 
 package com.wynntils.core.framework.settings.ui;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.lwjgl.input.Keyboard;
+
 import com.wynntils.McIf;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.MouseButton;
@@ -18,12 +24,8 @@ import com.wynntils.core.framework.settings.SettingsContainer;
 import com.wynntils.core.framework.ui.UI;
 import com.wynntils.core.framework.ui.elements.UIEButton;
 import com.wynntils.core.framework.ui.elements.UIEClickZone;
-import net.minecraft.client.gui.GuiScreen;
-import org.lwjgl.input.Keyboard;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import net.minecraft.client.gui.GuiScreen;
 
 public class OverlayPositionsUI extends UI {
 

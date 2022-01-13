@@ -4,11 +4,22 @@
 
 package com.wynntils.modules.cosmetics.layers;
 
+import static net.minecraft.client.renderer.GlStateManager.blendFunc;
+import static net.minecraft.client.renderer.GlStateManager.color;
+import static net.minecraft.client.renderer.GlStateManager.disableBlend;
+import static net.minecraft.client.renderer.GlStateManager.enableAlpha;
+import static net.minecraft.client.renderer.GlStateManager.enableBlend;
+import static net.minecraft.client.renderer.GlStateManager.popMatrix;
+import static net.minecraft.client.renderer.GlStateManager.pushMatrix;
+import static net.minecraft.client.renderer.GlStateManager.rotate;
+import static net.minecraft.client.renderer.GlStateManager.translate;
+
 import com.wynntils.McIf;
 import com.wynntils.modules.core.instances.account.WynntilsUser;
 import com.wynntils.modules.core.managers.UserManager;
 import com.wynntils.modules.cosmetics.configs.CosmeticsConfig;
 import com.wynntils.modules.cosmetics.layers.models.CustomElytraModel;
+
 import net.minecraft.client.entity.AbstractClientPlayer;
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.renderer.GlStateManager.DestFactor;
@@ -18,8 +29,6 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.MathHelper;
-
-import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class LayerElytra extends ModelBase implements LayerRenderer<AbstractClientPlayer> {
 

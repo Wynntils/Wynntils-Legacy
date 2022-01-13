@@ -1,11 +1,11 @@
 package com.wynntils.modules.utilities.managers;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class CorkianAmplifierManager {
 

@@ -4,14 +4,21 @@
 
 package com.wynntils.modules.map.instances;
 
-import com.google.gson.*;
-import com.wynntils.core.framework.rendering.colors.CommonColors;
-import com.wynntils.core.framework.rendering.colors.CustomColor;
-import com.wynntils.modules.map.configs.MapConfig;
-
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import com.wynntils.core.framework.rendering.colors.CommonColors;
+import com.wynntils.core.framework.rendering.colors.CustomColor;
+import com.wynntils.modules.map.configs.MapConfig;
 
 public class PathWaypointProfile {
 

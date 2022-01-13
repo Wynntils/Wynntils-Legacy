@@ -4,14 +4,13 @@
 
 package com.wynntils.core.framework.instances.containers;
 
-import com.wynntils.McIf;
-import com.wynntils.core.events.custom.WynnSocialEvent;
-import com.wynntils.core.framework.FrameworkManager;
-import net.minecraft.client.Minecraft;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.wynntils.McIf;
+import com.wynntils.core.events.custom.WynnSocialEvent;
+import com.wynntils.core.framework.FrameworkManager;
 
 /**
  * Contains all the player currently party status

@@ -1,5 +1,8 @@
 package com.wynntils.modules.richpresence.discordgamesdk;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.sun.jna.Callback;
 import com.sun.jna.Pointer;
 import com.sun.jna.Structure;
@@ -8,9 +11,6 @@ import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordLobbySearc
 import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordLobbySearchDistance;
 import com.wynntils.modules.richpresence.discordgamesdk.enums.EDiscordResult;
 import com.wynntils.modules.richpresence.discordgamesdk.options.DiscordGameSDKOptions;
-
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * <i>native declaration : line 381</i><br>

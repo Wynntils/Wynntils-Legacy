@@ -4,11 +4,6 @@
 
 package com.wynntils.modules.chat.instances;
 
-import com.wynntils.McIf;
-import com.wynntils.core.utils.objects.Pair;
-import net.minecraft.client.gui.ChatLine;
-import net.minecraft.util.text.ITextComponent;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,6 +11,12 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
+
+import com.wynntils.McIf;
+import com.wynntils.core.utils.objects.Pair;
+
+import net.minecraft.client.gui.ChatLine;
+import net.minecraft.util.text.ITextComponent;
 
 public class ChatTab implements Comparable<ChatTab> {
 

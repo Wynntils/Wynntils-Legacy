@@ -4,18 +4,19 @@
 
 package com.wynntils.core.framework.rendering.textures;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.wynntils.McIf;
-import com.wynntils.Reference;
-import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
-import org.apache.commons.io.IOUtils;
-
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.io.IOUtils;
+
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.wynntils.McIf;
+import com.wynntils.Reference;
+
+import net.minecraft.util.ResourceLocation;
 
 public class Mappings {
 

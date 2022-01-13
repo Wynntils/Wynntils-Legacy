@@ -7,6 +7,7 @@ package com.wynntils.modules.utilities.managers;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+
 import net.minecraft.network.play.server.SPacketSpawnObject;
 
 public class WarManager {

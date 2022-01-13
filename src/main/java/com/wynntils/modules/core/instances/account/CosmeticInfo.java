@@ -4,14 +4,14 @@
 
 package com.wynntils.modules.core.instances.account;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.util.Base64;
+
 import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.client.renderer.texture.TextureUtil;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.util.ResourceLocation;
-
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.util.Base64;
 
 public class CosmeticInfo extends AbstractTexture {
 

@@ -1,8 +1,8 @@
 package com.wynntils.modules.utilities.managers;
 
-import com.wynntils.core.utils.objects.TimedSet;
-
 import java.util.concurrent.TimeUnit;
+
+import com.wynntils.core.utils.objects.TimedSet;
 
 public class KillsManager {
     private static final TimedSet<Boolean> KILLS_SET = new TimedSet<>(60, TimeUnit.SECONDS);

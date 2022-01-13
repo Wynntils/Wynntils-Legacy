@@ -4,13 +4,20 @@
 
 package com.wynntils.modules.utilities.enums;
 
+import static net.minecraft.util.text.TextFormatting.AQUA;
+import static net.minecraft.util.text.TextFormatting.DARK_GREEN;
+import static net.minecraft.util.text.TextFormatting.DARK_RED;
+import static net.minecraft.util.text.TextFormatting.GOLD;
+import static net.minecraft.util.text.TextFormatting.GREEN;
+import static net.minecraft.util.text.TextFormatting.RED;
+import static net.minecraft.util.text.TextFormatting.YELLOW;
+
+import org.apache.commons.lang3.math.Fraction;
+
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.instances.IdentificationResult;
 import com.wynntils.modules.utilities.interfaces.IIdentificationAnalyser;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
-import org.apache.commons.lang3.math.Fraction;
-
-import static net.minecraft.util.text.TextFormatting.*;
 
 public enum IdentificationType implements IIdentificationAnalyser {
 

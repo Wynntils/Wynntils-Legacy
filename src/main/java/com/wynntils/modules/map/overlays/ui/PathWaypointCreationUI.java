@@ -4,6 +4,11 @@
 
 package com.wynntils.modules.map.overlays.ui;
 
+import java.io.IOException;
+import java.util.function.Consumer;
+
+import org.lwjgl.input.Keyboard;
+
 import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.MouseButton;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
@@ -16,15 +21,12 @@ import com.wynntils.modules.map.instances.PathWaypointProfile;
 import com.wynntils.modules.map.instances.PathWaypointProfile.PathPoint;
 import com.wynntils.modules.map.overlays.objects.MapPathWaypointIcon;
 import com.wynntils.modules.map.overlays.objects.WorldMapIcon;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraftforge.fml.client.config.GuiCheckBox;
-import org.lwjgl.input.Keyboard;
-
-import java.io.IOException;
-import java.util.function.Consumer;
 
 public class PathWaypointCreationUI extends WorldMapUI {
     private GuiButton saveButton;

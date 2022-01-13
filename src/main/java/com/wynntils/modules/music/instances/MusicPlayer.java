@@ -4,21 +4,23 @@
 
 package com.wynntils.modules.music.instances;
 
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+
+import org.lwjgl.opengl.Display;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.MusicPlayerEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.modules.music.configs.MusicConfig;
+
 import javazoom.jl.player.JavaSoundAudioDevice;
 import javazoom.jl.player.advanced.AdvancedPlayer;
 import javazoom.jl.player.advanced.PlaybackEvent;
 import javazoom.jl.player.advanced.PlaybackListener;
 import net.minecraft.util.SoundCategory;
-import org.lwjgl.opengl.Display;
-
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
 
 public class MusicPlayer {
 

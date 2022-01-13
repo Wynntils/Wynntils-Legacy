@@ -4,16 +4,16 @@
 
 package com.wynntils.modules.map.instances;
 
-import com.wynntils.core.framework.enums.GuildResource;
-import com.wynntils.core.framework.rendering.colors.CustomColor;
-import com.wynntils.core.utils.objects.Storage;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import com.wynntils.core.framework.enums.GuildResource;
+import com.wynntils.core.framework.rendering.colors.CustomColor;
+import com.wynntils.core.utils.objects.Storage;
 
 public class GuildResourceContainer {
 

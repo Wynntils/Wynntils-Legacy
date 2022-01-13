@@ -4,6 +4,12 @@
 
 package com.wynntils.modules.utilities.overlays.hud;
 
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+import org.apache.logging.log4j.LogManager;
+
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
@@ -13,13 +19,8 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
-import io.netty.channel.MessageSizeEstimator;
-import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import org.apache.logging.log4j.LogManager;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 public class GameUpdateOverlay extends Overlay {
 

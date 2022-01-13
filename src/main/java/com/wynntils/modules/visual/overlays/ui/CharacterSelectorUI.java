@@ -4,6 +4,21 @@
 
 package com.wynntils.modules.visual.overlays.ui;
 
+import static net.minecraft.client.renderer.GlStateManager.color;
+import static net.minecraft.client.renderer.GlStateManager.disableBlend;
+import static net.minecraft.client.renderer.GlStateManager.enableAlpha;
+import static net.minecraft.client.renderer.GlStateManager.enableBlend;
+import static net.minecraft.client.renderer.GlStateManager.scale;
+import static net.minecraft.client.renderer.GlStateManager.translate;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
+import org.lwjgl.opengl.GL11;
+
 import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.CharacterGameMode;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
@@ -16,6 +31,7 @@ import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.visual.VisualModule;
 import com.wynntils.modules.visual.instances.CharacterProfile;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
@@ -29,15 +45,6 @@ import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
-import org.lwjgl.input.Keyboard;
-import org.lwjgl.input.Mouse;
-import org.lwjgl.opengl.GL11;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class CharacterSelectorUI extends GuiScreen {
 

@@ -4,6 +4,10 @@
 
 package com.wynntils.modules.map.overlays.ui;
 
+import java.io.IOException;
+
+import org.lwjgl.input.Keyboard;
+
 import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -17,14 +21,11 @@ import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.map.instances.WaypointProfile.WaypointType;
 import com.wynntils.modules.map.overlays.objects.MapWaypointIcon;
-import net.minecraft.client.Minecraft;
+
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
-import org.lwjgl.input.Keyboard;
-
-import java.io.IOException;
 
 public class WaypointCreationMenu extends UI {
     private GuiLabel nameFieldLabel;
