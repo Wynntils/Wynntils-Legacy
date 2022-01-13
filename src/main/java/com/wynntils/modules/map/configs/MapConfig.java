@@ -63,7 +63,7 @@ public class MapConfig extends SettingsClass {
     @Setting(displayName = "Compass Beacon Colour", description = "What colour should the compass beacon be?", order = 11)
     @Setting.Features.CustomColorFeatures(allowAlpha = true)
     public CustomColor compassBeaconColor = CommonColors.RED;
-
+                        
     @Setting(displayName = "Map Blur", description = "Should the map be rendered using linear textures to avoid aliasing issues?", order = 12)
     public boolean renderUsingLinear = true;
 
@@ -75,7 +75,7 @@ public class MapConfig extends SettingsClass {
     @Setting.Limitations.IntLimit(min = MiniMapOverlay.MIN_ZOOM, max = MiniMapOverlay.MAX_ZOOM, precision = 1)
     public int mapZoom = 30;
 
-    @Setting(displayName = "Hide in Non-Mapped Areas", description = "Should the minimap be hidden if the player is outside the map?", order = 15)
+    @Setting(displayName = "Hide Minimap in Non-Mapped Areas", description = "Should the minimap be hidden if the player is outside the map?", order = 15)
     public boolean hideMinimapOutOfBounds = true;
 
     @Setting
