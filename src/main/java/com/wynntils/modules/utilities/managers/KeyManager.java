@@ -1,10 +1,11 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.modules.utilities.managers;
 
 import com.wynntils.McIf;
+import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.wynntils.WynntilsConflictContext;
 import com.wynntils.core.framework.instances.KeyHolder;
 import com.wynntils.core.framework.settings.ui.SettingsUI;
@@ -16,8 +17,16 @@ import com.wynntils.modules.utilities.events.ClientEvents;
 import com.wynntils.modules.utilities.overlays.hud.StopWatchOverlay;
 import com.wynntils.modules.utilities.overlays.ui.GearViewerUI;
 import com.wynntils.webapi.WebManager;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommand;
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.settings.KeyConflictContext;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.lwjgl.input.Keyboard;
+
+import java.util.Arrays;
+import java.util.Map;
 
 public class KeyManager {
 
@@ -84,9 +93,12 @@ public class KeyManager {
             String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind1;
             if (cKeyBind.isEmpty())
                 return;
-            if (McIf.mc().currentScreen != null)
+            if (McIf.mc().currentScreen != null || !Reference.onServer)
                 return;
 
+            if (handleIfClientCommand(cKeyBind)) return;
+
+            //run server command
             McIf.player().sendChatMessage("/" + cKeyBind);
         });
 
@@ -94,8 +106,10 @@ public class KeyManager {
             String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind2;
             if (cKeyBind.isEmpty())
                 return;
-            if (McIf.mc().currentScreen != null)
+            if (McIf.mc().currentScreen != null || !Reference.onServer)
                 return;
+
+            if (handleIfClientCommand(cKeyBind)) return;
 
             McIf.player().sendChatMessage("/" + cKeyBind);
         });
@@ -104,8 +118,10 @@ public class KeyManager {
             String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind3;
             if (cKeyBind.isEmpty())
                 return;
-            if (McIf.mc().currentScreen != null)
+            if (McIf.mc().currentScreen != null || !Reference.onServer)
                 return;
+
+            if (handleIfClientCommand(cKeyBind)) return;
 
             McIf.player().sendChatMessage("/" + cKeyBind);
         });
@@ -114,8 +130,10 @@ public class KeyManager {
             String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind4;
             if (cKeyBind.isEmpty())
                 return;
-            if (McIf.mc().currentScreen != null)
+            if (McIf.mc().currentScreen != null || !Reference.onServer)
                 return;
+
+            if (handleIfClientCommand(cKeyBind)) return;
 
             McIf.player().sendChatMessage("/" + cKeyBind);
         });
@@ -124,8 +142,10 @@ public class KeyManager {
             String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind5;
             if (cKeyBind.isEmpty())
                 return;
-            if (McIf.mc().currentScreen != null)
+            if (McIf.mc().currentScreen != null || !Reference.onServer)
                 return;
+
+            if (handleIfClientCommand(cKeyBind)) return;
 
             McIf.player().sendChatMessage("/" + cKeyBind);
         });
@@ -134,11 +154,39 @@ public class KeyManager {
             String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind6;
             if (cKeyBind.isEmpty())
                 return;
-            if (McIf.mc().currentScreen != null)
+            if (McIf.mc().currentScreen != null || !Reference.onServer)
                 return;
+
+            if (handleIfClientCommand(cKeyBind)) return;
 
             McIf.player().sendChatMessage("/" + cKeyBind);
         });
+    }
+
+    private static boolean handleIfClientCommand(String cKeyBind) {
+        String[] parts = cKeyBind.split(" ");
+        String command = parts[0];
+        String[] args = new String[parts.length - 1];
+        System.arraycopy(parts, 1, args, 0, parts.length - 1);
+
+        // This map contains aliases aswell as full command names
+        Map<String, ICommand> clientCommands = getClientCommands();
+
+        // Run as client command if possible
+        if (clientCommands.containsKey(command))
+        {
+            try {
+                clientCommands.get(command).execute(FMLCommonHandler.instance().getMinecraftServerInstance(), McIf.player(), args);
+            } catch (CommandException e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public static Map<String, ICommand> getClientCommands() {
+        return ClientCommandHandler.instance.getCommands();
     }
 
     public static KeyHolder getFavoriteTradeKey() {
