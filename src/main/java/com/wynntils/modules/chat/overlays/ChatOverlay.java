@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.modules.chat.overlays;
@@ -159,13 +159,13 @@ public class ChatOverlay extends GuiNewChat {
 
         Pair<Boolean, ITextComponent> dialogue = ChatManager.applyToDialogue(chatComponent.createCopy());
         if (dialogue.a) {
+            chatComponent = dialogue.b;
+            chatLineId = WYNN_DIALOGUE_ID;
+
             if (dialogue.b == null) {
                 deleteChatLine(chatLineId);
                 return;
             }
-
-            chatComponent = dialogue.b;
-            chatLineId = WYNN_DIALOGUE_ID;
         }
 
         if (!noEvent) {

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2021.
+ *  * Copyright © Wynntils - 2022.
  */
 
 package com.wynntils.modules.map.configs;
@@ -75,7 +75,7 @@ public class MapConfig extends SettingsClass {
     @Setting.Limitations.IntLimit(min = MiniMapOverlay.MIN_ZOOM, max = MiniMapOverlay.MAX_ZOOM, precision = 1)
     public int mapZoom = 30;
 
-    @Setting(displayName = "Hide in Non-Mapped Areas", description = "Should the minimap be hidden if the player is outside the map?", order = 15)
+    @Setting(displayName = "Hide Minimap in Non-Mapped Areas", description = "Should the minimap be hidden if the player is outside the map?", order = 15)
     public boolean hideMinimapOutOfBounds = true;
 
     @Setting
