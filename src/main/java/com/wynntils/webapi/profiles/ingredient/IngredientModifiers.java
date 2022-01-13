@@ -3,6 +3,9 @@ package com.wynntils.webapi.profiles.ingredient;
 import com.wynntils.webapi.profiles.ingredient.enums.IngredientModifierType;
 import net.minecraft.util.text.TextFormatting;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 public class IngredientModifiers {
@@ -61,5 +64,23 @@ public class IngredientModifiers {
                     TextFormatting.RED.toString() + modifierValue + "%" + TextFormatting.GRAY + " Ingredient Effectiveness",
                     TextFormatting.GRAY + "(To ingredients " + type.getDisplayValue() + " this one)"
             };
+    }
+
+    public List<String> generateAllLoreLines() {
+        List<String> itemLore = new ArrayList<>();
+        if (this.left != 0)
+            itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("left", left)));
+        if (this.right != 0)
+            itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("right", right)));
+        if (this.above != 0)
+            itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("above", above)));
+        if (this.under != 0)
+            itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("under", under)));
+        if (this.touching != 0)
+            itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("touching", touching)));
+        if (this.notTouching != 0)
+            itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("notTouching", notTouching)));
+
+        return itemLore;
     }
 }

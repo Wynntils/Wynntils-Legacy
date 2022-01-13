@@ -99,57 +99,12 @@ public class IngredientProfile {
         if (statuses.size() > 0)
             itemLore.add("");
 
-        int left = ingredientModifiers.getLeft();
-        int right = ingredientModifiers.getRight();
-        int above = ingredientModifiers.getAbove();
-        int under = ingredientModifiers.getUnder();
-        int touching = ingredientModifiers.getTouching();
-        int notTouching = ingredientModifiers.getNotTouching();
-
-        if (left != 0)
-            itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("left", left)));
-        if (right != 0)
-            itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("right", right)));
-        if (above != 0)
-            itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("above", above)));
-        if (under != 0)
-            itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("under", under)));
-        if (touching != 0)
-            itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("touching", touching)));
-        if (notTouching != 0)
-            itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("notTouching", notTouching)));
+        itemLore.addAll(ingredientModifiers.generateAllLoreLines());
 
         if (ingredientModifiers.anyExists())
             itemLore.add("");
 
-        int durability = itemModifiers.getDurability();
-        int duration = itemModifiers.getDuration();
-        int charges = itemModifiers.getCharges();
-        int strength = itemModifiers.getStrength();
-        int dexterity = itemModifiers.getDexterity();
-        int intelligence = itemModifiers.getIntelligence();
-        int defense = itemModifiers.getDefense();
-        int agility = itemModifiers.getAgility();
-
-        if (durability != 0 && duration != 0)
-            itemLore.add(IngredientItemModifiers.getFormattedModifierText("durability", durability) + TextFormatting.GRAY + " or " + IngredientItemModifiers.getFormattedModifierText("duration", duration));
-        else if (durability != 0)
-            itemLore.add(IngredientItemModifiers.getFormattedModifierText("durability", durability));
-        else if (duration != 0)
-            itemLore.add(IngredientItemModifiers.getFormattedModifierText("duration", duration));
-
-        if (charges != 0)
-            itemLore.add(IngredientItemModifiers.getFormattedModifierText("charges", charges));
-        if (strength != 0)
-            itemLore.add(IngredientItemModifiers.getFormattedModifierText("strength", strength));
-        if (dexterity != 0)
-            itemLore.add(IngredientItemModifiers.getFormattedModifierText("dexterity", dexterity));
-        if (intelligence != 0)
-            itemLore.add(IngredientItemModifiers.getFormattedModifierText("intelligence", intelligence));
-        if (defense != 0)
-            itemLore.add(IngredientItemModifiers.getFormattedModifierText("defense", defense));
-        if (agility != 0)
-            itemLore.add(IngredientItemModifiers.getFormattedModifierText("agility", agility));
+        itemLore.addAll(itemModifiers.generateAllLoreLines());
 
         if (itemModifiers.anyExists())
             itemLore.add("");

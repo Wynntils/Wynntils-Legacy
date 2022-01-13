@@ -3,6 +3,9 @@ package com.wynntils.webapi.profiles.ingredient;
 import com.wynntils.webapi.profiles.ingredient.enums.ItemModifierType;
 import net.minecraft.util.text.TextFormatting;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Locale;
 
 public class IngredientItemModifiers {
@@ -69,5 +72,31 @@ public class IngredientItemModifiers {
 
     public boolean anyExists() {
         return durability != 0 || duration != 0 || charges != 0 || strength != 0 || dexterity != 0 || intelligence != 0 || defense != 0 || agility != 0;
+    }
+
+    public List<String> generateAllLoreLines() {
+        List<String> itemLore = new ArrayList<>();
+
+        if (durability != 0 && duration != 0)
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("durability", durability) + TextFormatting.GRAY + " or " + IngredientItemModifiers.getFormattedModifierText("duration", duration));
+        else if (durability != 0)
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("durability", durability));
+        else if (duration != 0)
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("duration", duration));
+
+        if (charges != 0)
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("charges", charges));
+        if (strength != 0)
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("strength", strength));
+        if (dexterity != 0)
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("dexterity", dexterity));
+        if (intelligence != 0)
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("intelligence", intelligence));
+        if (defense != 0)
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("defense", defense));
+        if (agility != 0)
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("agility", agility));
+
+        return itemLore;
     }
 }
