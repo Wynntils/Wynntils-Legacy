@@ -63,7 +63,7 @@ public class MapConfig extends SettingsClass {
     @Setting(displayName = "Compass Beacon Colour", description = "What colour should the compass beacon be?", order = 11)
     @Setting.Features.CustomColorFeatures(allowAlpha = true)
     public CustomColor compassBeaconColor = CommonColors.RED;
-                        
+
     @Setting(displayName = "Map Blur", description = "Should the map be rendered using linear textures to avoid aliasing issues?", order = 12)
     public boolean renderUsingLinear = true;
 
