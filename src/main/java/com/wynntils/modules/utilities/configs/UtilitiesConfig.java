@@ -168,7 +168,7 @@ public class UtilitiesConfig extends SettingsClass {
         public IdentificationDecimalPlaces decimalPlaces = IdentificationDecimalPlaces.Zero;
 
         @Setting(displayName = "Show Item Identification Stars", description = "Should the star rating of an item's identifications be shown?")
-        public boolean addStars = false;
+        public boolean addStars = true;
 
         @Setting(displayName = "Legacy Identification Values", description = "Should mana and life steal stats display as /4s instead of /3s and /5s?")
         public boolean legacyIds = false;
