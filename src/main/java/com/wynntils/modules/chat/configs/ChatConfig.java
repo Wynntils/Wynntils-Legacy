@@ -74,7 +74,7 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Use Brackets for Translation", description = "How should sent messages be translated to Wynnic and Gavellian?\n\nIf disabled, there will be two buttons next to the message field that allow you to select Wynnic and Gavellian.\n\nIf enabled, you can type in Wynnic using curly brackets ({ }) and in Gavellian using angle brackets (< >).", order = 15)
     public boolean useBrackets = false;
 
-    @Setting(displayName = "Clickable Coordinates", description = "Should coordinates that are displayed in chat be clickable as a '/compass' command?", order = 17)
+    @Setting(displayName = "Clickable Coordinates", description = "Should coordinates automatically execute /compass when clicked on in chat?", order = 17)
     public boolean clickableCoordinates = true;
 
     @Setting(displayName = "Clickable Duel Requests", description = "Should duel requests provide a clickable command?", order = 19)
