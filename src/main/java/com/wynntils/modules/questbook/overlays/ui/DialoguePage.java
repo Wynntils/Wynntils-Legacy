@@ -34,7 +34,7 @@ public class DialoguePage extends QuestBookListPage<String> {
 
     @Override
     public List<String> getHoveredDescription() {
-        return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Dialogue", TextFormatting.GRAY + "Read your last", TextFormatting.GRAY + "few conversations", "", TextFormatting.GREEN + "Left click to select");
+        return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Dialogue", TextFormatting.GRAY + "Read your last", TextFormatting.GRAY + "few conversations.", "", TextFormatting.GREEN + "Left click to select");
     }
 
     @Override
