@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 public class DialoguePage extends QuestBookListPage<String> {
 
-    final static List<String> textLines = Arrays.asList("Here you can read your", "last few conversations with", "NPCs on this class");
+    final static List<String> textLines = Arrays.asList("Here you can read your", "last few conversations with", "NPCs on your current class.");
 
 
     public DialoguePage() {

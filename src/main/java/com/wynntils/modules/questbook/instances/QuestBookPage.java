@@ -303,7 +303,7 @@ public class QuestBookPage extends GuiScreen {
     protected void drawMenuButton(int x, int y, int posX, int posY) {
         if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
             render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 238, 234, 16, 9);
-            hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Back to Menu", TextFormatting.GRAY + "Click here to go", TextFormatting.GRAY + "back to the main page", "", TextFormatting.GREEN + "Left click to select");
+            hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Back to Menu", TextFormatting.GRAY + "Click here to go", TextFormatting.GRAY + "back to the main page.", "", TextFormatting.GREEN + "Left click to select");
             return;
         }
 
