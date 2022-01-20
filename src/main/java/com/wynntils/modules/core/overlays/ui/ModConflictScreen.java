@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.modules.core.overlays.ui;
@@ -36,9 +36,9 @@ public class ModConflictScreen extends CustomModLoadingErrorDisplayException {
             errorScreen.drawCenteredString(fontRenderer, "§f§l" + x + "§f§o (" + conflictMods.get(x) + ")", errorScreen.width/2, offset, 0xFFFFFF);
         }
         offset+=20;
-        errorScreen.drawCenteredString(fontRenderer, "§fThese mods are known to cause §f§lmassive conflicts §fwith Wynntils", errorScreen.width/2, offset, 0xFFFFFF);
+        errorScreen.drawCenteredString(fontRenderer, "§fThese mods are known to cause §f§lcompatibility issues §fwith Wynntils.", errorScreen.width/2, offset, 0xFFFFFF);
         offset+=10;
-        errorScreen.drawCenteredString(fontRenderer, "§cPlease remove these mods and restart your game to play", errorScreen.width/2, offset, 0xFFFFFF);
+        errorScreen.drawCenteredString(fontRenderer, "§cPlease remove these mods and restart your game to play.", errorScreen.width/2, offset, 0xFFFFFF);
     }
 
 }

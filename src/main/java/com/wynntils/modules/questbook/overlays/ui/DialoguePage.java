@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.modules.questbook.overlays.ui;
@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 
 public class DialoguePage extends QuestBookListPage<String> {
 
-    final static List<String> textLines = Arrays.asList("Here you can read your", "last few conversations with", "NPCs on this class");
+    final static List<String> textLines = Arrays.asList("Here you can read your", "last few conversations with", "NPCs on your current class.");
 
 
     public DialoguePage() {
@@ -34,7 +34,7 @@ public class DialoguePage extends QuestBookListPage<String> {
 
     @Override
     public List<String> getHoveredDescription() {
-        return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Dialogue", TextFormatting.GRAY + "Read your last", TextFormatting.GRAY + "few conversations", "", TextFormatting.GREEN + "Left click to select");
+        return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Dialogue", TextFormatting.GRAY + "Read your last", TextFormatting.GRAY + "few conversations.", "", TextFormatting.GREEN + "Left click to select");
     }
 
     @Override

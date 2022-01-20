@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.webapi.profiles.item.objects;
@@ -80,7 +80,7 @@ public class IdentificationContainer {
             else nameBuilder.append(c);
         }
 
-        return StringUtils.capitalizeFirst(nameBuilder.toString());
+        return StringUtils.capitalizeFirst(nameBuilder.toString()).replaceAll("\\bXp\\b", "XP");
     }
 
     public static IdentificationModifier getTypeFromName(String name) {

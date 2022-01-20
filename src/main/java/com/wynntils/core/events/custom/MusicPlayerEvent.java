@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.core.events.custom;
@@ -22,8 +22,15 @@ public class MusicPlayerEvent extends Event {
 
         public static class Start extends Playback {
 
-            public Start(String songName) {
+            boolean force;
+
+            public boolean isForce() {
+                return force;
+            }
+
+            public Start(String songName, boolean force) {
                 super(songName);
+                this.force = force;
             }
 
         }

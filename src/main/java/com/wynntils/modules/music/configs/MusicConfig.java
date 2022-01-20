@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2021.
+ *  * Copyright © Wynntils - 2022.
  */
 
 package com.wynntils.modules.music.configs;
@@ -20,16 +20,16 @@ public class MusicConfig extends SettingsClass {
     @Setting(displayName = "Music System", description = "Should Wynntils' music player be enabled?", order = 0)
     public boolean enabled = true;
 
-    @Setting(displayName = "Replace Wynncraft Jukebox", description = "Should Wynncraft's jukebox be replaced with an offline version?\n\n§8This is a useful feature if you usually lag but it's not as precise as Wynncraft's music player with 86.7% precision.\n\n§8Type `/toggle music` to avoid duplicate music being played.", order = 1)
+    @Setting(displayName = "Replace Wynncraft Jukebox", description = "Should Wynncraft's jukebox be replaced with an offline version?\n\n§8This is a helpful feature if you usually lag, but it's not as precise as Wynncraft's music player with a precision of 86.7%.\n\n§8Run `/toggle music` to avoid duplicate music playing simultaneously.", order = 1)
     public boolean replaceJukebox = false;
 
     @Setting(displayName = "Class Selection Music", description = "Should the character selection music be played?", order = 2)
     public boolean classSelectionMusic = true;
 
-    @Setting(displayName = "Quieter Character Selector", description = "Should Character selector music be played more quietly?", order = 3)
+    @Setting(displayName = "Quieter Character Selector", description = "Should the character selection music be played more quietly?", order = 3)
     public boolean characterSelectorQuiet = true;
 
-    @Setting(displayName = "Off Focus Volume Offset", description = "How loud should soundtracks be when Minecraft is not focused on?")
+    @Setting(displayName = "Off Focus Volume Offset", description = "How loud should sounds be when Minecraft is not focused on?")
     @Setting.Limitations.FloatLimit(max = 0f, min= -32f, precision = 1f)
     public float focusOffset = -10;
 
@@ -41,7 +41,7 @@ public class MusicConfig extends SettingsClass {
     public static class SoundEffects extends SettingsClass {
         public static SoundEffects INSTANCE;
 
-        @Setting(displayName = "Mythic Found", description = "Should a sound be played when a mythic is found in a loot chest?")
+        @Setting(displayName = "Mythic Found", description = "Should a sound effect be played when a mythic is found in a loot chest?")
         public boolean mythicFound = true;
 
     }

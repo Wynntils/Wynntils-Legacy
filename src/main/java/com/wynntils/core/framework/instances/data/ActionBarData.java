@@ -1,9 +1,10 @@
 /*
- *  * Copyright © Wynntils - 2021.
+ *  * Copyright © Wynntils - 2022.
  */
 
 package com.wynntils.core.framework.instances.data;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.containers.PlayerData;
 import com.wynntils.core.utils.StringUtils;
@@ -58,8 +59,10 @@ public class ActionBarData extends PlayerData {
                         lastSpell[i] = match.group(i + 3).charAt(0) == 'R' ? SpellData.SPELL_RIGHT : SpellData.SPELL_LEFT;
                     }
 
-                    spellData.setLastSpell(lastSpell);
+                    spellData.setLastSpell(lastSpell, McIf.player().inventory.currentItem);
                 }
+                else if (spellData.getLastSpell() != SpellData.NO_SPELL)
+                    spellData.setLastSpell(SpellData.NO_SPELL, -1);
             }
         }
 

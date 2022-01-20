@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2021.
+ *  * Copyright © Wynntils - 2022.
  */
 
 package com.wynntils.modules.utilities.events;
@@ -1049,7 +1049,8 @@ public class ClientEvents implements Listener {
         return (itemName.endsWith(" Teleport Scroll") ||
                 itemName.contains("Potion of ") || // We're using .contains here because we check for skill point potions which are different colors/symbols
                 itemName.endsWith("Speed Surge [1/1]") ||
-                itemName.endsWith("Bipedal Spring [1/1]"))
+                itemName.endsWith("Bipedal Spring [1/1]") ||
+                itemName.equals("§aEmerald")) // For the Selchar Treasure Merchant
 
                 && ItemUtils.getStringLore(is).contains("§6Price:")
                 && !ItemUtils.getStringLore(is).contains(" x "); // Make sure we're not in trade market
@@ -1123,24 +1124,25 @@ public class ClientEvents implements Listener {
             lastOpenedRewardWindowId = e.getPacket().getWindowId();
     }
 
-    //Dry streak counter, mythic music event
+    // Dry streak counter, mythic music event
     @SubscribeEvent
     public void onMythicFound(PacketEvent<SPacketWindowItems> e) {
         if (lastOpenedChestWindowId != e.getPacket().getWindowId() && lastOpenedRewardWindowId != e.getPacket().getWindowId()) return;
 
-        //Get items in chest, return if there is not enough items
-        if (e.getPacket().getItemStacks().size() < 27)
+        // Get items in chest, return if there is not enough or too many items
+        // 63 is the size of a chest (27) + player inventory
+        if (e.getPacket().getItemStacks().size() != 63)
             return;
 
-        //Only run at first time we get items, don't care about updating
+        // Only run at first time we get items, don't care about updating
         if (e.getPacket().getWindowId() == lastProcessedOpenedChest) return;
 
         lastProcessedOpenedChest = e.getPacket().getWindowId();
 
-        //Dry streak counter and sound sfx
+        // Dry streak counter and sound sfx
         if (UtilitiesConfig.INSTANCE.enableDryStreak && lastOpenedChestWindowId == e.getPacket().getWindowId()) {
             boolean foundMythic = false;
-            //Size should be at least 27, checked for it earlier
+            // Size should be at least 27, checked for it earlier
             int size = 27;
             for (int i = 0; i < size; i++) {
                 ItemStack stack = e.getPacket().getItemStacks().get(i);
@@ -1154,7 +1156,7 @@ public class ClientEvents implements Listener {
                 if (MusicConfig.SoundEffects.INSTANCE.mythicFound) {
                     try {
                         SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("mythicFound"),
-                                true, false, false, false, true, false);
+                                true, false, false, false, true, false, true);
                     } catch (Exception exception) {
                         exception.printStackTrace();
                     }
@@ -1183,10 +1185,10 @@ public class ClientEvents implements Listener {
             return;
         }
 
-        //Mythic found sfx for daily rewards and objective rewards
+        // Mythic found sfx for daily rewards and objective rewards
         if (!MusicConfig.SoundEffects.INSTANCE.mythicFound) return;
 
-        //Size should be at least 27, checked for it earlier
+        // Size should be at least 27, checked for it earlier
         int size = 27;
         for (int i = 0; i < size; i++) {
             ItemStack stack = e.getPacket().getItemStacks().get(i);
@@ -1196,7 +1198,7 @@ public class ClientEvents implements Listener {
 
             try {
                 SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("mythicFound"),
-                        true, false, false, false, true, false);
+                        true, false, false, false, true, false, true);
             } catch (Exception exception) {
                 exception.printStackTrace();
             }

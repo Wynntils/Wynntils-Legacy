@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.modules.music.overlays.inventories;
@@ -19,8 +19,7 @@ public class CurrentMusicDisplayer implements Listener {
 
     @SubscribeEvent
     public void onDrawInGameMenu(GuiOverlapEvent.IngameMenuOverlap.DrawScreen e) {
-        if (!Reference.onWorld || !MusicConfig.INSTANCE.enabled) return;
-        if (!SoundTrackManager.getPlayer().isPlaying() && !SoundTrackManager.getPlayer().getStatus().isPaused()) return;
+        if (!Reference.onWorld || !MusicConfig.INSTANCE.enabled || SoundTrackManager.getPlayer() == null) return;
 
         ScreenRenderer r = new ScreenRenderer();
 
@@ -34,14 +33,12 @@ public class CurrentMusicDisplayer implements Listener {
         r.drawString((SoundTrackManager.getPlayer().getStatus().getCurrentSong() != null ? SoundTrackManager.getPlayer().getStatus().getCurrentSong().getName() : "Nothing is being played!"), 0, 155, CommonColors.WHITE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NORMAL);
 
         int x = (e.getGui().width / 2) - e.getMouseX(); int y = (e.getGui().height /4 - 16) - e.getMouseY();
-        if (SoundTrackManager.getPlayer() != null) {
-            if (SoundTrackManager.getPlayer().getStatus().isPaused()) {
-                r.drawRect(Textures.UIs.hud_overlays, -8, 170, 17, 0, 16, 16);
-                if (x >= -7 && y >= -186 && x <= 7 && y <= -171) e.getGui().drawHoveringText("Play", e.getMouseX(), e.getMouseY());
-            } else {
-                r.drawRect(Textures.UIs.hud_overlays, -8, 170, 34, 0, 16, 16);
-                if (x >= -7 && y >= -186 && x <= 7 && y <= -171) e.getGui().drawHoveringText("Pause", e.getMouseX(), e.getMouseY());
-            }
+        if (SoundTrackManager.getPlayer().getStatus().isPaused()) {
+            r.drawRect(Textures.UIs.hud_overlays, -8, 170, 17, 0, 16, 16);
+            if (x >= -7 && y >= -186 && x <= 7 && y <= -171) e.getGui().drawHoveringText("Play", e.getMouseX(), e.getMouseY());
+        } else {
+            r.drawRect(Textures.UIs.hud_overlays, -8, 170, 34, 0, 16, 16);
+            if (x >= -7 && y >= -186 && x <= 7 && y <= -171) e.getGui().drawHoveringText("Pause", e.getMouseX(), e.getMouseY());
         }
 
         ScreenRenderer.endGL();
@@ -54,6 +51,7 @@ public class CurrentMusicDisplayer implements Listener {
         int x = (e.getGui().width / 2) - e.getMouseX(); int y = (e.getGui().height /4 - 16) - e.getMouseY();
 
         if (x >= -7 && y >= -186 && x <= 7 && y <= -171 && SoundTrackManager.getPlayer() != null) {
+            SoundTrackManager.getPlayer().getStatus().setPauseAfter(false); // player override
             SoundTrackManager.getPlayer().getStatus().setPaused(!SoundTrackManager.getPlayer().getStatus().isPaused());
         }
     }

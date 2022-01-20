@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2021.
+ *  * Copyright © Wynntils - 2022.
  */
 
 package com.wynntils.modules.core.commands;
@@ -227,7 +227,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
             updateCheckText = new TextComponentString("Wynntils is currently outdated. Press " + KeyManager.getCheckForUpdatesKey().getKeyBinding().getDisplayName() + " to update now.");
             color = TextFormatting.DARK_RED;
         } else {
-            updateCheckText = new TextComponentString("Wynntils was up-to-date when last checked. Press " + KeyManager.getCheckForUpdatesKey().getKeyBinding().getDisplayName() + " to check for updates.");
+            updateCheckText = new TextComponentString("Wynntils was up to date when last checked. Press " + KeyManager.getCheckForUpdatesKey().getKeyBinding().getDisplayName() + " to check for updates.");
             color = TextFormatting.DARK_GREEN;
         }
         updateCheckText.getStyle().setColor(color);

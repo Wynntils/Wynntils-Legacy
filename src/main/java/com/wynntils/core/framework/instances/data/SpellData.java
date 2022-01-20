@@ -1,13 +1,19 @@
 /*
- *  * Copyright © Wynntils - 2021.
+ *  * Copyright © Wynntils - 2022.
  */
 
 package com.wynntils.core.framework.instances.data;
 
 import com.wynntils.McIf;
+import com.wynntils.Reference;
+import com.wynntils.core.events.custom.PacketEvent;
+import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.instances.containers.PlayerData;
 import com.wynntils.core.utils.reflections.ReflectionFields;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.play.client.CPacketHeldItemChange;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,7 +22,7 @@ public class SpellData extends PlayerData {
 
     private static final Pattern LEVEL_1_SPELL_PATTERN = Pattern.compile("^(Left|Right|\\?)-(Left|Right|\\?)-(Left|Right|\\?)$");
     private static final Pattern LOW_LEVEL_SPELL_PATTERN = Pattern.compile("^([LR?])-([LR?])-([LR?])$");
-    private static final boolean[] NO_SPELL = new boolean[0];
+    public static final boolean[] NO_SPELL = new boolean[0];
 
     /** Represents `L` in the currently casting spell */
     public static final boolean SPELL_LEFT = false;
@@ -25,8 +31,11 @@ public class SpellData extends PlayerData {
 
     private String lastParsedTitle = null;
     private boolean[] lastSpell = NO_SPELL;
+    public int lastSpellWeaponSlot = -1;
 
-    public SpellData() { }
+    public SpellData() {
+
+    }
 
     public boolean[] parseSpellFromTitle(String subtitle) {
         // Level 1: Left-Right-? in subtitle
@@ -37,6 +46,7 @@ public class SpellData extends PlayerData {
 
         lastParsedTitle = subtitle;
         if (subtitle.isEmpty()) {
+            lastSpellWeaponSlot = -1;
             return (lastSpell = NO_SPELL);
         }
 
@@ -52,6 +62,8 @@ public class SpellData extends PlayerData {
         if (m.group(3).equals("?")) return (lastSpell = new boolean[]{ spell1, spell2 });
 
         boolean spell3 = m.group(3).equals(right) ? SPELL_RIGHT : SPELL_LEFT;
+
+        lastSpellWeaponSlot = McIf.player().inventory.currentItem;
         return (lastSpell = new boolean[]{ spell1, spell2, spell3 });
     }
 
@@ -75,8 +87,8 @@ public class SpellData extends PlayerData {
         return lastSpell;
     }
 
-    public void setLastSpell(boolean[] lastSpell) {
+    public void setLastSpell(boolean[] lastSpell, int heldItemSlot) {
         this.lastSpell = lastSpell;
+        this.lastSpellWeaponSlot = heldItemSlot;
     }
-
 }

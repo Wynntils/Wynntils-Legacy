@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.modules.core.overlays.ui;
@@ -23,28 +23,35 @@ public class ForgeConflictScreen extends CustomModLoadingErrorDisplayException {
         errorScreen.drawCenteredString(
                 fontRenderer,
                 String.format(
-                    "Wynntils has detected that you are using Forge 1.12.2 version: %s.",
+                    "Wynntils has detected that you are using version %s of Forge for 1.12.2.",
                     ForgeVersion.getVersion()
                 ),
                 errorScreen.width / 2,
                 errorScreen.height / 2 - 30,
                 0xFFFFFF);
         errorScreen.drawCenteredString(fontRenderer,
-                "However, Wynntils requires Forge 1.12.2 to be of 14.23.5.2856 or higher.",
+                "However, Wynntils requires Forge to be version 14.23.5.2856 or newer.",
                 errorScreen.width / 2,
                 errorScreen.height / 2 - 20,
                 0xFFFFFF);
         errorScreen.drawCenteredString(
                 fontRenderer,
-                "As lower versions of Forge are vulnerable to a severe exploit (log4shell).",
+                "Previous versions of Forge are vulnerable to a severe exploit.",
                 errorScreen.width / 2,
                 errorScreen.height / 2 - 10,
                 0xFFFFFF
         );
-        errorScreen.drawCenteredString(fontRenderer,
-                "§cPlease update your Forge version to stay safe.",
+        errorScreen.drawCenteredString(
+                fontRenderer,
+                "For your safety, we have prevented your game from loading with vulnerable versions of Forge.",
                 errorScreen.width / 2,
-                errorScreen.height / 2 + 10,
+                errorScreen.height / 2,
+                0xFFFFFF
+        );
+        errorScreen.drawCenteredString(fontRenderer,
+                "§cPlease update your version of Forge for 1.12.2 to be protected against this vulnerability.",
+                errorScreen.width / 2,
+                errorScreen.height / 2 + 20,
                 0xFFFFFF);
     }
 

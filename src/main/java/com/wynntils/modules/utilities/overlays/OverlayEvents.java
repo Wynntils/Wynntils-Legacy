@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2021.
+ *  * Copyright © Wynntils - 2022.
  */
 
 package com.wynntils.modules.utilities.overlays;
@@ -627,6 +627,7 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void onMusicStart(MusicPlayerEvent.Playback.Start e) {
+        if (e.isForce()) return; // don't inform about songs that are played by force (easter egg, mythic find)
         if (OverlayConfig.GameUpdate.TerritoryChangeMessages.INSTANCE.musicChange)
             GameUpdateOverlay.queueMessage(OverlayConfig.GameUpdate.TerritoryChangeMessages.INSTANCE.musicChangeFormat
                     .replace("%np%", e.getSongName()));

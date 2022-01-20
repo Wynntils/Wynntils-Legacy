@@ -1,15 +1,17 @@
 /*
- *  * Copyright © Wynntils - 2021.
+ *  * Copyright © Wynntils - 2022.
  */
 
 package com.wynntils.modules.chat.events;
 
 import com.wynntils.McIf;
 import com.wynntils.Reference;
+import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.WynnClassChangeEvent;
 import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.chat.configs.ChatConfig;
@@ -17,10 +19,20 @@ import com.wynntils.modules.chat.managers.ChatManager;
 import com.wynntils.modules.chat.managers.HeldItemChatManager;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
+import com.wynntils.modules.core.managers.PacketQueue;
 import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.events.custom.QuestBookUpdateEvent;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import com.wynntils.webapi.profiles.item.enums.ItemType;
 import com.wynntils.webapi.services.TranslationManager;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiChat;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.network.play.client.CPacketEntityAction;
+import net.minecraft.network.play.client.CPacketUseEntity;
+import net.minecraft.network.play.server.SPacketCustomSound;
+import net.minecraft.network.play.server.SPacketSoundEffect;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatEvent;
@@ -130,6 +142,22 @@ public class ClientEvents implements Listener {
             ChatManager.setDiscoveriesLoaded(true);
             ChatOverlay.getChat().processQueues();
         }
+    }
+
+    @SubscribeEvent
+    public void onClickNPC(PacketEvent<CPacketUseEntity> e) {
+        if (!ChatConfig.INSTANCE.rightClickDialogue) return;
+        if (e.getPacket().getAction() != CPacketUseEntity.Action.INTERACT) return; // only right click
+        if (!ChatManager.inDialogue) return;
+
+        EntityPlayerSP player = McIf.player();
+        Entity clicked = e.getPacket().getEntityFromWorld(player.world);
+
+        if (clicked.getTeam() != null) return; // entity is another player
+        String name = clicked.getName();
+        if (!name.contains("NPC") && !name.contains("\u0001")) return; // (probably) not an NPC
+
+        ChatManager.progressDialogue();
     }
 
 }
