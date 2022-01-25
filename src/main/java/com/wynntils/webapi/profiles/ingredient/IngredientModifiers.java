@@ -1,12 +1,10 @@
 package com.wynntils.webapi.profiles.ingredient;
 
-import com.wynntils.webapi.profiles.ingredient.enums.IngredientModifierType;
 import net.minecraft.util.text.TextFormatting;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
 
 public class IngredientModifiers {
     int left = 0;
@@ -42,28 +40,41 @@ public class IngredientModifiers {
         return notTouching;
     }
 
-    public static IngredientModifierType getModifierTypeFromString(String modifierName) {
-        if (modifierName.equals("notTouching"))
-            return IngredientModifierType.NOT_TOUCHING;
-        return IngredientModifierType.valueOf(modifierName.toUpperCase(Locale.ROOT));
-    }
 
     public boolean anyExists() {
         return left != 0 || right != 0 || under != 0 || above != 0 || touching != 0 || notTouching != 0;
     }
 
     public static String[] getLoreLines(String modifierName, int modifierValue) {
-        IngredientModifierType type = getModifierTypeFromString(modifierName);
+        String readableModifier = getReadableModifierFromString(modifierName);
         if (modifierValue > 0)
             return new String[] {
                     TextFormatting.GREEN + "+" + modifierValue + "%" + TextFormatting.GRAY + " Ingredient Effectiveness",
-                    TextFormatting.GRAY + "(To ingredients " + type.getDisplayValue() + " this one)"
+                    TextFormatting.GRAY + "(To ingredients " + readableModifier + " this one)"
             };
         else
             return new String[] {
                     TextFormatting.RED.toString() + modifierValue + "%" + TextFormatting.GRAY + " Ingredient Effectiveness",
-                    TextFormatting.GRAY + "(To ingredients " + type.getDisplayValue() + " this one)"
+                    TextFormatting.GRAY + "(To ingredients " + readableModifier + " this one)"
             };
+    }
+
+    private static String getReadableModifierFromString(String modifierName) {
+        switch (modifierName) {
+            case "left":
+                return "to the left of";
+            case "right":
+                return "to the right of";
+            case "above":
+                return "above";
+            case "under":
+                return "under";
+            case "touching":
+                return "touching";
+            case "notTouching":
+                return "not touching";
+        }
+        return null;
     }
 
     public List<String> generateAllLoreLines() {

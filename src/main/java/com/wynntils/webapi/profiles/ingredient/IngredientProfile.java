@@ -3,7 +3,6 @@ package com.wynntils.webapi.profiles.ingredient;
 import com.google.gson.annotations.SerializedName;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.WebManager;
-import com.wynntils.webapi.profiles.ingredient.enums.IngredientModifierType;
 import com.wynntils.webapi.profiles.ingredient.enums.IngredientTier;
 import com.wynntils.webapi.profiles.ingredient.enums.ProfessionType;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
