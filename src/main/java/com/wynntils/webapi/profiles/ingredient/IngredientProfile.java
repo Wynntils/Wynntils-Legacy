@@ -1,7 +1,10 @@
 package com.wynntils.webapi.profiles.ingredient;
 
+import com.google.gson.annotations.SerializedName;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.ingredient.enums.IngredientModifierType;
+import com.wynntils.webapi.profiles.ingredient.enums.IngredientTier;
 import com.wynntils.webapi.profiles.ingredient.enums.ProfessionType;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 import net.minecraft.init.Items;
@@ -17,7 +20,10 @@ import java.util.*;
 public class IngredientProfile {
 
     String name;
-    int tier;
+
+    @SerializedName("tier")
+    IngredientTier ingredientTier;
+
     boolean untradeable;
     int level;
     String material;
@@ -28,26 +34,12 @@ public class IngredientProfile {
 
     transient ItemStack guideStack;
 
-    public IngredientProfile(String name, int tier, int level, boolean untradeable, String material,
+    public IngredientProfile(String name, IngredientTier tier, int level, boolean untradeable, String material,
                              ArrayList<ProfessionType> professions, Map<String, IdentificationContainer> statuses,
                              IngredientItemModifiers itemModifiers, IngredientModifiers ingredientModifiers) {}
 
     public String getIngredientStringFormatted() {
-        return TextFormatting.GRAY + name + " " + getTierString();
-    }
-
-    private String getTierString() {
-        switch (tier) {
-            case 0:
-                return "§7[§8✫✫✫§7]";
-            case 1:
-                return "§6[§e✫§8✫✫§6]";
-            case 2:
-                return "§5[§d✫✫§8✫§5]";
-            case 3:
-                return "§3[§b✫✫✫§3]";
-        }
-        return "";
+        return TextFormatting.GRAY + name + " " + ingredientTier.getTierString();
     }
 
     public String getDisplayName() {
@@ -62,8 +54,8 @@ public class IngredientProfile {
         return guideStack != null ? guideStack : generateStack();
     }
 
-    public int getTier() {
-        return tier;
+    public IngredientTier getTier() {
+        return ingredientTier;
     }
 
     private ItemStack generateStack() {

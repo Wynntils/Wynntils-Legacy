@@ -43,13 +43,13 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
         CustomColor color = new CustomColor(0, 0, 0);
 
         switch (entryInfo.getTier()) {
-            case 1:
+            case TIER_1:
                 color = UtilitiesConfig.Items.INSTANCE.ingredientOneHighlightColor;
                 break;
-            case 2:
+            case TIER_2:
                 color = UtilitiesConfig.Items.INSTANCE.ingredientTwoHighlightColor;
                 break;
-            case 3:
+            case TIER_3:
                 color = UtilitiesConfig.Items.INSTANCE.ingredientThreeHighlightColor;
                 break;
         }
