@@ -52,34 +52,10 @@ public class IngredientItemModifiers {
     }
 
     public static String getFormattedModifierText(String itemModifierName, int modifierValue) {
-        String requirementString = getRequirementStringFromModifier(itemModifierName);
         if (itemModifierName.equals("duration") || itemModifierName.equals("charges") || itemModifierName.equals("durability")) {
-            if (modifierValue > 0)
-                return TextFormatting.GREEN + "+" + modifierValue + " " + requirementString;
-            else
-                return TextFormatting.RED.toString() + modifierValue + " " + requirementString;
+            return (modifierValue > 0 ? TextFormatting.GREEN + "+" : TextFormatting.RED.toString()) + modifierValue + " " + itemModifierName.substring(0, 1).toUpperCase(Locale.ROOT) + itemModifierName.substring(1);
         }
-        else if (modifierValue > 0) {
-            return TextFormatting.RED + "+" + modifierValue + " " + requirementString;
-        }
-        return TextFormatting.GREEN.toString() + modifierValue + " " + requirementString;
-    }
-
-    private static String getRequirementStringFromModifier(String itemModifierName) {
-        switch (itemModifierName) {
-            case "duration":
-            case "charges":
-            case "durability":
-                return itemModifierName;
-            case "strength":
-            case "intelligence":
-            case "dexterity":
-            case "agility":
-            case "defense":
-                return itemModifierName.substring(0, 1).toUpperCase(Locale.ROOT) + itemModifierName.substring(1) + " Min.";
-        }
-
-        return null;
+        return (modifierValue > 0 ? TextFormatting.RED + "+" : TextFormatting.GREEN.toString()) + modifierValue + " " + itemModifierName.substring(0, 1).toUpperCase(Locale.ROOT) + itemModifierName.substring(1) + " Min.";
     }
 
     public boolean anyExists() {

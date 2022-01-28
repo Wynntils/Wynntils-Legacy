@@ -46,35 +46,24 @@ public class IngredientModifiers {
     }
 
     public static String[] getLoreLines(String modifierName, int modifierValue) {
-        String readableModifier = getReadableModifierFromString(modifierName);
-        if (modifierValue > 0)
-            return new String[] {
-                    TextFormatting.GREEN + "+" + modifierValue + "%" + TextFormatting.GRAY + " Ingredient Effectiveness",
-                    TextFormatting.GRAY + "(To ingredients " + readableModifier + " this one)"
-            };
-        else
-            return new String[] {
-                    TextFormatting.RED.toString() + modifierValue + "%" + TextFormatting.GRAY + " Ingredient Effectiveness",
-                    TextFormatting.GRAY + "(To ingredients " + readableModifier + " this one)"
-            };
-    }
+        String readableModifier = modifierName;
 
-    private static String getReadableModifierFromString(String modifierName) {
         switch (modifierName) {
             case "left":
-                return "to the left of";
+                readableModifier = "to the left of";
+                break;
             case "right":
-                return "to the right of";
-            case "above":
-                return "above";
-            case "under":
-                return "under";
-            case "touching":
-                return "touching";
+                readableModifier = "to the right of";
+                break;
             case "notTouching":
-                return "not touching";
+                readableModifier =  "not touching";
+                break;
         }
-        return null;
+
+        return new String[] {
+                (modifierValue > 0 ? TextFormatting.GREEN + "+" : TextFormatting.RED.toString()) + modifierValue + "%" + TextFormatting.GRAY + " Ingredient Effectiveness",
+                TextFormatting.GRAY + "(To ingredients " + readableModifier + " this one)"
+        };
     }
 
     public List<String> generateAllLoreLines() {
