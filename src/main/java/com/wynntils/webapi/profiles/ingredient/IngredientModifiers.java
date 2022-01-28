@@ -46,32 +46,18 @@ public class IngredientModifiers {
     }
 
     public static String[] getLoreLines(String modifierName, int modifierValue) {
-        String readableModifier = modifierName;
-
-        switch (modifierName) {
-            case "left":
-                readableModifier = "to the left of";
-                break;
-            case "right":
-                readableModifier = "to the right of";
-                break;
-            case "notTouching":
-                readableModifier =  "not touching";
-                break;
-        }
-
         return new String[] {
                 (modifierValue > 0 ? TextFormatting.GREEN + "+" : TextFormatting.RED.toString()) + modifierValue + "%" + TextFormatting.GRAY + " Ingredient Effectiveness",
-                TextFormatting.GRAY + "(To ingredients " + readableModifier + " this one)"
+                TextFormatting.GRAY + "(To ingredients " + modifierName + " this one)"
         };
     }
 
     public List<String> generateAllLoreLines() {
         List<String> itemLore = new ArrayList<>();
         if (this.left != 0)
-            itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("left", left)));
+            itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("to the left", left)));
         if (this.right != 0)
-            itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("right", right)));
+            itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("to the right right", right)));
         if (this.above != 0)
             itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("above", above)));
         if (this.under != 0)
@@ -79,7 +65,7 @@ public class IngredientModifiers {
         if (this.touching != 0)
             itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("touching", touching)));
         if (this.notTouching != 0)
-            itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("notTouching", notTouching)));
+            itemLore.addAll(Arrays.asList(IngredientModifiers.getLoreLines("not touching", notTouching)));
 
         return itemLore;
     }
