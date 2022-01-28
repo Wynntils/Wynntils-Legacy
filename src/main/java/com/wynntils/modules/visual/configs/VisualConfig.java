@@ -156,7 +156,7 @@ public class VisualConfig extends SettingsClass {
         @Setting(displayName = "Custom Character Selector", description = "Should the custom character selector be enabled?")
         public boolean characterSelector = true;
 
-        @Setting(displayName = "Custom Seaskipper Selector", description = "Should the Seaskipper gui be replaced with a map?")
+        @Setting(displayName = "Custom Seaskipper Selector", description = "Should the Seaskipper GUI be replaced with a map?")
         public boolean seaskipperSelector = true;
 
     }
@@ -167,8 +167,8 @@ public class VisualConfig extends SettingsClass {
 
         @Setting(displayName = "Enable Cached Chunks", description = "Should Wynntils cache the server chunks in order to fullfill your game render distance?\n\n§cEnabling this feature will cause the game to use more disk space.", upload = false)
         public boolean enabled = false;
-        
-        
+
+
         @Setting(displayName = "Delete Cached Chunks", description = "Toggling this to true will delete all cached chunks.", upload = false)
         public boolean deleteChunks = false;
 

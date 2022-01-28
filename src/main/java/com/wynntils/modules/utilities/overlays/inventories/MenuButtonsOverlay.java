@@ -42,7 +42,7 @@ public class MenuButtonsOverlay implements Listener {
         moveButtons(buttonList, gui);
 
         if (Reference.onWorld && UtilitiesConfig.INSTANCE.addClassHubButtons) {
-            addButtonPair(buttonList, gui, yOffset, 753, "Class selection",
+            addButtonPair(buttonList, gui, yOffset, 753, "Class Selection",
                     754, "Back to Hub");
             yOffset = 48;
         }

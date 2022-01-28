@@ -44,17 +44,17 @@ import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class LootRunPage extends QuestBookListPage<String> {
 
-    private final static List<String> textLines = Arrays.asList("Here you can see all lootruns", "you have downloaded. You can", "also search for a specific", "quest just by typing its name.", "You can go to the next page", "by clicking on the two buttons", "or by scrolling your mouse.", "", "To add lootruns, access the", "folder for lootruns by", "running /lootrun folder");
+    private final static List<String> textLines = Arrays.asList("Here you can see loot runs", "you have saved. You can also ", "search for a specific quest", "just by typing its name. You", "can go to the next page by", "clicking on the two buttons or", "by scrolling your mouse.", "", "To add loot runs, access the", "folder for loot runs by", "running /lootrun folder.");
     private static int mapScale = 1;
     private boolean mapHovered;
 
     public LootRunPage() {
-        super("Your Lootruns", true, IconContainer.lootrunIcon);
+        super("Loot Runs", true, IconContainer.lootrunIcon);
     }
 
     @Override
     public List<String> getHoveredDescription() {
-        return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Lootruns", TextFormatting.GRAY + "See all lootruns", TextFormatting.GRAY + "you have", TextFormatting.GRAY + "saved in the game.", "", TextFormatting.GREEN + "Left click to select");
+        return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Loot Runs", TextFormatting.GRAY + "See all loot runs", TextFormatting.GRAY + "you have saved", TextFormatting.GRAY + "in the game.", "", TextFormatting.GREEN + "Left click to select");
     }
 
     @Override

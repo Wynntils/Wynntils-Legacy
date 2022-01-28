@@ -86,7 +86,7 @@ public class MainPage extends QuestBookPage {
                 }
             }
 
-            render.drawSplitString("Welcome to Wynntils. You can see your statistics on the right or select some of the options above for more features",
+            render.drawSplitString("Welcome to Wynntils! You can see your statistics on the right or select one of the options above for more features.",
                     155, x - 150, y + 30, 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
             render.drawRect(Textures.UIs.quest_book, x + 20, y - 90, 224, 253, 17, 18);
