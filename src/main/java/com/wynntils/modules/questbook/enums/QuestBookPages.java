@@ -15,10 +15,11 @@ public enum QuestBookPages {
     QUESTS(new QuestsPage(), 1),
     SETTINGS(new SettingsPage(), 2),
     ITEMGUIDE(new ItemPage(), 3),
-    HUDCONFIG(new HUDConfigPage(), 4),
+    INGREDIENTGUIDE(new IngredientPage(), 4),
     DIALOGUE(new DialoguePage(), 5),
-    DISCOVERIES(new DiscoveriesPage(), 6),
-    LOOTRUNS(new LootRunPage(), 7);
+    HUDCONFIG(new HUDConfigPage(), 6),
+    DISCOVERIES(new DiscoveriesPage(), 7),
+    LOOTRUNS(new LootRunPage(), 8);
 
     private QuestBookPage questBookPage;
     private int slotNb;

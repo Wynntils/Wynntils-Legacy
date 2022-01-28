@@ -16,9 +16,9 @@ public class IdentificationContainer {
 
     private static Map<String, IdentificationModifier> typeMap = new HashMap<>();
 
-    private IdentificationModifier type;
+    protected IdentificationModifier type;
     private int baseValue;
-    private boolean isFixed;
+    protected boolean isFixed;
 
     private transient int min, max;
     private transient Fraction minChance;

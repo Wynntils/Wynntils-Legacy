@@ -38,7 +38,7 @@ public class QuestBookPage extends GuiScreen {
     private boolean open = false;
 
     // Page specific information
-    private final String title;
+    protected final String title;
     private final IconContainer icon;
     protected boolean showAnimation;
     protected List<String> hoveredText = new ArrayList<>();
@@ -164,9 +164,7 @@ public class QuestBookPage extends GuiScreen {
 
             render.drawRect(Textures.UIs.quest_book, x - 168, y - 81, 34, 222, 168, 33);
 
-            ScreenRenderer.scale(2f);
-            render.drawString(title, (x - 158f) / 2.0f, (y - 74) / 2.0f, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            ScreenRenderer.resetScale();
+            drawTitle(x, y);
 
             /*Render search bar when needed*/
             if (showSearchBar) {
@@ -175,6 +173,12 @@ public class QuestBookPage extends GuiScreen {
         }
 
         ScreenRenderer.endGL();
+    }
+
+    protected void drawTitle(int x, int y) {
+        ScreenRenderer.scale(2f);
+        render.drawString(title, (x - 158f) / 2.0f, (y - 74) / 2.0f, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+        ScreenRenderer.resetScale();
     }
 
     protected void drawSearchBar(int centerX, int centerY) {

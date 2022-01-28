@@ -24,7 +24,7 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
-import com.wynntils.modules.utilities.enums.IdentificationType;
+import com.wynntils.modules.utilities.configs.enums.IdentificationType;
 import com.wynntils.modules.utilities.overlays.inventories.ItemIdentificationOverlay;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.IdentificationOrderer;

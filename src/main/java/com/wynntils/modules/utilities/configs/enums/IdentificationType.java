@@ -2,7 +2,7 @@
  *  * Copyright © Wynntils - 2018 - 2022.
  */
 
-package com.wynntils.modules.utilities.enums;
+package com.wynntils.modules.utilities.configs.enums;
 
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.instances.IdentificationResult;
