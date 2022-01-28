@@ -52,10 +52,10 @@ public class IngredientItemModifiers {
     }
 
     public static String getFormattedModifierText(String itemModifierName, int modifierValue) {
-        if (itemModifierName.equals("duration") || itemModifierName.equals("charges") || itemModifierName.equals("durability")) {
-            return (modifierValue > 0 ? TextFormatting.GREEN + "+" : TextFormatting.RED.toString()) + modifierValue + " " + itemModifierName.substring(0, 1).toUpperCase(Locale.ROOT) + itemModifierName.substring(1);
+        if (itemModifierName.equals("Duration") || itemModifierName.equals("Charges") || itemModifierName.equals("Durability")) {
+            return (modifierValue > 0 ? TextFormatting.GREEN + "+" : TextFormatting.RED.toString()) + modifierValue + " " + itemModifierName;
         }
-        return (modifierValue > 0 ? TextFormatting.RED + "+" : TextFormatting.GREEN.toString()) + modifierValue + " " + itemModifierName.substring(0, 1).toUpperCase(Locale.ROOT) + itemModifierName.substring(1) + " Min.";
+        return (modifierValue > 0 ? TextFormatting.RED + "+" : TextFormatting.GREEN.toString()) + modifierValue + " " + itemModifierName;
     }
 
     public boolean anyExists() {
@@ -66,24 +66,24 @@ public class IngredientItemModifiers {
         List<String> itemLore = new ArrayList<>();
 
         if (durability != 0 && duration != 0)
-            itemLore.add(IngredientItemModifiers.getFormattedModifierText("durability", durability) + TextFormatting.GRAY + " or " + IngredientItemModifiers.getFormattedModifierText("duration", duration));
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("Durability", durability) + TextFormatting.GRAY + " or " + IngredientItemModifiers.getFormattedModifierText("duration", duration));
         else if (durability != 0)
-            itemLore.add(IngredientItemModifiers.getFormattedModifierText("durability", durability));
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("Durability", durability));
         else if (duration != 0)
-            itemLore.add(IngredientItemModifiers.getFormattedModifierText("duration", duration));
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("Duration", duration));
 
         if (charges != 0)
-            itemLore.add(IngredientItemModifiers.getFormattedModifierText("charges", charges));
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("Charges", charges));
         if (strength != 0)
-            itemLore.add(IngredientItemModifiers.getFormattedModifierText("strength", strength));
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("Strength Min.", strength));
         if (dexterity != 0)
-            itemLore.add(IngredientItemModifiers.getFormattedModifierText("dexterity", dexterity));
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("Dexterity Min.", dexterity));
         if (intelligence != 0)
-            itemLore.add(IngredientItemModifiers.getFormattedModifierText("intelligence", intelligence));
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("Intelligence Min.", intelligence));
         if (defense != 0)
-            itemLore.add(IngredientItemModifiers.getFormattedModifierText("defense", defense));
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("Defense Min.", defense));
         if (agility != 0)
-            itemLore.add(IngredientItemModifiers.getFormattedModifierText("agility", agility));
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("Agility Min.", agility));
 
         return itemLore;
     }
