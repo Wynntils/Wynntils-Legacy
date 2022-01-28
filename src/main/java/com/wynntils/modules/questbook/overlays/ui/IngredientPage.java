@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 public class IngredientPage extends QuestBookListPage<IngredientProfile> {
 
     public IngredientPage() {
-        super("Ingredient Guide", true, IconContainer.itemGuideIcon);
+        super("Ingredient Guide", true, IconContainer.ingredientGuideIcon);
     }
 
     @Override

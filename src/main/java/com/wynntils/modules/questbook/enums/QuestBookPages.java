@@ -16,8 +16,8 @@ public enum QuestBookPages {
     SETTINGS(new SettingsPage(), 2),
     ITEMGUIDE(new ItemPage(), 3),
     INGREDIENTGUIDE(new IngredientPage(), 4),
-    HUDCONFIG(new HUDConfigPage(), 5),
-    DIALOGUE(new DialoguePage(), 6),
+    DIALOGUE(new DialoguePage(), 5),
+    HUDCONFIG(new HUDConfigPage(), 6),
     DISCOVERIES(new DiscoveriesPage(), 7),
     LOOTRUNS(new LootRunPage(), 8);
 

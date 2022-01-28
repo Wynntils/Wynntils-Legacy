@@ -1,16 +1,17 @@
 package com.wynntils.webapi.profiles.ingredient.enums;
 
 import com.google.gson.annotations.SerializedName;
+import static net.minecraft.util.text.TextFormatting.*;
 
 public enum IngredientTier {
     @SerializedName("0")
-    TIER_0(0, "§7[§8✫✫✫§7]"),
+    TIER_0(0, GRAY + "[" + DARK_GRAY + "✫✫✫" + GRAY + "]"),
     @SerializedName("1")
-    TIER_1(1, "§6[§e✫§8✫✫§6]"),
+    TIER_1(1, GOLD + "[" + YELLOW + "✫" + DARK_GRAY + "✫✫" + GOLD + "]"),
     @SerializedName("2")
-    TIER_2(2, "§5[§d✫✫§8✫§5]"),
+    TIER_2(2, DARK_PURPLE + "[" + LIGHT_PURPLE + "✫✫" + DARK_GRAY + "✫" + DARK_PURPLE + "]"),
     @SerializedName("3")
-    TIER_3(3, "§3[§b✫✫✫§3]");
+    TIER_3(3, DARK_AQUA + "[" + AQUA + "✫✫✫" + DARK_AQUA + "]");
 
     private final int tierInt;
     private final String tierString;

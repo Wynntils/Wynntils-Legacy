@@ -9,6 +9,7 @@ public enum IconContainer {
     questPageIcon(0, 24, 221, 255, true),
     settingsPageIcon(283, 304, 221, 263, true),
     itemGuideIcon(307, 325, 221, 261, true),
+    ingredientGuideIcon(33, 51, 255, 295, true),
     hudConfigIcon(262, 283, 261, 303, true),
     discoveriesIcon(0, 16, 255, 287, true),
     lootrunIcon(16, 32, 287, 319, true),
