@@ -900,7 +900,7 @@ public class ChatManager {
     public static Pair<Boolean, ITextComponent> applyToDialogue(ITextComponent component) {
         List<ITextComponent> siblings = component.getSiblings();
         List<ITextComponent> dialogue = new ArrayList<>();
-        if (inDialogue && McIf.getUnformattedText(component).equals(lastChat)) {
+        if (inDialogue && TextFormatting.getTextWithoutFormattingCodes(McIf.getUnformattedText(component)).equals(lastChat)) {
             inDialogue = false;
             int max = Math.max(0, siblings.size() - newMessageCount);
             for (int i = max; i < siblings.size(); i++) {
