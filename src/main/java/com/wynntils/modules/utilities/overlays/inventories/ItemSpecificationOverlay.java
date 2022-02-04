@@ -95,7 +95,7 @@ public class ItemSpecificationOverlay implements Listener {
                 Pattern dungeonKey = Pattern.compile("§6(.*) Key");
                 Matcher m = dungeonKey.matcher(name);
                 // Lore line is different on TM keys
-                if (m.find() && (lore.get(0).equals("§7Grants access to the") || lore.get(4).equals("§7Grants access to the"))) {
+                if (m.find() && lore.size() > 0 && (lore.get(0).equals("§7Grants access to the") || (lore.size() >= 4 && lore.get(4).equals("§7Grants access to the")))) {
                     StringBuilder builder = new StringBuilder();
                     for (String part : m.group(1).split(" ")) {
                         builder.append(part.charAt(0));
