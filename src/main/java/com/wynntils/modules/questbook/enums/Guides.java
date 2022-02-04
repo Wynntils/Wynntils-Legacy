@@ -25,4 +25,8 @@ public enum Guides {
     public static QuestBookPage[] getAllGuides() {
         return Arrays.stream(Guides.values()).sorted(Comparator.comparingInt(o -> o.slotNb)).map(guide -> guide.questBookPage).toArray(QuestBookPage[]::new);
     }
+
+    public QuestBookPage getPage() {
+        return questBookPage;
+    }
 }
