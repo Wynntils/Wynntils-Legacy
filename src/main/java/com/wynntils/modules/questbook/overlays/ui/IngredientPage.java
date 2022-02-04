@@ -8,6 +8,7 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookListPage;
 import com.wynntils.modules.utilities.UtilitiesModule;
@@ -178,6 +179,13 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
         if (mouseButton == 1) { // right click
             Utils.openUrl("https://www.wynndata.tk/i/" + Utils.encodeUrl(ingredient.getDisplayName()));
             return;
+        }
+    }
+
+    @Override
+    protected void checkMenuButton(int posX, int posY) {
+        if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) { // Back Button
+            QuestBookPages.GUIDES.getPage().open(false);
         }
     }
 }
