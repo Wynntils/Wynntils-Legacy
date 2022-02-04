@@ -17,6 +17,7 @@ import com.wynntils.webapi.profiles.item.ItemProfile;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -70,6 +71,11 @@ public class FavoriteItemsOverlay implements Listener {
 
             if (matcher.matches()) {
                 nbt.setBoolean("wynntilsFavorite", UtilitiesConfig.INSTANCE.favoriteIngredients.contains(matcher.group(1)));
+                continue;
+            }
+
+            if (UtilitiesConfig.INSTANCE.favoriteEmeraldPouches.contains(itemName) && stack.getItem() == Items.DIAMOND_AXE) {
+                nbt.setBoolean("wynntilsFavorite", true);
                 continue;
             }
 

@@ -147,6 +147,9 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting
     public List<String> favoriteIngredients = new ArrayList<>();
 
+    @Setting
+    public List<String> favoriteEmeraldPouches = new ArrayList<>();
+
     public enum FovScalingFunction {
         Vanilla,
         Arctangent,

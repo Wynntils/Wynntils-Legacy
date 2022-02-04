@@ -78,7 +78,7 @@ public class GuidesPage extends QuestBookListPage<QuestBookPage> {
 
     @Override
     protected List<List<QuestBookPage>> getSearchResults(String currentText) {
-        QuestBookPage[] names = Guides.GetAllGuides();
+        QuestBookPage[] names = Guides.getAllGuides();
 
         return getListSplitIntoParts(Arrays.asList(names), 13);
     }

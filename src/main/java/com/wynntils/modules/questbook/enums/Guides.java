@@ -1,6 +1,7 @@
 package com.wynntils.modules.questbook.enums;
 
 import com.wynntils.modules.questbook.instances.QuestBookPage;
+import com.wynntils.modules.questbook.overlays.ui.EmeraldPouchPage;
 import com.wynntils.modules.questbook.overlays.ui.IngredientPage;
 import com.wynntils.modules.questbook.overlays.ui.ItemPage;
 
@@ -9,8 +10,9 @@ import java.util.Comparator;
 
 public enum Guides {
 
-    ITEMGUIDE(new ItemPage(), 0),
-    INGREDIENTGUIDE(new IngredientPage(), 1);
+    ITEM_GUIDE(new ItemPage(), 0),
+    INGREDIENT_GUIDE(new IngredientPage(), 1),
+    EMERALD_POUCH_GUIDE(new EmeraldPouchPage(), 2);
 
     private QuestBookPage questBookPage;
     private int slotNb;
@@ -20,7 +22,7 @@ public enum Guides {
         this.slotNb = slotNb;
     }
 
-    public static QuestBookPage[] GetAllGuides() {
+    public static QuestBookPage[] getAllGuides() {
         return Arrays.stream(Guides.values()).sorted(Comparator.comparingInt(o -> o.slotNb)).map(guide -> guide.questBookPage).toArray(QuestBookPage[]::new);
     }
 }
