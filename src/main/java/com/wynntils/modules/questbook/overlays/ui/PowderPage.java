@@ -31,7 +31,10 @@ public class PowderPage extends QuestBookListPage<PowderProfile> {
 
     @Override
     protected void drawEntry(PowderProfile entryInfo, int index, boolean hovered) {
-        CustomColor color = new CustomColor(0, 200, 0);
+        CustomColor color = CustomColor.fromTextFormatting(entryInfo.getElement().getLightColor());
+
+        if (color == null)
+            color = new CustomColor(0, 0, 0);
 
         int currentX = index % 7;
         int currentY = (index - currentX) / 7;
@@ -42,11 +45,7 @@ public class PowderPage extends QuestBookListPage<PowderProfile> {
         int maxX = x + 15 + (currentX * 20);
         int maxY = y - 66 + (currentY * 20);
 
-        if (hovered) {
-            GlStateManager.color(color.r, color.g, color.b, 0.5f);
-        } else {
-            GlStateManager.color(color.r, color.g, color.b, 1.0f);
-        }
+        GlStateManager.color(color.r, color.g, color.b, entryInfo.getTier() / 6.0f + 0.3f);
 
         GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
         render.drawRect(Textures.UIs.rarity, maxX - 1, maxY - 1, 0, 0, 18, 18);

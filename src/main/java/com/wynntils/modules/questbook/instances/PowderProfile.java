@@ -104,4 +104,12 @@ public class PowderProfile {
 
         return itemStack = stack;
     }
+
+    public Powder getElement() {
+        return element;
+    }
+
+    public int getTier() {
+        return tier;
+    }
 }

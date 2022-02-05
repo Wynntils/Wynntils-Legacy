@@ -92,6 +92,7 @@ public class EmeraldPouch {
 
         tag.setTag("display", display);
         tag.setBoolean("Unbreakable", true);  // this allow items like reliks to have damage
+        tag.setInteger("Tier", tier);
 
         stack.setTagCompound(tag);
 
