@@ -1,7 +1,7 @@
 package com.wynntils.modules.questbook.instances;
 
+import com.wynntils.core.framework.enums.Powder;
 import com.wynntils.core.utils.StringUtils;
-import com.wynntils.modules.questbook.enums.PowderElement;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.Locale;
 
 public class PowderProfile {
-    PowderElement element;
+    Powder element;
 
     int tier;
 
@@ -27,7 +27,7 @@ public class PowderProfile {
 
     transient ItemStack itemStack;
 
-    public PowderProfile(PowderElement element, int tier, int min, int max, int convertedFromNeutral, int addedDefence, int removedDefence) {
+    public PowderProfile(Powder element, int tier, int min, int max, int convertedFromNeutral, int addedDefence, int removedDefence) {
         this.element = element;
         this.tier = tier;
         this.min = min;
@@ -51,26 +51,8 @@ public class PowderProfile {
         else
             stack.setItemDamage(element.getHighTierDamage());
 
-        String name = StringUtils.capitalizeFirst(element.name().toLowerCase(Locale.ROOT));
-        PowderElement opposingElement = element;
-
-        switch (element) {
-            case EARTH:
-                opposingElement = PowderElement.AIR;
-                break;
-            case THUNDER:
-                opposingElement = PowderElement.EARTH;
-                break;
-            case WATER:
-                opposingElement = PowderElement.THUNDER;
-                break;
-            case FIRE:
-                opposingElement = PowderElement.WATER;
-                break;
-            case AIR:
-                opposingElement = PowderElement.FIRE;
-                break;
-        }
+        String name = element.getName();
+        Powder opposingElement = element.getOpposingElement();
 
         List<String> itemLore = new ArrayList<>();
 
@@ -111,9 +93,9 @@ public class PowderProfile {
 
         display.setTag("Lore", loreList);
         if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier)
-            display.setString("Name", element.getLightColor() + element.getSymbol() + " " + name + " Powder " + StringUtils.integerToRoman(tier));  // item display name
+            display.setString("Name", element.getLightColor() + String.valueOf(element.getSymbol()) + " " + name + " Powder " + StringUtils.integerToRoman(tier));  // item display name
         else
-            display.setString("Name", element.getLightColor() + element.getSymbol() + " " + name + " Powder " + tier);  // item display name
+            display.setString("Name", element.getLightColor() + String.valueOf(element.getSymbol()) + " " + name + " Powder " + tier);  // item display name
 
         tag.setTag("display", display);
         tag.setBoolean("Unbreakable", true);  // this allow items like reliks to have damage
