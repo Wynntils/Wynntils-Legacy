@@ -84,7 +84,7 @@ public class PowderProfile {
             tierStringBuilder.append('■');
         }
 
-        itemLore.add(TextFormatting.GRAY + "Tier [" + tierStringBuilder + TextFormatting.GRAY + "]");
+        itemLore.add(TextFormatting.GRAY + "Tier " + tier + " [" + tierStringBuilder + TextFormatting.GRAY + "]");
         itemLore.add("");
         itemLore.add(element.getDarkColor() + "Effect on Weapons:");
         itemLore.add(element.getDarkColor() + "— " + TextFormatting.GRAY + "+" + min + "-" + max + " " + element.getLightColor() + element.getSymbol() + " " + name + " " + TextFormatting.GRAY + "Damage");
