@@ -602,7 +602,7 @@ public class ClientEvents implements Listener {
                             text = new TextComponentString("You cannot close this loot chest while there is a mythic in it!");
                         } else if (UtilitiesConfig.INSTANCE.preventFavoritedChestClose && stack.hasTagCompound() &&
                                 stack.getTagCompound().getBoolean("wynntilsFavorite")) {
-                            text = new TextComponentString("You cannot close this loot chest while there is a favorited item or ingredient in it!");
+                            text = new TextComponentString("You cannot close this loot chest while there is a favorited item, ingredient, emerald pouch, powder or potion in it!");
                         } else {
                             continue;
                         }

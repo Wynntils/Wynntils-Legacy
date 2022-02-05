@@ -79,6 +79,11 @@ public class FavoriteItemsOverlay implements Listener {
                 continue;
             }
 
+            if (UtilitiesConfig.INSTANCE.favoritePowders.contains(itemName) && stack.getItem() == Items.DYE) {
+                nbt.setBoolean("wynntilsFavorite", true);
+                continue;
+            }
+
             if (!itemName.contains("Unidentified")) {
                 nbt.setBoolean("wynntilsFavorite", false);
                 continue; // don't care about identified items

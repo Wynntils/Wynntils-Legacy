@@ -8,14 +8,11 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
-import com.wynntils.modules.questbook.instances.EmeraldPouch;
-import com.wynntils.modules.questbook.instances.IconContainer;
-import com.wynntils.modules.questbook.instances.QuestBookListPage;
+import com.wynntils.modules.questbook.instances.*;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.StringUtils;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
@@ -26,14 +23,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class EmeraldPouchPage extends QuestBookListPage<ItemStack> {
+public class PowderPage extends QuestBookListPage<PowderProfile> {
 
-    public EmeraldPouchPage() {
-        super("Emerald Pouch Guide", false, IconContainer.guideIcon);
+    public PowderPage() {
+        super("Powder Guide", false, IconContainer.guideIcon);
     }
 
     @Override
-    protected void drawEntry(ItemStack entryInfo, int index, boolean hovered) {
+    protected void drawEntry(PowderProfile entryInfo, int index, boolean hovered) {
         CustomColor color = new CustomColor(0, 200, 0);
 
         int currentX = index % 7;
@@ -56,10 +53,10 @@ public class EmeraldPouchPage extends QuestBookListPage<ItemStack> {
         GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
         GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 
-        if (entryInfo.isEmpty()) return;
-        render.drawItemStack(entryInfo, maxX, maxY, false);
+        if (entryInfo.getStack().isEmpty()) return;
+        render.drawItemStack(entryInfo.getStack(), maxX, maxY, false);
 
-        if (EmeraldPouch.isFavorited(entryInfo)) {
+        if (entryInfo.isFavorited()) {
             GlStateManager.translate(0, 0, 360f);
             ScreenRenderer.scale(0.5f);
             render.drawRect(Textures.Map.map_icons, (maxX + 10)*2, (maxY - 5)*2, 208, 36, 18, 18);
@@ -70,12 +67,12 @@ public class EmeraldPouchPage extends QuestBookListPage<ItemStack> {
 
     @Override
     public List<String> getHoveredDescription() {
-        return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Emerald Pouch Guide", TextFormatting.GRAY + "See all emerald pouches", TextFormatting.GRAY + "currently available", TextFormatting.GRAY + "in the game.", "", TextFormatting.GREEN + "Left click to select");
+        return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Powder Guide", TextFormatting.GRAY + "See all powders", TextFormatting.GRAY + "currently available", TextFormatting.GRAY + "in the game.", "", TextFormatting.GREEN + "Left click to select");
     }
 
     @Override
-    protected List<List<ItemStack>> getSearchResults(String currentText) {
-        List<ItemStack> ingredients = EmeraldPouch.generateAllItemPouchStacks();
+    protected List<List<PowderProfile>> getSearchResults(String currentText) {
+        List<PowderProfile> ingredients = PowderGenerator.getAllPowderProfiles();
 
         return getListSplitIntoParts(ingredients, 42);
     }
@@ -114,12 +111,12 @@ public class EmeraldPouchPage extends QuestBookListPage<ItemStack> {
     }
 
     @Override
-    protected List<String> getHoveredText(ItemStack entryInfo) {
+    protected List<String> getHoveredText(PowderProfile entryInfo) {
         List<String> lore = new ArrayList<>();
-        lore.add(entryInfo.getDisplayName());
-        lore.addAll(ItemUtils.getLore(entryInfo));
+        lore.add(entryInfo.getStack().getDisplayName());
+        lore.addAll(ItemUtils.getLore(entryInfo.getStack()));
         lore.add("");
-        lore.add(TextFormatting.GOLD + "Shift + Left Click to " + (EmeraldPouch.isFavorited(entryInfo) ? "unfavorite" : "favorite"));
+        lore.add(TextFormatting.GOLD + "Shift + Left Click to " + (entryInfo.isFavorited() ? "unfavorite" : "favorite"));
         return lore;
     }
 
@@ -135,17 +132,17 @@ public class EmeraldPouchPage extends QuestBookListPage<ItemStack> {
     }
 
     @Override
-    protected void handleEntryClick(ItemStack itemInfo, int mouseButton) {
+    protected void handleEntryClick(PowderProfile itemInfo, int mouseButton) {
         if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) return;
         if (selected >= search.get(currentPage - 1).size() || selected < 0) return;
 
-        ItemStack stack = search.get(currentPage - 1).get(selected);
+        PowderProfile powderProfile = search.get(currentPage - 1).get(selected);
 
         if (mouseButton == 0) { // left click
-            if (EmeraldPouch.isFavorited(stack))
-                UtilitiesConfig.INSTANCE.favoriteEmeraldPouches.remove(StringUtils.stripControlCodes(stack.getDisplayName()));
+            if (powderProfile.isFavorited())
+                UtilitiesConfig.INSTANCE.favoritePowders.remove(StringUtils.stripControlCodes(powderProfile.getStack().getDisplayName()));
             else
-                UtilitiesConfig.INSTANCE.favoriteEmeraldPouches.add(StringUtils.stripControlCodes(stack.getDisplayName()));
+                UtilitiesConfig.INSTANCE.favoritePowders.add(StringUtils.stripControlCodes(powderProfile.getStack().getDisplayName()));
             UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
         }
     }
