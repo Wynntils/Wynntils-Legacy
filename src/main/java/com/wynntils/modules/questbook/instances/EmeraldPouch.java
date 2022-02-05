@@ -1,6 +1,7 @@
 package com.wynntils.modules.questbook.instances;
 
 import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -46,14 +47,12 @@ public class EmeraldPouch {
                 break;
         }
 
-        // EB - ²½
-        // LE - ¼²
         if (tier >= 7) {
             totalString = tier - 6 + "stx";
         } else if (tier >= 4) {
-            totalString += "¼²";
+            totalString += EmeraldSymbols.L_STRING + EmeraldSymbols.E_STRING;
         } else {
-            totalString += "²½";
+            totalString += EmeraldSymbols.E_STRING + EmeraldSymbols.B_STRING;
         }
 
         ItemStack stack = new ItemStack(Items.DIAMOND_AXE);
