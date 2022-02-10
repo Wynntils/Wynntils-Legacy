@@ -129,6 +129,9 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Show Emerald Count as Text", description = "Should your emerald count be displayed as text instead of icons?", order = 26)
     public boolean emeraldCountText = false;
 
+    @Setting(displayName = "Show potion charges in hotbar", description = "Should healing and skill potion charges be shown in the hotbar?", order = 28)
+    public boolean showPotionChargesHotbar = true;
+
     @Setting(upload = false)
     public String lastServerResourcePack = "";
 

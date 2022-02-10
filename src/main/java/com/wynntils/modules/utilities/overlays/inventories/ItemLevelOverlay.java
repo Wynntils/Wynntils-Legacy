@@ -18,6 +18,7 @@ import com.wynntils.modules.utilities.managers.KeyManager;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.regex.Matcher;
@@ -63,12 +64,20 @@ public class ItemLevelOverlay implements Listener {
 
     @SubscribeEvent
     public void onItemOverlay(RenderEvent.DrawItemOverlay event) {
-        if (!UtilitiesConfig.Items.INSTANCE.itemLevelOverlayOutsideGui && McIf.mc().currentScreen == null) return;
-        if (!KeyManager.getShowLevelOverlayKey().isKeyDown()) return;
-
         ItemStack stack = event.getStack();
         Item item = stack.getItem();
         String name = stack.getDisplayName();
+
+        if (UtilitiesConfig.INSTANCE.showPotionChargesHotbar && item == Items.POTIONITEM) { // potion charge count in hotbar
+            String[] potionName = name.split(" ");
+            String[] charges = potionName[potionName.length - 1].split("/");
+            String remainingCharges = charges[0].replace("[", "");
+            event.setOverlayText(TextFormatting.getTextWithoutFormattingCodes(remainingCharges));
+        }
+
+        if (!UtilitiesConfig.Items.INSTANCE.itemLevelOverlayOutsideGui && McIf.mc().currentScreen == null) return;
+        if (!KeyManager.getShowLevelOverlayKey().isKeyDown()) return;
+
 
         // powder tier
         if (item == Items.DYE || item == Items.GUNPOWDER || item == Items.CLAY_BALL || item == Items.SUGAR) {
