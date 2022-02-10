@@ -64,64 +64,64 @@ public class ItemLevelOverlay implements Listener {
 
     @SubscribeEvent
     public void onItemOverlay(RenderEvent.DrawItemOverlay event) {
+        if (!UtilitiesConfig.INSTANCE.showConsumableChargesHotbar && !UtilitiesConfig.Items.INSTANCE.itemLevelOverlayOutsideGui && McIf.mc().currentScreen == null) return;
         ItemStack stack = event.getStack();
         Item item = stack.getItem();
         String name = stack.getDisplayName();
 
+        if (KeyManager.getShowLevelOverlayKey().isKeyDown()) {
+            // powder tier
+            if (item == Items.DYE || item == Items.GUNPOWDER || item == Items.CLAY_BALL || item == Items.SUGAR) {
+                Matcher powderMatcher = Powder.POWDER_NAME_PATTERN.matcher(StringUtils.normalizeBadString(name));
+                if (powderMatcher.find()) {
+                    if (!UtilitiesConfig.Items.INSTANCE.levelKeyShowsItemTiers) return;
+                    if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
+                        event.setOverlayText(powderMatcher.group(1));
+                        return;
+                    }
+                    event.setOverlayText(romanToArabic(powderMatcher.group(1)));
+                    return;
+                }
+            }
+
+            // emerald pouch tier
+            if (EmeraldPouchManager.isEmeraldPouch(stack)) {
+                if (!UtilitiesConfig.Items.INSTANCE.levelKeyShowsItemTiers) return;
+                if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
+                    event.setOverlayText(EmeraldPouchManager.getPouchTier(stack));
+                    return;
+                }
+                event.setOverlayText(romanToArabic(EmeraldPouchManager.getPouchTier(stack)));
+                return;
+            }
+
+            // cork amp tier
+            if (CorkianAmplifierManager.isAmplifier(stack)) {
+                if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
+                    event.setOverlayText(CorkianAmplifierManager.getAmplifierTier(stack));
+                    return;
+                }
+                event.setOverlayText(romanToArabic(CorkianAmplifierManager.getAmplifierTier(stack)));
+                return;
+            }
+
+            String lore = ItemUtils.getStringLore(stack);
+
+            // item level
+            IntRange level = ItemUtils.getLevel(lore);
+            if (level != null) {
+                event.setOverlayText(UtilitiesConfig.Items.INSTANCE.averageUnidentifiedLevel ? level.toString() : Integer.toString(level.getAverage()));
+                return;
+            }
+        }
+
+        // Hotbar charges
         if (UtilitiesConfig.INSTANCE.showConsumableChargesHotbar && (item == Items.POTIONITEM || item == Items.DIAMOND_AXE)) { // potion charge count in hotbar
             if (!name.contains("[") || !name.contains("/")) return; // Make sure it's actually some consumable
             String[] consumable = name.split(" ");
             String[] charges = consumable[consumable.length - 1].split("/");
             String remainingCharges = charges[0].replace("[", "");
             event.setOverlayText(TextFormatting.getTextWithoutFormattingCodes(remainingCharges));
-        }
-
-        if (!UtilitiesConfig.Items.INSTANCE.itemLevelOverlayOutsideGui && McIf.mc().currentScreen == null) return;
-        if (!KeyManager.getShowLevelOverlayKey().isKeyDown()) return;
-
-
-        // powder tier
-        if (item == Items.DYE || item == Items.GUNPOWDER || item == Items.CLAY_BALL || item == Items.SUGAR) {
-            Matcher powderMatcher = Powder.POWDER_NAME_PATTERN.matcher(StringUtils.normalizeBadString(name));
-            if (powderMatcher.find()) {
-                if (!UtilitiesConfig.Items.INSTANCE.levelKeyShowsItemTiers) return;
-                if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
-                    event.setOverlayText(powderMatcher.group(1));
-                    return;
-                }
-                event.setOverlayText(romanToArabic(powderMatcher.group(1)));
-                return;
-            }
-        }
-
-        // emerald pouch tier
-        if (EmeraldPouchManager.isEmeraldPouch(stack)) {
-            if (!UtilitiesConfig.Items.INSTANCE.levelKeyShowsItemTiers) return;
-            if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
-                event.setOverlayText(EmeraldPouchManager.getPouchTier(stack));
-                return;
-            }
-            event.setOverlayText(romanToArabic(EmeraldPouchManager.getPouchTier(stack)));
-            return;
-        }
-
-        // cork amp tier
-        if (CorkianAmplifierManager.isAmplifier(stack)) {
-            if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
-                event.setOverlayText(CorkianAmplifierManager.getAmplifierTier(stack));
-                return;
-            }
-            event.setOverlayText(romanToArabic(CorkianAmplifierManager.getAmplifierTier(stack)));
-            return;
-        }
-
-        String lore = ItemUtils.getStringLore(stack);
-
-        // item level
-        IntRange level = ItemUtils.getLevel(lore);
-        if (level != null) {
-            event.setOverlayText(UtilitiesConfig.Items.INSTANCE.averageUnidentifiedLevel ? level.toString() : Integer.toString(level.getAverage()));
-            return;
         }
     }
 
