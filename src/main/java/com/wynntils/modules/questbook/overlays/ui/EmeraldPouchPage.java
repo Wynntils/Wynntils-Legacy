@@ -13,6 +13,7 @@ import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookListPage;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
+import jdk.nashorn.internal.runtime.regexp.joni.Matcher;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.item.ItemStack;
@@ -25,6 +26,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class EmeraldPouchPage extends QuestBookListPage<ItemStack> {
 
@@ -58,6 +60,8 @@ public class EmeraldPouchPage extends QuestBookListPage<ItemStack> {
 
         if (entryInfo.isEmpty()) return;
         render.drawItemStack(entryInfo, maxX, maxY, false);
+
+        render.drawString(com.wynntils.core.utils.StringUtils.integerToRoman(tier), maxX - 1, maxY - 1, color);
 
         if (EmeraldPouch.isFavorited(entryInfo)) {
             GlStateManager.translate(0, 0, 360f);

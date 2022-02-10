@@ -55,6 +55,8 @@ public class PowderPage extends QuestBookListPage<PowderProfile> {
         if (entryInfo.getStack().isEmpty()) return;
         render.drawItemStack(entryInfo.getStack(), maxX, maxY, false);
 
+        render.drawString(com.wynntils.core.utils.StringUtils.integerToRoman(entryInfo.getTier()), maxX - 1, maxY - 1, color);
+
         if (entryInfo.isFavorited()) {
             GlStateManager.translate(0, 0, 360f);
             ScreenRenderer.scale(0.5f);
