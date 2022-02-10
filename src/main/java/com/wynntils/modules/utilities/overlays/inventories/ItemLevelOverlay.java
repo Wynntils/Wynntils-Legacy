@@ -68,9 +68,10 @@ public class ItemLevelOverlay implements Listener {
         Item item = stack.getItem();
         String name = stack.getDisplayName();
 
-        if (UtilitiesConfig.INSTANCE.showPotionChargesHotbar && item == Items.POTIONITEM) { // potion charge count in hotbar
-            String[] potionName = name.split(" ");
-            String[] charges = potionName[potionName.length - 1].split("/");
+        if (UtilitiesConfig.INSTANCE.showConsumableChargesHotbar && (item == Items.POTIONITEM || item == Items.DIAMOND_AXE)) { // potion charge count in hotbar
+            if (!name.contains("[") || !name.contains("/")) return; // Make sure it's actually some consumable
+            String[] consumable = name.split(" ");
+            String[] charges = consumable[consumable.length - 1].split("/");
             String remainingCharges = charges[0].replace("[", "");
             event.setOverlayText(TextFormatting.getTextWithoutFormattingCodes(remainingCharges));
         }
