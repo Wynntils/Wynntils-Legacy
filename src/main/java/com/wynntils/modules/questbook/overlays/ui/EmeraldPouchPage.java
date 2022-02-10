@@ -59,9 +59,7 @@ public class EmeraldPouchPage extends QuestBookListPage<ItemStack> {
         GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 
         if (entryInfo.isEmpty()) return;
-        render.drawItemStack(entryInfo, maxX, maxY, false);
-
-        render.drawString(com.wynntils.core.utils.StringUtils.integerToRoman(tier), maxX - 1, maxY - 1, color);
+        render.drawItemStack(entryInfo, maxX, maxY, com.wynntils.core.utils.StringUtils.integerToRoman(tier));
 
         if (EmeraldPouch.isFavorited(entryInfo)) {
             GlStateManager.translate(0, 0, 360f);
