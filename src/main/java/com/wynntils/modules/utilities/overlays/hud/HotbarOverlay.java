@@ -60,21 +60,21 @@ public class HotbarOverlay extends Overlay {
                 CustomColor color = null;
 
                 if (description.contains(ItemTier.NORMAL.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.normalHighlight)
-                    color = UtilitiesConfig.Items.INSTANCE.normalHighlightColor;
+                    color = ItemTier.NORMAL.getCustomizedHighlightColor();
                 else if (description.contains(ItemTier.UNIQUE.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.uniqueHighlight)
-                    color = UtilitiesConfig.Items.INSTANCE.uniqueHighlightColor;
+                    color = ItemTier.UNIQUE.getCustomizedHighlightColor();
                 else if (description.contains(ItemTier.RARE.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.rareHighlight)
-                    color = UtilitiesConfig.Items.INSTANCE.rareHighlightColor;
+                    color = ItemTier.RARE.getCustomizedHighlightColor();
                 else if (description.contains(ItemTier.SET.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.setHighlight)
-                    color = UtilitiesConfig.Items.INSTANCE.setHighlightColor;
+                    color = ItemTier.SET.getCustomizedHighlightColor();
                 else if (description.contains(ItemTier.LEGENDARY.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.legendaryHighlight)
-                    color = UtilitiesConfig.Items.INSTANCE.legendaryHighlightColor;
+                    color = ItemTier.LEGENDARY.getCustomizedHighlightColor();
                 else if (description.contains(ItemTier.FABLED.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.fabledHighlight)
-                    color = UtilitiesConfig.Items.INSTANCE.fabledHighlightColor;
+                    color = ItemTier.FABLED.getCustomizedHighlightColor();
                 else if (description.contains(ItemTier.MYTHIC.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.mythicHighlight)
-                    color = UtilitiesConfig.Items.INSTANCE.mythicHighlightColor;
+                    color = ItemTier.MYTHIC.getCustomizedHighlightColor();
                 else if (description.contains(ItemTier.CRAFTED.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.craftedHighlight)
-                    color = UtilitiesConfig.Items.INSTANCE.craftedHighlightColor;
+                    color = ItemTier.CRAFTED.getCustomizedHighlightColor();
 
                 if (color != null) {
                     color.setA(UtilitiesConfig.Items.INSTANCE.hotbarAlpha / 100);
