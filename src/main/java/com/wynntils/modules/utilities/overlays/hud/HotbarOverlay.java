@@ -59,21 +59,21 @@ public class HotbarOverlay extends Overlay {
             if (UtilitiesConfig.Items.INSTANCE.hotbarHighlight && UtilitiesConfig.Items.INSTANCE.hotbarAlpha > 0 && !description.isEmpty()) {
                 CustomColor color = null;
 
-                if (description.contains(ItemTier.NORMAL.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.normalHighlight)
+                if (UtilitiesConfig.Items.INSTANCE.normalHighlight && description.contains(ItemTier.NORMAL.asFormattedName()))
                     color = ItemTier.NORMAL.getCustomizedHighlightColor();
-                else if (description.contains(ItemTier.UNIQUE.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.uniqueHighlight)
+                else if (UtilitiesConfig.Items.INSTANCE.uniqueHighlight && description.contains(ItemTier.UNIQUE.asFormattedName()))
                     color = ItemTier.UNIQUE.getCustomizedHighlightColor();
-                else if (description.contains(ItemTier.RARE.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.rareHighlight)
+                else if (UtilitiesConfig.Items.INSTANCE.rareHighlight && description.contains(ItemTier.RARE.asFormattedName()))
                     color = ItemTier.RARE.getCustomizedHighlightColor();
-                else if (description.contains(ItemTier.SET.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.setHighlight)
+                else if (UtilitiesConfig.Items.INSTANCE.setHighlight && description.contains(ItemTier.SET.asFormattedName()))
                     color = ItemTier.SET.getCustomizedHighlightColor();
-                else if (description.contains(ItemTier.LEGENDARY.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.legendaryHighlight)
+                else if (UtilitiesConfig.Items.INSTANCE.legendaryHighlight && description.contains(ItemTier.LEGENDARY.asFormattedName()))
                     color = ItemTier.LEGENDARY.getCustomizedHighlightColor();
-                else if (description.contains(ItemTier.FABLED.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.fabledHighlight)
+                else if (UtilitiesConfig.Items.INSTANCE.fabledHighlight && description.contains(ItemTier.FABLED.asFormattedName()))
                     color = ItemTier.FABLED.getCustomizedHighlightColor();
-                else if (description.contains(ItemTier.MYTHIC.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.mythicHighlight)
+                else if (UtilitiesConfig.Items.INSTANCE.mythicHighlight && description.contains(ItemTier.MYTHIC.asFormattedName()))
                     color = ItemTier.MYTHIC.getCustomizedHighlightColor();
-                else if (description.contains(ItemTier.CRAFTED.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.craftedHighlight)
+                else if (UtilitiesConfig.Items.INSTANCE.craftedHighlight && description.contains(ItemTier.CRAFTED.asFormattedName()))
                     color = ItemTier.CRAFTED.getCustomizedHighlightColor();
 
                 if (color != null) {
