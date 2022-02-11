@@ -7,16 +7,13 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
-import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
-import com.wynntils.modules.questbook.instances.IconContainer;
-import com.wynntils.modules.questbook.instances.QuestBookListPage;
+import com.wynntils.modules.questbook.instances.*;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
-import com.wynntils.webapi.WebManager;
-import com.wynntils.webapi.profiles.ingredient.IngredientProfile;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.util.StringUtils;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -25,38 +22,22 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
 
-public class IngredientPage extends QuestBookListPage<IngredientProfile> {
+public class PowderPage extends QuestBookListPage<PowderProfile> {
 
-    public IngredientPage() {
-        super("Ingredient Guide", true, IconContainer.ingredientGuideIcon);
+    public PowderPage() {
+        super("Powder Guide", false, IconContainer.guideIcon);
     }
 
     @Override
-    public void initGui() {
-        super.initGui();
-    }
+    protected void drawEntry(PowderProfile entryInfo, int index, boolean hovered) {
+        CustomColor color = CustomColor.fromTextFormatting(entryInfo.getElement().getLightColor());
 
-    @Override
-    protected void drawEntry(IngredientProfile entryInfo, int index, boolean hovered) {
-        CustomColor color = new CustomColor(0, 0, 0);
-
-        switch (entryInfo.getTier()) {
-            case TIER_1:
-                color = UtilitiesConfig.Items.INSTANCE.ingredientOneHighlightColor;
-                break;
-            case TIER_2:
-                color = UtilitiesConfig.Items.INSTANCE.ingredientTwoHighlightColor;
-                break;
-            case TIER_3:
-                color = UtilitiesConfig.Items.INSTANCE.ingredientThreeHighlightColor;
-                break;
-        }
+        if (color == null)
+            color = new CustomColor(0, 0, 0);
 
         int currentX = index % 7;
-        int currentY = (index - currentX)/7;
+        int currentY = (index - currentX) / 7;
 
         int x = width / 2;
         int y = height / 2;
@@ -64,20 +45,15 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
         int maxX = x + 15 + (currentX * 20);
         int maxY = y - 66 + (currentY * 20);
 
-        if (hovered) {
-            GlStateManager.color(color.r, color.g, color.b, 0.5f);
-        } else {
-            GlStateManager.color(color.r, color.g, color.b, 1.0f);
-        }
+        GlStateManager.color(color.r, color.g, color.b, entryInfo.getTier() / 6.0f + 0.3f);
 
         GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_BLEND);
         render.drawRect(Textures.UIs.rarity, maxX - 1, maxY - 1, 0, 0, 18, 18);
         GlStateManager.glTexEnvi(GL11.GL_TEXTURE_ENV, GL11.GL_TEXTURE_ENV_MODE, GL11.GL_MODULATE);
         GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 
-        if (entryInfo.getGuideStack().isEmpty()) return;
-
-        render.drawItemStack(entryInfo.getGuideStack(), maxX, maxY, false);
+        if (entryInfo.getStack().isEmpty()) return;
+        render.drawItemStack(entryInfo.getStack(), maxX, maxY, com.wynntils.core.utils.StringUtils.integerToRoman(entryInfo.getTier()));
 
         if (entryInfo.isFavorited()) {
             GlStateManager.translate(0, 0, 360f);
@@ -90,22 +66,20 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
 
     @Override
     public List<String> getHoveredDescription() {
-        return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Ingredient Guide", TextFormatting.GRAY + "See all ingredients", TextFormatting.GRAY + "currently available", TextFormatting.GRAY + "in the game.", "", TextFormatting.GREEN + "Left click to select");
+        return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Powder Guide", TextFormatting.GRAY + "See all powders", TextFormatting.GRAY + "currently available", TextFormatting.GRAY + "in the game.", "", TextFormatting.GREEN + "Left click to select");
     }
 
     @Override
-    protected List<List<IngredientProfile>> getSearchResults(String currentText) {
-        List<IngredientProfile> ingredients;
-
-        ingredients = WebManager.getDirectIngredients().stream().filter(i -> i.getDisplayName().toLowerCase(Locale.ROOT).contains(currentText.toLowerCase(Locale.ROOT))).sorted((o1, o2) -> o1.getDisplayName().compareToIgnoreCase(o2.getDisplayName())).collect(Collectors.toList());
+    protected List<List<PowderProfile>> getSearchResults(String currentText) {
+        List<PowderProfile> ingredients = PowderGenerator.getAllPowderProfiles();
 
         return getListSplitIntoParts(ingredients, 42);
     }
 
     @Override
     protected void drawTitle(int x, int y) {
-        ScreenRenderer.scale(1.9f);
-        render.drawString(title, (x - 158f) / 1.9f, (y - 74) / 1.9f, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+        ScreenRenderer.scale(1.5f);
+        render.drawString(title, (x - 158f) / 1.5f, (y - 74) / 1.5f, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
         ScreenRenderer.resetScale();
     }
 
@@ -125,7 +99,7 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
     @Override
     protected boolean isHovered(int index, int posX, int posY) {
         int currentX = index % 7;
-        int currentY = (index - currentX)/7;
+        int currentY = (index - currentX) / 7;
 
         int maxX = -15 - (currentX * 20);
         int maxY = 66 - (currentY * 20);
@@ -136,14 +110,12 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
     }
 
     @Override
-    protected List<String> getHoveredText(IngredientProfile entryInfo) {
+    protected List<String> getHoveredText(PowderProfile entryInfo) {
         List<String> lore = new ArrayList<>();
-        lore.add(entryInfo.getGuideStack().getDisplayName());
-        lore.addAll(ItemUtils.getLore(entryInfo.getGuideStack()));
+        lore.add(entryInfo.getStack().getDisplayName());
+        lore.addAll(ItemUtils.getLore(entryInfo.getStack()));
         lore.add("");
         lore.add(TextFormatting.GOLD + "Shift + Left Click to " + (entryInfo.isFavorited() ? "unfavorite" : "favorite"));
-        lore.add(TextFormatting.RED + "Shift + Right Click to open WynnData");
-
         return lore;
     }
 
@@ -159,26 +131,18 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
     }
 
     @Override
-    protected void handleEntryClick(IngredientProfile itemInfo, int mouseButton) {
+    protected void handleEntryClick(PowderProfile itemInfo, int mouseButton) {
         if (!Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) && !Keyboard.isKeyDown(Keyboard.KEY_RSHIFT)) return;
         if (selected >= search.get(currentPage - 1).size() || selected < 0) return;
 
-        IngredientProfile ingredient = search.get(currentPage - 1).get(selected);
+        PowderProfile powderProfile = search.get(currentPage - 1).get(selected);
 
         if (mouseButton == 0) { // left click
-            if (ingredient.isFavorited())
-                UtilitiesConfig.INSTANCE.favoriteIngredients.remove(ingredient.getDisplayName());
+            if (powderProfile.isFavorited())
+                UtilitiesConfig.INSTANCE.favoritePowders.remove(StringUtils.stripControlCodes(powderProfile.getStack().getDisplayName()));
             else
-                UtilitiesConfig.INSTANCE.favoriteIngredients.add(ingredient.getDisplayName());
+                UtilitiesConfig.INSTANCE.favoritePowders.add(StringUtils.stripControlCodes(powderProfile.getStack().getDisplayName()));
             UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
-
-            updateSearch();
-            return;
-        }
-
-        if (mouseButton == 1) { // right click
-            Utils.openUrl("https://www.wynndata.tk/i/" + Utils.encodeUrl(ingredient.getDisplayName()));
-            return;
         }
     }
 

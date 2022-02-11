@@ -446,4 +446,7 @@ public class QuestBookPage extends GuiScreen {
         }
     }
 
+    public String getTitle() {
+        return title;
+    }
 }
