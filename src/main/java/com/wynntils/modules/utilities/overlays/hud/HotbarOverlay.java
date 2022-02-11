@@ -73,7 +73,7 @@ public class HotbarOverlay extends Overlay {
                     color = UtilitiesConfig.Items.INSTANCE.fabledHighlightColor;
                 else if (description.contains(ItemTier.MYTHIC.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.mythicHighlight)
                     color = UtilitiesConfig.Items.INSTANCE.mythicHighlightColor;
-                else if (description.contains(ItemTier.CRAFTED.asFormattedName()))
+                else if (description.contains(ItemTier.CRAFTED.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.craftedHighlight)
                     color = UtilitiesConfig.Items.INSTANCE.craftedHighlightColor;
 
                 if (color != null) {

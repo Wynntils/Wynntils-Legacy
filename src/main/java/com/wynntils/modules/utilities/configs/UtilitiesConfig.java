@@ -349,6 +349,9 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Highlight Normal Items", description = "Should normal items be highlighted?", order = 28)
         public boolean normalHighlight = false;
 
+        @Setting(displayName = "Highlight Crafted Items", description = "Should crafted items be highlighted?", order = 29)
+        public boolean craftedHighlight = true;
+
         @Setting(displayName = "Highlight Black Market Cosmetics", description = "Should black market cosmetic items be highlighted?", order = 30)
         public boolean blackMarketEffectsHighlight = true;
 

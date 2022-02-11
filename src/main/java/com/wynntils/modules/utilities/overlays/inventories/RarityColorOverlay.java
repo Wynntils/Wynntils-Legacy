@@ -166,7 +166,7 @@ public class RarityColorOverlay implements Listener {
         if (lore.contains(ItemTier.MYTHIC.asFormattedName()) && UtilitiesConfig.Items.INSTANCE.mythicHighlight) {
             return ItemTier.MYTHIC.getCustomizedHighlightColor();
         }
-        if (name.matches("^(" + TextFormatting.DARK_AQUA + ".*%.*)$")) {
+        if (name.matches("^(" + TextFormatting.DARK_AQUA + ".*%.*)$") && UtilitiesConfig.Items.INSTANCE.craftedHighlight) {
             return ItemTier.CRAFTED.getCustomizedHighlightColor();
         }
         if (UtilitiesConfig.Items.INSTANCE.ingredientHighlight && !(is.getCount() == 0)) {
