@@ -104,8 +104,11 @@ public class CommandServer extends CommandBase implements IClientCommand {
             } else {
                 minuteColor = TextFormatting.RED;
             }
-
-            toSend.appendText("\n§b- §6" + wynnServer + " §b in " + minuteColor + uptimeMinutes + " minutes");
+            if(uptimeMinutes==1){
+                toSend.appendText("\n§b- §6" + wynnServer + " §b in " + minuteColor + uptimeMinutes + " minute");
+            }else{
+                toSend.appendText("\n§b- §6" + wynnServer + " §b in " + minuteColor + uptimeMinutes + " minutes");
+            }
         }
 
         sender.sendMessage(toSend);
