@@ -61,6 +61,9 @@ public class CommandServer extends CommandBase implements IClientCommand {
                     case "nextsoulpoint":
                         nextSoulPoint(server, sender, args);
                         break;
+                    case "sp":
+                        nextSoulPoint(server, sender, args);
+                        break;
                     default:
                         throw new CommandException(getUsage(sender));
                 }
@@ -85,9 +88,13 @@ public class CommandServer extends CommandBase implements IClientCommand {
                 .sorted(Map.Entry.comparingByValue())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
+
         TextComponentString toSend = new TextComponentString("§bApproximate soul point times:");
 
-        for (String wynnServer : sortedServers.keySet()) {
+        List<String> keys = sortedServers.keySet().stream().limit(10).collect(Collectors.toList());
+
+
+        for (String wynnServer : keys) {
             int uptimeMinutes = sortedServers.get(wynnServer);
             TextFormatting minuteColor;
             if (uptimeMinutes <= 2) {
