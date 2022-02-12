@@ -66,6 +66,8 @@ public class ClientEvents implements Listener {
             e.setCanceled(true);
         } else if (McIf.getFormattedText(msg).startsWith(TextFormatting.GRAY + "[You are now leaving") && ChatConfig.INSTANCE.filterTerritoryEnter) {
             e.setCanceled(true);
+        } else if (ChatConfig.INSTANCE.filterPartyFinder && McIf.getFormattedText(msg).startsWith(TextFormatting.DARK_PURPLE + "Party Finder: Hey ")) {
+            e.setCanceled(true);
         }
     }
 
