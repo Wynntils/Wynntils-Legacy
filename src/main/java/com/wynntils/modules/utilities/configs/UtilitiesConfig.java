@@ -355,6 +355,9 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Highlight Normal Items", description = "Should normal items be highlighted?", order = 28)
         public boolean normalHighlight = false;
 
+        @Setting(displayName = "Highlight Emeralds in chests", description = "Should emeralds be highlighted in chests?", order = 29)
+        public boolean emeraldHighlightInChest = true;
+
         @Setting(displayName = "Highlight Black Market Cosmetics", description = "Should black market cosmetic items be highlighted?", order = 30)
         public boolean blackMarketEffectsHighlight = true;
 
@@ -379,6 +382,9 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Minimum Powder Tier Highlight", description = "What should the minimum tier of powders be for it to be highlighted?\n\n§8Set the value to 0 to disable this setting.", order = 42)
         @Setting.Limitations.IntLimit(min = 0, max = 6)
         public int minPowderTier = 4;
+
+        @Setting(displayName = "Emerald Highlight Colour", description = "What colour should the highlight for emeralds be?\n\n§aClick the coloured box to open the colour wheel.", order = 49)
+        public CustomColor emeraldHighlightColor = new CustomColor(0, 150, 0);
 
         @Setting(displayName = "Profession Filter Highlight Colour", description = "What colour should the highlight for filtered ingredients be?\n\n§aClick the coloured box to open the colour wheel.", order = 50)
         public CustomColor professionFilterHighlightColor = new CustomColor(0.078f, 0.35f, 0.8f);
