@@ -59,8 +59,6 @@ public class CommandServer extends CommandBase implements IClientCommand {
                         serverInfo(server, sender, Arrays.copyOfRange(args, 1, args.length));
                         break;
                     case "nextsoulpoint":
-                        nextSoulPoint(server, sender, args);
-                        break;
                     case "sp":
                         nextSoulPoint(server, sender, args);
                         break;

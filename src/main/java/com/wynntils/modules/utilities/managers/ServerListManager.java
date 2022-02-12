@@ -14,7 +14,7 @@ public class ServerListManager {
 
     private static Map<String, ServerProfile> availableServers = new HashMap<>();
 
-    public static Map<String, ServerProfile> getAvailableServers(){
+    public static Map<String, ServerProfile> getAvailableServers() {
         return availableServers;
     }
 
