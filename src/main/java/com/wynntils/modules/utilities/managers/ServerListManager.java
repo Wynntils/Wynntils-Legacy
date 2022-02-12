@@ -12,11 +12,17 @@ import java.util.Map;
 
 public class ServerListManager {
 
-    private static Map<String, ServerProfile> availableServers = new HashMap<>();
+    public static Map<String, ServerProfile> availableServers = new HashMap<>();
 
     public static synchronized void updateServers() {
         WebManager.getServerList((list) -> availableServers = list);
     }
+
+    public static int getUptimeTotalMinutes(String id) {
+        long milliseconds = System.currentTimeMillis() - availableServers.get(id).getFirstSeen();
+        return (int) (milliseconds / (1000 * 60));
+    }
+
 
     public static ServerProfile getServer(String id) {
         return availableServers.get(id);
