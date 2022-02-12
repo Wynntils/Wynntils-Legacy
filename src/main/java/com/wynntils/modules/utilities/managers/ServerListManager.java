@@ -12,7 +12,11 @@ import java.util.Map;
 
 public class ServerListManager {
 
-    public static Map<String, ServerProfile> availableServers = new HashMap<>();
+    private static Map<String, ServerProfile> availableServers = new HashMap<>();
+
+    public static Map<String, ServerProfile> getAvailableServers(){
+        return availableServers;
+    }
 
     public static synchronized void updateServers() {
         WebManager.getServerList((list) -> availableServers = list);

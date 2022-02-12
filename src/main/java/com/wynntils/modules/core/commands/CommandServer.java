@@ -73,7 +73,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
     private void nextSoulPoint(MinecraftServer server, ICommandSender sender, String[] args){
         Map<String, Integer> nextServers = new HashMap<>();
 
-        for (String availServer : ServerListManager.availableServers.keySet()) {
+        for (String availServer : ServerListManager.getAvailableServers().keySet()) {
             int uptimeMinutes = ServerListManager.getUptimeTotalMinutes(availServer);
             if ((uptimeMinutes % 20) >= 10) { // >= to 10min because we're looking for time UNTIL 20min, not after
                 nextServers.put(availServer, 20 - (uptimeMinutes % 20));
