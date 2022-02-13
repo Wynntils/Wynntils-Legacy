@@ -98,7 +98,6 @@ public class CommandServer extends CommandBase implements IClientCommand {
         sender.sendMessage(toSend);
 
         List<String> keys = sortedServers.keySet().stream().limit(10).collect(Collectors.toList());
-
         for (String wynnServer : keys) {
             int uptimeMinutes = sortedServers.get(wynnServer);
 
@@ -120,10 +119,10 @@ public class CommandServer extends CommandBase implements IClientCommand {
                 .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Switch To " + TextFormatting.BLUE + wynnServer)));
                 sent.appendSibling(serverLine);
             } else {
-                TextComponentString wc = new TextComponentString(TextFormatting.BLUE + wynnServer);
-                wc.getStyle()
+                TextComponentString serverLine = new TextComponentString(TextFormatting.BLUE + wynnServer);
+                serverLine.getStyle()
                 .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(TextFormatting.RED + "HERO or higher rank is required to use /switch")));
-                sent.appendSibling(wc);
+                sent.appendSibling(serverLine);
             }
 
             if (uptimeMinutes == 1) {
