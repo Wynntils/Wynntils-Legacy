@@ -22,6 +22,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.IClientCommand;
+import scala.tools.nsc.doc.base.comment.Text;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -88,7 +89,9 @@ public class CommandServer extends CommandBase implements IClientCommand {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
 
-        TextComponentString toSend = new TextComponentString("§bApproximate soul point times:");
+        TextComponentString toSend = new TextComponentString("\n" + "§bApproximate soul point times:" + "\n");
+        toSend.getStyle()
+                .setBold(true);
         sender.sendMessage(toSend);
 
         List<String> keys = sortedServers.keySet().stream().limit(10).collect(Collectors.toList());
@@ -107,37 +110,29 @@ public class CommandServer extends CommandBase implements IClientCommand {
             TextComponentString sent = new TextComponentString(TextFormatting.BOLD + "-" + TextFormatting.GOLD);
             if(WebManager.getPlayerProfile() != null && (WebManager.getPlayerProfile().getTag() == PlayerStatsProfile.PlayerTag.HERO || WebManager.getPlayerProfile().getTag() == PlayerStatsProfile.PlayerTag.CHAMPION)) {
                 TextComponentString wc = new TextComponentString(TextFormatting.BLUE + wynnServer);
-                Style style = sent.getStyle();
-                //Without these for some reason there a lot of null errors spammed in console so I am keeping them here
-                style.setBold(false);
-                style.setItalic(false);
-                style.setStrikethrough(false);
-                style.setUnderlined(false);
-                style.setObfuscated(false);
-                style.setColor(TextFormatting.BLUE);
-                ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/switch " + wynnServer);
-                style.setClickEvent(clickEvent);
-                HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Switch To " + TextFormatting.BLUE + wynnServer));
-                style.setHoverEvent(hoverEvent);
-                style.setInsertion("");
-                wc.setStyle(style);
+                wc.getStyle()
+                .setBold(false)
+                .setItalic(false)
+                .setStrikethrough(false)
+                .setUnderlined(false)
+                .setObfuscated(false)
+                .setColor(TextFormatting.BLUE)
+                .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/switch " + wynnServer))
+                .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Switch To " + TextFormatting.BLUE + wynnServer)))
+                .setInsertion("");
                 sent.appendSibling(wc);
             } else {
                 TextComponentString wc = new TextComponentString(TextFormatting.BLUE + wynnServer);
-                Style style = sent.getStyle();
-                //Without these for some reason there a lot of null errors spammed in console so I am keeping them here
-                style.setBold(false);
-                style.setItalic(false);
-                style.setStrikethrough(false);
-                style.setColor(TextFormatting.BLUE);
-                style.setUnderlined(false);
-                style.setObfuscated(false);
-                style.setInsertion("");
-                HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(TextFormatting.RED + "You require Champion or Hero to access this feature."));
-                style.setHoverEvent(hoverEvent);
-                ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "");
-                style.setClickEvent(clickEvent);
-                wc.setStyle(style);
+                wc.getStyle()
+                .setBold(false)
+                .setItalic(false)
+                .setStrikethrough(false)
+                .setColor(TextFormatting.BLUE)
+                .setUnderlined(false)
+                .setObfuscated(false)
+                .setInsertion("")
+                .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(TextFormatting.RED + "HERO or higher rank is required to use /switch")))
+                .setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, ""));
                 sent.appendSibling(wc);
             }
 
