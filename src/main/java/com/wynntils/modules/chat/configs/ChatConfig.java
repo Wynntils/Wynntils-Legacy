@@ -55,6 +55,9 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Recolor Guild War Messages", description = "Should successful guild war messages be colored green instead of red?", order = 15)
     public boolean recolorGuildWarSuccess = true;
 
+    @Setting(displayName = "Use Guild Role Names", description = "Should guild stars be translated into guild roles in the chat?", order = 16)
+    public boolean guildRoleNames = false;
+
     @Setting(displayName = "Chat History Length", description = "How many messages should be saved in the chat history?", order = 1)
     @Setting.Limitations.IntLimit(min = 10, max = 2000)
     public int chatHistorySize = 100;

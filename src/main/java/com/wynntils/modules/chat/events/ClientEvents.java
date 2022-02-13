@@ -20,6 +20,7 @@ import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.events.custom.QuestBookUpdateEvent;
+import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
 import com.wynntils.webapi.services.TranslationManager;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiChat;
@@ -36,11 +37,13 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ClientEvents implements Listener {
 
     private static final Pattern GUILD_RESOURCE_WARNING = Pattern.compile("\\[INFO\\] Territory .+ is producing more .+");
+    private static final Pattern GUILD_CHAT_MESSAGE = Pattern.compile("\\[(★{0,5})(.+)\\] (.+)");
 
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent e) {
@@ -71,6 +74,12 @@ public class ClientEvents implements Listener {
             e.setMessage(new TextComponentString(TextFormatting.DARK_AQUA + "[WAR] " + TextFormatting.GREEN + strippedMsg.substring(6)));
         } else if (ChatConfig.INSTANCE.filterResourceWarnings && McIf.getFormattedText(msg).startsWith(TextFormatting.DARK_AQUA + "[INFO") && GUILD_RESOURCE_WARNING.matcher(strippedMsg).matches()) {
             e.setCanceled(true);
+        } else if (ChatConfig.INSTANCE.guildRoleNames && McIf.getFormattedText(msg).startsWith(TextFormatting.DARK_AQUA + "[")) {
+            Matcher matcher = GUILD_CHAT_MESSAGE.matcher(strippedMsg);
+            if (matcher.matches()) {
+                String roleName = PlayerStatsProfile.GuildRank.getRoleNameFromStars(matcher.group(1).length());
+                e.setMessage(new TextComponentString(TextFormatting.DARK_AQUA + "[" + TextFormatting.AQUA + roleName + " " + TextFormatting.DARK_AQUA + matcher.group(2) + "] " + TextFormatting.AQUA + matcher.group(3)));
+            }
         }
     }
 
