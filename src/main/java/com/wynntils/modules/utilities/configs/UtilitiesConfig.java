@@ -356,7 +356,7 @@ public class UtilitiesConfig extends SettingsClass {
         public boolean normalHighlight = false;
 
         @Setting(displayName = "Highlight Emeralds in chests", description = "Should emeralds be highlighted in chests?", order = 29)
-        public boolean emeraldHighlightInChest = true;
+        public boolean emeraldHighlightInChest = false;
 
         @Setting(displayName = "Highlight Black Market Cosmetics", description = "Should black market cosmetic items be highlighted?", order = 30)
         public boolean blackMarketEffectsHighlight = true;
