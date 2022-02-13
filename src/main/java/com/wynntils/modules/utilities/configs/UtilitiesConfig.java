@@ -358,23 +358,30 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Highlight Emeralds in chests", description = "Should emeralds be highlighted in chests?", order = 29)
         public boolean emeraldHighlightInChest = false;
 
-        @Setting(displayName = "Highlight Black Market Cosmetics", description = "Should black market cosmetic items be highlighted?", order = 30)
+        @Setting(displayName = "Highlight Crafted Items", description = "Should crafted items be highlighted?", order = 30)
+        public boolean craftedHighlight = true;
+
+        @Setting(displayName = "Highlight Black Market Cosmetics", description = "Should black market cosmetic items be highlighted?", order = 31)
         public boolean blackMarketEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight Godly Cosmetics", description = "Should godly cosmetic items be highlighted?", order = 31)
+        @Setting(displayName = "Highlight Godly Cosmetics", description = "Should godly cosmetic items be highlighted?", order = 32)
         public boolean godlyEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight Epic Cosmetics", description = "Should epic cosmetic items be highlighted?", order = 32)
+        @Setting(displayName = "Highlight Epic Cosmetics", description = "Should epic cosmetic items be highlighted?", order = 33)
         public boolean epicEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight Rare Cosmetics", description = "Should rare cosmetic items be highlighted?", order = 33)
+        @Setting(displayName = "Highlight Rare Cosmetics", description = "Should rare cosmetic items be highlighted?", order = 34)
         public boolean rareEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight Common Cosmetics", description = "Should common cosmetic items be highlighted?", order = 34)
+        @Setting(displayName = "Highlight Common Cosmetics", description = "Should common cosmetic items be highlighted?", order = 35)
         public boolean commonEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight Crafting Ingredients", description = "Should crafting ingredients be highlighted according to their tier?", order = 40)
+        @Setting(displayName = "Highlight Crafting Ingredients", description = "Should crafting ingredients be highlighted according to their tier?", order = 36)
         public boolean ingredientHighlight = true;
+
+        @Setting(displayName = "Minimum Ingredient Tier Highlight", description = "What should the minimum tier of crafting ingredients be for them to be highlighted?", order = 40)
+        @Setting.Limitations.IntLimit(min = 1, max = 3)
+        public int minCraftingIngredientHighlightTier = 1;
 
         @Setting(displayName = "Highlight Duplicate Cosmetics", description = "Should duplicate cosmetics be highlighted in the scrap menu?", order = 41)
         public boolean highlightCosmeticDuplicates = true;
