@@ -82,8 +82,8 @@ public class ClientEvents implements Listener {
      * /xp -> /guild xp
      *
      * /guild att/a -> attack
-     *        def/d -> defend
-     *        c -> contribute
+     *        defend/def/d -> territory (/guild territory is the old /guild defend)
+     *        man/m -> manage
      * /party j -> join
      *        i -> invite
      *        l -> leave
@@ -93,7 +93,7 @@ public class ClientEvents implements Listener {
     public void commandReplacements(ClientChatEvent e) {
         if (e.getMessage().startsWith("/tell")) e.setMessage(e.getMessage().replaceFirst("/tell", "/msg"));
         else if (e.getMessage().startsWith("/xp")) e.setMessage(e.getMessage().replaceFirst("/xp", "/guild xp"));
-        else if (e.getMessage().startsWith("/gu")) e.setMessage(e.getMessage().replaceFirst(" att$", " attack").replaceFirst(" a$", " attack").replaceFirst(" def$", " defend").replaceFirst(" d$", " defend").replaceFirst(" c$", " contribute"));
+        else if (e.getMessage().startsWith("/gu")) e.setMessage(e.getMessage().replaceFirst(" att$", " attack").replaceFirst(" a$", " attack").replaceFirst(" defend$", " territory").replaceFirst(" def$", " territory").replaceFirst(" d$", " territory").replaceFirst(" man$", " manage").replaceFirst(" m$", " manage"));
         else if (e.getMessage().startsWith("/pa")) e.setMessage(e.getMessage().replaceFirst(" j ", " join ").replaceFirst(" i ", " invite ").replaceFirst(" l$", " leave").replaceFirst(" c$", " create"));
     }
 
