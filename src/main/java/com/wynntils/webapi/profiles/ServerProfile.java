@@ -31,7 +31,8 @@ public class ServerProfile {
     }
 
     public int getUptimeMinutes() {
-        return (int) (Integer.parseInt(getUptime()) / TimeUnit.MINUTES.toMillis(1));
+        long milliseconds = System.currentTimeMillis() - getFirstSeen();
+        return (int) (milliseconds / (1000 * 60));
     }
 
     /**

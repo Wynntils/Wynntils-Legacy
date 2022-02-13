@@ -81,9 +81,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
         for (String availServer : ServerListManager.getAvailableServers().keySet()) {
             ServerProfile serverProfile = ServerListManager.getServer(availServer);
             int uptimeMinutes = serverProfile.getUptimeMinutes();
-            if ((uptimeMinutes % 20) >= 10) { // >= to 10min because we're looking for time UNTIL 20min, not after
-                nextServers.put(availServer, 20 - (uptimeMinutes % 20));
-            }
+            nextServers.put(availServer, 20 - (uptimeMinutes % 20));
         }
 
         // Sort servers by time until soul point
