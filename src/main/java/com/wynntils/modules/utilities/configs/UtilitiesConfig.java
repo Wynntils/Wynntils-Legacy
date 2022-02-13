@@ -355,6 +355,9 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Highlight Normal Items", description = "Should normal items be highlighted?", order = 28)
         public boolean normalHighlight = false;
 
+        @Setting(displayName = "Highlight Crafted Items", description = "Should crafted items be highlighted?", order = 29)
+        public boolean craftedHighlight = true;
+
         @Setting(displayName = "Highlight Black Market Cosmetics", description = "Should black market cosmetic items be highlighted?", order = 30)
         public boolean blackMarketEffectsHighlight = true;
 
@@ -370,8 +373,12 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Highlight Common Cosmetics", description = "Should common cosmetic items be highlighted?", order = 34)
         public boolean commonEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight Crafting Ingredients", description = "Should crafting ingredients be highlighted according to their tier?", order = 40)
+        @Setting(displayName = "Highlight Crafting Ingredients", description = "Should crafting ingredients be highlighted according to their tier?", order = 39)
         public boolean ingredientHighlight = true;
+
+        @Setting(displayName = "Minimum Ingredient Tier Highlight", description = "What should the minimum tier of crafting ingredients be for them to be highlighted?", order = 40)
+        @Setting.Limitations.IntLimit(min = 1, max = 3)
+        public int minCraftingIngredientHighlightTier = 1;
 
         @Setting(displayName = "Highlight Duplicate Cosmetics", description = "Should duplicate cosmetics be highlighted in the scrap menu?", order = 41)
         public boolean highlightCosmeticDuplicates = true;
