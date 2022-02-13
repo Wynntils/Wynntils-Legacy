@@ -50,7 +50,7 @@ public class ChatConfig extends SettingsClass {
     public boolean filterTerritoryEnter = true;
 
     @Setting(displayName = "Filter Party Finder Messages", description = "Should Party Finder recommendation messages be hidden from chat?.", order = 12)
-    public boolean filterPartyFinder = true;
+    public boolean filterPartyFinder = false;
 
     @Setting(displayName = "Show Held Item Chat Message", description = "Should details of your compass and soul points be shown in chat while you are holding them?", order = 13)
     public boolean heldItemChat = true;
