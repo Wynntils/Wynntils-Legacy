@@ -57,14 +57,18 @@ public class ClientEvents implements Listener {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChatReceived(ClientChatReceivedEvent e) {
         ITextComponent msg = e.getMessage();
-        if (McIf.getUnformattedText(msg).startsWith("[Info] ") && ChatConfig.INSTANCE.filterWynncraftInfo) {
+        if (ChatConfig.INSTANCE.filterWynncraftInfo && McIf.getUnformattedText(msg).startsWith("[Info] ")) {
             e.setCanceled(true);
-        } else if (McIf.getFormattedText(msg).startsWith("\n                       " + TextFormatting.GOLD + TextFormatting.BOLD + "Welcome to Wynncraft!") &&
-                !McIf.getFormattedText(msg).contains("n the Trade Market") && ChatConfig.INSTANCE.filterJoinMessages) {
+        } else if (ChatConfig.INSTANCE.filterJoinMessages && McIf.getFormattedText(msg).startsWith("\n                       " + TextFormatting.GOLD + TextFormatting.BOLD + "Welcome to Wynncraft!") &&
+                !McIf.getFormattedText(msg).contains("n the Trade Market")) {
             e.setCanceled(true);
-        } else if (McIf.getFormattedText(msg).startsWith(TextFormatting.GRAY + "[You are now entering") && ChatConfig.INSTANCE.filterTerritoryEnter) {
+        } else if (ChatConfig.INSTANCE.filterTerritoryEnter && McIf.getFormattedText(msg).startsWith(TextFormatting.GRAY + "[You are now entering")) {
             e.setCanceled(true);
-        } else if (McIf.getFormattedText(msg).startsWith(TextFormatting.GRAY + "[You are now leaving") && ChatConfig.INSTANCE.filterTerritoryEnter) {
+        } else if (ChatConfig.INSTANCE.filterTerritoryEnter && McIf.getFormattedText(msg).startsWith(TextFormatting.GRAY + "[You are now leaving")) {
+            e.setCanceled(true);
+        } else if (ChatConfig.INSTANCE.filterPartyFinder && McIf.getFormattedText(msg).startsWith(TextFormatting.DARK_PURPLE + "Party Finder: Hey ")) {
+            e.setCanceled(true);
+        } else if (ChatConfig.INSTANCE.filterEventMessages && McIf.getFormattedText(msg).startsWith(TextFormatting.GOLD + "[Event]")) {
             e.setCanceled(true);
         }
     }
