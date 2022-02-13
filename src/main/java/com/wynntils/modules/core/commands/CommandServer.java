@@ -10,6 +10,7 @@ import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.utilities.managers.ServerListManager;
 import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -18,6 +19,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.IClientCommand;
 
@@ -88,6 +90,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
 
 
         TextComponentString toSend = new TextComponentString("§bApproximate soul point times:");
+        sender.sendMessage(toSend);
 
         List<String> keys = sortedServers.keySet().stream().limit(10).collect(Collectors.toList());
 
@@ -102,14 +105,48 @@ public class CommandServer extends CommandBase implements IClientCommand {
             } else {
                 minuteColor = TextFormatting.RED;
             }
-            if(uptimeMinutes==1){
-                toSend.appendText("\n§b- §6" + wynnServer + " §b in " + minuteColor + uptimeMinutes + " minute");
-            }else{
-                toSend.appendText("\n§b- §6" + wynnServer + " §b in " + minuteColor + uptimeMinutes + " minutes");
+            TextComponentString sent = new TextComponentString("§b- §6");
+            if(WebManager.getPlayerProfile() != null && (WebManager.getPlayerProfile().getTag() == PlayerStatsProfile.PlayerTag.HERO || WebManager.getPlayerProfile().getTag() == PlayerStatsProfile.PlayerTag.CHAMPION)) {
+                TextComponentString wc = new TextComponentString(TextFormatting.BLUE + wynnServer);
+                Style style = sent.getStyle();
+                style.setBold(false);
+                style.setItalic(false);
+                style.setStrikethrough(false);
+                style.setUnderlined(false);
+                style.setObfuscated(false);
+                style.setColor(TextFormatting.BLUE);
+                ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/switch " + wynnServer);
+                style.setClickEvent(clickEvent);
+                HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Switch To " + TextFormatting.BLUE + wynnServer));
+                style.setHoverEvent(hoverEvent);
+                style.setInsertion("");
+                wc.setStyle(style);
+                sent.appendSibling(wc);
+            } else {
+                TextComponentString wc = new TextComponentString(TextFormatting.BLUE + wynnServer);
+                Style style = sent.getStyle();
+                style.setBold(false);
+                style.setItalic(false);
+                style.setStrikethrough(false);
+                style.setColor(TextFormatting.BLUE);
+                style.setUnderlined(false);
+                style.setObfuscated(false);
+                style.setInsertion("");
+                HoverEvent hoverEvent = new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(TextFormatting.RED + "You require Champion or Hero to access this feature."));
+                style.setHoverEvent(hoverEvent);
+                ClickEvent clickEvent = new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "");
+                style.setClickEvent(clickEvent);
+                wc.setStyle(style);
+                sent.appendSibling(wc);
             }
-        }
 
-        sender.sendMessage(toSend);
+            if (uptimeMinutes == 1) {
+                sent.appendText(" §b in " + minuteColor + uptimeMinutes + " minute");
+            } else {
+                sent.appendText(" §b in " + minuteColor + uptimeMinutes + " minutes");
+            }
+            sender.sendMessage(sent);
+        }
     }
 
     private void serverList(MinecraftServer server, ICommandSender sender, String[] args) {
