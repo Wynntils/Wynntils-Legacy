@@ -104,13 +104,9 @@ public class GuildWorldMapUI extends WorldMapUI {
             return;
         }
 
-        if (MapConfig.WorldMap.INSTANCE.autoCloseMapOnMovement)
-        {
-            if (checkForPlayerMovement(holdingDecided, holdingMapKey))
-            {
-                McIf.mc().displayGuiScreen(null);
-                return;
-            }
+        if (MapConfig.WorldMap.INSTANCE.autoCloseMapOnMovement && checkForPlayerMovement(holdingDecided, holdingMapKey))  {
+            McIf.mc().displayGuiScreen(null);
+            return;
         }
 
         if (!Mouse.isButtonDown(1)) {
