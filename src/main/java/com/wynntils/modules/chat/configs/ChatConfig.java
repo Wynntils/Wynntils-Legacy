@@ -40,7 +40,7 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Filter Info Messages", description = "Should Wynncraft info messages be hidden from chat?\n\n§8Messages starting with §4[Info]§8 will no longer appear in chat.", order = 8)
     public boolean filterWynncraftInfo = true;
 
-    @Setting(displayName = "Filter Join Messagse", description = "Should Wynncraft join messages be hidden from chat?", order = 9)
+    @Setting(displayName = "Filter Join Messages", description = "Should Wynncraft join messages be hidden from chat?", order = 9)
     public boolean filterJoinMessages = false;
 
     @Setting(displayName = "Filter Event Messages", description = "Should Wynncraft join messages be hidden from chat?\n\n§8Messages starting with §6[Event] will no longer appear in chat.", order = 10)
