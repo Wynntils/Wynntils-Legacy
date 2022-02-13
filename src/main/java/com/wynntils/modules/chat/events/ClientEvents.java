@@ -11,7 +11,6 @@ import com.wynntils.core.events.custom.WynnClassChangeEvent;
 import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.interfaces.Listener;
-import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.chat.configs.ChatConfig;
@@ -19,21 +18,16 @@ import com.wynntils.modules.chat.managers.ChatManager;
 import com.wynntils.modules.chat.managers.HeldItemChatManager;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
-import com.wynntils.modules.core.managers.PacketQueue;
 import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.events.custom.QuestBookUpdateEvent;
-import com.wynntils.modules.utilities.configs.UtilitiesConfig;
-import com.wynntils.webapi.profiles.item.enums.ItemType;
 import com.wynntils.webapi.services.TranslationManager;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.network.play.client.CPacketEntityAction;
 import net.minecraft.network.play.client.CPacketUseEntity;
-import net.minecraft.network.play.server.SPacketCustomSound;
-import net.minecraft.network.play.server.SPacketSoundEffect;
+import net.minecraft.util.StringUtils;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -66,6 +60,10 @@ public class ClientEvents implements Listener {
             e.setCanceled(true);
         } else if (McIf.getFormattedText(msg).startsWith(TextFormatting.GRAY + "[You are now leaving") && ChatConfig.INSTANCE.filterTerritoryEnter) {
             e.setCanceled(true);
+        } else if (ChatConfig.INSTANCE.recolorGuildWarSuccess && McIf.getFormattedText(msg).startsWith(TextFormatting.DARK_AQUA + "[WAR") && StringUtils.stripControlCodes(McIf.getUnformattedText(msg)).startsWith("[WAR] You have taken control of")) {
+            e.setMessage(new TextComponentString(TextFormatting.DARK_AQUA + "[WAR] " + TextFormatting.GREEN + StringUtils.stripControlCodes(McIf.getUnformattedText(msg)).substring(6)));
+        } else if (ChatConfig.INSTANCE.recolorGuildWarSuccess && McIf.getFormattedText(msg).startsWith(TextFormatting.DARK_AQUA + "[WAR") && StringUtils.stripControlCodes(McIf.getUnformattedText(msg)).startsWith("[WAR] Your guild has successfully defended")) {
+            e.setMessage(new TextComponentString(TextFormatting.DARK_AQUA + "[WAR] " + TextFormatting.GREEN + StringUtils.stripControlCodes(McIf.getUnformattedText(msg)).substring(6)));
         }
     }
 

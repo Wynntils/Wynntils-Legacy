@@ -49,6 +49,9 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Show Held Item Chat Message", description = "Should details of your compass and soul points be shown in chat while you are holding them?", order = 12)
     public boolean heldItemChat = true;
 
+    @Setting(displayName = "Recolor Guild War Messages", description = "Should successful guild war messages be colored green instead of red?", order = 15)
+    public boolean recolorGuildWarSuccess = true;
+
     @Setting(displayName = "Chat History Length", description = "How many messages should be saved in the chat history?", order = 1)
     @Setting.Limitations.IntLimit(min = 10, max = 2000)
     public int chatHistorySize = 100;
