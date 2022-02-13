@@ -121,6 +121,7 @@ public class ItemLevelOverlay implements Listener {
             String[] consumable = name.split(" ");
             if (consumable.length < 2) return; // Make sure we actually split the consumable name
             String[] charges = consumable[consumable.length - 1].split("/");
+            if (charges.length != 2) return; // Make sure we arent't splitting a / from anywhere else; charges always return 2 entries - one for charges remaining and one for total
             String remainingCharges = charges[0].replace("[", "");
             event.setOverlayText(TextFormatting.getTextWithoutFormattingCodes(remainingCharges));
         }
