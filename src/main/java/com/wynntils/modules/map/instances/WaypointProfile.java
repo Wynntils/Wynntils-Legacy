@@ -55,6 +55,10 @@ public class WaypointProfile {
         return zoomNeeded;
     }
 
+    public void setZoomNeeded(int zoomNeeded) {
+        this.zoomNeeded = zoomNeeded;
+    }
+
     public WaypointType getType() {
         if (type == null) type = WaypointType.FLAG;
         return type;
@@ -313,7 +317,7 @@ public class WaypointProfile {
         STAR("Star"),
         TURRET("Turret"),
         LOOTCHEST_T4("Chest (T4)"),
-        LOOTCHEST_T3("Chest (T3"),
+        LOOTCHEST_T3("Chest (T3)"),
         LOOTCHEST_T2("Chest (T2)"),
         LOOTCHEST_T1("Chest (T1)"),
         FARMING("Farming"),
