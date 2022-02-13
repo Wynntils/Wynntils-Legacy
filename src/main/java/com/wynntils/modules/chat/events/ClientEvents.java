@@ -79,7 +79,7 @@ public class ClientEvents implements Listener {
             e.setMessage(new TextComponentString(TextFormatting.DARK_AQUA + "[WAR] " + TextFormatting.GREEN + strippedMsg.substring(6)));
         } else if (ChatConfig.INSTANCE.filterResourceWarnings && McIf.getFormattedText(msg).startsWith(TextFormatting.DARK_AQUA + "[INFO") && GUILD_RESOURCE_WARNING.matcher(strippedMsg).matches()) {
             e.setCanceled(true);
-        } else if (ChatConfig.INSTANCE.guildRoleNames && McIf.getFormattedText(msg).startsWith(TextFormatting.DARK_AQUA + "[") && !strippedMsg.startsWith("[WAR]") && !strippedMsg.startsWith("[INFO]")) {
+        } else if (ChatConfig.INSTANCE.guildRoleNames && McIf.getFormattedText(msg).startsWith(TextFormatting.DARK_AQUA + "[") && !strippedMsg.startsWith("[WAR]") && !strippedMsg.startsWith("[INFO]") && !strippedMsg.startsWith("[VIP+")) {
             Matcher matcher = GUILD_CHAT_MESSAGE.matcher(strippedMsg);
             if (matcher.matches()) {
                 String roleName = PlayerStatsProfile.GuildRank.getRoleNameFromStars(matcher.group(1).length());
