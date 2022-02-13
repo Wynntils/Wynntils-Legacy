@@ -78,8 +78,11 @@ public class ClientEvents implements Listener {
             Matcher matcher = GUILD_CHAT_MESSAGE.matcher(strippedMsg);
             if (matcher.matches()) {
                 String roleName = PlayerStatsProfile.GuildRank.getRoleNameFromStars(matcher.group(1).length());
-                String playerName = msg.getUnformattedText().contains(TextFormatting.ITALIC + matcher.group(2)) ? TextFormatting.ITALIC + matcher.group(2) + TextFormatting.RESET : matcher.group(2);
-                e.setMessage(new TextComponentString(TextFormatting.DARK_AQUA + "[" + TextFormatting.AQUA + roleName + " " + TextFormatting.DARK_AQUA + playerName + "] " + TextFormatting.AQUA + matcher.group(3)));
+                String playerName = msg.getUnformattedText().contains(TextFormatting.ITALIC + matcher.group(2)) ? TextFormatting.ITALIC + matcher.group(2) + TextFormatting.RESET + TextFormatting.DARK_AQUA : matcher.group(2);
+                TextComponentString message = new TextComponentString(TextFormatting.DARK_AQUA + "[" + TextFormatting.AQUA + roleName + " " + TextFormatting.DARK_AQUA + playerName + "] " + TextFormatting.AQUA + matcher.group(3));
+                if (e.getMessage().getStyle().getHoverEvent() != null)
+                    message.getStyle().setHoverEvent(e.getMessage().getStyle().getHoverEvent());
+                e.setMessage(message);
             }
         }
     }
