@@ -746,6 +746,9 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Text Colour", description = "What colour should the objective text be?\n\n§aClick the coloured box to open the colour wheel.")
         public CustomColor textColour = CommonColors.GREEN;
 
+        @Setting(displayName = "Text Colour", description = "What colour should the guild objective text be?\n\n§aClick the coloured box to open the colour wheel.")
+        public CustomColor guildTextColour = CommonColors.LIGHT_BLUE;
+
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 

@@ -97,10 +97,10 @@ public class ScoreboardOverlay extends Overlay {
     }
 
     private void removeObjectiveLines(List<Score> scores) {
-        scores.removeIf(s -> TextFormatting.getTextWithoutFormattingCodes(s.getPlayerName()).matches(ObjectivesOverlay.OBJECTIVE_PATTERN.pattern())
-                && !s.getPlayerName().startsWith(TextFormatting.AQUA.toString()));
+        scores.removeIf(s -> TextFormatting.getTextWithoutFormattingCodes(s.getPlayerName()).matches(ObjectivesOverlay.OBJECTIVE_PATTERN.pattern()));
         scores.removeIf(s -> TextFormatting.getTextWithoutFormattingCodes(s.getPlayerName()).matches("- All done"));
-        scores.removeIf(s -> TextFormatting.getTextWithoutFormattingCodes(s.getPlayerName()).matches(ObjectivesOverlay.HEADER_PATTERN.pattern()));
+        scores.removeIf(s -> TextFormatting.getTextWithoutFormattingCodes(s.getPlayerName()).matches(ObjectivesOverlay.OBJECTIVE_HEADER_PATTERN.pattern()));
+        scores.removeIf(s -> TextFormatting.getTextWithoutFormattingCodes(s.getPlayerName()).matches(ObjectivesOverlay.GUILD_OBJECTIVE_HEADER_PATTERN.pattern()));
 
         scores.removeIf(s -> s.getPlayerName().startsWith(TextFormatting.RED + "- "));
     }
