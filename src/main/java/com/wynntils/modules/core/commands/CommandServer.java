@@ -42,8 +42,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "/s <command> [options]\n\ncommands:\nl,ls,list | list available servers\ni,info | get info about a server\n\nmore detailed help:\n/s <command> help \nSkill Points:\nnextsoulpoint";
-    }
+        return "/s <command> [options]\n\ncommands:\nl,ls,list | list available servers\ni,info | get info about a server\nsp,nextsoulpoint | list servers with soul point timers\n\nmore detailed help:\n/s <command> help";    }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
@@ -105,10 +104,11 @@ public class CommandServer extends CommandBase implements IClientCommand {
             } else {
                 minuteColor = TextFormatting.RED;
             }
-            TextComponentString sent = new TextComponentString("§b- §6");
+            TextComponentString sent = new TextComponentString(TextFormatting.BOLD + "-" + TextFormatting.GOLD);
             if(WebManager.getPlayerProfile() != null && (WebManager.getPlayerProfile().getTag() == PlayerStatsProfile.PlayerTag.HERO || WebManager.getPlayerProfile().getTag() == PlayerStatsProfile.PlayerTag.CHAMPION)) {
                 TextComponentString wc = new TextComponentString(TextFormatting.BLUE + wynnServer);
                 Style style = sent.getStyle();
+                //Without these for some reason there a lot of null errors spammed in console so I am keeping them here
                 style.setBold(false);
                 style.setItalic(false);
                 style.setStrikethrough(false);
@@ -125,6 +125,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
             } else {
                 TextComponentString wc = new TextComponentString(TextFormatting.BLUE + wynnServer);
                 Style style = sent.getStyle();
+                //Without these for some reason there a lot of null errors spammed in console so I am keeping them here
                 style.setBold(false);
                 style.setItalic(false);
                 style.setStrikethrough(false);
