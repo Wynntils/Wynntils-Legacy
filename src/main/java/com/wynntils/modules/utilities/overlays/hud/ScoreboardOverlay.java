@@ -23,8 +23,11 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class ScoreboardOverlay extends Overlay {
+
+    private static final Pattern GUILD_WAR_TIMER = Pattern.compile("- (\\d+\\d+:\\d+\\d+) (.+)");
 
     public ScoreboardOverlay() {
         super("Scoreboard", 125, 60, true, 1, 0.5f, 0, 0, OverlayGrowFrom.MIDDLE_RIGHT);
@@ -49,6 +52,7 @@ public class ScoreboardOverlay extends Overlay {
 
         // remove objective, compass lines, quest lines, then remove unnecessary blanks
         if (OverlayConfig.Objectives.INSTANCE.enabled) removeObjectiveLines(scores);
+        if (OverlayConfig.INSTANCE.removeGuildWarTimers) removeGuildWarTimerLines(scores);
         if (!OverlayConfig.Scoreboard.INSTANCE.showCompass || QuestBookConfig.INSTANCE.autoUpdateQuestbook) removeCompassLines(scores);
         if (QuestBookConfig.INSTANCE.autoUpdateQuestbook) removeQuestLines(scores);
         trimBlankLines(scores);
@@ -94,6 +98,11 @@ public class ScoreboardOverlay extends Overlay {
             }
         }
 
+    }
+
+    private void removeGuildWarTimerLines(List<Score> scores) {
+        scores.removeIf(s -> TextFormatting.getTextWithoutFormattingCodes(s.getPlayerName()).matches(GUILD_WAR_TIMER.pattern()));
+        scores.removeIf(s -> TextFormatting.getTextWithoutFormattingCodes(s.getPlayerName()).equalsIgnoreCase("Upcoming Attacks:"));
     }
 
     private void removeObjectiveLines(List<Score> scores) {

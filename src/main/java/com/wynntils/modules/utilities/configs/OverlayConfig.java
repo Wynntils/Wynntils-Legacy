@@ -38,6 +38,9 @@ public class OverlayConfig extends SettingsClass {
     @Setting(displayName = "Use Y Position on Action Bar", description = "Should the action bar display your elevation instead of your orientation?")
     public boolean replaceDirection = false;
 
+    @Setting(displayName = "Remove Guild War Timers", description = "Should guild war timers be removed from the scoreboard?")
+    public boolean removeGuildWarTimers = false;
+
     @SettingsInfo(name = "health_settings", displayPath = "Utilities/Overlays/Health")
     public static class Health extends SettingsClass {
         public static Health INSTANCE;
@@ -748,7 +751,7 @@ public class OverlayConfig extends SettingsClass {
 
         @Setting(displayName = "Guild Objective Text Colour", description = "What colour should the guild objective text be?\n\n§aClick the coloured box to open the colour wheel.")
         public CustomColor guildTextColour = CommonColors.LIGHT_BLUE;
-        
+
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
