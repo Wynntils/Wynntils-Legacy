@@ -36,7 +36,11 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.util.regex.Pattern;
+
 public class ClientEvents implements Listener {
+
+    private static final Pattern GUILD_RESOURCE_WARNING = Pattern.compile("\\[INFO\\] Territory .+ is producing more .+");
 
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent e) {
@@ -51,6 +55,7 @@ public class ClientEvents implements Listener {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChatReceived(ClientChatReceivedEvent e) {
         ITextComponent msg = e.getMessage();
+        String strippedMsg = StringUtils.stripControlCodes(McIf.getUnformattedText(msg));
         if (McIf.getUnformattedText(msg).startsWith("[Info] ") && ChatConfig.INSTANCE.filterWynncraftInfo) {
             e.setCanceled(true);
         } else if (McIf.getFormattedText(msg).startsWith("\n                       " + TextFormatting.GOLD + TextFormatting.BOLD + "Welcome to Wynncraft!") &&
@@ -60,10 +65,12 @@ public class ClientEvents implements Listener {
             e.setCanceled(true);
         } else if (McIf.getFormattedText(msg).startsWith(TextFormatting.GRAY + "[You are now leaving") && ChatConfig.INSTANCE.filterTerritoryEnter) {
             e.setCanceled(true);
-        } else if (ChatConfig.INSTANCE.recolorGuildWarSuccess && McIf.getFormattedText(msg).startsWith(TextFormatting.DARK_AQUA + "[WAR") && StringUtils.stripControlCodes(McIf.getUnformattedText(msg)).startsWith("[WAR] You have taken control of")) {
-            e.setMessage(new TextComponentString(TextFormatting.DARK_AQUA + "[WAR] " + TextFormatting.GREEN + StringUtils.stripControlCodes(McIf.getUnformattedText(msg)).substring(6)));
-        } else if (ChatConfig.INSTANCE.recolorGuildWarSuccess && McIf.getFormattedText(msg).startsWith(TextFormatting.DARK_AQUA + "[WAR") && StringUtils.stripControlCodes(McIf.getUnformattedText(msg)).startsWith("[WAR] Your guild has successfully defended")) {
-            e.setMessage(new TextComponentString(TextFormatting.DARK_AQUA + "[WAR] " + TextFormatting.GREEN + StringUtils.stripControlCodes(McIf.getUnformattedText(msg)).substring(6)));
+        } else if (ChatConfig.INSTANCE.recolorGuildWarSuccess && McIf.getFormattedText(msg).startsWith(TextFormatting.DARK_AQUA + "[WAR") && strippedMsg.startsWith("[WAR] You have taken control of")) {
+            e.setMessage(new TextComponentString(TextFormatting.DARK_AQUA + "[WAR] " + TextFormatting.GREEN + strippedMsg.substring(6)));
+        } else if (ChatConfig.INSTANCE.recolorGuildWarSuccess && McIf.getFormattedText(msg).startsWith(TextFormatting.DARK_AQUA + "[WAR") && strippedMsg.startsWith("[WAR] Your guild has successfully defended")) {
+            e.setMessage(new TextComponentString(TextFormatting.DARK_AQUA + "[WAR] " + TextFormatting.GREEN + strippedMsg.substring(6)));
+        } else if (ChatConfig.INSTANCE.filterResourceWarnings && McIf.getFormattedText(msg).startsWith(TextFormatting.DARK_AQUA + "[INFO") && GUILD_RESOURCE_WARNING.matcher(strippedMsg).matches()) {
+            e.setCanceled(true);
         }
     }
 

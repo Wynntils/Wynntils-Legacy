@@ -46,6 +46,9 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Filter Territory Enter", description = "Should territory enter messages be hidden from chat?\n\n§8Territory enter messages look like §7[You are now entering Detlas]§8.", order = 10)
     public boolean filterTerritoryEnter = true;
 
+    @Setting(displayName = "Filter Resource Warnings", description = "Should guild territory resource production warnings be hidden from chat?", order = 15)
+    public boolean filterResourceWarnings = false;
+
     @Setting(displayName = "Show Held Item Chat Message", description = "Should details of your compass and soul points be shown in chat while you are holding them?", order = 12)
     public boolean heldItemChat = true;
 
