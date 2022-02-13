@@ -78,10 +78,10 @@ public class CommandServer extends CommandBase implements IClientCommand {
     private void nextSoulPoint(MinecraftServer server, ICommandSender sender, String[] args){
         Map<String, Integer> nextServers = new HashMap<>();
 
-        for (String availServer : ServerListManager.getAvailableServers().keySet()) {
-            ServerProfile serverProfile = ServerListManager.getServer(availServer);
+        for (String availableServer : ServerListManager.getAvailableServers().keySet()) {
+            ServerProfile serverProfile = ServerListManager.getServer(availableServer);
             int uptimeMinutes = serverProfile.getUptimeMinutes();
-            nextServers.put(availServer, 20 - (uptimeMinutes % 20));
+            nextServers.put(availableServer, 20 - (uptimeMinutes % 20));
         }
 
         // Sort servers by time until soul point
@@ -89,11 +89,11 @@ public class CommandServer extends CommandBase implements IClientCommand {
                 .sorted(Map.Entry.comparingByValue())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
-        TextComponentString toSend = new TextComponentString("Approximate soul point times:" + "\n");
-        toSend.getStyle()
+        TextComponentString soulPointInfo = new TextComponentString("Approximate soul point times:" + "\n");
+        soulPointInfo.getStyle()
                 .setBold(true)
                 .setColor(TextFormatting.AQUA);
-        sender.sendMessage(toSend);
+        sender.sendMessage(soulPointInfo);
 
         List<String> keys = sortedServers.keySet().stream().limit(10).collect(Collectors.toList());
         for (String wynnServer : keys) {
@@ -108,28 +108,28 @@ public class CommandServer extends CommandBase implements IClientCommand {
                 minuteColor = TextFormatting.RED;
             }
 
-            TextComponentString sent = new TextComponentString(TextFormatting.BOLD + "-" + TextFormatting.GOLD);
+            TextComponentString world = new TextComponentString(TextFormatting.BOLD + "-" + TextFormatting.GOLD);
             if (WebManager.getPlayerProfile() != null && (WebManager.getPlayerProfile().getTag() == PlayerStatsProfile.PlayerTag.HERO || WebManager.getPlayerProfile().getTag() == PlayerStatsProfile.PlayerTag.CHAMPION)) {
                 TextComponentString serverLine = new TextComponentString(TextFormatting.BLUE + wynnServer);
                 serverLine.getStyle()
                 .setColor(TextFormatting.BLUE)
                 .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/switch " + wynnServer))
                 .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Switch To " + TextFormatting.BLUE + wynnServer)));
-                sent.appendSibling(serverLine);
+                world.appendSibling(serverLine);
             } else {
                 TextComponentString serverLine = new TextComponentString(TextFormatting.BLUE + wynnServer);
                 serverLine.getStyle()
                 .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(TextFormatting.RED + "HERO or higher rank is required to use /switch")));
-                sent.appendSibling(serverLine);
+                world.appendSibling(serverLine);
             }
 
             if (uptimeMinutes == 1) {
-                sent.appendText(" §b in " + minuteColor + uptimeMinutes + " minute");
+                world.appendText(" §b in " + minuteColor + uptimeMinutes + " minute");
             } else {
-                sent.appendText(" §b in " + minuteColor + uptimeMinutes + " minutes");
+                world.appendText(" §b in " + minuteColor + uptimeMinutes + " minutes");
             }
 
-            sender.sendMessage(sent);
+            sender.sendMessage(world);
         }
     }
 
