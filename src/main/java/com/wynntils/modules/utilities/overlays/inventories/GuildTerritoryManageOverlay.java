@@ -85,33 +85,42 @@ public class GuildTerritoryManageOverlay implements Listener {
         int offsetMouseY = e.getMouseY() - e.getGui().getGuiTop();
 
         // handle mouse input on search box
-        if (searchField != null) {
-            searchField.mouseClicked(offsetMouseX, offsetMouseY, e.getMouseButton());
-            if (e.getMouseButton() == 0) { // left click
-                if (searchField.isFocused()) {
-                    searchField.setCursorPositionEnd();
-                    searchField.setSelectionPos(0);
-                } else {
-                    searchField.setSelectionPos(searchField.getCursorPosition());
-                }
-            }
+        if (searchField == null) {
+            return;
         }
+
+        // Process the search field click interaction
+        searchField.mouseClicked(offsetMouseX, offsetMouseY, e.getMouseButton());
+
+        // Only listen for left clicks
+        if (e.getMouseButton() != 0) {
+            return;
+        }
+
+        if (searchField.isFocused()) {
+            searchField.setCursorPositionEnd();
+            searchField.setSelectionPos(0);
+            return;
+        }
+
+        searchField.setSelectionPos(searchField.getCursorPosition());
     }
 
     @SubscribeEvent
     public void onKeyTyped(GuiOverlapEvent.ChestOverlap.KeyTyped e) {
         if (!inTerritoryManageMenu) return;
 
-        if (searchField != null && searchField.isFocused()) {
-            e.setCanceled(true);
-            if (e.getKeyCode() == Keyboard.KEY_ESCAPE) {
-                searchField.setFocused(false);
-            } else {
-                searchField.textboxKeyTyped(e.getTypedChar(), e.getKeyCode());
-            }
-        } else if (e.getKeyCode() == Keyboard.KEY_ESCAPE || e.getKeyCode() == McIf.mc().gameSettings.keyBindInventory.getKeyCode()) { // bank was closed by player
-            searchField = null;
-            inTerritoryManageMenu = false;
+        if (searchField == null || !searchField.isFocused()) {
+            return;
         }
+
+        e.setCanceled(true);
+
+        if (e.getKeyCode() == Keyboard.KEY_ESCAPE) {
+            searchField.setFocused(false);
+            return;
+        }
+
+        searchField.textboxKeyTyped(e.getTypedChar(), e.getKeyCode());
     }
 }
