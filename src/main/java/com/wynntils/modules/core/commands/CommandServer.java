@@ -43,7 +43,8 @@ public class CommandServer extends CommandBase implements IClientCommand {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "/s <command> [options]\n\ncommands:\nl,ls,list | list available servers\ni,info | get info about a server\nsp,nextsoulpoint | list servers with soul point timers\n\nmore detailed help:\n/s <command> help";    }
+        return "/s <command> [options]\n\ncommands:\nl,ls,list | list available servers\ni,info | get info about a server\nsp,nextsoulpoint | list servers with soul point timers\n\nmore detailed help:\n/s <command> help";
+    }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
@@ -88,10 +89,10 @@ public class CommandServer extends CommandBase implements IClientCommand {
                 .sorted(Map.Entry.comparingByValue())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
-
-        TextComponentString toSend = new TextComponentString("\n" + "§bApproximate soul point times:" + "\n");
+        TextComponentString toSend = new TextComponentString("Approximate soul point times:" + "\n");
         toSend.getStyle()
-                .setBold(true);
+                .setBold(true)
+                .setColor(TextFormatting.AQUA);
         sender.sendMessage(toSend);
 
         List<String> keys = sortedServers.keySet().stream().limit(10).collect(Collectors.toList());
@@ -109,30 +110,16 @@ public class CommandServer extends CommandBase implements IClientCommand {
             }
             TextComponentString sent = new TextComponentString(TextFormatting.BOLD + "-" + TextFormatting.GOLD);
             if(WebManager.getPlayerProfile() != null && (WebManager.getPlayerProfile().getTag() == PlayerStatsProfile.PlayerTag.HERO || WebManager.getPlayerProfile().getTag() == PlayerStatsProfile.PlayerTag.CHAMPION)) {
-                TextComponentString wc = new TextComponentString(TextFormatting.BLUE + wynnServer);
-                wc.getStyle()
-                .setBold(false)
-                .setItalic(false)
-                .setStrikethrough(false)
-                .setUnderlined(false)
-                .setObfuscated(false)
+                TextComponentString serverLine = new TextComponentString(TextFormatting.BLUE + wynnServer);
+                serverLine.getStyle()
                 .setColor(TextFormatting.BLUE)
                 .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/switch " + wynnServer))
-                .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Switch To " + TextFormatting.BLUE + wynnServer)))
-                .setInsertion("");
-                sent.appendSibling(wc);
+                .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Switch To " + TextFormatting.BLUE + wynnServer)));
+                sent.appendSibling(serverLine);
             } else {
                 TextComponentString wc = new TextComponentString(TextFormatting.BLUE + wynnServer);
                 wc.getStyle()
-                .setBold(false)
-                .setItalic(false)
-                .setStrikethrough(false)
-                .setColor(TextFormatting.BLUE)
-                .setUnderlined(false)
-                .setObfuscated(false)
-                .setInsertion("")
-                .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(TextFormatting.RED + "HERO or higher rank is required to use /switch")))
-                .setClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, ""));
+                .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(TextFormatting.RED + "HERO or higher rank is required to use /switch")));
                 sent.appendSibling(wc);
             }
 
