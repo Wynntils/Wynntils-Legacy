@@ -119,6 +119,7 @@ public class ItemLevelOverlay implements Listener {
         if (UtilitiesConfig.INSTANCE.showConsumableChargesHotbar && (item == Items.POTIONITEM || item == Items.DIAMOND_AXE)) { // potion charge count in hotbar
             if (!name.contains("[") || !name.contains("/")) return; // Make sure it's actually some consumable
             String[] consumable = name.split(" ");
+            if (consumable.length < 2) return; // Make sure we actually split the consumable name
             String[] charges = consumable[consumable.length - 1].split("/");
             String remainingCharges = charges[0].replace("[", "");
             event.setOverlayText(TextFormatting.getTextWithoutFormattingCodes(remainingCharges));
