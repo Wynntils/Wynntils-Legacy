@@ -88,6 +88,9 @@ public class MapConfig extends SettingsClass {
     public static class WorldMap extends SettingsClass {
         public static WorldMap INSTANCE;
 
+        @Setting(displayName = "Auto Close Map On Movement", description = "Should the map close when the user starts moving? If the user opened the map by holding the keybind, the map will stay open until the key is released.")
+        public boolean autoCloseMapOnMovement = false;
+
         @Setting(displayName = "Keep Territory Visible", description = "Should territory names always be displayed rather than only when you hold CTRL?")
         public boolean keepTerritoryVisible = false;
 
@@ -109,6 +112,22 @@ public class MapConfig extends SettingsClass {
 
         @Setting(displayName = "Open Animation", description = "Should the world map have an opening animation?")
         public boolean openAnimation = true;
+
+        @Setting(displayName = "Minimum Zoom for Loot Chest I", description = "What is the minimum zoom level for tier 1 loot chest to show on the map?")
+        @Setting.Limitations.IntLimit(min = -10, max = 500)
+        public int lootChestTier1MinZoom = 500;
+
+        @Setting(displayName = "Minimum Zoom for Loot Chest II", description = "What is the minimum zoom level for tier 2 loot chest to show on the map?")
+        @Setting.Limitations.IntLimit(min = -10, max = 500)
+        public int lootChestTier2MinZoom = 500;
+
+        @Setting(displayName = "Minimum Zoom for Loot Chest III", description = "What is the minimum zoom level for tier 3 loot chest to show on the map?")
+        @Setting.Limitations.IntLimit(min = -10, max = 500)
+        public int lootChestTier3MinZoom = 500;
+
+        @Setting(displayName = "Minimum Zoom for Loot Chest IV", description = "What is the minimum zoom level for tier 4 loot chest to show on the map?")
+        @Setting.Limitations.IntLimit(min = -10, max = 500)
+        public int lootChestTier4MinZoom = 500;
 
         @Setting(displayName = "Opening Animation Length", description = "How long should the opening animation be?")
         @Setting.Limitations.IntLimit(min = 50, max = 1000)
