@@ -10,6 +10,7 @@ import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.utilities.managers.ServerListManager;
 import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.ServerProfile;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -26,7 +27,6 @@ import scala.tools.nsc.doc.base.comment.Text;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
 
 public class CommandServer extends CommandBase implements IClientCommand {
     private List<String> serverTypes = Lists.newArrayList("WC", "lobby", "GM", "DEV", "WAR", "HB");
@@ -74,11 +74,13 @@ public class CommandServer extends CommandBase implements IClientCommand {
         }
     }
 
+
     private void nextSoulPoint(MinecraftServer server, ICommandSender sender, String[] args){
         Map<String, Integer> nextServers = new HashMap<>();
 
         for (String availServer : ServerListManager.getAvailableServers().keySet()) {
-            int uptimeMinutes = ServerListManager.getUptimeTotalMinutes(availServer);
+            ServerProfile serverProfile = ServerListManager.getServer(availServer);
+            int uptimeMinutes = serverProfile.getUptimeMinutes();
             if ((uptimeMinutes % 20) >= 10) { // >= to 10min because we're looking for time UNTIL 20min, not after
                 nextServers.put(availServer, 20 - (uptimeMinutes % 20));
             }
@@ -97,9 +99,9 @@ public class CommandServer extends CommandBase implements IClientCommand {
 
         List<String> keys = sortedServers.keySet().stream().limit(10).collect(Collectors.toList());
 
-
         for (String wynnServer : keys) {
             int uptimeMinutes = sortedServers.get(wynnServer);
+
             TextFormatting minuteColor;
             if (uptimeMinutes <= 2) {
                 minuteColor = TextFormatting.GREEN;
@@ -108,8 +110,9 @@ public class CommandServer extends CommandBase implements IClientCommand {
             } else {
                 minuteColor = TextFormatting.RED;
             }
+
             TextComponentString sent = new TextComponentString(TextFormatting.BOLD + "-" + TextFormatting.GOLD);
-            if(WebManager.getPlayerProfile() != null && (WebManager.getPlayerProfile().getTag() == PlayerStatsProfile.PlayerTag.HERO || WebManager.getPlayerProfile().getTag() == PlayerStatsProfile.PlayerTag.CHAMPION)) {
+            if (WebManager.getPlayerProfile() != null && (WebManager.getPlayerProfile().getTag() == PlayerStatsProfile.PlayerTag.HERO || WebManager.getPlayerProfile().getTag() == PlayerStatsProfile.PlayerTag.CHAMPION)) {
                 TextComponentString serverLine = new TextComponentString(TextFormatting.BLUE + wynnServer);
                 serverLine.getStyle()
                 .setColor(TextFormatting.BLUE)
@@ -128,6 +131,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
             } else {
                 sent.appendText(" §b in " + minuteColor + uptimeMinutes + " minutes");
             }
+
             sender.sendMessage(sent);
         }
     }

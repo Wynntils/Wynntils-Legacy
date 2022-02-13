@@ -7,6 +7,7 @@ package com.wynntils.webapi.profiles;
 import com.wynntils.core.utils.StringUtils;
 
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class ServerProfile {
 
@@ -27,6 +28,10 @@ public class ServerProfile {
 
     public String getUptime() {
         return StringUtils.millisToLongString(System.currentTimeMillis() - firstSeen);
+    }
+
+    public int getUptimeMinutes() {
+        return (int) (Integer.parseInt(getUptime()) / TimeUnit.MINUTES.toMillis(1));
     }
 
     /**
