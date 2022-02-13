@@ -68,6 +68,8 @@ public class ClientEvents implements Listener {
             e.setCanceled(true);
         } else if (ChatConfig.INSTANCE.filterPartyFinder && McIf.getFormattedText(msg).startsWith(TextFormatting.DARK_PURPLE + "Party Finder: Hey ")) {
             e.setCanceled(true);
+        } else if (ChatConfig.INSTANCE.filterEventMessages && McIf.getFormattedText(msg).startsWith(TextFormatting.GOLD + "[Event]")) {
+            e.setCanceled(true);
         }
     }
 
