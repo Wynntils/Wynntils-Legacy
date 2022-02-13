@@ -355,25 +355,28 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Highlight Normal Items", description = "Should normal items be highlighted?", order = 28)
         public boolean normalHighlight = false;
 
-        @Setting(displayName = "Highlight Crafted Items", description = "Should crafted items be highlighted?", order = 29)
+        @Setting(displayName = "Highlight Emeralds in chests", description = "Should emeralds be highlighted in chests?", order = 29)
+        public boolean emeraldHighlightInChest = false;
+
+        @Setting(displayName = "Highlight Crafted Items", description = "Should crafted items be highlighted?", order = 30)
         public boolean craftedHighlight = true;
 
-        @Setting(displayName = "Highlight Black Market Cosmetics", description = "Should black market cosmetic items be highlighted?", order = 30)
+        @Setting(displayName = "Highlight Black Market Cosmetics", description = "Should black market cosmetic items be highlighted?", order = 31)
         public boolean blackMarketEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight Godly Cosmetics", description = "Should godly cosmetic items be highlighted?", order = 31)
+        @Setting(displayName = "Highlight Godly Cosmetics", description = "Should godly cosmetic items be highlighted?", order = 32)
         public boolean godlyEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight Epic Cosmetics", description = "Should epic cosmetic items be highlighted?", order = 32)
+        @Setting(displayName = "Highlight Epic Cosmetics", description = "Should epic cosmetic items be highlighted?", order = 33)
         public boolean epicEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight Rare Cosmetics", description = "Should rare cosmetic items be highlighted?", order = 33)
+        @Setting(displayName = "Highlight Rare Cosmetics", description = "Should rare cosmetic items be highlighted?", order = 34)
         public boolean rareEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight Common Cosmetics", description = "Should common cosmetic items be highlighted?", order = 34)
+        @Setting(displayName = "Highlight Common Cosmetics", description = "Should common cosmetic items be highlighted?", order = 35)
         public boolean commonEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight Crafting Ingredients", description = "Should crafting ingredients be highlighted according to their tier?", order = 39)
+        @Setting(displayName = "Highlight Crafting Ingredients", description = "Should crafting ingredients be highlighted according to their tier?", order = 36)
         public boolean ingredientHighlight = true;
 
         @Setting(displayName = "Minimum Ingredient Tier Highlight", description = "What should the minimum tier of crafting ingredients be for them to be highlighted?", order = 40)
@@ -386,6 +389,9 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Minimum Powder Tier Highlight", description = "What should the minimum tier of powders be for it to be highlighted?\n\n§8Set the value to 0 to disable this setting.", order = 42)
         @Setting.Limitations.IntLimit(min = 0, max = 6)
         public int minPowderTier = 4;
+
+        @Setting(displayName = "Emerald Highlight Colour", description = "What colour should the highlight for emeralds be?\n\n§aClick the coloured box to open the colour wheel.", order = 49)
+        public CustomColor emeraldHighlightColor = new CustomColor(0, 150, 0);
 
         @Setting(displayName = "Profession Filter Highlight Colour", description = "What colour should the highlight for filtered ingredients be?\n\n§aClick the coloured box to open the colour wheel.", order = 50)
         public CustomColor professionFilterHighlightColor = new CustomColor(0.078f, 0.35f, 0.8f);

@@ -124,6 +124,9 @@ public class RarityColorOverlay implements Listener {
             if (UtilitiesConfig.Items.INSTANCE.filterEnabled && !professionFilter.equals("-") && lore.contains(professionFilter)) {
                 return UtilitiesConfig.Items.INSTANCE.professionFilterHighlightColor;
             }
+            if (UtilitiesConfig.Items.INSTANCE.emeraldHighlightInChest && is.getItem() == Items.EMERALD && s.inventory.getDisplayName().getUnformattedText().startsWith("Loot Chest")) {
+                return UtilitiesConfig.Items.INSTANCE.emeraldHighlightColor;
+            }
             if (UtilitiesConfig.Items.INSTANCE.highlightCosmeticDuplicates && slotUnderMouse != null && lore.contains("Reward") && !lore.contains("Raid Reward") && slotUnderMouse.slotNumber != s.slotNumber && slotUnderMouse.getStack().getDisplayName().equals(name)) {
                 return new CustomColor(0f, 1f, 0f);
             }
