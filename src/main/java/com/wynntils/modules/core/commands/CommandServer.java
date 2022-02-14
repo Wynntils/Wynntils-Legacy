@@ -96,6 +96,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
         sender.sendMessage(soulPointInfo);
 
         List<String> keys = sortedServers.keySet().stream().limit(10).collect(Collectors.toList());
+        boolean canUseSwitch = WebManager.getPlayerProfile() != null && (WebManager.getPlayerProfile().getTag() == PlayerStatsProfile.PlayerTag.HERO || WebManager.getPlayerProfile().getTag() == PlayerStatsProfile.PlayerTag.CHAMPION);
         for (String wynnServer : keys) {
             int uptimeMinutes = sortedServers.get(wynnServer);
 
@@ -109,7 +110,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
             }
 
             TextComponentString world = new TextComponentString(TextFormatting.BOLD + "-" + TextFormatting.GOLD);
-            if (WebManager.getPlayerProfile() != null && (WebManager.getPlayerProfile().getTag() == PlayerStatsProfile.PlayerTag.HERO || WebManager.getPlayerProfile().getTag() == PlayerStatsProfile.PlayerTag.CHAMPION)) {
+            if (canUseSwitch) {
                 TextComponentString serverLine = new TextComponentString(TextFormatting.BLUE + wynnServer);
                 serverLine.getStyle()
                 .setColor(TextFormatting.BLUE)
