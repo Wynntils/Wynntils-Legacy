@@ -20,6 +20,7 @@ import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.gui.Gui;
+import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.ITextureObject;
 import net.minecraft.client.renderer.texture.SimpleTexture;
@@ -47,6 +48,7 @@ import java.util.regex.Pattern;
 public class BankOverlay implements Listener {
 
     private static final Pattern PAGE_PATTERN = Pattern.compile("\\[Pg\\. ([0-9]*)\\] [a-z_A-Z0-9 ]+'s? Bank");
+    private static final Pattern PAGE_CUSTOM_NAME_PATTERN = Pattern.compile("\\[Pg\\. ([0-9]*)\\] ([a-z_A-Z0-9 ]+)");
 
     private static final ResourceLocation COLUMN_ARROW = new ResourceLocation("minecraft:textures/wynn/gui/column_arrow_right.png");
 
@@ -83,21 +85,42 @@ public class BankOverlay implements Listener {
     }
 
     @SubscribeEvent
-    public void onBankInit(GuiOverlapEvent.ChestOverlap.InitGui e) {
-        Matcher m = PAGE_PATTERN.matcher(TextFormatting.getTextWithoutFormattingCodes(e.getGui().getLowerInv().getName()));
-        if (!m.matches()) return;
+    public void onBankInitEvent(GuiOverlapEvent.ChestOverlap.InitGui e) {
+        ChestReplacer currentChest = e.getGui();
+        tryInitBank(currentChest);
+    }
+
+    private void tryInitBank(ChestReplacer currentChest) {
+        String name = currentChest.getLowerInv().getName();
+
+        Matcher matcher = PAGE_PATTERN.matcher(TextFormatting.getTextWithoutFormattingCodes(name));
+
+        // This is done so already renamed pages can be identified as well. Used when GuiParentedYesNo override current gui
+        // and we need to try to reload the overlay
+        if (!matcher.matches()) {
+            Matcher matcherCustomName = PAGE_CUSTOM_NAME_PATTERN.matcher(TextFormatting.getTextWithoutFormattingCodes(name));
+
+            if (!matcherCustomName.matches())
+                return;
+
+            page = Integer.parseInt(matcherCustomName.group(1));
+
+            if (!UtilitiesConfig.Bank.INSTANCE.pageNames.containsKey(page) || !matcherCustomName.group(2).equals(UtilitiesConfig.Bank.INSTANCE.pageNames.get(page)))
+                return;
+        } else {
+            page = Integer.parseInt(matcher.group(1));
+        }
 
         inBank = true;
-        page = Integer.parseInt(m.group(1));
         updateMaxPages();
 
         if (UtilitiesConfig.Bank.INSTANCE.pageNames.containsKey(page))
-            updateName(e.getGui().getLowerInv());
+            updateName(currentChest.getLowerInv());
 
         if (destinationPage == page) destinationPage = 0; // if we've already arrived, reset destination
 
         if (searchField == null && UtilitiesConfig.Bank.INSTANCE.showBankSearchBar) {
-            int nameWidth = McIf.mc().fontRenderer.getStringWidth(McIf.getUnformattedText(e.getGui().getUpperInv().getDisplayName()));
+            int nameWidth = McIf.mc().fontRenderer.getStringWidth(McIf.getUnformattedText(currentChest.getUpperInv().getDisplayName()));
             searchField = new GuiTextFieldWynn(201, McIf.mc().fontRenderer, nameWidth + 13, 128, 157 - nameWidth, 10);
             searchField.setText("Search...");
         }
@@ -105,6 +128,16 @@ public class BankOverlay implements Listener {
         textureLoaded = isTextureLoaded(COLUMN_ARROW);
 
         Keyboard.enableRepeatEvents(true);
+    }
+
+    public void tryForceBankInit() {
+        GuiScreen currentScreen = McIf.mc().currentScreen;
+
+        if (!(currentScreen instanceof ChestReplacer))
+            return;
+
+        ChestReplacer currentChest = (ChestReplacer) currentScreen;
+        tryInitBank(currentChest);
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
@@ -240,6 +273,7 @@ public class BankOverlay implements Listener {
                             McIf.mc().getConnection().sendPacket(packet);
                             bankPageConfirmed = true;
                         }
+                        tryForceBankInit();
                     }, "Are you sure you want to dump your inventory?", "This confirm may be disabled in the Wynntils config.", 0));
                 case Block:
                     e.setCanceled(true);
@@ -259,6 +293,7 @@ public class BankOverlay implements Listener {
                         if (result) {
                             McIf.mc().getConnection().sendPacket(packet);
                         }
+                        tryForceBankInit();
                     }, "Are you sure you want to quick stash?", "This confirm may be disabled in the Wynntils config.", 0));
                 case Block:
                     e.setCanceled(true);
@@ -279,6 +314,7 @@ public class BankOverlay implements Listener {
                         if (result) {
                             McIf.mc().getConnection().sendPacket(packet);
                         }
+                        tryForceBankInit();
                     }, "Are you sure you want to purchase another bank page?", "Page number: " + pageNumber + "\nCost: " + price, 0));
                     e.setCanceled(true);
                 }
@@ -298,7 +334,6 @@ public class BankOverlay implements Listener {
 
     @SubscribeEvent
     public void onSetSlot(PacketEvent<SPacketSetSlot> event) {
-        if (!inBank) return;
         if (bankPageConfirmed && event.getPacket().getSlot() == 8) {
             bankPageConfirmed = false;
             CPacketClickWindow packet = new CPacketClickWindow(McIf.player().openContainer.windowId, 8, 0, ClickType.PICKUP, event.getPacket().getStack(), McIf.player().openContainer.getNextTransactionID(McIf.player().inventory));
