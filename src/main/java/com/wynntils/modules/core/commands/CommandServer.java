@@ -101,13 +101,11 @@ public class CommandServer extends CommandBase implements IClientCommand {
             else {
                 sender.sendMessage(new TextComponentString("HERO or higher rank is required to use /switch"));
             }
-        }
-        else if (args[1].equalsIgnoreCase("help")) {
+        } else if (args[1].equalsIgnoreCase("help")) {
             TextComponentString text = new TextComponentString("Usage: /s sp \nDefault: Prints the 10 worlds with the lowest soul point timers");
             text.appendText("\nOptions");
             text.appendText("\n  s, switch : automatically switch to the server with the lowest soul point timer");
-        }
-        else {
+        } else {
             TextComponentString soulPointInfo = new TextComponentString("Approximate soul point times:" + "\n");
             soulPointInfo.getStyle()
                     .setBold(true)
