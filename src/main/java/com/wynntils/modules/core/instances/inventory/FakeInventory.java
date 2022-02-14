@@ -108,7 +108,8 @@ public class FakeInventory {
         FrameworkManager.getEventBus().unregister(this);
         isOpen = false;
 
-        if (windowId != -1) McIf.mc().getConnection().sendPacket(new CPacketCloseWindow(windowId));
+        // No need to send close window packet on overlap, window was already closed.
+        if (windowId != -1 && result != InventoryResult.CLOSED_OVERLAP) McIf.mc().getConnection().sendPacket(new CPacketCloseWindow(windowId));
         windowId = -1;
 
         if(onClose != null) McIf.mc().addScheduledTask(() -> onClose.accept(this, result));
