@@ -69,7 +69,7 @@ public class ItemLevelOverlay implements Listener {
         Item item = stack.getItem();
         String name = stack.getDisplayName();
 
-        if (KeyManager.getShowLevelOverlayKey().isKeyDown()) {
+        if (UtilitiesConfig.Items.INSTANCE.itemLevelOverlayOutsideGui && KeyManager.getShowLevelOverlayKey().isKeyDown()) {
             // powder tier
             if (item == Items.DYE || item == Items.GUNPOWDER || item == Items.CLAY_BALL || item == Items.SUGAR) {
                 Matcher powderMatcher = Powder.POWDER_NAME_PATTERN.matcher(StringUtils.normalizeBadString(name));
