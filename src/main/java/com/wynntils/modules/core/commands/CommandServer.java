@@ -78,6 +78,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
     private void nextSoulPoint(MinecraftServer server, ICommandSender sender, String[] args){
         Map<String, Integer> nextServers = new HashMap<>();
 
+        // No need for checks if timer underneath 10min as I shorten the keySet anyways.
         for (String availableServer : ServerListManager.getAvailableServers().keySet()) {
             nextServers.put(availableServer, 20 - (ServerListManager.getServer(availableServer).getUptimeMinutes() % 20));
         }
