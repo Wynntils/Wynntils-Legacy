@@ -89,7 +89,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
                 .sorted(Map.Entry.comparingByValue())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
-        if (args[1].equalsIgnoreCase("switch")) {
+        if (args[1].equalsIgnoreCase("switch") || args[1].equalsIgnoreCase("s")) {
             if (WebManager.getPlayerProfile().canUseSwitch()) {
                 String world = sortedServers.keySet().stream().limit(1).toString();
                 try {
@@ -106,7 +106,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
         else if (args[1].equalsIgnoreCase("help")) {
             TextComponentString text = new TextComponentString("Usage: /s sp \nDefault: Prints the 10 worlds with the lowest soul point timers");
             text.appendText("\nOptions");
-            text.appendText("\n  switch: automatically switch to the server with the lowest soul point timer");
+            text.appendText("\n  s, switch : automatically switch to the server with the lowest soul point timer");
         }
 
         else {
