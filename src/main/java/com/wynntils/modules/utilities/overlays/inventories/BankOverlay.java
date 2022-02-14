@@ -6,6 +6,8 @@ package com.wynntils.modules.utilities.overlays.inventories;
 
 import com.wynntils.McIf;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
+import com.wynntils.core.events.custom.PacketEvent;
+import com.wynntils.core.framework.instances.GuiParentedYesNo;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -29,6 +31,7 @@ import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketClickWindow;
+import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -204,6 +207,8 @@ public class BankOverlay implements Listener {
         editButtonHover = false;
     }
 
+    private boolean bankPageConfirmed = false;
+
     @SubscribeEvent
     public void onSlotClicked(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
         if (!inBank || e.getSlotIn() == null) return;
@@ -221,6 +226,65 @@ public class BankOverlay implements Listener {
             break;
         }
 
+        // Bank dump confirm
+        if (e.getSlotIn().getStack().getDisplayName().equals("§dDump Inventory")) {
+            switch (UtilitiesConfig.INSTANCE.bankDumpButton) {
+                case Default:
+                    return;
+                case Confirm:
+                    ChestReplacer gui = e.getGui();
+                    ItemStack item = e.getSlotIn().getStack();
+                    CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), item, e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
+                    McIf.mc().displayGuiScreen(new GuiParentedYesNo((result, parentButtonId) -> gui, (result, parentButtonID) -> {
+                        if (result) {
+                            McIf.mc().getConnection().sendPacket(packet);
+                            bankPageConfirmed = true;
+                        }
+                    }, "Are you sure you want to dump your inventory?", "This confirm may be disabled in the Wynntils config.", 0));
+                case Block:
+                    e.setCanceled(true);
+            }
+        }
+
+        // Bank quick stash confirm
+        if (e.getSlotIn().getStack().getDisplayName().equals("§dQuick Stash")) {
+            switch (UtilitiesConfig.INSTANCE.bankStashButton) {
+                case Default:
+                    return;
+                case Confirm:
+                    ChestReplacer gui = e.getGui();
+                    ItemStack item = e.getSlotIn().getStack();
+                    CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), item, e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
+                    McIf.mc().displayGuiScreen(new GuiParentedYesNo((result, parentButtonId) -> gui, (result, parentButtonID) -> {
+                        if (result) {
+                            McIf.mc().getConnection().sendPacket(packet);
+                        }
+                    }, "Are you sure you want to quick stash?", "This confirm may be disabled in the Wynntils config.", 0));
+                case Block:
+                    e.setCanceled(true);
+            }
+        }
+
+        if (UtilitiesConfig.Bank.INSTANCE.addBankConfirmation) {
+            if (McIf.getUnformattedText(e.getSlotIn().inventory.getDisplayName()).contains("[Pg. ") && e.getSlotIn().getHasStack()) {
+                ItemStack item = e.getSlotIn().getStack();
+                if (item.getDisplayName().contains(">" + TextFormatting.DARK_RED + ">" + TextFormatting.RED + ">" + TextFormatting.DARK_RED + ">" + TextFormatting.RED + ">")) {
+                    String lore = TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(item));
+                    String price = lore.substring(lore.indexOf(" Price: ") + 8);
+                    String itemName = item.getDisplayName();
+                    String pageNumber = itemName.substring(9, itemName.indexOf(TextFormatting.RED + " >"));
+                    ChestReplacer gui = e.getGui();
+                    CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), item, e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
+                    McIf.mc().displayGuiScreen(new GuiParentedYesNo((result, parentButtonId) -> gui, (result, parentButtonID) -> {
+                        if (result) {
+                            McIf.mc().getConnection().sendPacket(packet);
+                        }
+                    }, "Are you sure you want to purchase another bank page?", "Page number: " + pageNumber + "\nCost: " + price, 0));
+                    e.setCanceled(true);
+                }
+            }
+        }
+
         // auto page searching
         if (!isSearching() || !UtilitiesConfig.Bank.INSTANCE.autoPageSearch
                 || !(s.slotNumber == PAGE_FORWARD || s.slotNumber == PAGE_BACK)) return;
@@ -230,6 +294,16 @@ public class BankOverlay implements Listener {
         gotoPage(e.getGui());
 
         e.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public void onSetSlot(PacketEvent<SPacketSetSlot> event) {
+        if (!inBank) return;
+        if (bankPageConfirmed && event.getPacket().getSlot() == 8) {
+            bankPageConfirmed = false;
+            CPacketClickWindow packet = new CPacketClickWindow(McIf.player().openContainer.windowId, 8, 0, ClickType.PICKUP, event.getPacket().getStack(), McIf.player().openContainer.getNextTransactionID(McIf.player().inventory));
+            McIf.mc().getConnection().sendPacket(packet);
+        }
     }
 
     @SubscribeEvent
