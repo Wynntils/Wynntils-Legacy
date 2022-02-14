@@ -96,8 +96,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
                 } catch (NullPointerException e) {
                     server.createCommandManager().executeCommand(sender, "switch " + world);
                 }
-            }
-            else {
+            } else {
                 sender.sendMessage(new TextComponentString("HERO or higher rank is required to use /switch"));
             }
         } else if (args[1].equalsIgnoreCase("help")) {
