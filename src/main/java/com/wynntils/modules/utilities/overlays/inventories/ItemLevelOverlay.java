@@ -64,12 +64,12 @@ public class ItemLevelOverlay implements Listener {
 
     @SubscribeEvent
     public void onItemOverlay(RenderEvent.DrawItemOverlay event) {
-        if ((!UtilitiesConfig.INSTANCE.showConsumableChargesHotbar && !UtilitiesConfig.Items.INSTANCE.itemLevelOverlayOutsideGui) || McIf.mc().currentScreen == null) return;
+        if (!UtilitiesConfig.INSTANCE.showConsumableChargesHotbar && !UtilitiesConfig.Items.INSTANCE.itemLevelOverlayOutsideGui && McIf.mc().currentScreen == null) return;
         ItemStack stack = event.getStack();
         Item item = stack.getItem();
         String name = stack.getDisplayName();
 
-        if (KeyManager.getShowLevelOverlayKey().isKeyDown()) {
+        if (UtilitiesConfig.Items.INSTANCE.itemLevelOverlayOutsideGui && KeyManager.getShowLevelOverlayKey().isKeyDown()) {
             // powder tier
             if (item == Items.DYE || item == Items.GUNPOWDER || item == Items.CLAY_BALL || item == Items.SUGAR) {
                 Matcher powderMatcher = Powder.POWDER_NAME_PATTERN.matcher(StringUtils.normalizeBadString(name));
