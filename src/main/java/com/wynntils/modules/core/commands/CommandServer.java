@@ -79,9 +79,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
         Map<String, Integer> nextServers = new HashMap<>();
 
         for (String availableServer : ServerListManager.getAvailableServers().keySet()) {
-            ServerProfile serverProfile = ServerListManager.getServer(availableServer);
-            int uptimeMinutes = serverProfile.getUptimeMinutes();
-            nextServers.put(availableServer, 20 - (uptimeMinutes % 20));
+            nextServers.put(availableServer, 20 - (ServerListManager.getServer(availableServer).getUptimeMinutes() % 20));
         }
 
         // Sort servers by time until soul point
