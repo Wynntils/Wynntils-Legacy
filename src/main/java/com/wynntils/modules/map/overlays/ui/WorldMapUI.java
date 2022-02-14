@@ -426,9 +426,9 @@ public class WorldMapUI extends GuiMovementScreen {
     }
 
     protected void handleZoomAcceleration(float partialTicks) {
-        if (System.nanoTime() > zoomEnd) return;
+        if (McIf.getSystemTime() > zoomEnd) return;
 
-        float percentage = MathHelper.clamp(1f - (zoomEnd - System.nanoTime()) / ZOOM_RESISTANCE, 0f, 1f);
+        float percentage = MathHelper.clamp(1f - (zoomEnd - McIf.getSystemTime()) / ZOOM_RESISTANCE, 0f, 1f);
         double toIncrease = (zoomTarget - zoomInitial) * Math.sin((Math.PI / 2f) * percentage);
 
         zoom = zoomInitial + (float) toIncrease;
@@ -472,7 +472,7 @@ public class WorldMapUI extends GuiMovementScreen {
         double zoomScale = Math.pow(ZOOM_SCALE_FACTOR, -by);
         zoomTarget = (float) MathHelper.clamp(zoomScale * (zoom + 50) - 50, MIN_ZOOM, MAX_ZOOM);
 
-        zoomEnd = System.nanoTime() + ZOOM_RESISTANCE;
+        zoomEnd = McIf.getSystemTime() + ZOOM_RESISTANCE;
         zoomInitial = zoom;
     }
 
