@@ -16,6 +16,7 @@ import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.framework.ui.elements.GuiTextFieldWynn;
 import com.wynntils.core.utils.ItemUtils;
+import com.wynntils.modules.core.managers.PacketQueue;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
@@ -64,6 +65,8 @@ public class BankOverlay implements Listener {
     private int destinationPage = 0;
     private int searching = 0;
 
+    private boolean bankPageConfirmed = false;
+
     private boolean textureLoaded = false;
 
     private boolean editButtonHover = false;
@@ -80,6 +83,7 @@ public class BankOverlay implements Listener {
         inBank = false;
         itemsLoaded = false;
         nameField = null;
+        bankPageConfirmed = false;
         searchedItems.clear();
         Keyboard.enableRepeatEvents(false);
     }
@@ -240,8 +244,6 @@ public class BankOverlay implements Listener {
         editButtonHover = false;
     }
 
-    private boolean bankPageConfirmed = false;
-
     @SubscribeEvent
     public void onSlotClicked(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
         if (!inBank || e.getSlotIn() == null) return;
@@ -271,7 +273,6 @@ public class BankOverlay implements Listener {
                     McIf.mc().displayGuiScreen(new GuiParentedYesNo((result, parentButtonId) -> gui, (result, parentButtonID) -> {
                         if (result) {
                             McIf.mc().getConnection().sendPacket(packet);
-                            bankPageConfirmed = true;
                         }
                         tryForceBankInit();
                     }, "Are you sure you want to dump your inventory?", "This confirm may be disabled in the Wynntils config.", 0));
@@ -309,12 +310,15 @@ public class BankOverlay implements Listener {
                     String itemName = item.getDisplayName();
                     String pageNumber = itemName.substring(9, itemName.indexOf(TextFormatting.RED + " >"));
                     ChestReplacer gui = e.getGui();
-                    CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), item, e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
                     McIf.mc().displayGuiScreen(new GuiParentedYesNo((result, parentButtonId) -> gui, (result, parentButtonID) -> {
                         if (result) {
-                            McIf.mc().getConnection().sendPacket(packet);
+                            bankPageConfirmed = true;
+                            CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), item, gui.inventorySlots.getNextTransactionID(McIf.player().inventory));
+                            tryForceBankInit();
+                            PacketQueue.queueSimplePacket(packet);
+                        } else {
+                            tryForceBankInit();
                         }
-                        tryForceBankInit();
                     }, "Are you sure you want to purchase another bank page?", "Page number: " + pageNumber + "\nCost: " + price, 0));
                     e.setCanceled(true);
                 }
@@ -337,7 +341,7 @@ public class BankOverlay implements Listener {
         if (bankPageConfirmed && event.getPacket().getSlot() == 8) {
             bankPageConfirmed = false;
             CPacketClickWindow packet = new CPacketClickWindow(McIf.player().openContainer.windowId, 8, 0, ClickType.PICKUP, event.getPacket().getStack(), McIf.player().openContainer.getNextTransactionID(McIf.player().inventory));
-            McIf.mc().getConnection().sendPacket(packet);
+            PacketQueue.queueSimplePacket(packet);
         }
     }
 
