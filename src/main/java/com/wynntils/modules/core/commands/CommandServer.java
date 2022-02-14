@@ -89,10 +89,8 @@ public class CommandServer extends CommandBase implements IClientCommand {
                 .sorted(Map.Entry.comparingByValue())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
-        boolean canUseSwitch = WebManager.getPlayerProfile() != null && (WebManager.getPlayerProfile().getTag() == PlayerStatsProfile.PlayerTag.HERO || WebManager.getPlayerProfile().getTag() == PlayerStatsProfile.PlayerTag.CHAMPION);
-
         if (args[1].equalsIgnoreCase("switch")) {
-            if (canUseSwitch) {
+            if (WebManager.getPlayerProfile().canUseSwitch()) {
                 String world = sortedServers.keySet().stream().limit(1).toString();
                 try {
                     sender.getServer().getCommandManager().executeCommand(sender, "switch " + world);
@@ -126,7 +124,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
                 }
 
                 TextComponentString world = new TextComponentString(TextFormatting.BOLD + "-" + TextFormatting.GOLD);
-                if (canUseSwitch) {
+                if (WebManager.getPlayerProfile().canUseSwitch()) {
                     TextComponentString serverLine = new TextComponentString(TextFormatting.BLUE + wynnServer);
                     serverLine.getStyle()
                             .setColor(TextFormatting.BLUE)

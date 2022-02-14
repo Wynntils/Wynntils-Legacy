@@ -7,6 +7,7 @@ package com.wynntils.webapi.profiles.player;
 import com.google.common.reflect.TypeToken;
 import com.google.gson.*;
 import com.wynntils.Reference;
+import com.wynntils.webapi.WebManager;
 
 import java.lang.reflect.Type;
 import java.text.ParseException;
@@ -317,6 +318,9 @@ public class PlayerStatsProfile {
         Hybrid,
         CMD,
         Media
+    }
+    public boolean canUseSwitch() {
+        return getTag() == PlayerTag.HERO || getTag() == PlayerTag.CHAMPION;
     }
 
     public enum PlayerTag {
