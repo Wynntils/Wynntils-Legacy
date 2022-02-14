@@ -44,7 +44,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "/s <command> [options]\n\ncommands:\nl,ls,list | list available servers\ni,info | get info about a server\nsp,nextsoulpoint | list servers with soul point timers and if you add switch at the end you automatically switch to the world with the lowest soul point timer\n\nmore detailed help:\n/s <command> help";
+        return "/s <command> [options]\n\ncommands:\nl,ls,list | list available servers\ni,info | get info about a server\nsp,nextsoulpoint | list servers with soul point timers\n\nmore detailed help:\n/s <command> help";
     }
 
     @Override
@@ -98,9 +98,15 @@ public class CommandServer extends CommandBase implements IClientCommand {
                     server.createCommandManager().executeCommand(sender, "switch " + world);
                 }
             }
-            else{
+            else {
                 sender.sendMessage(new TextComponentString("HERO or higher rank is required to use /switch"));
             }
+        }
+
+        else if (args[1].equalsIgnoreCase("help")) {
+            TextComponentString text = new TextComponentString("Usage: /s sp \nDefault: Prints the 10 worlds with the lowest soul point timers");
+            text.appendText("\nOptions");
+            text.appendText("\n  switch: automatically switch to the server with the lowest soul point timer");
         }
 
         else {
