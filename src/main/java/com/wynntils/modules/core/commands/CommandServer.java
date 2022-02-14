@@ -88,21 +88,9 @@ public class CommandServer extends CommandBase implements IClientCommand {
                 .sorted(Map.Entry.comparingByValue())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
-        if (args[1].equalsIgnoreCase("switch") || args[1].equalsIgnoreCase("s")) {
-            if (WebManager.getPlayerProfile().canUseSwitch()) {
-                String world = sortedServers.keySet().stream().limit(1).toString();
-                try {
-                    sender.getServer().getCommandManager().executeCommand(sender, "switch " + world);
-                } catch (NullPointerException e) {
-                    server.createCommandManager().executeCommand(sender, "switch " + world);
-                }
-            } else {
-                sender.sendMessage(new TextComponentString("HERO or higher rank is required to use /switch"));
-            }
-        } else if (args[1].equalsIgnoreCase("help")) {
+        if (args[1].equalsIgnoreCase("help")) {
             TextComponentString text = new TextComponentString("Usage: /s sp \nDefault: Prints the 10 worlds with the lowest soul point timers");
-            text.appendText("\nOptions");
-            text.appendText("\n  s, switch : automatically switch to the server with the lowest soul point timer");
+            sender.sendMessage(text);
         } else {
             TextComponentString soulPointInfo = new TextComponentString("Approximate soul point times:" + "\n");
             soulPointInfo.getStyle()
