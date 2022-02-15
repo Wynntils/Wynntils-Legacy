@@ -59,8 +59,6 @@ public class ChatOverlay extends GuiNewChat {
 
     public void drawChat(int updateCounter) {
         if (McIf.mc().gameSettings.chatVisibility != EntityPlayer.EnumChatVisibility.HIDDEN) {
-            int chatSize = getCurrentTab().getCurrentMessages().size();
-
             getCurrentTab().checkNotifications();
 
             boolean flag = false;
@@ -74,7 +72,7 @@ public class ChatOverlay extends GuiNewChat {
             GlStateManager.scale(chatScale, chatScale, 1.0F);
             int l = 0;
 
-            for (int i1 = 0; i1 + scrollPos < chatSize && i1 < getLineCount(); ++i1) {
+            for (int i1 = 0; i1 + scrollPos < getCurrentTab().getCurrentMessages().size() && i1 < getLineCount(); ++i1) {
                 ChatLine chatline = getCurrentTab().getCurrentMessages().get(i1 + scrollPos);
 
                 if (chatline != null) {
@@ -112,6 +110,7 @@ public class ChatOverlay extends GuiNewChat {
 
             if (flag) {
                 // continuing chat render
+                int chatSize = getCurrentTab().getCurrentMessages().size();
                 if (chatSize > 0) {
                     int k2 = McIf.mc().fontRenderer.FONT_HEIGHT;
                     GlStateManager.translate(-3.0F, 0.0F, 0.0F);
@@ -395,7 +394,7 @@ public class ChatOverlay extends GuiNewChat {
 
     public void updateLine(ChatTab tab, int id, Function<ITextComponent, ITextComponent> change) {
         updateLines(tab, new HashMap<Integer, Pair<Supplier<Boolean>, Function<ITextComponent, ITextComponent>>>()
-            {{ put(id, new Pair<>(() -> true, change)); }});
+        {{ put(id, new Pair<>(() -> true, change)); }});
     }
 
     public void refreshChat() {
