@@ -25,7 +25,9 @@ import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import static net.minecraft.util.text.TextFormatting.*;
 
@@ -62,33 +64,45 @@ public class GuildWorldMapUI extends WorldMapUI {
                 AQUA + "[>] Show territory borders",
                 GRAY + "Click here to enable/disable",
                 GRAY + "territory borders."
-        ), (v) -> showTerritory, (i, btn) -> showTerritory = !showTerritory);
+        ), true, (v) -> showTerritory ? 1 : 0, (i, btn) -> showTerritory = !showTerritory);
 
         addButton(MapButtonIcon.PENCIL, 0, Arrays.asList(
                 YELLOW + "[>] Show territory owners",
                 GRAY + "Click here to enable/disable",
                 GRAY + "territory owners."
-        ), (v) -> showOwners, (i, btn) -> showOwners = !showOwners);
+        ), true, (v) -> showOwners ? 1 : 0, (i, btn) -> showOwners = !showOwners);
 
         addButton(MapButtonIcon.INFO, 1, Arrays.asList(
                 GOLD + "[>] Use resource generation colors",
                 GRAY + "Click here to switch between",
                 GRAY + "resource generation colors and",
                 GRAY + "guild colors."
-        ), (v) -> resourceColors, (i, btn) -> resourceColors = !resourceColors);
+        ), true, (v) -> resourceColors ? 1 : 0, (i, btn) -> resourceColors = !resourceColors);
 
         addButton(MapButtonIcon.PIN, 2, Arrays.asList(
                 LIGHT_PURPLE + "[>] Show trade routes",
                 GRAY + "Click here to enable/disable",
                 GRAY + "territory trade routes."
-        ), (v) -> showTradeRoutes, (i, btn) -> showTradeRoutes = !showTradeRoutes);
+        ), true, (v) -> showTradeRoutes ? 1 : 0, (i, btn) -> showTradeRoutes = !showTradeRoutes);
 
         addButton(MapButtonIcon.PLUS, 3, Arrays.asList(
                 RED + "[>] Shift + Right Click on a territory",
                 RED + "to open management menu.",
                 GRAY + "Click here to enable/disable",
                 GRAY + "territory management shortcut."
-        ), (v) -> territoryManageShortcut, (i, btn) -> territoryManageShortcut = !territoryManageShortcut);
+        ), true , (v) -> territoryManageShortcut ? 1 : 0, (i, btn) -> territoryManageShortcut = !territoryManageShortcut);
+
+        addButton(MapButtonIcon.PLUS, 4, Arrays.asList(
+                BLUE + "[>] Territory difficulty filter",
+                GRAY + "Click here to cycle territory",
+                GRAY + "difficulty filter."
+        ), false, (v) -> territoryDifficultyFilter, (i, btn) -> {
+            if (territoryDifficultyFilter == 5) {
+                territoryDifficultyFilter = 0;
+            } else {
+                territoryDifficultyFilter += 1;
+            }
+        });
     }
 
     @Override
@@ -138,6 +152,13 @@ public class GuildWorldMapUI extends WorldMapUI {
 
         drawPositionCursor(map);
         if (showTradeRoutes) generateTradeRoutes();
+
+        if (territoryDifficultyFilter != 0) {
+            HashMap<String, MapTerritory> renderableTerritories;
+            for (Map.Entry<String, MapTerritory> territory : territories.entrySet()) {
+                if territory.getValue().getTerritory().
+            }
+        }
 
         territories.values().forEach(c -> c.drawScreen(mouseX, mouseY, partialTicks, showTerritory, resourceColors, !showOwners, showOwners));
         territories.values().forEach(c -> c.postDraw(mouseX, mouseY, partialTicks, width, height));

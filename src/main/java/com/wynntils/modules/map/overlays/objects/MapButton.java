@@ -25,11 +25,12 @@ public class MapButton {
     MapButtonIcon icon;
     List<String> hoverLore;
     BiConsumer<MapButton, Integer> onClick;
-    Function<Void, Boolean> isEnabled;
+    Function<Void, Integer> state;
+    Boolean isBool;
 
     ScreenRenderer renderer = new ScreenRenderer();
 
-    public MapButton(int posX, int posY, MapButtonIcon icon, List<String> hoverLore, Function<Void, Boolean> isEnabled, BiConsumer<MapButton, Integer> onClick) {
+    public MapButton(int posX, int posY, MapButtonIcon icon, List<String> hoverLore, Boolean isBool, Function<Void, Integer> state, BiConsumer<MapButton, Integer> onClick) {
         int halfWidth = icon.getWidth() / 2;
         int halfHeight = icon.getHeight() / 2;
 
@@ -40,7 +41,8 @@ public class MapButton {
 
         this.icon = icon;
         this.hoverLore = hoverLore;
-        this.isEnabled = isEnabled;
+        this.isBool = isBool;
+        this.state = state;
         this.onClick = onClick;
     }
 
@@ -51,10 +53,10 @@ public class MapButton {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         pushMatrix();
         {
-            if (isEnabled.apply(null)) {
-                color(1f, 1f, 1f, 1f);
-            } else {
+            if (this.isBool && !Boolean.parseBoolean(String.valueOf(state.apply(null)))) {
                 color(.3f, .3f, .3f, 1f);
+            } else {
+                color(1f, 1f, 1f, 1f);
             }
 
             // icon itself
@@ -73,7 +75,7 @@ public class MapButton {
     }
 
     public Boolean isEnabled() {
-        return isEnabled.apply(null);
+        return Boolean.parseBoolean(String.valueOf(state.apply(null)));
     }
 
     public int getStartX() {

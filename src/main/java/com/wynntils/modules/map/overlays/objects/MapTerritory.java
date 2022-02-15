@@ -106,6 +106,8 @@ public class MapTerritory {
         return territory;
     }
 
+    public
+
     public void drawScreen(int mouseX, int mouseY, float partialTicks, boolean territoryArea, boolean resourceColor, boolean showHeadquarters, boolean showNames) {
         if (!shouldRender || renderer == null) return;
 
