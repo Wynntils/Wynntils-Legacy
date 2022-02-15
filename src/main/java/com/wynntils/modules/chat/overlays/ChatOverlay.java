@@ -394,7 +394,7 @@ public class ChatOverlay extends GuiNewChat {
 
     public void updateLine(ChatTab tab, int id, Function<ITextComponent, ITextComponent> change) {
         updateLines(tab, new HashMap<Integer, Pair<Supplier<Boolean>, Function<ITextComponent, ITextComponent>>>()
-        {{ put(id, new Pair<>(() -> true, change)); }});
+            {{ put(id, new Pair<>(() -> true, change)); }});
     }
 
     public void refreshChat() {
