@@ -13,7 +13,7 @@ import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.GuildResourceContainer;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.managers.GuildResourceManager;
-import com.wynntils.modules.map.overlays.enums.MapButtonType;
+import com.wynntils.modules.map.overlays.enums.MapButtonIcon;
 import com.wynntils.modules.map.overlays.objects.MapTerritory;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -41,6 +41,7 @@ public class GuildWorldMapUI extends WorldMapUI {
     private boolean resourceColors = false;
     private boolean showTradeRoutes = true;
     private boolean territoryManageShortcut = true;
+    private int territoryDifficultyFilter = 0; // 0=off; 1=verylow; 2=low; 3=med; 4=high; 5=veryhigh
 
     public GuildWorldMapUI() {
         super((float) McIf.player().posX, (float) McIf.player().posZ);
@@ -57,32 +58,32 @@ public class GuildWorldMapUI extends WorldMapUI {
 
         this.mapButtons.clear();
 
-        addButton(MapButtonType.CENTER, 0, Arrays.asList(
+        addButton(MapButtonIcon.CENTER, 0, Arrays.asList(
                 AQUA + "[>] Show territory borders",
                 GRAY + "Click here to enable/disable",
                 GRAY + "territory borders."
         ), (v) -> showTerritory, (i, btn) -> showTerritory = !showTerritory);
 
-        addButton(MapButtonType.PENCIL, 0, Arrays.asList(
+        addButton(MapButtonIcon.PENCIL, 0, Arrays.asList(
                 YELLOW + "[>] Show territory owners",
                 GRAY + "Click here to enable/disable",
                 GRAY + "territory owners."
         ), (v) -> showOwners, (i, btn) -> showOwners = !showOwners);
 
-        addButton(MapButtonType.INFO, 1, Arrays.asList(
+        addButton(MapButtonIcon.INFO, 1, Arrays.asList(
                 GOLD + "[>] Use resource generation colors",
                 GRAY + "Click here to switch between",
                 GRAY + "resource generation colors and",
                 GRAY + "guild colors."
         ), (v) -> resourceColors, (i, btn) -> resourceColors = !resourceColors);
 
-        addButton(MapButtonType.PIN, 2, Arrays.asList(
+        addButton(MapButtonIcon.PIN, 2, Arrays.asList(
                 LIGHT_PURPLE + "[>] Show trade routes",
                 GRAY + "Click here to enable/disable",
                 GRAY + "territory trade routes."
         ), (v) -> showTradeRoutes, (i, btn) -> showTradeRoutes = !showTradeRoutes);
 
-        addButton(MapButtonType.PLUS, 3, Arrays.asList(
+        addButton(MapButtonIcon.PLUS, 3, Arrays.asList(
                 RED + "[>] Shift + Right Click on a territory",
                 RED + "to open management menu.",
                 GRAY + "Click here to enable/disable",

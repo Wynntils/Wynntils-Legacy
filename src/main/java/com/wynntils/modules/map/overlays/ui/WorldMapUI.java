@@ -20,7 +20,7 @@ import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.map.managers.LootRunManager;
-import com.wynntils.modules.map.overlays.enums.MapButtonType;
+import com.wynntils.modules.map.overlays.enums.MapButtonIcon;
 import com.wynntils.modules.map.overlays.objects.*;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
@@ -123,15 +123,15 @@ public class WorldMapUI extends GuiMovementScreen {
         Keyboard.enableRepeatEvents(true);
     }
 
-    protected void addButton(MapButtonType type, int offsetX, List<String> hover, Function<Void, Boolean> isEnabled, BiConsumer<MapButton, Integer> onClick) {
+    protected void addButton(MapButtonIcon icon, int offsetX, List<String> hover, Function<Void, Boolean> isEnabled, BiConsumer<MapButton, Integer> onClick) {
         // add the button base
         if (mapButtons.isEmpty()) {
-            mapButtons.add(new MapButton(width / 2, height - 45, MapButtonType.BASE, null, (v) -> true, null));
+            mapButtons.add(new MapButton(width / 2, height - 45, MapButtonIcon.BASE, null, (v) -> true, null));
         }
 
         int posX = mapButtons.get(0).getStartX() + 13 + (19 * (mapButtons.size() - 1)) + offsetX;
         int posY = height - 45;
-        mapButtons.add(new MapButton(posX, posY, type, hover, isEnabled, onClick));
+        mapButtons.add(new MapButton(posX, posY, icon, hover, isEnabled, onClick));
     }
 
     protected void createIcons() {
@@ -407,7 +407,7 @@ public class WorldMapUI extends GuiMovementScreen {
 
         // hover lore
         for (MapButton button : mapButtons) {
-            if (button.getType().isIgnoreAction()) continue;
+            if (button.getIcon().isIgnoreAction()) continue;
             if (!button.isHovering(mouseX, mouseY)) continue;
 
             drawHoveringText(button.getHoverLore(), mouseX, mouseY);
@@ -527,7 +527,7 @@ public class WorldMapUI extends GuiMovementScreen {
 
         for (MapButton button : mapButtons) {
             if (!button.isHovering(mouseX, mouseY)) continue;
-            if (button.getType().isIgnoreAction()) continue;
+            if (button.getIcon().isIgnoreAction()) continue;
 
             button.mouseClicked(mouseX, mouseY, mouseButton);
             return;
