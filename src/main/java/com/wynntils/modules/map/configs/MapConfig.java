@@ -115,15 +115,15 @@ public class MapConfig extends SettingsClass {
 
         @Setting(displayName = "Minimum Zoom for Loot Chest I", description = "What is the minimum zoom level for tier 1 loot chest to show on the map?")
         @Setting.Limitations.IntLimit(min = -10, max = 500)
-        public int lootChestTier1MinZoom = 500;
+        public int lootChestTier1MinZoom = 200;
 
         @Setting(displayName = "Minimum Zoom for Loot Chest II", description = "What is the minimum zoom level for tier 2 loot chest to show on the map?")
         @Setting.Limitations.IntLimit(min = -10, max = 500)
-        public int lootChestTier2MinZoom = 500;
+        public int lootChestTier2MinZoom = 300;
 
         @Setting(displayName = "Minimum Zoom for Loot Chest III", description = "What is the minimum zoom level for tier 3 loot chest to show on the map?")
         @Setting.Limitations.IntLimit(min = -10, max = 500)
-        public int lootChestTier3MinZoom = 500;
+        public int lootChestTier3MinZoom = 400;
 
         @Setting(displayName = "Minimum Zoom for Loot Chest IV", description = "What is the minimum zoom level for tier 4 loot chest to show on the map?")
         @Setting.Limitations.IntLimit(min = -10, max = 500)
