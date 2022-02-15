@@ -89,7 +89,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
         if (args[1].equalsIgnoreCase("help")) {
-            TextComponentString text = new TextComponentString("Usage: /s sp \nDefault: Prints the 10 worlds with the lowest soul point timers");
+            TextComponentString text = new TextComponentString("Usage: /s sp \nDefault: Prints 10 worlds with increasing lowest soul point timers");
             sender.sendMessage(text);
         } else {
             TextComponentString soulPointInfo = new TextComponentString("Approximate soul point times:" + "\n");
