@@ -59,7 +59,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
                         serverInfo(server, sender, Arrays.copyOfRange(args, 1, args.length));
                         break;
                     case "sp":
-                        nextSoulPoint(server, sender, args);
+                        nextSoulPoint(sender, args);
                         break;
                     default:
                         throw new CommandException(getUsage(sender));
@@ -70,7 +70,14 @@ public class CommandServer extends CommandBase implements IClientCommand {
         }
     }
 
-    private void nextSoulPoint(MinecraftServer server, ICommandSender sender, String[] args){
+    private void nextSoulPoint(ICommandSender sender, String[] args){
+
+        if (args[1].equalsIgnoreCase("help")) {
+            TextComponentString text = new TextComponentString("Usage: /s sp \nDefault: Prints 10 worlds with increasing lowest soul point timers");
+            sender.sendMessage(text);
+            return;
+        }
+
         Map<String, Integer> nextServers = new HashMap<>();
 
         // No need for checks if timer underneath 10min as I shorten the keySet anyways.
@@ -118,7 +125,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
                 world.appendText(" §b in " + minuteColor + uptimeMinutes + " minutes");
             }
             sender.sendMessage(world);
-        }
+            }
     }
 
     private void serverList(MinecraftServer server, ICommandSender sender, String[] args) {
