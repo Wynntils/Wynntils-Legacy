@@ -94,4 +94,7 @@ public class MapButton {
         return icon;
     }
 
+    public void editHoverLore(List<String> newLore) {
+        this.hoverLore = newLore;
+    }
 }

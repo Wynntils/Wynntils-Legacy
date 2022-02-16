@@ -14,6 +14,7 @@ import com.wynntils.modules.map.instances.GuildResourceContainer;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.managers.GuildResourceManager;
 import com.wynntils.modules.map.overlays.enums.MapButtonIcon;
+import com.wynntils.modules.map.overlays.objects.MapButton;
 import com.wynntils.modules.map.overlays.objects.MapTerritory;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -24,10 +25,7 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 import static net.minecraft.util.text.TextFormatting.*;
 
@@ -43,6 +41,8 @@ public class GuildWorldMapUI extends WorldMapUI {
     private boolean resourceColors = false;
     private boolean showTradeRoutes = true;
     private boolean territoryManageShortcut = true;
+
+    MapButton cycleButton;
     private int territoryDefenseFilter = 0; // 0=off; 1=verylow; 2=low; 3=med; 4=high; 5=veryhigh
 
     public GuildWorldMapUI() {
@@ -92,19 +92,40 @@ public class GuildWorldMapUI extends WorldMapUI {
                 GRAY + "territory management shortcut."
         ), true , (v) -> territoryManageShortcut ? 1 : 0, (i, btn) -> territoryManageShortcut = !territoryManageShortcut);
 
-        addButton(MapButtonIcon.PLUS, 4, Arrays.asList(
+        cycleButton = addButton(MapButtonIcon.SEARCH, 4, Arrays.asList(
                 BLUE + "[>] Territory defense filter",
                 GRAY + "Click here to cycle territory",
-                GRAY + "defense filter."
+                GRAY + "defense filter.",
+                "Current value: " + getDefenseFilterText(territoryDefenseFilter)
         ), false, (v) -> territoryDefenseFilter, (i, btn) -> {
             if (territoryDefenseFilter == 5) {
                 territoryDefenseFilter = 0;
             } else {
                 ++territoryDefenseFilter;
             }
-            System.out.println(territoryDefenseFilter);
-
+            cycleButton.editHoverLore(Arrays.asList(
+                    BLUE + "[>] Territory defense filter",
+                    GRAY + "Click here to cycle territory",
+                    GRAY + "defense filter.",
+                    "Current value: " + getDefenseFilterText(territoryDefenseFilter)));
         });
+    }
+
+    private String getDefenseFilterText(int defenseLevel) {
+        switch (defenseLevel) {
+            default:
+                return "§7Off";
+            case 1:
+                return "§aVery Low";
+            case 2:
+                return "§aLow";
+            case 3:
+                return "§eMedium";
+            case 4:
+                return "§cHigh";
+            case 5:
+                return "§cVery High";
+        }
     }
 
     @Override

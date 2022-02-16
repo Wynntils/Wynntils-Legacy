@@ -123,7 +123,7 @@ public class WorldMapUI extends GuiMovementScreen {
         Keyboard.enableRepeatEvents(true);
     }
 
-    protected void addButton(MapButtonIcon icon, int offsetX, List<String> hover, Boolean isBool, Function<Void, Integer> state, BiConsumer<MapButton, Integer> onClick) {
+    protected MapButton addButton(MapButtonIcon icon, int offsetX, List<String> hover, Boolean isBool, Function<Void, Integer> state, BiConsumer<MapButton, Integer> onClick) {
         // add the button base
         if (mapButtons.isEmpty()) {
             mapButtons.add(new MapButton(width / 2, height - 45, MapButtonIcon.BASE, null, true, (v) -> 1, null));
@@ -131,7 +131,9 @@ public class WorldMapUI extends GuiMovementScreen {
 
         int posX = mapButtons.get(0).getStartX() + 13 + (19 * (mapButtons.size() - 1)) + offsetX;
         int posY = height - 45;
-        mapButtons.add(new MapButton(posX, posY, icon, hover, isBool, state, onClick));
+        MapButton btn = new MapButton(posX, posY, icon, hover, isBool, state, onClick);
+        mapButtons.add(btn);
+        return btn;
     }
 
     protected void createIcons() {
