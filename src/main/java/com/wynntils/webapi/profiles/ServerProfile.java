@@ -7,7 +7,6 @@ package com.wynntils.webapi.profiles;
 import com.wynntils.core.utils.StringUtils;
 
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 public class ServerProfile {
 
