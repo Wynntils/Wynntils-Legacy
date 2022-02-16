@@ -53,7 +53,7 @@ public class MapButton {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         pushMatrix();
         {
-            if (this.isBool && !Boolean.parseBoolean(String.valueOf(state.apply(null)))) {
+            if (this.isBool && !(state.apply(null) == 1)) {
                 color(.3f, .3f, .3f, 1f);
             } else {
                 color(1f, 1f, 1f, 1f);

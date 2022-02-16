@@ -43,7 +43,7 @@ public class GuildWorldMapUI extends WorldMapUI {
     private boolean resourceColors = false;
     private boolean showTradeRoutes = true;
     private boolean territoryManageShortcut = true;
-    private int territoryDifficultyFilter = 0; // 0=off; 1=verylow; 2=low; 3=med; 4=high; 5=veryhigh
+    private int territoryDefenseFilter = 0; // 0=off; 1=verylow; 2=low; 3=med; 4=high; 5=veryhigh
 
     public GuildWorldMapUI() {
         super((float) McIf.player().posX, (float) McIf.player().posZ);
@@ -93,15 +93,17 @@ public class GuildWorldMapUI extends WorldMapUI {
         ), true , (v) -> territoryManageShortcut ? 1 : 0, (i, btn) -> territoryManageShortcut = !territoryManageShortcut);
 
         addButton(MapButtonIcon.PLUS, 4, Arrays.asList(
-                BLUE + "[>] Territory difficulty filter",
+                BLUE + "[>] Territory defense filter",
                 GRAY + "Click here to cycle territory",
-                GRAY + "difficulty filter."
-        ), false, (v) -> territoryDifficultyFilter, (i, btn) -> {
-            if (territoryDifficultyFilter == 5) {
-                territoryDifficultyFilter = 0;
+                GRAY + "defense filter."
+        ), false, (v) -> territoryDefenseFilter, (i, btn) -> {
+            if (territoryDefenseFilter == 5) {
+                territoryDefenseFilter = 0;
             } else {
-                territoryDifficultyFilter += 1;
+                ++territoryDefenseFilter;
             }
+            System.out.println(territoryDefenseFilter);
+
         });
     }
 
@@ -153,15 +155,22 @@ public class GuildWorldMapUI extends WorldMapUI {
         drawPositionCursor(map);
         if (showTradeRoutes) generateTradeRoutes();
 
-        if (territoryDifficultyFilter != 0) {
-            HashMap<String, MapTerritory> renderableTerritories;
+        HashMap<String, MapTerritory> renderableTerritories = new HashMap<>();
+        if (territoryDefenseFilter != 0) { // If active
             for (Map.Entry<String, MapTerritory> territory : territories.entrySet()) {
-                if territory.getValue().getTerritory().
+                System.out.println(territory.getValue().getDefenses());
+                System.out.println(territoryDefenseFilter);
+                if (territory.getValue().getDefenses() == territoryDefenseFilter) {
+                    System.out.println(true);
+                    renderableTerritories.put(territory.getKey(), territory.getValue());
+                }
             }
+        } else {
+            renderableTerritories = territories;
         }
 
-        territories.values().forEach(c -> c.drawScreen(mouseX, mouseY, partialTicks, showTerritory, resourceColors, !showOwners, showOwners));
-        territories.values().forEach(c -> c.postDraw(mouseX, mouseY, partialTicks, width, height));
+        renderableTerritories.values().forEach(c -> c.drawScreen(mouseX, mouseY, partialTicks, showTerritory, resourceColors, !showOwners, showOwners));
+        renderableTerritories.values().forEach(c -> c.postDraw(mouseX, mouseY, partialTicks, width, height));
 
         clearMask();
     }

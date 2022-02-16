@@ -106,7 +106,22 @@ public class MapTerritory {
         return territory;
     }
 
-    public
+    public int getDefenses() {
+        String def = resources.getDefences();
+        if (def.contains("Very Low")) {
+            return 1;
+        } else if (def.contains("Low")) {
+            return 2;
+        } else if (def.contains("Medium")) {
+            return 3;
+        } else if (def.contains("High")) {
+            return 4;
+        } else if (def.contains("Very High")) {
+            return 5;
+        } else {
+            return -1;
+        }
+    }
 
     public void drawScreen(int mouseX, int mouseY, float partialTicks, boolean territoryArea, boolean resourceColor, boolean showHeadquarters, boolean showNames) {
         if (!shouldRender || renderer == null) return;
