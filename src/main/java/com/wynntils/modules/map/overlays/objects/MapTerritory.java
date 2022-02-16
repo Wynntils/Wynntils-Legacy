@@ -107,6 +107,7 @@ public class MapTerritory {
     }
 
     public int getDefenses() {
+        // Switch statement and .equals do not work here
         String def = resources.getDefences();
         if (def.contains("Very Low")) {
             return 1;

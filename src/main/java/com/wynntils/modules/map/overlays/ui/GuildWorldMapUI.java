@@ -158,10 +158,7 @@ public class GuildWorldMapUI extends WorldMapUI {
         HashMap<String, MapTerritory> renderableTerritories = new HashMap<>();
         if (territoryDefenseFilter != 0) { // If active
             for (Map.Entry<String, MapTerritory> territory : territories.entrySet()) {
-                System.out.println(territory.getValue().getDefenses());
-                System.out.println(territoryDefenseFilter);
                 if (territory.getValue().getDefenses() == territoryDefenseFilter) {
-                    System.out.println(true);
                     renderableTerritories.put(territory.getKey(), territory.getValue());
                 }
             }
