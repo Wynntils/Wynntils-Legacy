@@ -109,7 +109,10 @@ public class FakeInventory {
         isOpen = false;
 
         // No need to send close window packet on overlap, window was already closed.
-        if (windowId != -1 && result != InventoryResult.CLOSED_OVERLAP) McIf.mc().getConnection().sendPacket(new CPacketCloseWindow(windowId));
+        if (windowId != -1 && result != InventoryResult.CLOSED_OVERLAP) {
+            McIf.mc().getConnection().sendPacket(new CPacketCloseWindow(windowId));
+        }
+        
         windowId = -1;
 
         if(onClose != null) McIf.mc().addScheduledTask(() -> onClose.accept(this, result));
