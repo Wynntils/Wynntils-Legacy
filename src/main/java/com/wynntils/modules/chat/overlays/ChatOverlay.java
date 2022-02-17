@@ -61,9 +61,7 @@ public class ChatOverlay extends GuiNewChat {
         if (McIf.mc().gameSettings.chatVisibility != EntityPlayer.EnumChatVisibility.HIDDEN) {
             getCurrentTab().checkNotifications();
 
-            boolean flag = false;
-
-            if (getChatOpen()) flag = true;
+            boolean flag = getChatOpen();
 
             float chatScale = getChatScale();
             int extraY = MathHelper.ceil((float)getChatWidth() / chatScale) + 4;
