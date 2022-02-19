@@ -75,7 +75,14 @@ public class MapButton {
     }
 
     public Boolean isEnabled() {
-        return Boolean.parseBoolean(String.valueOf(state.apply(null)));
+        switch (state.apply(null)) {
+            case 0:
+                return false;
+            case 1:
+                return true;
+            default:
+                return null; // Generally it shouldn't return null but if it does there's a problem with related code
+        }
     }
 
     public int getStartX() {
