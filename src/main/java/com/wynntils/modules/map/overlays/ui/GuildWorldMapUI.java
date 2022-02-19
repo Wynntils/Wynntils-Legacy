@@ -114,17 +114,17 @@ public class GuildWorldMapUI extends WorldMapUI {
     private String getDefenseFilterText(int defenseLevel) {
         switch (defenseLevel) {
             case 1:
-                return "§aVery Low";
+                return GREEN + "Very Low";
             case 2:
-                return "§aLow";
+                return GREEN + "Low";
             case 3:
-                return "§eMedium";
+                return YELLOW + "Medium";
             case 4:
-                return "§cHigh";
+                return RED + "High";
             case 5:
-                return "§cVery High";
+                return RED + "Very High";
             default:
-                return "§7Off";
+                return GRAY + "Off";
         }
     }
 
