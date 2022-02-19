@@ -64,6 +64,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
                     case "wcd":
                     case "worldcooldown":
                         worldCooldown(sender, args);
+                        break;
                     default:
                         throw new CommandException(getUsage(sender));
                 }
@@ -83,11 +84,9 @@ public class CommandServer extends CommandBase implements IClientCommand {
         Map<String, Integer> nextServers = new HashMap<>();
 
         if(args[1].equals(null)){
-            TextComponentString text = new TextComponentString("Please add the interval");
-            text.getStyle()
-                    .setColor(TextFormatting.RED);
-            sender.sendMessage(text);
-            return;
+            for (String availableServer : ServerListManager.getAvailableServers().keySet()) {
+                nextServers.put(availableServer, 20 - (ServerListManager.getServer(availableServer).getUptimeMinutes() % 20));
+            }
         } else{
             int interval = Integer.parseInt(args[1]);
             for (String availableServer : ServerListManager.getAvailableServers().keySet()) {
