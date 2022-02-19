@@ -61,12 +61,80 @@ public class CommandServer extends CommandBase implements IClientCommand {
                     case "sp":
                         nextSoulPoint(sender, args);
                         break;
+                    case "wcd":
+                    case "worldcooldown":
+                        worldCooldown(sender, args);
                     default:
                         throw new CommandException(getUsage(sender));
                 }
             } else {
                 throw new CommandException(getUsage(sender));
             }
+        }
+    }
+
+    private void worldCooldown(ICommandSender sender, String[] args){
+        if (args[1].equalsIgnoreCase("help")) {
+            TextComponentString text = new TextComponentString("Usage: /s wcd interval \nPrints 10 upcoming worlds that have the shortest time to an interval for things like rare mob timers");
+            sender.sendMessage(text);
+            return;
+        }
+
+        Map<String, Integer> nextServers = new HashMap<>();
+
+        if(args[1].equals(null)){
+            TextComponentString text = new TextComponentString("Please add the interval");
+            text.getStyle()
+                    .setColor(TextFormatting.RED);
+            sender.sendMessage(text);
+            return;
+        } else{
+            int interval = Integer.parseInt(args[1]);
+            for (String availableServer : ServerListManager.getAvailableServers().keySet()) {
+                nextServers.put(availableServer, interval - (ServerListManager.getServer(availableServer).getUptimeMinutes() % interval));
+            }
+        }
+
+        // Sort servers by time until soul point
+        Map<String, Integer> sortedServers = nextServers.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+
+        TextComponentString soulPointInfo = new TextComponentString("Approximate world times:" + "\n");
+        soulPointInfo.getStyle()
+                .setBold(true)
+                .setColor(TextFormatting.AQUA);
+        sender.sendMessage(soulPointInfo);
+        List<String> keys = sortedServers.keySet().stream().limit(10).collect(Collectors.toList());
+        for (String wynnServer : keys) {
+            int uptimeMinutes = sortedServers.get(wynnServer);
+            TextFormatting minuteColor;
+            if (uptimeMinutes <= 2) {
+                minuteColor = TextFormatting.GREEN;
+            } else if (uptimeMinutes <= 5) {
+                minuteColor = TextFormatting.YELLOW;
+            } else {
+                minuteColor = TextFormatting.RED;
+            }
+            TextComponentString world = new TextComponentString(TextFormatting.BOLD + "-" + TextFormatting.GOLD);
+            if (WebManager.getPlayerProfile().canUseSwitch()) {
+                TextComponentString serverLine = new TextComponentString(TextFormatting.BLUE + wynnServer);
+                serverLine.getStyle()
+                        .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/switch " + wynnServer))
+                        .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Switch To " + TextFormatting.BLUE + wynnServer)));
+                world.appendSibling(serverLine);
+            } else {
+                TextComponentString serverLine = new TextComponentString(TextFormatting.BLUE + wynnServer);
+                serverLine.getStyle()
+                        .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(TextFormatting.RED + "HERO or higher rank is required to use /switch")));
+                world.appendSibling(serverLine);
+            }
+            if (uptimeMinutes == 1) {
+                world.appendText(" §b in " + minuteColor + uptimeMinutes + " minute");
+            } else {
+                world.appendText(" §b in " + minuteColor + uptimeMinutes + " minutes");
+            }
+            sender.sendMessage(world);
         }
     }
 
