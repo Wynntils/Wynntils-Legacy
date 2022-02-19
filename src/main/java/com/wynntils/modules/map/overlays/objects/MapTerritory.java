@@ -107,8 +107,7 @@ public class MapTerritory {
     }
 
     public int getDefenses() {
-        String def = net.minecraft.util.StringUtils.stripControlCodes(resources.getDefences());
-        switch (def) {
+        switch (net.minecraft.util.StringUtils.stripControlCodes(resources.getDefences())) {
             case "Very Low":
                 return 1;
             case "Low":
