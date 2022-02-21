@@ -74,9 +74,9 @@ public class CommandServer extends CommandBase implements IClientCommand {
         if(args.length > 1 && args[1].equalsIgnoreCase("help")){
             TextComponentString helpMessage = new TextComponentString("Usage: /s sp \nDefault: Prints 10 worlds with increasing lowest soul point timers");
             helpMessage.appendText("Args:\n");
-            helpMessage.appendText("1: Offset for timers\n");
-            helpMessage.appendText("2: Interval for which to check\n");
-            helpMessage.appendText("3: How many worlds");
+            helpMessage.appendText("1: Offset for timers, default is 0\n");
+            helpMessage.appendText("2: Interval for which to check, default is 20\n");
+            helpMessage.appendText("3: How many worlds, default is 10");
             sender.sendMessage(helpMessage);
             return;
         }
@@ -92,11 +92,11 @@ public class CommandServer extends CommandBase implements IClientCommand {
                 offset = args[1] != null ? Integer.parseInt(args[1]) : 0;
             }
             if (args.length > 2) {
-                interval = args[2] != null ? Integer.parseInt(args[2]) : 0;
+                interval = args[2] != null ? Integer.parseInt(args[2]) : 20;
             }
 
             if (args.length > 3) {
-                worlds = args[3] != null ? Integer.parseInt(args[3]) : 0;
+                worlds = args[3] != null ? Integer.parseInt(args[3]) : 10;
                 if (worlds < 0){
                     sender.sendMessage(new TextComponentString(TextFormatting.RED + "Please input a valid world number"));
                     return;
@@ -123,11 +123,14 @@ public class CommandServer extends CommandBase implements IClientCommand {
                 .sorted(Map.Entry.comparingByValue())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
-        TextComponentString soulPointInfo = new TextComponentString("Approximate soul point times(-" + offset + "min offset, " + interval + "min interval" + "):" + "\n");
+        TextComponentString soulPointInfo = args.length > 1 ? new TextComponentString("Approximate soul point times(-" + offset + "min offset, " + interval + "min interval" + "):" + "\n") : new TextComponentString("\"Approximate soul point times:");
+
         soulPointInfo.getStyle()
                 .setBold(true)
                 .setColor(TextFormatting.AQUA);
+
         sender.sendMessage(soulPointInfo);
+
         sortedServers.entrySet().stream()
                 .limit(worlds)
                 .map(Map.Entry::getKey)
