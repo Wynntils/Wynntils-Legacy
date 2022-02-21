@@ -98,7 +98,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
             }
 
             if (args.length >= 3) {
-                worlds = args[3] != null ? Integer.parseInt(args[2]) : 0;
+                worlds = args[3] != null ? Integer.parseInt(args[3]) : 0;
             }
         } catch (NumberFormatException exception){
             sender.sendMessage(new TextComponentString(TextFormatting.RED + "Please input valid numbers"));
