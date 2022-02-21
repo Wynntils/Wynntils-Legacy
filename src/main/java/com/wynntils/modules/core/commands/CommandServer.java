@@ -123,7 +123,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
                 .sorted(Map.Entry.comparingByValue())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
-        TextComponentString soulPointInfo = new TextComponentString("Approximate soul point times(" + offset + "min offset, -" + interval + "min interval" + "):" + "\n");
+        TextComponentString soulPointInfo = new TextComponentString("Approximate soul point times(-" + offset + "min offset, " + interval + "min interval" + "):" + "\n");
         soulPointInfo.getStyle()
                 .setBold(true)
                 .setColor(TextFormatting.AQUA);
@@ -154,7 +154,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
                                 .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(TextFormatting.RED + "HERO or higher rank is required to use /switch")));
                         world.appendSibling(serverLine);
                     }
-                    world.appendText(TextFormatting.AQUA + " in " + minuteColor + uptimeMinutes + (uptimeMinutes == 1 ? " minute" : "minutes"));
+                    world.appendText(TextFormatting.AQUA + " in " + minuteColor + uptimeMinutes + (uptimeMinutes == 1 || uptimeMinutes == 0 ? " minute" : " minutes"));
                     sender.sendMessage(world);
                 });
     }
