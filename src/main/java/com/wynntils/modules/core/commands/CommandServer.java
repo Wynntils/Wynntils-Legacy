@@ -15,6 +15,7 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -89,19 +90,19 @@ public class CommandServer extends CommandBase implements IClientCommand {
         int worlds = 10;
 
         try{
-            if (args.length >= 1) {
-                if(!args[1].equalsIgnoreCase("help")){
-                    offset = args[1] != null ? Integer.parseInt(args[1]) : 0;
-
-                }
-            }
-
             if (args.length >= 2) {
+                offset = args[1] != null ? Integer.parseInt(args[1]) : 0;
+            }
+            if (args.length >= 3) {
                 interval = args[2] != null ? Integer.parseInt(args[2]) : 0;
             }
 
-            if (args.length >= 3) {
+            if (args.length >= 4) {
                 worlds = args[3] != null ? Integer.parseInt(args[3]) : 0;
+                if (worlds < 0){
+                    sender.sendMessage(new TextComponentString(TextFormatting.RED + "Please input a valid world number"));
+                    return;
+                }
             }
         } catch (NumberFormatException exception){
             sender.sendMessage(new TextComponentString(TextFormatting.RED + "Please input valid numbers"));
@@ -129,39 +130,35 @@ public class CommandServer extends CommandBase implements IClientCommand {
                 .setBold(true)
                 .setColor(TextFormatting.AQUA);
         sender.sendMessage(soulPointInfo);
-        if(sortedServers.keySet().size() < worlds){
-            worlds = sortedServers.keySet().size();
-        }
-        List<String> keys = sortedServers.entrySet().stream()
+        sortedServers.entrySet().stream()
                 .limit(worlds)
                 .map(Map.Entry::getKey)
-                .collect(Collectors.toList());
-        for (String wynnServer : keys) {
-            int uptimeMinutes = sortedServers.get(wynnServer);
-            TextFormatting minuteColor;
-            if (uptimeMinutes <= 2) {
-                minuteColor = TextFormatting.GREEN;
-            } else if (uptimeMinutes <= 5) {
-                minuteColor = TextFormatting.YELLOW;
-            } else {
-                minuteColor = TextFormatting.RED;
-            }
-            TextComponentString world = new TextComponentString(TextFormatting.BOLD + "-" + TextFormatting.GOLD);
-            if (WebManager.getPlayerProfile().canUseSwitch()) {
-                TextComponentString serverLine = new TextComponentString(TextFormatting.BLUE + wynnServer);
-                serverLine.getStyle()
-                        .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/switch " + wynnServer))
-                        .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Switch To " + TextFormatting.BLUE + wynnServer)));
-                world.appendSibling(serverLine);
-            } else {
-                TextComponentString serverLine = new TextComponentString(TextFormatting.BLUE + wynnServer);
-                serverLine.getStyle()
-                        .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(TextFormatting.RED + "HERO or higher rank is required to use /switch")));
-                world.appendSibling(serverLine);
-            }
-            world.appendText(" §b in " + minuteColor + uptimeMinutes + (uptimeMinutes == 1 ? " minute" : "minutes"));
-            sender.sendMessage(world);
-        }
+                .forEach(server -> {
+                    int uptimeMinutes = sortedServers.get(server);
+                    TextFormatting minuteColor;
+                    if (uptimeMinutes <= 2) {
+                        minuteColor = TextFormatting.GREEN;
+                    } else if (uptimeMinutes <= 5) {
+                        minuteColor = TextFormatting.YELLOW;
+                    } else {
+                        minuteColor = TextFormatting.RED;
+                    }
+                    TextComponentString world = new TextComponentString(TextFormatting.BOLD + "-" + TextFormatting.GOLD);
+                    if (WebManager.getPlayerProfile().canUseSwitch()) {
+                        TextComponentString serverLine = new TextComponentString(TextFormatting.BLUE + server);
+                        serverLine.getStyle()
+                                .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/switch " + server))
+                                .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Switch To " + TextFormatting.BLUE + wynnServer)));
+                        world.appendSibling(serverLine);
+                    } else {
+                        TextComponentString serverLine = new TextComponentString(TextFormatting.BLUE + server);
+                        serverLine.getStyle()
+                                .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(TextFormatting.RED + "HERO or higher rank is required to use /switch")));
+                        world.appendSibling(serverLine);
+                    }
+                    world.appendText(TextFormatting.AQUA + " in " + minuteColor + uptimeMinutes + (uptimeMinutes == 1 ? " minute" : "minutes"));
+                    sender.sendMessage(world);
+                });
     }
 
     private void serverList(MinecraftServer server, ICommandSender sender, String[] args) {
