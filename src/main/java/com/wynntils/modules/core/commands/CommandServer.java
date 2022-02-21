@@ -101,7 +101,10 @@ public class CommandServer extends CommandBase implements IClientCommand {
         }
 
         for (String availableServer : ServerListManager.getAvailableServers().keySet()) {
-            int time = interval - (ServerListManager.getServer(availableServer).getUptimeMinutes() % interval) + offset;
+            int time = interval - (ServerListManager.getServer(availableServer).getUptimeMinutes() % interval) - offset;
+            if (time < 0){
+                time = interval - Math.abs(time);
+            }
             if(time>interval){
                 time = time-interval;
             }
@@ -113,7 +116,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
                 .sorted(Map.Entry.comparingByValue())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
-        TextComponentString soulPointInfo = new TextComponentString("Approximate soul point times:" + "\n");
+        TextComponentString soulPointInfo = new TextComponentString("Approximate soul point times(" + offset + "min offset, -" + interval + "min interval" + "):" + "\n");
         soulPointInfo.getStyle()
                 .setBold(true)
                 .setColor(TextFormatting.AQUA);
