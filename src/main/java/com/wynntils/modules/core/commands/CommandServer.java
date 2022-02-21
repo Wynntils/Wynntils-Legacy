@@ -90,7 +90,10 @@ public class CommandServer extends CommandBase implements IClientCommand {
 
         try{
             if (args.length >= 1) {
-                offset = args[1] != null ? Integer.parseInt(args[1]) : 0;
+                if(!args[1].equalsIgnoreCase("help")){
+                    offset = args[1] != null ? Integer.parseInt(args[1]) : 0;
+
+                }
             }
 
             if (args.length >= 2) {
