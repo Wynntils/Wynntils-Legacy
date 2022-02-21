@@ -18,7 +18,6 @@ import com.wynntils.modules.utilities.managers.KeyManager;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.regex.Matcher;
@@ -64,66 +63,55 @@ public class ItemLevelOverlay implements Listener {
 
     @SubscribeEvent
     public void onItemOverlay(RenderEvent.DrawItemOverlay event) {
-        if (!UtilitiesConfig.INSTANCE.showConsumableChargesHotbar && !UtilitiesConfig.Items.INSTANCE.itemLevelOverlayOutsideGui && McIf.mc().currentScreen == null) return;
+        if (!UtilitiesConfig.Items.INSTANCE.itemLevelOverlayOutsideGui && McIf.mc().currentScreen == null) return;
+        if (!KeyManager.getShowLevelOverlayKey().isKeyDown()) return;
+
         ItemStack stack = event.getStack();
         Item item = stack.getItem();
         String name = stack.getDisplayName();
 
-        if (UtilitiesConfig.Items.INSTANCE.itemLevelOverlayOutsideGui && KeyManager.getShowLevelOverlayKey().isKeyDown()) {
-            // powder tier
-            if (item == Items.DYE || item == Items.GUNPOWDER || item == Items.CLAY_BALL || item == Items.SUGAR) {
-                Matcher powderMatcher = Powder.POWDER_NAME_PATTERN.matcher(StringUtils.normalizeBadString(name));
-                if (powderMatcher.find()) {
-                    if (!UtilitiesConfig.Items.INSTANCE.levelKeyShowsItemTiers) return;
-                    if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
-                        event.setOverlayText(powderMatcher.group(1));
-                        return;
-                    }
-                    event.setOverlayText(romanToArabic(powderMatcher.group(1)));
-                    return;
-                }
-            }
-
-            // emerald pouch tier
-            if (EmeraldPouchManager.isEmeraldPouch(stack)) {
+        // powder tier
+        if (item == Items.DYE || item == Items.GUNPOWDER || item == Items.CLAY_BALL || item == Items.SUGAR) {
+            Matcher powderMatcher = Powder.POWDER_NAME_PATTERN.matcher(StringUtils.normalizeBadString(name));
+            if (powderMatcher.find()) {
                 if (!UtilitiesConfig.Items.INSTANCE.levelKeyShowsItemTiers) return;
                 if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
-                    event.setOverlayText(EmeraldPouchManager.getPouchTier(stack));
+                    event.setOverlayText(powderMatcher.group(1));
                     return;
                 }
-                event.setOverlayText(romanToArabic(EmeraldPouchManager.getPouchTier(stack)));
-                return;
-            }
-
-            // cork amp tier
-            if (CorkianAmplifierManager.isAmplifier(stack)) {
-                if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
-                    event.setOverlayText(CorkianAmplifierManager.getAmplifierTier(stack));
-                    return;
-                }
-                event.setOverlayText(romanToArabic(CorkianAmplifierManager.getAmplifierTier(stack)));
-                return;
-            }
-
-            String lore = ItemUtils.getStringLore(stack);
-
-            // item level
-            IntRange level = ItemUtils.getLevel(lore);
-            if (level != null) {
-                event.setOverlayText(UtilitiesConfig.Items.INSTANCE.averageUnidentifiedLevel ? level.toString() : Integer.toString(level.getAverage()));
+                event.setOverlayText(romanToArabic(powderMatcher.group(1)));
                 return;
             }
         }
 
-        // Hotbar charges
-        if (UtilitiesConfig.INSTANCE.showConsumableChargesHotbar && (item == Items.POTIONITEM || item == Items.DIAMOND_AXE)) { // potion charge count in hotbar
-            if (!name.contains("[") || !name.contains("/")) return; // Make sure it's actually some consumable
-            String[] consumable = name.split(" ");
-            if (consumable.length < 2) return; // Make sure we actually split the consumable name
-            String[] charges = consumable[consumable.length - 1].split("/");
-            if (charges.length != 2) return; // Make sure we arent't splitting a / from anywhere else; charges always return 2 entries - one for charges remaining and one for total
-            String remainingCharges = charges[0].replace("[", "");
-            event.setOverlayText(TextFormatting.getTextWithoutFormattingCodes(remainingCharges));
+        // emerald pouch tier
+        if (EmeraldPouchManager.isEmeraldPouch(stack)) {
+            if (!UtilitiesConfig.Items.INSTANCE.levelKeyShowsItemTiers) return;
+            if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
+                event.setOverlayText(EmeraldPouchManager.getPouchTier(stack));
+                return;
+            }
+            event.setOverlayText(romanToArabic(EmeraldPouchManager.getPouchTier(stack)));
+            return;
+        }
+
+        // cork amp tier
+        if (CorkianAmplifierManager.isAmplifier(stack)) {
+            if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
+                event.setOverlayText(CorkianAmplifierManager.getAmplifierTier(stack));
+                return;
+            }
+            event.setOverlayText(romanToArabic(CorkianAmplifierManager.getAmplifierTier(stack)));
+            return;
+        }
+
+        String lore = ItemUtils.getStringLore(stack);
+
+        // item level
+        IntRange level = ItemUtils.getLevel(lore);
+        if (level != null) {
+            event.setOverlayText(UtilitiesConfig.Items.INSTANCE.averageUnidentifiedLevel ? level.toString() : Integer.toString(level.getAverage()));
+            return;
         }
     }
 
