@@ -21,6 +21,7 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.IClientCommand;
+import org.w3c.dom.Text;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -73,27 +74,39 @@ public class CommandServer extends CommandBase implements IClientCommand {
     private void nextSoulPoint(ICommandSender sender, String[] args){
 
         if (args[1].equalsIgnoreCase("help")) {
-            TextComponentString text = new TextComponentString("Usage: /s sp \nDefault: Prints 10 worlds with increasing lowest soul point timers");
-            sender.sendMessage(text);
+            sender.sendMessage(new TextComponentString("Usage: /s sp \nDefault: Prints 10 worlds with increasing lowest soul point timers"));
             return;
         }
 
-        Map<String, Integer> nextServers = new HashMap<>();
+        HashMap<String, Integer> nextServers = new HashMap<>();
 
         int offset = 0;
-
-        if(args[1]!=null){
-            offset = Integer.parseInt(args[1]);
-        }
-
         int interval = 20;
+        int worlds = 10;
 
-        if(args[2]!=null){
-            interval = Integer.parseInt(args[2]);
+        try{
+            if (args.length >= 1) {
+                offset = args[1] != null ? Integer.parseInt(args[1]) : 0;
+            }
+
+            if (args.length >= 2) {
+                interval = args[2] != null ? Integer.parseInt(args[2]) : 0;
+            }
+
+            if (args.length >= 3) {
+                worlds = args[3] != null ? Integer.parseInt(args[2]) : 0;
+            }
+        } catch (NumberFormatException exception){
+            sender.sendMessage(new TextComponentString(TextFormatting.RED + "Please input valid numbers"));
+            return;
         }
 
         for (String availableServer : ServerListManager.getAvailableServers().keySet()) {
-            nextServers.put(availableServer, (interval - (ServerListManager.getServer(availableServer).getUptimeMinutes() % interval)) + offset);
+            int time = interval - (ServerListManager.getServer(availableServer).getUptimeMinutes() % interval) + offset;
+            if(time>interval){
+                time = time-interval;
+            }
+            nextServers.put(availableServer, time);
         }
 
         // Sort servers by time until soul point
@@ -106,7 +119,13 @@ public class CommandServer extends CommandBase implements IClientCommand {
                 .setBold(true)
                 .setColor(TextFormatting.AQUA);
         sender.sendMessage(soulPointInfo);
-        List<String> keys = sortedServers.keySet().stream().limit(10).collect(Collectors.toList());
+        if(sortedServers.keySet().size() < worlds){
+            worlds = sortedServers.keySet().size();
+        }
+        List<String> keys = sortedServers.entrySet().stream()
+                .limit(worlds)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
         for (String wynnServer : keys) {
             int uptimeMinutes = sortedServers.get(wynnServer);
             TextFormatting minuteColor;
@@ -130,13 +149,9 @@ public class CommandServer extends CommandBase implements IClientCommand {
                         .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(TextFormatting.RED + "HERO or higher rank is required to use /switch")));
                 world.appendSibling(serverLine);
             }
-            if (uptimeMinutes == 1) {
-                world.appendText(" §b in " + minuteColor + uptimeMinutes + " minute");
-            } else {
-                world.appendText(" §b in " + minuteColor + uptimeMinutes + " minutes");
-            }
+            world.appendText(" §b in " + minuteColor + uptimeMinutes + (uptimeMinutes == 1 ? " minute" : "minutes"));
             sender.sendMessage(world);
-            }
+        }
     }
 
     private void serverList(MinecraftServer server, ICommandSender sender, String[] args) {
