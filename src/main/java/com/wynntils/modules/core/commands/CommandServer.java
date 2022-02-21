@@ -21,7 +21,6 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.IClientCommand;
-import org.w3c.dom.Text;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -78,7 +77,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
             return;
         }
 
-        HashMap<String, Integer> nextServers = new HashMap<>();
+        Map<String, Integer> nextServers = new HashMap<>();
 
         int offset = 0;
         int interval = 20;
