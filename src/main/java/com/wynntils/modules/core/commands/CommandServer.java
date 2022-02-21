@@ -72,15 +72,16 @@ public class CommandServer extends CommandBase implements IClientCommand {
     }
 
     private void nextSoulPoint(ICommandSender sender, String[] args){
-
-        if (args[1].equalsIgnoreCase("help")) {
-            TextComponentString helpMessage = new TextComponentString("Usage: /s sp \nDefault: Prints 10 worlds with increasing lowest soul point timers");
-            helpMessage.appendText("Args:\n");
-            helpMessage.appendText("1: Offset for timers\n");
-            helpMessage.appendText("2: Interval for which to check\n");
-            helpMessage.appendText("3: How many worlds");
-            sender.sendMessage(helpMessage);
-            return;
+        if(args.length >= 2){
+            if (args[1].equalsIgnoreCase("help")) {
+                TextComponentString helpMessage = new TextComponentString("Usage: /s sp \nDefault: Prints 10 worlds with increasing lowest soul point timers");
+                helpMessage.appendText("Args:\n");
+                helpMessage.appendText("1: Offset for timers\n");
+                helpMessage.appendText("2: Interval for which to check\n");
+                helpMessage.appendText("3: How many worlds");
+                sender.sendMessage(helpMessage);
+                return;
+            }
         }
 
         Map<String, Integer> nextServers = new HashMap<>();
