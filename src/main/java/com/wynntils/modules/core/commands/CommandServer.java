@@ -15,7 +15,6 @@ import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.Style;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
@@ -149,7 +148,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
                         TextComponentString serverLine = new TextComponentString(TextFormatting.BLUE + server);
                         serverLine.getStyle()
                                 .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/switch " + server))
-                                .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Switch To " + TextFormatting.BLUE + wynnServer)));
+                                .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Switch To " + TextFormatting.BLUE + server)));
                         world.appendSibling(serverLine);
                     } else {
                         TextComponentString serverLine = new TextComponentString(TextFormatting.BLUE + server);
