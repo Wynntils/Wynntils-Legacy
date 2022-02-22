@@ -335,7 +335,7 @@ public class UtilitiesConfig extends SettingsClass {
         public boolean mainHighlightInventory = true;
 
         @Setting(displayName = "Accessories Highlight", description = "Should your worn accessories be highlighted according to rarity?", order = 19)
-        public boolean accessoryHighlight = true;
+        public boolean accesoryHighlight = true;
 
         @Setting(displayName = "Highlight Hotbar Items", description = "Should the items in your hotbar be highlighted according to rarity?", order = 20)
         public boolean hotbarHighlight = true;
