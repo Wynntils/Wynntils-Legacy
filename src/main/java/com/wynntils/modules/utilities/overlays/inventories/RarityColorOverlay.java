@@ -67,7 +67,7 @@ public class RarityColorOverlay implements Listener {
         GuiContainer guiContainer = e.getGui();
 
         for (Slot s : guiContainer.inventorySlots.inventorySlots) {
-            if (!UtilitiesConfig.Items.INSTANCE.accesoryHighlight && s.slotNumber >= 9 && s.slotNumber <= 12)
+            if (!UtilitiesConfig.Items.INSTANCE.accessoryHighlight && s.slotNumber >= 9 && s.slotNumber <= 12)
                 continue;
             if (!UtilitiesConfig.Items.INSTANCE.hotbarHighlight && s.slotNumber >= 36 && s.slotNumber <= 41)
                 continue;
@@ -86,7 +86,7 @@ public class RarityColorOverlay implements Listener {
         for (Slot s : guiContainer.inventorySlots.inventorySlots) {
             if (s.inventory.getDisplayName().equals(McIf.player().inventory.getDisplayName())) {
                 playerInvSlotNumber++;
-                if (playerInvSlotNumber <= 4 && playerInvSlotNumber >= 1 && !UtilitiesConfig.Items.INSTANCE.accesoryHighlight)
+                if (playerInvSlotNumber <= 4 && playerInvSlotNumber >= 1 && !UtilitiesConfig.Items.INSTANCE.accessoryHighlight)
                     continue;
                 if (playerInvSlotNumber <= 27 && playerInvSlotNumber >= 5 && !UtilitiesConfig.Items.INSTANCE.mainHighlightInventory)
                     continue;
