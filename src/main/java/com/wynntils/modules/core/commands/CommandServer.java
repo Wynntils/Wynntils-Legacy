@@ -10,6 +10,7 @@ import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.utilities.managers.ServerListManager;
 import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.ServerProfile;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -88,34 +89,23 @@ public class CommandServer extends CommandBase implements IClientCommand {
         int worlds = 10;
 
         try{
-            if (args.length > 1) {
-                offset = args[1] != null ? Integer.parseInt(args[1]) : 0;
-            }
-            if (args.length > 2) {
-                interval = args[2] != null ? Integer.parseInt(args[2]) : 20;
-            }
-
-            if (args.length > 3) {
-                worlds = args[3] != null ? Integer.parseInt(args[3]) : 10;
-                if (worlds < 0){
-                    sender.sendMessage(new TextComponentString(TextFormatting.RED + "Please input a valid world number"));
-                    return;
-                }
-            }
+            offset = args.length > 1 && args[1] != null ? Integer.parseInt(args[1]) : 0;
+            interval = args.length > 2 && args[2] != null ? Integer.parseInt(args[2]) : 20;
+            worlds = args.length > 3 && args[3] != null ? Integer.parseInt(args[3]) : 10;
         } catch (NumberFormatException exception){
             sender.sendMessage(new TextComponentString(TextFormatting.RED + "Please input valid numbers"));
             return;
         }
 
-        for (String availableServer : ServerListManager.getAvailableServers().keySet()) {
-            int time = interval - (ServerListManager.getServer(availableServer).getUptimeMinutes() % interval) - offset;
+        for (Map.Entry<String, ServerProfile> entry : ServerListManager.getAvailableServers().entrySet()) {
+            int time = interval - (entry.getValue().getUptimeMinutes() % interval) - offset;
             if (time < 0){
                 time = interval - Math.abs(time);
             }
             if(time>interval){
                 time = time-interval;
             }
-            nextServers.put(availableServer, time);
+            nextServers.put(entry.getKey(), time);
         }
 
         // Sort servers by time until soul point
