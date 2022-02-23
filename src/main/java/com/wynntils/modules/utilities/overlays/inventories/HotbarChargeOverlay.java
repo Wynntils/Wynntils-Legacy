@@ -20,7 +20,7 @@ public class HotbarChargeOverlay implements Listener {
 
         // We don't care about items inside the inventory, only in the hotbar
         if (McIf.player().inventory.mainInventory.contains(is) && McIf.player().inventory.mainInventory.indexOf(is) > 8) return;
-        if (!(item == Items.POTIONITEM) || item == Items.DIAMOND_AXE) return; // Consumables are only potions or diamond axes (crafted)
+        if (item != Items.POTIONITEM && item != Items.DIAMOND_AXE) return; // Consumables are only potions or diamond axes (crafted)
 
         String name = is.getDisplayName();
         if (!name.contains("[") || !name.contains("/")) return; // Make sure it's actually some consumable
