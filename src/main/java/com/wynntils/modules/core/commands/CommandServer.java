@@ -11,6 +11,7 @@ import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.utilities.managers.ServerListManager;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.ServerProfile;
+import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -41,7 +42,7 @@ public class CommandServer extends CommandBase implements IClientCommand {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "/s <command> [options]\n\ncommands:\nl,ls,list | list available servers\ni,info | get info about a server\nsp,nextsoulpoint | list servers with soul point timers\n\nmore detailed help:\n/s <command> help";
+        return "/s <command> [options]\n\ncommands:\nl,ls,list | list available servers\ni,info | get info about a server\nsp | list servers with soul point timers\n\nmore detailed help:\n/s <command> help";
     }
 
     @Override
@@ -73,25 +74,29 @@ public class CommandServer extends CommandBase implements IClientCommand {
 
     private void nextSoulPoint(ICommandSender sender, String[] args){
         if(args.length > 1 && args[1].equalsIgnoreCase("help")){
-            TextComponentString helpMessage = new TextComponentString("Usage: /s sp \nDefault: Prints 10 worlds with increasing lowest soul point timers");
+            int messageId = Utils.getRandom().nextInt(Integer.MAX_VALUE);
+            TextComponentString helpMessage = new TextComponentString("Usage: /s sp <offset> <interval> <worldcount>\nDefault: Prints 10 worlds with increasing lowest soul point timers");
             helpMessage.appendText("Args:\n");
             helpMessage.appendText("1: Offset for timers, default is 0\n");
             helpMessage.appendText("2: Interval for which to check, default is 20\n");
             helpMessage.appendText("3: How many worlds, default is 10");
-            sender.sendMessage(helpMessage);
+            ChatOverlay.getChat().printUnloggedChatMessage(helpMessage, messageId);
             return;
         }
 
         Map<String, Integer> nextServers = new HashMap<>();
 
-        int offset = 0;
-        int interval = 20;
-        int worlds = 10;
+        int offset;
+        int interval;
+        int worlds;
 
-        try{
-            offset = args.length > 1 && args[1] != null ? Integer.parseInt(args[1]) : 0;
+        try {
+            offset = args.length > 1 ? Integer.parseInt(args[1]) : 0;
             interval = args.length > 2 && args[2] != null ? Integer.parseInt(args[2]) : 20;
             worlds = args.length > 3 && args[3] != null ? Integer.parseInt(args[3]) : 10;
+            if (offset < 0 || interval < 0){
+                sender.sendMessage(new TextComponentString(TextFormatting.RED + "Please input valid numbers"));
+            }
         } catch (NumberFormatException exception){
             sender.sendMessage(new TextComponentString(TextFormatting.RED + "Please input valid numbers"));
             return;
@@ -108,14 +113,15 @@ public class CommandServer extends CommandBase implements IClientCommand {
             nextServers.put(entry.getKey(), time);
         }
 
+        PlayerStatsProfile playerProfile = WebManager.getPlayerProfile();
+        boolean canUseSwitch = playerProfile != null && playerProfile.canUseSwitch();
+
         // Sort servers by time until soul point
         Map<String, Integer> sortedServers = nextServers.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue())
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
 
-        TextComponentString soulPointInfo = args.length > 1 ? new TextComponentString("Approximate soul point times(-" + offset + "min offset, " + interval + "min interval" + "):" + "\n") : new TextComponentString("\"Approximate soul point times:");
-
-        soulPointInfo.getStyle()
+        TextComponentString soulPointInfo = args.length > 1 ? new TextComponentString("Approximate soul point times(-" + offset + "min offset, " + interval + "min interval" + "):" + "\n") : new TextComponentString("Approximate soul point times:");        soulPointInfo.getStyle()
                 .setBold(true)
                 .setColor(TextFormatting.AQUA);
 
@@ -135,14 +141,13 @@ public class CommandServer extends CommandBase implements IClientCommand {
                         minuteColor = TextFormatting.RED;
                     }
                     TextComponentString world = new TextComponentString(TextFormatting.BOLD + "-" + TextFormatting.GOLD);
-                    if (WebManager.getPlayerProfile().canUseSwitch()) {
-                        TextComponentString serverLine = new TextComponentString(TextFormatting.BLUE + server);
+                    TextComponentString serverLine = new TextComponentString(TextFormatting.BLUE + server);
+                    if (canUseSwitch) {
                         serverLine.getStyle()
                                 .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/switch " + server))
-                                .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Switch To " + TextFormatting.BLUE + server)));
+                                .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Switch to " + TextFormatting.BLUE + server)));
                         world.appendSibling(serverLine);
                     } else {
-                        TextComponentString serverLine = new TextComponentString(TextFormatting.BLUE + server);
                         serverLine.getStyle()
                                 .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(TextFormatting.RED + "HERO or higher rank is required to use /switch")));
                         world.appendSibling(serverLine);
