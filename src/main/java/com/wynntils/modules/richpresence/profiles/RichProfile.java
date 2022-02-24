@@ -227,7 +227,13 @@ public class RichProfile {
      */
     public void updateRichPresence(String state, String details, String largText, OffsetDateTime date) {
         if (disabled) return;
-        DiscordActivity richPresence = new DiscordActivity();
+        DiscordActivity richPresence;
+        try {
+            richPresence = new DiscordActivity();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
         richPresence.state = toBytes(state, 128);
         richPresence.details = toBytes(details, 128);
         richPresence.application_id = applicationID;
@@ -278,7 +284,13 @@ public class RichProfile {
      */
     public void updateRichPresence(String state, String details, String largeImg, String largText, OffsetDateTime date) {
         if (disabled) return;
-        DiscordActivity richPresence = new DiscordActivity();
+        DiscordActivity richPresence;
+        try {
+            richPresence = new DiscordActivity();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
         richPresence.state = toBytes(state, 128);
         richPresence.details = toBytes(details, 128);
         richPresence.application_id = applicationID;
@@ -327,7 +339,13 @@ public class RichProfile {
      */
     public void updateRichPresenceEndDate(String state, String details, String largText, OffsetDateTime date) {
         if (disabled) return;
-        DiscordActivity richPresence = new DiscordActivity();
+        DiscordActivity richPresence;
+        try {
+            richPresence = new DiscordActivity();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
         richPresence.state = toBytes(state, 128);
         richPresence.details = toBytes(details, 128);
         richPresence.application_id = applicationID;
@@ -378,7 +396,13 @@ public class RichProfile {
      */
     public void updateRichPresenceEndDate(String state, String details, String largeImg, String largText, OffsetDateTime date) {
         if (disabled) return;
-        DiscordActivity richPresence = new DiscordActivity();
+        DiscordActivity richPresence;
+        try {
+            richPresence = new DiscordActivity();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
         richPresence.state = toBytes(state, 128);
         richPresence.details = toBytes(details, 128);
         richPresence.application_id = applicationID;
