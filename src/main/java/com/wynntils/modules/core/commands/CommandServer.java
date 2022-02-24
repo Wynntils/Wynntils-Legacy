@@ -94,21 +94,21 @@ public class CommandServer extends CommandBase implements IClientCommand {
             offset = args.length > 1 ? Integer.parseInt(args[1]) : 0;
             interval = args.length > 2 && args[2] != null ? Integer.parseInt(args[2]) : 20;
             worlds = args.length > 3 && args[3] != null ? Integer.parseInt(args[3]) : 10;
-            if (offset < 0 || interval < 0){
+            if (offset < 0 || interval < 0) {
                 sender.sendMessage(new TextComponentString(TextFormatting.RED + "Please input valid numbers"));
             }
-        } catch (NumberFormatException exception){
+        } catch (NumberFormatException exception) {
             sender.sendMessage(new TextComponentString(TextFormatting.RED + "Please input valid numbers"));
             return;
         }
 
         for (Map.Entry<String, ServerProfile> entry : ServerListManager.getAvailableServers().entrySet()) {
             int time = interval - (entry.getValue().getUptimeMinutes() % interval) - offset;
-            if (time < 0){
+            if (time < 0) {
                 time = interval - Math.abs(time);
             }
-            if(time>interval){
-                time = time-interval;
+            if(time > interval) {
+                time = time - interval;
             }
             nextServers.put(entry.getKey(), time);
         }
