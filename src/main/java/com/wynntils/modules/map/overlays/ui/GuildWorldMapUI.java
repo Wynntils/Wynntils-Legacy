@@ -147,7 +147,8 @@ public class GuildWorldMapUI extends WorldMapUI {
                 return RED + "High";
             case 5:
                 return RED + "Very High";
-            // 11, 15, 21, 25 missing as those correspond to verylow+higher, veryhigh+higher, verylow+lower, and veryhigh+lower respectively
+
+            // verylow+higher, veryhigh+higher, verylow+lower, and veryhigh+lower are missing because they're redundant
             case 12:
                 return GREEN + "Low" + RESET + " and higher";
             case 13:
@@ -216,7 +217,22 @@ public class GuildWorldMapUI extends WorldMapUI {
         if (showTradeRoutes) generateTradeRoutes();
 
         HashMap<String, MapTerritory> renderableTerritories = new HashMap<>();
-        if (territoryDefenseFilter != 0) { // If active
+        int calculatedFilter;
+        if (territoryDefenseFilter > 20) { // if "and lower" is active (Ctrl)
+            calculatedFilter = territoryDefenseFilter - 20; // Don't do math in the for loop
+            for (Map.Entry<String, MapTerritory> territory : territories.entrySet()) {
+                if (territory.getValue().getDefenses() <= calculatedFilter) {
+                    renderableTerritories.put(territory.getKey(), territory.getValue());
+                }
+            }
+        } else if (territoryDefenseFilter > 10) { // if "and higher" is active (Shift)
+            calculatedFilter = territoryDefenseFilter - 10;
+            for (Map.Entry<String, MapTerritory> territory : territories.entrySet()) {
+                if (territory.getValue().getDefenses() >= calculatedFilter) {
+                    renderableTerritories.put(territory.getKey(), territory.getValue());
+                }
+            }
+        } else if (territoryDefenseFilter != 0) { // If not off and also not higher/lower
             for (Map.Entry<String, MapTerritory> territory : territories.entrySet()) {
                 if (territory.getValue().getDefenses() == territoryDefenseFilter) {
                     renderableTerritories.put(territory.getKey(), territory.getValue());
