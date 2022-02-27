@@ -17,8 +17,10 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -38,7 +40,7 @@ public class CachedChunkManager {
             .setNameFormat("Wynntils-CachedChunks-%d").build()
     );
 
-    private static final Set<ChunkPos> ignoredChunks = new HashSet<>();
+    private static final Set<ChunkPos> ignoredChunks = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private static boolean running = false;
 
     /**
