@@ -43,7 +43,7 @@ public class GuildWorldMapUI extends WorldMapUI {
     private boolean territoryManageShortcut = true;
 
     MapButton cycleButton;
-    private int territoryDefenseFilter = 0; // 0=off; 1=verylow; 2=low; 3=med; 4=high; 5=veryhigh
+    private int territoryDefenseFilter = 0; // See #getDefenseFilterText for number definitions
 
     public GuildWorldMapUI() {
         super((float) McIf.player().posX, (float) McIf.player().posZ);
@@ -94,20 +94,44 @@ public class GuildWorldMapUI extends WorldMapUI {
 
         cycleButton = addButton(MapButtonIcon.SEARCH, 4, Arrays.asList(
                 BLUE + "[>] Territory defense filter",
-                GRAY + "Click here to cycle territory",
-                GRAY + "defense filter.",
-                "Current value: " + getDefenseFilterText(territoryDefenseFilter)
+                GRAY + "Click here to cycle territory defense filter",
+                GRAY + "Hold SHIFT to filter higher, CTRL to filter lower",
+                GRAY + "Current value: " + getDefenseFilterText(territoryDefenseFilter)
         ), false, (v) -> territoryDefenseFilter, (i, btn) -> {
             if (territoryDefenseFilter == 5) {
                 territoryDefenseFilter = 0;
+            } else if (!isShiftKeyDown() && !isCtrlKeyDown()) {
+                if (territoryDefenseFilter > 20) { // Larger than 20, "and lower" range (Ctrl)
+                    territoryDefenseFilter -= 20;
+                } else if (territoryDefenseFilter > 10) { // Larger than 10, "and higher" range (Shift)
+                    territoryDefenseFilter -= 10;
+                } else {
+                    ++territoryDefenseFilter;
+                }
             } else {
                 ++territoryDefenseFilter;
             }
+
+            // Shift (and higher) handling
+            if ((territoryDefenseFilter > 14 || territoryDefenseFilter < 12) && isShiftKeyDown()) {
+                territoryDefenseFilter = 12;
+            }
+
+            // Ctrl (and lower) handling
+            if ((territoryDefenseFilter > 24 || territoryDefenseFilter < 22) && isCtrlKeyDown()) {
+                territoryDefenseFilter = 22;
+            }
+
+            // Safety check in case number goes out of bounds
+            if (territoryDefenseFilter > 24 || (territoryDefenseFilter > 14 && territoryDefenseFilter < 22)) {
+                territoryDefenseFilter = 0;
+            }
+
             cycleButton.editHoverLore(Arrays.asList(
                     BLUE + "[>] Territory defense filter",
-                    GRAY + "Click here to cycle territory",
-                    GRAY + "defense filter.",
-                    "Current value: " + getDefenseFilterText(territoryDefenseFilter)));
+                    GRAY + "Click here to cycle territory defense filter",
+                    GRAY + "Hold SHIFT to filter higher, CTRL to filter lower",
+                    GRAY + "Current value: " + getDefenseFilterText(territoryDefenseFilter)));
         });
     }
 
@@ -123,6 +147,21 @@ public class GuildWorldMapUI extends WorldMapUI {
                 return RED + "High";
             case 5:
                 return RED + "Very High";
+            // 11, 15, 21, 25 missing as those correspond to verylow+higher, veryhigh+higher, verylow+lower, and veryhigh+lower respectively
+            case 12:
+                return GREEN + "Low" + RESET + " and higher";
+            case 13:
+                return YELLOW + "Medium" + RESET + " and higher";
+            case 14:
+                return RED + "High" + RESET + " and higher";
+
+            case 22:
+                return GREEN + "Low" + RESET + " and lower";
+            case 23:
+                return YELLOW + "Medium" + RESET + " and lower";
+            case 24:
+                return RED + "High" + RESET + " and lower";
+
             default:
                 return GRAY + "Off";
         }
