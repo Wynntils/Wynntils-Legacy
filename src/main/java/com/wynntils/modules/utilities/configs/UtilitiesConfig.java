@@ -86,6 +86,12 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Searched Item Highlight Colour", description = "What colour should the highlight for searched items be?\n\n§aClick the coloured box to open the colour wheel.", order = 23)
     public CustomColor guildTerritoryMenuSearchHighlightColor = new CustomColor(80, 242, 242);
 
+    @Setting(displayName = "Show Guild Manage Member Search Bar", description = "Should the search bar be shown in the guild manage members GUI?\n\n§8Members that match the search will be highlighted.", order = 24)
+    public boolean showGuildMemberManageSearchbar = true;
+
+    @Setting(displayName = "Searched Item Highlight Colour", description = "What colour should the highlight for searched items be?\n\n§aClick the coloured box to open the colour wheel.", order = 25)
+    public CustomColor guildMemberMenuSearchHighlightColor = new CustomColor(80, 242, 242);
+
     @Setting(displayName = "Auto Mount Horse", description = "Should you mount your horse automatically when it is summoned?", order = 2)
     public boolean autoMount = false;
 
