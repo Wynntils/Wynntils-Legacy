@@ -240,10 +240,10 @@ public class GuildWorldMapUI extends WorldMapUI {
         createMask();
 
         drawPositionCursor(map);
-        if (showTradeRoutes) generateTradeRoutes();
-
 
         HashMap<String, MapTerritory> renderableTerritories = getFilteredTerritories();
+
+        if (showTradeRoutes) generateTradeRoutes(renderableTerritories);
 
         renderableTerritories.values().forEach(c -> c.drawScreen(mouseX, mouseY, partialTicks, showTerritory, resourceColors, !showOwners, showOwners));
         renderableTerritories.values().forEach(c -> c.postDraw(mouseX, mouseY, partialTicks, width, height));
@@ -251,18 +251,21 @@ public class GuildWorldMapUI extends WorldMapUI {
         clearMask();
     }
 
-    protected void generateTradeRoutes() {
+    protected void generateTradeRoutes(HashMap<String, MapTerritory> filteredTerritories) {
         HashSet<String> alreadyGenerated = new HashSet<>();
-        for (String territoryName : territories.keySet()) {
+        for (String territoryName : filteredTerritories.keySet()) {
             GuildResourceContainer resources = GuildResourceManager.getResources(territoryName);
             if (resources == null) continue;
 
-            MapTerritory origin = territories.get(territoryName);
+            MapTerritory origin = filteredTerritories.get(territoryName);
             for (String tradingRoute : resources.getTradingRoutes()) {
                 // we don't want lines to be duplicated from each route so we just draw them one time
                 if (alreadyGenerated.contains(tradingRoute + territoryName)) continue;
 
-                MapTerritory destination = territories.get(tradingRoute);
+                // Destination does not exist, ignore the routes that involve them
+                if (!filteredTerritories.containsKey(tradingRoute)) continue;
+
+                MapTerritory destination = filteredTerritories.get(tradingRoute);
 
                 alreadyGenerated.add(territoryName + tradingRoute);
                 drawTradeRoute(origin, destination);
