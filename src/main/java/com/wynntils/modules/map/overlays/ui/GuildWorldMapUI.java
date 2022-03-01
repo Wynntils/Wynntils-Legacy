@@ -51,6 +51,7 @@ public class GuildWorldMapUI extends WorldMapUI {
         LOWER
     }
     private TDFTypes territoryDefenseFilterType = TDFTypes.NORMAL;
+    private HashMap<String, MapTerritory> filteredTerritories;
 
     public GuildWorldMapUI() {
         super((float) McIf.player().posX, (float) McIf.player().posZ);
@@ -241,17 +242,17 @@ public class GuildWorldMapUI extends WorldMapUI {
 
         drawPositionCursor(map);
 
-        HashMap<String, MapTerritory> renderableTerritories = getFilteredTerritories();
+        filteredTerritories = getFilteredTerritories();
 
-        if (showTradeRoutes) generateTradeRoutes(renderableTerritories);
+        if (showTradeRoutes) generateTradeRoutes();
 
-        renderableTerritories.values().forEach(c -> c.drawScreen(mouseX, mouseY, partialTicks, showTerritory, resourceColors, !showOwners, showOwners));
-        renderableTerritories.values().forEach(c -> c.postDraw(mouseX, mouseY, partialTicks, width, height));
+        filteredTerritories.values().forEach(c -> c.drawScreen(mouseX, mouseY, partialTicks, showTerritory, resourceColors, !showOwners, showOwners));
+        filteredTerritories.values().forEach(c -> c.postDraw(mouseX, mouseY, partialTicks, width, height));
 
         clearMask();
     }
 
-    protected void generateTradeRoutes(HashMap<String, MapTerritory> filteredTerritories) {
+    protected void generateTradeRoutes() {
         HashSet<String> alreadyGenerated = new HashSet<>();
         for (String territoryName : filteredTerritories.keySet()) {
             GuildResourceContainer resources = GuildResourceManager.getResources(territoryName);
@@ -334,7 +335,7 @@ public class GuildWorldMapUI extends WorldMapUI {
             return;
         }
 
-        for (MapTerritory territory : territories.values()) {
+        for (MapTerritory territory : filteredTerritories.values()) {
             boolean hovering = territory.isBeingHovered(lastMouseX, lastMouseY);
             if (!hovering) continue;
 
