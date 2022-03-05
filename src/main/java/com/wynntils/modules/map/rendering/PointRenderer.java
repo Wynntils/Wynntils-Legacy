@@ -378,12 +378,15 @@ public class PointRenderer {
     public static void drawCube(BlockPos point, CustomColor color) {
         if (!McIf.world().isBlockLoaded(point, false)) return;
 
+        if (McIf.player().getDistanceSq(point.getX(), point.getY(), point.getZ()) > 4096f)
+            return; // only draw chest when close
+
         RenderManager renderManager = McIf.mc().getRenderManager();
 
         Location c = new Location(
-            point.getX() - renderManager.viewerPosX,
-            point.getY() - renderManager.viewerPosY,
-            point.getZ() - renderManager.viewerPosZ
+                point.getX() - renderManager.viewerPosX,
+                point.getY() - renderManager.viewerPosY,
+                point.getZ() - renderManager.viewerPosZ
         );
 
         GlStateManager.pushMatrix();
