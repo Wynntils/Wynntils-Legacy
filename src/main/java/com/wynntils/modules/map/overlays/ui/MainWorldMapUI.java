@@ -12,13 +12,18 @@ import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.core.commands.CommandCompass;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.map.MapModule;
+import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.overlays.enums.MapButtonType;
 import com.wynntils.modules.map.overlays.objects.MapButton;
 import com.wynntils.modules.music.managers.SoundTrackManager;
 import com.wynntils.webapi.WebManager;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.client.settings.GameSettings;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.init.SoundEvents;
+import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -30,6 +35,7 @@ import static net.minecraft.util.text.TextFormatting.*;
 public class MainWorldMapUI extends WorldMapUI {
 
     private boolean holdingMapKey = false;
+    private boolean holdingDecided = false;
     private final long creationTime = System.currentTimeMillis();
     private long lastClickTime = Integer.MAX_VALUE;
     private static final long doubleClickTime = Utils.getDoubleClickTime();
@@ -134,10 +140,18 @@ public class MainWorldMapUI extends WorldMapUI {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         // HeyZeer0: This detects if the user is holding the map key;
-        if (!holdingMapKey && (System.currentTimeMillis() - creationTime >= 150) && isHoldingMapKey()) holdingMapKey = true;
-
+        if (!holdingDecided && (System.currentTimeMillis() - creationTime >= 150)) {
+            holdingDecided = true;
+            if (isHoldingMapKey())
+                holdingMapKey = true;
+        }
         // HeyZeer0: This close the map if the user was pressing the map key and after a moment dropped it
         if (holdingMapKey && !isHoldingMapKey()) {
+            McIf.mc().displayGuiScreen(null);
+            return;
+        }
+
+        if (MapConfig.WorldMap.INSTANCE.autoCloseMapOnMovement && checkForPlayerMovement(holdingDecided, holdingMapKey))  {
             McIf.mc().displayGuiScreen(null);
             return;
         }

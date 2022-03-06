@@ -18,6 +18,7 @@ import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
+import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.map.overlays.enums.MapButtonType;
 import com.wynntils.modules.map.overlays.objects.*;
@@ -28,6 +29,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.input.Keyboard;
@@ -60,7 +62,7 @@ public class WorldMapUI extends GuiMovementScreen {
     protected float centerPositionZ;
 
     // Zoom
-    protected float zoom = 0;  // Zoom goes from 300 (whole world) to -10 (max details)
+    protected float zoom = 0;  // Zoom goes from 500 (whole world) to -10 (max details)
     protected float zoomInitial = 0;
     protected float zoomTarget = 0;
     protected float zoomEnd = 0;
@@ -161,6 +163,26 @@ public class WorldMapUI extends GuiMovementScreen {
                 WorldMapIcon icon;
                 if (i instanceof MapLabel) {
                     icon = new WorldMapLabel((MapLabel) i);
+                } else if (i instanceof MapWaypointIcon) {
+                    icon = new WorldMapIcon(i);
+                    //Make sure this waypoint is named a Loot Chest, and uses the correct icons
+                    if (icon.getInfo().getName().startsWith("Loot Chest")) {
+                        WaypointProfile waypointProfile = ((MapWaypointIcon) i).getWaypointProfile();
+                        switch (waypointProfile.getType()) {
+                            case LOOTCHEST_T1:
+                                waypointProfile.setZoomNeeded(MapConfig.WorldMap.INSTANCE.lootChestTier1MinZoom);
+                                break;
+                            case LOOTCHEST_T2:
+                                waypointProfile.setZoomNeeded(MapConfig.WorldMap.INSTANCE.lootChestTier2MinZoom);
+                                break;
+                            case LOOTCHEST_T3:
+                                waypointProfile.setZoomNeeded(MapConfig.WorldMap.INSTANCE.lootChestTier3MinZoom);
+                                break;
+                            case LOOTCHEST_T4:
+                                waypointProfile.setZoomNeeded(MapConfig.WorldMap.INSTANCE.lootChestTier4MinZoom);
+                                break;
+                        }
+                    }
                 } else {
                     icon = new WorldMapIcon(i);
                 }
@@ -406,7 +428,7 @@ public class WorldMapUI extends GuiMovementScreen {
     protected void handleZoomAcceleration(float partialTicks) {
         if (McIf.getSystemTime() > zoomEnd) return;
 
-        float percentage = Math.min(1f, 1f - (zoomEnd - McIf.getSystemTime()) / ZOOM_RESISTANCE);
+        float percentage = MathHelper.clamp(1f - (zoomEnd - McIf.getSystemTime()) / ZOOM_RESISTANCE, 0f, 1f);
         double toIncrease = (zoomTarget - zoomInitial) * Math.sin((Math.PI / 2f) * percentage);
 
         zoom = zoomInitial + (float) toIncrease;
@@ -512,6 +534,16 @@ public class WorldMapUI extends GuiMovementScreen {
         }
 
         super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    protected boolean checkForPlayerMovement(boolean holdingDecided, boolean holdingMapKey) {
+        GameSettings gameSettings = McIf.mc().gameSettings;
+
+        if (holdingDecided && !holdingMapKey) {
+            return gameSettings.keyBindForward.isKeyDown() || gameSettings.keyBindBack.isKeyDown() || gameSettings.keyBindLeft.isKeyDown() || gameSettings.keyBindRight.isKeyDown();
+        }
+
+        return false;
     }
 
 }

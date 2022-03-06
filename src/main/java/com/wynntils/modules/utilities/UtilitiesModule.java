@@ -40,6 +40,7 @@ public class UtilitiesModule extends Module {
         registerEvents(new ItemIdentificationOverlay());
         registerEvents(new RarityColorOverlay());
         registerEvents(new ItemLevelOverlay());
+        registerEvents(new HotbarChargeOverlay());
         registerEvents(new SkillPointOverlay());
         registerEvents(new ItemLockOverlay());
         registerEvents(new FavoriteTradesOverlay());
@@ -52,6 +53,7 @@ public class UtilitiesModule extends Module {
         registerEvents(new BankOverlay());
         registerEvents(new ServerSelectorOverlay());
         registerEvents(new FavoriteItemsOverlay());
+        registerEvents(new GuildTerritoryManageOverlay());
 
         // Real overlays
         registerOverlay(new WarTimerOverlay(), Priority.LOWEST);
