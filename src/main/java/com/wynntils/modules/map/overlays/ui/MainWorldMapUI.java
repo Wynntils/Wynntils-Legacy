@@ -56,32 +56,32 @@ public class MainWorldMapUI extends WorldMapUI {
             DARK_GREEN + "[>] Create a new Waypoint",
             GRAY + "Click here to create",
             GRAY + "a new waypoint."
-        ), true, (v) -> 1, (i, btn) -> McIf.mc().displayGuiScreen(new WaypointCreationMenu(null)));
+        ), true, () -> 1, (i, btn) -> McIf.mc().displayGuiScreen(new WaypointCreationMenu(null)));
 
         addButton(MapButtonIcon.PENCIL, 0, Arrays.asList(
             GOLD + "[>] Manage Paths",
             GRAY + "List, Delete or Create",
             GRAY + "drawed lines that help you",
             GRAY + "to navigate around the world!"
-        ), true, (v) -> 1, (i, btn) -> McIf.mc().displayGuiScreen(new PathWaypointOverviewUI()));
+        ), true, () -> 1, (i, btn) -> McIf.mc().displayGuiScreen(new PathWaypointOverviewUI()));
 
         addButton(MapButtonIcon.PIN, 1, Arrays.asList(
                 RED + "[>] Manage Waypoints",
                 GRAY + "List, Delete or Create",
                 GRAY + "all your preview set",
                 GRAY + "waypoints!"
-        ),true, (v) -> 1, (i, btn) -> McIf.mc().displayGuiScreen(new WaypointOverviewUI()));
+        ),true, () -> 1, (i, btn) -> McIf.mc().displayGuiScreen(new WaypointOverviewUI()));
 
         addButton(MapButtonIcon.SEARCH, 2, Arrays.asList(
                 LIGHT_PURPLE + "[>] Search",
                 RED + "In Development"
-        ), true, (v) -> 1, (i, btn) -> {});
+        ), true, () -> 1, (i, btn) -> {});
 
         addButton(MapButtonIcon.CENTER, 3, Arrays.asList(
                 AQUA + "[>] Configure Markers",
                 GRAY + "Enable or disable each",
                 GRAY + "map marker available."
-        ), true, (v) -> 1, (i, btn) -> McIf.mc().displayGuiScreen(new WorldMapSettingsUI()));
+        ), true, () -> 1, (i, btn) -> McIf.mc().displayGuiScreen(new WorldMapSettingsUI()));
 
         addButton(MapButtonIcon.SHARE, 4, Arrays.asList(
                 BLUE + "[>] Share Location",
@@ -91,7 +91,7 @@ public class MainWorldMapUI extends WorldMapUI {
                 GRAY + "location with your party.",
                 AQUA + "Shift" + GRAY + " to share your",
                 GRAY + "pin location instead."
-        ), true, (v) -> 1, (i, btn) -> handleShareButton(btn == 0));
+        ), true, () -> 1, (i, btn) -> handleShareButton(btn == 0));
 
         addButton(MapButtonIcon.INFO, 5, Lists.newArrayList(Arrays.asList(
                 YELLOW + "[>] Quick Guide",
@@ -101,7 +101,7 @@ public class MainWorldMapUI extends WorldMapUI {
                 GRAY + " - Double click on a pin to create a waypoint.",
                 GRAY + " - Right click on pin to remove it.",
                 GRAY + " - Right click to center on player."
-        )), true, (v) -> 1, (i, btn) -> {
+        )), true, () -> 1, (i, btn) -> {
             easterEggClicks += 1;
 
             // Easter egg :)

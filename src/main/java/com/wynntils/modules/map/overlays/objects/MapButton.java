@@ -13,7 +13,7 @@ import net.minecraft.init.SoundEvents;
 
 import java.util.List;
 import java.util.function.BiConsumer;
-import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
@@ -25,12 +25,12 @@ public class MapButton {
     MapButtonIcon icon;
     List<String> hoverLore;
     BiConsumer<MapButton, Integer> onClick;
-    Function<Void, Integer> state;
+    Supplier<Integer> state;
     Boolean isBool;
 
     ScreenRenderer renderer = new ScreenRenderer();
 
-    public MapButton(int posX, int posY, MapButtonIcon icon, List<String> hoverLore, Boolean isBool, Function<Void, Integer> state, BiConsumer<MapButton, Integer> onClick) {
+    public MapButton(int posX, int posY, MapButtonIcon icon, List<String> hoverLore, Boolean isBool, Supplier<Integer> state, BiConsumer<MapButton, Integer> onClick) {
         int halfWidth = icon.getWidth() / 2;
         int halfHeight = icon.getHeight() / 2;
 
@@ -53,7 +53,7 @@ public class MapButton {
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         pushMatrix();
         {
-            if (this.isBool && !(state.apply(null) == 1)) {
+            if (this.isBool && state.get() != 1) {
                 color(.3f, .3f, .3f, 1f);
             } else {
                 color(1f, 1f, 1f, 1f);
@@ -75,7 +75,7 @@ public class MapButton {
     }
 
     public Boolean isEnabled() {
-        switch (state.apply(null)) {
+        switch (state.get()) {
             case 0:
                 return false;
             case 1:

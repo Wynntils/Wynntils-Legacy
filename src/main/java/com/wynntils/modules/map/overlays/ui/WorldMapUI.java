@@ -45,6 +45,7 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static com.wynntils.modules.map.configs.MapConfig.INSTANCE;
 import static net.minecraft.client.renderer.GlStateManager.*;
@@ -123,10 +124,10 @@ public class WorldMapUI extends GuiMovementScreen {
         Keyboard.enableRepeatEvents(true);
     }
 
-    protected MapButton addButton(MapButtonIcon icon, int offsetX, List<String> hover, Boolean isBool, Function<Void, Integer> state, BiConsumer<MapButton, Integer> onClick) {
+    protected MapButton addButton(MapButtonIcon icon, int offsetX, List<String> hover, Boolean isBool, Supplier<Integer> state, BiConsumer<MapButton, Integer> onClick) {
         // add the button base
         if (mapButtons.isEmpty()) {
-            mapButtons.add(new MapButton(width / 2, height - 45, MapButtonIcon.BASE, null, true, (v) -> 1, null));
+            mapButtons.add(new MapButton(width / 2, height - 45, MapButtonIcon.BASE, null, true, () -> 1, null));
         }
 
         int posX = mapButtons.get(0).getStartX() + 13 + (19 * (mapButtons.size() - 1)) + offsetX;
