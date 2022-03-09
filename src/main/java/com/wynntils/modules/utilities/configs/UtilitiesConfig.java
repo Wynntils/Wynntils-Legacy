@@ -454,13 +454,6 @@ public class UtilitiesConfig extends SettingsClass {
     public static class Market extends SettingsClass {
         public static Market INSTANCE;
 
-        @Setting(displayName = "Price Formatting", description = "Should market prices be displayed in a custom format?")
-        public boolean displayInCustomFormat = true;
-
-        @Setting(displayName = "Market Prices Format", description = "What format should market prices be displayed in?\n\n§8Brackets indicate all parameters inside must not be 0.")
-        @Setting.Features.StringParameters(parameters = {"les", "ebs", "es", "stx", "le", "eb", "e"})
-        public String customFormat = "(%stx%stx )(%le%%les% )(%eb%%ebs% )(%e%%es%)";
-
         @Setting(displayName = "Open Chat", description = "Should the chat open when the trade market asks you to type a response?")
         public boolean openChatMarket = true;
     }
