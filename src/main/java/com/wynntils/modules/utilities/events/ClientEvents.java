@@ -981,6 +981,15 @@ public class ClientEvents implements Listener {
                 itemName.endsWith("Speed Surge [1/1]") ||
                 itemName.endsWith("Bipedal Spring [1/1]") ||
                 itemName.contains("Egg") ||
+
+                itemName.contains("Silver Festival Coin") ||
+                itemName.contains("Golden Festival Coin") ||
+                itemName.contains("Trophy Festival Coin") ||
+                itemName.contains("Heroic Fireworks [1/1]") ||
+                itemName.contains("Scavenger Seeker [1/1]") ||
+                itemName.contains("Reward Voucher [1/1]") ||
+                itemName.contains("Balloon [1/1]") || // This covers all the balloon colours
+
                 itemName.equals("§aEmerald")) // For the Selchar Treasure Merchant
 
                 && ItemUtils.getStringLore(is).contains("§6Price:")
