@@ -323,7 +323,7 @@ public class UtilitiesConfig extends SettingsClass {
         public boolean emeraldPouchSpecification = true;
 
         @Setting(displayName = "Tier Overlay Size", description = "How large should the tier overlays of emerald pouches, powders, and amplifiers be?", order = 15)
-        @Setting.Limitations.FloatLimit(min = 0.5f, max = 1, precision = 0.1f)
+        @Setting.Limitations.FloatLimit(min = 0.5f, max = 1)
         public float specificationTierSize = 1;
 
         @Setting(displayName = "Emerald Pouch Usage Arc", description = "Should emerald pouch usage be shown with an arc?", order = 16)
