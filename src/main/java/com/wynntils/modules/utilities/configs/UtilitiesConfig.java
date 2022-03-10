@@ -89,8 +89,9 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Auto Mount Horse", description = "Should you mount your horse automatically when it is summoned?", order = 2)
     public boolean autoMount = false;
 
-    @Setting(displayName = "Block Health Potions", description = "Should the mod prevent you from using your health potions when you are at full health?", order = 1)
-    public boolean blockHealingPots = true;
+    @Setting.Limitations.IntLimit(min = 0, max = 100, precision = 1)
+    @Setting(displayName = "Health Potion Blocking Threshold", description = "When you have more health than the percentage specified here, Wynntils will block health potions.\n\n§8Set to 0 to disable.", order = 1)
+    public int blockHealingPotThreshold = 99;
 
     @Setting(displayName = "Apply Resource Pack", description = "Should the Wynncraft server resource pack be applied when joining the server instead of selecting your class?", order = 29)
     public boolean autoResource = true;
