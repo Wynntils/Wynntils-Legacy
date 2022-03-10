@@ -89,7 +89,7 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Auto Mount Horse", description = "Should you mount your horse automatically when it is summoned?", order = 2)
     public boolean autoMount = false;
 
-    @Setting.Limitations.IntLimit(min = 0, max = 100, precision = 1)
+    @Setting.Limitations.IntLimit(min = 0, max = 100)
     @Setting(displayName = "Health Potion Blocking Threshold", description = "When you have more health than the percentage specified here, Wynntils will block health potions.\n\n§8Set to 0 to disable.", order = 1)
     public int blockHealingPotThreshold = 99;
 
