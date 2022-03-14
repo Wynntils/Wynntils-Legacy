@@ -101,6 +101,7 @@ public class ChatConfig extends SettingsClass {
     public enum Presets {
         a,
         b,
+        c,
         vanilla
     }
 
