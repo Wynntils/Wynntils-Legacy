@@ -46,9 +46,19 @@ public class GuildWorldMapUI extends WorldMapUI {
     MapButton cycleButton;
     private int territoryDefenseFilter = 0; // See #getDefenseFilterText for number definitions
     private enum TDFTypes {
-        NORMAL,
-        HIGHER,
-        LOWER
+        NORMAL(""),
+        HIGHER(RESET + " and higher"),
+        LOWER(RESET + " and lower");
+
+        private final String typeText;
+
+        TDFTypes(String s) {
+            this.typeText = s;
+        }
+
+        public String getDefenseFilterTypeText() {
+            return this.typeText;
+        }
     }
     private TDFTypes territoryDefenseFilterType = TDFTypes.NORMAL;
     private HashMap<String, MapTerritory> filteredTerritories;
@@ -135,7 +145,6 @@ public class GuildWorldMapUI extends WorldMapUI {
 
     private String getDefenseFilterText() {
         String diff;
-        String type;
         switch (territoryDefenseFilter) {
             case 1:
                 diff = GREEN + "Very Low";
@@ -156,20 +165,7 @@ public class GuildWorldMapUI extends WorldMapUI {
                 return GRAY + "Off";
         }
 
-        switch (territoryDefenseFilterType) {
-            case HIGHER:
-                type = RESET + " and higher";
-                break;
-            case LOWER:
-                type = RESET + " and lower";
-                break;
-            case NORMAL:
-            default:
-                type = "";
-                break;
-        }
-
-        return diff + type;
+        return diff + territoryDefenseFilterType.getDefenseFilterTypeText();
     }
 
     @Override
