@@ -11,7 +11,7 @@ import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.overlays.objects.SeaskipperLocation;
-import com.wynntils.modules.map.overlays.enums.MapButtonType;
+import com.wynntils.modules.map.overlays.enums.MapButtonIcon;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.SeaskipperProfile;
 import net.minecraft.client.renderer.BufferBuilder;
@@ -72,25 +72,25 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
 
         this.mapButtons.clear();
 
-        addButton(MapButtonType.CENTER, 0, Arrays.asList(
+        addButton(MapButtonIcon.CENTER, 0, Arrays.asList(
                 AQUA + "[>] Show territory borders",
                 GRAY + "Click here to enable/disable",
                 GRAY + "territory borders."
         ), (v) -> showLocations, (i, btn) -> showLocations = !showLocations);
 
-        addButton(MapButtonType.PLUS, 0, Arrays.asList(
+        addButton(MapButtonIcon.PLUS, 0, Arrays.asList(
                 AQUA + "[>] Show inaccessible locations",
                 GRAY + "Click here to enable/disable",
                 GRAY + "inaccessible locations."
         ), (v) -> showInaccessibleLocations, (i, btn) -> showInaccessibleLocations = !showInaccessibleLocations);
 
-        addButton(MapButtonType.PIN, 1, Arrays.asList(
+        addButton(MapButtonIcon.PIN, 1, Arrays.asList(
                 LIGHT_PURPLE + "[>] Show Seaskipper routes",
                 GRAY + "Click here to enable/disable",
                 GRAY + "Seaskipper routes."
         ), (v) -> showSeaskipperRoutes, (i, btn) -> showSeaskipperRoutes = !showSeaskipperRoutes);
 
-        addButton(MapButtonType.BOAT, 2, Arrays.asList(
+        addButton(MapButtonIcon.BOAT, 2, Arrays.asList(
                 LIGHT_PURPLE + "[>] Buy a boat",
                 GRAY + "Click here to buy a boat."
         ), (v) -> {
