@@ -80,6 +80,7 @@ public class GuildTerritoryManageOverlay implements Listener {
     @SubscribeEvent
     public void onMouseClicked(GuiOverlapEvent.ChestOverlap.MouseClicked e) {
         if (!inTerritoryManageMenu) return;
+        if (e.getMouseButton() != 0) return; // Only listen for left clicks
 
         int offsetMouseX = e.getMouseX() - e.getGui().getGuiLeft();
         int offsetMouseY = e.getMouseY() - e.getGui().getGuiTop();
@@ -91,11 +92,6 @@ public class GuildTerritoryManageOverlay implements Listener {
 
         // Process the search field click interaction
         searchField.mouseClicked(offsetMouseX, offsetMouseY, e.getMouseButton());
-
-        // Only listen for left clicks
-        if (e.getMouseButton() != 0) {
-            return;
-        }
 
         if (searchField.isFocused()) {
             searchField.setCursorPositionEnd();
