@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class TabManager {
 
-    public static final String DEFAULT_GUILD_REGEX = "(^&3\\[(&b★{0,5})?(&3)?(&o)?[\\w ]*?(&3)?\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)";
+    public static final String DEFAULT_GUILD_REGEX = "(^&3\\[((&b★{0,5})|(&b.*))?(&3)?(&o)?[\\w ]*?(&3)?\\])(?<!&3\\[Parkour\\])|(^&3You were not in the territory)";
     public static final String DEFAULT_PARTY_REGEX = "(^&7\\[&r&e(&o)?[a-zA-Z0-9_ ]+?&r&7\\])|(^&eYou are not in a party!)";
 
     private static List<ChatTab> availableTabs;
@@ -62,6 +62,16 @@ public class TabManager {
                     availableTabs.add(new ChatTab("Shouts", "^&3.*shouts:", null, "", false, 1));
                     availableTabs.add(new ChatTab("G/P", DEFAULT_GUILD_REGEX + "|" + DEFAULT_PARTY_REGEX, null, "/g", false, 2));
                     availableTabs.add(new ChatTab("Private", "&7\\[.*\u27A4.*&7\\]", null, "/r", false, 3));
+                    break;
+                case c:
+                    availableTabs.add(new ChatTab("All", ".*", null, "", true, 0));
+                    availableTabs.add(new ChatTab("Guild", DEFAULT_GUILD_REGEX, null, "/g", true, 1));
+                    availableTabs.add(new ChatTab("Party", DEFAULT_PARTY_REGEX, null, "/p", true, 2));
+                    availableTabs.add(new ChatTab("Bombs", "&e\\[Bomb Bell\\]", null, "/switch", true, 3));
+                    availableTabs.add(new ChatTab("Global", "^&[a78]\\[.+\\*?\\/\\w{2}", null, "", true, 4));
+                    availableTabs.add(new ChatTab("Local", "^&[a7]\\[.+\\*?\\/\\w{2}", null, "", true, 5));
+                    availableTabs.add(new ChatTab("Private", "&7\\[.*\u27A4.*&7\\]", null, "/r", true, 6));
+                    availableTabs.add(new ChatTab("Shouts", "(^&3.*shouts:)", null, "", true, 7));
                     break;
                 case vanilla:
                     availableTabs.add(new ChatTab("All", ".*", null, "", false, 0));

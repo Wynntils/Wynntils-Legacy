@@ -300,7 +300,7 @@ public class TabGUI extends GuiScreen {
             if ((v && !allIsPresent) || (allIsPresent && !v)) {
                 switch (k) {
                     case "Local":
-                        result.add("^&7\\[\\d+\\*?\\/\\w{2}");
+                        result.add("^&[a7]\\[\\d+\\*?\\/\\w{2}");
                         break;
                     case "Guild":
                         result.add(TabManager.DEFAULT_GUILD_REGEX);
