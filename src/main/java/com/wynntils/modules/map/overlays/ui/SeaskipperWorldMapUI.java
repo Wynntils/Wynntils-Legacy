@@ -76,29 +76,29 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
                 AQUA + "[>] Show territory borders",
                 GRAY + "Click here to enable/disable",
                 GRAY + "territory borders."
-        ), true, () -> showLocations ? 1 : 0, (i, btn) -> showLocations = !showLocations);
+        ), (v) -> showLocations, (i, btn) -> showLocations = !showLocations);
 
         addButton(MapButtonIcon.PLUS, 0, Arrays.asList(
                 AQUA + "[>] Show inaccessible locations",
                 GRAY + "Click here to enable/disable",
                 GRAY + "inaccessible locations."
-        ), true, () -> showInaccessibleLocations ? 1 : 0, (i, btn) -> showInaccessibleLocations = !showInaccessibleLocations);
+        ), (v) -> showInaccessibleLocations, (i, btn) -> showInaccessibleLocations = !showInaccessibleLocations);
 
         addButton(MapButtonIcon.PIN, 1, Arrays.asList(
                 LIGHT_PURPLE + "[>] Show Seaskipper routes",
                 GRAY + "Click here to enable/disable",
                 GRAY + "Seaskipper routes."
-        ), true, () -> showSeaskipperRoutes ? 1 : 0, (i, btn) -> showSeaskipperRoutes = !showSeaskipperRoutes);
+        ), (v) -> showSeaskipperRoutes, (i, btn) -> showSeaskipperRoutes = !showSeaskipperRoutes);
 
         addButton(MapButtonIcon.BOAT, 2, Arrays.asList(
                 LIGHT_PURPLE + "[>] Buy a boat",
                 GRAY + "Click here to buy a boat."
-        ), true, () -> {
+        ), (v) -> {
                 for (Slot slot : McIf.player().inventoryContainer.inventorySlots) {
-                    if (slot.getStack().getItem() == Items.BOAT) return 0;
+                    if (slot.getStack().getItem() == Items.BOAT) return false;
                 }
 
-                return 1;
+                return true;
         }, (i, btn) -> {
             if (!i.isEnabled() || boatSlot == -1) return;
             chest.handleMouseClick(chest.inventorySlots.getSlot(boatSlot), boatSlot, 0, ClickType.PICKUP);

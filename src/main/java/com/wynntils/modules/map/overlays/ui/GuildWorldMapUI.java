@@ -72,40 +72,40 @@ public class GuildWorldMapUI extends WorldMapUI {
                 AQUA + "[>] Show territory borders",
                 GRAY + "Click here to enable/disable",
                 GRAY + "territory borders."
-        ), true, () -> showTerritory ? 1 : 0, (i, btn) -> showTerritory = !showTerritory);
+        ), (v) -> showTerritory, (i, btn) -> showTerritory = !showTerritory);
 
         addButton(MapButtonIcon.PENCIL, 0, Arrays.asList(
                 YELLOW + "[>] Show territory owners",
                 GRAY + "Click here to enable/disable",
                 GRAY + "territory owners."
-        ), true, () -> showOwners ? 1 : 0, (i, btn) -> showOwners = !showOwners);
+        ), (v) -> showOwners, (i, btn) -> showOwners = !showOwners);
 
         addButton(MapButtonIcon.INFO, 1, Arrays.asList(
                 GOLD + "[>] Use resource generation colors",
                 GRAY + "Click here to switch between",
                 GRAY + "resource generation colors and",
                 GRAY + "guild colors."
-        ), true, () -> resourceColors ? 1 : 0, (i, btn) -> resourceColors = !resourceColors);
+        ), (v) -> resourceColors, (i, btn) -> resourceColors = !resourceColors);
 
         addButton(MapButtonIcon.PIN, 2, Arrays.asList(
                 LIGHT_PURPLE + "[>] Show trade routes",
                 GRAY + "Click here to enable/disable",
                 GRAY + "territory trade routes."
-        ), true, () -> showTradeRoutes ? 1 : 0, (i, btn) -> showTradeRoutes = !showTradeRoutes);
+        ), (v) -> showTradeRoutes, (i, btn) -> showTradeRoutes = !showTradeRoutes);
 
         addButton(MapButtonIcon.PLUS, 3, Arrays.asList(
                 RED + "[>] Shift + Right Click on a territory",
                 RED + "to open management menu.",
                 GRAY + "Click here to enable/disable",
                 GRAY + "territory management shortcut."
-        ), true , () -> territoryManageShortcut ? 1 : 0, (i, btn) -> territoryManageShortcut = !territoryManageShortcut);
+        ), (v) -> territoryManageShortcut, (i, btn) -> territoryManageShortcut = !territoryManageShortcut);
 
         cycleButton = addButton(MapButtonIcon.SEARCH, 4, Arrays.asList(
                 BLUE + "[>] Territory defense filter",
                 GRAY + "Click here to cycle territory defense filter",
                 GRAY + "Hold SHIFT to filter higher, CTRL to filter lower",
                 GRAY + "Current value: " + getDefenseFilterText()
-        ), false, () -> territoryDefenseFilter, (i, btn) -> {
+        ), (v) -> true, (i, btn) -> {
             if (isShiftKeyDown()) {
                 territoryDefenseFilterType = TDFTypes.HIGHER;
             } else if (isCtrlKeyDown()) {
