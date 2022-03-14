@@ -74,7 +74,7 @@ public class ChatConfig extends SettingsClass {
     @Setting
     public List<ChatTab> available_tabs = new ArrayList<>();
 
-    @Setting(displayName = "Alter Chat Tab by Presets", description = "Which premade selection of chat tabs should be used?\n\na - Global, Guild, Party\n\nb - Global, Shouts, Guild/Party, PMs\n\nvanilla - All", order = 0)
+    @Setting(displayName = "Alter Chat Tab by Presets", description = "Which premade selection of chat tabs should be used?\n\na - Global, Guild, Party\n\nb - Global, Shouts, Guild/Party, PMs\n\nc - All, Guild, Party, Bombs, Global, Local, Private, Shouts\n\nvanilla - All", order = 0)
     public Presets preset = Presets.vanilla;
 
     @Setting(displayName = "Wynnic Translation Condition", description = "When should Wynnic and Gavellian be translated?\n\nDiscovery: The discovery for the transcriber has been discovered.\n\nBook: The transcriber is in your inventory.", order = 12)
