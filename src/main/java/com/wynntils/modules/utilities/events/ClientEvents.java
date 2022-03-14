@@ -8,7 +8,6 @@ import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
-import com.wynntils.core.framework.instances.GuiParentedYesNo;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.instances.data.InventoryData;
@@ -46,7 +45,6 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
@@ -73,7 +71,6 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import org.lwjgl.input.Keyboard;
 
 import java.sql.Timestamp;
@@ -118,7 +115,6 @@ public class ClientEvents implements Listener {
     private static int lastProcessedOpenedChest = -1;
     private int lastOpenedChestWindowId = -1;
     private int lastOpenedRewardWindowId = -1;
-    private Boolean isInInteractionDialogue = false;
 
 
     @SubscribeEvent
@@ -135,8 +131,8 @@ public class ClientEvents implements Listener {
 
         lastUserInput = currentTime;
 
-        // Manually send a hotbar packet if we're in dialogue + the user presses the already selected hotbar slot
-        if (isInInteractionDialogue && Keyboard.getEventKeyState() && Keyboard.getEventKey() - 2 == McIf.player().inventory.currentItem) { // -2 because KEY_1 is 0x02, and hotbar is 0-8
+        // Manually send a hotbar packet if the user presses the already selected hotbar slot - for dialogue
+        if (Keyboard.getEventKeyState() && Keyboard.getEventKey() - 2 == McIf.player().inventory.currentItem) { // -2 because KEY_1 is 0x02, and hotbar is 0-8
             McIf.mc().getConnection().sendPacket(new CPacketHeldItemChange(McIf.player().inventory.currentItem));
         }
     }
@@ -284,7 +280,7 @@ public class ClientEvents implements Listener {
         }
     }
 
-  @SubscribeEvent
+    @SubscribeEvent
     public void onGUIClose(GuiOpenEvent e) {
         if (e.getGui() == null) {
             afkProtectionBlocked = false;
@@ -357,15 +353,10 @@ public class ClientEvents implements Listener {
         if (e.isCanceled() || e.getType() == ChatType.GAME_INFO) return;
 
         String msg = McIf.getUnformattedText(e.getMessage());
-        String fMsg = McIf.getFormattedText(e.getMessage());
         if (msg.startsWith("[Daily Rewards:")) {
             DailyReminderManager.openedDaily();
         }
 
-        isInInteractionDialogue = fMsg.contains("§r§7Select §r§fan option §r§7to continue§r") ||
-                fMsg.contains("§r§4Select §r§can option §r§4to continue§r") ||
-                fMsg.contains("§r§fCLICK §r§7an option to continue§r") ||
-                fMsg.contains("§r§cCLICK §r§4an option to continue§r");
     }
 
     @SubscribeEvent
