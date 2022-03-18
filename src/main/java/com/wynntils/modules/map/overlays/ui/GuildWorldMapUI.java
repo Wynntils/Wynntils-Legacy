@@ -13,7 +13,8 @@ import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.GuildResourceContainer;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.managers.GuildResourceManager;
-import com.wynntils.modules.map.overlays.enums.MapButtonType;
+import com.wynntils.modules.map.overlays.enums.MapButtonIcon;
+import com.wynntils.modules.map.overlays.objects.MapButton;
 import com.wynntils.modules.map.overlays.objects.MapTerritory;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
@@ -24,8 +25,8 @@ import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.*;
+import java.util.function.Predicate;
 
 import static net.minecraft.util.text.TextFormatting.*;
 
@@ -42,6 +43,26 @@ public class GuildWorldMapUI extends WorldMapUI {
     private boolean showTradeRoutes = true;
     private boolean territoryManageShortcut = true;
 
+    MapButton cycleButton;
+    private int territoryDefenseFilter = 0; // See #getDefenseFilterText for number definitions
+    private enum TDFTypes {
+        NORMAL(""),
+        HIGHER(RESET + " and higher"),
+        LOWER(RESET + " and lower");
+
+        private final String typeText;
+
+        TDFTypes(String s) {
+            this.typeText = s;
+        }
+
+        public String getDefenseFilterTypeText() {
+            return this.typeText;
+        }
+    }
+    private TDFTypes territoryDefenseFilterType = TDFTypes.NORMAL;
+    private HashMap<String, MapTerritory> filteredTerritories;
+
     public GuildWorldMapUI() {
         super((float) McIf.player().posX, (float) McIf.player().posZ);
     }
@@ -57,37 +78,94 @@ public class GuildWorldMapUI extends WorldMapUI {
 
         this.mapButtons.clear();
 
-        addButton(MapButtonType.CENTER, 0, Arrays.asList(
+        addButton(MapButtonIcon.CENTER, 0, Arrays.asList(
                 AQUA + "[>] Show territory borders",
                 GRAY + "Click here to enable/disable",
                 GRAY + "territory borders."
         ), (v) -> showTerritory, (i, btn) -> showTerritory = !showTerritory);
 
-        addButton(MapButtonType.PENCIL, 0, Arrays.asList(
+        addButton(MapButtonIcon.PENCIL, 0, Arrays.asList(
                 YELLOW + "[>] Show territory owners",
                 GRAY + "Click here to enable/disable",
                 GRAY + "territory owners."
         ), (v) -> showOwners, (i, btn) -> showOwners = !showOwners);
 
-        addButton(MapButtonType.INFO, 1, Arrays.asList(
+        addButton(MapButtonIcon.INFO, 1, Arrays.asList(
                 GOLD + "[>] Use resource generation colors",
                 GRAY + "Click here to switch between",
                 GRAY + "resource generation colors and",
                 GRAY + "guild colors."
         ), (v) -> resourceColors, (i, btn) -> resourceColors = !resourceColors);
 
-        addButton(MapButtonType.PIN, 2, Arrays.asList(
+        addButton(MapButtonIcon.PIN, 2, Arrays.asList(
                 LIGHT_PURPLE + "[>] Show trade routes",
                 GRAY + "Click here to enable/disable",
                 GRAY + "territory trade routes."
         ), (v) -> showTradeRoutes, (i, btn) -> showTradeRoutes = !showTradeRoutes);
 
-        addButton(MapButtonType.PLUS, 3, Arrays.asList(
+        addButton(MapButtonIcon.PLUS, 3, Arrays.asList(
                 RED + "[>] Shift + Right Click on a territory",
                 RED + "to open management menu.",
                 GRAY + "Click here to enable/disable",
                 GRAY + "territory management shortcut."
         ), (v) -> territoryManageShortcut, (i, btn) -> territoryManageShortcut = !territoryManageShortcut);
+
+        cycleButton = addButton(MapButtonIcon.SEARCH, 4, Arrays.asList(
+                BLUE + "[>] Territory defense filter",
+                GRAY + "Click here to cycle territory defense filter",
+                GRAY + "Hold SHIFT to filter higher, CTRL to filter lower",
+                GRAY + "Current value: " + getDefenseFilterText()
+        ), (v) -> true, (i, btn) -> {
+            if (isShiftKeyDown()) {
+                territoryDefenseFilterType = TDFTypes.HIGHER;
+            } else if (isCtrlKeyDown()) {
+                territoryDefenseFilterType = TDFTypes.LOWER;
+            } else {
+                territoryDefenseFilterType = TDFTypes.NORMAL;
+            }
+
+            if (territoryDefenseFilter >= 5 || (territoryDefenseFilterType != TDFTypes.NORMAL && territoryDefenseFilter == 4)) { // Safety check and reset
+                territoryDefenseFilter = 0;
+            } else {
+                ++territoryDefenseFilter;
+            }
+
+            // Remove redundant settings (Very low and lower, very high and lower, very low and higher, very high and higher)
+            if (territoryDefenseFilterType != TDFTypes.NORMAL && territoryDefenseFilter == 1) {
+                territoryDefenseFilter = 2;
+            }
+
+            cycleButton.editHoverLore(Arrays.asList(
+                    BLUE + "[>] Territory defense filter",
+                    GRAY + "Click here to cycle territory defense filter",
+                    GRAY + "Hold SHIFT to filter higher, CTRL to filter lower",
+                    GRAY + "Current value: " + getDefenseFilterText()));
+        });
+    }
+
+    private String getDefenseFilterText() {
+        String diff;
+        switch (territoryDefenseFilter) {
+            case 1:
+                diff = GREEN + "Very Low";
+                break;
+            case 2:
+                diff = GREEN + "Low";
+                break;
+            case 3:
+                diff = YELLOW + "Medium";
+                break;
+            case 4:
+                diff = RED + "High";
+                break;
+            case 5:
+                diff = RED + "Very High";
+                break;
+            default:
+                return GRAY + "Off";
+        }
+
+        return diff + territoryDefenseFilterType.getDefenseFilterTypeText();
     }
 
     @Override
@@ -126,6 +204,29 @@ public class GuildWorldMapUI extends WorldMapUI {
         super.drawScreen(mouseX, mouseY, partialTicks);
     }
 
+    private HashMap<String, MapTerritory> getFilteredTerritories() {
+        if (territoryDefenseFilter == 0) return territories;
+
+        Predicate<MapTerritory> filterCheck;
+        if (territoryDefenseFilterType == TDFTypes.HIGHER) {
+            filterCheck = territory -> territory.getDefenses() >= territoryDefenseFilter;
+        } else if (territoryDefenseFilterType == TDFTypes.LOWER) {
+            filterCheck = territory -> territory.getDefenses() <= territoryDefenseFilter;
+        } else {
+            filterCheck = territory -> territory.getDefenses() == territoryDefenseFilter;
+        }
+
+        HashMap<String, MapTerritory> filteredTerritories = new HashMap<>();
+
+        for (Map.Entry<String, MapTerritory> territory : territories.entrySet()) {
+            if (filterCheck.test(territory.getValue())) {
+                filteredTerritories.put(territory.getKey(), territory.getValue());
+            }
+        }
+
+        return filteredTerritories;
+    }
+
     @Override
     protected void drawIcons(int mouseX, int mouseY, float partialTicks) {
         if (!Reference.onWorld) return;
@@ -136,26 +237,32 @@ public class GuildWorldMapUI extends WorldMapUI {
         createMask();
 
         drawPositionCursor(map);
+
+        filteredTerritories = getFilteredTerritories();
+
         if (showTradeRoutes) generateTradeRoutes();
 
-        territories.values().forEach(c -> c.drawScreen(mouseX, mouseY, partialTicks, showTerritory, resourceColors, !showOwners, showOwners));
-        territories.values().forEach(c -> c.postDraw(mouseX, mouseY, partialTicks, width, height));
+        filteredTerritories.values().forEach(c -> c.drawScreen(mouseX, mouseY, partialTicks, showTerritory, resourceColors, !showOwners, showOwners));
+        filteredTerritories.values().forEach(c -> c.postDraw(mouseX, mouseY, partialTicks, width, height));
 
         clearMask();
     }
 
     protected void generateTradeRoutes() {
         HashSet<String> alreadyGenerated = new HashSet<>();
-        for (String territoryName : territories.keySet()) {
+        for (String territoryName : filteredTerritories.keySet()) {
             GuildResourceContainer resources = GuildResourceManager.getResources(territoryName);
             if (resources == null) continue;
 
-            MapTerritory origin = territories.get(territoryName);
+            MapTerritory origin = filteredTerritories.get(territoryName);
             for (String tradingRoute : resources.getTradingRoutes()) {
                 // we don't want lines to be duplicated from each route so we just draw them one time
                 if (alreadyGenerated.contains(tradingRoute + territoryName)) continue;
 
-                MapTerritory destination = territories.get(tradingRoute);
+                // Destination does not exist, ignore the routes that involve them
+                if (!filteredTerritories.containsKey(tradingRoute)) continue;
+
+                MapTerritory destination = filteredTerritories.get(tradingRoute);
 
                 alreadyGenerated.add(territoryName + tradingRoute);
                 drawTradeRoute(origin, destination);
@@ -224,7 +331,7 @@ public class GuildWorldMapUI extends WorldMapUI {
             return;
         }
 
-        for (MapTerritory territory : territories.values()) {
+        for (MapTerritory territory : filteredTerritories.values()) {
             boolean hovering = territory.isBeingHovered(lastMouseX, lastMouseY);
             if (!hovering) continue;
 
