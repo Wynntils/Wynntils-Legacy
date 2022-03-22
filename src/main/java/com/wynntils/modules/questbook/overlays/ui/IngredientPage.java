@@ -12,8 +12,6 @@ import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.helpers.IngredientFilter;
 import com.wynntils.core.utils.helpers.IngredientSearchState;
-import com.wynntils.core.utils.helpers.ItemFilter;
-import com.wynntils.core.utils.helpers.ItemSearchState;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.instances.IconContainer;
@@ -23,14 +21,10 @@ import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.ingredient.IngredientProfile;
 import com.wynntils.webapi.profiles.ingredient.enums.ProfessionType;
-import com.wynntils.webapi.profiles.item.enums.ItemType;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -249,7 +243,6 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
     }
 
     private interface SearchHandler {
-
         // mouse x and y, screen center x and y, mouse pos relative to center x and y
         List<String> drawScreenELements(IngredientPage page, ScreenRenderer renderer, int mouseX, int mouseY, int x, int y, int posX, int posY, int selected);
 
@@ -260,19 +253,6 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
 
     private static class BasicSearchHandler implements SearchHandler {
         static final BasicSearchHandler INSTANCE = new BasicSearchHandler();
-
-        private static final ItemStack weaponsmithingIcon = new ItemStack(Items.GOLDEN_SWORD);
-        private static final ItemStack woodworkingIcon = new ItemStack(Items.ARROW);
-        private static final ItemStack armouringIcon = new ItemStack(Items.IRON_HELMET);
-        private static final ItemStack tailoringIcon = new ItemStack(Items.LEATHER_BOOTS);
-        private static final ItemStack jewelingIcon = new ItemStack(Items.FLINT_AND_STEEL, 1, 2);
-        private static final ItemStack cookingIcon = new ItemStack(Items.COOKED_FISH);
-        private static final ItemStack alchemismIcon = new ItemStack(Items.POTIONITEM);
-        private static final ItemStack scribingIcon = new ItemStack(Items.PAPER);
-
-        static {
-            jewelingIcon.setTagCompound(ItemUtils.UNBREAKABLE);
-        }
 
         private static final List<ProfessionType> professionTypeArray = ImmutableList.of(
                 ProfessionType.WEAPONSMITHING,
@@ -483,12 +463,6 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
             if (byTier != null && byTier.getSortDirection() != SortDirection.NONE) {
                 sortFunction = IngredientPage.BasicSearchHandler.SortFunction.BY_TIER;
             }
-
-            // inherit combat level sorting from the "Level" filter
-//            ItemFilter.ByStat byLevel = searchState.getFilter(IngredientFilter.ByStat.TYPE_COMBAT_LEVEL);
-//            if (byLevel != null && byLevel.getSortDirection() != SortDirection.NONE) {
-//                sortFunction = IngredientPage.BasicSearchHandler.SortFunction.BY_LEVEL;
-//            }
 
             // fall back to alphabetical if no sort function could be inherited
             if (sortFunction == null) sortFunction = IngredientPage.BasicSearchHandler.SortFunction.ALPHABETICAL;

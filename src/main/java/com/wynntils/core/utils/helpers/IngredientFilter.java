@@ -2,18 +2,12 @@ package com.wynntils.core.utils.helpers;
 
 import com.google.common.collect.ImmutableMap;
 import com.wynntils.core.framework.enums.Comparison;
-import com.wynntils.core.framework.enums.DamageType;
 import com.wynntils.core.framework.enums.SortDirection;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.webapi.profiles.ingredient.IngredientProfile;
 import com.wynntils.webapi.profiles.ingredient.enums.IngredientTier;
 import com.wynntils.webapi.profiles.ingredient.enums.ProfessionType;
-import com.wynntils.webapi.profiles.item.ItemProfile;
-import com.wynntils.webapi.profiles.item.enums.ItemAttackSpeed;
-import com.wynntils.webapi.profiles.item.enums.ItemTier;
-import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -21,13 +15,11 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.*;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
 public interface IngredientFilter extends Predicate<IngredientProfile>, Comparator<IngredientProfile> {
-
     Type<?> getFilterType();
 
     String toFilterString();
@@ -324,14 +316,6 @@ public interface IngredientFilter extends Predicate<IngredientProfile>, Comparat
         });
 
         public static class StatType extends IngredientFilter.Type<IngredientFilter.ByStat> {
-
-//            static IngredientFilter.ByStat.StatType getIdStat(String name, String desc, String key) {
-//                return new IngredientFilter.ByStat.StatType(name, desc, i -> {
-//                    IdentificationContainer id = i.getStatuses().get(key);
-//                    return id != null ? id.getMax() : 0;
-//                });
-//            }
-
             static IngredientFilter.ByStat.StatType sum(String name, String desc, IngredientFilter.ByStat.StatType... summands) {
                 return new IngredientFilter.ByStat.StatType(name, desc, i -> Arrays.stream(summands).mapToInt(s -> s.extractStat(i)).sum());
             }
@@ -359,7 +343,6 @@ public interface IngredientFilter extends Predicate<IngredientProfile>, Comparat
                 });
                 return new IngredientFilter.ByStat(this, comparisons, sortDir.b);
             }
-
         }
 
         private final IngredientFilter.ByStat.StatType type;
@@ -400,65 +383,6 @@ public interface IngredientFilter extends Predicate<IngredientProfile>, Comparat
         public int compare(IngredientProfile a, IngredientProfile b) {
             return sortDir.modifyComparison(Integer.compare(type.extractStat(a), type.extractStat(b)));
         }
-    }
-
-    class ByString implements IngredientFilter {
-
-        // info about sets is missing in the current wynntils item dataset
-        //public static final StringType TYPE_SET = new StringType("Set", i -> i.getItemInfo().getSet());
-
-        public static class StringType extends Type<ByString> {
-
-            private final Function<IngredientProfile, String> stringExtractor;
-
-            StringType(String name, String desc, Function<IngredientProfile, String> stringExtractor) {
-                super(name, desc);
-                this.stringExtractor = stringExtractor;
-            }
-
-            public String extractString(IngredientProfile item) {
-                return stringExtractor.apply(item);
-            }
-
-            @Override
-            public ByString parse(String filterStr) throws FilteringException {
-                Pair<String, SortDirection> sortDir = parseSortDirection(filterStr);
-                return new ByString(this, sortDir.a, sortDir.b);
-            }
-
-        }
-
-        private final ByString.StringType type;
-        private final String matchStr;
-        private final SortDirection sortDir;
-
-        public ByString(ByString.StringType type, String matchStr, SortDirection sortDir) {
-            this.type = type;
-            this.matchStr = matchStr.toLowerCase(Locale.ROOT);
-            this.sortDir = sortDir;
-        }
-
-        @Override
-        public Type<ByString> getFilterType() {
-            return type;
-        }
-
-        @Override
-        public String toFilterString() {
-            return type.getName() + ':' + sortDir.prefix + StringUtils.quoteIfContainsSpace(matchStr);
-        }
-
-        @Override
-        public boolean test(IngredientProfile item) {
-            String s = type.extractString(item);
-            return s != null && s.toLowerCase(Locale.ROOT).contains(matchStr);
-        }
-
-        @Override
-        public int compare(IngredientProfile a, IngredientProfile b) {
-            return sortDir.modifyComparison(type.extractString(a).compareToIgnoreCase(type.extractString(b)));
-        }
-
     }
 
     class FilteringException extends Exception {
