@@ -30,6 +30,7 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
@@ -260,14 +261,18 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
     private static class BasicSearchHandler implements SearchHandler {
         static final BasicSearchHandler INSTANCE = new BasicSearchHandler();
 
-        private static final ItemStack weaponsmithingIcon = new ItemStack(Items.IRON_SWORD);
-        private static final ItemStack woodworkingIcon = new ItemStack(Items.STICK);
+        private static final ItemStack weaponsmithingIcon = new ItemStack(Items.GOLDEN_SWORD);
+        private static final ItemStack woodworkingIcon = new ItemStack(Items.ARROW);
         private static final ItemStack armouringIcon = new ItemStack(Items.IRON_HELMET);
         private static final ItemStack tailoringIcon = new ItemStack(Items.LEATHER_BOOTS);
-        private static final ItemStack jewelingIcon = new ItemStack(Items.GOLD_INGOT);
+        private static final ItemStack jewelingIcon = new ItemStack(Items.FLINT_AND_STEEL, 1, 2);
         private static final ItemStack cookingIcon = new ItemStack(Items.COOKED_FISH);
-        private static final ItemStack alchemismIcon = new ItemStack(Items.BREWING_STAND);
-        private static final ItemStack scribingIcon = new ItemStack(Items.WRITABLE_BOOK);
+        private static final ItemStack alchemismIcon = new ItemStack(Items.POTIONITEM);
+        private static final ItemStack scribingIcon = new ItemStack(Items.PAPER);
+
+        static {
+            jewelingIcon.setTagCompound(ItemUtils.UNBREAKABLE);
+        }
 
         private static final List<ProfessionType> professionTypeArray = ImmutableList.of(
                 ProfessionType.WEAPONSMITHING,
@@ -367,14 +372,7 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
                     renderer.drawRect(allowedProfessions.contains(professionTypeArray.get(i)) ? selected_cube_2 : unselected_cube, maxX, maxY, minX, minY);
                 }
 
-                if (i == 0) renderer.drawItemStack(weaponsmithingIcon, maxX, minY, false);
-                else if (i == 1) renderer.drawItemStack(woodworkingIcon, maxX, minY, false);
-                else if (i == 2) renderer.drawItemStack(armouringIcon, maxX, minY, false);
-                else if (i == 3) renderer.drawItemStack(tailoringIcon, maxX, minY, false);
-                else if (i == 4) renderer.drawItemStack(jewelingIcon, maxX, minY, false);
-                else if (i == 5) renderer.drawItemStack(cookingIcon, maxX, minY, false);
-                else if (i == 6) renderer.drawItemStack(alchemismIcon, maxX, minY, false);
-                else if (i == 7) renderer.drawItemStack(scribingIcon, maxX, minY, false);
+                renderer.drawRect(Textures.UIs.profession_icons, maxX, minY, professionTypeArray.get(i).getTextureX(), professionTypeArray.get(i).getTextureY(), 16, 16);
 
                 placed++;
             }

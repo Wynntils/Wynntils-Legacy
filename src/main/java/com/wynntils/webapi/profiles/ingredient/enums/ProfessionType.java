@@ -3,21 +3,26 @@ package com.wynntils.webapi.profiles.ingredient.enums;
 import java.util.Locale;
 
 public enum ProfessionType {
-    WEAPONSMITHING("Weaponsmithing", "Ⓖ"),
-    WOODWORKING("Woodworking", "Ⓘ"),
-    ARMOURING("Armouring", "Ⓗ"),
-    TAILORING("Tailoring", "Ⓕ"),
-    JEWELING("Jeweling", "Ⓓ"),
-    COOKING("Cooking", "Ⓐ"),
-    ALCHEMISM("Alchemism", "Ⓛ"),
-    SCRIBING("Scribing", "Ⓔ");
+    WEAPONSMITHING("Weaponsmithing", "Ⓖ", 16 * 4, 0),
+    WOODWORKING("Woodworking", "Ⓘ", 16 * 5, 0),
+    ARMOURING("Armouring", "Ⓗ", 16 * 6, 0),
+    TAILORING("Tailoring", "Ⓕ", 16 * 7, 0),
+    JEWELING("Jeweling", "Ⓓ", 16 * 8, 0),
+    COOKING("Cooking", "Ⓐ", 16 * 11, 0),
+    ALCHEMISM("Alchemism", "Ⓛ", 16 * 10, 0),
+    SCRIBING("Scribing", "Ⓔ", 16 * 9, 0);
 
     final String professionName;
     final String professionIconChar;
 
-    ProfessionType(String professionName, String professionIconChar) {
+    int textureX;
+    int textureY;
+
+    ProfessionType(String professionName, String professionIconChar, int textureX, int textureY) {
         this.professionName = professionName;
         this.professionIconChar = professionIconChar;
+        this.textureX = textureX;
+        this.textureY = textureY;
     }
 
     public String getDisplayName() {
@@ -26,6 +31,14 @@ public enum ProfessionType {
 
     public String getProfessionIconChar() {
         return professionIconChar;
+    }
+
+    public int getTextureX() {
+        return textureX;
+    }
+
+    public int getTextureY() {
+        return textureY;
     }
 
     public static ProfessionType from(String type) {
