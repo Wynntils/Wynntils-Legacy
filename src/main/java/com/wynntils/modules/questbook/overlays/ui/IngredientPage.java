@@ -38,6 +38,8 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static net.minecraft.util.text.TextFormatting.*;
+
 public class IngredientPage extends QuestBookListPage<IngredientProfile> {
 
     private IngredientSearchState searchState;
@@ -53,11 +55,7 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
 
     @Override
     public void initGui() {
-        IngredientSearchState oldSearchState = searchState;
         super.initGui();
-        if (oldSearchState != null) {
-            updateSearch();
-        }
         initBasicSearch();
     }
 
@@ -70,6 +68,17 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
         textField.x = width / 2 + 32;
         textField.y = height / 2 - 97;
         textField.width = 113;
+    }
+
+    @Override
+    protected void preEntries(int mouseX, int mouseY, float partialTicks) {
+        int x = width / 2;
+        int y = height / 2;
+        int posX = (x - mouseX);
+        int posY = (y - mouseY);
+        selected = -1;
+
+        hoveredText = getSearchHandler().drawScreenELements(this, render, mouseX, mouseY, x, y, posX, posY, selected);
     }
 
     @Override
@@ -293,7 +302,7 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
                 }
             }
 
-            renderer.drawString("Level Order (100-0)", x - 140, y - 15, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            renderer.drawString("Level Order (High-Low)", x - 140, y - 15, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
             if (posX >= 144 && posX <= 150 && posY >= 8 && posY <= 15) {
                 selected = -3;
@@ -307,7 +316,7 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
                 }
             }
 
-            renderer.drawString("Rarity Order (MYTH-NORM)", x - 140, y - 5, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            renderer.drawString("Rarity Order (" + AQUA + "✫✫✫" + BLACK + "-" + DARK_GRAY + "✫✫✫" + BLACK + ")", x - 140, y - 5, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
             if (posX >= 144 && posX <= 150 && posY >= -2 && posY <= 5) {
                 selected = -4;
@@ -338,15 +347,15 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
 
             int placed = 0;
             int plusY = 0;
-            for (int i = 0; i < 12; i++) {
-                if (placed + 1 >= 7) {
+            for (int i = 0; i < 8; i++) {
+                if (placed + 1 >= 5) {
                     placed = 0;
                     plusY++;
                 }
 
-                int maxX = x - 139 + (placed * 20);
+                int maxX = x - 119 + (placed * 20);
                 int maxY = y + 50 + (plusY * 20);
-                int minX = x - 123 + (placed * 20);
+                int minX = x - 103 + (placed * 20);
                 int minY = y + 34 + (plusY * 20);
 
                 if (mouseX >= maxX && mouseX <= minX && mouseY >= minY && mouseY <= maxY) {
@@ -435,14 +444,11 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
             if (allowedProfessions.size() < professionTypeArray.size()) searchState.addFilter(new IngredientFilter.ByProfession(allowedProfessions, SortDirection.NONE));
 
             switch (sortFunction) { // alphabetical is handled above
-//                case BY_LEVEL:
-//                    searchState.addFilter(new IngredientFilter.ByStat(IngredientFilter.ByStat.TYPE_COMBAT_LEVEL, Collections.emptyList(), SortDirection.DESCENDING));
-//                    break;
                 case BY_TIER:
                     searchState.addFilter(new IngredientFilter.ByTier(Collections.emptyList(), SortDirection.DESCENDING));
                     break;
-//                case FAVORITES:
-//                    searchState.addFilter(new IngredientFilter.ByStat(ItemFilter.ByStat.TYPE_FAVORITED, Collections.emptyList(), SortDirection.DESCENDING));
+                case FAVORITES:
+                    searchState.addFilter(new IngredientFilter.ByStat(IngredientFilter.ByStat.TYPE_FAVORITED, Collections.emptyList(), SortDirection.DESCENDING));
             }
 
             return searchState;

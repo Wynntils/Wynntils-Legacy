@@ -316,6 +316,92 @@ public interface IngredientFilter extends Predicate<IngredientProfile>, Comparat
         }
     }
 
+    class ByStat implements IngredientFilter {
+        // user-favorited
+        @IngredientFilter.Type.Alias({"Favourited", "fav"})
+        public static final IngredientFilter.ByStat.StatType TYPE_FAVORITED = new IngredientFilter.ByStat.StatType("Favorited", "Favorited", i -> {
+            return i.isFavorited() ? 1 : 0;
+        });
+
+        public static class StatType extends IngredientFilter.Type<IngredientFilter.ByStat> {
+
+//            static IngredientFilter.ByStat.StatType getIdStat(String name, String desc, String key) {
+//                return new IngredientFilter.ByStat.StatType(name, desc, i -> {
+//                    IdentificationContainer id = i.getStatuses().get(key);
+//                    return id != null ? id.getMax() : 0;
+//                });
+//            }
+
+            static IngredientFilter.ByStat.StatType sum(String name, String desc, IngredientFilter.ByStat.StatType... summands) {
+                return new IngredientFilter.ByStat.StatType(name, desc, i -> Arrays.stream(summands).mapToInt(s -> s.extractStat(i)).sum());
+            }
+
+            private final ToIntFunction<IngredientProfile> statExtractor;
+
+            StatType(String name, String desc, ToIntFunction<IngredientProfile> statExtractor) {
+                super(name, desc);
+                this.statExtractor = statExtractor;
+            }
+
+            public int extractStat(IngredientProfile item) {
+                return statExtractor.applyAsInt(item);
+            }
+
+            @Override
+            public IngredientFilter.ByStat parse(String filterStr) throws IngredientFilter.FilteringException {
+                Pair<String, SortDirection> sortDir = parseSortDirection(filterStr);
+                List<Pair<Comparison, Integer>> comparisons = parseComparisons(sortDir.a, s -> {
+                    try {
+                        return Integer.parseInt(s);
+                    } catch (NumberFormatException e) {
+                        throw new IngredientFilter.FilteringException("Not a number: " + s);
+                    }
+                });
+                return new IngredientFilter.ByStat(this, comparisons, sortDir.b);
+            }
+
+        }
+
+        private final IngredientFilter.ByStat.StatType type;
+        private final List<Pair<Comparison, Integer>> comps;
+        private final SortDirection sortDir;
+
+        public ByStat(IngredientFilter.ByStat.StatType type, List<Pair<Comparison, Integer>> comps, SortDirection sortDir) {
+            this.type = type;
+            this.comps = comps;
+            this.sortDir = sortDir;
+        }
+
+        public SortDirection getSortDirection() {
+            return sortDir;
+        }
+
+        @Override
+        public IngredientFilter.Type<?> getFilterType() {
+            return type;
+        }
+
+        @Override
+        public String toFilterString() {
+            return type.getName() + ':' + sortDir.prefix + comps.stream()
+                    .map(c -> (c.a == Comparison.EQUAL ? "" : c.a.symbol) + c.b)
+                    .collect(Collectors.joining(","));
+        }
+
+        @Override
+        public boolean test(IngredientProfile item) {
+            for (Pair<Comparison, Integer> comp : comps) {
+                if (!comp.a.test(type.extractStat(item), comp.b)) return false;
+            }
+            return true;
+        }
+
+        @Override
+        public int compare(IngredientProfile a, IngredientProfile b) {
+            return sortDir.modifyComparison(Integer.compare(type.extractStat(a), type.extractStat(b)));
+        }
+    }
+
     class ByString implements IngredientFilter {
 
         // info about sets is missing in the current wynntils item dataset
