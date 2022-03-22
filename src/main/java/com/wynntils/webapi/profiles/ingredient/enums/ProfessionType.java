@@ -1,5 +1,7 @@
 package com.wynntils.webapi.profiles.ingredient.enums;
 
+import java.util.Locale;
+
 public enum ProfessionType {
     WEAPONSMITHING("Weaponsmithing", "Ⓖ"),
     WOODWORKING("Woodworking", "Ⓘ"),
@@ -24,5 +26,28 @@ public enum ProfessionType {
 
     public String getProfessionIconChar() {
         return professionIconChar;
+    }
+
+    public static ProfessionType from(String type) {
+        switch (type.toLowerCase(Locale.ROOT)) {
+            case "weaponsmithing":
+                return WEAPONSMITHING;
+            case "woodworking":
+                return WOODWORKING;
+            case "armouring":
+                return ARMOURING;
+            case "tailoring":
+                return TAILORING;
+            case "jeweling":
+                return JEWELING;
+            case "cooking":
+                return COOKING;
+            case "alchemism":
+                return ALCHEMISM;
+            case "scribing":
+                return SCRIBING;
+            default:
+                return null;
+        }
     }
 }

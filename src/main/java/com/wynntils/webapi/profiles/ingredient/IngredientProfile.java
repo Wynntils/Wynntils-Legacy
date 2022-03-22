@@ -45,6 +45,14 @@ public class IngredientProfile {
         return name;
     }
 
+    public List<ProfessionType> getProfessions() {
+        return professions;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
     public boolean isFavorited() {
         return UtilitiesConfig.INSTANCE.favoriteIngredients.contains(name);
     }
