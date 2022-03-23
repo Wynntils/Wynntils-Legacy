@@ -272,62 +272,10 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
         @Override
         public List<String> drawScreenELements(IngredientPage page, ScreenRenderer renderer, int mouseX, int mouseY, int x, int y, int posX, int posY, int selected) {
             // order buttons
-            // render.drawString("Order the list by", x - 84, y - 30, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-            renderer.drawString("Alphabetical Order (A-Z)", x - 140, y - 25, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-
-            if (posX >= 144 && posX <= 150 && posY >= 18 && posY <= 25) {
-                selected = -2;
-                renderer.drawRect(Textures.UIs.quest_book, x - 150, y - 25, 246, 259, 7, 7);
-            } else {
-                if (selected == -2) selected = -1;
-                if (sortFunction == IngredientPage.BasicSearchHandler.SortFunction.ALPHABETICAL) {
-                    renderer.drawRect(Textures.UIs.quest_book, x - 150, y - 25, 246, 259, 7, 7);
-                } else {
-                    renderer.drawRect(Textures.UIs.quest_book, x - 150, y - 25, 254, 259, 7, 7);
-                }
-            }
-
-            renderer.drawString("Level Order (High-Low)", x - 140, y - 15, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-
-            if (posX >= 144 && posX <= 150 && posY >= 8 && posY <= 15) {
-                selected = -3;
-                renderer.drawRect(Textures.UIs.quest_book, x - 150, y - 15, 246, 259, 7, 7);
-            } else {
-                if (selected == -3) selected = -1;
-                if (sortFunction == IngredientPage.BasicSearchHandler.SortFunction.BY_LEVEL) {
-                    renderer.drawRect(Textures.UIs.quest_book, x - 150, y - 15, 246, 259, 7, 7);
-                } else {
-                    renderer.drawRect(Textures.UIs.quest_book, x - 150, y - 15, 254, 259, 7, 7);
-                }
-            }
-
-            renderer.drawString("Rarity Order (" + AQUA + "✫✫✫" + BLACK + "-" + DARK_GRAY + "✫✫✫" + BLACK + ")", x - 140, y - 5, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-
-            if (posX >= 144 && posX <= 150 && posY >= -2 && posY <= 5) {
-                selected = -4;
-                renderer.drawRect(Textures.UIs.quest_book, x - 150, y - 5, 246, 259, 7, 7);
-            } else {
-                if (selected == -4) selected = -1;
-                if (sortFunction == IngredientPage.BasicSearchHandler.SortFunction.BY_TIER) {
-                    renderer.drawRect(Textures.UIs.quest_book, x - 150, y - 5, 246, 259, 7, 7);
-                } else {
-                    renderer.drawRect(Textures.UIs.quest_book, x - 150, y - 5, 254, 259, 7, 7);
-                }
-            }
-
-            renderer.drawString("Favorited Items", x - 140, y + 5, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-
-            if (posX >= 144 && posX <= 150 && posY >= -12 && posY <= -5) {
-                selected = -5;
-                renderer.drawRect(Textures.UIs.quest_book, x - 150, y + 5, 246, 259, 7, 7);
-            } else {
-                if (selected == -5) selected = -1;
-                if (sortFunction == IngredientPage.BasicSearchHandler.SortFunction.FAVORITES) {
-                    renderer.drawRect(Textures.UIs.quest_book, x - 150, y + 5, 246, 259, 7, 7);
-                } else {
-                    renderer.drawRect(Textures.UIs.quest_book, x - 150, y + 5, 254, 259, 7, 7);
-                }
-            }
+            selected = drawSortingMethod(renderer, "Alphabetical Order (A-Z)", x - 140, y, 0, posX, posY, selected, SortFunction.ALPHABETICAL, -2);
+            selected = drawSortingMethod(renderer, "Level Order (High-Low)", x - 140, y, 10, posX, posY, selected, SortFunction.BY_LEVEL, -3);
+            selected = drawSortingMethod(renderer, "Rarity Order (" + AQUA + "✫✫✫" + BLACK + "-" + DARK_GRAY + "✫✫✫" + BLACK + ")", x - 140, y, 20, posX, posY, selected, SortFunction.BY_TIER, -4);
+            selected = drawSortingMethod(renderer, "Favorited Items", x - 140, y, 30, posX, posY, selected, SortFunction.FAVORITES, -5);
 
 
             int placed = 0;
@@ -359,6 +307,24 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
 
             page.selected = selected;
             return null;
+        }
+
+        private int drawSortingMethod(ScreenRenderer renderer, String text, int x, int y, int yOffset, int posX, int posY, int selected, IngredientPage.BasicSearchHandler.SortFunction sortFunction, int sortFunctionIndex) {
+            renderer.drawString(text, x, y - 25 + yOffset, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+
+            if (posX >= 144 && posX <= 150 && posY >= 18 - yOffset && posY <= 25 - yOffset) {
+                selected = sortFunctionIndex;
+                renderer.drawRect(Textures.UIs.quest_book, x - 10, y - 25 + yOffset, 246, 259, 7, 7);
+            } else {
+                if (selected == sortFunctionIndex) selected = -1;
+                if (this.sortFunction == sortFunction) {
+                    renderer.drawRect(Textures.UIs.quest_book, x - 10, y - 25 + yOffset, 246, 259, 7, 7);
+                } else {
+                    renderer.drawRect(Textures.UIs.quest_book, x - 10, y - 25 + yOffset, 254, 259, 7, 7);
+                }
+            }
+
+            return selected;
         }
 
         @Override

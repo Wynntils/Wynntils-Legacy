@@ -46,8 +46,8 @@ public interface IngredientFilter extends Predicate<IngredientProfile>, Comparat
                                     builder.put(alias.toLowerCase(Locale.ROOT), type);
                                 }
                             }
-                        } catch (IllegalAccessException e) {
-
+                        } catch (IllegalAccessException ignored) {
+                            // Could not infer filter type, ignore it
                         }
                     }
                 }
