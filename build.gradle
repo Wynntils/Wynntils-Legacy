@@ -80,12 +80,6 @@ reobf {
     shadowJar {}
 }
 
-sourceSets {
-    main {
-        output.resourcesDir = output.classesDirs.singleFile
-    }
-}
-
 class Version {
     int major, minor, revision
 

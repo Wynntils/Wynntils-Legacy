@@ -208,7 +208,7 @@ public interface IngredientFilter extends Predicate<IngredientProfile>, Comparat
                 for (String token : filterString.split(",")) {
                     token = token.trim().toLowerCase(Locale.ROOT);
                     if (token.isEmpty()) continue;
-                    ProfessionType profession = ProfessionType.from(token);
+                    ProfessionType profession = ProfessionType.fromString(token);
                     if (profession != null) {
                         allowedProfessions.add(profession);
                     }

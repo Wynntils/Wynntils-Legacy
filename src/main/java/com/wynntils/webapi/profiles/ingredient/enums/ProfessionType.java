@@ -41,7 +41,7 @@ public enum ProfessionType {
         return textureY;
     }
 
-    public static ProfessionType from(String type) {
+    public static ProfessionType fromString(String type) {
         switch (type.toLowerCase(Locale.ROOT)) {
             case "weaponsmithing":
                 return WEAPONSMITHING;

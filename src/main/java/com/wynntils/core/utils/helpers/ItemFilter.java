@@ -227,7 +227,7 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
                 for (String token : filterStr.split(",")) {
                     token = token.trim().toLowerCase(Locale.ROOT);
                     if (token.isEmpty()) continue;
-                    ItemType type = ItemType.from(token);
+                    ItemType type = ItemType.fromString(token);
                     if (type != null) {
                         allowedTypes.add(type);
                     } else {
