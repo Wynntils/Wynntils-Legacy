@@ -66,7 +66,7 @@ public class IngredientItemModifiers {
         List<String> itemLore = new ArrayList<>();
 
         if (durability != 0 && duration != 0)
-            itemLore.add(IngredientItemModifiers.getFormattedModifierText("Durability", durability) + TextFormatting.GRAY + " or " + IngredientItemModifiers.getFormattedModifierText("duration", duration));
+            itemLore.add(IngredientItemModifiers.getFormattedModifierText("Durability", durability) + TextFormatting.GRAY + " or " + IngredientItemModifiers.getFormattedModifierText("Duration", duration));
         else if (durability != 0)
             itemLore.add(IngredientItemModifiers.getFormattedModifierText("Durability", durability));
         else if (duration != 0)
