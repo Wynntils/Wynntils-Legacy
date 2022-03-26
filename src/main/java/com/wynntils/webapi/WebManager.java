@@ -969,20 +969,23 @@ public class WebManager {
         {
             String javaVersion = System.getProperty("java.version");
             Reference.LOGGER.info("Found java version " + javaVersion);
+
             if (javaVersion != null && javaVersion.startsWith("1.8.0_")) {
                 try {
                     if (Integer.parseInt(javaVersion.substring("1.8.0_".length())) < 101)
-                        return false;
+                        return true;
                 } catch (NumberFormatException e) {
                     e.printStackTrace();
                     Reference.LOGGER.warn("Could not parse java version!");
+                    return true;
                 }
             }
-            return true;
+
+            return false;
         }
 
         public static void registerCerts() {
-            if (needsPatching()) return;
+            if (!needsPatching()) return;
             try {
                 final KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
                 Path ksPath = Paths.get(System.getProperty("java.home"),"lib", "security", "cacerts");
