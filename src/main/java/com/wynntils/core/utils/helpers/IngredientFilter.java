@@ -1,13 +1,19 @@
 package com.wynntils.core.utils.helpers;
 
 import com.google.common.collect.ImmutableMap;
+import com.wynntils.Reference;
 import com.wynntils.core.framework.enums.Comparison;
+import com.wynntils.core.framework.enums.DamageType;
 import com.wynntils.core.framework.enums.SortDirection;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Pair;
+import com.wynntils.webapi.profiles.ingredient.IngredientIdentificationContainer;
 import com.wynntils.webapi.profiles.ingredient.IngredientProfile;
 import com.wynntils.webapi.profiles.ingredient.enums.IngredientTier;
 import com.wynntils.webapi.profiles.ingredient.enums.ProfessionType;
+import com.wynntils.webapi.profiles.item.ItemProfile;
+import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
+
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -309,6 +315,93 @@ public interface IngredientFilter extends Predicate<IngredientProfile>, Comparat
     }
 
     class ByStat implements IngredientFilter {
+        @Type.Alias({"Lvl", "CombatLevel", "CombatLvl"})
+        public static final ByStat.StatType TYPE_LEVEL = new ByStat.StatType("Level", "Combat Level", IngredientProfile::getLevel);
+
+        // Defense ids
+        @Type.Alias("hp")
+        public static final ByStat.StatType TYPE_HEALTH = StatType.getIdStat("Health", "Health", "rawHealth");
+        public static final ByStat.StatType TYPE_EARTH_DEF = StatType.getIdStat("EarthDef", "Earth Defence", "earthDefence");
+        public static final ByStat.StatType TYPE_THUNDER_DEF = StatType.getIdStat("ThunderDef", "Thunder Defence", "thunderDefence");
+        public static final ByStat.StatType TYPE_WATER_DEF = StatType.getIdStat("WaterDef", "Water Defence", "waterDefence");
+        public static final ByStat.StatType TYPE_FIRE_DEF = StatType.getIdStat("FireDef", "Fire Defence", "fireDefence");
+        public static final ByStat.StatType TYPE_AIR_DEF = StatType.getIdStat("AirDef", "Air Defence", "airDefence");
+        @Type.Alias("TotalDef")
+        public static final ByStat.StatType TYPE_SUM_DEF = ByStat.StatType.sum("SumDef", "Total Defence", TYPE_EARTH_DEF, TYPE_THUNDER_DEF, TYPE_WATER_DEF, TYPE_FIRE_DEF, TYPE_AIR_DEF);
+
+        // Attribute ids
+        public static final ByStat.StatType TYPE_STR = ByStat.StatType.getIdStat("Str", "Strength", "rawStrength");
+        public static final ByStat.StatType TYPE_DEX = ByStat.StatType.getIdStat("Dex", "Dexterity", "rawDexterity");
+        public static final ByStat.StatType TYPE_INT = ByStat.StatType.getIdStat("Int", "Intelligence", "rawIntelligence");
+        public static final ByStat.StatType TYPE_DEF = ByStat.StatType.getIdStat("Def", "Defence", "rawDefence");
+        public static final ByStat.StatType TYPE_AGI = ByStat.StatType.getIdStat("Agi", "Agility", "rawAgility");
+        @Type.Alias({"SkillPts", "Attributes", "Attrs"})
+        public static final ByStat.StatType TYPE_SKILL_POINTS = ByStat.StatType.sum("SkillPoints", "Total Skill Points", TYPE_STR, TYPE_DEX, TYPE_INT, TYPE_DEF, TYPE_AGI);
+
+        // Damage ids
+        @Type.Alias("MainAtkRawDmg")
+        public static final ByStat.StatType TYPE_MAIN_ATK_NEUTRAL_DMG = ByStat.StatType.getIdStat("MainAtkNeutralDmg", "Main Attack Neutral Damage", "rawMainAttackNeutralDamage");
+        @Type.Alias({"MainAtkDmg%", "%MainAtkDmg", "Melee%", "%Melee"})
+        public static final ByStat.StatType TYPE_MAIN_ATK_DMG = ByStat.StatType.getIdStat("MainAtkDmg", "Main Attack Damage %", "mainAttackDamage");
+        @Type.Alias("SpellRawDmg")
+        public static final ByStat.StatType TYPE_SPELL_NEUTRAL_DMG = ByStat.StatType.getIdStat("SpellNeutralDmg", "Neutral Spell Damage", "rawNeutralSpellDamage");
+        @Type.Alias({"SpellDmg%", "%SpellDmg", "Spell%", "%Spell", "sd"})
+        public static final ByStat.StatType TYPE_SPELL_DMG = ByStat.StatType.getIdStat("SpellDmg", "Spell Damage %", "spellDamage");
+        @Type.Alias({"EarthDmg%", "%EarthDmg"})
+        public static final ByStat.StatType TYPE_BONUS_EARTH_DMG = ByStat.StatType.getIdStat("BonusEarthDmg", "Earth Damage %", "earthDamage");
+        @Type.Alias({"ThunderDmg%", "%ThunderDmg"})
+        public static final ByStat.StatType TYPE_BONUS_THUNDER_DMG = ByStat.StatType.getIdStat("BonusThunderDmg", "Thunder Damage %", "thunderDamage");
+        @Type.Alias({"WaterDmg%", "%WaterDmg"})
+        public static final ByStat.StatType TYPE_BONUS_WATER_DMG = ByStat.StatType.getIdStat("BonusWaterDmg", "Water Damage %", "waterDamage");
+        @Type.Alias({"FireDmg%", "%FireDmg"})
+        public static final ByStat.StatType TYPE_BONUS_FIRE_DMG = ByStat.StatType.getIdStat("BonusFireDmg", "Fire Damage %", "fireDamage");
+        @Type.Alias({"AirDmg%", "%AirDmg"})
+        public static final ByStat.StatType TYPE_BONUS_AIR_DMG = ByStat.StatType.getIdStat("BonusAirDmg", "Air Damage %", "airDamage");
+        @Type.Alias({"SumDmg%", "%SumDmg", "BonusTotalDmg", "TotalDmg%", "%TotalDmg"})
+        public static final ByStat.StatType TYPE_BONUS_SUM_DMG = ByStat.StatType.sum("BonusSumDmg", "Total Damage %", TYPE_BONUS_EARTH_DMG, TYPE_BONUS_THUNDER_DMG, TYPE_BONUS_WATER_DMG, TYPE_BONUS_FIRE_DMG, TYPE_BONUS_AIR_DMG);
+
+        // Resource regen ids
+        @Type.Alias({"hpr", "hr"})
+        public static final ByStat.StatType TYPE_RAW_HEALTH_REGEN = ByStat.StatType.getIdStat("RawHealthRegen", "Health Regen", "rawHealthRegen");
+        @Type.Alias({"hr%", "%hr"})
+        public static final ByStat.StatType TYPE_HEALTH_REGEN = ByStat.StatType.getIdStat("HealthRegen", "Health Regen %", "healthRegen");
+        @Type.Alias("ls")
+        public static final ByStat.StatType TYPE_LIFE_STEAL = ByStat.StatType.getIdStat("LifeSteal", "Life Steal", "lifeSteal");
+        @Type.Alias("mr")
+        public static final ByStat.StatType TYPE_MANA_REGEN = ByStat.StatType.getIdStat("ManaRegen", "Mana Regen", "manaRegen");
+        @Type.Alias("ms")
+        public static final ByStat.StatType TYPE_MANA_STEAL = ByStat.StatType.getIdStat("ManaSteal", "Mana Steal", "manaSteal");
+
+        // Movement ids
+        @Type.Alias({"MoveSpeed", "ws"})
+        public static final ByStat.StatType TYPE_WALK_SPEED = ByStat.StatType.getIdStat("WalkSpeed", "Walk Speed", "walkSpeed");
+        public static final ByStat.StatType TYPE_SPRINT = ByStat.StatType.getIdStat("Sprint", "Sprint", "sprint");
+        public static final ByStat.StatType TYPE_SPRINT_REGEN = ByStat.StatType.getIdStat("SprintRegen", "Sprint Regen", "sprintRegen");
+        @Type.Alias("jh")
+        public static final ByStat.StatType TYPE_JUMP_HEIGHT = ByStat.StatType.getIdStat("JumpHeight", "Jump Height", "rawJumpHeight");
+
+        // Gathering ids
+        @Type.Alias("GatherSpeed")
+        public static final ByStat.StatType TYPE_GATHER_SPEED = ByStat.StatType.getIdStat("GatheringSpeed", "Bonus Gather Speed", "gatherSpeed");
+        @Type.Alias("GatherXP")
+        public static final ByStat.StatType TYPE_GATHER_XP = ByStat.StatType.getIdStat("GatheringXP", "Bonus Gather XP", "gatherXPBonus");
+
+        // Other ids
+        @Type.Alias("AtkSpd+")
+        public static final ByStat.StatType TYPE_BONUS_ATK_SPD = ByStat.StatType.getIdStat("BonusAtkSpd", "Bonus Attack Speed", "attackSpeed");
+        public static final ByStat.StatType TYPE_EXPLODING = ByStat.StatType.getIdStat("Exploding", "Exploding", "exploding");
+        public static final ByStat.StatType TYPE_POISON = ByStat.StatType.getIdStat("Poison", "Poison", "poison");
+        public static final ByStat.StatType TYPE_THORNS = ByStat.StatType.getIdStat("Thorns", "Thorns", "thorns");
+        public static final ByStat.StatType TYPE_REFLECTION = ByStat.StatType.getIdStat("Reflection", "Reflection", "reflection");
+        public static final ByStat.StatType TYPE_SOUL_POINT_REGEN = ByStat.StatType.getIdStat("SoulPointRegen", "Soul Point Regen", "soulPointRegen");
+        @Type.Alias("lb")
+        public static final ByStat.StatType TYPE_LOOT_BONUS = ByStat.StatType.getIdStat("LootBonus", "Loot Bonus", "lootBonus");
+        @Type.Alias("lq")
+        public static final ByStat.StatType TYPE_LOOT_QUALITY = ByStat.StatType.getIdStat("LootQuality", "Loot Quality", "lootQuality");
+        public static final ByStat.StatType TYPE_STEALING = ByStat.StatType.getIdStat("Stealing", "Stealing", "stealing");
+        @Type.Alias({"xp", "xb"})
+        public static final ByStat.StatType TYPE_XP_BONUS = ByStat.StatType.getIdStat("XpBonus", "Xp Bonus", "xpBonus");
+
         // user-favorited
         @IngredientFilter.Type.Alias({"Favourited", "fav"})
         public static final IngredientFilter.ByStat.StatType TYPE_FAVORITED = new IngredientFilter.ByStat.StatType("Favorited", "Favorited", i -> {
@@ -318,6 +411,13 @@ public interface IngredientFilter extends Predicate<IngredientProfile>, Comparat
         public static class StatType extends IngredientFilter.Type<IngredientFilter.ByStat> {
             static IngredientFilter.ByStat.StatType sum(String name, String desc, IngredientFilter.ByStat.StatType... summands) {
                 return new IngredientFilter.ByStat.StatType(name, desc, i -> Arrays.stream(summands).mapToInt(s -> s.extractStat(i)).sum());
+            }
+
+            static ByStat.StatType getIdStat(String name, String desc, String key) {
+                return new IngredientFilter.ByStat.StatType(name, desc, i -> {
+                    IngredientIdentificationContainer id = i.getStatuses().get(key);
+                    return id != null ? id.getMax() : 0;
+                });
             }
 
             private final ToIntFunction<IngredientProfile> statExtractor;
@@ -373,6 +473,11 @@ public interface IngredientFilter extends Predicate<IngredientProfile>, Comparat
 
         @Override
         public boolean test(IngredientProfile item) {
+            // If we are 'sorting' by favorited, only show favorited items
+            if (type == TYPE_FAVORITED) {
+                return item.isFavorited();
+            }
+
             for (Pair<Comparison, Integer> comp : comps) {
                 if (!comp.a.test(type.extractStat(item), comp.b)) return false;
             }

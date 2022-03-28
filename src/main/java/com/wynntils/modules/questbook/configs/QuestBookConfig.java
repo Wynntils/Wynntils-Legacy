@@ -34,11 +34,17 @@ public class QuestBookConfig extends SettingsClass {
     @Setting(displayName = "Secret Discoveries Tracking", description = "When viewing secret discoveries, which should be tracked?\n\n§8Coordinates are obtained via the Wynncraft Wiki.")
     public SecretSpoilMode spoilSecretDiscoveries = SecretSpoilMode.ONLY_DISCOVERED;
 
-    @Setting(displayName = "Long Advanced Search Bar", description = "Should the large search bar be used when advanced item search mode is enabled?", order = 150)
+    @Setting(displayName = "Long Advanced Search Bar (Items)", description = "Should the large search bar be used when advanced item search mode is enabled?", order = 150)
     public boolean advItemSearchLongBar = true;
 
     @Setting(upload = false)
     public boolean advancedItemSearch = false;
+
+    @Setting(displayName = "Long Advanced Search Bar (Ingredients)", description = "Should the large search bar be used when advanced ingredient search mode is enabled?", order = 150)
+    public boolean advIngredientSearchLongBar = true;
+
+    @Setting(upload = false)
+    public boolean advancedIngredientSearch = false;
 
     public enum SecretSpoilMode {
         ALL,

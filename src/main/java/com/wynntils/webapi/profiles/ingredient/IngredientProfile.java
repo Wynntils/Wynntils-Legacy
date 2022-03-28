@@ -162,4 +162,8 @@ public class IngredientProfile {
 
         return guideStack = stack;
     }
+
+    public Map<String, IngredientIdentificationContainer> getStatuses() {
+        return this.statuses;
+    }
 }
