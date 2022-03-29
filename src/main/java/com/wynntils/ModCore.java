@@ -61,6 +61,8 @@ public class ModCore {
         if (Reference.developmentEnvironment)
             Reference.LOGGER.info("Development environment detected, automatic update detection disabled");
 
+        WebManager.FixSSL.registerCerts();
+
         WebManager.setupUserAccount();
         WebManager.setupWebApi(true);
 
