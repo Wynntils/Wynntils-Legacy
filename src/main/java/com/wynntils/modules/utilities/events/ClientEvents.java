@@ -671,9 +671,10 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void clickOnChest(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
         if (e.getSlotIn() == null) return;
+        IInventory chestInv = e.getGui().getLowerInv();
 
         // Queue messages into game update ticker when clicking on emeralds in loot chest
-        if (TextFormatting.getTextWithoutFormattingCodes(e.getGui().getLowerInv().getName()).startsWith("Loot Chest") && OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
+        if (TextFormatting.getTextWithoutFormattingCodes(chestInv.getName()).startsWith("Loot Chest") && OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
             // Check if item is actually an emerald, if we're left clicking, and make sure we're not shift clicking
             if (currentLootChest.getStackInSlot(e.getSlotId()).getDisplayName().equals("§aEmerald") && e.getMouseButton() == 0 && !GuiScreen.isShiftKeyDown()) {
                 // Find all emerald pouches in inventory
@@ -703,9 +704,9 @@ public class ClientEvents implements Listener {
 
 
         // Prevent accidental ingredient/emerald pouch clicks in loot chests
-        if (TextFormatting.getTextWithoutFormattingCodes(e.getGui().getLowerInv().getName()).startsWith("Loot Chest") && UtilitiesConfig.INSTANCE.preventOpeningPouchesChest) {
+        if (TextFormatting.getTextWithoutFormattingCodes(chestInv.getName()).startsWith("Loot Chest") && UtilitiesConfig.INSTANCE.preventOpeningPouchesChest) {
             // Ingredient pouch
-            if (e.getSlotId() - e.getGui().getLowerInv().getSizeInventory() == 4) {
+            if (e.getSlotId() - chestInv.getSizeInventory() == 4) {
                 e.setCanceled(true);
                 return;
             }
@@ -722,7 +723,7 @@ public class ClientEvents implements Listener {
 
         // Bulk buy functionality
         // The title for the shops are in slot 4
-        if (UtilitiesConfig.INSTANCE.shiftBulkBuy && isBulkShopConsumable(e.getGui().getLowerInv().getStackInSlot(e.getSlotId())) && GuiScreen.isShiftKeyDown()) {
+        if (UtilitiesConfig.INSTANCE.shiftBulkBuy && isBulkShopConsumable(chestInv, chestInv.getStackInSlot(e.getSlotId())) && GuiScreen.isShiftKeyDown()) {
             CPacketClickWindow packet = new CPacketClickWindow(e.getGui().inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), e.getSlotIn().getStack(), e.getGui().inventorySlots.getNextTransactionID(McIf.player().inventory));
             for (int i = 1; i < UtilitiesConfig.INSTANCE.bulkBuyAmount; i++) { // int i is 1 by default because the user's original click is not cancelled
                 McIf.mc().getConnection().sendPacket(packet);
@@ -950,24 +951,9 @@ public class ClientEvents implements Listener {
         }
     }
 
-    private static boolean isBulkShopConsumable(ItemStack is) {
-        String itemName = is.getDisplayName();
-        return (itemName.endsWith(" Teleport Scroll") ||
-                itemName.contains("Potion of ") || // We're using .contains here because we check for skill point potions which are different colors/symbols
-                itemName.endsWith("Speed Surge [1/1]") ||
-                itemName.endsWith("Bipedal Spring [1/1]") ||
-                itemName.contains("Egg") ||
-
-                itemName.contains("Silver Festival Coin") ||
-                itemName.contains("Golden Festival Coin") ||
-                itemName.contains("Trophy Festival Coin") ||
-                itemName.contains("Heroic Fireworks [1/1]") ||
-                itemName.contains("Scavenger Seeker [1/1]") ||
-                itemName.contains("Reward Voucher [1/1]") ||
-                itemName.contains("Balloon [1/1]") || // This covers all the balloon colours
-
-                itemName.equals("§aEmerald")) // For the Selchar Treasure Merchant
-
+    private static boolean isBulkShopConsumable(IInventory inv, ItemStack is) {
+        return inv.getStackInSlot(4).getDisplayName().contains("§a")
+                && inv.getStackInSlot(4).getDisplayName().contains("Shop")
                 && ItemUtils.getStringLore(is).contains("§6Price:")
                 && !ItemUtils.getStringLore(is).contains(" x "); // Make sure we're not in trade market
         // Normal shops don't have a string with " x " whereas TM uses it for the amount of the item being sold
@@ -976,7 +962,9 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void onItemHovered(ItemTooltipEvent e) {
         // If the shift to bulk buy setting is on and is applicable to the hovered item, add bulk prices
-        if (!UtilitiesConfig.INSTANCE.shiftBulkBuy || !isBulkShopConsumable(e.getItemStack())) return;
+        if (!UtilitiesConfig.INSTANCE.shiftBulkBuy
+                || !(McIf.mc().currentScreen instanceof ChestReplacer)
+                || !isBulkShopConsumable(((ChestReplacer) McIf.mc().currentScreen).getLowerInv(), e.getItemStack())) return;
 
         ItemStack is = e.getItemStack();
         List<String> newLore = new ArrayList<>();
