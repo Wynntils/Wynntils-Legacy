@@ -1,7 +1,7 @@
 package com.wynntils.modules.map.overlays.objects;
 
 /*
- *  * Copyright © Wynntils - 2021.
+ *  * Copyright © Wynntils - 2022.
  */
 
 

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.modules.questbook.overlays.ui;
@@ -41,7 +41,7 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
 
     private SortMethod sort = SortMethod.LEVEL;
     private boolean showingMiniQuests = false;
-    final static List<String> textLines = Arrays.asList("Here you can see all quests", "available for you. You can", "also search for a specific", "quest just by typing its name.", "You can go to the next page", "by clicking on the two buttons", "or by scrolling your mouse.", "", "You can pin/unpin a quest", "by clicking on it.");
+    final static List<String> textLines = Arrays.asList("Here you can see all quests", "available for you. You can", "also search for a specific", "quest just by typing its name.", "You can go to the next page", "by clicking on the two buttons", "or by scrolling your mouse.", "", "You can pin and unpin a quest", "by clicking on it.");
 
     public QuestsPage() {
         super("Quests", true, IconContainer.questPageIcon);

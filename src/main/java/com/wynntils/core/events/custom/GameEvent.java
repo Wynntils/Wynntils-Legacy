@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.core.events.custom;
@@ -182,6 +182,22 @@ public class GameEvent extends Event {
 
         public Map<DamageType, Integer> getDamageTypes() {
             return damageTypes;
+        }
+
+    }
+
+    /**
+     * Called whenever an entity kill tag is received by the client
+     */
+    public static class KillEntity extends GameEvent {
+        Entity entity;
+
+        public KillEntity(Entity entity) {
+            this.entity = entity;
+        }
+
+        public Entity getEntity() {
+            return entity;
         }
 
     }

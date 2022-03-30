@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2021.
+ *  * Copyright © Wynntils - 2022.
  */
 
 package com.wynntils.modules.map.overlays.ui;
@@ -12,8 +12,9 @@ import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.core.commands.CommandCompass;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.map.MapModule;
+import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
-import com.wynntils.modules.map.overlays.enums.MapButtonType;
+import com.wynntils.modules.map.overlays.enums.MapButtonIcon;
 import com.wynntils.modules.map.overlays.objects.MapButton;
 import com.wynntils.modules.music.managers.SoundTrackManager;
 import com.wynntils.webapi.WebManager;
@@ -30,6 +31,7 @@ import static net.minecraft.util.text.TextFormatting.*;
 public class MainWorldMapUI extends WorldMapUI {
 
     private boolean holdingMapKey = false;
+    private boolean holdingDecided = false;
     private final long creationTime = System.currentTimeMillis();
     private long lastClickTime = Integer.MAX_VALUE;
     private static final long doubleClickTime = Utils.getDoubleClickTime();
@@ -50,38 +52,38 @@ public class MainWorldMapUI extends WorldMapUI {
 
         this.mapButtons.clear();
 
-        addButton(MapButtonType.PLUS, 0, Arrays.asList(
+        addButton(MapButtonIcon.PLUS, 0, Arrays.asList(
             DARK_GREEN + "[>] Create a new Waypoint",
             GRAY + "Click here to create",
             GRAY + "a new waypoint."
         ), (v) -> true, (i, btn) -> McIf.mc().displayGuiScreen(new WaypointCreationMenu(null)));
 
-        addButton(MapButtonType.PENCIL, 0, Arrays.asList(
+        addButton(MapButtonIcon.PENCIL, 0, Arrays.asList(
             GOLD + "[>] Manage Paths",
             GRAY + "List, Delete or Create",
             GRAY + "drawed lines that help you",
             GRAY + "to navigate around the world!"
         ), (v) -> true, (i, btn) -> McIf.mc().displayGuiScreen(new PathWaypointOverviewUI()));
 
-        addButton(MapButtonType.PIN, 1, Arrays.asList(
+        addButton(MapButtonIcon.PIN, 1, Arrays.asList(
                 RED + "[>] Manage Waypoints",
                 GRAY + "List, Delete or Create",
                 GRAY + "all your preview set",
                 GRAY + "waypoints!"
-        ), (v) -> true, (i, btn) -> McIf.mc().displayGuiScreen(new WaypointOverviewUI()));
+        ),(v) -> true, (i, btn) -> McIf.mc().displayGuiScreen(new WaypointOverviewUI()));
 
-        addButton(MapButtonType.SEARCH, 2, Arrays.asList(
+        addButton(MapButtonIcon.SEARCH, 2, Arrays.asList(
                 LIGHT_PURPLE + "[>] Search",
                 RED + "In Development"
         ), (v) -> true, (i, btn) -> {});
 
-        addButton(MapButtonType.CENTER, 3, Arrays.asList(
+        addButton(MapButtonIcon.CENTER, 3, Arrays.asList(
                 AQUA + "[>] Configure Markers",
                 GRAY + "Enable or disable each",
                 GRAY + "map marker available."
         ), (v) -> true, (i, btn) -> McIf.mc().displayGuiScreen(new WorldMapSettingsUI()));
 
-        addButton(MapButtonType.SHARE, 4, Arrays.asList(
+        addButton(MapButtonIcon.SHARE, 4, Arrays.asList(
                 BLUE + "[>] Share Location",
                 AQUA + "Left click" + GRAY +" to share your",
                 GRAY + "location with your guild..",
@@ -91,7 +93,7 @@ public class MainWorldMapUI extends WorldMapUI {
                 GRAY + "pin location instead."
         ), (v) -> true, (i, btn) -> handleShareButton(btn == 0));
 
-        addButton(MapButtonType.INFO, 5, Lists.newArrayList(Arrays.asList(
+        addButton(MapButtonIcon.INFO, 5, Lists.newArrayList(Arrays.asList(
                 YELLOW + "[>] Quick Guide",
                 GRAY + " - CTRL to show territories",
                 GRAY + " - Left click on waypoint to place a pin.",
@@ -106,7 +108,7 @@ public class MainWorldMapUI extends WorldMapUI {
             if (easterEggClicks == 20) {
                 i.getHoverLore().set(1, RED + "Alright you asked for it...");
                 SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("easterEgg1"),
-                        true, true, true, false, true, false);
+                        true, true, true, false, true, false, true);
             } else if (easterEggClicks == 15) {
                 i.getHoverLore().set(1, RED + "Are you really sure you want this?");
                 i.getHoverLore().remove(2);
@@ -134,10 +136,18 @@ public class MainWorldMapUI extends WorldMapUI {
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         // HeyZeer0: This detects if the user is holding the map key;
-        if (!holdingMapKey && (System.currentTimeMillis() - creationTime >= 150) && isHoldingMapKey()) holdingMapKey = true;
-
+        if (!holdingDecided && (System.currentTimeMillis() - creationTime >= 150)) {
+            holdingDecided = true;
+            if (isHoldingMapKey())
+                holdingMapKey = true;
+        }
         // HeyZeer0: This close the map if the user was pressing the map key and after a moment dropped it
         if (holdingMapKey && !isHoldingMapKey()) {
+            McIf.mc().displayGuiScreen(null);
+            return;
+        }
+
+        if (MapConfig.WorldMap.INSTANCE.autoCloseMapOnMovement && checkForPlayerMovement(holdingDecided, holdingMapKey))  {
             McIf.mc().displayGuiScreen(null);
             return;
         }
@@ -164,7 +174,7 @@ public class MainWorldMapUI extends WorldMapUI {
         // Map buttons
         for (MapButton button : mapButtons) {
             if (!button.isHovering(mouseX, mouseY)) continue;
-            if (button.getType().isIgnoreAction()) continue;
+            if (button.getIcon().isIgnoreAction()) continue;
 
             button.mouseClicked(mouseX, mouseY, mouseButton);
             return;

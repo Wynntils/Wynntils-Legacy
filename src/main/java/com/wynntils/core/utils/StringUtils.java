@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.core.utils;
@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -104,15 +105,21 @@ public class StringUtils {
         int length = 0;
 
         for (String string : stringArray) {
-            if (length + string.length() >= max) {
-                result.append('|');
-                length = 0;
+            String[] lines = string.split("\\\\n", -1);
+            for (int i = 0; i < lines.length; i ++) {
+                String line = lines[i];
+                if (i > 0 || length + line.length() >= max) {
+                    result.append('\n');
+                    length = 0;
+                }
+                if (line.length() > 0) {
+                    result.append(line).append(' ');
+                    length += line.length() + 1;  // +1 for the space following
+                }
             }
-            result.append(string).append(' ');
-            length += string.length() + 1;  // +1 for the space following
         }
 
-        return result.toString().split("\\|");
+        return result.toString().split("\n");
     }
 
     public static String[] wrapTextBySize(String s, int maxPixels) {
@@ -124,15 +131,21 @@ public class StringUtils {
         int length = 0;
 
         for (String string : stringArray) {
-            if (length + renderer.getStringWidth(string) >= maxPixels) {
-                result.append('|');
-                length = 0;
+            String[] lines = string.split("\\\\n", -1);
+            for (int i = 0; i < lines.length; i ++) {
+                String line = lines[i];
+                if (i > 0 || length + renderer.getStringWidth(line) >= maxPixels) {
+                    result.append('\n');
+                    length = 0;
+                }
+                if (line.length() > 0) {
+                    result.append(line).append(' ');
+                    length += renderer.getStringWidth(line) + spaceSize;
+                }
             }
-            result.append(string).append(' ');
-            length += renderer.getStringWidth(string) + spaceSize;
         }
 
-        return result.toString().split("\\|");
+        return result.toString().split("\n");
     }
 
     private static final Map<String, CustomColor> registeredColors = new HashMap<>();
@@ -461,4 +474,28 @@ public class StringUtils {
         return str.indexOf(' ') == -1 ? str : ('"' + str + '"');
     }
 
+    private static final TreeMap<Integer, String> treemap = new TreeMap<Integer, String>();
+    static {
+        treemap.put(1000, "M");
+        treemap.put(900, "CM");
+        treemap.put(500, "D");
+        treemap.put(400, "CD");
+        treemap.put(100, "C");
+        treemap.put(90, "XC");
+        treemap.put(50, "L");
+        treemap.put(40, "XL");
+        treemap.put(10, "X");
+        treemap.put(9, "IX");
+        treemap.put(5, "V");
+        treemap.put(4, "IV");
+        treemap.put(1, "I");
+    }
+
+    public static String integerToRoman(int number) {
+        int l = treemap.floorKey(number);
+        if (number == l) {
+            return treemap.get(number);
+        }
+        return treemap.get(l) + integerToRoman(number - l);
+    }
 }

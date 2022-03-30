@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.modules.questbook.instances;
@@ -38,7 +38,7 @@ public class QuestBookPage extends GuiScreen {
     private boolean open = false;
 
     // Page specific information
-    private final String title;
+    protected final String title;
     private final IconContainer icon;
     protected boolean showAnimation;
     protected List<String> hoveredText = new ArrayList<>();
@@ -164,9 +164,7 @@ public class QuestBookPage extends GuiScreen {
 
             render.drawRect(Textures.UIs.quest_book, x - 168, y - 81, 34, 222, 168, 33);
 
-            ScreenRenderer.scale(2f);
-            render.drawString(title, (x - 158f) / 2.0f, (y - 74) / 2.0f, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
-            ScreenRenderer.resetScale();
+            drawTitle(x, y);
 
             /*Render search bar when needed*/
             if (showSearchBar) {
@@ -175,6 +173,12 @@ public class QuestBookPage extends GuiScreen {
         }
 
         ScreenRenderer.endGL();
+    }
+
+    protected void drawTitle(int x, int y) {
+        ScreenRenderer.scale(2f);
+        render.drawString(title, (x - 158f) / 2.0f, (y - 74) / 2.0f, CommonColors.YELLOW, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+        ScreenRenderer.resetScale();
     }
 
     protected void drawSearchBar(int centerX, int centerY) {
@@ -303,7 +307,7 @@ public class QuestBookPage extends GuiScreen {
     protected void drawMenuButton(int x, int y, int posX, int posY) {
         if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) {
             render.drawRect(Textures.UIs.quest_book, x - 90, y - 46, 238, 234, 16, 9);
-            hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Back to Menu", TextFormatting.GRAY + "Click here to go", TextFormatting.GRAY + "back to the main page", "", TextFormatting.GREEN + "Left click to select");
+            hoveredText = Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Back to Menu", TextFormatting.GRAY + "Click here to go", TextFormatting.GRAY + "back to the main page.", "", TextFormatting.GREEN + "Left click to select");
             return;
         }
 
@@ -442,4 +446,7 @@ public class QuestBookPage extends GuiScreen {
         }
     }
 
+    public String getTitle() {
+        return title;
+    }
 }

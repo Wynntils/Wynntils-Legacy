@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.modules.questbook.overlays.ui;
@@ -7,6 +7,7 @@ package com.wynntils.modules.questbook.overlays.ui;
 import com.google.common.collect.ImmutableList;
 import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.SortDirection;
+import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -19,6 +20,7 @@ import com.wynntils.core.utils.helpers.ItemFilter.ByStat;
 import com.wynntils.core.utils.helpers.ItemSearchState;
 import com.wynntils.modules.questbook.QuestBookModule;
 import com.wynntils.modules.questbook.configs.QuestBookConfig;
+import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookListPage;
 import com.wynntils.modules.utilities.UtilitiesModule;
@@ -52,7 +54,7 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
     private String searchError;
 
     public ItemPage() {
-        super("Item Guide", true, IconContainer.itemGuideIcon);
+        super("Item Guide", true, IconContainer.guideIcon);
     }
 
     @Override
@@ -958,6 +960,13 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
 
         }
 
+    }
+
+    @Override
+    protected void checkMenuButton(int posX, int posY) {
+        if (posX >= 74 && posX <= 90 && posY >= 37 & posY <= 46) { // Back Button
+            QuestBookPages.GUIDES.getPage().open(false);
+        }
     }
 
 }

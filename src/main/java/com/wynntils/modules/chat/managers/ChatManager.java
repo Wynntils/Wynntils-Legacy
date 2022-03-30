@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.modules.chat.managers;
@@ -12,6 +12,7 @@ import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.chat.configs.ChatConfig;
 import com.wynntils.modules.chat.language.WynncraftLanguage;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
+import com.wynntils.modules.core.managers.PacketQueue;
 import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.instances.DiscoveryInfo;
 import com.wynntils.modules.questbook.managers.QuestManager;
@@ -22,6 +23,8 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Slot;
+import net.minecraft.network.play.client.CPacketEntityAction;
+import net.minecraft.network.play.server.SPacketCustomSound;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraft.util.text.*;
@@ -38,8 +41,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -75,14 +76,14 @@ public class ChatManager {
     private static int lineCount = -1;
     private static ITextComponent dialogueChat = null;
 
+    private static boolean outgoingSneak = false;
+
     private static final SoundEvent popOffSound = new SoundEvent(new ResourceLocation("minecraft", "entity.blaze.hurt"));
 
     private static final String nonTranslatable = "[^a-zA-Z.!?]";
     private static final String optionalTranslatable = "[.!?]";
 
-    private static final Pattern inviteReg = Pattern.compile("((" + TextFormatting.GOLD + "|" + TextFormatting.AQUA + ")/(party|guild) join [a-zA-Z0-9._\\- ]+)");
-    private static final Pattern tradeReg = Pattern.compile("[\\w ]+ would like to trade! Type /trade [\\w ]+ to accept\\.");
-    private static final Pattern duelReg = Pattern.compile("[\\w ]+ \\[Lv\\. \\d+] would like to duel! Type /duel [\\w ]+ to accept\\.");
+    private static final Pattern duelReg = Pattern.compile("[\\w ]+ would like to duel! Type (/duel [\\w ]+) to accept\\.");
     private static final Pattern coordinateReg = Pattern.compile("(-?\\d{1,5}[ ,]{1,2})(\\d{1,3}[ ,]{1,2})?(-?\\d{1,5})");
 
     private static boolean discoveriesLoaded = false;
@@ -110,11 +111,11 @@ public class ChatManager {
 
         // timestamps
         if (ChatConfig.INSTANCE.addTimestampsToChat) {
-            addTimestamp(in);
+            in = addTimestamp(in);
         }
 
         // popup sound
-        if (McIf.getUnformattedText(in).contains(" requires your ") && McIf.getUnformattedText(in).contains(" skill to be at least "))
+        if (McIf.getFormattedText(in).contains("§4 requires your ") && McIf.getUnformattedText(in).contains(" skill to be at least "))
             McIf.player().playSound(popOffSound, 1f, 1f);
 
         // wynnic and gavellian translator
@@ -239,37 +240,12 @@ public class ChatManager {
             }
         }
 
-        // clickable party invites
-        if (ChatConfig.INSTANCE.clickablePartyInvites && inviteReg.matcher(McIf.getFormattedText(in)).find()) {
-            for (ITextComponent textComponent : in.getSiblings()) {
-                if (textComponent.getUnformattedComponentText().startsWith("/")) {
-                    String command = textComponent.getUnformattedComponentText();
-                    textComponent.getStyle()
-                            .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
-                            .setUnderlined(true)
-                            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Join!")));
-                }
-            }
-        }
-
-        // clickable trade messages
-        if (ChatConfig.INSTANCE.clickableTradeMessage && tradeReg.matcher(McIf.getUnformattedText(in)).find()) {
-            for (ITextComponent textComponent : in.getSiblings()) {
-                if (textComponent.getUnformattedComponentText().startsWith("/")) {
-                    String command = textComponent.getUnformattedComponentText();
-                    textComponent.getStyle()
-                            .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
-                            .setUnderlined(true)
-                            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Trade!")));
-                }
-            }
-        }
-
         // clickable duel messages
-        if (ChatConfig.INSTANCE.clickableDuelMessage && duelReg.matcher(McIf.getUnformattedText(in)).find()) {
+        Matcher duelMatcher = duelReg.matcher(McIf.getUnformattedText(in));
+        if (ChatConfig.INSTANCE.clickableDuelMessage && duelMatcher.find()) {
+            String command = duelMatcher.group(1);
             for (ITextComponent textComponent : in.getSiblings()) {
-                if (McIf.getUnformattedText(textComponent).startsWith("/")) {
-                    String command = textComponent.getUnformattedComponentText();
+                if (McIf.getUnformattedText(textComponent).contains("/duel")) {
                     textComponent.getStyle()
                             .setClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, command))
                             .setUnderlined(true)
@@ -924,7 +900,7 @@ public class ChatManager {
     public static Pair<Boolean, ITextComponent> applyToDialogue(ITextComponent component) {
         List<ITextComponent> siblings = component.getSiblings();
         List<ITextComponent> dialogue = new ArrayList<>();
-        if (inDialogue && McIf.getUnformattedText(component).equals(lastChat)) {
+        if (inDialogue && TextFormatting.getTextWithoutFormattingCodes(McIf.getUnformattedText(component)).equals(lastChat)) {
             inDialogue = false;
             int max = Math.max(0, siblings.size() - newMessageCount);
             for (int i = max; i < siblings.size(); i++) {
@@ -939,11 +915,13 @@ public class ChatManager {
                     ChatOverlay.getChat().printChatMessage(line);
                 }
             }
+            // reset everything
             newMessageCount = 0;
             lastChat = null;
             lineCount = -1;
             dialogueChat = null;
-            ChatOverlay.getChat().deleteChatLine(WYNN_DIALOGUE_NEW_MESSAGES_ID);
+            ChatOverlay.getChat().deleteChatLine(WYNN_DIALOGUE_NEW_MESSAGES_ID); // clear dialogue messages
+            finishSneak(); // make sure dialogue progression is canceled in case it wasn't
             return new Pair<>(true, null);
         }
 
@@ -964,12 +942,14 @@ public class ChatManager {
                 }
             }
             chat = siblings.subList(0, siblings.size() - lineCount).stream().map(McIf::getUnformattedText).collect(Collectors.joining());
+            chat = TextFormatting.getTextWithoutFormattingCodes(chat);
             chat = chat.substring(0, chat.length() - 1);
         } else if (inDialogue) {
             if (siblings.size() < lineCount) {
                 return new Pair<>(false, component);
             }
             chat = siblings.subList(0, siblings.size() - lineCount).stream().map(McIf::getUnformattedText).collect(Collectors.joining());
+            chat = TextFormatting.getTextWithoutFormattingCodes(chat);
             if (!chat.isEmpty()) chat = chat.substring(0, chat.length() - 1);
             dialogue = new ArrayList<>(siblings.subList(siblings.size() - lineCount, siblings.size()));
             if (!chat.equals(lastChat) && !dialogue.equals(last)) {
@@ -986,13 +966,13 @@ public class ChatManager {
 
                 // most recent message
                 ITextComponent newMessage = siblings.get(siblings.size() - lineCount - 1);
-                // filter out info messages because they wont be caught through the normal checks
-                if (!newMessage.getUnformattedText().startsWith("[Info] ") || !ChatConfig.INSTANCE.filterWynncraftInfo) {
+                // filter out any disabled messages
+                if (ForgeEventFactory.onClientChat(ChatType.SYSTEM, newMessage) != null) {
                     if (dialogueChat == null) {
                         dialogueChat = newMessage;
                     } else {
                         if (ChatConfig.INSTANCE.addTimestampsToChat) {
-                            addTimestamp(newMessage); // add timestamps to new lines for consistency
+                            newMessage = addTimestamp(newMessage); // add timestamps to new lines for consistency
                         }
                         dialogueChat.appendSibling(newMessage);
                     }
@@ -1011,6 +991,31 @@ public class ChatManager {
         return new Pair<>(false, component);
     }
 
+    public static void progressDialogue() {
+        if (!inDialogue) return; // nothing to progress
+        if (outgoingSneak) return; // do not send multiple sneak packets
+        outgoingSneak = true;
+
+        // send the sneak packet, then stop sneaking once the dialogue progresses
+        CPacketEntityAction sneakPacket = new CPacketEntityAction(McIf.player(), CPacketEntityAction.Action.START_SNEAKING);
+        PacketQueue.queueComplexPacket(sneakPacket, SPacketCustomSound.class, p -> verifyDialogue(((SPacketCustomSound) p)));
+    }
+
+    private static boolean verifyDialogue(SPacketCustomSound p) {
+        boolean success = p.getSoundName().equals("block.lava.pop"); // dialogue progression sound
+        if (success) finishSneak();
+        return success;
+    }
+
+    public static void finishSneak() {
+        if (!outgoingSneak) return; // nothing to finish
+        outgoingSneak = false;
+
+        // immediately send the unsneak packet, no need to queue it
+        CPacketEntityAction unsneakPacket = new CPacketEntityAction(McIf.player(), CPacketEntityAction.Action.STOP_SNEAKING);
+        McIf.mc().getConnection().sendPacket(unsneakPacket);
+    }
+
     public static void onLeave() {
         inDialogue = false;
         newMessageCount = 0;
@@ -1021,7 +1026,7 @@ public class ChatManager {
         ChatOverlay.getChat().deleteChatLine(ChatOverlay.WYNN_DIALOGUE_ID);
     }
 
-    private static void addTimestamp(ITextComponent in) {
+    private static ITextComponent addTimestamp(ITextComponent in) {
         if (dateFormat == null || !validDateFormat) {
             try {
                 dateFormat = new SimpleDateFormat(ChatConfig.INSTANCE.timestampFormat);
@@ -1031,10 +1036,10 @@ public class ChatManager {
             }
         }
 
-        List<ITextComponent> timeStamp = new ArrayList<>();
+        ITextComponent timeStamp = new TextComponentString("");
         ITextComponent startBracket = new TextComponentString("[");
         startBracket.getStyle().setColor(TextFormatting.DARK_GRAY);
-        timeStamp.add(startBracket);
+        timeStamp.appendSibling(startBracket);
         ITextComponent time;
         if (validDateFormat) {
             time = new TextComponentString(dateFormat.format(new Date()));
@@ -1043,11 +1048,13 @@ public class ChatManager {
             time = new TextComponentString("Invalid Format");
             time.getStyle().setColor(TextFormatting.RED);
         }
-        timeStamp.add(time);
+        timeStamp.appendSibling(time);
         ITextComponent endBracket = new TextComponentString("] ");
         endBracket.getStyle().setColor(TextFormatting.DARK_GRAY);
-        timeStamp.add(endBracket);
-        in.getSiblings().addAll(0, timeStamp);
+        timeStamp.appendSibling(endBracket);
+
+        timeStamp.appendSibling(in);
+        return timeStamp;
     }
 
     public static void setDiscoveriesLoaded(boolean discoveriesLoaded) {

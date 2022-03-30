@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.webapi.profiles.player;
@@ -363,6 +363,25 @@ public class PlayerStatsProfile {
 
         public String getStars() {
             return stars;
+        }
+
+        public static String getRoleNameFromStars(int starCount) {
+            switch (starCount) {
+                case 5:
+                    return "Owner";
+                case 4:
+                    return "Chief";
+                case 3:
+                    return "Strategist";
+                case 2:
+                    return "Captain";
+                case 1:
+                    return "Recruiter";
+                case 0:
+                    return "Recruit";
+                default:
+                    return "";
+            }
         }
     }
 

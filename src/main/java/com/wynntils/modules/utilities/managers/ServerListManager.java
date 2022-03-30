@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.modules.utilities.managers;
@@ -28,11 +28,13 @@ public class ServerListManager {
     }
 
     public static String getUptimeHours(String id) {
+        if (!availableServers.containsKey(id)) return "-";
         long milliseconds = System.currentTimeMillis() - availableServers.get(id).getFirstSeen();
         return String.valueOf((milliseconds / (1000*60*60)) % 24);
     }
 
     public static String getUptimeMinutes(String id) {
+        if (!availableServers.containsKey(id)) return "-";
         long milliseconds = System.currentTimeMillis() - availableServers.get(id).getFirstSeen();
         return String.valueOf(milliseconds / (1000*60) % 60);
     }

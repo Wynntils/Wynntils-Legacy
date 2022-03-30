@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.webapi;
@@ -14,10 +14,10 @@ import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.overlays.objects.MapApiIcon;
-import com.wynntils.modules.map.overlays.objects.SeaskipperLocation;
 import com.wynntils.webapi.account.WynntilsAccount;
 import com.wynntils.webapi.profiles.*;
 import com.wynntils.webapi.profiles.guild.GuildProfile;
+import com.wynntils.webapi.profiles.ingredient.IngredientProfile;
 import com.wynntils.webapi.profiles.item.IdentificationOrderer;
 import com.wynntils.webapi.profiles.item.ItemGuessProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
@@ -28,13 +28,15 @@ import com.wynntils.webapi.profiles.music.MusicLocationsProfile;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
 import com.wynntils.webapi.request.Request;
 import com.wynntils.webapi.request.RequestHandler;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.common.ProgressManager;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,6 +46,15 @@ import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.Certificate;
+import java.security.cert.CertificateException;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -65,6 +76,10 @@ public class WebManager {
     private static HashMap<ItemType, String[]> materialTypes = new HashMap<>();
     private static HashMap<String, ItemGuessProfile> itemGuesses = new HashMap<>();
     private static HashMap<String, MajorIdentification> majorIds = new HashMap<>();
+
+    private static HashMap<String, IngredientProfile> ingredients = new HashMap<>();
+    private static Collection<IngredientProfile> directIngredients = new ArrayList<>();
+    private static HashMap<String, String> ingredientHeadTextures = new HashMap<>();
 
     private static ArrayList<MapMarkerProfile> mapMarkers = new ArrayList<>();
     private static ArrayList<MapLabelProfile> mapLabels = new ArrayList<>();
@@ -118,6 +133,7 @@ public class WebManager {
 
         updateTerritories(handler);
         updateItemList(handler);
+        updateIngredientList(handler);
         updateMapLocations(handler);
         updateItemGuesses(handler);
         updatePlayerProfile(handler);
@@ -228,6 +244,18 @@ public class WebManager {
 
     public static ArrayList<SeaskipperProfile> getSeaskipperLocations() {
         return seaskipperLocations;
+    }
+
+    public static Map<String, IngredientProfile> getIngredients() {
+        return ingredients;
+    }
+
+    public static Collection<IngredientProfile> getDirectIngredients() {
+        return directIngredients;
+    }
+
+    public static HashMap<String, String> getIngredientHeadTextures() {
+        return ingredientHeadTextures;
     }
 
     public static String getTranslatedItemName(String name) {
@@ -474,6 +502,33 @@ public class WebManager {
 
                 return true;
             })
+        );
+    }
+
+    /**
+     * Update all Wynn ingredients on the {@link HashMap} ingredients
+     */
+    public static void updateIngredientList(RequestHandler handler) {
+        if (apiUrls == null) return;
+        String url = apiUrls.get("Athena") + "/cache/get/ingredientList";
+        handler.addRequest(new Request(url, "ingredientList")
+                .cacheTo(new File(API_CACHE_ROOT, "ingredient_list.json"))
+                .cacheMD5Validator(() -> getAccount().getMD5Verification("ingredientList"))
+                .handleJsonObject(j -> {
+                    ingredientHeadTextures = gson.fromJson(j.getAsJsonObject("headTextures"), HashMap.class);
+
+                    IngredientProfile[] gItems = gson.fromJson(j.getAsJsonArray("ingredients"), IngredientProfile[].class);
+                    HashMap<String, IngredientProfile> cingredients = new HashMap<>();
+
+                    for (IngredientProfile prof : gItems) {
+                        cingredients.put(prof.getDisplayName(), prof);
+                    }
+
+                    ingredients = cingredients;
+                    directIngredients = cingredients.values();
+
+                    return true;
+                })
         );
     }
 
@@ -906,6 +961,80 @@ public class WebManager {
         if (apiUrls == null) return null;
 
         return apiUrls.get(key);
+    }
+
+    public static class FixSSL {
+
+        private static boolean needsPatching()
+        {
+            String javaVersion = System.getProperty("java.version");
+            Reference.LOGGER.info("Found java version " + javaVersion);
+
+            if (javaVersion != null && javaVersion.startsWith("1.8.0_")) {
+                try {
+                    if (Integer.parseInt(javaVersion.substring("1.8.0_".length())) < 101)
+                        return true;
+                } catch (NumberFormatException e) {
+                    e.printStackTrace();
+                    Reference.LOGGER.warn("Could not parse java version!");
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        public static void registerCerts() {
+            if (!needsPatching()) return;
+            try {
+                final KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
+                Path ksPath = Paths.get(System.getProperty("java.home"),"lib", "security", "cacerts");
+                keyStore.load(Files.newInputStream(ksPath), "changeit".toCharArray());
+                final Map<String, Certificate> jdkTrustStore = Collections.list(keyStore.aliases()).stream().collect(Collectors.toMap(a -> a, (String alias) -> {
+                    try {
+                        return keyStore.getCertificate(alias);
+                    } catch (KeyStoreException e) {
+                        throw new UncheckedKeyStoreException(e);
+                    }
+                }));
+
+                final KeyStore leKS = KeyStore.getInstance(KeyStore.getDefaultType());
+                final InputStream leKSFile = FixSSL.class.getResourceAsStream("/assets/wynntils/certs/lekeystore.jks");
+                leKS.load(leKSFile, "supersecretpassword".toCharArray());
+                final Map<String, Certificate> leTrustStore = Collections.list(leKS.aliases()).stream().collect(Collectors.toMap(a -> a, (String alias) -> {
+                    try {
+                        return leKS.getCertificate(alias);
+                    } catch (KeyStoreException e) {
+                        throw new UncheckedKeyStoreException(e);
+                    }
+                }));
+
+                final KeyStore mergedTrustStore = KeyStore.getInstance(KeyStore.getDefaultType());
+                mergedTrustStore.load(null, new char[0]);
+                for (Map.Entry<String, Certificate> entry : jdkTrustStore.entrySet()) {
+                    mergedTrustStore.setCertificateEntry(entry.getKey(), entry.getValue());
+                }
+                for (Map.Entry<String , Certificate> entry : leTrustStore.entrySet()) {
+                    mergedTrustStore.setCertificateEntry(entry.getKey(), entry.getValue());
+                }
+
+                final TrustManagerFactory instance = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+                instance.init(mergedTrustStore);
+                final SSLContext tls = SSLContext.getInstance("TLS");
+                tls.init(null, instance.getTrustManagers(), null);
+                HttpsURLConnection.setDefaultSSLSocketFactory(tls.getSocketFactory());
+                Reference.LOGGER.info("Added Lets Encrypt root certificates as additional trust");
+            } catch (UncheckedKeyStoreException | KeyStoreException | IOException | NoSuchAlgorithmException | CertificateException | KeyManagementException e) {
+                Reference.LOGGER.error("Failed to load lets encrypt certificate. Expect problems");
+                e.printStackTrace();
+            }
+        }
+
+        private static class UncheckedKeyStoreException extends RuntimeException {
+            public UncheckedKeyStoreException(Throwable cause) {
+                super(cause);
+            }
+        }
     }
 
 }

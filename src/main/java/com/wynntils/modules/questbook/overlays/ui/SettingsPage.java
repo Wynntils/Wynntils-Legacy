@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.modules.questbook.overlays.ui;
@@ -25,6 +25,6 @@ public class SettingsPage extends QuestBookPage {
 
     @Override
     public List<String> getHoveredDescription() {
-        return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Configuration", TextFormatting.GRAY + "Change the settings", TextFormatting.GRAY + "to the way you want.", "", TextFormatting.RED + "BETA VERSION", TextFormatting.GREEN + "Left click to select");
+        return Arrays.asList(TextFormatting.GOLD + "[>] " + TextFormatting.BOLD + "Configuration", TextFormatting.GRAY + "Change the settings", TextFormatting.GRAY + "to the way you want.", "", TextFormatting.GREEN + "Left click to select");
     }
 }

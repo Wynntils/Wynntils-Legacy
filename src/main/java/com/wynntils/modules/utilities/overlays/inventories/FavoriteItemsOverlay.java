@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.modules.utilities.overlays.inventories;
@@ -10,23 +10,30 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.StringUtils;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import static net.minecraft.util.text.TextFormatting.*;
 
 public class FavoriteItemsOverlay implements Listener {
 
     private static final ScreenRenderer renderer = new ScreenRenderer();
+
+    private static final Pattern INGREDIENT_PATTERN = Pattern.compile("(.+)\\s\\[✫✫✫\\]");
 
     private static void renderFavorites(GuiContainer gui) {
         if (!Reference.onWorld) return;
@@ -59,6 +66,24 @@ public class FavoriteItemsOverlay implements Listener {
             if (nbt.hasKey("wynntilsFavorite")) continue; // already been checked
 
             String itemName = StringUtils.normalizeBadString(getTextWithoutFormattingCodes(stack.getDisplayName()));
+
+            Matcher matcher = INGREDIENT_PATTERN.matcher(itemName);
+
+            if (matcher.matches()) {
+                nbt.setBoolean("wynntilsFavorite", UtilitiesConfig.INSTANCE.favoriteIngredients.contains(matcher.group(1)));
+                continue;
+            }
+
+            if (UtilitiesConfig.INSTANCE.favoriteEmeraldPouches.contains(itemName) && stack.getItem() == Items.DIAMOND_AXE) {
+                nbt.setBoolean("wynntilsFavorite", true);
+                continue;
+            }
+
+            if (UtilitiesConfig.INSTANCE.favoritePowders.contains(itemName) && stack.getItem() == Items.DYE) {
+                nbt.setBoolean("wynntilsFavorite", true);
+                continue;
+            }
+
             if (!itemName.contains("Unidentified")) {
                 nbt.setBoolean("wynntilsFavorite", false);
                 continue; // don't care about identified items

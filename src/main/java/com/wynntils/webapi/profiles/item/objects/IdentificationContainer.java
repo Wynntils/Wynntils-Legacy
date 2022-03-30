@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.webapi.profiles.item.objects;
@@ -16,9 +16,9 @@ public class IdentificationContainer {
 
     private static Map<String, IdentificationModifier> typeMap = new HashMap<>();
 
-    private IdentificationModifier type;
+    protected IdentificationModifier type;
     private int baseValue;
-    private boolean isFixed;
+    protected boolean isFixed;
 
     private transient int min, max;
     private transient Fraction minChance;
@@ -80,7 +80,7 @@ public class IdentificationContainer {
             else nameBuilder.append(c);
         }
 
-        return StringUtils.capitalizeFirst(nameBuilder.toString());
+        return StringUtils.capitalizeFirst(nameBuilder.toString()).replaceAll("\\bXp\\b", "XP");
     }
 
     public static IdentificationModifier getTypeFromName(String name) {

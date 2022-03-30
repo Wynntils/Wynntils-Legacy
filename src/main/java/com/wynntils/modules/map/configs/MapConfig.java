@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2021.
+ *  * Copyright © Wynntils - 2022.
  */
 
 package com.wynntils.modules.map.configs;
@@ -51,7 +51,7 @@ public class MapConfig extends SettingsClass {
     @Setting(displayName = "Minimap Coordinates", description = "Should your coordinates be displayed below the minimap?", order = 7)
     public boolean showCoords = false;
 
-    @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?\n\n§8This has no effect if compass directions are disabled.", order = 8)
+    @Setting(displayName = "Display Only North", description = "Should only north be displayed on the minimap?\n\n§8This has no effect if Show Compass Directions is disabled.", order = 8)
     public boolean northOnly = false;
 
     @Setting(displayName = "Display Minimap Icons", description = "Should map icons be displayed on the minimap?", order = 9)
@@ -75,7 +75,7 @@ public class MapConfig extends SettingsClass {
     @Setting.Limitations.IntLimit(min = MiniMapOverlay.MIN_ZOOM, max = MiniMapOverlay.MAX_ZOOM, precision = 1)
     public int mapZoom = 30;
 
-    @Setting(displayName = "Hide in Non-Mapped Areas", description = "Should the minimap be hidden if the player is outside the map?", order = 15)
+    @Setting(displayName = "Hide Minimap in Unmapped Areas", description = "Should the minimap be hidden when you are outside of the main map?\n\n§8This setting targets areas that are not displayed in the map, such as quest areas.", order = 15)
     public boolean hideMinimapOutOfBounds = true;
 
     @Setting
@@ -87,6 +87,9 @@ public class MapConfig extends SettingsClass {
     @SettingsInfo(name = "map_worldmap", displayPath = "Map/World Map")
     public static class WorldMap extends SettingsClass {
         public static WorldMap INSTANCE;
+
+        @Setting(displayName = "Auto Close Map On Movement", description = "Should the map close when the user starts moving? If the user opened the map by holding the keybind, the map will stay open until the key is released.")
+        public boolean autoCloseMapOnMovement = false;
 
         @Setting(displayName = "Keep Territory Visible", description = "Should territory names always be displayed rather than only when you hold CTRL?")
         public boolean keepTerritoryVisible = false;
@@ -101,7 +104,7 @@ public class MapConfig extends SettingsClass {
         @Setting.Limitations.FloatLimit(min = 0.1f, max = 1f)
         public float colorAlpha = 0.4f;
 
-        @Setting(displayName = "Show Territory Areas", description = "Should territory rectangles be visible?")
+        @Setting(displayName = "Show Territory Areas", description = "Should rectangles covering the area of territories be displayed?")
         public boolean territoryArea = true;
 
         @Setting(displayName = "Show Location Labels", description = "Should location labels be displayed?")
@@ -110,9 +113,56 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Open Animation", description = "Should the world map have an opening animation?")
         public boolean openAnimation = true;
 
-        @Setting(displayName = "Opening Animation Length", description = "How long should be the opening animation")
+        @Setting(displayName = "Minimum Zoom for Loot Chest I", description = "What is the minimum zoom level for tier 1 loot chest to show on the map?")
+        @Setting.Limitations.IntLimit(min = -10, max = 500)
+        public int lootChestTier1MinZoom = 200;
+
+        @Setting(displayName = "Minimum Zoom for Loot Chest II", description = "What is the minimum zoom level for tier 2 loot chest to show on the map?")
+        @Setting.Limitations.IntLimit(min = -10, max = 500)
+        public int lootChestTier2MinZoom = 300;
+
+        @Setting(displayName = "Minimum Zoom for Loot Chest III", description = "What is the minimum zoom level for tier 3 loot chest to show on the map?")
+        @Setting.Limitations.IntLimit(min = -10, max = 500)
+        public int lootChestTier3MinZoom = 400;
+
+        @Setting(displayName = "Minimum Zoom for Loot Chest IV", description = "What is the minimum zoom level for tier 4 loot chest to show on the map?")
+        @Setting.Limitations.IntLimit(min = -10, max = 500)
+        public int lootChestTier4MinZoom = 500;
+
+        @Setting(displayName = "Opening Animation Length", description = "How long should the opening animation be?")
         @Setting.Limitations.IntLimit(min = 50, max = 1000)
         public int animationLength = 250;
+
+        @Setting(displayName = "Default Map Zoom", description = "How zoomed in should the map be when opened?")
+        @Setting.Limitations.IntLimit(min = -10, max = 300)
+        public int defaultMapZoom = 0;
+
+        @Setting(displayName = "Map Center X During War", description = "At what X coordinate should the center of the map be when you are in war?")
+        public String mapDefaultXString = "-200";
+
+        @Setting
+        public int mapDefaultX = -200;
+
+        @Setting(displayName = "Map Center Z During War", description = "At what Z coordinate should the center of the map be when you are in war?")
+        public String mapDefaultZString = "-3300";
+
+        @Setting
+        public int mapDefaultZ = -3300;
+
+        @Override
+        public void onSettingChanged(String name) {
+            super.onSettingChanged(name);
+
+            if (name.equals("mapDefaultXString")) {
+                try {
+                    mapDefaultX = Integer.parseInt(mapDefaultXString);
+                } catch (NumberFormatException ignored) { }
+            } else if (name.equals("mapDefaultZString")) {
+                try {
+                    mapDefaultZ = Integer.parseInt(mapDefaultZString);
+                } catch (NumberFormatException ignored) { }
+            }
+        }
     }
 
     @SettingsInfo(name = "map_textures", displayPath = "Map/Textures")
@@ -142,10 +192,10 @@ public class MapConfig extends SettingsClass {
         @Setting(upload = true)
         public List<PathWaypointProfile> pathWaypoints = new ArrayList<>();
 
-        @Setting(displayName = "Minimap Waypoint Fade", description = "Should waypoints become more clear the closer you are in elevation?\n\n§8Waypoints below you will darken, and waypoints above you will lighten.", order = 1)
+        @Setting(displayName = "Minimap Waypoint Fade", description = "Should waypoints become more apparent the closer you are in elevation?\n\n§8Waypoints below you will darken, and waypoints above you will lighten.", order = 1)
         public boolean iconFade = true;
 
-        @Setting(displayName = "Minimap Waypoint Fade Scale", description = "At which Y difference should waypoints become invisible?", order = 2)
+        @Setting(displayName = "Minimap Waypoint Fade Scale", description = "At what difference in elevation should waypoints become invisible?", order = 2)
         @Setting.Limitations.IntLimit(min = 10, max = 100, precision = 10)
         public int iconFadeScale = 30;
 
@@ -195,25 +245,25 @@ public class MapConfig extends SettingsClass {
     public static class LootRun extends SettingsClass {
         public static LootRun INSTANCE;
 
-        @Setting(displayName = "Loot Run Path Type", description = "How should paths be drawn?", order = 1)
+        @Setting(displayName = "Path Type", description = "How should paths be drawn?", order = 1)
         public PathType pathType = PathType.TEXTURED;
 
-        @Setting(displayName = "Loot Run Path Colour", description = "What should the colour of displayed paths be?\n\n§aClick the coloured box to open the colour wheel.", order = 2)
+        @Setting(displayName = "Path Colour", description = "What should the colour of displayed paths be?\n\n§aClick the coloured box to open the colour wheel.", order = 2)
         @Setting.Features.CustomColorFeatures(allowAlpha = true)
         public CustomColor activePathColour = MinecraftChatColors.AQUA;
 
-        @Setting(displayName = "Recording Loot Run Path Colour", description = "What should the colour of the currently recording path be?\n\n§aClick the coloured box to open the colour wheel.", order = 3)
+        @Setting(displayName = "Recording Path Colour", description = "What should the colour of a recording path be?\n\n§aClick the coloured box to open the colour wheel.", order = 3)
         @Setting.Features.CustomColorFeatures(allowAlpha = true)
         public CustomColor recordingPathColour = CommonColors.RED;
 
-        @Setting(displayName = "Show Loot Run Paths as Rainbow", description = "Should loot run paths be shown in colours of the rainbow?", order = 4)
+        @Setting(displayName = "Show Paths as Rainbow", description = "Should paths be shown in the colours of a rainbow?", order = 4)
         public boolean rainbowLootRun = false;
 
-        @Setting(displayName = "Rainbow Path Transitioning", description = "How many blocks should loot run paths be shown in a colour before transitioning to a different colour?", order = 5)
+        @Setting(displayName = "Rainbow Path Transitioning", description = "How many blocks should paths be shown in a colour before transitioning to a different colour?", order = 5)
         @Setting.Limitations.IntLimit(min = 1, max = 500)
         public int cycleDistance = 20;
 
-        @Setting(displayName = "Show Loot Run Path on Map", description = "Should the active loot run path be shown on the map?", order = 6)
+        @Setting(displayName = "Show Path on Map", description = "Should the active path be shown on the map?", order = 6)
         public boolean displayLootrunOnMap = true;
 
         @Setting(displayName = "Show Loot Run Notes", description = "Should notes from the active loot run be rendered?", order = 7)
@@ -242,7 +292,7 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Contribute Gathering Spots", description = "Should the mod send data about your collected gathering spots?\n\n§8Wynntils uses this data in order to place gathering spots on the map. Allowing the mod to send data is completely optional, and your contributions are always appreciated. Disabling this will still allow you to see gathering spots.", order = 1)
         public boolean allowGatheringSpot = true;
 
-        @Setting(displayName = "Enable Location Detection (Experimental)", description = "Should NPC/service detection be activated?", order = 8)
+        @Setting(displayName = "Enable Location Detection", description = "Should the mod detect NPCs and services?\n\n§8This setting is currently experimental.", order = 8)
         public boolean enableLocationDetection = false;
     }
 

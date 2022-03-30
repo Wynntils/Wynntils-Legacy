@@ -1,10 +1,10 @@
 /*
- *  * Copyright © Wynntils - 2021.
+ *  * Copyright © Wynntils - 2022.
  */
 
 package com.wynntils.modules.map.overlays.enums;
 
-public enum MapButtonType {
+public enum MapButtonIcon {
 
     PLUS(0, 46, 14, 60),
     PIN(14, 46, 26, 62),
@@ -23,7 +23,7 @@ public enum MapButtonType {
 
     boolean ignoreAction;
 
-    MapButtonType(int startX, int startY, int endX, int endY, boolean ignoreAction) {
+    MapButtonIcon(int startX, int startY, int endX, int endY, boolean ignoreAction) {
         this.startX = startX;
         this.startY = startY;
         this.endX = endX;
@@ -32,7 +32,7 @@ public enum MapButtonType {
         this.ignoreAction = ignoreAction;
     }
 
-    MapButtonType(int startX, int startY, int endX, int endY) {
+    MapButtonIcon(int startX, int startY, int endX, int endY) {
         this(startX, startY, endX, endY, false);
     }
 

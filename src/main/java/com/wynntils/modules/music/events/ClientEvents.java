@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2021.
+ *  * Copyright © Wynntils - 2022.
  */
 
 package com.wynntils.modules.music.events;
@@ -98,30 +98,4 @@ public class ClientEvents implements Listener {
         if (BossTrackManager.isAlive()) return;
         AreaTrackManager.update(new Location(McIf.player()));
     }
-
-    // mythic found sfx
-    @SubscribeEvent
-    public void onMythicFound(PacketEvent<SPacketWindowItems> e) {
-        if (!MusicConfig.SoundEffects.INSTANCE.mythicFound) return;
-        if (McIf.mc().currentScreen == null) return;
-        if (!(McIf.mc().currentScreen instanceof ChestReplacer)) return;
-
-        ChestReplacer chest = (ChestReplacer) McIf.mc().currentScreen;
-        if (!chest.getLowerInv().getName().contains("Loot Chest") &&
-                !chest.getLowerInv().getName().contains("Daily Rewards") &&
-                !chest.getLowerInv().getName().contains("Objective Rewards")) return;
-
-        int size = Math.min(chest.getLowerInv().getSizeInventory(), e.getPacket().getItemStacks().size());
-        for (int i = 0; i < size; i++) {
-            ItemStack stack = e.getPacket().getItemStacks().get(i);
-            if (stack.isEmpty() || !stack.hasDisplayName()) continue;
-            if (!stack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString())) continue;
-            if (!stack.getDisplayName().contains("Unidentified")) continue;
-
-            SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("mythicFound"),
-                    true, false, false, false, true, false);
-            break;
-        }
-    }
-
 }

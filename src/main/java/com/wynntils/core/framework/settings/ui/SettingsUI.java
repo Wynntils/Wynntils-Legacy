@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.core.framework.settings.ui;
@@ -59,7 +59,7 @@ public class SettingsUI extends UI {
         changedSettings.forEach(c -> { try { registeredSettings.get(c).tryToLoad(); } catch (Exception e) { e.printStackTrace(); } });
         onClose();
     }, 0, 0, 17, 45);
-    public UIEButton applyButton = new UIEButton("Apply", Textures.UIs.button_a, 0.5f, 0.5f, -130, 85, -10, true, (ui, mouseButton) -> {
+    public UIEButton applyButton = new UIEButton("Save", Textures.UIs.button_a, 0.5f, 0.5f, -130, 85, -10, true, (ui, mouseButton) -> {
         changedSettings.forEach(c -> { try { registeredSettings.get(c).saveSettings(); } catch (Exception e) { e.printStackTrace(); } });
         onClose();
     }, 0, 0, 17, 45);

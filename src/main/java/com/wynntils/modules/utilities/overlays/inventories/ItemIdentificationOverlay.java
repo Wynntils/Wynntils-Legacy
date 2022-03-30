@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2021.
+ *  * Copyright © Wynntils - 2022.
  */
 
 package com.wynntils.modules.utilities.overlays.inventories;
@@ -16,7 +16,7 @@ import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.helpers.AnimatedText;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
-import com.wynntils.modules.utilities.enums.IdentificationType;
+import com.wynntils.modules.utilities.configs.enums.IdentificationType;
 import com.wynntils.modules.utilities.instances.IdentificationResult;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.IdentificationOrderer;

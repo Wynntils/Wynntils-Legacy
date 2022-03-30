@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.modules.map.rendering;
@@ -14,7 +14,6 @@ import com.wynntils.modules.map.instances.LootRunPath;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import net.minecraft.block.Block;
 import net.minecraft.block.state.IBlockState;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderGlobal;
@@ -378,12 +377,15 @@ public class PointRenderer {
     public static void drawCube(BlockPos point, CustomColor color) {
         if (!McIf.world().isBlockLoaded(point, false)) return;
 
+        if (McIf.player().getDistanceSq(point.getX(), point.getY(), point.getZ()) > 4096f)
+            return; // only draw chest when close
+
         RenderManager renderManager = McIf.mc().getRenderManager();
 
         Location c = new Location(
-            point.getX() - renderManager.viewerPosX,
-            point.getY() - renderManager.viewerPosY,
-            point.getZ() - renderManager.viewerPosZ
+                point.getX() - renderManager.viewerPosX,
+                point.getY() - renderManager.viewerPosY,
+                point.getZ() - renderManager.viewerPosZ
         );
 
         GlStateManager.pushMatrix();

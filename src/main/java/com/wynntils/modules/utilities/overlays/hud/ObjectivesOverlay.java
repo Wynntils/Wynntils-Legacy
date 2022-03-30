@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2021.
+ *  * Copyright © Wynntils - 2022.
  */
 
 package com.wynntils.modules.utilities.overlays.hud;
@@ -12,6 +12,7 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.network.play.server.SPacketDisplayObjective;
 import net.minecraft.network.play.server.SPacketScoreboardObjective;
 import net.minecraft.network.play.server.SPacketUpdateScore;
@@ -26,17 +27,21 @@ import java.util.regex.Pattern;
 public class ObjectivesOverlay extends Overlay {
 
     public static final Pattern OBJECTIVE_PATTERN = Pattern.compile("^[- ] (.*): *([0-9]+)/([0-9]+)$");
-    public static final Pattern HEADER_PATTERN = Pattern.compile("(★ )?(Daily )?Objectives?:");
+    public static final Pattern OBJECTIVE_HEADER_PATTERN = Pattern.compile("(★ )?(Daily )?Objectives?:");
+    public static final Pattern GUILD_OBJECTIVE_HEADER_PATTERN = Pattern.compile("(★ )?Guild Obj: (.+)");
 
     private static final int WIDTH = 130;
-    private static final int HEIGHT = 52;
+    private static final int HEIGHT = 70;
     private static final int MAX_OBJECTIVES = 3;
 
     private static final Objective[] objectives = new Objective[MAX_OBJECTIVES];
+    private static Objective guildObjectives = null;
     private static String sidebarObjectiveName;
     private static long keepVisibleTimestamp;
     private static int objectivesPosition;
     private static int objectivesEnd;
+    private static int guildObjectivesPosition;
+    private static int guildObjectivesEnd;
 
     public ObjectivesOverlay() {
         super("Objectives", WIDTH, HEIGHT, true, 1f, 1f, -1, -1, OverlayGrowFrom.BOTTOM_RIGHT);
@@ -106,7 +111,7 @@ public class ObjectivesOverlay extends Overlay {
         if (updateScore.getObjectiveName().equals(sidebarObjectiveName)) {
             if (updateScore.getScoreAction() == SPacketUpdateScore.Action.REMOVE) {
                 String objectiveLine = TextFormatting.getTextWithoutFormattingCodes(updateScore.getPlayerName());
-                if (HEADER_PATTERN.matcher(objectiveLine).matches()) {
+                if (OBJECTIVE_HEADER_PATTERN.matcher(objectiveLine).matches()) {
                     objectivesPosition = 0;
                     return true;
                 }
@@ -116,14 +121,23 @@ public class ObjectivesOverlay extends Overlay {
             }
 
             String text = TextFormatting.getTextWithoutFormattingCodes(updateScore.getPlayerName());
-            if (HEADER_PATTERN.matcher(text).matches()) {
+            if (OBJECTIVE_HEADER_PATTERN.matcher(text).matches()) {
                 objectivesPosition = updateScore.getScoreValue();
                 return true;
-            } else if (updateScore.getPlayerName().equals(TextFormatting.BLACK.toString())) {
+            } else if (updateScore.getPlayerName().equals("ÀÀ")) {
                 objectivesEnd = updateScore.getScoreValue();
                 return true;
             }
 
+            if (GUILD_OBJECTIVE_HEADER_PATTERN.matcher(text).matches()) {
+                guildObjectivesPosition = updateScore.getScoreValue();
+                return true;
+            } else if (updateScore.getPlayerName().equals("ÀÀÀ")) {
+                guildObjectivesEnd = updateScore.getScoreValue();
+                return true;
+            }
+
+            // Normal objective
             if (updateScore.getScoreValue() < objectivesPosition && (objectivesEnd == 0 || updateScore.getScoreValue() > objectivesEnd)) {
                 int pos = objectivesPosition - 1 - updateScore.getScoreValue();
                 if (pos + 1 > MAX_OBJECTIVES) {
@@ -134,6 +148,14 @@ public class ObjectivesOverlay extends Overlay {
                 String objectiveLine = TextFormatting.getTextWithoutFormattingCodes(updateScore.getPlayerName());
                 if (OBJECTIVE_PATTERN.matcher(objectiveLine).find()) // only create objective if it matches the format
                     objectives[pos] = parseObjectiveLine(objectiveLine);
+                return true;
+            }
+
+            // Guild objective
+            if (updateScore.getScoreValue() < guildObjectivesPosition && (guildObjectivesEnd == 0 || updateScore.getScoreValue() > guildObjectivesEnd)) {
+                String objectiveLine = TextFormatting.getTextWithoutFormattingCodes(updateScore.getPlayerName());
+                if (OBJECTIVE_PATTERN.matcher(objectiveLine).find()) // only create objective if it matches the format
+                    guildObjectives = parseObjectiveLine(objectiveLine);
                 return true;
             }
         }
@@ -192,13 +214,16 @@ public class ObjectivesOverlay extends Overlay {
         }
     }
 
-    private CustomColor getAlphaAdjustedColor(float fadeAlpha) {
+    private CustomColor getAlphaAdjustedColor(float fadeAlpha, boolean guildObjective) {
         CustomColor color = new CustomColor(OverlayConfig.Objectives.INSTANCE.textColour);
+        if (guildObjective) {
+            color = new CustomColor(OverlayConfig.Objectives.INSTANCE.guildTextColour);
+        }
         color.setA(OverlayConfig.Objectives.INSTANCE.objectivesAlpha * fadeAlpha);
         return color;
     }
 
-    private void renderObjective(Objective objective, int height) {
+    private void renderObjective(Objective objective, int height, boolean guildObjective) {
         float fadeAlpha = 1.0f;
 
         if (OverlayConfig.Objectives.INSTANCE.hideOnInactivity) {
@@ -209,7 +234,7 @@ public class ObjectivesOverlay extends Overlay {
             }
         }
 
-        drawString(objective.toString(), -WIDTH, -HEIGHT + height + 1, getAlphaAdjustedColor(fadeAlpha),
+        drawString(objective.toString(), -WIDTH, -HEIGHT + height + 1, getAlphaAdjustedColor(fadeAlpha, guildObjective),
                 SmartFontRenderer.TextAlignment.LEFT_RIGHT, OverlayConfig.Objectives.INSTANCE.textShadow);
 
         if (OverlayConfig.Objectives.INSTANCE.enableProgressBar && objective.hasProgress()) {
@@ -224,24 +249,31 @@ public class ObjectivesOverlay extends Overlay {
         if (!Reference.onWorld || !OverlayConfig.Objectives.INSTANCE.enabled ||
                 event.getType() != RenderGameOverlayEvent.ElementType.ALL) return;
 
-        int height = 36;
+        int height = 54;
+
+        if (guildObjectives != null) {
+            renderObjective(guildObjectives, height, true);
+            height -= 18;
+        } else if (!OverlayConfig.Objectives.INSTANCE.growFromBottom) {
+            height -= 18;
+        }
 
         if (objectives[2] != null) {
-            renderObjective(objectives[2], height);
+            renderObjective(objectives[2], height, false);
             height -= 18;
         } else if (!OverlayConfig.Objectives.INSTANCE.growFromBottom) {
             height -= 18;
         }
 
         if (objectives[1] != null) {
-            renderObjective(objectives[1], height);
+            renderObjective(objectives[1], height, false);
             height -= 18;
         } else if (!OverlayConfig.Objectives.INSTANCE.growFromBottom) {
             height -= 18;
         }
 
         if (objectives[0] != null) {
-            renderObjective(objectives[0], height);
+            renderObjective(objectives[0], height, false);
         }
     }
 

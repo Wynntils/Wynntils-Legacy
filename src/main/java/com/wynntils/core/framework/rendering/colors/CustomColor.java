@@ -1,11 +1,12 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.core.framework.rendering.colors;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.text.TextFormatting;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import java.util.Arrays;
@@ -40,6 +41,44 @@ public class CustomColor {
     public CustomColor() {}
 
     public CustomColor(CustomColor c) { this(c.r, c.g, c.b, c.a); }
+
+    public static CustomColor fromTextFormatting(TextFormatting textFormatting) {
+        switch (textFormatting) {
+            case BLACK:
+                return new CustomColor(0, 0, 0);
+            case DARK_BLUE:
+                return new CustomColor(0, 0, 170);
+            case DARK_GREEN:
+                return new CustomColor(0, 170, 0);
+            case DARK_AQUA:
+                return new CustomColor(0, 170, 170);
+            case DARK_RED:
+                return new CustomColor(170, 0, 0);
+            case DARK_PURPLE:
+                return new CustomColor(170, 0, 170);
+            case GOLD:
+                return new CustomColor(255, 170, 0);
+            case GRAY:
+                return new CustomColor(170, 170, 170);
+            case DARK_GRAY:
+                return new CustomColor(85, 85, 85);
+            case BLUE:
+                return new CustomColor(85, 85, 255);
+            case GREEN:
+                return new CustomColor(85, 255, 85);
+            case AQUA:
+                return new CustomColor(85, 255, 255);
+            case RED:
+                return new CustomColor(255, 85, 85);
+            case LIGHT_PURPLE:
+                return new CustomColor(255, 85, 255);
+            case YELLOW:
+                return new CustomColor(255, 255, 85);
+            case WHITE:
+                return new CustomColor(255, 255, 255);
+        }
+        return null;
+    }
 
     /** applyColor
      * Will set the color to OpenGL's active color

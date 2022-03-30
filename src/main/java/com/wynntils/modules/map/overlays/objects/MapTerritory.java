@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2021.
+ *  * Copyright © Wynntils - 2022.
  */
 
 package com.wynntils.modules.map.overlays.objects;
@@ -106,6 +106,23 @@ public class MapTerritory {
         return territory;
     }
 
+    public int getDefenses() {
+        switch (net.minecraft.util.StringUtils.stripControlCodes(resources.getDefences())) {
+            case "Very Low":
+                return 1;
+            case "Low":
+                return 2;
+            case "Medium":
+                return 3;
+            case "High":
+                return 4;
+            case "Very High":
+                return 5;
+            default:
+                return -1;
+        }
+    }
+
     public void drawScreen(int mouseX, int mouseY, float partialTicks, boolean territoryArea, boolean resourceColor, boolean showHeadquarters, boolean showNames) {
         if (!shouldRender || renderer == null) return;
 
@@ -125,7 +142,7 @@ public class MapTerritory {
         float ppX = getCenterX();
         float ppY = getCenterY();
 
-        boolean hovering = (mouseX > initX && mouseX < endX && mouseY > initY && mouseY < endY);
+        boolean hovering = isBeingHovered(mouseX, mouseY);
 
         if (showHeadquarters) {
             if (!resources.isHeadquarters()) return;
@@ -146,10 +163,13 @@ public class MapTerritory {
     }
 
     public void postDraw(int mouseX, int mouseY, float partialTicks, int width, int height) {
-        boolean hovering = (mouseX > initX && mouseX < endX && mouseY > initY && mouseY < endY);
+        boolean hovering = isBeingHovered(mouseX, mouseY);
         if (!hovering) return;
 
         infoBox.render((int)(width * 0.95), (int)(height * 0.1));
     }
 
+    public boolean isBeingHovered(int mouseX, int mouseY) {
+        return (mouseX > initX && mouseX < endX && mouseY > initY && mouseY < endY);
+    }
 }

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.modules.chat.overlays;
@@ -59,13 +59,9 @@ public class ChatOverlay extends GuiNewChat {
 
     public void drawChat(int updateCounter) {
         if (McIf.mc().gameSettings.chatVisibility != EntityPlayer.EnumChatVisibility.HIDDEN) {
-            int chatSize = getCurrentTab().getCurrentMessages().size();
-
             getCurrentTab().checkNotifications();
 
-            boolean flag = false;
-
-            if (getChatOpen()) flag = true;
+            boolean flag = getChatOpen();
 
             float chatScale = getChatScale();
             int extraY = MathHelper.ceil((float)getChatWidth() / chatScale) + 4;
@@ -74,8 +70,10 @@ public class ChatOverlay extends GuiNewChat {
             GlStateManager.scale(chatScale, chatScale, 1.0F);
             int l = 0;
 
-            for (int i1 = 0; i1 + scrollPos < chatSize && i1 < getLineCount(); ++i1) {
-                ChatLine chatline = getCurrentTab().getCurrentMessages().get(i1 + scrollPos);
+            List<ChatLine> currentMessages = getCurrentTab().getCurrentMessages();
+            int currentMessagesSize = currentMessages.size();
+            for (int i1 = 0; i1 + scrollPos < currentMessagesSize && i1 < getLineCount(); ++i1) {
+                ChatLine chatline = currentMessages.get(i1 + scrollPos);
 
                 if (chatline != null) {
                     int j1 = updateCounter - chatline.getUpdatedCounter();
@@ -112,12 +110,12 @@ public class ChatOverlay extends GuiNewChat {
 
             if (flag) {
                 // continuing chat render
-                if (chatSize > 0) {
+                if (currentMessagesSize > 0) {
                     int k2 = McIf.mc().fontRenderer.FONT_HEIGHT;
                     GlStateManager.translate(-3.0F, 0.0F, 0.0F);
-                    int l2 = chatSize * k2 + chatSize;
+                    int l2 = currentMessagesSize * k2 + currentMessagesSize;
                     int i3 = l * k2 + l;
-                    int j3 = scrollPos * i3 / chatSize;
+                    int j3 = scrollPos * i3 / currentMessagesSize;
                     int k1 = i3 * i3 / l2;
 
                     if (l2 != i3) {
@@ -159,13 +157,13 @@ public class ChatOverlay extends GuiNewChat {
 
         Pair<Boolean, ITextComponent> dialogue = ChatManager.applyToDialogue(chatComponent.createCopy());
         if (dialogue.a) {
+            chatComponent = dialogue.b;
+            chatLineId = WYNN_DIALOGUE_ID;
+
             if (dialogue.b == null) {
                 deleteChatLine(chatLineId);
                 return;
             }
-
-            chatComponent = dialogue.b;
-            chatLineId = WYNN_DIALOGUE_ID;
         }
 
         if (!noEvent) {

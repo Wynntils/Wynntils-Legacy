@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.modules.utilities.overlays.inventories;
@@ -94,15 +94,24 @@ public class ItemSpecificationOverlay implements Listener {
             if (UtilitiesConfig.Items.INSTANCE.keySpecification) {
                 Pattern dungeonKey = Pattern.compile("§6(.*) Key");
                 Matcher m = dungeonKey.matcher(name);
-                if (m.find() && lore.get(0).equals("§7Grants access to the")) {
-                    destinationName = m.group(1).substring(0, 1);
+                // Lore line is different on TM keys
+                if (m.find() && lore.size() > 0 && (lore.get(0).equals("§7Grants access to the") || (lore.size() > 4 && lore.get(4).equals("§7Grants access to the")))) {
+                    StringBuilder builder = new StringBuilder();
+                    for (String part : m.group(1).split(" ")) {
+                        builder.append(part.charAt(0));
+                    }
+                    destinationName = builder.toString();
                     color = MinecraftChatColors.GOLD;
                 }
 
                 Pattern brokenDungeonKey = Pattern.compile("Broken (.*) Key");
                 Matcher m2 = brokenDungeonKey.matcher(name);
                 if (m2.find()) {
-                    destinationName = m2.group(1).substring(0, 1);
+                    StringBuilder builder = new StringBuilder();
+                    for (String part : m2.group(1).split(" ")) {
+                        builder.append(part.charAt(0));
+                    }
+                    destinationName = builder.toString();
                     color = MinecraftChatColors.DARK_RED;
                 }
 
@@ -110,7 +119,11 @@ public class ItemSpecificationOverlay implements Listener {
                 Pattern corruptedDungeonKey = Pattern.compile("§4(?:Broken )?(?:Corrupted )?(.*) Key");
                 Matcher m3 = corruptedDungeonKey.matcher(name);
                 if (m3.find()) {
-                    destinationName = m3.group(1).substring(0, 1);
+                    StringBuilder builder = new StringBuilder();
+                    for (String part : m3.group(1).split(" ")) {
+                        builder.append(part.charAt(0));
+                    }
+                    destinationName = builder.toString();
                     color = MinecraftChatColors.DARK_RED;
                 }
             }

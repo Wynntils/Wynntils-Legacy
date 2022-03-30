@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2021.
+ *  * Copyright © Wynntils - 2022.
  */
 
 package com.wynntils.core.framework.instances.data;
@@ -12,11 +12,13 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,6 +29,7 @@ public class InventoryData extends PlayerData {
     private static final Pattern UNPROCESSED_LORE_REGEX = Pattern.compile("^§7Unprocessed Material \\[Weight: ([1-9][0-9]*)]$");
 
     private static final Pattern HEALTH_POTION_REGEX = Pattern.compile("(?:\\[\\+\\d+ ❤] )?Potions? of Healing \\[(\\d+)/(\\d+)]");
+    private static final Pattern INGREDIENT_SPLIT_PATTERN = Pattern.compile("§f(\\d+) x (.+)");
 
     public InventoryData() { }
 
@@ -55,25 +58,47 @@ public class InventoryData extends PlayerData {
 
         if (currentClass == ClassType.NONE || player == null) return -1;
         ItemStack pouch = player.inventory.mainInventory.get(13);
+        NBTTagCompound nbt = pouch.getTagCompound();
         int count = 0;
 
         List<String> lore = ItemUtils.getLore(pouch);
 
-        for (int i = 4; i < lore.size(); i++) {
-            String line = TextFormatting.getTextWithoutFormattingCodes(lore.get(i));
+        if (nbt != null && nbt.hasKey("originalItems")) {
+            int[] slots = nbt.getIntArray("originalItems");
+            for (int slot : slots) {
+                if (slot == 0)
+                    break;
 
-            int end = line.indexOf(" x ");
-
-            if (end == -1) break;
-
-            if (countSlotsOnly) {
-                count++;
-            } else {
-                line = line.substring(0, end);
-                count = count + Integer.parseInt(line);
+                if (countSlotsOnly)
+                    count += 1;
+                else
+                    count += slot;
             }
         }
+        else {
+            boolean foundFirstItem = false;
+            for (String line : lore) {
+                if (line == null)
+                    continue;
 
+                Matcher matcher = INGREDIENT_SPLIT_PATTERN.matcher(line);
+
+                //Account for ironman
+                if (!matcher.matches() && foundFirstItem)
+                    break;
+                else if (!matcher.matches())
+                    continue;
+
+                foundFirstItem = true;
+
+                int itemCount = Integer.parseInt(matcher.group(1));
+
+                if (countSlotsOnly)
+                    count += 1;
+                else
+                    count += itemCount;
+            }
+        }
         return count;
     }
 

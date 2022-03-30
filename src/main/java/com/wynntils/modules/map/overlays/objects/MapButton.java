@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2021.
+ *  * Copyright © Wynntils - 2022.
  */
 
 package com.wynntils.modules.map.overlays.objects;
@@ -7,13 +7,14 @@ package com.wynntils.modules.map.overlays.objects;
 import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.textures.Textures;
-import com.wynntils.modules.map.overlays.enums.MapButtonType;
+import com.wynntils.modules.map.overlays.enums.MapButtonIcon;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.init.SoundEvents;
 
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static net.minecraft.client.renderer.GlStateManager.*;
 
@@ -22,23 +23,24 @@ public class MapButton {
     int startX, startY;
     int endX, endY;
 
-    MapButtonType type;
+    MapButtonIcon icon;
     List<String> hoverLore;
     BiConsumer<MapButton, Integer> onClick;
+    Supplier<Integer> state;
     Function<Void, Boolean> isEnabled;
 
     ScreenRenderer renderer = new ScreenRenderer();
 
-    public MapButton(int posX, int posY, MapButtonType type, List<String> hoverLore, Function<Void, Boolean> isEnabled, BiConsumer<MapButton, Integer> onClick) {
-        int halfWidth = type.getWidth() / 2;
-        int halfHeight = type.getHeight() / 2;
+    public MapButton(int posX, int posY, MapButtonIcon icon, List<String> hoverLore, Function<Void, Boolean> isEnabled, BiConsumer<MapButton, Integer> onClick) {
+        int halfWidth = icon.getWidth() / 2;
+        int halfHeight = icon.getHeight() / 2;
 
         this.startX = posX - halfWidth;
         this.startY = posY - halfHeight;
         this.endX = posX + halfWidth;
         this.endY = posY + halfHeight;
 
-        this.type = type;
+        this.icon = icon;
         this.hoverLore = hoverLore;
         this.isEnabled = isEnabled;
         this.onClick = onClick;
@@ -59,7 +61,7 @@ public class MapButton {
 
             // icon itself
             renderer.drawRect(Textures.Map.map_buttons, startX, startY, endX, endY,
-                    type.getStartX(), type.getStartY(), type.getEndX(), type.getEndY());
+                    icon.getStartX(), icon.getStartY(), icon.getEndX(), icon.getEndY());
         }
         popMatrix();
     }
@@ -88,8 +90,11 @@ public class MapButton {
         return hoverLore;
     }
 
-    public MapButtonType getType() {
-        return type;
+    public MapButtonIcon getIcon() {
+        return icon;
     }
 
+    public void editHoverLore(List<String> newLore) {
+        this.hoverLore = newLore;
+    }
 }

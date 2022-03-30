@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.modules.map.commands;
@@ -11,6 +11,8 @@ import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.map.instances.LootRunNote;
 import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
+import com.wynntils.modules.utilities.UtilitiesModule;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -49,7 +51,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "lootrun <load/save/delete/rename/record/undo/note/list/folder/clear/help>";
+        return "lootrun <load/save/delete/rename/record/undo/note/list/folder/clear/resetdry/help>";
     }
 
     @Override
@@ -330,10 +332,17 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                     DARK_GRAY + "/lootrun " + RED + "list " + GRAY + "List all saved lootruns\n" +
                     DARK_GRAY + "/lootrun " + RED + "folder " + GRAY + "Open the folder where lootruns are stored, for import\n" +
                     DARK_GRAY + "/lootrun " + RED + "clear " + GRAY + "Clears/Hide the currently loaded loot run and the loot run being recorded\n" +
+                    DARK_GRAY + "/lootrun " + RED + "resetdry " + GRAY + "Resets %dry_streak% and %dry_boxes% variables\n" +
                     DARK_GRAY + "/lootrun " + RED + "help " + GRAY + "View this help message"
                 ));
                 return;
             }
+            case "resetdry":
+                UtilitiesConfig.INSTANCE.dryStreakBoxes = 0;
+                UtilitiesConfig.INSTANCE.dryStreakCount = 0;
+                UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
+                sender.sendMessage(new TextComponentString(GREEN + "Reset dry streak and dry boxes count successfully!"));
+                break;
             default:
                 throw new WrongUsageException("/" + getUsage(sender));
         }
@@ -353,9 +362,10 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
             case "help":
             case "record":
             case "undo":
+            case "resetdry":
             default:
                 if (args.length > 1) return Collections.emptyList();
-                return getListOfStringsMatchingLastWord(args, "load", "save", "delete", "rename", "record", "list", "folder", "clear", "help", "undo");
+                return getListOfStringsMatchingLastWord(args, "load", "save", "delete", "rename", "record", "list", "folder", "clear", "help", "undo", "resetdry");
         }
     }
 

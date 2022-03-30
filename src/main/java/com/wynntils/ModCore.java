@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2021.
+ *  * Copyright © Wynntils - 2022.
  */
 
 package com.wynntils;
@@ -60,6 +60,8 @@ public class ModCore {
 
         if (Reference.developmentEnvironment)
             Reference.LOGGER.info("Development environment detected, automatic update detection disabled");
+
+        WebManager.FixSSL.registerCerts();
 
         WebManager.setupUserAccount();
         WebManager.setupWebApi(true);

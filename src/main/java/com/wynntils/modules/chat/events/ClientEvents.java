@@ -1,11 +1,12 @@
 /*
- *  * Copyright © Wynntils - 2021.
+ *  * Copyright © Wynntils - 2022.
  */
 
 package com.wynntils.modules.chat.events;
 
 import com.wynntils.McIf;
 import com.wynntils.Reference;
+import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.WynnClassChangeEvent;
 import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
@@ -19,9 +20,15 @@ import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.events.custom.QuestBookUpdateEvent;
+import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
 import com.wynntils.webapi.services.TranslationManager;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiChat;
+import net.minecraft.entity.Entity;
+import net.minecraft.network.play.client.CPacketUseEntity;
+import net.minecraft.util.StringUtils;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -30,7 +37,13 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 public class ClientEvents implements Listener {
+
+    private static final Pattern GUILD_RESOURCE_WARNING = Pattern.compile("\\[INFO\\] Territory .+ is producing more .+");
+    private static final Pattern GUILD_CHAT_MESSAGE = Pattern.compile("\\[(★{0,5})(.+)\\] (.+)");
 
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent e) {
@@ -45,15 +58,37 @@ public class ClientEvents implements Listener {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onChatReceived(ClientChatReceivedEvent e) {
         ITextComponent msg = e.getMessage();
-        if (McIf.getUnformattedText(msg).startsWith("[Info] ") && ChatConfig.INSTANCE.filterWynncraftInfo) {
+        String strippedMsg = StringUtils.stripControlCodes(McIf.getUnformattedText(msg));
+        if (ChatConfig.INSTANCE.filterWynncraftInfo && McIf.getUnformattedText(msg).startsWith("[Info] ")) {
+
             e.setCanceled(true);
-        } else if (McIf.getFormattedText(msg).startsWith("\n                       " + TextFormatting.GOLD + TextFormatting.BOLD + "Welcome to Wynncraft!") &&
-                !McIf.getFormattedText(msg).contains("n the Trade Market") && ChatConfig.INSTANCE.filterJoinMessages) {
+        } else if (ChatConfig.INSTANCE.filterJoinMessages && McIf.getFormattedText(msg).startsWith("\n                       " + TextFormatting.GOLD + TextFormatting.BOLD + "Welcome to Wynncraft!") &&
+                !McIf.getFormattedText(msg).contains("n the Trade Market")) {
             e.setCanceled(true);
-        } else if (McIf.getFormattedText(msg).startsWith(TextFormatting.GRAY + "[You are now entering") && ChatConfig.INSTANCE.filterTerritoryEnter) {
+        } else if (ChatConfig.INSTANCE.filterTerritoryEnter && McIf.getFormattedText(msg).startsWith(TextFormatting.GRAY + "[You are now entering")) {
             e.setCanceled(true);
-        } else if (McIf.getFormattedText(msg).startsWith(TextFormatting.GRAY + "[You are now leaving") && ChatConfig.INSTANCE.filterTerritoryEnter) {
+        } else if (ChatConfig.INSTANCE.filterTerritoryEnter && McIf.getFormattedText(msg).startsWith(TextFormatting.GRAY + "[You are now leaving")) {
             e.setCanceled(true);
+        } else if (ChatConfig.INSTANCE.filterPartyFinder && McIf.getFormattedText(msg).startsWith(TextFormatting.DARK_PURPLE + "Party Finder: Hey ")) {
+            e.setCanceled(true);
+        } else if (ChatConfig.INSTANCE.filterEventMessages && McIf.getFormattedText(msg).startsWith(TextFormatting.GOLD + "[Event]")) {
+            e.setCanceled(true);
+        } else if (ChatConfig.INSTANCE.recolorGuildWarSuccess && McIf.getFormattedText(msg).startsWith(TextFormatting.DARK_AQUA + "[WAR") && strippedMsg.startsWith("[WAR] You have taken control of")) {
+            e.setMessage(new TextComponentString(TextFormatting.DARK_AQUA + "[WAR] " + TextFormatting.GREEN + strippedMsg.substring(6)));
+        } else if (ChatConfig.INSTANCE.recolorGuildWarSuccess && McIf.getFormattedText(msg).startsWith(TextFormatting.DARK_AQUA + "[WAR") && strippedMsg.startsWith("[WAR] Your guild has successfully defended")) {
+            e.setMessage(new TextComponentString(TextFormatting.DARK_AQUA + "[WAR] " + TextFormatting.GREEN + strippedMsg.substring(6)));
+        } else if (ChatConfig.INSTANCE.filterResourceWarnings && McIf.getFormattedText(msg).startsWith(TextFormatting.DARK_AQUA + "[INFO") && GUILD_RESOURCE_WARNING.matcher(strippedMsg).matches()) {
+            e.setCanceled(true);
+        } else if (ChatConfig.INSTANCE.guildRoleNames && McIf.getFormattedText(msg).startsWith(TextFormatting.DARK_AQUA + "[") && !strippedMsg.startsWith("[WAR]") && !strippedMsg.startsWith("[INFO]") && !strippedMsg.startsWith("[VIP+")) {
+            Matcher matcher = GUILD_CHAT_MESSAGE.matcher(strippedMsg);
+            if (matcher.matches()) {
+                String roleName = PlayerStatsProfile.GuildRank.getRoleNameFromStars(matcher.group(1).length());
+                String playerName = msg.getUnformattedText().contains(TextFormatting.ITALIC + matcher.group(2)) ? TextFormatting.ITALIC + matcher.group(2) + TextFormatting.RESET + TextFormatting.DARK_AQUA : matcher.group(2);
+                TextComponentString message = new TextComponentString(TextFormatting.DARK_AQUA + "[" + TextFormatting.AQUA + roleName + " " + TextFormatting.DARK_AQUA + playerName + "] " + TextFormatting.AQUA + matcher.group(3));
+                if (e.getMessage().getStyle().getHoverEvent() != null)
+                    message.getStyle().setHoverEvent(e.getMessage().getStyle().getHoverEvent());
+                e.setMessage(message);
+            }
         }
     }
 
@@ -65,8 +100,8 @@ public class ClientEvents implements Listener {
      * /xp -> /guild xp
      *
      * /guild att/a -> attack
-     *        def/d -> defend
-     *        c -> contribute
+     *        defend/def/d -> territory (/guild territory is the old /guild defend)
+     *        man/m -> manage
      * /party j -> join
      *        i -> invite
      *        l -> leave
@@ -76,7 +111,7 @@ public class ClientEvents implements Listener {
     public void commandReplacements(ClientChatEvent e) {
         if (e.getMessage().startsWith("/tell")) e.setMessage(e.getMessage().replaceFirst("/tell", "/msg"));
         else if (e.getMessage().startsWith("/xp")) e.setMessage(e.getMessage().replaceFirst("/xp", "/guild xp"));
-        else if (e.getMessage().startsWith("/gu")) e.setMessage(e.getMessage().replaceFirst(" att$", " attack").replaceFirst(" a$", " attack").replaceFirst(" def$", " defend").replaceFirst(" d$", " defend").replaceFirst(" c$", " contribute"));
+        else if (e.getMessage().startsWith("/gu")) e.setMessage(e.getMessage().replaceFirst(" att$", " attack").replaceFirst(" a$", " attack").replaceFirst(" defend$", " territory").replaceFirst(" def$", " territory").replaceFirst(" d$", " territory").replaceFirst(" man$", " manage").replaceFirst(" m$", " manage"));
         else if (e.getMessage().startsWith("/pa")) e.setMessage(e.getMessage().replaceFirst(" j ", " join ").replaceFirst(" i ", " invite ").replaceFirst(" l$", " leave").replaceFirst(" c$", " create"));
     }
 
@@ -130,6 +165,22 @@ public class ClientEvents implements Listener {
             ChatManager.setDiscoveriesLoaded(true);
             ChatOverlay.getChat().processQueues();
         }
+    }
+
+    @SubscribeEvent
+    public void onClickNPC(PacketEvent<CPacketUseEntity> e) {
+        if (!ChatConfig.INSTANCE.rightClickDialogue) return;
+        if (e.getPacket().getAction() != CPacketUseEntity.Action.INTERACT) return; // only right click
+        if (!ChatManager.inDialogue) return;
+
+        EntityPlayerSP player = McIf.player();
+        Entity clicked = e.getPacket().getEntityFromWorld(player.world);
+
+        if (clicked.getTeam() != null) return; // entity is another player
+        String name = clicked.getName();
+        if (!name.contains("NPC") && !name.contains("\u0001")) return; // (probably) not an NPC
+
+        ChatManager.progressDialogue();
     }
 
 }

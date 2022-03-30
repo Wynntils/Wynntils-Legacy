@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2021.
+ *  * Copyright © Wynntils - 2022.
  */
 
 package com.wynntils.modules.utilities.instances;
@@ -16,8 +16,11 @@ import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.managers.PingManager;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.interfaces.InfoModule;
 import com.wynntils.modules.utilities.managers.AreaDPSManager;
+import com.wynntils.modules.utilities.managers.KillsManager;
+import com.wynntils.modules.utilities.managers.LevelingManager;
 import com.wynntils.modules.utilities.managers.ServerListManager;
 import com.wynntils.modules.utilities.managers.SpeedometerManager;
 import com.wynntils.webapi.WebManager;
@@ -449,6 +452,26 @@ public class InfoFormatter {
                 String.valueOf(AreaDPSManager.getCurrentDPS()),
                 "adps", "areadps");
 
+        registerFormatter((input ->
+                StringUtils.integerToShortString(LevelingManager.getXpPerMinute())),
+                "xpm");
+
+        registerFormatter((input ->
+                String.valueOf(LevelingManager.getXpPerMinute())),
+                "xpm_raw");
+
+        registerFormatter((input ->
+                LevelingManager.getXpPercentPerMinute()),
+                "xppm");
+
+        registerFormatter((input ->
+                StringUtils.integerToShortString(KillsManager.getKillsPerMinute())),
+                "kpm");
+
+        registerFormatter((input ->
+                String.valueOf(KillsManager.getKillsPerMinute())),
+                "kpm_raw");
+
         // Uptime variables
         registerFormatter((input) ->
                 Reference.inStream ? "-" : ServerListManager.getUptimeHours(Reference.getUserWorld()),
@@ -457,6 +480,15 @@ public class InfoFormatter {
         registerFormatter((input) ->
                 Reference.inStream ? "-" : ServerListManager.getUptimeMinutes(Reference.getUserWorld()),
                 "uptime_m");
+
+        //Dry streak counter
+        registerFormatter((input) ->
+                !UtilitiesConfig.INSTANCE.enableDryStreak ? "-" : String.valueOf(UtilitiesConfig.INSTANCE.dryStreakCount),
+                "dry_streak");
+
+        registerFormatter((input) ->
+                        !UtilitiesConfig.INSTANCE.enableDryStreak ? "-" : String.valueOf(UtilitiesConfig.INSTANCE.dryStreakBoxes),
+                "dry_boxes", "dry_streak_boxes");
     }
 
     private void registerFormatter(InfoModule formatter, String... vars) {

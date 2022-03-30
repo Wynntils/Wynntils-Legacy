@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.modules.utilities;
@@ -40,6 +40,7 @@ public class UtilitiesModule extends Module {
         registerEvents(new ItemIdentificationOverlay());
         registerEvents(new RarityColorOverlay());
         registerEvents(new ItemLevelOverlay());
+        registerEvents(new HotbarChargeOverlay());
         registerEvents(new SkillPointOverlay());
         registerEvents(new ItemLockOverlay());
         registerEvents(new FavoriteTradesOverlay());
@@ -52,6 +53,8 @@ public class UtilitiesModule extends Module {
         registerEvents(new BankOverlay());
         registerEvents(new ServerSelectorOverlay());
         registerEvents(new FavoriteItemsOverlay());
+        registerEvents(new GuildTerritoryManageOverlay());
+        registerEvents(new GuildMemberManageOverlay());
 
         // Real overlays
         registerOverlay(new WarTimerOverlay(), Priority.LOWEST);
@@ -90,6 +93,7 @@ public class UtilitiesModule extends Module {
         registerSettings(UtilitiesConfig.Market.class);
         registerSettings(UtilitiesConfig.Bank.class);
         registerSettings(UtilitiesConfig.Identifications.class);
+        registerSettings(UtilitiesConfig.CommandKeybinds.class);
 
         registerSettings(TranslationConfig.class);
 

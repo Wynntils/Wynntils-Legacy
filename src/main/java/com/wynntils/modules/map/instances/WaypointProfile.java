@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.modules.map.instances;
@@ -53,6 +53,10 @@ public class WaypointProfile {
 
     public int getZoomNeeded() {
         return zoomNeeded;
+    }
+
+    public void setZoomNeeded(int zoomNeeded) {
+        this.zoomNeeded = zoomNeeded;
     }
 
     public WaypointType getType() {
@@ -313,7 +317,7 @@ public class WaypointProfile {
         STAR("Star"),
         TURRET("Turret"),
         LOOTCHEST_T4("Chest (T4)"),
-        LOOTCHEST_T3("Chest (T3"),
+        LOOTCHEST_T3("Chest (T3)"),
         LOOTCHEST_T2("Chest (T2)"),
         LOOTCHEST_T1("Chest (T1)"),
         FARMING("Farming"),

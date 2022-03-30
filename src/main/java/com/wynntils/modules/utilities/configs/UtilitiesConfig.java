@@ -1,13 +1,16 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.modules.utilities.configs;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
+import com.wynntils.core.framework.settings.ui.SettingsUI;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.events.ServerEvents;
 import com.wynntils.modules.utilities.instances.SkillPointAllocation;
 import com.wynntils.modules.utilities.managers.WindowIconManager;
@@ -23,87 +26,123 @@ import java.util.*;
 public class UtilitiesConfig extends SettingsClass {
     public static UtilitiesConfig INSTANCE;
 
-    @Setting(displayName = "Class & Hub Buttons", description = "Should 'Class selection' and 'Back to Hub' buttons be displayed on the in-game menu?", order = 1)
+    @Setting(displayName = "Class & Hub Buttons", description = "Should 'Class Selection' and 'Back to Hub' buttons be displayed in the Game Menu?", order = 9)
     public boolean addClassHubButtons = true;
 
-    @Setting(displayName = "Options & Profile Buttons", description = "Should 'Wynntils Option' and 'User Profile' buttons be displayed on the in-game menu?", order = 2)
+    @Setting(displayName = "Options & Profile Buttons", description = "Should 'Wynntils Option' and 'User Profile' buttons be displayed in the Game Menu?", order = 10)
     public boolean addOptionsProfileButtons = true;
 
-    @Setting(displayName = "Daily Chest Reminder", description = "Should a message notifying that you can claim your daily chest be sent upon joining a world?")
+    @Setting(displayName = "Daily Chest Reminder", description = "Should a message notifying that you can claim your daily chest be sent upon joining a world?", order = 7)
     public boolean dailyReminder = true;
 
-    @Setting(displayName = "Hide Vanilla Potions Indicators", description = "Should the vanilla indicators for active potion effects be hidden?")
+    @Setting(displayName = "Hide Vanilla Potions Indicators", description = "Should the vanilla indicators for active potion effects be hidden?", order = 11)
     public boolean hidePotionGui = true;
 
-    @Setting(displayName = "Hide Nametags Through Walls", description = "Should nametags be hidden when behind opaque blocks?")
+    @Setting(displayName = "Hide Nametags Through Walls", description = "Should nametags be hidden when behind opaque blocks?", order = 12)
     public boolean hideNametags = true;
 
-    @Setting(displayName = "Hide Nametags' Box", description = "Should the box around nametags be hidden?")
+    @Setting(displayName = "Hide Nametags' Box", description = "Should the box around nametags be hidden?", order = 13)
     public boolean hideNametagBox = true;
 
-    @Setting(displayName = "Show Players' Armour", description = "Should the worn armour of players be listed underneath their nametag?")
+    @Setting(displayName = "Show Players' Armour", description = "Should the worn armour of players be listed underneath their nametag?", order = 8)
     public boolean showArmors = false;
 
-    @Setting(displayName = "Prevent Mythic Chest Closing", description = "Should the closing of loot chests be prevented when they contain mythics?")
+    @Setting(displayName = "Mythic Chest Closing", description = "Should the closing of loot chests be prevented when they contain mythics?", order = 3)
     public boolean preventMythicChestClose = true;
 
-    @Setting(displayName = "Prevent Favorited Item Chest Closing", description = "Should the closing of loot chests be prevented when they contain favorited items?")
+    @Setting(displayName = "Favorited Item Chest Closing", description = "Should the closing of loot chests be prevented when they contain favorited items?", order = 4)
     public boolean preventFavoritedChestClose = true;
 
-    @Setting(displayName = "Prevent Clicking on Pouches in Loot Chests", description = "Should opening ingredient and emerald pouches be blocked in loot chests?")
+    @Setting(displayName = "Clicking on Pouches in Chests", description = "Should opening ingredient and emerald pouches be blocked when opening loot chests?", order = 6)
     public boolean preventOpeningPouchesChest = true;
 
-    @Setting(displayName = "Prevent Clicking on Locked Items", description = "Should moving items to and from locked inventory slots be blocked?")
+    @Setting(displayName = "Count Dry Streak", description = "Should the number of chests since your last discovered mythic in a chest be recorded?", order = 16)
+    public boolean enableDryStreak = true;
+
+    @Setting(displayName = "Dry Streak Ended Message", description = "Should there be a message when you find a mythic in a loot chest?", order = 17)
+    public boolean dryStreakEndedMessage = true;
+
+    @Setting
+    public int dryStreakCount = 0;
+
+    @Setting
+    public int dryStreakBoxes = 0;
+
+    @Setting(displayName = "Clicking on Locked Items", description = "Should moving items to and from locked inventory slots be prevented?", order = 5)
     public boolean preventSlotClicking = false;
 
-    @Setting(displayName = "Bank Dump Button Behaviour", description = "What should happen when the bank inventory dump button is clicked?")
+    @Setting(displayName = "Bank Dump Behaviour", description = "What should happen when the bank inventory dump button is clicked?", order = 18)
     public BankButtonSetting bankDumpButton = BankButtonSetting.Confirm;
 
-    @Setting(displayName = "Bank Quick Stash Button Behaviour", description = "What should happen when the bank quick stash button is clicked?")
+    @Setting(displayName = "Bank Quick Stash Behaviour", description = "What should happen when the bank quick stash button is clicked?", order = 19)
     public BankButtonSetting bankStashButton = BankButtonSetting.Confirm;
 
-    @Setting(displayName = "FOV Scaling Function", description = "What scaling function should be used for speed-based FOV changes?")
+    @Setting(displayName = "FOV Scaling Function", description = "What scaling function should be used for speed-based FOV changes?", order = 21)
     public FovScalingFunction fovScalingFunction = FovScalingFunction.Vanilla;
 
-    @Setting(displayName = "Auto Mount Horse", description = "Should you mount your horse automatically when it is spawned?")
+    @Setting(displayName = "Show Guild Territory Search", description = "Should the search bar be shown in the guild manage territory GUI?\n\n§8Territories that match the search will be highlighted.", order = 22)
+    public boolean showGuildTerritoryManageSearchbar = true;
+
+    @Setting(displayName = "Searched Territory Colour", description = "What colour should the highlight for searched items be?\n\n§aClick the coloured box to open the colour wheel.", order = 23)
+    public CustomColor guildTerritoryMenuSearchHighlightColor = new CustomColor(80, 242, 242);
+
+    @Setting(displayName = "Show Guild Member Search", description = "Should the search bar be shown in the guild manage members GUI?\n\n§8Members that match the search will be highlighted.", order = 24)
+    public boolean showGuildMemberManageSearchbar = true;
+
+    @Setting(displayName = "Searched Member Colour", description = "What colour should the highlight for searched items be?\n\n§aClick the coloured box to open the colour wheel.", order = 25)
+    public CustomColor guildMemberMenuSearchHighlightColor = new CustomColor(80, 242, 242);
+
+    @Setting(displayName = "Auto Mount Horse", description = "Should you mount your horse automatically when it is summoned?", order = 2)
     public boolean autoMount = false;
 
-    @Setting(displayName = "Block Health ", description = "Should the mod prevent you from using your health potions when you are at full health?")
+    @Setting(displayName = "Block Health Potions", description = "Should the mod prevent you from using your health potions when you are at full health?", order = 1)
     public boolean blockHealingPots = true;
 
-    @Setting(displayName = "Apply Resource Pack", description = "Should the Wynncraft server resource pack be applied when joining the server instead of when selecting your class?")
+    @Setting(displayName = "Apply Resource Pack", description = "Should the Wynncraft server resource pack be applied when joining the server instead of selecting your class?", order = 29)
     public boolean autoResource = true;
 
-    @Setting(displayName = "Startup Resource Pack", description = "Should the Wynncraft server resource pack be applied when starting Minecraft?")
+    @Setting(displayName = "Startup Resource Pack", description = "Should the Wynncraft server resource pack be applied when starting Minecraft?", order = 30)
     public boolean autoResourceOnLoad = false;
 
-    @Setting(displayName = "Change Window Title", description = "Should the mod change the window title to \"Wynncraft\" while on the server?")
+    @Setting(displayName = "Change Window Title", description = "Should the mod change the window title to \"Wynncraft\" while on the server?", order = 31)
     public boolean changeWindowTitle = true;
 
-    @Setting(displayName = "Change Window Icon", description = "Should the mod change the window icon to the Wynncraft logo while on the server?\n\n§8This does not work on macOS systems.")
+    @Setting(displayName = "Change Window Icon", description = "Should the mod change the window icon to the Wynncraft logo while on the server?\n\n§8This does not work on macOS systems.", order = 32)
     public boolean changeWindowIcon = true;
 
-    @Setting(displayName = "Show Tooltips From Top", description = "Should tooltips be rendered from the top?")
+    @Setting(displayName = "Show Tooltips From Top", description = "Should tooltips be rendered from the top?", order = 27)
     public boolean renderTooltipsFromTop = true;
 
-    @Setting(displayName = "Scale Tooltips", description = "Should tooltips be scaled down so that they fit on your screen?")
+    @Setting(displayName = "Scale Tooltips", description = "Should tooltips be scaled down so that they fit on your screen?", order = 28)
     public boolean renderTooltipsScaled = false;
 
-    @Setting(displayName = "Show Leaderboard Badges", description = "Should leaderboard players have a badge above their heads?")
+    @Setting(displayName = "Show Leaderboard Badges", description = "Should leaderboard players have badges above their heads?", order = 22)
     public boolean renderLeaderboardBadges = true;
 
-    @Setting(displayName = "Shift-click Accessories", description = "Allow accessories to be shift-clicked on and off?")
-    public boolean shiftClickAccessories = true;
-
-    @Setting(displayName = "Prevent Trades/Duels in Combat", description = "Should trade and duel requests be disabled while holding an item?")
+    @Setting(displayName = "Prevent Trades & Duels", description = "Should trade and duel requests be disabled while holding an item?", order = 20)
     public boolean preventTradesDuels = false;
 
-    @Setting(displayName = "Bulk Buy on Shift-click", description = "Should the option to bulk buy items (scrolls, potions) while holding shift be available?")
+    @Setting(displayName = "Bulk Buy on Shift-Click", description = "Should the option to buy scrolls and potions in bulk while holding shift be available?", order = 14)
     public boolean shiftBulkBuy = true;
 
     @Setting.Limitations.IntLimit(min = 2, max = 16)
-    @Setting(displayName = "Bulk Buy Amount", description = "How many items should be bought in bulk?")
+    @Setting(displayName = "Bulk Buy Amount", description = "How many items should be bought when purchasing in bulk?", order = 15)
     public int bulkBuyAmount = 3;
+
+    @Setting(displayName = "Show Death Coordinates", description = "Upon death, should a message be sent containing the coordinates of where you died?", order = 23)
+    public boolean deathMessageWithCoords = true;
+
+    @Setting(displayName = "Show Emerald Count in Containers", description = "Should your emerald count be displayed in remote containers?\n\n§8Remote containers are items such as chests and emerald pouches.", order = 24)
+    public boolean emeraldCountChest = true;
+
+    @Setting(displayName = "Show Emerald Count in Inventory", description = "Should your emerald count be displayed in your inventory?", order = 25)
+    public boolean emeraldCountInventory = true;
+
+    @Setting(displayName = "Show Emerald Count as Text", description = "Should your emerald count be displayed as text instead of icons?", order = 26)
+    public boolean emeraldCountText = false;
+
+    @Setting(displayName = "Show consumable charges in hotbar", description = "Should potion, food, and scroll charges be shown in the hotbar?", order = 28)
+    public boolean showConsumableChargesHotbar = true;
 
     @Setting(upload = false)
     public String lastServerResourcePack = "";
@@ -119,6 +158,15 @@ public class UtilitiesConfig extends SettingsClass {
 
     @Setting
     public List<String> favoriteItems = new ArrayList<>();
+
+    @Setting
+    public List<String> favoriteIngredients = new ArrayList<>();
+
+    @Setting
+    public List<String> favoriteEmeraldPouches = new ArrayList<>();
+
+    @Setting
+    public List<String> favoritePowders = new ArrayList<>();
 
     public enum FovScalingFunction {
         Vanilla,
@@ -140,20 +188,20 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Show Advanced Identifications", description = "Should items show advanced identifications?", order = 0)
         public boolean enabled = true;
 
-        @Setting(displayName = "Advanced Identifications Decimal Places", description = "How many decimal places should advanced identifications have?\n\n§8 This requires your inventory to be reloaded to update. To do that, open the bank once.")
+        @Setting(displayName = "Identifications Decimal Places", description = "How many decimal places should advanced identifications have?\n\n§8This requires your inventory to be reloaded to update. To do so, open the bank once.")
         public IdentificationDecimalPlaces decimalPlaces = IdentificationDecimalPlaces.Zero;
 
-        @Setting(displayName = "Show Item Identification Stars", description = "Should the star rating of an item's identifications be shown?")
-        public boolean addStars = false;
+        @Setting(displayName = "Show Item Identification Stars", description = "Should star ratings of stats be shown on items?")
+        public boolean addStars = true;
 
         @Setting(displayName = "Legacy Identification Values", description = "Should mana and life steal stats display as /4s instead of /3s and /5s?")
         public boolean legacyIds = false;
 
-        @Setting(displayName = "Animate Perfect/Defect Item Names", description = "Should perfect and defective items have animated names?\n\n§8 This includes perfect items having rainbow names.")
+        @Setting(displayName = "Animated Item Names", description = "Should perfect and defective items have animated names?\n\n§8This includes perfect items having rainbow names.")
         public boolean rainbowPerfect = true;
 
         @Setting.Limitations.FloatLimit(min = 1.0f, max = 20.0f, precision = 1.0f)
-        @Setting(displayName = "Defect Item Obfuscation Percentage", description = "How much should defective item names be obfuscated?\n\n§8 Obfuscation is where the characters constantly change and appear corrupted.")
+        @Setting(displayName = "Defect Obfuscation Percentage", description = "How much should defective item names be obfuscated?\n\n§8Obfuscation is where the characters constantly change and appear corrupted.")
         public float defectiveObfuscationAmount = 8.0f;
 
         @Setting(displayName = "Categorize Identifications", description = "Should the identifications in an item's tooltip be categorized?")
@@ -168,7 +216,7 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Unidentified Item Guesses", description = "Should guesses for your unidentified items be displayed?")
         public boolean showItemGuesses = true;
 
-        @Setting(displayName = "Identification Price Guesses", description = "Should the guesses for prices of identifying unidentified items be displayed?\n\n§8 This requires your inventory to be reloaded to update. To do that, open the bank once.")
+        @Setting(displayName = "Identification Price Guesses", description = "Should guesses for prices of identifying unidentified items be displayed?\n\n§8This requires your inventory to be reloaded to update. To do so, open the bank once.")
         public boolean showGuessesPrice = false;
 
         public enum IdentificationDecimalPlaces {
@@ -199,7 +247,7 @@ public class UtilitiesConfig extends SettingsClass {
         public boolean afkProtection = false;
 
         @Setting.Limitations.FloatLimit(min = 1f, max = 30f)
-        @Setting(displayName = "Timer Threshold", description = "How many minutes of inactivity is required for AFK Protection?")
+        @Setting(displayName = "Timer Threshold", description = "How many minutes of inactivity is required for AFK Protection to trigger?")
         public float afkProtectionThreshold = 10f;
 
         @Setting.Limitations.FloatLimit(min = 1f, max = 100f)
@@ -243,16 +291,16 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Item Combat Level Arc", description = "Should the required combat level be shown behind items as an arc?", order = 1)
         public boolean itemLevelArc = false;
 
-        @Setting(displayName = "Crafted Item Durability Arc", description = "Should crafted items' durability be shown with an arc?", order = 2)
+        @Setting(displayName = "Crafted Item Durability Arc", description = "Should the durability of crafted items be displayed with an arc?", order = 2)
         public boolean craftedDurabilityBars = true;
 
         @Setting(displayName = "Show Average Unidentified Level", description = "Should the average level of an unidentified item be shown instead of the entire range?", order = 3)
         public boolean averageUnidentifiedLevel = true;
 
-        @Setting(displayName = "Show Levels Key Also Shows Item Tiers", description = "Should the tier of items (powders, amplifiers, pouches) be shown when pressing the show item level key?", order = 5)
+        @Setting(displayName = "Shows Item Tiers", description = "Should the tier of powders, amplifiers, and pouches be shown when pressing the show item level key?", order = 5)
         public boolean levelKeyShowsItemTiers = false;
 
-        @Setting(displayName = "Roman Numeral Item Tiers", description = "Should the tier of items (powders, amplifiers, pouches) be displayed using roman numerals?", order = 6)
+        @Setting(displayName = "Roman Numeral Item Tiers", description = "Should the tier of powders, amplifiers, and pouches be displayed using Roman numerals?", order = 6)
         public boolean romanNumeralItemTier = true;
 
         @Setting(displayName = "Item Levels Outside GUIs", description = "Should the item level overlay key be enabled even when no GUI is open?", order = 7)
@@ -279,7 +327,7 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Emerald Pouch Specification", description = "Should the tier of emerald pouches be displayed?", order = 14)
         public boolean emeraldPouchSpecification = true;
 
-        @Setting(displayName = "Tier Overlay Size", description = "How large should the tier overlays (emerald pouches, powders, amplifiers) be?", order = 15)
+        @Setting(displayName = "Tier Overlay Size", description = "How large should the tier overlays of emerald pouches, powders, and amplifiers be?", order = 15)
         @Setting.Limitations.FloatLimit(min = 0.5f, max = 1, precision = 0.1f)
         public float specificationTierSize = 1;
 
@@ -322,41 +370,44 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Highlight Normal Items", description = "Should normal items be highlighted?", order = 28)
         public boolean normalHighlight = false;
 
-        @Setting(displayName = "Highlight Black Market Cosmetics", description = "Should black market cosmetic items be highlighted?", order = 30)
+        @Setting(displayName = "Highlight Emeralds in chests", description = "Should emeralds be highlighted in chests?", order = 29)
+        public boolean emeraldHighlightInChest = false;
+
+        @Setting(displayName = "Highlight Crafted Items", description = "Should crafted items be highlighted?", order = 30)
+        public boolean craftedHighlight = true;
+
+        @Setting(displayName = "Highlight Black Market Cosmetics", description = "Should black market cosmetic items be highlighted?", order = 31)
         public boolean blackMarketEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight Godly Cosmetics", description = "Should godly cosmetic items be highlighted?", order = 31)
+        @Setting(displayName = "Highlight Godly Cosmetics", description = "Should godly cosmetic items be highlighted?", order = 32)
         public boolean godlyEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight Epic Cosmetics", description = "Should epic cosmetic items be highlighted?", order = 32)
+        @Setting(displayName = "Highlight Epic Cosmetics", description = "Should epic cosmetic items be highlighted?", order = 33)
         public boolean epicEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight Rare Cosmetics", description = "Should rare cosmetic items be highlighted?", order = 33)
+        @Setting(displayName = "Highlight Rare Cosmetics", description = "Should rare cosmetic items be highlighted?", order = 34)
         public boolean rareEffectsHighlight = true;
 
-        @Setting(displayName = "Highlight Common Cosmetics", description = "Should common cosmetic items be highlighted?", order = 34)
+        @Setting(displayName = "Highlight Common Cosmetics", description = "Should common cosmetic items be highlighted?", order = 35)
         public boolean commonEffectsHighlight = true;
 
-        // TODO: move these 3 configs
-        @Setting(displayName = "Show Emerald Count in Containers", description = "Should your emerald count be displayed in remote containers?\n\n§8Remote containers are items such as chests and banks.", order = 101)
-        public boolean emeraldCountChest = true;
-
-        @Setting(displayName = "Show Emerald Count in Inventory", description = "Should your emerald count be displayed in your inventory?", order = 102)
-        public boolean emeraldCountInventory = true;
-
-        @Setting(displayName = "Show Emerald Count as Text", description = "Should your emerald count be displayed as text instead of icons?", order = 103)
-        public boolean emeraldCountText = false;
-
-        @Setting(displayName = "Highlight Crafting Ingredients", description = "Should crafting ingredients be highlighted according to their tier?", order = 40)
+        @Setting(displayName = "Highlight Crafting Ingredients", description = "Should crafting ingredients be highlighted according to their tier?", order = 36)
         public boolean ingredientHighlight = true;
 
-        @Setting(displayName = "Highlight Duplicate Cosmetics", description = "Should duplicate cosmetics be highlighted on the scrap menu", order = 41)
+        @Setting(displayName = "Minimum Ingredient Tier Highlight", description = "What should the minimum tier of crafting ingredients be for them to be highlighted?", order = 40)
+        @Setting.Limitations.IntLimit(min = 1, max = 3)
+        public int minCraftingIngredientHighlightTier = 1;
+
+        @Setting(displayName = "Highlight Duplicate Cosmetics", description = "Should duplicate cosmetics be highlighted in the scrap menu?", order = 41)
         public boolean highlightCosmeticDuplicates = true;
 
-        @Setting(displayName = "Minimum Powder Tier Highlight", description = "What should the minimum tier of powders be for it to be highlighted?\n\n§8Set to 0 to disable.", order = 42)
+        @Setting(displayName = "Minimum Powder Tier Highlight", description = "What should the minimum tier of powders be for it to be highlighted?\n\n§8Set the value to 0 to disable this setting.", order = 42)
         @Setting.Limitations.IntLimit(min = 0, max = 6)
         public int minPowderTier = 4;
-        
+
+        @Setting(displayName = "Emerald Highlight Colour", description = "What colour should the highlight for emeralds be?\n\n§aClick the coloured box to open the colour wheel.", order = 49)
+        public CustomColor emeraldHighlightColor = new CustomColor(0, 150, 0);
+
         @Setting(displayName = "Profession Filter Highlight Colour", description = "What colour should the highlight for filtered ingredients be?\n\n§aClick the coloured box to open the colour wheel.", order = 50)
         public CustomColor professionFilterHighlightColor = new CustomColor(0.078f, 0.35f, 0.8f);
 
@@ -381,40 +432,33 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Mythic Item Highlight Colour", description = "What colour should the highlight for mythic items be?\n\n§aClick the coloured box to open the colour wheel.", order = 57)
         public CustomColor mythicHighlightColor = ItemTier.MYTHIC.getDefaultHighlightColor();
 
-        @Setting(displayName = "Crafted Armour & Weapon Highlight Colour", description = "What colour should the highlight for crafted armour and weapons be?\n\n§aClick the coloured box to open the colour wheel.", order = 58)
+        @Setting(displayName = "Crafted Gear Colour", description = "What colour should the highlight for crafted armour and weapons be?\n\n§aClick the coloured box to open the colour wheel.", order = 58)
         public CustomColor craftedHighlightColor = ItemTier.CRAFTED.getDefaultHighlightColor();
 
-        @Setting(displayName = "Ingredient Highlight Colour (1 star)", description = "What colour should the highlight for ingredients with one star be?\n\n§aClick the coloured box to open the colour wheel.", order = 59)
+        @Setting(displayName = "1 Star Ingredient Colour", description = "What colour should the highlight for ingredients with one star be?\n\n§aClick the coloured box to open the colour wheel.", order = 59)
         public CustomColor ingredientOneHighlightColor = new CustomColor(1, 0.97f, 0.6f);
 
-        @Setting(displayName = "Ingredient Highlight Colour (2 stars)", description = "What colour should the highlight for ingredients with two stars be?\n\n§aClick the coloured box to open the colour wheel.", order = 60)
+        @Setting(displayName = "2 Star Ingredient Colour", description = "What colour should the highlight for ingredients with two stars be?\n\n§aClick the coloured box to open the colour wheel.", order = 60)
         public CustomColor ingredientTwoHighlightColor = new CustomColor(1f, 1f, 0f);
 
-        @Setting(displayName = "Ingredient Highlight Colour (3 stars)", description = "What colour should the highlight for ingredients with three stars be?\n\n§aClick the coloured box to open the colour wheel.", order = 61)
+        @Setting(displayName = "3 Star Ingredient Colour", description = "What colour should the highlight for ingredients with three stars be?\n\n§aClick the coloured box to open the colour wheel.", order = 61)
         public CustomColor ingredientThreeHighlightColor = new CustomColor(0.9f, .3f, 0);
 
-        @Setting(displayName = "Inventory Item Highlight Opacity %", description = "How opaque should highlights in your inventory be? (As a percentage)", order = 62)
+        @Setting(displayName = "Inventory Highlight Opacity", description = "As a percentage, how opaque should highlights in your inventory be?", order = 62)
         @Setting.Limitations.FloatLimit(min = 0, max = 100, precision = 0.5f)
         public float inventoryAlpha = 100;
 
-        @Setting(displayName = "Hotbar Item Highlight Opacity %", description = "Should the highlight of item rarities be displayed on the hotbar?\n\n§8Set to 0 to disable.", order = 63)
+        @Setting(displayName = "Hotbar Highlight Opacity", description = "As a percentage, how opaque should highlights in your hotbar be?", order = 63)
         @Setting.Limitations.FloatLimit(min = 0, max = 100, precision = 0.5f)
         public float hotbarAlpha = 30;
 
-        @Setting(displayName = "Color Number of Skillpoints", description = "Should the number of skillpoints be colored??")
+        @Setting(displayName = "Colour Number of Skill Points", description = "Should the number of skill points be coloured?")
         public boolean colorSkillPointNumberOverlay = true;
     }
 
     @SettingsInfo(name = "market", displayPath = "Utilities/Market")
     public static class Market extends SettingsClass {
         public static Market INSTANCE;
-
-        @Setting(displayName = "Price Formatting", description = "Should market prices be displayed in a custom format?")
-        public boolean displayInCustomFormat = true;
-
-        @Setting(displayName = "Market Prices Format", description = "What format should market prices be displayed in?\n\n§8Brackets indicate all parameters inside must not be 0.")
-        @Setting.Features.StringParameters(parameters = {"les", "ebs", "es", "stx", "le", "eb", "e"})
-        public String customFormat = "(%stx%stx )(%le%%les% )(%eb%%ebs% )(%e%%es%)";
 
         @Setting(displayName = "Open Chat", description = "Should the chat open when the trade market asks you to type a response?")
         public boolean openChatMarket = true;
@@ -424,13 +468,13 @@ public class UtilitiesConfig extends SettingsClass {
     public static class Bank extends SettingsClass {
         public static Bank INSTANCE;
 
-        @Setting(displayName = "Show Quick Access Page Numbers", description = "Should the page number that the bank quick access buttons send you to be shown?", order = 1)
+        @Setting(displayName = "Show Quick Access Page Numbers", description = "Should page numbers be shown on the quick access buttons in the bank?", order = 1)
         public boolean showQuickAccessNumbers = false;
 
         @Setting(displayName = "Show Quick Access Button Icons", description = "Should the quick access buttons have a custom icon?", order = 2)
         public boolean showQuickAccessIcons = true;
 
-        @Setting(displayName = "Show Bank Search Bar", description = "Should the bank search bar be shown in the bank GUI?\n\n§aBank items that match the search will be highlighted.", order = 3)
+        @Setting(displayName = "Show Bank Search Bar", description = "Should the bank search bar be shown in the bank GUI?\n\n§8Bank items that match the search will be highlighted.", order = 3)
         public boolean showBankSearchBar = true;
 
         @Setting(displayName = "Automatic Page Searching", description = "Should pressing a bank page button automatically cycle through pages until the searched item is found?", order = 4)
@@ -442,7 +486,7 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Open Chat Bank Search", description = "Should the chat open when the bank search asks you to type a response?", order = 7)
         public boolean openChatBankSearch = true;
 
-        @Setting(displayName = "Searched Item Highlight Color", description = "What colour should the highlight for searched items be?\n\n§aClick the coloured box to open the colour wheel.", order = 20)
+        @Setting(displayName = "Searched Item Highlight Colour", description = "What colour should the highlight for searched items be?\n\n§aClick the coloured box to open the colour wheel.", order = 20)
         public CustomColor searchHighlightColor = new CustomColor(0.9f, .3f, 0f);
 
         @Setting(displayName = "Quick Access 1 Destination", description = "Which bank page should the first quick access button take you to?", order = 10)
@@ -474,6 +518,65 @@ public class UtilitiesConfig extends SettingsClass {
 
         @Setting
         public int maxPages = 1;
+    }
+
+    @SettingsInfo(name = "Command Keybinds", displayPath = "Utilities/Command Keybinds")
+    public static class CommandKeybinds extends SettingsClass {
+        public static CommandKeybinds INSTANCE;
+
+        @Setting(displayName = "Command Keybind 1", description = "What command should be run upon pressing the command keybind 1 key?", order = 1)
+        public String cKeyBind1 = "totem";
+
+        @Setting(displayName = "Command Keybind 2", description = "What command should be run upon pressing the command keybind 2 key?", order = 2)
+        public String cKeyBind2 = "";
+
+        @Setting(displayName = "Command Keybind 3", description = "What command should be run upon pressing the command keybind 3 key?", order = 3)
+        public String cKeyBind3 = "";
+
+        @Setting(displayName = "Command Keybind 4", description = "What command should be run upon pressing the command keybind 4 key?", order = 4)
+        public String cKeyBind4 = "";
+
+        @Setting(displayName = "Command Keybind 5", description = "What command should be run upon pressing the command keybind 5 key?", order = 5)
+        public String cKeyBind5 = "";
+
+        @Setting(displayName = "Command Keybind 6", description = "What command should be run upon pressing the command keybind 6 key?", order = 6)
+        public String cKeyBind6 = "";
+
+        @Setting(displayName = "Presets", description = "Click on the button below to cycle through various command presets. The commands will automatically be copied to your clipboard for you to paste in the above fields.", upload = false, order = 9)
+        public Presets preset = Presets.CLICK_ME;
+
+        @Override
+        public void onSettingChanged(String name) {
+            if (name.contentEquals("preset")) {
+                if (!(McIf.mc().currentScreen instanceof SettingsUI)) {
+                    preset = Presets.CLICK_ME;
+                } else if (preset.value != null) {
+                    Utils.copyToClipboard(preset.value);
+                }
+            }
+        }
+
+        public enum Presets {
+            CLICK_ME("Click me to copy to clipboard", null),
+            MANAGE_CURRENT_TERRITORY("Manage the current territory", "guild territory"),
+            ATTACK_CURRENT_TERRITORY("Attack the current territory", "guild attack"),
+            MANAGE_GUILD("Open the guild manage menu", "guild manage"),
+            HOUSING_EDIT_TOGGLE("Toggle edit mode while in housing", "housing edit"),
+            OPEN_CLASS_MENU("Open character selection menu", "class"),
+            OPEN_PARTYFINDER_MENU("Open partyfinder menu", "partyfinder"),
+            OPEN_PETS("Open pets menu", "pets"),
+            OPEN_USE_MENU("Open use menu", "use"),
+            OPEN_TOTEM_MENU("Open totem menu", "totem"),
+            OPEN_CRATES_MENU("Open crates menu", "crates");
+
+            public final String displayName;
+            public final String value;
+
+            Presets(String displayName, String value) {
+                this.displayName = displayName;
+                this.value = value;
+            }
+        }
     }
 
     @Override

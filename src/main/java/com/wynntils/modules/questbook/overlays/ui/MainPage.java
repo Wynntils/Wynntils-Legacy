@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2021.
+ *  * Copyright © Wynntils - 2022.
  */
 
 package com.wynntils.modules.questbook.overlays.ui;
@@ -62,7 +62,6 @@ public class MainPage extends QuestBookPage {
             render.drawString(TextFormatting.DARK_AQUA + guild, x + 80, y - 53, CommonColors.CYAN, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
             render.drawString(McIf.player().getName(), x + 80, y - 43, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
             render.drawString(PlayerInfo.get(CharacterData.class).getCurrentClass().toString() + " Level " + PlayerInfo.get(CharacterData.class).getLevel(), x + 80, y + 40, CommonColors.PURPLE, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-            render.drawString("In Development", x + 80, y + 50, CommonColors.RED, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
             render.drawString(WebManager.getCurrentSplash(), x + 82, y + 70, CommonColors.RAINBOW, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
 
             selected = 0;
@@ -87,7 +86,7 @@ public class MainPage extends QuestBookPage {
                 }
             }
 
-            render.drawSplitString("Welcome to Wynntils. You can see your statistics on the right or select some of the options above for more features",
+            render.drawSplitString("Welcome to Wynntils! You can see your statistics on the right or select one of the options above for more features.",
                     155, x - 150, y + 30, 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
             render.drawRect(Textures.UIs.quest_book, x + 20, y - 90, 224, 253, 17, 18);

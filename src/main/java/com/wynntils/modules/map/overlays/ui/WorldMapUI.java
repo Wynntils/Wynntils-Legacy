@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2021.
+ *  * Copyright © Wynntils - 2022.
  */
 
 package com.wynntils.modules.map.overlays.ui;
@@ -18,8 +18,9 @@ import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.MapProfile;
+import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.map.managers.LootRunManager;
-import com.wynntils.modules.map.overlays.enums.MapButtonType;
+import com.wynntils.modules.map.overlays.enums.MapButtonIcon;
 import com.wynntils.modules.map.overlays.objects.*;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
@@ -28,6 +29,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.renderer.BufferBuilder;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.input.Keyboard;
@@ -43,7 +45,9 @@ import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
+import static com.wynntils.modules.map.configs.MapConfig.INSTANCE;
 import static net.minecraft.client.renderer.GlStateManager.*;
 
 public class WorldMapUI extends GuiMovementScreen {
@@ -59,7 +63,7 @@ public class WorldMapUI extends GuiMovementScreen {
     protected float centerPositionZ;
 
     // Zoom
-    protected float zoom = 0;  // Zoom goes from 300 (whole world) to -10 (max details)
+    protected float zoom = 0;  // Zoom goes from 500 (whole world) to -10 (max details)
     protected float zoomInitial = 0;
     protected float zoomTarget = 0;
     protected float zoomEnd = 0;
@@ -96,6 +100,10 @@ public class WorldMapUI extends GuiMovementScreen {
             territories.put(territory.getFriendlyName(), new MapTerritory(territory).setRenderer(renderer));
         }
 
+        //Only set if there is no animation, otherwise it is handled by handleOpenAnimation()
+        if (!MapConfig.WorldMap.INSTANCE.openAnimation)
+            zoom = MapConfig.WorldMap.INSTANCE.defaultMapZoom;
+
         // Also creates icons
         createIcons();
         this.centerPositionX = startX; this.centerPositionZ = startZ;
@@ -116,20 +124,22 @@ public class WorldMapUI extends GuiMovementScreen {
         Keyboard.enableRepeatEvents(true);
     }
 
-    protected void addButton(MapButtonType type, int offsetX, List<String> hover, Function<Void, Boolean> isEnabled, BiConsumer<MapButton, Integer> onClick) {
+    protected MapButton addButton(MapButtonIcon icon, int offsetX, List<String> hover, Function<Void, Boolean> isEnabled, BiConsumer<MapButton, Integer> onClick) {
         // add the button base
         if (mapButtons.isEmpty()) {
-            mapButtons.add(new MapButton(width / 2, height - 45, MapButtonType.BASE, null, (v) -> true, null));
+            mapButtons.add(new MapButton(width / 2, height - 45, MapButtonIcon.BASE, null, (v) -> true, null));
         }
 
         int posX = mapButtons.get(0).getStartX() + 13 + (19 * (mapButtons.size() - 1)) + offsetX;
         int posY = height - 45;
-        mapButtons.add(new MapButton(posX, posY, type, hover, isEnabled, onClick));
+        MapButton btn = new MapButton(posX, posY, icon, hover, isEnabled, onClick);
+        mapButtons.add(btn);
+        return btn;
     }
 
     protected void createIcons() {
         // HeyZeer0: Handles MiniMap markers provided by Wynn API
-        List<MapIcon> apiMapIcons = MapIcon.getApiMarkers(MapConfig.INSTANCE.iconTexture);
+        List<MapIcon> apiMapIcons = MapIcon.getApiMarkers(INSTANCE.iconTexture);
         // Handles map labels from map.wynncraft.com
         List<MapIcon> mapLabels = MapIcon.getLabels();
         // Handles all waypoints
@@ -156,6 +166,26 @@ public class WorldMapUI extends GuiMovementScreen {
                 WorldMapIcon icon;
                 if (i instanceof MapLabel) {
                     icon = new WorldMapLabel((MapLabel) i);
+                } else if (i instanceof MapWaypointIcon) {
+                    icon = new WorldMapIcon(i);
+                    //Make sure this waypoint is named a Loot Chest, and uses the correct icons
+                    if (icon.getInfo().getName().startsWith("Loot Chest")) {
+                        WaypointProfile waypointProfile = ((MapWaypointIcon) i).getWaypointProfile();
+                        switch (waypointProfile.getType()) {
+                            case LOOTCHEST_T1:
+                                waypointProfile.setZoomNeeded(MapConfig.WorldMap.INSTANCE.lootChestTier1MinZoom);
+                                break;
+                            case LOOTCHEST_T2:
+                                waypointProfile.setZoomNeeded(MapConfig.WorldMap.INSTANCE.lootChestTier2MinZoom);
+                                break;
+                            case LOOTCHEST_T3:
+                                waypointProfile.setZoomNeeded(MapConfig.WorldMap.INSTANCE.lootChestTier3MinZoom);
+                                break;
+                            case LOOTCHEST_T4:
+                                waypointProfile.setZoomNeeded(MapConfig.WorldMap.INSTANCE.lootChestTier4MinZoom);
+                                break;
+                        }
+                    }
                 } else {
                     icon = new WorldMapIcon(i);
                 }
@@ -380,7 +410,7 @@ public class WorldMapUI extends GuiMovementScreen {
 
         // hover lore
         for (MapButton button : mapButtons) {
-            if (button.getType().isIgnoreAction()) continue;
+            if (button.getIcon().isIgnoreAction()) continue;
             if (!button.isHovering(mouseX, mouseY)) continue;
 
             drawHoveringText(button.getHoverLore(), mouseX, mouseY);
@@ -394,14 +424,14 @@ public class WorldMapUI extends GuiMovementScreen {
         float invertedProgress = (animationEnd - System.currentTimeMillis()) / (float) MapConfig.WorldMap.INSTANCE.animationLength;
         double radians = (Math.PI / 2f) * invertedProgress;
 
-        zoom = (float) (25 * Math.sin(radians));
+        zoom = (float) (25 * Math.sin(radians)) + (float) MapConfig.WorldMap.INSTANCE.defaultMapZoom;
         updateCenterPosition(centerPositionX, centerPositionZ);
     }
 
     protected void handleZoomAcceleration(float partialTicks) {
         if (McIf.getSystemTime() > zoomEnd) return;
 
-        float percentage = Math.min(1f, 1f - (zoomEnd - McIf.getSystemTime()) / ZOOM_RESISTANCE);
+        float percentage = MathHelper.clamp(1f - (zoomEnd - McIf.getSystemTime()) / ZOOM_RESISTANCE, 0f, 1f);
         double toIncrease = (zoomTarget - zoomInitial) * Math.sin((Math.PI / 2f) * percentage);
 
         zoom = zoomInitial + (float) toIncrease;
@@ -500,13 +530,23 @@ public class WorldMapUI extends GuiMovementScreen {
 
         for (MapButton button : mapButtons) {
             if (!button.isHovering(mouseX, mouseY)) continue;
-            if (button.getType().isIgnoreAction()) continue;
+            if (button.getIcon().isIgnoreAction()) continue;
 
             button.mouseClicked(mouseX, mouseY, mouseButton);
             return;
         }
 
         super.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    protected boolean checkForPlayerMovement(boolean holdingDecided, boolean holdingMapKey) {
+        GameSettings gameSettings = McIf.mc().gameSettings;
+
+        if (holdingDecided && !holdingMapKey) {
+            return gameSettings.keyBindForward.isKeyDown() || gameSettings.keyBindBack.isKeyDown() || gameSettings.keyBindLeft.isKeyDown() || gameSettings.keyBindRight.isKeyDown();
+        }
+
+        return false;
     }
 
 }

@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.modules.utilities.managers;
@@ -12,22 +12,21 @@ import com.wynntils.core.framework.settings.ui.SettingsUI;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.map.overlays.MiniMapOverlay;
 import com.wynntils.modules.utilities.UtilitiesModule;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.events.ClientEvents;
-import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
 import com.wynntils.modules.utilities.overlays.hud.StopWatchOverlay;
 import com.wynntils.modules.utilities.overlays.ui.GearViewerUI;
 import com.wynntils.webapi.WebManager;
-import net.minecraft.client.entity.EntityPlayerSP;
-import net.minecraft.inventory.ClickType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.play.client.CPacketClickWindow;
-import net.minecraft.util.EnumHand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommand;
+import net.minecraft.command.ICommandSender;
+import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.settings.KeyConflictContext;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.lwjgl.input.Keyboard;
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.Arrays;
+import java.util.Map;
 
 public class KeyManager {
 
@@ -66,20 +65,14 @@ public class KeyManager {
 
         zoomOutKey = CoreModule.getModule().registerKeyBinding("Zoom Out", Keyboard.KEY_MINUS, "Wynntils", KeyConflictContext.IN_GAME, false, () -> MiniMapOverlay.zoomBy(-1));
 
-        CoreModule.getModule().registerKeyBinding("Cast First Spell", Keyboard.KEY_Z, "Wynntils", KeyConflictContext.IN_GAME, true, QuickCastManager::castFirstSpell);
-        CoreModule.getModule().registerKeyBinding("Cast Second Spell", Keyboard.KEY_X, "Wynntils", KeyConflictContext.IN_GAME, true, QuickCastManager::castSecondSpell);
-        CoreModule.getModule().registerKeyBinding("Cast Third Spell", Keyboard.KEY_C, "Wynntils", KeyConflictContext.IN_GAME, true, QuickCastManager::castThirdSpell);
-        CoreModule.getModule().registerKeyBinding("Cast Fourth Spell", Keyboard.KEY_V, "Wynntils", KeyConflictContext.IN_GAME, true, QuickCastManager::castFourthSpell);
+        CoreModule.getModule().registerKeyBinding("Cast 1st Spell", Keyboard.KEY_Z, "Wynntils", KeyConflictContext.IN_GAME, true, QuickCastManager::castFirstSpell);
+        CoreModule.getModule().registerKeyBinding("Cast 2nd Spell", Keyboard.KEY_X, "Wynntils", KeyConflictContext.IN_GAME, true, QuickCastManager::castSecondSpell);
+        CoreModule.getModule().registerKeyBinding("Cast 3rd Spell", Keyboard.KEY_C, "Wynntils", KeyConflictContext.IN_GAME, true, QuickCastManager::castThirdSpell);
+        CoreModule.getModule().registerKeyBinding("Cast 4th Spell", Keyboard.KEY_V, "Wynntils", KeyConflictContext.IN_GAME, true, QuickCastManager::castFourthSpell);
 
         CoreModule.getModule().registerKeyBinding("Mount Horse", Keyboard.KEY_Y, "Wynntils", KeyConflictContext.IN_GAME, true, MountHorseManager::mountHorseAndShowMessage);
 
-        CoreModule.getModule().registerKeyBinding("Mob Totem Menu", Keyboard.KEY_J, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
-            if (!Reference.onWorld) return;
-
-            McIf.player().sendChatMessage("/totem");
-        });
-
-        CoreModule.getModule().registerKeyBinding("Open Ingredient Pouch", Keyboard.KEY_O, "Wynntils", KeyConflictContext.IN_GAME, true, PouchHotkeyManager::onIngredientHotkeyPress);
+        CoreModule.getModule().registerKeyBinding("Open Ingredient Pouch", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, PouchHotkeyManager::onIngredientHotkeyPress);
 
         CoreModule.getModule().registerKeyBinding("Open Emerald Pouch", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, PouchHotkeyManager::onEmeraldHotkeyPress);
 
@@ -91,6 +84,109 @@ public class KeyManager {
         CoreModule.getModule().registerKeyBinding("View Player's Gear", -98, "Wynntils", KeyConflictContext.IN_GAME, true, GearViewerUI::openGearViewer);
 
         showLevelOverlayKey = UtilitiesModule.getModule().registerKeyBinding("Show Item Level Overlay", Keyboard.KEY_LCONTROL, "Wynntils", WynntilsConflictContext.AMBIENT, true, () -> {});
+
+        RegisterCustomCommandKeybinds();
+    }
+
+    private static void RegisterCustomCommandKeybinds() {
+        CoreModule.getModule().registerKeyBinding("Command Keybind 1", Keyboard.KEY_J, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+            String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind1;
+            if (cKeyBind.isEmpty())
+                return;
+            if (McIf.mc().currentScreen != null || !Reference.onServer)
+                return;
+
+            if (handleIfClientCommand(cKeyBind)) return;
+
+            //run server command
+            McIf.player().sendChatMessage("/" + cKeyBind);
+        });
+
+        CoreModule.getModule().registerKeyBinding("Command Keybind 2", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+            String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind2;
+            if (cKeyBind.isEmpty())
+                return;
+            if (McIf.mc().currentScreen != null || !Reference.onServer)
+                return;
+
+            if (handleIfClientCommand(cKeyBind)) return;
+
+            McIf.player().sendChatMessage("/" + cKeyBind);
+        });
+
+        CoreModule.getModule().registerKeyBinding("Command Keybind 3", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+            String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind3;
+            if (cKeyBind.isEmpty())
+                return;
+            if (McIf.mc().currentScreen != null || !Reference.onServer)
+                return;
+
+            if (handleIfClientCommand(cKeyBind)) return;
+
+            McIf.player().sendChatMessage("/" + cKeyBind);
+        });
+
+        CoreModule.getModule().registerKeyBinding("Command Keybind 4", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+            String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind4;
+            if (cKeyBind.isEmpty())
+                return;
+            if (McIf.mc().currentScreen != null || !Reference.onServer)
+                return;
+
+            if (handleIfClientCommand(cKeyBind)) return;
+
+            McIf.player().sendChatMessage("/" + cKeyBind);
+        });
+
+        CoreModule.getModule().registerKeyBinding("Command Keybind 5", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+            String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind5;
+            if (cKeyBind.isEmpty())
+                return;
+            if (McIf.mc().currentScreen != null || !Reference.onServer)
+                return;
+
+            if (handleIfClientCommand(cKeyBind)) return;
+
+            McIf.player().sendChatMessage("/" + cKeyBind);
+        });
+
+        CoreModule.getModule().registerKeyBinding("Command Keybind 6", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+            String cKeyBind = UtilitiesConfig.CommandKeybinds.INSTANCE.cKeyBind6;
+            if (cKeyBind.isEmpty())
+                return;
+            if (McIf.mc().currentScreen != null || !Reference.onServer)
+                return;
+
+            if (handleIfClientCommand(cKeyBind)) return;
+
+            McIf.player().sendChatMessage("/" + cKeyBind);
+        });
+    }
+
+    private static boolean handleIfClientCommand(String cKeyBind) {
+        String[] parts = cKeyBind.split(" ");
+        String command = parts[0];
+        String[] args = new String[parts.length - 1];
+        System.arraycopy(parts, 1, args, 0, parts.length - 1);
+
+        // This map contains aliases aswell as full command names
+        Map<String, ICommand> clientCommands = getClientCommands();
+
+        // Run as client command if possible
+        if (clientCommands.containsKey(command))
+        {
+            try {
+                clientCommands.get(command).execute(FMLCommonHandler.instance().getMinecraftServerInstance(), McIf.player(), args);
+            } catch (CommandException e) {
+                e.printStackTrace();
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public static Map<String, ICommand> getClientCommands() {
+        return ClientCommandHandler.instance.getCommands();
     }
 
     public static KeyHolder getFavoriteTradeKey() {

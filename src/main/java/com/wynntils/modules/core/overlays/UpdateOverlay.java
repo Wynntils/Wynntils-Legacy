@@ -1,5 +1,5 @@
 /*
- *  * Copyright © Wynntils - 2018 - 2021.
+ *  * Copyright © Wynntils - 2018 - 2022.
  */
 
 package com.wynntils.modules.core.overlays;
@@ -132,7 +132,7 @@ public class UpdateOverlay extends Overlay {
                         try {
                             String message = TextFormatting.DARK_AQUA + "An update to Wynntils (";
                             message += CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE ? "Version " + jarName.split("_")[0].split("-")[1] : "Build " + jarName.split("_")[1].replace(".jar", "");
-                            message += ") has been downloaded, and will be applied when the game is restarted.";
+                            message += ") has been downloaded and will be applied when the game is restarted.";
                             McIf.player().sendMessage(new TextComponentString(message));
                             scheduleCopyUpdateAtShutdown(jarName);
                         } catch (Exception ex) {
