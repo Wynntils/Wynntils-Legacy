@@ -96,7 +96,7 @@ public class UtilitiesConfig extends SettingsClass {
     public boolean autoMount = false;
 
     @Setting.Limitations.IntLimit(min = 0, max = 100)
-    @Setting(displayName = "Health Potion Blocking Threshold", description = "When you have more health than the percentage specified here, Wynntils will block health potions.\n\n§8Set to 0 to disable.", order = 1)
+    @Setting(displayName = "Health Potion Blocking Threshold", description = "When you have equal or more health than the percentage specified here, Wynntils will block health potions.\n\n§8Set to 0 to disable.", order = 1)
     public int blockHealingPotThreshold = 99;
 
     @Setting(displayName = "Apply Resource Pack", description = "Should the Wynncraft server resource pack be applied when joining the server instead of selecting your class?", order = 29)
