@@ -445,11 +445,11 @@ public class UtilitiesConfig extends SettingsClass {
         public CustomColor ingredientThreeHighlightColor = new CustomColor(0.9f, .3f, 0);
 
         @Setting(displayName = "Inventory Highlight Opacity", description = "As a percentage, how opaque should highlights in your inventory be?", order = 62)
-        @Setting.Limitations.FloatLimit(min = 0, max = 100, precision = 0.5f)
+        @Setting.Limitations.FloatLimit(min = 30, max = 100, precision = 0.5f)
         public float inventoryAlpha = 100;
 
         @Setting(displayName = "Hotbar Highlight Opacity", description = "As a percentage, how opaque should highlights in your hotbar be?", order = 63)
-        @Setting.Limitations.FloatLimit(min = 0, max = 100, precision = 0.5f)
+        @Setting.Limitations.FloatLimit(min = 10, max = 100, precision = 0.5f)
         public float hotbarAlpha = 30;
 
         @Setting(displayName = "Colour Number of Skill Points", description = "Should the number of skill points be coloured?")
