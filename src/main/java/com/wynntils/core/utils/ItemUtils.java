@@ -23,6 +23,7 @@ import net.minecraft.util.text.TextFormatting;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -122,7 +123,7 @@ public class ItemUtils {
         for (Entry<ItemType, String[]> e : WebManager.getMaterialTypes().entrySet()) {
             for (String id : e.getValue()) {
                 if (id.matches("[A-Za-z_:]+")) {
-                    if (Item.getByNameOrId(id).equals(item.getItem())) return e.getKey();
+                    if (Objects.equals(Item.getByNameOrId(id), item.getItem())) return e.getKey();
                 } else {
                     int damageValue = 0;
 
