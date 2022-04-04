@@ -11,6 +11,7 @@ import com.google.gson.JsonParser;
 import com.wynntils.Reference;
 import com.wynntils.core.utils.helpers.MD5Verification;
 import com.wynntils.core.utils.objects.ThrowingBiPredicate;
+import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.WebReader;
 
 import java.io.File;
@@ -235,6 +236,10 @@ public class Request {
     public HttpURLConnection establishConnection() throws IOException {
         HttpURLConnection st = (HttpURLConnection) new URL(url).openConnection();
         st.setRequestProperty("User-Agent", "WynntilsClient v" + Reference.VERSION + "/B" + Reference.BUILD_NUMBER);
+        if (WebManager.isAthenaOnline()) {
+            st.setRequestProperty("authToken", WebManager.getAccount().getToken());
+        }
+
         if (!headers.isEmpty()) headers.forEach(st::addRequestProperty);
 
         st.setConnectTimeout(timeout);
