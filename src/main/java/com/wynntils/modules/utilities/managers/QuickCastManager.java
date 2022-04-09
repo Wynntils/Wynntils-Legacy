@@ -130,22 +130,13 @@ public class QuickCastManager {
         List<String> lore = ItemUtils.getLore(heldItem);
 
         //If item has attack speed line, it is a weapon
-        boolean isWeapon = false;
+        boolean isWeapon = ItemUtils.isWeapon(heldItem);
         //Check class reqs to see if the weapon can be used by current class
         boolean classReqOk = false;
         //Is the current combat level enough to use the weapon
         boolean combatLvlMinReached = false;
         //If there is a spell point requirement that is not reached, store it and print it later
         String notReachedSpellPointRequirements = null;
-
-        int i = 0;
-        for (; i < lore.size(); i++) {
-            if (WEAPON_SPEED_PATTERN.matcher(lore.get(i)).matches())
-            {
-                isWeapon = true;
-                break;
-            }
-        }
 
         if (!isWeapon)
         {
@@ -155,6 +146,7 @@ public class QuickCastManager {
             return NO_SPELL;
         }
 
+        int i = 0;
         for (; i < lore.size(); i++) {
             if (CLASS_REQ_OK_PATTERN.matcher(lore.get(i)).matches())
             {
