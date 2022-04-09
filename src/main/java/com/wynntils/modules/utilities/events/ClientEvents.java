@@ -81,6 +81,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static net.minecraft.util.text.TextFormatting.getTextWithoutFormattingCodes;
+
 public class ClientEvents implements Listener {
 
     private static GuiScreen scheduledGuiScreen = null;
@@ -274,7 +276,7 @@ public class ClientEvents implements Listener {
     public void onGUIOpen(GuiOpenEvent e) {
         // Store the original opened chest so we can check itemstacks later
         // Make sure this check is not spoofed by checking inventory size
-        if (e.getGui() instanceof ChestReplacer && TextFormatting.getTextWithoutFormattingCodes(((ChestReplacer) e.getGui()).getLowerInv().getName()).startsWith("Loot Chest")
+        if (e.getGui() instanceof ChestReplacer && getTextWithoutFormattingCodes(((ChestReplacer) e.getGui()).getLowerInv().getName()).startsWith("Loot Chest")
                 && ((ChestReplacer) e.getGui()).getLowerInv().getSizeInventory() == 27) {
             currentLootChest = ((ChestReplacer) e.getGui()).getLowerInv();
         }
@@ -580,7 +582,7 @@ public class ClientEvents implements Listener {
         if (UtilitiesConfig.INSTANCE.preventMythicChestClose || UtilitiesConfig.INSTANCE.preventFavoritedChestClose) {
             if (e.getKeyCode() == 1 || e.getKeyCode() == McIf.mc().gameSettings.keyBindInventory.getKeyCode()) {
                 IInventory inv = e.getGui().getLowerInv();
-                String invName = TextFormatting.getTextWithoutFormattingCodes(inv.getName());
+                String invName = getTextWithoutFormattingCodes(inv.getName());
                 if ((invName.startsWith("Loot Chest") || invName.contains("Daily Rewards") ||
                         invName.contains("Objective Rewards")) && inv.getSizeInventory() <= 27) {
                     for (int i = 0; i < inv.getSizeInventory(); i++) {
@@ -674,7 +676,7 @@ public class ClientEvents implements Listener {
         IInventory chestInv = e.getGui().getLowerInv();
 
         // Queue messages into game update ticker when clicking on emeralds in loot chest
-        if (TextFormatting.getTextWithoutFormattingCodes(chestInv.getName()).startsWith("Loot Chest") && OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
+        if (getTextWithoutFormattingCodes(chestInv.getName()).startsWith("Loot Chest") && OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
             // Check if item is actually an emerald, if we're left clicking, and make sure we're not shift clicking
             if (currentLootChest.getStackInSlot(e.getSlotId()).getDisplayName().equals("§aEmerald") && e.getMouseButton() == 0 && !GuiScreen.isShiftKeyDown()) {
                 // Find all emerald pouches in inventory
@@ -704,7 +706,7 @@ public class ClientEvents implements Listener {
 
 
         // Prevent accidental ingredient/emerald pouch clicks in loot chests
-        if (TextFormatting.getTextWithoutFormattingCodes(chestInv.getName()).startsWith("Loot Chest") && UtilitiesConfig.INSTANCE.preventOpeningPouchesChest) {
+        if (getTextWithoutFormattingCodes(chestInv.getName()).startsWith("Loot Chest") && UtilitiesConfig.INSTANCE.preventOpeningPouchesChest) {
             // Ingredient pouch
             if (e.getSlotId() - chestInv.getSizeInventory() == 4) {
                 e.setCanceled(true);
@@ -779,14 +781,14 @@ public class ClientEvents implements Listener {
         if (oldStack.isEmpty() || !newStack.isEmpty() && !oldStack.isItemEqual(newStack)) return; // invalid move
         if (!oldStack.hasDisplayName()) return; // old item is not a valid item
 
-        String oldName = TextFormatting.getTextWithoutFormattingCodes(oldStack.getDisplayName());
+        String oldName = getTextWithoutFormattingCodes(oldStack.getDisplayName());
         Matcher oldMatcher = CRAFTED_USES.matcher(oldName);
         if (!oldMatcher.matches()) return;
         int oldUses = Integer.parseInt(oldMatcher.group(1));
 
         int newUses = 0;
         if (!newStack.isEmpty()) {
-            String newName = TextFormatting.getTextWithoutFormattingCodes(StringUtils.normalizeBadString(newStack.getDisplayName()));
+            String newName = getTextWithoutFormattingCodes(StringUtils.normalizeBadString(newStack.getDisplayName()));
             Matcher newMatcher = CRAFTED_USES.matcher(newName);
             if (newMatcher.matches()) {
                 newUses = Integer.parseInt(newMatcher.group(1));
@@ -885,10 +887,9 @@ public class ClientEvents implements Listener {
         EntityPlayer ep = (EntityPlayer) clicked;
         if (ep.getTeam() == null) return; // player model npc
 
-        ItemType item = ItemUtils.getItemType(player.getHeldItemMainhand());
-        if (item == null) return; // not any type of gear
-        if (item != ItemType.WAND && item != ItemType.DAGGER && item != ItemType.BOW && item != ItemType.SPEAR && item != ItemType.RELIK)
+        if (!ItemUtils.isWeapon(player.getHeldItemMainhand()))
             return; // not a weapon
+
         e.setCanceled(true);
     }
 
@@ -1022,7 +1023,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onWindowOpen(PacketEvent<SPacketOpenWindow> e){
-        if (TextFormatting.getTextWithoutFormattingCodes(e.getPacket().getWindowTitle().getUnformattedText()).startsWith("Loot Chest"))
+        if (getTextWithoutFormattingCodes(e.getPacket().getWindowTitle().getUnformattedText()).startsWith("Loot Chest"))
             lastOpenedChestWindowId = e.getPacket().getWindowId();
         if (e.getPacket().getWindowTitle().toString().contains("Daily Rewards") || e.getPacket().getWindowTitle().toString().contains("Objective Rewards"))
             lastOpenedRewardWindowId = e.getPacket().getWindowId();
