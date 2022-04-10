@@ -65,7 +65,7 @@ public class CloudConfigurations {
             while (it.hasNext()) {
                 File f = (File) it.next();
 
-                formParts.add(new MultipartFormFilePart("config", f));
+                formParts.add(new MultipartFormFilePart("config[]", f));
 
                 it.remove();
             }
