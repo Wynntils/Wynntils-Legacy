@@ -23,6 +23,7 @@ import net.minecraft.util.text.TextFormatting;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -30,6 +31,7 @@ public class ItemUtils {
 
     private static final Pattern LEVEL_PATTERN = Pattern.compile("(?:Combat|Crafting|Mining|Woodcutting|Farming|Fishing) Lv\\. Min: ([0-9]+)");
     private static final Pattern LEVEL_RANGE_PATTERN = Pattern.compile("Lv\\. Range: " + TextFormatting.WHITE.toString() + "([0-9]+)-([0-9]+)");
+    private static final Pattern WEAPON_SPEED_PATTERN = Pattern.compile("§7.+ Attack Speed");
 
     public static final NBTTagCompound UNBREAKABLE = new NBTTagCompound();
 
@@ -122,7 +124,7 @@ public class ItemUtils {
         for (Entry<ItemType, String[]> e : WebManager.getMaterialTypes().entrySet()) {
             for (String id : e.getValue()) {
                 if (id.matches("[A-Za-z_:]+")) {
-                    if (Item.getByNameOrId(id).equals(item.getItem())) return e.getKey();
+                    if (Objects.equals(Item.getByNameOrId(id), item.getItem())) return e.getKey();
                 } else {
                     int damageValue = 0;
 
@@ -209,4 +211,18 @@ public class ItemUtils {
         UNBREAKABLE.setBoolean("Unbreakable", true);
     }
 
+    public static boolean isWeapon(ItemStack heldItem) {
+        List<String> lore = ItemUtils.getLore(heldItem);
+
+        //If item has attack speed line, it is a weapon
+        boolean isWeapon = false;
+        for (String s : lore) {
+            if (WEAPON_SPEED_PATTERN.matcher(s).matches()) {
+                isWeapon = true;
+                break;
+            }
+        }
+
+        return isWeapon;
+    }
 }
