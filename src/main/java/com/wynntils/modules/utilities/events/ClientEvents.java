@@ -81,6 +81,8 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.wynntils.core.framework.instances.PlayerInfo.get;
+
 public class ClientEvents implements Listener {
 
     private static GuiScreen scheduledGuiScreen = null;
@@ -566,7 +568,7 @@ public class ClientEvents implements Listener {
 
 
         if (e.getKeyCode() == McIf.mc().gameSettings.keyBindDrop.getKeyCode() && e.getGui().getSlotUnderMouse() != null && McIf.player().inventory == e.getGui().getSlotUnderMouse().inventory) {
-            if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId()))
+            if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(get(CharacterData.class).getClassId()))
                 return;
 
             e.setCanceled(checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex()));
@@ -624,7 +626,7 @@ public class ClientEvents implements Listener {
 
 
         if (e.getKeyCode() == McIf.mc().gameSettings.keyBindDrop.getKeyCode() && e.getGui().getSlotUnderMouse() != null && McIf.player().inventory == e.getGui().getSlotUnderMouse().inventory) {
-            if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId()))
+            if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(get(CharacterData.class).getClassId()))
                 return;
 
             e.setCanceled(checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex()));
@@ -649,7 +651,7 @@ public class ClientEvents implements Listener {
         }
 
         if (e.getKeyCode() == McIf.mc().gameSettings.keyBindDrop.getKeyCode() && e.getGui().getSlotUnderMouse() != null && McIf.player().inventory == e.getGui().getSlotUnderMouse().inventory) {
-            if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId()))
+            if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(get(CharacterData.class).getClassId()))
                 return;
 
             e.setCanceled(checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex()));
@@ -751,11 +753,11 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void keyPress(PacketEvent<CPacketPlayerDigging> e) {
         if ((e.getPacket().getAction() != Action.DROP_ITEM && e.getPacket().getAction() != Action.DROP_ALL_ITEMS)
-                || !UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId()))
+                || !UtilitiesConfig.INSTANCE.locked_slots.containsKey(get(CharacterData.class).getClassId()))
             return;
 
         lastWasDrop = true;
-        if (UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.get(CharacterData.class).getClassId()).contains(McIf.player().inventory.currentItem))
+        if (UtilitiesConfig.INSTANCE.locked_slots.get(get(CharacterData.class).getClassId()).contains(McIf.player().inventory.currentItem))
             e.setCanceled(true);
     }
 
@@ -811,23 +813,23 @@ public class ClientEvents implements Listener {
     private static boolean checkDropState(int slot) {
         if (!Reference.onWorld) return false;
 
-        if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId()))
+        if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(get(CharacterData.class).getClassId()))
             return false;
 
-        return UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.get(CharacterData.class).getClassId()).contains(slot);
+        return UtilitiesConfig.INSTANCE.locked_slots.get(get(CharacterData.class).getClassId()).contains(slot);
     }
 
     private static void checkLockState(int slot) {
         if (!Reference.onWorld) return;
 
-        if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(PlayerInfo.get(CharacterData.class).getClassId())) {
-            UtilitiesConfig.INSTANCE.locked_slots.put(PlayerInfo.get(CharacterData.class).getClassId(), new HashSet<>());
+        if (!UtilitiesConfig.INSTANCE.locked_slots.containsKey(get(CharacterData.class).getClassId())) {
+            UtilitiesConfig.INSTANCE.locked_slots.put(get(CharacterData.class).getClassId(), new HashSet<>());
         }
 
-        if (UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.get(CharacterData.class).getClassId()).contains(slot)) {
-            UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.get(CharacterData.class).getClassId()).remove(slot);
+        if (UtilitiesConfig.INSTANCE.locked_slots.get(get(CharacterData.class).getClassId()).contains(slot)) {
+            UtilitiesConfig.INSTANCE.locked_slots.get(get(CharacterData.class).getClassId()).remove(slot);
         } else {
-            UtilitiesConfig.INSTANCE.locked_slots.get(PlayerInfo.get(CharacterData.class).getClassId()).add(slot);
+            UtilitiesConfig.INSTANCE.locked_slots.get(get(CharacterData.class).getClassId()).add(slot);
         }
 
         UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
@@ -835,16 +837,35 @@ public class ClientEvents implements Listener {
 
     // blocking healing pots below
     private boolean blockHealingPotions(ItemStack stack) {
-        if (stack.isEmpty() || !stack.hasDisplayName() || UtilitiesConfig.INSTANCE.blockHealingPotThreshold == 0) return false;
-
-        if (!stack.getDisplayName().contains(TextFormatting.LIGHT_PURPLE + "Potions of Healing") && !stack.getDisplayName().contains(TextFormatting.RED + "Potion of Healing"))
+        if (UtilitiesConfig.INSTANCE.potionBlockingType.equals(UtilitiesConfig.PotionBlockingType.Never) || !HealthPotionManager.isHealthPotion(stack))
             return false;
 
-        EntityPlayerSP player = McIf.player();
-        if (player.getHealth() / player.getMaxHealth() * 100 < UtilitiesConfig.INSTANCE.blockHealingPotThreshold) return false;
+        int threshold = UtilitiesConfig.INSTANCE.blockHealingPotThreshold;
+        int currentHealth = get(CharacterData.class).getCurrentHealth();
+        int maxHealth = get(CharacterData.class).getMaxHealth();
 
-        McIf.mc().addScheduledTask(() -> GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You already have more than " + UtilitiesConfig.INSTANCE.blockHealingPotThreshold + "% health!"));
-        return true;
+        switch (UtilitiesConfig.INSTANCE.potionBlockingType) {
+
+            case HealthPercent:
+                if (currentHealth / maxHealth * 100 < threshold) return false;
+                McIf.mc().addScheduledTask(() -> GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "You already have more than " + threshold + "% health!"));
+                return true;
+
+            case EffectivePercent:
+                float missingHealth = maxHealth - currentHealth;
+                float minHeal = (float) threshold / 100 * HealthPotionManager.getNextHealAmount(stack);
+                if (missingHealth > minHeal) return false;
+                McIf.mc().addScheduledTask(() -> GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "This potion is currently not " + threshold + "%+ effective!"));
+                return true;
+
+            case Always:
+                McIf.mc().addScheduledTask(() -> GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "Potions are currently always blocked!"));
+                return true;
+
+            case Never:
+            default:
+                return false;
+        }
     }
 
     @SubscribeEvent
@@ -980,7 +1001,7 @@ public class ClientEvents implements Listener {
                 if (priceMatcher.matches()) { // Determine if we have enough money to buy the bulk amount and add lore
                     int singularPrice = Integer.parseInt(priceMatcher.group(1));
                     int bulkPrice = singularPrice * UtilitiesConfig.INSTANCE.bulkBuyAmount;
-                    int availMoney = PlayerInfo.get(InventoryData.class).getMoney(); // this value includes both raw emeralds and pouches
+                    int availMoney = get(InventoryData.class).getMoney(); // this value includes both raw emeralds and pouches
 
                     String moneySymbol = (bulkPrice > availMoney) ? TextFormatting.RED + RequirementSymbols.XMARK_STRING : TextFormatting.GREEN + RequirementSymbols.CHECKMARK_STRING;
                     String loreString = "§6 - " + moneySymbol + " §f" + bulkPrice + "§7" + EmeraldSymbols.E_STRING + " (" + UtilitiesConfig.INSTANCE.bulkBuyAmount + "x)";

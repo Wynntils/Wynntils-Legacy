@@ -92,11 +92,14 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Searched Member Colour", description = "What colour should the highlight for searched items be?\n\n§aClick the coloured box to open the colour wheel.", order = 25)
     public CustomColor guildMemberMenuSearchHighlightColor = new CustomColor(80, 242, 242);
 
-    @Setting(displayName = "Auto Mount Horse", description = "Should you mount your horse automatically when it is summoned?", order = 2)
+    @Setting(displayName = "Auto Mount Horse", description = "Should you mount your horse automatically when it is summoned?", order = 3)
     public boolean autoMount = false;
 
+    @Setting(displayName = "Potion Blocking Type", description = "How should the potion blocking feature function?\n\n§7HealthPercent §8- Block potions when health is above %\n§7EffectivePercent §8- Block potions if they are not at least % effective\n§7Never §8- Do not block health potions\n§7Always §8- Always block health potions", order = 1)
+    public PotionBlockingType potionBlockingType = PotionBlockingType.HealthPercent;
+
     @Setting.Limitations.IntLimit(min = 0, max = 100)
-    @Setting(displayName = "Health Potion Blocking Threshold", description = "When you have equal or more health than the percentage specified here, Wynntils will block health potions.\n\n§8Set to 0 to disable.", order = 1)
+    @Setting(displayName = "Health Potion Blocking Threshold", description = "When you have equal or more health than the percentage specified here, Wynntils will block health potions.\n\n§8Set to 0 to disable.", order = 2)
     public int blockHealingPotThreshold = 99;
 
     @Setting(displayName = "Apply Resource Pack", description = "Should the Wynncraft server resource pack be applied when joining the server instead of selecting your class?", order = 29)
@@ -180,6 +183,13 @@ public class UtilitiesConfig extends SettingsClass {
         Default,
         Confirm,
         Block
+    }
+
+    public enum PotionBlockingType {
+        HealthPercent,
+        EffectivePercent,
+        Never,
+        Always
     }
 
     @SettingsInfo(name = "identifications", displayPath = "Utilities/Identifications")
