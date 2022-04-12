@@ -15,12 +15,12 @@ public class EmeraldPouchManager {
     private static final Pattern POUCH_TIER_PATTERN = Pattern.compile("§aEmerald Pouch§2 \\[Tier ([XIV]{1,4})]");
 
 
-    public static boolean isEmeraldPouch(ItemStack i) {
-        return i.getDisplayName().startsWith("§aEmerald Pouch§2 [Tier");
+    public static boolean isEmeraldPouch(ItemStack is) {
+        return is.getDisplayName().startsWith("§aEmerald Pouch§2 [Tier");
     }
 
-    public static int getPouchCapacity(ItemStack i) {
-        Matcher capacityMatcher = POUCH_CAPACITY_PATTERN.matcher(ItemUtils.getStringLore(i));
+    public static int getPouchCapacity(ItemStack is) {
+        Matcher capacityMatcher = POUCH_CAPACITY_PATTERN.matcher(ItemUtils.getStringLore(is));
         if (!capacityMatcher.find()) {
             return -1;
         }
@@ -30,10 +30,10 @@ public class EmeraldPouchManager {
         return capacity;
     }
 
-    public static int getPouchUsage(ItemStack i) {
-        Matcher usageMatcher = POUCH_USAGE_PATTERN.matcher(ItemUtils.getStringLore(i));
+    public static int getPouchUsage(ItemStack is) {
+        Matcher usageMatcher = POUCH_USAGE_PATTERN.matcher(ItemUtils.getStringLore(is));
         if (!usageMatcher.find()) {
-            if (ItemUtils.getStringLore(i).contains("§7Empty")) { // We might just have an valid, empty pouch
+            if (ItemUtils.getStringLore(is).contains("§7Empty")) { // We might just have an valid, empty pouch
                 return 0;
             }
 
@@ -42,8 +42,8 @@ public class EmeraldPouchManager {
         return Integer.parseInt(usageMatcher.group(1).replaceAll("\\s", ""));
     }
 
-    public static String getPouchTier(ItemStack i) {
-        Matcher tierMatcher = POUCH_TIER_PATTERN.matcher(i.getDisplayName());
+    public static String getPouchTier(ItemStack is) {
+        Matcher tierMatcher = POUCH_TIER_PATTERN.matcher(is.getDisplayName());
         if (!tierMatcher.find()) {
             return null;
         }
