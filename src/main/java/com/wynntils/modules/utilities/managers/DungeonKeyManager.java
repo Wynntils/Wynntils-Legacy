@@ -45,7 +45,7 @@ public class DungeonKeyManager {
     }
 
     public static boolean isCorrupted(ItemStack is) {
-        return isDungeonKey(is) && is.getDisplayName().contains("Corrupted");
+        return isDungeonKey(is) && (is.getDisplayName().contains("Corrupted") || isBroken(is)); // Broken keys are always corrupted
     }
 
     public static boolean isBroken(ItemStack is) {
@@ -54,10 +54,19 @@ public class DungeonKeyManager {
 
     public static DungeonKey getKeyDungeon(ItemStack is) {
         if (isBroken(is)) { // Broken corrupted keys
-            Matcher brokenMatcher = BROKEN_KEY_PATTERN.matcher(ItemUtils.getStringLore(is));
-            if (!brokenMatcher.find()) return null;
+            String lore = ItemUtils.getStringLore(is);
+            String result;
+            Matcher brokenMatcher = BROKEN_KEY_PATTERN.matcher(lore);
+            if (!brokenMatcher.find()) {
+                if (!lore.contains("§7Use this item at§7the §fForgery §7to craft§7a §4Corrupted Dungeon Key")) return null;
+                // This lore is only present for keys that aren't working properly and were dropped from raids
+                // Only way to parse this is to use item name
+                result = is.getDisplayName().replace("Broken", "Corrupted").replace(" Key", "");
+            } else {
+                result = brokenMatcher.group(1);
+            }
             for (DungeonKey dk : DungeonKey.values()) {
-                if (brokenMatcher.group(1).equals(dk.getFullName(true))) {
+                if (result.equals(dk.getFullName(true))) {
                     return dk;
                 }
             }
