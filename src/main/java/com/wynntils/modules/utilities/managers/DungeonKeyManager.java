@@ -21,23 +21,18 @@ public class DungeonKeyManager {
         UndergrowthRuins("UR", "Undergrowth Ruins"),
         GalleonsGraveyard("GG", "Galleon's Graveyard"),
         FallenFactory("FF", "Fallen Factory"),
-        EldritchOutlook("EO", "Eldritch Outlook"),
-
-        CDecrepitSewers("DS", "Corrupted Decrepit Sewers"),
-        CInfestedPit("IP", "Corrupted Infested Pit"),
-        CLostSanctuary("LS", "Corrupted Lost Sanctuary"),
-        CUnderworldCrypt("UC", "Corrupted Underworld Crypt"),
-        CSandSweptTob("ST", "Corrupted Sand-Swept Tomb"),
-        CIceBarrows("IB", "Corrupted Ice Barrows"),
-        CUndergrowthRuins("UR", "Corrupted Undergrowth Ruins");
-
+        EldritchOutlook("EO", "Eldritch Outlook");
 
         public final String acronym;
-        public final String fullname;
+        private final String fullName;
 
-        DungeonKey(String acronym, String fullname) {
+        DungeonKey(String acronym, String fullName) {
             this.acronym = acronym;
-            this.fullname = fullname;
+            this.fullName = fullName;
+        }
+
+        public String getFullName(boolean isCorrupted) {
+            return (isCorrupted) ? "Corrupted " + this.fullName : this.fullName;
         }
     }
 
@@ -59,7 +54,7 @@ public class DungeonKeyManager {
             Matcher brokenMatcher = BROKEN_KEY_PATTERN.matcher(ItemUtils.getStringLore(is));
             if (!brokenMatcher.find()) return null;
             for (DungeonKey dk : DungeonKey.values()) {
-                if (brokenMatcher.group(1).equals(dk.fullname)) {
+                if (brokenMatcher.group(1).equals(dk.getFullName(true))) {
                     return dk;
                 }
             }
@@ -67,7 +62,7 @@ public class DungeonKeyManager {
             Matcher normalMatcher = NORMAL_KEY_PATTERN.matcher(ItemUtils.getStringLore(is));
             if (!normalMatcher.find()) return null;
             for (DungeonKey dk : DungeonKey.values()) {
-                if (normalMatcher.group(1).equals(dk.fullname)) {
+                if (normalMatcher.group(1).equals(dk.getFullName(isCorrupted(is)))) {
                     return dk;
                 }
             }
