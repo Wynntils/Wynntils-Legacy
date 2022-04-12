@@ -41,22 +41,22 @@ public class DungeonKeyManager {
         }
     }
 
-    public static boolean isDungeonKey(ItemStack i) {
-        String lore = ItemUtils.getStringLore(i);
+    public static boolean isDungeonKey(ItemStack is) {
+        String lore = ItemUtils.getStringLore(is);
         return lore.contains("Dungeon Info");
     }
 
-    public static boolean isCorrupted(ItemStack i) {
-        return i.getDisplayName().contains("Corrupted") && i.getDisplayName().contains("Key");
+    public static boolean isCorrupted(ItemStack is) {
+        return is.getDisplayName().contains("Corrupted") && is.getDisplayName().contains("Key");
     }
 
-    public static boolean isBroken(ItemStack i) {
-        return i.getDisplayName().contains("Broken") && i.getDisplayName().contains("Key");
+    public static boolean isBroken(ItemStack is) {
+        return is.getDisplayName().contains("Broken") && is.getDisplayName().contains("Key");
     }
 
-    public static DungeonKey getKeyDungeon(ItemStack i) {
-        if (isBroken(i)) { // Broken corrupted keys
-            Matcher brokenMatcher = BROKEN_KEY_PATTERN.matcher(ItemUtils.getStringLore(i));
+    public static DungeonKey getKeyDungeon(ItemStack is) {
+        if (isBroken(is)) { // Broken corrupted keys
+            Matcher brokenMatcher = BROKEN_KEY_PATTERN.matcher(ItemUtils.getStringLore(is));
             if (!brokenMatcher.find()) return null;
             for (DungeonKey dk : DungeonKey.values()) {
                 if (brokenMatcher.group(1).equals(dk.fullname)) {
@@ -64,7 +64,7 @@ public class DungeonKeyManager {
                 }
             }
         } else { // Fixed corrupted keys, normal keys
-            Matcher normalMatcher = NORMAL_KEY_PATTERN.matcher(ItemUtils.getStringLore(i));
+            Matcher normalMatcher = NORMAL_KEY_PATTERN.matcher(ItemUtils.getStringLore(is));
             if (!normalMatcher.find()) return null;
             for (DungeonKey dk : DungeonKey.values()) {
                 if (normalMatcher.group(1).equals(dk.fullname)) {
