@@ -11,12 +11,12 @@ public class CorkianAmplifierManager {
 
     public static final Pattern CORKIAN_AMPLIFIER_PATTERN = Pattern.compile("§bCorkian Amplifier (I{1,3})");
 
-    public static boolean isAmplifier(ItemStack i) {
-        return i.getDisplayName().startsWith("§bCorkian Amplifier ") && i.getItem() == Item.getItemFromBlock(Blocks.STONE_BUTTON);
+    public static boolean isAmplifier(ItemStack is) {
+        return is.getDisplayName().startsWith("§bCorkian Amplifier ") && is.getItem() == Item.getItemFromBlock(Blocks.STONE_BUTTON);
     }
 
-    public static String getAmplifierTier(ItemStack i) {
-        Matcher tierMatcher = CORKIAN_AMPLIFIER_PATTERN.matcher(i.getDisplayName());
+    public static String getAmplifierTier(ItemStack is) {
+        Matcher tierMatcher = CORKIAN_AMPLIFIER_PATTERN.matcher(is.getDisplayName());
         if (!tierMatcher.find()) {
             return null;
         }
