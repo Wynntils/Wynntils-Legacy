@@ -662,6 +662,13 @@ public class ClientEvents implements Listener {
     public void clickOnInventory(GuiOverlapEvent.InventoryOverlap.HandleMouseClick e) {
         if (!Reference.onWorld) return;
 
+        if (e.getMouseButton() == 2 && // Dungeon key middle click functionality
+                e.getGui().getSlotUnderMouse() != null &&
+                e.getGui().getSlotUnderMouse().getHasStack() &&
+                DungeonKeyManager.isDungeonKey(e.getGui().getSlotUnderMouse().getStack())) {
+            System.out.println("passed into dn key if");
+        }
+
         if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().inventory instanceof InventoryPlayer) {
             if ((!EmeraldPouchManager.isEmeraldPouch(e.getGui().getSlotUnderMouse().getStack()) || e.getMouseButton() == 0) && checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex())) {
                 e.setCanceled(true);
@@ -673,6 +680,14 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void clickOnChest(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
         if (e.getSlotIn() == null) return;
+
+        if (e.getMouseButton() == 2 && // Dungeon key middle click functionality
+                e.getGui().getSlotUnderMouse() != null &&
+                e.getGui().getSlotUnderMouse().getHasStack() &&
+                DungeonKeyManager.isDungeonKey(e.getGui().getSlotUnderMouse().getStack())) {
+            System.out.println("passed into dn key if");
+        }
+
         IInventory chestInv = e.getGui().getLowerInv();
 
         // Queue messages into game update ticker when clicking on emeralds in loot chest

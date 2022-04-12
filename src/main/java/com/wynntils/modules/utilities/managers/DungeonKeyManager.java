@@ -38,15 +38,18 @@ public class DungeonKeyManager {
 
     public static boolean isDungeonKey(ItemStack is) {
         String lore = ItemUtils.getStringLore(is);
-        return lore.contains("Dungeon Info");
+        return is.getDisplayName().contains("Key") &&
+                (lore.contains("§7Grants access to the") ||
+                        lore.contains("§7Use this item at the §fForgery§7 to craft a") ||
+                        lore.contains("§7Use this item at§7the §fForgery §7to craft§7a §4Corrupted Dungeon Key"));
     }
 
     public static boolean isCorrupted(ItemStack is) {
-        return is.getDisplayName().contains("Corrupted") && is.getDisplayName().contains("Key");
+        return isDungeonKey(is) && is.getDisplayName().contains("Corrupted");
     }
 
     public static boolean isBroken(ItemStack is) {
-        return is.getDisplayName().contains("Broken") && is.getDisplayName().contains("Key");
+        return isDungeonKey(is) && is.getDisplayName().contains("Broken");
     }
 
     public static DungeonKey getKeyDungeon(ItemStack is) {
