@@ -99,6 +99,14 @@ public class LootRunManager {
         activePathName = lootRunName;
         return true;
     }
+    
+    static void loadManagedLootRun(LootRunPath path, String name) {
+    	if (path != null && name != null) {
+    		activePath = path;
+    		activePathName = name;
+    		updateMapPath();
+    	}
+    }
 
     public static boolean saveToFile(String lootRunName) {
         try {

@@ -1,0 +1,31 @@
+{
+	"nodeList": [
+		{
+			"uid": 0,
+			"position": {
+				"x": 0,
+				"y": 0,
+				"z": 0
+			},
+			"closed": true
+		},
+		{
+			"uid": 1,
+			"position": {
+				"x": 1,
+				"y": 0,
+				"z": 0
+			},
+			"closed": true
+		}
+	],
+	"pathList": [
+		{
+			"uid": 0,
+			"startNode": 0,
+			"endNode": 1,
+			"points": [
+			]
+		}
+	]
+}

@@ -14,6 +14,7 @@ import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.map.commands.CommandDetection;
 import com.wynntils.modules.map.commands.CommandLocate;
 import com.wynntils.modules.map.commands.CommandLootRun;
+import com.wynntils.modules.map.commands.CommandPathFinder;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.events.ClientEvents;
 import com.wynntils.modules.map.instances.MapProfile;
@@ -67,6 +68,7 @@ public class MapModule extends Module {
         registerCommand(new CommandLootRun());
         registerCommand(new CommandLocate());
         registerCommand(new CommandDetection());
+        registerCommand(new CommandPathFinder());
 
         registerKeyBinding("New Waypoint", Keyboard.KEY_B, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
             if (Reference.onWorld)
