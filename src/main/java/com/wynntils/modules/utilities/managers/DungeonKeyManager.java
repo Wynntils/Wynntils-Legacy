@@ -1,3 +1,7 @@
+/*
+ *  * Copyright © Wynntils - 2018 - 2022.
+ */
+
 package com.wynntils.modules.utilities.managers;
 
 import com.wynntils.core.utils.ItemUtils;
