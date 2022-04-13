@@ -15,10 +15,13 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.objects.Location;
+import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.core.utils.reference.RequirementSymbols;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
+import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
@@ -662,11 +665,16 @@ public class ClientEvents implements Listener {
     public void clickOnInventory(GuiOverlapEvent.InventoryOverlap.HandleMouseClick e) {
         if (!Reference.onWorld) return;
 
-        if (e.getMouseButton() == 2 && // Dungeon key middle click functionality
-                e.getGui().getSlotUnderMouse() != null &&
-                e.getGui().getSlotUnderMouse().getHasStack() &&
-                DungeonKeyManager.isDungeonKey(e.getGui().getSlotUnderMouse().getStack())) {
-            System.out.println("passed into dn key if");
+        // Dungeon key middle click functionality
+        if (e.getMouseButton() == 2 && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().getHasStack()) {
+            ItemStack is = e.getGui().getSlotUnderMouse().getStack();
+            if (DungeonKeyManager.isDungeonKey(is)) {
+                Pair<Integer, Integer> coords = DungeonKeyManager.getDungeonCoords(is);
+                CompassManager.setCompassLocation(new Location(coords.a, 0, coords.b));
+                boolean isCorrupted = DungeonKeyManager.isCorrupted(is);
+                String location = (isCorrupted) ? "§4The Forgery" : "§6" + DungeonKeyManager.getDungeonKey(is).getFullName(false);
+                GameUpdateOverlay.queueMessage("§aSet compass to " + location);
+            }
         }
 
         if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().inventory instanceof InventoryPlayer) {
@@ -681,11 +689,16 @@ public class ClientEvents implements Listener {
     public void clickOnChest(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
         if (e.getSlotIn() == null) return;
 
-        if (e.getMouseButton() == 2 && // Dungeon key middle click functionality
-                e.getGui().getSlotUnderMouse() != null &&
-                e.getGui().getSlotUnderMouse().getHasStack() &&
-                DungeonKeyManager.isDungeonKey(e.getGui().getSlotUnderMouse().getStack())) {
-            System.out.println("passed into dn key if");
+        // Dungeon key middle click functionality
+        if (e.getMouseButton() == 2 && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().getHasStack()) {
+            ItemStack is = e.getGui().getSlotUnderMouse().getStack();
+            if (DungeonKeyManager.isDungeonKey(is)) {
+                Pair<Integer, Integer> coords = DungeonKeyManager.getDungeonCoords(is);
+                CompassManager.setCompassLocation(new Location(coords.a, 0, coords.b));
+                boolean isCorrupted = DungeonKeyManager.isCorrupted(is);
+                String location = (isCorrupted) ? "§4The Forgery" : "§6" + DungeonKeyManager.getDungeonKey(is).getFullName(false);
+                GameUpdateOverlay.queueMessage("§aSet compass to " + location);
+            }
         }
 
         IInventory chestInv = e.getGui().getLowerInv();
