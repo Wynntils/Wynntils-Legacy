@@ -9,10 +9,12 @@ import java.util.regex.Pattern;
 
 public class DungeonKeyManager {
 
-    private static final Pattern NORMAL_KEY_PATTERN = Pattern.compile("§7Grants access to the§f(.+)§7 once");
-    private static final Pattern BROKEN_KEY_PATTERN = Pattern.compile("§7Use this item at the§fForgery§7 to craft a§4(.+) Key");
-    public static final int forgeryX = -873;
-    public static final int forgeryZ = -4902;
+    private static final Pattern NORMAL_KEY_LORE_PATTERN = Pattern.compile("§7Grants access to the§f(.+)§7 once");
+    private static final Pattern BROKEN_KEY_LORE_PATTERN = Pattern.compile("§7Use this item at(?: |§7)the ?§fForgery ?§7 ?to craft(?: |§7)a ?§4Corrupted ");
+    private static final Pattern BROKEN_KEY_NAME_PATTERN = Pattern.compile("Broken (?:Corrupted )?(.+) Key");
+
+    private static final int forgeryX = -873;
+    private static final int forgeryZ = -4902;
     private static final Pattern KEY_COORDINATE_PATTERN = Pattern.compile("§7Coordinates: §f(-?\\d+), (-?\\d+)");
 
     public enum DungeonKey {
@@ -81,16 +83,15 @@ public class DungeonKeyManager {
     public static DungeonKey getDungeonKey(ItemStack is) {
         if (isBroken(is)) { // Broken corrupted keys
             String lore = ItemUtils.getStringLore(is);
-            String result;
-            Matcher brokenMatcher = BROKEN_KEY_PATTERN.matcher(lore);
-            if (!brokenMatcher.find()) {
-                // For broken keys, eg. from raid rewards
-                result = is.getDisplayName().replace("Broken ", "").replace(" Key", "");
-                if (!result.contains("Corrupted")) {
-                    result = "Corrupted " + result;
-                }
-            } else {
-                result = brokenMatcher.group(1);
+            Matcher brokenMatcher = BROKEN_KEY_LORE_PATTERN.matcher(lore);
+            if (!brokenMatcher.find()) return null;
+            // lore matcher doesn't match dungeon names because Wynn isn't consistent
+            // get names from item name instead
+            Matcher brokenNameMatcher = BROKEN_KEY_NAME_PATTERN.matcher(is.getDisplayName());
+            if (!brokenNameMatcher.find()) return null;
+            String result = brokenNameMatcher.group(1);
+            if (!result.contains("Corrupted")) { // Banked broken keys don't contain "Corrupted", but they are corrupted
+                result = "Corrupted " + result;
             }
             for (DungeonKey dk : DungeonKey.values()) {
                 if (result.equals(dk.getFullName(true))) {
@@ -98,7 +99,7 @@ public class DungeonKeyManager {
                 }
             }
         } else { // Fixed corrupted keys, normal keys
-            Matcher normalMatcher = NORMAL_KEY_PATTERN.matcher(ItemUtils.getStringLore(is));
+            Matcher normalMatcher = NORMAL_KEY_LORE_PATTERN.matcher(ItemUtils.getStringLore(is));
             if (!normalMatcher.find()) return null;
             for (DungeonKey dk : DungeonKey.values()) {
                 if (normalMatcher.group(1).equals(dk.getFullName(isCorrupted(is)))) {
