@@ -661,6 +661,16 @@ public class ClientEvents implements Listener {
         }
     }
 
+    private void handleDungeonKeyMClick(ItemStack is) {
+        if (DungeonKeyManager.isDungeonKey(is)) {
+            Pair<Integer, Integer> coords = DungeonKeyManager.getDungeonCoords(is);
+            CompassManager.setCompassLocation(new Location(coords.a, 0, coords.b));
+            boolean isCorrupted = DungeonKeyManager.isCorrupted(is);
+            String location = (isCorrupted) ? "§4The Forgery" : "§6" + DungeonKeyManager.getDungeonKey(is).getFullName(false);
+            GameUpdateOverlay.queueMessage("§aSet compass to " + location);
+        }
+    }
+
     @SubscribeEvent
     public void clickOnInventory(GuiOverlapEvent.InventoryOverlap.HandleMouseClick e) {
         if (!Reference.onWorld) return;
@@ -668,13 +678,7 @@ public class ClientEvents implements Listener {
         // Dungeon key middle click functionality
         if (e.getMouseButton() == 2 && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().getHasStack()) {
             ItemStack is = e.getGui().getSlotUnderMouse().getStack();
-            if (DungeonKeyManager.isDungeonKey(is)) {
-                Pair<Integer, Integer> coords = DungeonKeyManager.getDungeonCoords(is);
-                CompassManager.setCompassLocation(new Location(coords.a, 0, coords.b));
-                boolean isCorrupted = DungeonKeyManager.isCorrupted(is);
-                String location = (isCorrupted) ? "§4The Forgery" : "§6" + DungeonKeyManager.getDungeonKey(is).getFullName(false);
-                GameUpdateOverlay.queueMessage("§aSet compass to " + location);
-            }
+            handleDungeonKeyMClick(is);
         }
 
         if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().inventory instanceof InventoryPlayer) {
@@ -692,13 +696,7 @@ public class ClientEvents implements Listener {
         // Dungeon key middle click functionality
         if (e.getMouseButton() == 2 && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().getHasStack()) {
             ItemStack is = e.getGui().getSlotUnderMouse().getStack();
-            if (DungeonKeyManager.isDungeonKey(is)) {
-                Pair<Integer, Integer> coords = DungeonKeyManager.getDungeonCoords(is);
-                CompassManager.setCompassLocation(new Location(coords.a, 0, coords.b));
-                boolean isCorrupted = DungeonKeyManager.isCorrupted(is);
-                String location = (isCorrupted) ? "§4The Forgery" : "§6" + DungeonKeyManager.getDungeonKey(is).getFullName(false);
-                GameUpdateOverlay.queueMessage("§aSet compass to " + location);
-            }
+            handleDungeonKeyMClick(is);
         }
 
         IInventory chestInv = e.getGui().getLowerInv();
