@@ -27,7 +27,7 @@ public class DungeonKeyManager {
         FallenFactory("FF", "Fallen Factory"),
         EldritchOutlook("EO", "Eldritch Outlook");
 
-        public final String acronym;
+        private final String acronym;
         private final String fullName;
 
         DungeonKey(String acronym, String fullName) {
@@ -37,6 +37,10 @@ public class DungeonKeyManager {
 
         public String getFullName(boolean isCorrupted) {
             return (isCorrupted) ? "Corrupted " + this.fullName : this.fullName;
+        }
+
+        public String getAcronym() {
+            return this.acronym;
         }
     }
 
