@@ -94,9 +94,15 @@ public class ObjectivesOverlay extends Overlay {
     private static void removeObjective(Objective objective) {
         String goalToRemove = objective.getGoal();
 
+        if (guildObjectives.getGoal().equals(goalToRemove)) {
+            guildObjectives = null;
+            return;
+        }
+
         for (int i = 0; i < objectives.length; i++) {
             if (objectives[i] != null && objectives[i].getGoal().equals(goalToRemove)) {
                 objectives[i] = null;
+                return;
             }
         }
     }
