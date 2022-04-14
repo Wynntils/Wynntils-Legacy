@@ -56,6 +56,9 @@ public abstract class CachingTranslationService implements TranslationService {
 
     public static synchronized void saveTranslationCache() {
         try {
+            if (translationCaches == null)
+                return;
+
             File f = new File(TRANSLATION_CACHE_ROOT, "translations.json");
             Gson gson = new Gson();
             String json = gson.toJson(translationCaches);
@@ -81,6 +84,10 @@ public abstract class CachingTranslationService implements TranslationService {
             translationCaches = gson.fromJson(json, type);
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            if (translationCaches == null) {
+                translationCaches = new HashMap<>();
+            }
         }
     }
 }
