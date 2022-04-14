@@ -51,13 +51,10 @@ public class ChatGUI extends GuiChat {
 
     private Map<String, String> chatItems = new HashMap<>();
 
-    public ChatGUI() {
-        FrameworkManager.getEventBus().register(this);
-    }
+    public ChatGUI() { }
 
     public ChatGUI(String defaultInputText) {
         super(defaultInputText);
-        FrameworkManager.getEventBus().register(this);
     }
 
     public void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
@@ -137,6 +134,7 @@ public class ChatGUI extends GuiChat {
     @Override
     public void initGui() {
         super.initGui();
+        FrameworkManager.getEventBus().register(this);
         addAllButtons();
     }
 
