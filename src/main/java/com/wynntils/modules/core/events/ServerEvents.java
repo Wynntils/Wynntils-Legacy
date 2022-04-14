@@ -243,7 +243,10 @@ public class ServerEvents implements Listener {
         TextComponentString msg = new TextComponentString("The Wynntils servers are currently down! You can still use Wynntils, but some features may not work. Our servers should be back soon.");
         msg.getStyle().setColor(TextFormatting.RED);
         msg.getStyle().setBold(true);
-        new Delay(() -> McIf.player().sendMessage(msg), 30); // delay so the player actually loads in
+        new Delay(() -> {
+            if (McIf.player() != null)
+                McIf.player().sendMessage(msg);
+        }, 30); // delay so the player actually loads in
     }
 
     private static boolean triedToShowChangelog = false;
