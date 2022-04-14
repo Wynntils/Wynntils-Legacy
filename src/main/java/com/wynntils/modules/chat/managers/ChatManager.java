@@ -929,7 +929,8 @@ public class ChatManager {
 
         // Very very long string of À's get sent in place of dialogue initially
         String chat = "";
-        if (McIf.getUnformattedText(component).contains("ÀÀÀÀ")) {
+        String message = McIf.getUnformattedText(component);
+        if (message.contains("ÀÀÀÀ") && message.contains("\n")) {
             inDialogue = true;
             lineCount = 0;
             for (int componentIndex = siblings.size() - 1; componentIndex >= 0; componentIndex--) {
