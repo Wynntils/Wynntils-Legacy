@@ -4,6 +4,7 @@
 
 package com.wynntils.core.framework.instances;
 
+import com.wynntils.Reference;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
@@ -57,7 +58,12 @@ public class KeyHolder {
     }
 
     public boolean isKeyDown() {
-        return Keyboard.isKeyDown(getKey());
+        try {
+            return Keyboard.isKeyDown(getKey());
+        } catch (Exception e) {
+            Reference.LOGGER.warn("Exception in KeyHolder#isKeyDown: " + e.getMessage());
+            return false;
+        }
     }
 
 }
