@@ -5,12 +5,14 @@
 package com.wynntils.modules.chat.overlays.gui;
 
 import com.wynntils.McIf;
+import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.chat.configs.ChatConfig;
+import com.wynntils.modules.chat.events.custom.ChatTabsUpdatedEvent;
 import com.wynntils.modules.chat.instances.ChatTab;
 import com.wynntils.modules.chat.language.WynncraftLanguage;
 import com.wynntils.modules.chat.managers.TabManager;
@@ -25,6 +27,7 @@ import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
 
@@ -48,9 +51,7 @@ public class ChatGUI extends GuiChat {
 
     private Map<String, String> chatItems = new HashMap<>();
 
-    public ChatGUI() {
-
-    }
+    public ChatGUI() { }
 
     public ChatGUI(String defaultInputText) {
         super(defaultInputText);
@@ -133,22 +134,8 @@ public class ChatGUI extends GuiChat {
     @Override
     public void initGui() {
         super.initGui();
-        int buttonId = 0;
-        int tabX = 0;
-        for (ChatTab tab : TabManager.getAvailableTabs()) {
-            this.tabButtons.put(tab, addButton(new ChatButton(buttonId++, 20 + tabX++ * 40, this.height - 45, 37, 13, getDisplayName(tab), ChatOverlay.getChat().getCurrentTab() == tab, tab)));
-        }
-        addTab = addButton(new ChatButton(buttonId++, 2, this.height - 45, 15, 13, TextFormatting.GOLD + "+", false));
-        int x = 0;
-        languageButtons.put(WynncraftLanguage.GAVELLIAN, addButton(new ChatButton(buttonId++, this.width - ++x * 12, this.height - 14, 10, 12, "G", false, WynncraftLanguage.GAVELLIAN)));
-        languageButtons.put(WynncraftLanguage.WYNNIC, addButton(new ChatButton(buttonId++, this.width - ++x * 12, this.height - 14, 10, 12, "W", false, WynncraftLanguage.WYNNIC)));
-        languageButtons.put(WynncraftLanguage.NORMAL, addButton(new ChatButton(buttonId++, this.width - ++x * 12, this.height - 14, 10, 12, "N", false, WynncraftLanguage.NORMAL)));
-        if (ChatConfig.INSTANCE.useBrackets) {
-            languageButtons.values().forEach((button) -> button.visible = false);
-        } else {
-            this.inputField.width = this.width - x * 12 - 4;
-        }
-        languageButtons.get(ChatOverlay.getChat().getCurrentLanguage()).setSelected(true);
+        FrameworkManager.getEventBus().register(this);
+        addAllButtons();
     }
 
     @Override
@@ -185,6 +172,7 @@ public class ChatGUI extends GuiChat {
     @Override
     public void onGuiClosed() {
         super.onGuiClosed();
+        FrameworkManager.getEventBus().unregister(this);
         chatItems.clear();
     }
 
@@ -196,6 +184,35 @@ public class ChatGUI extends GuiChat {
         } else {
             return tab.getName();
         }
+    }
+
+    @SubscribeEvent
+    public void updateTabs(ChatTabsUpdatedEvent event) {
+        this.tabButtons.clear();
+        this.buttonList.clear();
+        addAllButtons();
+
+        // Select a tab to make sure we have a selected tab (problems if deleted tab was the selected one)
+        tabButtons.values().stream().findFirst().ifPresent(button -> button.setSelected(true));
+    }
+
+    private void addAllButtons() {
+        int buttonId = 0;
+        int tabX = 0;
+        for (ChatTab tab : TabManager.getAvailableTabs()) {
+            this.tabButtons.put(tab, addButton(new ChatButton(buttonId++, 20 + tabX++ * 40, this.height - 45, 37, 13, getDisplayName(tab), ChatOverlay.getChat().getCurrentTab() == tab, tab)));
+        }
+        addTab = addButton(new ChatButton(buttonId++, 2, this.height - 45, 15, 13, TextFormatting.GOLD + "+", false));
+        int x = 0;
+        languageButtons.put(WynncraftLanguage.GAVELLIAN, addButton(new ChatButton(buttonId++, this.width - ++x * 12, this.height - 14, 10, 12, "G", false, WynncraftLanguage.GAVELLIAN)));
+        languageButtons.put(WynncraftLanguage.WYNNIC, addButton(new ChatButton(buttonId++, this.width - ++x * 12, this.height - 14, 10, 12, "W", false, WynncraftLanguage.WYNNIC)));
+        languageButtons.put(WynncraftLanguage.NORMAL, addButton(new ChatButton(buttonId++, this.width - ++x * 12, this.height - 14, 10, 12, "N", false, WynncraftLanguage.NORMAL)));
+        if (ChatConfig.INSTANCE.useBrackets) {
+            languageButtons.values().forEach((button) -> button.visible = false);
+        } else {
+            this.inputField.width = this.width - x * 12 - 4;
+        }
+        languageButtons.get(ChatOverlay.getChat().getCurrentLanguage()).setSelected(true);
     }
 
     private static class ChatButton extends GuiButton {

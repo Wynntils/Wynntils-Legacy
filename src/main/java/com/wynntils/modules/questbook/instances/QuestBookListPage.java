@@ -114,7 +114,7 @@ public class QuestBookListPage<T> extends QuestBookPage {
         int posY = ((res.getScaledHeight() / 2) - mouseY);
 
         super.mouseClicked(mouseX, mouseY, mouseButton);
-        if (selectedEntry != null && search.get(currentPage - 1).size() > selected) {
+        if (selectedEntry != null && search.size() >= currentPage && search.get(currentPage - 1).size() > selected) {
             handleEntryClick(selectedEntry, mouseButton);
         }
 

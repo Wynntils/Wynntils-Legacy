@@ -4,10 +4,10 @@
 
 package com.wynntils.core.framework.instances;
 
+import net.minecraft.client.settings.GameSettings;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import org.lwjgl.input.Keyboard;
 
 public class KeyHolder {
 
@@ -57,7 +57,7 @@ public class KeyHolder {
     }
 
     public boolean isKeyDown() {
-        return Keyboard.isKeyDown(getKey());
+        return GameSettings.isKeyDown(getKeyBinding());
     }
 
 }

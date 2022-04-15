@@ -165,7 +165,11 @@ public class ClientEvents implements Listener {
         afkProtectionEnabled = false;
         afkProtectionActivated = false;
 
-        lastHealth = McIf.player().getHealth();
+        EntityPlayerSP player = McIf.player();
+        if (player != null) {
+            lastHealth = player.getHealth();
+        }
+        
         lastUserInput = System.currentTimeMillis();
     }
 
