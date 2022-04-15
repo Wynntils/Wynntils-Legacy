@@ -91,10 +91,10 @@ public class GameUpdateOverlay extends Overlay {
         if (!Reference.onWorld) return null;
 
         if (OverlayConfig.GameUpdate.INSTANCE.messageMaxLength != 0 && OverlayConfig.GameUpdate.INSTANCE.messageMaxLength < message.length()) {
-            message = message.substring(0, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 4);
+            message = message.substring(0, Math.max(2, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 4));
 
             if (message.endsWith("§")) {
-                message = message.substring(0, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 5);
+                message = message.substring(0, Math.max(2, OverlayConfig.GameUpdate.INSTANCE.messageMaxLength - 5));
             }
             message = message + "...";
         }
