@@ -187,7 +187,7 @@ public class TotemTracker {
         Entity entity = getBufferedEntity(e.getPacket().getEntityId());
         if (!(entity instanceof EntityArmorStand)) return;
 
-        if (totemState == TotemState.PREPARING || totemState == TotemState.ACTIVE) {
+        if (totemState == TotemState.PREPARING || totemState == TotemState.SUMMONED || totemState == TotemState.ACTIVE) {
             Matcher m = SHAMAN_TOTEM_TIMER.matcher(name);
             if (m.find()) {
                 // We got a armor stand with a timer nametag

@@ -4,12 +4,14 @@
 
 package com.wynntils.modules.questbook.overlays.ui;
 
+import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
+import com.wynntils.modules.questbook.events.custom.QuestBookUpdateEvent;
 import com.wynntils.modules.questbook.instances.IconContainer;
 import com.wynntils.modules.questbook.instances.QuestBookListPage;
 import com.wynntils.modules.questbook.managers.QuestManager;
@@ -18,6 +20,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.io.IOException;
 import java.util.*;
@@ -109,6 +112,15 @@ public class DialoguePage extends QuestBookListPage<String> {
         return pages;
     }
 
+    @SubscribeEvent
+    protected void onQuestBookUpdate(QuestBookUpdateEvent.Partial event) {
+        searchUpdate("");
+    }
+    @SubscribeEvent
+    protected void onQuestBookUpdate(QuestBookUpdateEvent.Full event) {
+        searchUpdate("");
+    }
+
     @Override
     protected boolean isHovered(int index, int posX, int posY) {
         return false;
@@ -142,5 +154,17 @@ public class DialoguePage extends QuestBookListPage<String> {
     @Override
     protected void handleEntryClick(String itemInfo, int mouseButton) {
         //NO-OP
+    }
+
+    @Override
+    public void onGuiClosed() {
+        super.onGuiClosed();
+        FrameworkManager.getEventBus().unregister(this);
+    }
+
+    @Override
+    public void initGui() {
+        super.initGui();
+        FrameworkManager.getEventBus().register(this);
     }
 }
