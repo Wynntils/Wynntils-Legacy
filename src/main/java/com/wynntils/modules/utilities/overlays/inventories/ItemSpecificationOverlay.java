@@ -18,6 +18,7 @@ import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.CorkianAmplifierManager;
+import com.wynntils.modules.utilities.managers.DungeonKeyManager;
 import com.wynntils.modules.utilities.managers.EmeraldPouchManager;
 import com.wynntils.webapi.profiles.item.enums.ItemType;
 import net.minecraft.client.gui.inventory.GuiContainer;
@@ -55,7 +56,7 @@ public class ItemSpecificationOverlay implements Listener {
             }
             ItemUtils.replaceLore(stack, fixedLore);
 
-            String destinationName = null;
+            String specificationChars = null;
             CustomColor color = null;
             int xOffset = 2;
             float scale = 1f;
@@ -77,7 +78,7 @@ public class ItemSpecificationOverlay implements Listener {
                         ScreenRenderer.endGL();
                     } else {
                         // This is an un-id:ed but named item
-                        destinationName = "";
+                        specificationChars = "";
                         color = MinecraftChatColors.GRAY;
                     }
                 }
@@ -86,45 +87,17 @@ public class ItemSpecificationOverlay implements Listener {
             if (UtilitiesConfig.Items.INSTANCE.potionSpecification) {
                 if (name.startsWith("§aPotion of §")) {
                     SkillPoint skillPoint = SkillPoint.findSkillPoint(name);
-                    destinationName = skillPoint.getSymbol();
+                    specificationChars = skillPoint.getSymbol();
                     color = MinecraftChatColors.fromTextFormatting(skillPoint.getColor());
                 }
             }
 
-            if (UtilitiesConfig.Items.INSTANCE.keySpecification) {
-                Pattern dungeonKey = Pattern.compile("§6(.*) Key");
-                Matcher m = dungeonKey.matcher(name);
-                // Lore line is different on TM keys
-                if (m.find() && lore.size() > 0 && (lore.get(0).equals("§7Grants access to the") || (lore.size() > 4 && lore.get(4).equals("§7Grants access to the")))) {
-                    StringBuilder builder = new StringBuilder();
-                    for (String part : m.group(1).split(" ")) {
-                        builder.append(part.charAt(0));
-                    }
-                    destinationName = builder.toString();
+            if (UtilitiesConfig.Items.INSTANCE.keySpecification && DungeonKeyManager.isDungeonKey(stack)) {
+                specificationChars = DungeonKeyManager.getDungeonKey(stack).getAcronym();
+                if (DungeonKeyManager.isCorrupted(stack)) {
+                    color = MinecraftChatColors.DARK_RED;
+                } else {
                     color = MinecraftChatColors.GOLD;
-                }
-
-                Pattern brokenDungeonKey = Pattern.compile("Broken (.*) Key");
-                Matcher m2 = brokenDungeonKey.matcher(name);
-                if (m2.find()) {
-                    StringBuilder builder = new StringBuilder();
-                    for (String part : m2.group(1).split(" ")) {
-                        builder.append(part.charAt(0));
-                    }
-                    destinationName = builder.toString();
-                    color = MinecraftChatColors.DARK_RED;
-                }
-
-                // I'm not sure if this happens anymore, but keep it for now
-                Pattern corruptedDungeonKey = Pattern.compile("§4(?:Broken )?(?:Corrupted )?(.*) Key");
-                Matcher m3 = corruptedDungeonKey.matcher(name);
-                if (m3.find()) {
-                    StringBuilder builder = new StringBuilder();
-                    for (String part : m3.group(1).split(" ")) {
-                        builder.append(part.charAt(0));
-                    }
-                    destinationName = builder.toString();
-                    color = MinecraftChatColors.DARK_RED;
                 }
             }
 
@@ -132,29 +105,29 @@ public class ItemSpecificationOverlay implements Listener {
                 Pattern boatPass = Pattern.compile("§b(.*) (?:Boat )?Pass");
                 Matcher m = boatPass.matcher(name);
                 if (m.find() && lore.get(0).equals("§7Use this at the §fV.S.S. Seaskipper")) {
-                    destinationName = m.group(1).substring(0, 1);
+                    specificationChars = m.group(1).substring(0, 1);
                     color = MinecraftChatColors.BLUE;
                 }
 
                 Pattern cityTeleport = Pattern.compile("^§b(.*) Teleport Scroll$");
                 Matcher m2 = cityTeleport.matcher(name);
                 if (m2.find()) {
-                    destinationName = m2.group(1);
-                    if (destinationName.equals("Dungeon")) {
+                    specificationChars = m2.group(1);
+                    if (specificationChars.equals("Dungeon")) {
                         color = MinecraftChatColors.GOLD;
                         for (String loreLine : lore) {
                             Pattern dungeonTeleport = Pattern.compile("§3- §7Teleports to: §f(.*)");
                             Matcher m3 = dungeonTeleport.matcher(StringUtils.normalizeBadString(loreLine));
                             if (m3.find()) {
                                 // Make sure we print "F" for "the Forgery"
-                                destinationName = m3.group(1).replace("the ", "");
+                                specificationChars = m3.group(1).replace("the ", "");
                                 break;
                             }
                         }
                     } else {
                         color = MinecraftChatColors.AQUA;
                     }
-                    destinationName = destinationName.substring(0, 1);
+                    specificationChars = specificationChars.substring(0, 1);
                 }
             }
 
@@ -163,9 +136,9 @@ public class ItemSpecificationOverlay implements Listener {
                 Matcher m = powder.matcher(StringUtils.normalizeBadString(name));
                 if (m.matches()) {
                     if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
-                        destinationName = m.group(2);
+                        specificationChars = m.group(2);
                     } else {
-                        destinationName = ItemLevelOverlay.romanToArabic(m.group(2));
+                        specificationChars = ItemLevelOverlay.romanToArabic(m.group(2));
                     }
                     color = Powder.determineChatColor(m.group(1));
                     xOffset = -1;
@@ -176,9 +149,9 @@ public class ItemSpecificationOverlay implements Listener {
             if (UtilitiesConfig.Items.INSTANCE.amplifierSpecification) {
                 if (CorkianAmplifierManager.isAmplifier(stack)) {
                     if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
-                        destinationName = CorkianAmplifierManager.getAmplifierTier(stack);
+                        specificationChars = CorkianAmplifierManager.getAmplifierTier(stack);
                     } else {
-                        destinationName = ItemLevelOverlay.romanToArabic(CorkianAmplifierManager.getAmplifierTier(stack));
+                        specificationChars = ItemLevelOverlay.romanToArabic(CorkianAmplifierManager.getAmplifierTier(stack));
                     }
                     color = MinecraftChatColors.AQUA;
                     xOffset = -1;
@@ -189,9 +162,9 @@ public class ItemSpecificationOverlay implements Listener {
             if (UtilitiesConfig.Items.INSTANCE.emeraldPouchSpecification) {
                 if (EmeraldPouchManager.isEmeraldPouch(stack)) {
                     if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier) {
-                        destinationName = EmeraldPouchManager.getPouchTier(stack);
+                        specificationChars = EmeraldPouchManager.getPouchTier(stack);
                     } else {
-                        destinationName = ItemLevelOverlay.romanToArabic(EmeraldPouchManager.getPouchTier(stack));
+                        specificationChars = ItemLevelOverlay.romanToArabic(EmeraldPouchManager.getPouchTier(stack));
                     }
                     color = MinecraftChatColors.GREEN;
                     xOffset = -1;
@@ -199,7 +172,7 @@ public class ItemSpecificationOverlay implements Listener {
                 }
             }
 
-            if (destinationName != null) {
+            if (specificationChars != null) {
                 ScreenRenderer.beginGL((int) (gui.getGuiLeft() / scale), (int) (gui.getGuiTop() / scale));
                 GlStateManager.translate(0, 0, 260);
                 GlStateManager.scale(scale, scale, 1);
@@ -207,7 +180,7 @@ public class ItemSpecificationOverlay implements Listener {
                 // Make a modifiable copy
                 color = new CustomColor(color);
                 color.setA(0.8f);
-                renderer.drawString(destinationName, (s.xPos + xOffset) / scale, (s.yPos + 1) / scale, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
+                renderer.drawString(specificationChars, (s.xPos + xOffset) / scale, (s.yPos + 1) / scale, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
                 ScreenRenderer.endGL();
             }
         }
