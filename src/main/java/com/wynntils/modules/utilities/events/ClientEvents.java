@@ -15,10 +15,13 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.objects.Location;
+import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.core.utils.reference.RequirementSymbols;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
+import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
@@ -662,9 +665,25 @@ public class ClientEvents implements Listener {
         }
     }
 
+    private void handleDungeonKeyMClick(ItemStack is) {
+        if (DungeonKeyManager.isDungeonKey(is)) {
+            Pair<Integer, Integer> coords = DungeonKeyManager.getDungeonCoords(is);
+            CompassManager.setCompassLocation(new Location(coords.a, 0, coords.b));
+            boolean isCorrupted = DungeonKeyManager.isCorrupted(is);
+            String location = (isCorrupted) ? "§4The Forgery" : "§6" + DungeonKeyManager.getDungeonKey(is).getFullName(false);
+            GameUpdateOverlay.queueMessage("§aSet compass to " + location);
+        }
+    }
+
     @SubscribeEvent
     public void clickOnInventory(GuiOverlapEvent.InventoryOverlap.HandleMouseClick e) {
         if (!Reference.onWorld) return;
+
+        // Dungeon key middle click functionality
+        if (e.getMouseButton() == 2 && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().getHasStack()) {
+            ItemStack is = e.getGui().getSlotUnderMouse().getStack();
+            handleDungeonKeyMClick(is);
+        }
 
         if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().inventory instanceof InventoryPlayer) {
             if ((!EmeraldPouchManager.isEmeraldPouch(e.getGui().getSlotUnderMouse().getStack()) || e.getMouseButton() == 0) && checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex())) {
@@ -677,6 +696,13 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void clickOnChest(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
         if (e.getSlotIn() == null) return;
+
+        // Dungeon key middle click functionality
+        if (e.getMouseButton() == 2 && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().getHasStack()) {
+            ItemStack is = e.getGui().getSlotUnderMouse().getStack();
+            handleDungeonKeyMClick(is);
+        }
+
         IInventory chestInv = e.getGui().getLowerInv();
 
         // Queue messages into game update ticker when clicking on emeralds in loot chest
