@@ -93,11 +93,14 @@ public class ItemSpecificationOverlay implements Listener {
             }
 
             if (UtilitiesConfig.Items.INSTANCE.keySpecification && DungeonKeyManager.isDungeonKey(stack)) {
-                specificationChars = DungeonKeyManager.getDungeonKey(stack).getAcronym();
-                if (DungeonKeyManager.isCorrupted(stack)) {
-                    color = MinecraftChatColors.DARK_RED;
-                } else {
-                    color = MinecraftChatColors.GOLD;
+                DungeonKeyManager.DungeonKey dungeonKey = DungeonKeyManager.getDungeonKey(stack);
+                if (dungeonKey != null) {
+                    specificationChars = dungeonKey.getAcronym();
+                    if (DungeonKeyManager.isCorrupted(stack)) {
+                        color = MinecraftChatColors.DARK_RED;
+                    } else {
+                        color = MinecraftChatColors.GOLD;
+                    }
                 }
             }
 
