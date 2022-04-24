@@ -188,8 +188,7 @@ public class UtilitiesConfig extends SettingsClass {
     public enum PotionBlockingType {
         HealthPercent,
         EffectivePercent,
-        Never,
-        Always
+        Never
     }
 
     @SettingsInfo(name = "identifications", displayPath = "Utilities/Identifications")

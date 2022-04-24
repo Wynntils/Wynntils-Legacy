@@ -166,7 +166,7 @@ public class ClientEvents implements Listener {
         if (player != null) {
             lastHealth = player.getHealth();
         }
-        
+
         lastUserInput = System.currentTimeMillis();
     }
 
@@ -883,10 +883,6 @@ public class ClientEvents implements Listener {
                 float minHeal = (float) threshold / 100 * HealthPotionManager.getNextHealAmount(stack);
                 if (missingHealth > minHeal) return false;
                 McIf.mc().addScheduledTask(() -> GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "This potion is currently not " + threshold + "%+ effective!"));
-                return true;
-
-            case Always:
-                McIf.mc().addScheduledTask(() -> GameUpdateOverlay.queueMessage(TextFormatting.DARK_RED + "Potions are currently always blocked!"));
                 return true;
 
             case Never:
