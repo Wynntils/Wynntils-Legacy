@@ -84,6 +84,7 @@ public class QuestManager {
         if (!Reference.onWorld) return;
 
         if (McIf.player().openContainer != null && !(McIf.player().openContainer instanceof ContainerPlayer)) {
+            Reference.LOGGER.error("[QuestManager] Opened container is not ContainerPlayer (openContainer class: " + McIf.player().openContainer.getClass().getSimpleName() + ")");
             interrupt();
             return;
         }
@@ -303,6 +304,7 @@ public class QuestManager {
             lastInventory = null;
 
             if (result != InventoryResult.CLOSED_SUCCESSFULLY) {
+                Reference.LOGGER.error("[QuestManager] Failed to close inventory successfully (result: " + result.toString() + ")");
                 interrupt();
                 return;
             }
@@ -536,6 +538,7 @@ public class QuestManager {
         Pair<Integer, ItemStack> nextClick = i.findItem(currentPosition.getItemName(), FilterType.EQUALS);
 
         if (nextClick == null) {
+            Reference.LOGGER.error("[QuestManager] Failed to switch pages (nextClick was null)");
             interrupt();
             i.closeUnsuccessfully();
         } else {
