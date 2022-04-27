@@ -269,10 +269,19 @@ public class ClientEvents implements Listener {
         bakeStatus = null;
     }
 
+    // Prevent duplication
+    private TimedSet<UUID> damageLabelSet = new TimedSet<>(10, TimeUnit.SECONDS);
     @SubscribeEvent
     public void checkDamageLabelFound(LocationEvent.LabelFoundEvent event) {
         String value = TextFormatting.getTextWithoutFormattingCodes(event.getLabel());
         Entity i = event.getEntity();
+        UUID id = i.getUniqueID();
+        damageLabelSet.releaseEntries();
+        for (UUID setUuid : damageLabelSet) {
+            if (id.equals(setUuid)) return;
+        }
+        damageLabelSet.put(id);
+
         Map<DamageType, Integer> damageList = new HashMap<>();
 
         if (value.contains("Combat") || value.contains("Guild")) return;

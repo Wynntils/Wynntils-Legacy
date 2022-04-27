@@ -4,9 +4,12 @@
 
 package com.wynntils.modules.chat.managers;
 
+import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.modules.chat.ChatModule;
 import com.wynntils.modules.chat.configs.ChatConfig;
+import com.wynntils.modules.chat.events.custom.ChatTabsUpdatedEvent;
 import com.wynntils.modules.chat.instances.ChatTab;
+import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 
 import java.util.Collections;
 import java.util.List;
@@ -90,13 +93,16 @@ public class TabManager {
     public static void registerNewTab(ChatTab tab) {
         availableTabs.add(tab);
         Collections.sort(availableTabs);
+        FrameworkManager.getEventBus().post(new ChatTabsUpdatedEvent.TabAdded(tab));
         saveConfigs();
     }
 
     public static int deleteTab(int id) {
         if (id >= availableTabs.size()) return 0;
 
+        ChatTab removed = availableTabs.get(id);
         availableTabs.remove(id);
+        FrameworkManager.getEventBus().post(new ChatTabsUpdatedEvent.TabAdded(removed));
         saveConfigs();
         return id == 0 ? 0 : id - 1;
     }
@@ -113,6 +119,7 @@ public class TabManager {
     public static void updateTab(int id, String name, String regex, Map<String, Boolean> regexSettings, String autoCommand, boolean lowPriority, int orderNb) {
         availableTabs.get(id).update(name, regex.replace("&", "§"), regexSettings, autoCommand, lowPriority, orderNb);
         Collections.sort(availableTabs);
+        FrameworkManager.getEventBus().post(new ChatTabsUpdatedEvent.TabAdded(availableTabs.get(id)));
         saveConfigs();
     }
 

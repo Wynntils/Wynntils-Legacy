@@ -21,12 +21,15 @@ import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ObjectivesOverlay extends Overlay {
 
-    public static final Pattern OBJECTIVE_PATTERN = Pattern.compile("^[- ] (.*): *([0-9]+)/([0-9]+)$");
+    public static final Pattern OBJECTIVE_PARSER_PATTERN = Pattern.compile("^[- ] (.*): *(\\d+)/(\\d+)$");
+    public static final Pattern OBJECTIVE_PATTERN = Pattern.compile("^§[a|c][- ]\\s§7(.*): *§f(\\d+)§7/(\\d+)$");
+    public static final Pattern GUILD_OBJECTIVE_PATTERN = Pattern.compile("^§b[- ]\\s§7(.*): *§f(\\d+)§7/(\\d+)$");
     public static final Pattern OBJECTIVE_HEADER_PATTERN = Pattern.compile("(★ )?(Daily )?Objectives?:");
     public static final Pattern GUILD_OBJECTIVE_HEADER_PATTERN = Pattern.compile("(★ )?Guild Obj: (.+)");
 
@@ -39,9 +42,7 @@ public class ObjectivesOverlay extends Overlay {
     private static String sidebarObjectiveName;
     private static long keepVisibleTimestamp;
     private static int objectivesPosition;
-    private static int objectivesEnd;
     private static int guildObjectivesPosition;
-    private static int guildObjectivesEnd;
 
     public ObjectivesOverlay() {
         super("Objectives", WIDTH, HEIGHT, true, 1f, 1f, -1, -1, OverlayGrowFrom.BOTTOM_RIGHT);
@@ -62,14 +63,13 @@ public class ObjectivesOverlay extends Overlay {
             return;
         }
         objectivesPosition = 0;
-        objectivesEnd = 0;
 
         // Sidebar scoreboard is removed
         removeAllObjectives();
     }
 
     private static Objective parseObjectiveLine(String objectiveLine) {
-        Matcher matcher = OBJECTIVE_PATTERN.matcher(TextFormatting.getTextWithoutFormattingCodes(objectiveLine));
+        Matcher matcher = OBJECTIVE_PARSER_PATTERN.matcher(TextFormatting.getTextWithoutFormattingCodes(objectiveLine));
         String goal = null;
         int score = 0;
         int maxScore = 0;
@@ -94,9 +94,15 @@ public class ObjectivesOverlay extends Overlay {
     private static void removeObjective(Objective objective) {
         String goalToRemove = objective.getGoal();
 
+        if (guildObjectives != null && guildObjectives.getGoal().equals(goalToRemove)) {
+            guildObjectives = null;
+            return;
+        }
+
         for (int i = 0; i < objectives.length; i++) {
             if (objectives[i] != null && objectives[i].getGoal().equals(goalToRemove)) {
                 objectives[i] = null;
+                return;
             }
         }
     }
@@ -115,30 +121,39 @@ public class ObjectivesOverlay extends Overlay {
                     objectivesPosition = 0;
                     return true;
                 }
+
                 Objective objective = parseObjectiveLine(objectiveLine);
                 removeObjective(objective);
                 return true;
             }
 
             String text = TextFormatting.getTextWithoutFormattingCodes(updateScore.getPlayerName());
+
             if (OBJECTIVE_HEADER_PATTERN.matcher(text).matches()) {
                 objectivesPosition = updateScore.getScoreValue();
                 return true;
-            } else if (updateScore.getPlayerName().equals("ÀÀ")) {
-                objectivesEnd = updateScore.getScoreValue();
-                return true;
             }
-
             if (GUILD_OBJECTIVE_HEADER_PATTERN.matcher(text).matches()) {
                 guildObjectivesPosition = updateScore.getScoreValue();
                 return true;
-            } else if (updateScore.getPlayerName().equals("ÀÀÀ")) {
-                guildObjectivesEnd = updateScore.getScoreValue();
-                return true;
+            }
+
+            // Checking for guild objective first is important
+            // Guild objective
+            // §b- §7Win Raids: §f0§7/2
+            if (updateScore.getScoreValue() < guildObjectivesPosition) {
+                String objectiveLine = TextFormatting.getTextWithoutFormattingCodes(updateScore.getPlayerName());
+                String objectiveLineUnformatted = updateScore.getPlayerName();
+                if (GUILD_OBJECTIVE_PATTERN.matcher(objectiveLineUnformatted).find()) { // only create objective if it matches the format
+                    guildObjectives = parseObjectiveLine(objectiveLine);
+                    return true;
+                }
             }
 
             // Normal objective
-            if (updateScore.getScoreValue() < objectivesPosition && (objectivesEnd == 0 || updateScore.getScoreValue() > objectivesEnd)) {
+            // §a- §7Finish Quests: §f1§7/2
+            // §c- §7Gather Fish: §f0§7/30
+            if (updateScore.getScoreValue() < objectivesPosition) {
                 int pos = objectivesPosition - 1 - updateScore.getScoreValue();
                 if (pos + 1 > MAX_OBJECTIVES) {
                     Reference.LOGGER.warn("Too many objectives to handle, can only store " + MAX_OBJECTIVES);
@@ -146,17 +161,11 @@ public class ObjectivesOverlay extends Overlay {
                 }
 
                 String objectiveLine = TextFormatting.getTextWithoutFormattingCodes(updateScore.getPlayerName());
-                if (OBJECTIVE_PATTERN.matcher(objectiveLine).find()) // only create objective if it matches the format
+                String objectiveLineUnformatted = updateScore.getPlayerName();
+                if (OBJECTIVE_PATTERN.matcher(objectiveLineUnformatted).find()) {  // only create objective if it matches the format
                     objectives[pos] = parseObjectiveLine(objectiveLine);
-                return true;
-            }
-
-            // Guild objective
-            if (updateScore.getScoreValue() < guildObjectivesPosition && (guildObjectivesEnd == 0 || updateScore.getScoreValue() > guildObjectivesEnd)) {
-                String objectiveLine = TextFormatting.getTextWithoutFormattingCodes(updateScore.getPlayerName());
-                if (OBJECTIVE_PATTERN.matcher(objectiveLine).find()) // only create objective if it matches the format
-                    guildObjectives = parseObjectiveLine(objectiveLine);
-                return true;
+                    return true;
+                }
             }
         }
         return false;
@@ -164,7 +173,6 @@ public class ObjectivesOverlay extends Overlay {
 
     public static void resetObjectives() {
         objectivesPosition = 0;
-        objectivesEnd = 0;
     }
 
     public static void refreshVisibility() {
