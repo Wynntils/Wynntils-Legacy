@@ -749,10 +749,8 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
         public List<String> drawScreenELements(IngredientPage page, ScreenRenderer renderer, int mouseX, int mouseY, int x, int y, int posX, int posY, int selected) {
             Mutable<List<String>> hoveredText = new MutableObject<>();
 
-            ScreenRenderer.scale(0.9f);
-            renderer.drawString("Advanced Ingredient Search Mode", x - 81, y - 32,
+            renderer.drawString("Adv. Ingredient Search Mode", x - 81, y - 32,
                     CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
-            ScreenRenderer.resetScale();
             ScreenRenderer.scale(0.7f);
             drawHelpLine(renderer, x, y, 0, "In this mode, ingredients in the guide can");
             drawHelpLine(renderer, x, y, 1, "be queried and sorted using a series");
