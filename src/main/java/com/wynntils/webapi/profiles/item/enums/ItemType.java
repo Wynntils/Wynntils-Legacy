@@ -63,7 +63,7 @@ public enum ItemType {
         return textureY;
     }
 
-    public static ItemType from(String typeStr) {
+    public static ItemType fromString(String typeStr) {
         switch (typeStr.toLowerCase(Locale.ROOT)) {
             case "wand":
             case "stick":

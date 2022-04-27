@@ -45,6 +45,14 @@ public class IngredientProfile {
         return name;
     }
 
+    public List<ProfessionType> getProfessions() {
+        return professions;
+    }
+
+    public int getLevel() {
+        return level;
+    }
+
     public boolean isFavorited() {
         return UtilitiesConfig.INSTANCE.favoriteIngredients.contains(name);
     }
@@ -153,5 +161,9 @@ public class IngredientProfile {
         stack.setTagCompound(tag);
 
         return guideStack = stack;
+    }
+
+    public Map<String, IngredientIdentificationContainer> getStatuses() {
+        return this.statuses;
     }
 }

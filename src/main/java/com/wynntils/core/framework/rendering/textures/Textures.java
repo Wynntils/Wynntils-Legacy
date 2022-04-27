@@ -96,6 +96,8 @@ public class Textures {
         public static AssetsTexture tab_overlay;
 
         public static AssetsTexture character_selection;
+
+        public static AssetsTexture profession_icons;
     }
 
     public static class World {
