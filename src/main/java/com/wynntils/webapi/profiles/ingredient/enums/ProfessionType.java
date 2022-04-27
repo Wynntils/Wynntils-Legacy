@@ -15,8 +15,8 @@ public enum ProfessionType {
     final String professionName;
     final String professionIconChar;
 
-    int textureX;
-    int textureY;
+    final int textureX;
+    final int textureY;
 
     ProfessionType(String professionName, String professionIconChar, int textureX, int textureY) {
         this.professionName = professionName;
