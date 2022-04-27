@@ -61,6 +61,8 @@ public class ModCore {
         if (Reference.developmentEnvironment)
             Reference.LOGGER.info("Development environment detected, automatic update detection disabled");
 
+        Reference.LOGGER.info("Wynntils loaded " + Reference.VERSION + " (Build " + Reference.BUILD_NUMBER + ")"); // Print version
+
         WebManager.FixSSL.registerCerts();
 
         WebManager.setupUserAccount();
