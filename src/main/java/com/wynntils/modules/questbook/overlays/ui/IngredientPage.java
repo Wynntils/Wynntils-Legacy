@@ -641,10 +641,7 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
                         "supported, for specifying",
                         "ranges of matching tiers.")
                         .with(IngredientFilter.ByTier.TYPE)
-                        .build()
-        };
-
-        private static final AdvancedSearchHandler.HelpCategory[] STATS_HELP_2 = {
+                        .build(),
                 new AdvancedSearchHandler.HelpCategory.Builder(new ItemStack(Items.DIAMOND_SWORD), "Offensive Stats",
                         "Filters by stats related to",
                         "offence and damage output.",
@@ -658,7 +655,10 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
                         .with(IngredientFilter.ByStat.TYPE_SPELL_DMG).with(IngredientFilter.ByStat.TYPE_SPELL_NEUTRAL_DMG)
                         .with(IngredientFilter.ByStat.TYPE_BONUS_ATK_SPD)
                         .with(IngredientFilter.ByStat.TYPE_POISON).with(IngredientFilter.ByStat.TYPE_EXPLODING)
-                        .build(),
+                        .build()
+        };
+
+        private static final AdvancedSearchHandler.HelpCategory[] STATS_HELP_2 = {
                 new AdvancedSearchHandler.HelpCategory.Builder(new ItemStack(Items.RABBIT_HIDE), "Defensive Stats",
                         "Filters by stats related to",
                         "health and defence.",
@@ -704,6 +704,16 @@ public class IngredientPage extends QuestBookListPage<IngredientProfile> {
                         .with(IngredientFilter.ByStat.TYPE_WALK_SPEED)
                         .with(IngredientFilter.ByStat.TYPE_SPRINT).with(IngredientFilter.ByStat.TYPE_SPRINT_REGEN)
                         .with(IngredientFilter.ByStat.TYPE_JUMP_HEIGHT)
+                        .build(),
+                new AdvancedSearchHandler.HelpCategory.Builder(new ItemStack(Items.EXPERIENCE_BOTTLE), "Profession Bonuses",
+                        "Filters by stats related to",
+                        "professions.",
+                        "",
+                        "All of these filters support",
+                        "both relational operators and",
+                        "sorting.")
+                        .with(IngredientFilter.ByStat.TYPE_GATHER_SPEED)
+                        .with(IngredientFilter.ByStat.TYPE_GATHER_XP)
                         .build()
         };
 
