@@ -906,7 +906,7 @@ public class ChatManager {
             for (int i = max; i < siblings.size(); i++) {
                 ITextComponent line = siblings.get(i).createCopy();
                 // Remove new line if present
-                if (i != siblings.size() - 1) {
+                if (i != siblings.size() - 1 && !line.getSiblings().isEmpty()) {
                     line.getSiblings().remove(line.getSiblings().size() - 1);
                 }
 
