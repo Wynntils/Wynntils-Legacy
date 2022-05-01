@@ -227,7 +227,7 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
                 for (String token : filterStr.split(",")) {
                     token = token.trim().toLowerCase(Locale.ROOT);
                     if (token.isEmpty()) continue;
-                    ItemType type = ItemType.from(token);
+                    ItemType type = ItemType.fromString(token);
                     if (type != null) {
                         allowedTypes.add(type);
                     } else {
@@ -578,6 +578,11 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
 
         @Override
         public boolean test(ItemProfile item) {
+            // If we are 'sorting' by favorited, only show favorited items
+            if (type == TYPE_FAVORITED) {
+                return item.isFavorited();
+            }
+
             for (Pair<Comparison, Integer> comp : comps) {
                 if (!comp.a.test(type.extractStat(item), comp.b)) return false;
             }
