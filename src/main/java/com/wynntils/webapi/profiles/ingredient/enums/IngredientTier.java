@@ -28,4 +28,31 @@ public enum IngredientTier {
     public String getTierString() {
         return tierString;
     }
+
+    public static IngredientTier matchText(String tier) {
+        switch (tier) {
+            case "0":
+            case "common":
+            case "c":
+            case "normal":
+            case "n":
+                return TIER_0;
+            case "1":
+            case "unique":
+            case "u":
+                return TIER_1;
+            case "2":
+            case "rare":
+            case "r":
+                return TIER_2;
+            case "3":
+            case "fabled":
+            case "f":
+            case "legendary":
+            case "l":
+                return TIER_3;
+            default:
+                return null;
+        }
+    }
 }

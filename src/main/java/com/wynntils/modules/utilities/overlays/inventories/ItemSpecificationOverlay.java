@@ -65,7 +65,7 @@ public class ItemSpecificationOverlay implements Listener {
                 Pattern unidentifiedItem = Pattern.compile("^§.Unidentified (.*)");
                 Matcher m = unidentifiedItem.matcher(name);
                 if (m.find()) {
-                    ItemType type = ItemType.from(m.group(1));
+                    ItemType type = ItemType.fromString(m.group(1));
                     if (type != null) {
                         // Draw an icon representing the type on top
                         ScreenRenderer.beginGL(0, 0);
