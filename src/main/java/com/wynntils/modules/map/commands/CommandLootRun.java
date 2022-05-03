@@ -132,7 +132,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                         LootRunManager.clear();
                     }
                 } else {
-                    message = RED + "The provided lootrun doesn't exists!";
+                    message = RED + "The provided lootrun doesn't exist!";
                 }
 
                 sender.sendMessage(new TextComponentString(message));
