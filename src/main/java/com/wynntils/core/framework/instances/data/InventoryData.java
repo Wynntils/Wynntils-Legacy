@@ -7,6 +7,7 @@ package com.wynntils.core.framework.instances.data;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.containers.PlayerData;
 import com.wynntils.core.utils.ItemUtils;
+import com.wynntils.modules.utilities.managers.HealthPotionManager;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
@@ -112,7 +113,7 @@ public class InventoryData extends PlayerData {
         NonNullList<ItemStack> contents = player.inventory.mainInventory;
 
         for (ItemStack item : contents) {
-            if (!item.isEmpty() && item.hasDisplayName() && item.getDisplayName().contains("Potion of Healing") || item.getDisplayName().contains("Potions of Healing")) {
+            if (HealthPotionManager.isHealthPotion(item)) {
                 Matcher nameMatcher = HEALTH_POTION_REGEX.matcher(TextFormatting.getTextWithoutFormattingCodes(item.getDisplayName()));
                 if (!nameMatcher.matches()) continue;
 
