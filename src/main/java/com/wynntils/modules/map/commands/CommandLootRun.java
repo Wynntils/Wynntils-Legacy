@@ -133,7 +133,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                     return;
                 }
                 
-                if (LootRunManager.getActivePath() != null) {
+                if (LootRunManager.getActivePath() != null && LootRunManager.getActivePathName().equals(name) {
                     LootRunManager.clear();
                 }
 
