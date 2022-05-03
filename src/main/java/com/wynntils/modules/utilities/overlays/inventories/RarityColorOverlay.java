@@ -121,6 +121,9 @@ public class RarityColorOverlay implements Listener {
             return null;
         }
         if (isChest) {
+            if (is.getDisplayName().contains("§2 [Enabled]") && lore.contains("§7Requires")) { // Highlights for hardcore/ironman/hunted/crafted modifiers in class creation
+                return new CustomColor(0f, 1f, 0f);
+            }
             if (UtilitiesConfig.Items.INSTANCE.filterEnabled && !professionFilter.equals("-") && lore.contains(professionFilter)) {
                 return UtilitiesConfig.Items.INSTANCE.professionFilterHighlightColor;
             }
