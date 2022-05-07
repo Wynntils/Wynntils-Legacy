@@ -128,8 +128,11 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 String message;
                 if (result) {
                     message = GREEN + "Deleted run " + name + " successfully!";
+                    if (LootRunManager.getActivePath() != null && LootRunManager.getActivePathName().equals(name)) {
+                        LootRunManager.clear();
+                    }
                 } else {
-                    message = RED + "The provided lootrun doesn't exists!";
+                    message = RED + "The provided lootrun doesn't exist!";
                 }
 
                 sender.sendMessage(new TextComponentString(message));
