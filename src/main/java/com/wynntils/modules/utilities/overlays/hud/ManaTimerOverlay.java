@@ -90,7 +90,7 @@ public class ManaTimerOverlay extends Overlay {
         char suffix = (OverlayConfig.ManaTimer.INSTANCE.manaTimerUsePercentage) ? '%' : 's';
         String displayedMax = String.valueOf(maxProgress) + suffix;
         String decimalFormat = (OverlayConfig.ManaTimer.INSTANCE.manaTimerDecimal && !OverlayConfig.ManaTimer.INSTANCE.manaTimerUsePercentage) ? "%.2f" : "%.0f";
-        String displayedProgress = String.format(decimalFormat, manaTime) + suffix;;
+        String displayedProgress = String.format(decimalFormat, manaTime) + suffix;
 
         if (OverlayConfig.ManaTimer.INSTANCE.overlayRotation == OverlayRotation.NORMAL) {
             drawString(displayedProgress + " ✺ " + displayedMax, textPositionOffset.a - (81-OverlayConfig.ManaTimer.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Mana.INSTANCE.textShadow);
