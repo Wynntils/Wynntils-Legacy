@@ -33,7 +33,8 @@ public class ManaTimerOverlay extends Overlay {
 
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
-        if (!(visible = PlayerInfo.get(InventoryData.class).getTicksToNextSoulPoint() != -1 && !Reference.onLobby)) return;
+        visible = PlayerInfo.get(InventoryData.class).getTicksToNextSoulPoint() != -1;
+        if (!visible || Reference.onLobby) return;
 
         int spTicks = PlayerInfo.get(InventoryData.class).getTicksToNextSoulPoint();
         // Mana regen procs at 14599, 14499, 14399...
