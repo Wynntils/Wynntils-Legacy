@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ManaTimerOverlay extends Overlay {
     public ManaTimerOverlay() {
-        super("Mana Timer Bar", 81, 21, true, 0.5f, 1.0f, 10, -38, OverlayGrowFrom.BOTTOM_RIGHT);
+        super("Mana Timer Bar", 81, 21, true, 0.57f, 1.039f, 10, -38, OverlayGrowFrom.MIDDLE_LEFT);
     }
 
     @Setting(displayName = "Flip", description = "Should the filling of the bar be flipped")
@@ -87,8 +87,10 @@ public class ManaTimerOverlay extends Overlay {
 
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2, CustomColor cc) {
         int maxProgress = (OverlayConfig.ManaTimer.INSTANCE.manaTimerUsePercentage) ? 100 : 5;
-        String displayedMax = (OverlayConfig.ManaTimer.INSTANCE.manaTimerUsePercentage) ? "100%" : "5s";
-        String displayedProgress = (OverlayConfig.ManaTimer.INSTANCE.manaTimerDecimal) ? String.format("%.2f", manaTime) + "s" : String.format("%.0f", manaTime) + "%";
+        char suffix = (OverlayConfig.ManaTimer.INSTANCE.manaTimerUsePercentage) ? '%' : 's';
+        String displayedMax = String.valueOf(maxProgress) + suffix;
+        String decimalFormat = (OverlayConfig.ManaTimer.INSTANCE.manaTimerDecimal && !OverlayConfig.ManaTimer.INSTANCE.manaTimerUsePercentage) ? "%.2f" : "%.0f";
+        String displayedProgress = String.format(decimalFormat, manaTime) + suffix;;
 
         if (OverlayConfig.ManaTimer.INSTANCE.overlayRotation == OverlayRotation.NORMAL) {
             drawString(displayedProgress + " ✺ " + displayedMax, textPositionOffset.a - (81-OverlayConfig.ManaTimer.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Mana.INSTANCE.textShadow);
