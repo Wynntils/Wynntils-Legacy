@@ -30,6 +30,7 @@ public class ManaTimerOverlay extends Overlay {
     public CustomColor textColor = CommonColors.LIGHT_BLUE;
 
     private static float manaTime = 0.0f;
+    public static boolean isTimeFrozen = false;
 
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
@@ -93,11 +94,14 @@ public class ManaTimerOverlay extends Overlay {
         String decimalFormat = (OverlayConfig.ManaTimer.INSTANCE.manaTimerDecimal && !OverlayConfig.ManaTimer.INSTANCE.manaTimerUsePercentage) ? "%.2f" : "%.0f";
         String displayedProgress = String.format(decimalFormat, manaTime) + suffix;
 
+        String formattedDisplayed = (isTimeFrozen) ? "Unavailable" : displayedProgress + " ✺ " + displayedMax;
+        float progress = (isTimeFrozen) ? 0.0f : flip ? -manaTime : manaTime / (float) maxProgress;
+
         if (OverlayConfig.ManaTimer.INSTANCE.overlayRotation == OverlayRotation.NORMAL) {
-            drawString(displayedProgress + " ✺ " + displayedMax, textPositionOffset.a - (81-OverlayConfig.ManaTimer.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Mana.INSTANCE.textShadow);
+            drawString(formattedDisplayed, textPositionOffset.a - (81-OverlayConfig.ManaTimer.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Mana.INSTANCE.textShadow);
         }
         rotate(OverlayConfig.ManaTimer.INSTANCE.overlayRotation.getDegrees());
-        drawProgressBar(Textures.Overlays.bars_mana, OverlayConfig.ManaTimer.INSTANCE.width, y1, 0, y2, 0, ty1, 81, ty2, (flip ? -manaTime : manaTime) / (float) maxProgress);
+        drawProgressBar(Textures.Overlays.bars_mana, OverlayConfig.ManaTimer.INSTANCE.width, y1, 0, y2, 0, ty1, 81, ty2, progress);
 
     }
 }
