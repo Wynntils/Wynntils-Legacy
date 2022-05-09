@@ -364,7 +364,7 @@ public class ClientEvents implements Listener {
             DailyReminderManager.openedDaily();
         }
 
-        if (msg.startsWith("[!] Darkness has been enabled.")) {
+        if (msg.startsWith("[!] Darkness has been enabled.") || msg.startsWith("[!] Twilight has been enabled.")) {
             ManaTimerOverlay.isTimeFrozen = true;
         }
     }
