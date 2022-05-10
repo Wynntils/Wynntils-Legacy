@@ -90,9 +90,16 @@ public class ManaTimerOverlay extends Overlay {
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2, CustomColor cc) {
         int maxProgress = (OverlayConfig.ManaTimer.INSTANCE.manaTimerUsePercentage) ? 100 : 5;
         char suffix = (OverlayConfig.ManaTimer.INSTANCE.manaTimerUsePercentage) ? '%' : 's';
+
         String displayedMax = String.valueOf(maxProgress) + suffix;
-        String decimalFormat = (OverlayConfig.ManaTimer.INSTANCE.manaTimerDecimal && !OverlayConfig.ManaTimer.INSTANCE.manaTimerUsePercentage) ? "%.2f" : "%.0f";
-        String displayedProgress = String.format(decimalFormat, manaTime) + suffix;
+        String decimalFormat = (OverlayConfig.ManaTimer.INSTANCE.manaTimerUsePercentage) ?
+                OverlayConfig.ManaTimer.ManaTimerDecimalFormats.Zero.getDecimalFormat() :
+                OverlayConfig.ManaTimer.INSTANCE.manaTimerDecimal.getDecimalFormat();
+
+        String displayedProgress = (!OverlayConfig.ManaTimer.INSTANCE.manaTimerUsePercentage && OverlayConfig.ManaTimer.INSTANCE.manaTimerCountDown) ?
+                String.format(decimalFormat, 5.0f - manaTime) :
+                String.format(decimalFormat, manaTime);
+        displayedProgress += suffix;
 
         String formattedDisplayed = (isTimeFrozen) ? "Unavailable" : displayedProgress + " ✺ " + displayedMax;
         float progress = (isTimeFrozen) ? 0.0f : flip ? -manaTime : manaTime / (float) maxProgress;
