@@ -97,7 +97,7 @@ public class GearViewerUI extends FakeGuiContainer {
         }
 
         // This doesn't actually show up to the player but the name is actually set
-        inventory.setCustomName(player.getDisplayNameString() + "'s gear");
+        inventory.setCustomName(player.getDisplayNameString());
 
         super.buttonList.add(
                 new GuiButton(BUTTON_ID,
@@ -118,7 +118,7 @@ public class GearViewerUI extends FakeGuiContainer {
             if (gb.id == BUTTON_ID && gb.isMouseOver()) {
                 McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
 
-                String playerName = gui.inventorySlots.getSlot(0).inventory.getDisplayName().getUnformattedText().replace("'s gear", "");
+                String playerName = gui.inventorySlots.getSlot(0).inventory.getDisplayName().getUnformattedText();
                 String base = "https://wynncraft.com/stats/player/";
 
                 Utils.openUrl(base + playerName);
