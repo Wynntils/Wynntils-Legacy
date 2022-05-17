@@ -1156,19 +1156,16 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onIngredientPouchHovered(ItemTooltipEvent e) {
-        // Is item Ingredient Pouch
-        if (!e.getItemStack().getDisplayName().equals("§6Ingredient Pouch"))
-            return;
-
         ItemStack itemStack = e.getItemStack();
-        NBTTagCompound nbt = itemStack.getTagCompound();
+        if (!itemStack.getDisplayName().equals("§6Ingredient Pouch")) return; // Is item Ingredient Pouch
 
+        NBTTagCompound nbt = itemStack.getTagCompound();
         if (nbt.hasKey("groupedItems"))
             return;
 
         List<String> lore = ItemUtils.getLore(itemStack);
-
-        HashMap<String, Integer> itemCounts = new HashMap<>();
+        // Name, Pair<Qty, Rarity>
+        HashMap<String, Pair<Integer, Integer>> items = new HashMap<>();
 
         boolean foundFirstItem = false;
         int[] originalSlots = new int[27];
@@ -1187,16 +1184,50 @@ public class ClientEvents implements Listener {
 
             foundFirstItem = true;
 
+            int rarity = 0;
+            if (line.contains("§6")) {
+                rarity = 1;
+            } else if (line.contains("§5")) {
+                rarity = 2;
+            } else if (line.contains("§3")) {
+                rarity = 3;
+            }
+
             int itemCount = Integer.parseInt(matcher.group(1));
             String itemName = matcher.group(2);
 
-            if (!itemCounts.containsKey(itemName)) {
-                itemCounts.put(itemName, itemCount);
+            if (!items.containsKey(itemName)) {
+                items.put(itemName, new Pair<>(itemCount, rarity));
             } else {
-                itemCounts.replace(itemName, itemCount + itemCounts.get(itemName));
+                int prevQty = items.get(itemName).a;
+                items.replace(itemName, new Pair<>(prevQty + itemCount, rarity));
             }
             originalSlots[slot] = itemCount;
             slot += 1;
+        }
+
+        Map<String, Pair<Integer, Integer>> sortedIngredients;
+        switch (UtilitiesConfig.INSTANCE.sortIngredientPouch) {
+            case Alphabetical:
+                sortedIngredients = new TreeMap<>(items); // TreeMap will sort it for us
+                break;
+            case Quantity:
+                sortedIngredients = new LinkedHashMap<>();
+                List<Map.Entry<String, Pair<Integer, Integer>>> sortedQtyList = new LinkedList<>(items.entrySet());
+                sortedQtyList.sort(Comparator.comparing(o -> (o.getValue().a))); // sort based on the pair's first value (qty)
+                for (int i = sortedQtyList.size() - 1; i >= 0; i--) { // reversed for most -> least
+                    sortedIngredients.put(sortedQtyList.get(i).getKey(), sortedQtyList.get(i).getValue());
+                }
+                break;
+            case Rarity:
+            default:
+                sortedIngredients = new LinkedHashMap<>();
+                List<Map.Entry<String, Pair<Integer, Integer>>> sortedRarityList = new LinkedList<>(items.entrySet());
+                sortedRarityList.sort(Comparator.comparing(o -> (o.getValue().b))); // sort based on rarity
+                for (int i = sortedRarityList.size() - 1; i >= 0; i--) { // reversed for rare -> common
+                    sortedIngredients.put(sortedRarityList.get(i).getKey(), sortedRarityList.get(i).getValue());
+                }
+                break;
         }
 
         List<String> groupedItemLore = new ArrayList<>();
@@ -1212,8 +1243,8 @@ public class ClientEvents implements Listener {
             groupedItemLore.add(line);
         }
 
-        for (Map.Entry<String, Integer> line : itemCounts.entrySet()) {
-            groupedItemLore.add("§f" + line.getValue() + " x " + line.getKey());
+        for (Map.Entry<String, Pair<Integer, Integer>> line : sortedIngredients.entrySet()) {
+            groupedItemLore.add("§f" + line.getValue().a + " x " + line.getKey());
         }
 
         nbt.setBoolean("groupedItems", true);
