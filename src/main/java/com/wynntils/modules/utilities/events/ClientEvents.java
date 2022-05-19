@@ -1183,13 +1183,14 @@ public class ClientEvents implements Listener {
                 continue;
 
             foundFirstItem = true;
-
             int rarity = 0;
-            if (line.contains("§6")) {
+            String firstHalf = line.split("§8")[0]; // Wynn uses §8 to make stars grey (deactivated)
+            int stars = (int) firstHalf.chars().filter(star -> star == '✫').count();
+            if (line.contains("§6") && stars == 1) {
                 rarity = 1;
-            } else if (line.contains("§5")) {
+            } else if (line.contains("§5") && stars == 2) {
                 rarity = 2;
-            } else if (line.contains("§3")) {
+            } else if (line.contains("§3") && stars == 3) {
                 rarity = 3;
             }
 
