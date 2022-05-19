@@ -1214,18 +1214,20 @@ public class ClientEvents implements Listener {
             case Quantity:
                 sortedIngredients = new LinkedHashMap<>();
                 List<Map.Entry<String, Pair<Integer, Integer>>> sortedQtyList = new LinkedList<>(items.entrySet());
-                sortedQtyList.sort(Comparator.comparing(o -> (o.getValue().a))); // sort based on the pair's first value (qty)
-                for (int i = sortedQtyList.size() - 1; i >= 0; i--) { // reversed for most -> least
-                    sortedIngredients.put(sortedQtyList.get(i).getKey(), sortedQtyList.get(i).getValue());
+                // sort based on the pair's first value (qty), reversed for descending
+                sortedQtyList.sort(Comparator.comparing((Map.Entry<String, Pair<Integer, Integer>> o) -> (o.getValue().a)).reversed());
+                for (Map.Entry<String, Pair<Integer, Integer>> ingredient : sortedQtyList) {
+                    sortedIngredients.put(ingredient.getKey(), ingredient.getValue());
                 }
                 break;
             case Rarity:
             default:
                 sortedIngredients = new LinkedHashMap<>();
                 List<Map.Entry<String, Pair<Integer, Integer>>> sortedRarityList = new LinkedList<>(items.entrySet());
-                sortedRarityList.sort(Comparator.comparing(o -> (o.getValue().b))); // sort based on rarity
-                for (int i = sortedRarityList.size() - 1; i >= 0; i--) { // reversed for rare -> common
-                    sortedIngredients.put(sortedRarityList.get(i).getKey(), sortedRarityList.get(i).getValue());
+                // sort based on rarity, reversed for descending (3* -> 0*)
+                sortedRarityList.sort(Comparator.comparing((Map.Entry<String, Pair<Integer, Integer>> o) -> (o.getValue().b)).reversed());
+                for (Map.Entry<String, Pair<Integer, Integer>> ingredient : sortedRarityList) {
+                    sortedIngredients.put(ingredient.getKey(), ingredient.getValue());
                 }
                 break;
         }
