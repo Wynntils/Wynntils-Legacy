@@ -73,6 +73,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
+
 import java.sql.Timestamp;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -80,6 +81,7 @@ import java.time.format.FormatStyle;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import static com.wynntils.core.framework.instances.PlayerInfo.get;
 import static net.minecraft.util.text.TextFormatting.getTextWithoutFormattingCodes;
 
@@ -1214,7 +1216,7 @@ public class ClientEvents implements Listener {
                 break;
             case Quantity:
                 sortedIngredients = new LinkedHashMap<>();
-                List<Map.Entry<String, Pair<Integer, Integer>>> sortedQtyList = new LinkedList<>(items.entrySet());
+                List<Map.Entry<String, Pair<Integer, Integer>>> sortedQtyList = new ArrayList<>(items.entrySet());
                 // sort based on the pair's first value (qty), reversed for descending
                 sortedQtyList.sort(Comparator.comparing((Map.Entry<String, Pair<Integer, Integer>> o) -> (o.getValue().a)).reversed());
                 for (Map.Entry<String, Pair<Integer, Integer>> ingredient : sortedQtyList) {
@@ -1224,7 +1226,7 @@ public class ClientEvents implements Listener {
             case Rarity:
             default:
                 sortedIngredients = new LinkedHashMap<>();
-                List<Map.Entry<String, Pair<Integer, Integer>>> sortedRarityList = new LinkedList<>(items.entrySet());
+                List<Map.Entry<String, Pair<Integer, Integer>>> sortedRarityList = new ArrayList<>(items.entrySet());
                 // sort based on rarity, reversed for descending (3* -> 0*)
                 sortedRarityList.sort(Comparator.comparing((Map.Entry<String, Pair<Integer, Integer>> o) -> (o.getValue().b)).reversed());
                 for (Map.Entry<String, Pair<Integer, Integer>> ingredient : sortedRarityList) {
