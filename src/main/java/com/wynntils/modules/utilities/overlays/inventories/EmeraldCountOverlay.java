@@ -75,7 +75,8 @@ public class EmeraldCountOverlay implements Listener {
             return;
         }
 
-        if (UtilitiesConfig.INSTANCE.emeraldCountChest && containerMoneyAmount > 0)
+        // Don't draw emerald count for single row containers like the trade market ones, draw it for emerald pouch though
+        if (UtilitiesConfig.INSTANCE.emeraldCountChest && containerMoneyAmount > 0 && (container.getSizeInventory() > 9 || emeraldPouch))
             drawIconsMoneyAmount(178, 0, containerMoneyAmount, renderer);
         if (UtilitiesConfig.INSTANCE.emeraldCountInventory && !emeraldPouch)
             drawIconsMoneyAmount(178, 2 * (container.getSizeInventory() + 10), inventoryMoneyAmount, renderer);
