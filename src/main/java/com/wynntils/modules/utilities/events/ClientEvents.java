@@ -33,6 +33,7 @@ import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.*;
 import com.wynntils.modules.utilities.overlays.hud.ConsumableTimerOverlay;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
+import com.wynntils.modules.utilities.overlays.hud.ManaTimerOverlay;
 import com.wynntils.modules.utilities.overlays.ui.FakeGuiContainer;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
@@ -365,6 +366,9 @@ public class ClientEvents implements Listener {
             DailyReminderManager.openedDaily();
         }
 
+        if (msg.startsWith("[!] Darkness has been enabled.") || msg.startsWith("[!] Twilight has been enabled.")) {
+            ManaTimerOverlay.isTimeFrozen = true;
+        }
     }
 
     @SubscribeEvent
@@ -945,6 +949,7 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void onWorldLeave(WynnWorldEvent.Leave e) {
         ConsumableTimerOverlay.clearConsumables(true); // clear consumable list
+        ManaTimerOverlay.isTimeFrozen = false;
     }
 
     // tooltip scroller
