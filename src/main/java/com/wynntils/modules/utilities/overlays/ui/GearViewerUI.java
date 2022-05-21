@@ -16,6 +16,7 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.instances.ContainerGearViewer;
 import com.wynntils.modules.utilities.managers.ItemScreenshotManager;
 import com.wynntils.modules.utilities.managers.KeyManager;
@@ -27,14 +28,17 @@ import com.wynntils.webapi.profiles.item.enums.ItemTier;
 import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 import com.wynntils.webapi.profiles.item.objects.ItemRequirementsContainer;
 import com.wynntils.webapi.profiles.item.objects.MajorIdentification;
-
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.EntityOtherPlayerMP;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.gui.inventory.GuiInventory;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
@@ -54,6 +58,7 @@ import static net.minecraft.util.text.TextFormatting.*;
 public class GearViewerUI extends FakeGuiContainer {
 
     private static final ResourceLocation INVENTORY_GUI_TEXTURE = new ResourceLocation("textures/gui/container/inventory.png");
+    private static final int BUTTON_ID = 13;
 
     private InventoryBasic inventory;
     private EntityPlayer player;
@@ -91,10 +96,35 @@ public class GearViewerUI extends FakeGuiContainer {
             inventory.setInventorySlotContents(4, hand);
         }
 
+        // This doesn't actually show up to the player but the name is actually set
+        inventory.setCustomName(player.getDisplayNameString());
+
+        super.buttonList.add(
+                new GuiButton(BUTTON_ID,
+                        (super.width - super.getXSize()) / 2 - 20,
+                        (super.height - super.getYSize()) / 2 + 20,
+                        18, 18,
+                        "➦"
+                )
+        );
     }
 
     @Override
-    protected void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) { } // ignore all mouse clicks
+    protected void handleMouseClick(Slot slotIn, int slotId, int mouseButton, ClickType type) {
+        GuiContainer gui = (GuiContainer) McIf.mc().currentScreen;
+        if (slotId != -999 || mouseButton != 0 || type != ClickType.THROW) return;
+        if (gui.inventorySlots.getSlot(0).inventory.getSizeInventory() != 5) return;
+        super.buttonList.forEach(gb -> {
+            if (gb.id == BUTTON_ID && gb.isMouseOver()) {
+                McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+
+                String playerName = gui.inventorySlots.getSlot(0).inventory.getDisplayName().getUnformattedText();
+                String base = "https://wynncraft.com/stats/player/";
+
+                Utils.openUrl(base + playerName);
+            }
+        });
+    }
 
     @Override
     protected void keyTyped(char typedChar, int keyCode) throws IOException {
@@ -110,6 +140,12 @@ public class GearViewerUI extends FakeGuiContainer {
         this.drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
         this.renderHoveredToolTip(mouseX, mouseY);
+
+        super.buttonList.forEach(gb -> {
+            if (gb.id == BUTTON_ID && gb.isMouseOver()) {
+                McIf.mc().currentScreen.drawHoveringText("Click to view player's stats", mouseX, mouseY);
+            }
+        });
 
         // replace lore with advanced ids if enabled
         if (this.getSlotUnderMouse() != null && this.getSlotUnderMouse().getHasStack())
