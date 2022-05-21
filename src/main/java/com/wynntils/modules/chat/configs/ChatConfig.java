@@ -43,7 +43,7 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Filter Join Messages", description = "Should Wynncraft join messages be hidden from chat?", order = 9)
     public boolean filterJoinMessages = false;
 
-    @Setting(displayName = "Filter Event Messages", description = "Should Wynncraft join messages be hidden from chat?\n\n§8Messages starting with §6[Event] will no longer appear in chat.", order = 10)
+    @Setting(displayName = "Filter Event Messages", description = "Should Wynncraft join messages be hidden from chat?\n\n§8Messages starting with §6[Event] §8will no longer appear in chat.", order = 10)
     public boolean filterEventMessages = false;
 
     @Setting(displayName = "Filter Territory Enter", description = "Should territory enter messages be hidden from chat?\n\n§8Territory enter messages look like §7[You are now entering Detlas]§8.", order = 11)
