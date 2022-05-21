@@ -139,6 +139,7 @@ public class MountHorseManager {
         }
 
         player.inventory.currentItem = 8; // swap to soul points to avoid any right-click conflicts
+        McIf.player().setSprinting(false);
         playerController.interactWithEntity(player, playersHorse, EnumHand.MAIN_HAND);
         player.inventory.currentItem = prev;
         return MountHorseStatus.SUCCESS;
