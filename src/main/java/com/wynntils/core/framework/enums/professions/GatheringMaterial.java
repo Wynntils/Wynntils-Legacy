@@ -19,6 +19,8 @@ public enum GatheringMaterial {
     GUDGEON, TROUT, SALMON, CARP, ICEFISH, PIRANHA, KOI, GYLIA_FISH, BASS, MOLTEN_EEL, STARFISH,
 
     // Global
-    DERNIC
+    DERNIC,
 
+    // Quest
+    ROTTEN
 }
