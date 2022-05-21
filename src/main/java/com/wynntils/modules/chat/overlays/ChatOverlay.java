@@ -144,10 +144,6 @@ public class ChatOverlay extends GuiNewChat {
         LOGGER.info("[CHAT] " + McIf.getUnformattedText(chatComponent).replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n"));
     }
 
-    public void printUnloggedChatMessage(ITextComponent chatComponent) {
-        printUnloggedChatMessage(chatComponent, 0);
-    }
-
     public void printUnloggedChatMessage(ITextComponent chatComponent, int chatLineId) {
         setChatLine(chatComponent, chatLineId, McIf.mc().ingameGUI.getUpdateCounter(), false, true);
     }
