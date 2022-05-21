@@ -20,6 +20,8 @@ import com.wynntils.modules.utilities.overlays.hud.ObjectivesOverlay;
 import com.wynntils.modules.utilities.overlays.hud.ScoreboardOverlay;
 import com.wynntils.modules.utilities.overlays.hud.TerritoryFeedOverlay;
 import net.minecraft.util.text.TextFormatting;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 
 @SettingsInfo(name = "overlays", displayPath = "Utilities/Overlays")
 public class OverlayConfig extends SettingsClass {
@@ -131,6 +133,70 @@ public class OverlayConfig extends SettingsClass {
             // following the format, to add more textures, register them here with a name and create a special case in the render method
         }
 
+    }
+
+    @SettingsInfo(name = "mana_timer_settings", displayPath = "Utilities/Overlays/Mana Timer")
+    public static class ManaTimer extends SettingsClass {
+        public static ManaTimer INSTANCE;
+
+        @Setting(displayName = "Mana Timer Percentage", description = "Should the mana timer use percentages instead of seconds?")
+        public boolean manaTimerUsePercentage = false;
+
+        @Setting(displayName = "Mana Timer Second Decimal", description = "How many decimals should the mana timer have when displaying seconds?")
+        public ManaTimerDecimalFormats manaTimerDecimal = ManaTimerDecimalFormats.One;
+
+        @Setting(displayName = "Mana Timer Seconds Count Down", description = "Should the mana timer count down instead of up when displaying seconds?")
+        public boolean manaTimerCountDown = true;
+
+        @Setting(displayName = "Mana Timer Bar Width", description = "How wide should the mana bar be in pixels?\n\n§8This will be adjusted using Minecraft's scaling.")
+        @Setting.Limitations.IntLimit(min = 0, max = 81)
+        public int width = 81;
+
+        @Setting(displayName = "Mana Timer Bar Orientation", description = "How orientated in degrees should the mana bar be?\n\n§8Accompanied text will be removed.")
+        public OverlayRotation overlayRotation = OverlayRotation.NORMAL;
+
+        @Setting(displayName = "Mana Timer Texture", description = "What texture should be used for the mana bar?")
+        public ManaTimerTextures manaTexture = ManaTimerTextures.a;
+
+        @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
+        @Setting(displayName = "Animation Speed", description = "How fast should the animation be played?\n\n§8Set this to 0 for it to display instantly.")
+        public float animated = 5f;
+
+        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
+        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+
+
+        public enum ManaTimerTextures {
+            Wynn,
+            Brune,
+            Aether,
+            Skull,
+            Inverse,
+            Skyrim,
+            Rune,
+            a,
+            b,
+            c,
+            d
+            // following the format, to add more textures, register them here with a name and create a special case in the render method
+        }
+
+        public enum ManaTimerDecimalFormats {
+            Zero("%.0f"),
+            One("%.1f"),
+            Two("%.2f");
+
+            final String decimalFormat;
+
+            ManaTimerDecimalFormats(String decimalFormat) {
+                this.decimalFormat = decimalFormat;
+            }
+
+            public String getDecimalFormat() {
+                return this.decimalFormat;
+            }
+
+        }
     }
 
     @SettingsInfo(name = "hotbar_settings", displayPath = "Utilities/Overlays/Hotbar")
