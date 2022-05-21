@@ -122,7 +122,8 @@ public class MountHorseManager {
                 return MountHorseStatus.NO_HORSE;
             }
 
-            player.inventory.currentItem = horse.getInventorySlot();
+            
+            .inventory.currentItem = horse.getInventorySlot();
             playerController.processRightClick(player, player.world, EnumHand.MAIN_HAND);
             player.inventory.currentItem = prev;
             if (far) {
@@ -139,7 +140,7 @@ public class MountHorseManager {
         }
 
         player.inventory.currentItem = 8; // swap to soul points to avoid any right-click conflicts
-        McIf.player().setSprinting(false);
+        player.setSprinting(false);
         playerController.interactWithEntity(player, playersHorse, EnumHand.MAIN_HAND);
         player.inventory.currentItem = prev;
         return MountHorseStatus.SUCCESS;
