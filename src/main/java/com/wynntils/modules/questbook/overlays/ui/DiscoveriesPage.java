@@ -476,7 +476,7 @@ public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
                     Utils.openUrl(wikiUrl);
                     McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                     break;
-                case 2: //Middle Click
+                case 2: // Middle Click
                     if (QuestBookConfig.INSTANCE.spoilSecretDiscoveries.followsRule(selectedEntry.wasDiscovered())) {
                         locateSecretDiscovery(name, "map");
                         McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
