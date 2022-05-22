@@ -148,6 +148,15 @@ public class ChatOverlay extends GuiNewChat {
         setChatLine(chatComponent, chatLineId, McIf.mc().ingameGUI.getUpdateCounter(), false, true);
     }
 
+    /**
+     * Sets the chat to be chatComponent at chatLineId by deleting the previous value and adding the new one.
+     * Adds the line if the specified ID is 0.
+     * @param chatComponent The ITextComponent we are setting the value to be
+     * @param chatLineId The chat line ID we are replacing
+     * @param updateCounter Passed directly into {@link ChatOverlay#addLine}
+     * @param displayOnly Passed directly into {@link ChatOverlay#addLine}
+     * @param noEvent Skips posting a new ChatEvent when true
+     */
     private void setChatLine(ITextComponent chatComponent, int chatLineId, int updateCounter, boolean displayOnly, boolean noEvent) {
         chatComponent = chatComponent.createCopy();
 
