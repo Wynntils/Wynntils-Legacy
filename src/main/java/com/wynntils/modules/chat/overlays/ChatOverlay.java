@@ -156,7 +156,7 @@ public class ChatOverlay extends GuiNewChat {
             chatComponent = dialogue.b;
             chatLineId = WYNN_DIALOGUE_ID;
 
-            if (dialogue.b == null) {
+            if (chatComponent == null) {
                 deleteChatLine(chatLineId);
                 return;
             }
