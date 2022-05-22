@@ -905,13 +905,11 @@ public class ChatManager {
             int max = Math.max(0, siblings.size() - newMessageCount);
             for (int i = max; i < siblings.size(); i++) {
                 ITextComponent line = siblings.get(i).createCopy();
-                // Remove new line if present
-                if (i != siblings.size() - 1 && !line.getSiblings().isEmpty()) {
-                    line.getSiblings().remove(line.getSiblings().size() - 1);
-                }
+                line.getSiblings().removeIf(sibling -> sibling.getFormattedText().contains("\n")); // Remove new line if present
 
-                line = ForgeEventFactory.onClientChat(ChatType.SYSTEM, line);
-                if (line != null) {
+                line = ForgeEventFactory.onClientChat(ChatType.SYSTEM, line); // This just returns line, it doesn't actually alter it
+                if (line != null && !line.getFormattedText().equals("") && !line.getFormattedText().contains("\n")) { // Don't print extra newlines
+
                     ChatOverlay.getChat().printChatMessage(line);
                 }
             }
@@ -963,7 +961,8 @@ public class ChatManager {
             // If dialogue is the exact same as previously then most likely a message was received
             // The second check is for the colors changing on the shift prompt
             if (dialogue.equals(last) && dialogue.get(dialogue.size() - 1).getSiblings().equals(last.get(last.size() - 1).getSiblings())) {
-                newMessageCount++;
+                newMessageCount += 2; // 2 because this needs to account for the new lines
+                // new lines are ignored later in the processing logic but they are still present here and need to be fed to the processor
 
                 // most recent message
                 ITextComponent newMessage = siblings.get(siblings.size() - lineCount - 1);
