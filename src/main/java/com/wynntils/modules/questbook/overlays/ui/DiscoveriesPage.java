@@ -499,7 +499,7 @@ public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
                     CompassManager.setCompassLocation(new Location(x, 50, z));
                     McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                     break;
-                case 2: //Middle Click
+                case 2: // Middle Click
                     Utils.displayGuiScreen(new MainWorldMapUI(x, z));
                     McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                     break;
