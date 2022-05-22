@@ -494,11 +494,6 @@ public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
                     CompassManager.setCompassLocation(new Location(x, 50, z));
                     McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
                     break;
-                case 1: // Right Click
-                    Utils.displayGuiScreen(new MainWorldMapUI(x, z));
-                    CompassManager.setCompassLocation(new Location(x, 50, z));
-                    McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-                    break;
                 case 2: // Middle Click
                     Utils.displayGuiScreen(new MainWorldMapUI(x, z));
                     McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
