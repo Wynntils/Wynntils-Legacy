@@ -980,8 +980,9 @@ public class ChatManager {
                 }
             }
 
-            if (dialogueChat != null)
+            if (dialogueChat != null) {
                 ChatOverlay.getChat().printChatMessageWithOptionalDeletion(dialogueChat, WYNN_DIALOGUE_NEW_MESSAGES_ID);
+            }
 
             lastChat = chat;
             ITextComponent newComponent = new TextComponentString("");
