@@ -20,8 +20,6 @@ import com.wynntils.modules.utilities.overlays.hud.ObjectivesOverlay;
 import com.wynntils.modules.utilities.overlays.hud.ScoreboardOverlay;
 import com.wynntils.modules.utilities.overlays.hud.TerritoryFeedOverlay;
 import net.minecraft.util.text.TextFormatting;
-import java.math.RoundingMode;
-import java.text.DecimalFormat;
 
 @SettingsInfo(name = "overlays", displayPath = "Utilities/Overlays")
 public class OverlayConfig extends SettingsClass {
@@ -138,6 +136,9 @@ public class OverlayConfig extends SettingsClass {
     @SettingsInfo(name = "mana_timer_settings", displayPath = "Utilities/Overlays/Mana Timer")
     public static class ManaTimer extends SettingsClass {
         public static ManaTimer INSTANCE;
+
+        @Setting(displayName = "Show Mana Timer", description = "Disabling this will hide the mana timer regardless of overlay config status.")
+        public boolean showManaTimer = false;
 
         @Setting(displayName = "Mana Timer Percentage", description = "Should the mana timer use percentages instead of seconds?")
         public boolean manaTimerUsePercentage = false;

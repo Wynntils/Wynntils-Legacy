@@ -5,6 +5,7 @@
 package com.wynntils.core.framework.instances.data;
 
 import com.wynntils.core.framework.enums.ClassType;
+import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.containers.PlayerData;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.modules.utilities.managers.HealthPotionManager;
@@ -14,12 +15,10 @@ import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -203,4 +202,12 @@ public class InventoryData extends PlayerData {
         return ((24000 - ticks) % 24000);
     }
 
+    public int getTicksToNextManaRegen() {
+        int spTicks = PlayerInfo.get(InventoryData.class).getTicksToNextSoulPoint();
+        // Mana regen procs at 14599, 14499, 14399...
+        // and lasts until     14580, 14480, 14380...
+        // Each regen proc lasts one second but effectively needs to have the player having the MR stat at
+        // 14600, 14500, 14400... (which makes this calculation a lot easier compared to xxx99)
+        return 100 - spTicks % 100; // Each percent is a tick
+    }
 }
