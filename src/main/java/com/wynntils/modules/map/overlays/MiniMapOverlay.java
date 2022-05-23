@@ -34,7 +34,7 @@ import java.util.function.Consumer;
 public class MiniMapOverlay extends Overlay {
 
     public MiniMapOverlay() {
-        super("Mini Map", 100, 100, true, true, 0, 0, 10, 10, OverlayGrowFrom.TOP_LEFT);
+        super("Mini Map", 100, 100, true, 0, 0, 10, 10, OverlayGrowFrom.TOP_LEFT);
     }
 
     public static final int MAX_ZOOM = 100;  // Note that this is the most zoomed out

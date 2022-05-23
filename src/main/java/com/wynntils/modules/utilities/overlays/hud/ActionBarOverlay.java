@@ -26,7 +26,7 @@ public class ActionBarOverlay extends Overlay {
 //    public SmartFontRenderer.TextShadow shadow = SmartFontRenderer.TextShadow.OUTLINE;
 
     public ActionBarOverlay() {
-        super("ActionBar Helper", 75, 10, true, true, 0.5f, 1f, 0, -70, OverlayGrowFrom.TOP_CENTRE,
+        super("ActionBar Helper", 75, 10, true, 0.5f, 1f, 0, -70, OverlayGrowFrom.TOP_CENTRE,
                 RenderGameOverlayEvent.ElementType.EXPERIENCE, RenderGameOverlayEvent.ElementType.JUMPBAR);
     }
 

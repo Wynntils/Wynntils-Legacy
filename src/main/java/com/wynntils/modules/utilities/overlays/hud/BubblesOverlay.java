@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 public class BubblesOverlay extends Overlay {
 
     public BubblesOverlay() {
-        super("Bubbles Overlay", 182, 7, true, true, 0.5f, 1.0f, 0, -29, OverlayGrowFrom.MIDDLE_CENTRE, RenderGameOverlayEvent.ElementType.EXPERIENCE, RenderGameOverlayEvent.ElementType.JUMPBAR);
+        super("Bubbles Overlay", 182, 7, true, 0.5f, 1.0f, 0, -29, OverlayGrowFrom.MIDDLE_CENTRE, RenderGameOverlayEvent.ElementType.EXPERIENCE, RenderGameOverlayEvent.ElementType.JUMPBAR);
     }
 
     @Setting.Limitations.FloatLimit(min = 0f, max = 10f)

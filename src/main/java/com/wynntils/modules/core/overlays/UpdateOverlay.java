@@ -35,7 +35,7 @@ public class UpdateOverlay extends Overlay {
     private static CustomColor no = CustomColor.fromInt(0xfd8080, 1);
 
     public UpdateOverlay() {
-        super("Update", 20, 20, true, true, 1f, 0f, 0, 0, null);
+        super("Update", 20, 20, true, 1f, 0f, 0, 0, null);
     }
 
     static boolean disappear = false;

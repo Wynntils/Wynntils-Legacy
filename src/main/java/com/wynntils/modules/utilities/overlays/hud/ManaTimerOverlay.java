@@ -17,7 +17,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ManaTimerOverlay extends Overlay {
     public ManaTimerOverlay() {
-        super("Mana Timer Bar", 81, 21, true, false, 0.6f, 1f, 10, -38, OverlayGrowFrom.MIDDLE_LEFT);
+        super("Mana Timer Bar", 81, 21, true, 0.57f, 1.039f, 10, -38, OverlayGrowFrom.MIDDLE_LEFT);
     }
 
     @Setting(displayName = "Flip", description = "Should the filling of the bar be flipped")

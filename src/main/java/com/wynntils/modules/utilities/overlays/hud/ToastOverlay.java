@@ -35,7 +35,7 @@ public class ToastOverlay extends Overlay {
     private static final CustomColor defaultColor = new CustomColor(0, 0, 0); // black
 
     public ToastOverlay() {
-        super("Toasts", 160, 192, true, true, 1, 0, 0, 0, OverlayGrowFrom.TOP_RIGHT);
+        super("Toasts", 160, 192, true, 1, 0, 0, 0, OverlayGrowFrom.TOP_RIGHT);
     }
 
     @Override

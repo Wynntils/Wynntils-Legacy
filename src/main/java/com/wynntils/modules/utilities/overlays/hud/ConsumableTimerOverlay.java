@@ -30,16 +30,16 @@ import static net.minecraft.util.text.TextFormatting.*;
 
 public class ConsumableTimerOverlay extends Overlay {
 
-    private static final Pattern DURATION_PATTERN = Pattern.compile("^- Duration: ([0-9]*) (.*?)");
-    private static final Pattern EFFECT_PATTERN = Pattern.compile("^- Effect: (.*)");
-    private static final Pattern MANA_PATTERN = Pattern.compile("^- Mana: ([0-9]*) (.*?)");
-    private static final Pattern CHAT_DURATION_PATTERN = Pattern.compile("([0-9]*) seconds(.*?)");
+    transient private static final Pattern DURATION_PATTERN = Pattern.compile("^- Duration: ([0-9]*) (.*?)");
+    transient private static final Pattern EFFECT_PATTERN = Pattern.compile("^- Effect: (.*)");
+    transient private static final Pattern MANA_PATTERN = Pattern.compile("^- Mana: ([0-9]*) (.*?)");
+    transient private static final Pattern CHAT_DURATION_PATTERN = Pattern.compile("([0-9]*) seconds(.*?)");
 
-    private static List<ConsumableContainer> activeConsumables = new ArrayList<>();
-    private static Map<String, IdentificationHolder> activeEffects = new HashMap<>();
+    transient private static List<ConsumableContainer> activeConsumables = new ArrayList<>();
+    transient private static Map<String, IdentificationHolder> activeEffects = new HashMap<>();
 
     public ConsumableTimerOverlay() {
-        super("Consumable Timer", 125, 60, true, true, 1, 0.2f, 0, 0, OverlayGrowFrom.TOP_RIGHT, RenderGameOverlayEvent.ElementType.ALL);
+        super("Consumable Timer", 125, 60, true, 1, 0.2f, 0, 0, OverlayGrowFrom.TOP_RIGHT, RenderGameOverlayEvent.ElementType.ALL);
     }
 
     public static void clearConsumables(boolean clearPersistent) {

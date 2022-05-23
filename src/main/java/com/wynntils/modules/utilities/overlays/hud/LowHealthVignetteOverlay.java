@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 public class LowHealthVignetteOverlay extends Overlay {
 
     public LowHealthVignetteOverlay() {
-        super("Drowning Vignette", 20, 20, true, true, 0, 0, 0, 0, null);
+        super("Drowning Vignette", 20, 20, true, 0, 0, 0, 0, null);
     }
 
     private static float animation = 10f;

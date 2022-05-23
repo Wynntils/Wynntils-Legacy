@@ -21,7 +21,6 @@ public class ExampleOverlay extends Overlay {
                 20,  // The width of the overlay(to be dragged in the options)
                 20,  // The height of the overlay(to be dragged in the options)
                 true,  // Should the overlay start visible
-                true, // Should the overlay be active by default
                 0.5f,  // Origin anchor from 0.0 to 1.0 on the screen(0 being left of the screen, 1 being right of the screen)
                 0.5f,  // Origin anchor from 0.0 to 1.0 on the screen(0 being top of the screen, 1 being bottom of the screen)
                 0,  // Origin offset from the anchor in pixels

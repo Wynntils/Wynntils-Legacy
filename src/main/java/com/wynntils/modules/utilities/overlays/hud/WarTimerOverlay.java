@@ -32,7 +32,7 @@ import java.util.regex.Pattern;
 public class WarTimerOverlay extends Overlay {
 
     public WarTimerOverlay() {
-        super("War Timer overlay", 100, 22, true, true, 0.5f, 0f, 0, 26, OverlayGrowFrom.MIDDLE_CENTRE);
+        super("War Timer overlay", 100, 22, true, 0.5f, 0f, 0, 26, OverlayGrowFrom.MIDDLE_CENTRE);
     }
 
     private static long time = -1;
