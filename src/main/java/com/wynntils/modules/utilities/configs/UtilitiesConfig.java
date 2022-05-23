@@ -148,8 +148,11 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Show consumable charges in hotbar", description = "Should potion, food, and scroll charges be shown in the hotbar?", order = 28)
     public boolean showConsumableChargesHotbar = true;
 
-    @Setting(displayName = "Sort Ingredient Pouch Method", description = "How should the ingredient pouch overview be sorted?\n\n§8Click on the ingredient pouch to refresh.", order = 30)
+    @Setting(displayName = "Sort Ingredient Pouch Method", description = "How should the ingredient pouch overview be sorted?\n\n§8Click on the ingredient pouch to refresh.", order = 33)
     public IngPouchSortType sortIngredientPouch = IngPouchSortType.Rarity;
+
+    @Setting(displayName = "Reverse Ingredient Pouch Order", description = "Should the ingredient pouch sort order be reversed?\n\n§8Click on the ingredient pouch to refresh.", order = 34)
+    public boolean sortIngredientPouchReverse = false;
 
     @Setting(upload = false)
     public String lastServerResourcePack = "";
