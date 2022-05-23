@@ -1229,11 +1229,11 @@ public class ClientEvents implements Listener {
                 sortedIngredients = new LinkedHashMap<>();
                 List<Map.Entry<String, Pair<Integer, Integer>>> sortedQtyList = new ArrayList<>(items.entrySet());
 
-                // sort based on the pair's first value (qty), reversed for descending
-                sortedQtyList.sort(Comparator.comparing((Map.Entry<String, Pair<Integer, Integer>> o) -> (o.getValue().a)).reversed());
+                // sort based on the pair's first value (qty), sorted ascending
+                sortedQtyList.sort(Comparator.comparing(o -> (o.getValue().a)));
 
-                if (UtilitiesConfig.INSTANCE.sortIngredientPouchReverse) {
-                    // reverse sortedQtyList
+                if (!UtilitiesConfig.INSTANCE.sortIngredientPouchReverse) {
+                    // reverse sortedQtyList for descending if sortIngredientPouchReverse is false
                     Collections.reverse(sortedQtyList);
                 }
 
@@ -1246,11 +1246,11 @@ public class ClientEvents implements Listener {
                 sortedIngredients = new LinkedHashMap<>();
                 List<Map.Entry<String, Pair<Integer, Integer>>> sortedRarityList = new ArrayList<>(items.entrySet());
 
-                // sort based on rarity, reversed for descending (3* -> 0*)
-                sortedRarityList.sort(Comparator.comparing((Map.Entry<String, Pair<Integer, Integer>> o) -> (o.getValue().b)).reversed());
+                // sort based on rarity, sorting ascending (0* -> 3*)
+                sortedRarityList.sort(Comparator.comparing(o -> (o.getValue().b)));
 
-                if (UtilitiesConfig.INSTANCE.sortIngredientPouchReverse) {
-                    // reverse sortedRarityList
+                if (!UtilitiesConfig.INSTANCE.sortIngredientPouchReverse) {
+                    // reverse sortedRarityList for descending (3* -> 0*) if sortIngredientPouchReverse is false
                     Collections.reverse(sortedRarityList);
                 }
 
