@@ -16,13 +16,10 @@ import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.managers.PingManager;
+import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.interfaces.InfoModule;
-import com.wynntils.modules.utilities.managers.AreaDPSManager;
-import com.wynntils.modules.utilities.managers.KillsManager;
-import com.wynntils.modules.utilities.managers.LevelingManager;
-import com.wynntils.modules.utilities.managers.ServerListManager;
-import com.wynntils.modules.utilities.managers.SpeedometerManager;
+import com.wynntils.modules.utilities.managers.*;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.Minecraft;
@@ -311,6 +308,15 @@ public class InfoFormatter {
             return cache.get("soulpointseconds");
         }, "soulpointtimer_s", "sptimer_s");
 
+        // Mana regen timer, dependent on the timer overlay config
+        registerFormatter((input) -> {
+            if (!cache.containsKey("manaregenformatted")) {
+                cacheManaRegenTimer();
+            }
+
+            return cache.get("manaregenformatted");
+        },"manaregen_timer", "mr_timer");
+
         // Current soul points
         registerFormatter((input) ->
                 Integer.toString(PlayerInfo.get(InventoryData.class).getSoulPoints()),
@@ -598,6 +604,21 @@ public class InfoFormatter {
         cache.put("soulpointtimer", timer);
         cache.put("soulpointminutes", Integer.toString(minutes));
         cache.put("soulpointseconds", Integer.toString(seconds));
+    }
+
+    private void cacheManaRegenTimer() {
+        int ticks = PlayerInfo.get(InventoryData.class).getTicksToNextManaRegen();
+        float displayedValue = (OverlayConfig.ManaTimer.INSTANCE.manaTimerUsePercentage) ? ticks : ticks / 20.0f;
+
+        String decimalFormat = (OverlayConfig.ManaTimer.INSTANCE.manaTimerUsePercentage) ?
+                OverlayConfig.ManaTimer.ManaTimerDecimalFormats.Zero.getDecimalFormat() :
+                OverlayConfig.ManaTimer.INSTANCE.manaTimerDecimal.getDecimalFormat();
+
+        String displayedProgress = (!OverlayConfig.ManaTimer.INSTANCE.manaTimerUsePercentage && OverlayConfig.ManaTimer.INSTANCE.manaTimerCountDown) ?
+                String.format(decimalFormat, 5.0f - displayedValue) :
+                String.format(decimalFormat, displayedValue);
+
+        cache.put("manaregenformatted", displayedProgress);
     }
 
     private void cacheHorseData() {
