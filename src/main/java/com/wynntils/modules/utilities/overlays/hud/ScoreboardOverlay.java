@@ -30,7 +30,7 @@ public class ScoreboardOverlay extends Overlay {
     private static final Pattern GUILD_WAR_TIMER = Pattern.compile("- (\\d+\\d+:\\d+\\d+) (.+)");
 
     public ScoreboardOverlay() {
-        super("Scoreboard", 125, 60, true, 1, 0.5f, 0, 0, OverlayGrowFrom.MIDDLE_RIGHT);
+        super("Scoreboard", 125, 60, true, true, 1, 0.5f, 0, 0, OverlayGrowFrom.MIDDLE_RIGHT);
     }
 
 

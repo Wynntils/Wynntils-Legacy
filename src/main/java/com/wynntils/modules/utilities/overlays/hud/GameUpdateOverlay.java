@@ -24,7 +24,7 @@ import java.util.List;
 public class GameUpdateOverlay extends Overlay {
 
     public GameUpdateOverlay() {
-        super("Game Update Ticker", 100, 20, true, 1f, 1f, -3, -80, OverlayGrowFrom.BOTTOM_RIGHT);
+        super("Game Update Ticker", 100, 20, true, true, 1f, 1f, -3, -80, OverlayGrowFrom.BOTTOM_RIGHT);
     }
 
     @Setting(displayName = "Offset X", description = "How far the ticker should be offset on the X axis")

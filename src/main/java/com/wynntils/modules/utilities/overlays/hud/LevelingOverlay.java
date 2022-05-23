@@ -22,7 +22,7 @@ public class LevelingOverlay extends Overlay {
     public static final DecimalFormat GROUPED_FORMAT = new DecimalFormat("#,###");
 
     public LevelingOverlay() {
-        super("Leveling Helper", 80, 10, true, 0.5f, 1.0f, 0, -58, OverlayGrowFrom.TOP_CENTRE);
+        super("Leveling Helper", 80, 10, true, true, 0.5f, 1.0f, 0, -58, OverlayGrowFrom.TOP_CENTRE);
     }
 
     @Setting.Features.StringParameters(parameters = {"actual", "max", "percent"})

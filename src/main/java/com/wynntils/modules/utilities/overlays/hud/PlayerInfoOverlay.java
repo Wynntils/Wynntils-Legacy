@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 public class PlayerInfoOverlay extends Overlay {
 
     public PlayerInfoOverlay() {
-        super("Player Info Overlay", 410, 229, true, 0.5f, 0f, 0, 10, OverlayGrowFrom.TOP_CENTRE);
+        super("Player Info Overlay", 410, 229, true, true, 0.5f, 0f, 0, 10, OverlayGrowFrom.TOP_CENTRE);
     }
 
     transient double animationProgress = 0;

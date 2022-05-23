@@ -19,7 +19,7 @@ public abstract class InfoOverlay extends Overlay {
     private static final InfoFormatter formatter = UtilitiesModule.getModule().getInfoFormatter();
 
     private InfoOverlay(int index) {
-        super("Info " + index, 100, 9, true, 0, 0, 10, 105 + index * 11, OverlayGrowFrom.TOP_LEFT);
+        super("Info " + index, 100, 9, true, true, 0, 0, 10, 105 + index * 11, OverlayGrowFrom.TOP_LEFT);
     }
 
     public abstract int getIndex();

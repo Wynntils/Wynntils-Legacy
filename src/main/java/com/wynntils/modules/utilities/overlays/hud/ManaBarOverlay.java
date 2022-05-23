@@ -20,7 +20,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 public class ManaBarOverlay extends Overlay {
     public ManaBarOverlay() {
-        super("Mana Bar", 81, 21, true, 0.5f, 1.0f, 10, -38, OverlayGrowFrom.MIDDLE_LEFT, RenderGameOverlayEvent.ElementType.FOOD, RenderGameOverlayEvent.ElementType.HEALTHMOUNT);
+        super("Mana Bar", 81, 21, true, true, 0.5f, 1.0f, 10, -38, OverlayGrowFrom.MIDDLE_LEFT, RenderGameOverlayEvent.ElementType.FOOD, RenderGameOverlayEvent.ElementType.HEALTHMOUNT);
     }
 
     @Setting(displayName = "Flip", description = "Should the filling of the bar be flipped")

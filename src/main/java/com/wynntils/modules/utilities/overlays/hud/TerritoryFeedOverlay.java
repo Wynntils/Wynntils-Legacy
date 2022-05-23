@@ -22,7 +22,7 @@ public class TerritoryFeedOverlay extends Overlay {
     private static long animationStartTime;
 
     public TerritoryFeedOverlay() {
-        super("Territory Feed", 300, 11, true, 0, 0, 0, 40, OverlayGrowFrom.TOP_LEFT);
+        super("Territory Feed", 300, 11, true, true, 0, 0, 0, 40, OverlayGrowFrom.TOP_LEFT);
     }
 
     @Override

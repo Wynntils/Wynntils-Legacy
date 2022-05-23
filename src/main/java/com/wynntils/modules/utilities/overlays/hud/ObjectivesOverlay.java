@@ -45,7 +45,7 @@ public class ObjectivesOverlay extends Overlay {
     private static int guildObjectivesPosition;
 
     public ObjectivesOverlay() {
-        super("Objectives", WIDTH, HEIGHT, true, 1f, 1f, -1, -1, OverlayGrowFrom.BOTTOM_RIGHT);
+        super("Objectives", WIDTH, HEIGHT, true, true, 1f, 1f, -1, -1, OverlayGrowFrom.BOTTOM_RIGHT);
     }
 
     public static void checkForSidebar(SPacketDisplayObjective displayObjective) {
