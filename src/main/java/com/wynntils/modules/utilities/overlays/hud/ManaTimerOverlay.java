@@ -49,7 +49,7 @@ public class ManaTimerOverlay extends Overlay {
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
-        if (OverlayConfig.ManaTimer.INSTANCE.hideManaTimer) return;
+        if (!OverlayConfig.ManaTimer.INSTANCE.showManaTimer) return;
         switch (OverlayConfig.ManaTimer.INSTANCE.manaTexture) {
             case Wynn:
                 drawDefaultBar(-1, 8, 0, 17, textColor);
