@@ -102,7 +102,7 @@ public class QuestManager {
             return;
         }
 
-        sendMessage(GRAY + "[Analysing quest book...]");
+        sendQuestBookMessage(GRAY + "[Analysing quest book...]");
         hasInterrupted = false;
 
         List<ItemStack> gatheredQuests = new ArrayList<>();
@@ -314,7 +314,7 @@ public class QuestManager {
             if (!gatheredDiscoveries.isEmpty()) parseDiscoveries(gatheredDiscoveries);
 
             FrameworkManager.getEventBus().post(new QuestBookUpdateEvent.Full());
-            sendMessage(GRAY + "[Quest book analyzed]");
+            sendQuestBookMessage(GRAY + "[Quest book analyzed]");
             WynntilsSound.QUESTBOOK_UPDATE.play(0.5f, 1f);
         });
 
@@ -550,10 +550,10 @@ public class QuestManager {
 
     private static void interrupt() {
         hasInterrupted = true;
-        sendMessage(RED + "[Quest book analysis failed, manually open your book to try again]");
+        sendQuestBookMessage(RED + "[Quest book analysis failed, manually open your book to try again]");
     }
 
-    private static void sendMessage(String msg) {
+    private static void sendQuestBookMessage(String msg) {
         // Can be called from nio thread by FakeInventory
         McIf.mc().addScheduledTask(() ->
             ChatOverlay.getChat().printChatMessageWithOptionalDeletion(new TextComponentString(msg), MESSAGE_ID)

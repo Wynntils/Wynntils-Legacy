@@ -144,14 +144,19 @@ public class ChatOverlay extends GuiNewChat {
         LOGGER.info("[CHAT] " + McIf.getUnformattedText(chatComponent).replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n"));
     }
 
-    public void printUnloggedChatMessage(ITextComponent chatComponent) {
-        printUnloggedChatMessage(chatComponent, 0);
-    }
-
     public void printUnloggedChatMessage(ITextComponent chatComponent, int chatLineId) {
         setChatLine(chatComponent, chatLineId, McIf.mc().ingameGUI.getUpdateCounter(), false, true);
     }
 
+    /**
+     * Sets the chat to be chatComponent at chatLineId by deleting the previous value and adding the new one.
+     * Adds the line if the specified ID is 0.
+     * @param chatComponent The ITextComponent we are setting the value to be
+     * @param chatLineId The chat line ID we are replacing
+     * @param updateCounter Passed directly into {@link ChatOverlay#addLine}
+     * @param displayOnly Passed directly into {@link ChatOverlay#addLine}
+     * @param noEvent Skips posting a new ChatEvent when true
+     */
     private void setChatLine(ITextComponent chatComponent, int chatLineId, int updateCounter, boolean displayOnly, boolean noEvent) {
         chatComponent = chatComponent.createCopy();
 
@@ -160,7 +165,7 @@ public class ChatOverlay extends GuiNewChat {
             chatComponent = dialogue.b;
             chatLineId = WYNN_DIALOGUE_ID;
 
-            if (dialogue.b == null) {
+            if (chatComponent == null) {
                 deleteChatLine(chatLineId);
                 return;
             }
@@ -388,12 +393,6 @@ public class ChatOverlay extends GuiNewChat {
                 break;
             }
         }
-    }
-
-
-    public void updateLine(ChatTab tab, int id, Function<ITextComponent, ITextComponent> change) {
-        updateLines(tab, new HashMap<Integer, Pair<Supplier<Boolean>, Function<ITextComponent, ITextComponent>>>()
-            {{ put(id, new Pair<>(() -> true, change)); }});
     }
 
     public void refreshChat() {
