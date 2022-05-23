@@ -139,6 +139,9 @@ public class OverlayConfig extends SettingsClass {
     public static class ManaTimer extends SettingsClass {
         public static ManaTimer INSTANCE;
 
+        @Setting(displayName = "Force Hide Mana Timer", description = "Enabling this will hide the mana timer regardless of overlay config status.")
+        public boolean hideManaTimer = false;
+
         @Setting(displayName = "Mana Timer Percentage", description = "Should the mana timer use percentages instead of seconds?")
         public boolean manaTimerUsePercentage = false;
 
