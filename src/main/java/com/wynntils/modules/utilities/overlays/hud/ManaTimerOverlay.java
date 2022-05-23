@@ -37,12 +37,7 @@ public class ManaTimerOverlay extends Overlay {
         visible = PlayerInfo.get(InventoryData.class).getTicksToNextSoulPoint() != -1;
         if (!visible || Reference.onLobby) return;
 
-        int spTicks = PlayerInfo.get(InventoryData.class).getTicksToNextSoulPoint();
-        // Mana regen procs at 14599, 14499, 14399...
-        // and lasts until     14580, 14480, 14380...
-        // Each regen proc lasts one second but effectively needs to have the player having the MR stat at
-        // 14600, 14500, 14400... (which makes this calculation a lot easier compared to xxx99)
-        int percentUntilProc = 100 - spTicks % 100; // Each percent is a tick
+        int percentUntilProc = PlayerInfo.get(InventoryData.class).getTicksToNextManaRegen();
         float displayedValue = (OverlayConfig.ManaTimer.INSTANCE.manaTimerUsePercentage) ? percentUntilProc : percentUntilProc / 20.0f;
 
         if (OverlayConfig.ManaTimer.INSTANCE.animated > 0.0f && OverlayConfig.ManaTimer.INSTANCE.animated < 10.0f) {
