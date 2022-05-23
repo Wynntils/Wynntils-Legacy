@@ -291,7 +291,7 @@ public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
                 lore.add("");
 
             lore.add(TextFormatting.GREEN + (TextFormatting.BOLD + "Left click to set compass beacon!"));
-            lore.add(TextFormatting.YELLOW + (TextFormatting.BOLD + "Right click to view on the map!"));
+            lore.add(TextFormatting.YELLOW + (TextFormatting.BOLD + "Middle click to view on the map!"));
         }
 
         // Secret Discovery Actions
@@ -301,10 +301,10 @@ public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
 
             if (QuestBookConfig.INSTANCE.spoilSecretDiscoveries.followsRule(entryInfo.wasDiscovered())) {
                 lore.add(TextFormatting.GREEN + (TextFormatting.BOLD + "Left click to set compass beacon!"));
-                lore.add(TextFormatting.YELLOW + (TextFormatting.BOLD + "Right click to view on map!"));
+                lore.add(TextFormatting.YELLOW + (TextFormatting.BOLD + "Middle click to view on map!"));
             }
 
-            lore.add(TextFormatting.GOLD + (TextFormatting.BOLD + "Middle click to open on the wiki!"));
+            lore.add(TextFormatting.GOLD + (TextFormatting.BOLD + "Right click to open on the wiki!"));
         }
 
         // Removes blank space at the end of lores
@@ -472,15 +472,15 @@ public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
                     }
                     break;
                 case 1: // Right Click
+                    String wikiUrl = "https://wynncraft.fandom.com/wiki/" + Utils.encodeForWikiTitle(name);
+                    Utils.openUrl(wikiUrl);
+                    McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
+                    break;
+                case 2: // Middle Click
                     if (QuestBookConfig.INSTANCE.spoilSecretDiscoveries.followsRule(selectedEntry.wasDiscovered())) {
                         locateSecretDiscovery(name, "map");
                         McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                     }
-                    break;
-                case 2: //Middle Click
-                    String wikiUrl = "https://wynncraft.fandom.com/wiki/" + Utils.encodeForWikiTitle(name);
-                    Utils.openUrl(wikiUrl);
-                    McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                     break;
             }
         } else if (selectedEntry.getGuildTerritoryProfile() != null) { // Guild territory actions
@@ -494,13 +494,8 @@ public class DiscoveriesPage extends QuestBookListPage<DiscoveryInfo> {
                     CompassManager.setCompassLocation(new Location(x, 50, z));
                     McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_ANVIL_PLACE, 1f));
                     break;
-                case 1: // Right Click
+                case 2: // Middle Click
                     Utils.displayGuiScreen(new MainWorldMapUI(x, z));
-                    McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
-                    break;
-                case 2: //Middle Click
-                    Utils.displayGuiScreen(new MainWorldMapUI(x, z));
-                    CompassManager.setCompassLocation(new Location(x, 50, z));
                     McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.UI_BUTTON_CLICK, 1f));
                     break;
             }
