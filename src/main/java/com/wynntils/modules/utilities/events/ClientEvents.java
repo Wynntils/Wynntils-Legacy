@@ -1217,13 +1217,26 @@ public class ClientEvents implements Listener {
         Map<String, Pair<Integer, Integer>> sortedIngredients;
         switch (UtilitiesConfig.INSTANCE.sortIngredientPouch) {
             case Alphabetical:
-                sortedIngredients = new TreeMap<>(items); // TreeMap will sort it for us
+                if (UtilitiesConfig.INSTANCE.sortIngredientPouchReverse) {
+                    // Use TreeMap with reverseOrder to sort reverse-alphabetically
+                    sortedIngredients = new TreeMap<>(Collections.reverseOrder());
+                    sortedIngredients.putAll(items);
+                } else {
+                    sortedIngredients = new TreeMap<>(items); // TreeMap will sort it for us
+                }
                 break;
             case Quantity:
                 sortedIngredients = new LinkedHashMap<>();
                 List<Map.Entry<String, Pair<Integer, Integer>>> sortedQtyList = new ArrayList<>(items.entrySet());
-                // sort based on the pair's first value (qty), reversed for descending
-                sortedQtyList.sort(Comparator.comparing((Map.Entry<String, Pair<Integer, Integer>> o) -> (o.getValue().a)).reversed());
+
+                // Define default and reverse comparators
+                Comparator<Map.Entry<String, Pair<Integer, Integer>>> sortQtyComparator = UtilitiesConfig.INSTANCE.sortIngredientPouchReverse ?
+                        Comparator.comparing(o -> (o.getValue().a)) : // Sort based on qty, sorted ascending
+                        Comparator.comparing((Map.Entry<String, Pair<Integer, Integer>> o) -> (o.getValue().a)).reversed(); // Sort based on qty, sorted descending
+
+                // Sort using comparator
+                sortedQtyList.sort(sortQtyComparator);
+
                 for (Map.Entry<String, Pair<Integer, Integer>> ingredient : sortedQtyList) {
                     sortedIngredients.put(ingredient.getKey(), ingredient.getValue());
                 }
@@ -1232,8 +1245,15 @@ public class ClientEvents implements Listener {
             default:
                 sortedIngredients = new LinkedHashMap<>();
                 List<Map.Entry<String, Pair<Integer, Integer>>> sortedRarityList = new ArrayList<>(items.entrySet());
-                // sort based on rarity, reversed for descending (3* -> 0*)
-                sortedRarityList.sort(Comparator.comparing((Map.Entry<String, Pair<Integer, Integer>> o) -> (o.getValue().b)).reversed());
+
+                // Define default and reverse comparators
+                Comparator<Map.Entry<String, Pair<Integer, Integer>>> sortRarityComparator = UtilitiesConfig.INSTANCE.sortIngredientPouchReverse ?
+                        Comparator.comparing(o -> (o.getValue().b)) : // Sort based on rarity, sorted ascending (0* -> 3*)
+                        Comparator.comparing((Map.Entry<String, Pair<Integer, Integer>> o) -> (o.getValue().b)).reversed(); // Sort based on rarity, sorted descending (3* -> 0*)
+
+                // Sort using comparator
+                sortedRarityList.sort(sortRarityComparator);
+
                 for (Map.Entry<String, Pair<Integer, Integer>> ingredient : sortedRarityList) {
                     sortedIngredients.put(ingredient.getKey(), ingredient.getValue());
                 }
