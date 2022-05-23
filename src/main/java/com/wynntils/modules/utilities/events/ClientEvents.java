@@ -1229,13 +1229,13 @@ public class ClientEvents implements Listener {
                 sortedIngredients = new LinkedHashMap<>();
                 List<Map.Entry<String, Pair<Integer, Integer>>> sortedQtyList = new ArrayList<>(items.entrySet());
 
-                // sort based on the pair's first value (qty), sorted ascending
-                sortedQtyList.sort(Comparator.comparing(o -> (o.getValue().a)));
+                // Define default and reverse comparators
+                Comparator<Map.Entry<String, Pair<Integer, Integer>>> sortQtyComparator = UtilitiesConfig.INSTANCE.sortIngredientPouchReverse ?
+                        Comparator.comparing(o -> (o.getValue().a)) : // Sort based on qty, sorted ascending
+                        Comparator.comparing((Map.Entry<String, Pair<Integer, Integer>> o) -> (o.getValue().a)).reversed(); // Sort based on qty, sorted descending
 
-                if (!UtilitiesConfig.INSTANCE.sortIngredientPouchReverse) {
-                    // reverse sortedQtyList for descending if sortIngredientPouchReverse is false
-                    Collections.reverse(sortedQtyList);
-                }
+                // Sort using comparator
+                sortedQtyList.sort(sortQtyComparator);
 
                 for (Map.Entry<String, Pair<Integer, Integer>> ingredient : sortedQtyList) {
                     sortedIngredients.put(ingredient.getKey(), ingredient.getValue());
@@ -1246,13 +1246,13 @@ public class ClientEvents implements Listener {
                 sortedIngredients = new LinkedHashMap<>();
                 List<Map.Entry<String, Pair<Integer, Integer>>> sortedRarityList = new ArrayList<>(items.entrySet());
 
-                // sort based on rarity, sorting ascending (0* -> 3*)
-                sortedRarityList.sort(Comparator.comparing(o -> (o.getValue().b)));
+                // Define default and reverse comparators
+                Comparator<Map.Entry<String, Pair<Integer, Integer>>> sortRarityComparator = UtilitiesConfig.INSTANCE.sortIngredientPouchReverse ?
+                        Comparator.comparing(o -> (o.getValue().b)) : // Sort based on rarity, sorted ascending (0* -> 3*)
+                        Comparator.comparing((Map.Entry<String, Pair<Integer, Integer>> o) -> (o.getValue().b)).reversed(); // Sort based on rarity, sorted descending (3* -> 0*)
 
-                if (!UtilitiesConfig.INSTANCE.sortIngredientPouchReverse) {
-                    // reverse sortedRarityList for descending (3* -> 0*) if sortIngredientPouchReverse is false
-                    Collections.reverse(sortedRarityList);
-                }
+                // Sort using comparator
+                sortedRarityList.sort(sortRarityComparator);
 
                 for (Map.Entry<String, Pair<Integer, Integer>> ingredient : sortedRarityList) {
                     sortedIngredients.put(ingredient.getKey(), ingredient.getValue());
