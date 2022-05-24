@@ -26,6 +26,8 @@ When launching a run configuration use the generated run configuration
 
 * All IDEs - `runClient`
 
+<h2>Authenticating</h2>
+
 You will need to edit your `GRADLE_HOME/gradle.properties`,
 
 * Windows - `C:\Users\<your username>\.gradle\gradle.properties`
@@ -37,6 +39,8 @@ to include your UUID, username, and access token.
 * `mc_username=` is your minecraft username, not email
 * `mc_accessToken=` is your access token, you may be able to find it at `.minecraft/launcher_accounts.json` or `.minecraft/launcher_profiles.json`
 
+Alternatively, you may use <a href="https://github.com/DJtheRedstoner/DevAuth">DevAuth</a> to authenticate.
+<br> Place the `forge-legacy` .jar in `run/mods` and configure as documented in the DevAuth readme.
 
 Pull Request
 ========
