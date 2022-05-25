@@ -195,6 +195,7 @@ public class MainWorldMapUI extends WorldMapUI {
             int worldZ = getMouseWorldZ(mouseY, map);
             CompassManager.setCompassLocation(new Location(worldX, 0, worldZ));
 
+            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_EXPERIENCE_ORB_PICKUP, 1f));
             resetCompassMapIcon();
             return;
         }
