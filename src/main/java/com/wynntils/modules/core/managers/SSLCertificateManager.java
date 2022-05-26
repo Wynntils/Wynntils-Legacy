@@ -22,28 +22,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class SSLCertificateManager {
-    private static boolean needsPatching()
-    {
-        String javaVersion = System.getProperty("java.version");
-        Reference.LOGGER.info("Found java version " + javaVersion);
-
-        if (javaVersion != null && javaVersion.startsWith("1.8.0_")) {
-            try {
-                if (Integer.parseInt(javaVersion.substring("1.8.0_".length())) < 101)
-                    return true;
-            } catch (NumberFormatException e) {
-                e.printStackTrace();
-                Reference.LOGGER.warn("Could not parse java version!");
-                return true;
-            }
-        }
-
-        return false;
+    
+    public static void registerCerts() {
+        tryUseWindowsCertStore();
+        addLEKeyStore();
     }
 
-    public static void registerCerts() {
-        if (!needsPatching()) return;
-        tryUseWindowsCertStore();
+    private static void addLEKeyStore() {
         try {
             final KeyStore keyStore = KeyStore.getInstance(KeyStore.getDefaultType());
             Path ksPath = Paths.get(System.getProperty("java.home"),"lib", "security", "cacerts");
@@ -89,9 +74,7 @@ public class SSLCertificateManager {
         }
     }
 
-    public static void tryUseWindowsCertStore() {
-        if (!needsPatching()) return;
-
+    private static void tryUseWindowsCertStore() {
         String osName = System.getProperty("os.name").toLowerCase(Locale.ENGLISH);
 
         if (!osName.contains("win")) {
