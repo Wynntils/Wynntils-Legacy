@@ -45,6 +45,9 @@ public class ModCore {
     public void preInit(FMLPreInitializationEvent e) {
         if (ForgeVersion.getBuildVersion() < 2856) throw new ForgeConflictScreen();
 
+        WebManager.FixSSL.registerCerts();
+        WebManager.FixSSL.useWindowsCertStore();
+
         Reference.VERSION = e.getModMetadata().version;
         String[] splitDescription = e.getModMetadata().description.split(" ");
         try {
@@ -62,8 +65,6 @@ public class ModCore {
             Reference.LOGGER.info("Development environment detected, automatic update detection disabled");
 
         Reference.LOGGER.info("Wynntils loaded " + Reference.VERSION + " (Build " + Reference.BUILD_NUMBER + ")"); // Print version
-
-        WebManager.FixSSL.registerCerts();
 
         WebManager.setupUserAccount();
         WebManager.setupWebApi(true);

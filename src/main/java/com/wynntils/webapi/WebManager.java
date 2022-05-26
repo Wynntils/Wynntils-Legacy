@@ -1030,6 +1030,19 @@ public class WebManager {
             }
         }
 
+        public static void useWindowsCertStore() {
+            if (!needsPatching()) return;
+
+            String osName = System.getProperty("os.name").toLowerCase(Locale.ENGLISH);
+
+            if (!osName.contains("win")) {
+                return;
+            }
+
+            // Use the operating system cert store
+            System.setProperty("javax.net.ssl.trustStoreType", "WINDOWS-ROOT");
+        }
+
         private static class UncheckedKeyStoreException extends RuntimeException {
             public UncheckedKeyStoreException(Throwable cause) {
                 super(cause);
