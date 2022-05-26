@@ -57,7 +57,7 @@ public class SSLCertificateManager {
             }));
 
             final KeyStore leKS = KeyStore.getInstance(KeyStore.getDefaultType());
-            final InputStream leKSFile = FixSSL.class.getResourceAsStream("/assets/wynntils/certs/lekeystore.jks");
+            final InputStream leKSFile = SSLCertificateManager.class.getResourceAsStream("/assets/wynntils/certs/lekeystore.jks");
             leKS.load(leKSFile, "supersecretpassword".toCharArray());
             final Map<String, Certificate> leTrustStore = Collections.list(leKS.aliases()).stream().collect(Collectors.toMap(a -> a, (String alias) -> {
                 try {
