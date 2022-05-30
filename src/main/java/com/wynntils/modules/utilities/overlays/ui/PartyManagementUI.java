@@ -54,7 +54,7 @@ public class PartyManagementUI extends GuiScreen {
         fontRenderer.drawString(TextFormatting.BOLD + "Icon", this.width/2 - 205, 43, 0xFFFFFF);
         fontRenderer.drawString(TextFormatting.BOLD + "Name", this.width / 2 - 165, 43, 0xFFFFFF);
         drawCenteredString(fontRenderer, TextFormatting.BOLD + "Promote", this.width/2 + 120, 43, 0xFFFFFF);
-        drawCenteredString(fontRenderer, TextFormatting.BOLD + "Kick", this.width/2 + 179, 43, 0xFFFFFF);
+        drawCenteredString(fontRenderer, TextFormatting.BOLD + "Kick", this.width/2 + 172, 43, 0xFFFFFF);
         drawRect(this.width/2 - 205, 52, this.width/2 + 190, 53, 0xFFFFFFFF); // Underline
 
         List<String> partyMembers = new ArrayList<>(PlayerInfo.get(SocialData.class).getPlayerParty().getPartyMembers());
@@ -72,9 +72,10 @@ public class PartyManagementUI extends GuiScreen {
 //            float multiplier = 9f / Math.max(wpIcon.getSizeX(), wpIcon.getSizeZ());
 //            wpIcon.renderAt(renderer, this.width / 2f - 151, centreZ, multiplier, 1);
 
-            fontRenderer.drawString(playerName, this.width/2 - 130, 60 + 25 * i, colour);
+            fontRenderer.drawString(playerName, this.width/2 - 165, 60 + 25 * i, colour);
 //            drawCenteredString(fontRenderer, Integer.toString((int) wp.getX()), this.width/2 + 120, 60 + 25 * i, colour);
         }
+        setButtons();
         ScreenRenderer.endGL();
     }
 
@@ -101,9 +102,13 @@ public class PartyManagementUI extends GuiScreen {
     private void setButtons() {
         this.buttonList.removeAll(buttons);
         buttons.clear();
-        for (int i = 0, lim = Math.min(pageHeight, getWaypoints().size() - pageHeight * page); i < lim; i++) {
-            buttons.add(new GuiButton(3 + 10 * i))
+        for (int i = 0, lim = Math.min(pageHeight, PlayerInfo.get(SocialData.class).getPlayerParty().getPartyMembers().size() - pageHeight * page); i < lim; i++) {
+            buttons.add(new GuiButton(3 + 10 * i, this.width/2 + 95, 54 + 25 * i, 50, 20, "Promote"));
+            buttons.add(new GuiButton(5 + 10 * i, this.width/2 + 155, 54 + 25 * i, 35, 20, "Kick"));
+            // TODO line up buttons
+
         }
+        this.buttonList.addAll((buttons));
     }
 
     private List<WaypointProfile> getWaypoints() {
