@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.overlays.ui;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
@@ -16,6 +17,7 @@ import net.minecraft.util.text.TextFormatting;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PartyManagementUI extends GuiScreen {
@@ -28,6 +30,7 @@ public class PartyManagementUI extends GuiScreen {
 
     private final ScreenRenderer renderer = new ScreenRenderer();
     private List<WaypointProfile> waypoints;
+    private List<String> partyMembers = new ArrayList<>();
     @SuppressWarnings("unchecked")
     private List<WaypointProfile>[] groupedWaypoints = (ArrayList<WaypointProfile>[]) new ArrayList[ungroupedIndex + 1];
     private boolean[] enabledGroups;
@@ -57,15 +60,15 @@ public class PartyManagementUI extends GuiScreen {
         drawCenteredString(fontRenderer, TextFormatting.BOLD + "Kick", this.width/2 + 172, 43, 0xFFFFFF);
         drawRect(this.width/2 - 205, 52, this.width/2 + 190, 53, 0xFFFFFFFF); // Underline
 
-        List<String> partyMembers = new ArrayList<>(PlayerInfo.get(SocialData.class).getPlayerParty().getPartyMembers());
+        updatePartyMemberList();
         if (partyMembers.size() < 1) return;
 
         ScreenRenderer.beginGL(0, 0);
+        // Draw names
         for (int i = 0, lim = Math.min(pageHeight, partyMembers.size() - pageHeight * page); i < lim; i++) {
             String playerName = partyMembers.get(page * pageHeight + i);
             if (playerName == null) continue;
-
-            int colour = 0xFFFFFF;
+            int colour = (playerName.equals(McIf.mc().player.getName())) ? 0x00FFFF : 0xFFFFFF;
 
 //            MapWaypointIcon wpIcon = new MapWaypointIcon(wp);
 //            float centreZ = 64 + 25 * i;
@@ -102,10 +105,16 @@ public class PartyManagementUI extends GuiScreen {
     private void setButtons() {
         this.buttonList.removeAll(buttons);
         buttons.clear();
-        for (int i = 0, lim = Math.min(pageHeight, PlayerInfo.get(SocialData.class).getPlayerParty().getPartyMembers().size() - pageHeight * page); i < lim; i++) {
+        updatePartyMemberList();
+        String playerName = McIf.mc().player.getName();
+        // No buttons if we are not owner, members can't kick/promote
+        if (!playerName.equals(PlayerInfo.get(SocialData.class).getPlayerParty().getOwner())) return;
+
+        for (int i = 0, lim = Math.min(pageHeight, partyMembers.size() - pageHeight * page); i < lim; i++) {
+            // TODO: uncomment
+            //if (partyMembers.get(i).equals(playerName)) continue; // No buttons for self
             buttons.add(new GuiButton(3 + 10 * i, this.width/2 + 95, 54 + 25 * i, 50, 20, "Promote"));
             buttons.add(new GuiButton(5 + 10 * i, this.width/2 + 155, 54 + 25 * i, 35, 20, "Kick"));
-            // TODO line up buttons
 
         }
         this.buttonList.addAll((buttons));
@@ -116,6 +125,28 @@ public class PartyManagementUI extends GuiScreen {
             return waypoints;
         }
         return groupedWaypoints[group];
+    }
+
+    private void updatePartyMemberList() {
+        partyMembers = new ArrayList<>(PlayerInfo.get(SocialData.class).getPlayerParty().getPartyMembers());
+        Collections.sort(partyMembers);
+
+        // We put ourselves at the top, owner as #2
+        String playerName = McIf.mc().player.getName();
+        String ownerName = PlayerInfo.get(SocialData.class).getPlayerParty().getOwner();
+
+        for (String member : partyMembers) {
+            if (member.equals(ownerName) && partyMembers.size() > 1 && !partyMembers.get(1).equals(ownerName)) {
+                partyMembers.remove(ownerName);
+                partyMembers.add(1, ownerName);
+            }
+            if (member.equals(playerName) && !partyMembers.get(0).equals(playerName)) {
+                // Set ourselves after so it's higher priority, we will always be first even if owner
+                partyMembers.remove(playerName);
+                partyMembers.add(0, playerName);
+            }
+        }
+        // List is now sorted in [self, owner, party alphabetically]
     }
 
     private void onWaypointChange() {
