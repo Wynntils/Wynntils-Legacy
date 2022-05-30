@@ -16,6 +16,7 @@ import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.events.ClientEvents;
 import com.wynntils.modules.utilities.overlays.hud.StopWatchOverlay;
 import com.wynntils.modules.utilities.overlays.ui.GearViewerUI;
+import com.wynntils.modules.utilities.overlays.ui.PartyManagementUI;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
@@ -73,7 +74,6 @@ public class KeyManager {
         CoreModule.getModule().registerKeyBinding("Mount Horse", Keyboard.KEY_Y, "Wynntils", KeyConflictContext.IN_GAME, true, MountHorseManager::mountHorseAndShowMessage);
 
         CoreModule.getModule().registerKeyBinding("Open Ingredient Pouch", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, PouchHotkeyManager::onIngredientHotkeyPress);
-
         CoreModule.getModule().registerKeyBinding("Open Emerald Pouch", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, PouchHotkeyManager::onEmeraldHotkeyPress);
 
         stopwatchKey = CoreModule.getModule().registerKeyBinding("Start/Stop Stopwatch", Keyboard.KEY_NUMPAD5, "Wynntils", KeyConflictContext.IN_GAME, true, StopWatchOverlay::start);
@@ -84,6 +84,8 @@ public class KeyManager {
         CoreModule.getModule().registerKeyBinding("View Player's Gear", -98, "Wynntils", KeyConflictContext.IN_GAME, true, GearViewerUI::openGearViewer);
 
         showLevelOverlayKey = UtilitiesModule.getModule().registerKeyBinding("Show Item Level Overlay", Keyboard.KEY_LCONTROL, "Wynntils", WynntilsConflictContext.AMBIENT, true, () -> {});
+
+        CoreModule.getModule().registerKeyBinding("Open Party Management UI", Keyboard.KEY_RBRACKET, "Wynntils", KeyConflictContext.IN_GAME, true, () -> McIf.mc().displayGuiScreen(new PartyManagementUI()));
 
         RegisterCustomCommandKeybinds();
     }
