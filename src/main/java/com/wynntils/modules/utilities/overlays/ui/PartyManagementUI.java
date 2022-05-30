@@ -68,7 +68,7 @@ public class PartyManagementUI extends GuiScreen {
         for (int i = 0, lim = Math.min(pageHeight, partyMembers.size() - pageHeight * page); i < lim; i++) {
             String playerName = partyMembers.get(page * pageHeight + i);
             if (playerName == null) continue;
-            int colour = (playerName.equals(McIf.mc().player.getName())) ? 0x00FFFF : 0xFFFFFF;
+            int colour = (playerName.equals(McIf.player().getName())) ? 0x00FFFF : 0xFFFFFF;
 
 //            MapWaypointIcon wpIcon = new MapWaypointIcon(wp);
 //            float centreZ = 64 + 25 * i;
@@ -84,21 +84,14 @@ public class PartyManagementUI extends GuiScreen {
 
     @Override
     protected void actionPerformed(GuiButton b) {
-        if (b.id % 10 == 5) {
-            MapConfig.Waypoints.INSTANCE.waypoints.remove(getWaypoints().get(b.id / 10 + page * pageHeight));
-            onWaypointChange();
-        } else if (b.id % 10 == 6 || b.id % 10 == 7) {
-            int i = b.id / 10 + page * pageHeight;
-            int j = i + (b.id % 10 == 6 ? -1 : +1);
-            // Swap waypoints at i and j
-            WaypointProfile iWp = getWaypoints().get(i);
-            WaypointProfile jWp = getWaypoints().get(j);
-            // ii and jj will be different if this is a grouped view
-            int ii = MapConfig.Waypoints.INSTANCE.waypoints.indexOf(iWp);
-            int jj = MapConfig.Waypoints.INSTANCE.waypoints.indexOf(jWp);
-            MapConfig.Waypoints.INSTANCE.waypoints.set(ii, jWp);
-            MapConfig.Waypoints.INSTANCE.waypoints.set(jj, iWp);
-            onWaypointChange();
+        // TODO: remove debugs
+        System.out.println(b.id / 10 + page * pageHeight);
+        if (b.id % 10 == 3) { // Promote
+            System.out.println("Attempting to promote " + partyMembers.get(b.id / 10 + page * pageHeight));
+            McIf.player().sendChatMessage("/party promote " + partyMembers.get(b.id / 10 + page * pageHeight));
+        } else if (b.id % 10 == 5) { // Kick
+            System.out.println("Attempting to kick " + partyMembers.get(b.id / 10 + page * pageHeight));
+            McIf.player().sendChatMessage("/party kick " + partyMembers.get(b.id / 10 + page * pageHeight));
         }
     }
 
@@ -106,7 +99,7 @@ public class PartyManagementUI extends GuiScreen {
         this.buttonList.removeAll(buttons);
         buttons.clear();
         updatePartyMemberList();
-        String playerName = McIf.mc().player.getName();
+        String playerName = McIf.player().getName();
         // No buttons if we are not owner, members can't kick/promote
         if (!playerName.equals(PlayerInfo.get(SocialData.class).getPlayerParty().getOwner())) return;
 
@@ -132,7 +125,7 @@ public class PartyManagementUI extends GuiScreen {
         Collections.sort(partyMembers);
 
         // We put ourselves at the top, owner as #2
-        String playerName = McIf.mc().player.getName();
+        String playerName = McIf.player().getName();
         String ownerName = PlayerInfo.get(SocialData.class).getPlayerParty().getOwner();
 
         for (String member : partyMembers) {
