@@ -9,7 +9,6 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.utils.Utils;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
@@ -29,7 +28,7 @@ public class PartyManagementUI extends GuiScreen {
     private GuiTextField inviteField;
     private GuiButton inviteBtn;
     private GuiButton createBtn;
-    private GuiButton disbandBtn;
+    private GuiButton disbandLeaveBtn;
 
     private final List<String> partyMembers = new ArrayList<>();
     private int pageHeight;
@@ -53,7 +52,8 @@ public class PartyManagementUI extends GuiScreen {
 
         this.buttonList.add(inviteBtn = new GuiButton(1, this.width / 2 - 20, verticalReference - 40, 40, 20, "Invite"));
         this.buttonList.add(createBtn = new GuiButton(2, this.width / 2 + 25, verticalReference - 40, 80, 20, "Create Party"));
-        this.buttonList.add(disbandBtn = new GuiButton(3, this.width / 2 + 110, verticalReference - 40, 80, 20, TextFormatting.RED + "Disband Party"));
+        String disbandLeaveText = (PlayerInfo.get(SocialData.class).getPlayerParty().getOwner().equals(McIf.player().getName())) ? "Disband Party" : "Leave Party";
+        this.buttonList.add(disbandLeaveBtn = new GuiButton(3, this.width / 2 + 110, verticalReference - 40, 80, 20, TextFormatting.RED + disbandLeaveText));
         if (inviteField != null) {
             inviteField.drawTextBox();
             inviteFieldLabel.drawLabel(McIf.mc(), mouseX, mouseY);
@@ -130,8 +130,10 @@ public class PartyManagementUI extends GuiScreen {
             invitePlayersFromTextField();
         } else if (b == createBtn) {
             McIf.player().sendChatMessage("/party create");
-        } else if (b == disbandBtn) {
+        } else if (b == disbandLeaveBtn && b.displayString.contains("Disband")) {
             McIf.player().sendChatMessage("/party disband");
+        } else if (b == disbandLeaveBtn && b.displayString.contains("Leave")) {
+            McIf.player().sendChatMessage("/party leave");
         } else if (b.id % 10 == 7) { // Promote
             McIf.player().sendChatMessage("/party promote " + partyMembers.get(b.id / 10));
         } else if (b.id % 10 == 9) { // Kick
@@ -148,8 +150,8 @@ public class PartyManagementUI extends GuiScreen {
         inviteBtn.enabled = inviteField.getText().length() >= 3 && (ownerName.equals(playerName) || ownerName.equals(""));
         // not already in party
         createBtn.enabled = ownerName.equals("");
-        // in party && must be owner
-        disbandBtn.enabled = ownerName.equals(playerName);
+        // in party
+        disbandLeaveBtn.enabled = !ownerName.equals("");
     }
 
     private void invitePlayersFromTextField() {
