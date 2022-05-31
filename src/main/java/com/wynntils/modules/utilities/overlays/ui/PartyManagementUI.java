@@ -9,6 +9,7 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.objects.Pair;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
@@ -31,10 +32,11 @@ public class PartyManagementUI extends GuiScreen {
     private GuiButton disbandLeaveBtn;
 
     private final List<String> partyMembers = new ArrayList<>();
+    private Pair<HashSet<String>, String> unsortedPartyMembers = new Pair<>(new HashSet<>(), "");
     private int pageHeight;
 
     private final int verticalReference = 160;
-    boolean partyLeaveSent = false;
+    private boolean partyLeaveSent = false;
 
     @Override
     public void initGui() {
@@ -199,13 +201,18 @@ public class PartyManagementUI extends GuiScreen {
     }
 
     private void updatePartyMemberList() {
+        String ownerName = PlayerInfo.get(SocialData.class).getPlayerParty().getOwner();
         List<String> temporaryMembers = new ArrayList<>(PlayerInfo.get(SocialData.class).getPlayerParty().getPartyMembers());
+
+        Pair<HashSet<String>, String> unsorted = new Pair<>(new HashSet<>(temporaryMembers), ownerName);
+        if (unsorted.equals(unsortedPartyMembers)) return; // No changes, do not continue
+
+        unsortedPartyMembers = unsorted;
         Collections.sort(temporaryMembers);
         partyMembers.clear();
 
         // We put ourselves at the top, owner as #2
         String playerName = McIf.player().getName();
-        String ownerName = PlayerInfo.get(SocialData.class).getPlayerParty().getOwner();
         if (ownerName.equals("")) return; // We are not in a party
 
         temporaryMembers.remove(playerName);
