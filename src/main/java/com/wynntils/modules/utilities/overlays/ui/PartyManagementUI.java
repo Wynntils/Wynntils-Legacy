@@ -176,7 +176,7 @@ public class PartyManagementUI extends GuiScreen {
         this.buttonList.removeAll(buttons);
         buttons.clear();
         updatePartyMemberList();
-        if (partyMembers == null || partyMembers.isEmpty()) return; // No party
+        if (partyMembers.isEmpty()) return; // No party
         String playerName = McIf.player().getName();
         // No buttons if we are not owner, members can't kick/promote
         if (!playerName.equals(PlayerInfo.get(SocialData.class).getPlayerParty().getOwner())) return;
