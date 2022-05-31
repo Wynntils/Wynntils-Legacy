@@ -182,8 +182,7 @@ public class PartyManagementUI extends GuiScreen {
         if (!playerName.equals(PlayerInfo.get(SocialData.class).getPlayerParty().getOwner())) return;
 
         for (int i = 0, lim = Math.min(pageHeight, partyMembers.size()); i < lim; i++) {
-            // TODO: uncomment
-            //if (partyMembers.get(i).equals(playerName)) continue; // No buttons for self
+            if (partyMembers.get(i).equals(playerName)) continue; // No buttons for self
             buttons.add(new GuiButton(7 + 10 * i, this.width/2 + 95, (verticalReference + 11) + 25 * i, 50, 20, "Promote"));
             buttons.add(new GuiButton(9 + 10 * i, this.width/2 + 155, (verticalReference + 11) + 25 * i, 35, 20, "Kick"));
 
