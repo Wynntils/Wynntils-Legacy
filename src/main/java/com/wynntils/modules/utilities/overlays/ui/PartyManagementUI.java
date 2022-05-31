@@ -8,8 +8,7 @@ import com.wynntils.McIf;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynntils.modules.map.configs.MapConfig;
-import com.wynntils.modules.map.instances.WaypointProfile;
+import com.wynntils.core.utils.Utils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.text.TextFormatting;
@@ -24,7 +23,6 @@ public class PartyManagementUI extends GuiScreen {
     private GuiButton exitBtn;
     private List<GuiButton> buttons = new ArrayList<>();
 
-    private List<WaypointProfile> waypoints;
     private List<String> partyMembers = new ArrayList<>();
     private int page;
     private int pageHeight;
@@ -32,7 +30,6 @@ public class PartyManagementUI extends GuiScreen {
     @Override
     public void initGui() {
         super.initGui();
-        waypoints = MapConfig.Waypoints.INSTANCE.waypoints;
 
         pageHeight = (this.height - 100) / 25;
         this.buttonList.add(exitBtn = new GuiButton(2, this.width - 40, 20, 20, 20, TextFormatting.RED + "X"));
@@ -83,9 +80,9 @@ public class PartyManagementUI extends GuiScreen {
 
     @Override
     protected void actionPerformed(GuiButton b) {
-        // TODO: remove debugs
-        System.out.println(b.id / 10 + page * pageHeight);
-        if (b.id % 10 == 3) { // Promote
+        if (b == exitBtn) {
+            Utils.displayGuiScreen(null);
+        } else if (b.id % 10 == 3) { // Promote
             McIf.player().sendChatMessage("/party promote " + partyMembers.get(b.id / 10 + page * pageHeight));
         } else if (b.id % 10 == 5) { // Kick
             McIf.player().sendChatMessage("/party kick " + partyMembers.get(b.id / 10 + page * pageHeight));
