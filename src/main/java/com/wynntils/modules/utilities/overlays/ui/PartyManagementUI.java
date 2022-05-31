@@ -34,6 +34,7 @@ public class PartyManagementUI extends GuiScreen {
     private int pageHeight;
 
     private final int verticalReference = 160;
+    boolean partyLeaveSent = false;
 
     @Override
     public void initGui() {
@@ -69,6 +70,7 @@ public class PartyManagementUI extends GuiScreen {
         updatePartyMemberList();
         if (partyMembers.size() < 1) { // Refresh once and return as party could have previously been populated
             refreshAndSetButtons();
+            partyLeaveSent = false;
             return;
         }
 
@@ -136,8 +138,9 @@ public class PartyManagementUI extends GuiScreen {
             McIf.player().sendChatMessage("/party promote " + partyMembers.get(b.id / 10));
         } else if (b.id % 10 == 9 && b.displayString.contains("Kick")) { // Kick
             McIf.player().sendChatMessage("/party kick " + partyMembers.get(b.id / 10));
-        } else if (b.displayString.contains("Leave")) { // For both dynamic leave/kick and disband/leave btns
+        } else if (b.displayString.contains("Leave") && !partyLeaveSent) { // For both dynamic leave/kick and disband/leave btns
             McIf.player().sendChatMessage("/party leave");
+            partyLeaveSent = true;
         }
         refreshAndSetButtons();
     }
