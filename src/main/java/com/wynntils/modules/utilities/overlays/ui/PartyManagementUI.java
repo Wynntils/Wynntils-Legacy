@@ -8,7 +8,8 @@ import com.wynntils.McIf;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.map.MapModule;
+import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.WaypointProfile;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -23,14 +24,29 @@ public class PartyManagementUI extends GuiScreen {
 
     private GuiButton exitBtn;
     private List<GuiButton> buttons = new ArrayList<>();
+
+
+    private static final int ungroupedIndex = WaypointProfile.WaypointType.values().length;
+
+    private final ScreenRenderer renderer = new ScreenRenderer();
+    private List<WaypointProfile> waypoints;
     private List<String> partyMembers = new ArrayList<>();
+    @SuppressWarnings("unchecked")
+    private List<WaypointProfile>[] groupedWaypoints = (ArrayList<WaypointProfile>[]) new ArrayList[ungroupedIndex + 1];
+    private boolean[] enabledGroups;
+    private int page;
     private int pageHeight;
+    private int group = ungroupedIndex;
 
     @Override
     public void initGui() {
         super.initGui();
+        waypoints = MapConfig.Waypoints.INSTANCE.waypoints;
+
         pageHeight = (this.height - 100) / 25;
         this.buttonList.add(exitBtn = new GuiButton(2, this.width - 40, 20, 20, 20, TextFormatting.RED + "X"));
+
+        onWaypointChange();
     }
 
     @Override
@@ -49,8 +65,8 @@ public class PartyManagementUI extends GuiScreen {
 
         ScreenRenderer.beginGL(0, 0);
         // Draw names
-        for (int i = 0, lim = Math.min(pageHeight, partyMembers.size() - pageHeight); i < lim; i++) {
-            String playerName = partyMembers.get(pageHeight + i);
+        for (int i = 0, lim = Math.min(pageHeight, partyMembers.size() - pageHeight * page); i < lim; i++) {
+            String playerName = partyMembers.get(page * pageHeight + i);
             if (playerName == null) continue;
             int colour = (playerName.equals(McIf.player().getName())) ? 0x00FFFF : 0xFFFFFF;
 
@@ -66,24 +82,16 @@ public class PartyManagementUI extends GuiScreen {
         ScreenRenderer.endGL();
     }
 
-//    @Override
-//    protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
-//        super.mouseClicked(mouseX, mouseY, mouseButton);
-//    }
-
     @Override
     protected void actionPerformed(GuiButton b) {
-        System.out.println("BUTTON CLICKED");
         // TODO: remove debugs
-        System.out.println(b.id / 10 + pageHeight);
-        if (b == exitBtn) {
-            Utils.displayGuiScreen(null);
-        } else if (b.id % 10 == 3) { // Promote
-            System.out.println("Attempting to promote " + partyMembers.get(b.id / 10 + pageHeight));
-            McIf.player().sendChatMessage("/party promote " + partyMembers.get(b.id / 10 + pageHeight));
+        System.out.println(b.id / 10 + page * pageHeight);
+        if (b.id % 10 == 3) { // Promote
+            System.out.println("Attempting to promote " + partyMembers.get(b.id / 10 + page * pageHeight));
+            McIf.player().sendChatMessage("/party promote " + partyMembers.get(b.id / 10 + page * pageHeight));
         } else if (b.id % 10 == 5) { // Kick
-            System.out.println("Attempting to kick " + partyMembers.get(b.id / 10 + pageHeight));
-            McIf.player().sendChatMessage("/party kick " + partyMembers.get(b.id / 10 + pageHeight));
+            System.out.println("Attempting to kick " + partyMembers.get(b.id / 10 + page * pageHeight));
+            McIf.player().sendChatMessage("/party kick " + partyMembers.get(b.id / 10 + page * pageHeight));
         }
     }
 
@@ -95,7 +103,7 @@ public class PartyManagementUI extends GuiScreen {
         // No buttons if we are not owner, members can't kick/promote
         if (!playerName.equals(PlayerInfo.get(SocialData.class).getPlayerParty().getOwner())) return;
 
-        for (int i = 0, lim = Math.min(pageHeight, partyMembers.size() - pageHeight); i < lim; i++) {
+        for (int i = 0, lim = Math.min(pageHeight, partyMembers.size() - pageHeight * page); i < lim; i++) {
             // TODO: uncomment
             //if (partyMembers.get(i).equals(playerName)) continue; // No buttons for self
             buttons.add(new GuiButton(3 + 10 * i, this.width/2 + 95, 54 + 25 * i, 50, 20, "Promote"));
@@ -103,6 +111,13 @@ public class PartyManagementUI extends GuiScreen {
 
         }
         this.buttonList.addAll((buttons));
+    }
+
+    private List<WaypointProfile> getWaypoints() {
+        if (group == ungroupedIndex) {
+            return waypoints;
+        }
+        return groupedWaypoints[group];
     }
 
     private void updatePartyMemberList() {
@@ -125,6 +140,35 @@ public class PartyManagementUI extends GuiScreen {
             }
         }
         // List is now sorted in [self, owner, party alphabetically]
+    }
+
+    private void onWaypointChange() {
+        MapConfig.Waypoints.INSTANCE.saveSettings(MapModule.getModule());
+        waypoints = MapConfig.Waypoints.INSTANCE.waypoints;
+
+        if (getWaypoints().size() > 0 && page * pageHeight > getWaypoints().size() - 1) {
+            page = (getWaypoints().size() - 1) / pageHeight;
+        }
+
+        enabledGroups = new boolean[ungroupedIndex];
+        for (int i = 0; i <= ungroupedIndex; ++i) {
+            groupedWaypoints[i] = new ArrayList<>();
+        }
+
+        for (WaypointProfile wp : waypoints) {
+            if (wp.getGroup() == null) {
+                groupedWaypoints[ungroupedIndex].add(wp);
+            } else {
+                int index = wp.getGroup().ordinal();
+                groupedWaypoints[index].add(wp);
+                enabledGroups[index] = true;
+            }
+        }
+
+        if (this.group != ungroupedIndex && !enabledGroups[this.group]) {
+            this.group = ungroupedIndex;
+            onWaypointChange();
+        }
     }
 
     @Override
