@@ -184,10 +184,13 @@ public class PartyManagementUI extends GuiScreen {
         if (!playerName.equals(PlayerInfo.get(SocialData.class).getPlayerParty().getOwner())) return;
 
         for (int i = 0, lim = Math.min(pageHeight, partyMembers.size()); i < lim; i++) {
-            if (partyMembers.get(i).equals(playerName)) continue; // No buttons for self
-            buttons.add(new GuiButton(7 + 10 * i, this.width/2 + 95, (verticalReference + 11) + 25 * i, 50, 20, "Promote"));
-            buttons.add(new GuiButton(9 + 10 * i, this.width/2 + 155, (verticalReference + 11) + 25 * i, 35, 20, "Kick"));
+            boolean isSelf = partyMembers.get(i).equals(playerName);
+            if (!isSelf) {
+                buttons.add(new GuiButton(7 + 10 * i, this.width/2 + 95, (verticalReference + 11) + 25 * i, 50, 20, "Promote"));
+            } // No promote button for self
 
+            String kickLeaveText = (isSelf) ? "Leave" : "Kick";
+            buttons.add(new GuiButton(9 + 10 * i, this.width/2 + 151, (verticalReference + 11) + 25 * i, 40, 20, kickLeaveText));
         }
         this.buttonList.addAll(buttons);
     }
