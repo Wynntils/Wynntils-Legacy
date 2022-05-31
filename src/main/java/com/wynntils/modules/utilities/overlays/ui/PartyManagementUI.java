@@ -19,9 +19,7 @@ import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class PartyManagementUI extends GuiScreen {
 
@@ -90,6 +88,11 @@ public class PartyManagementUI extends GuiScreen {
                 colour = 0xFFFFFF;
             }
 
+            fontRenderer.drawString(playerName, this.width/2 - 165, (verticalReference + 17) + 25 * i, colour);
+            // Blank text to reset colour to white
+            // This is so player heads don't have the previous self/owner colour overlayed onto them
+            fontRenderer.drawString("", 0, 0, 0xFFFFFF);
+
             // Player heads
             NetworkPlayerInfo networkPlayerInfo = netHandlerPlayClient.getPlayerInfo(playerName);
             McIf.mc().getTextureManager().bindTexture(networkPlayerInfo.getLocationSkin());
@@ -99,7 +102,6 @@ public class PartyManagementUI extends GuiScreen {
                 drawScaledCustomSizeModalRect(this.width/2 - 197, (verticalReference + 16) + 25 * i, 40.0F, 8, 8, 8, 12, 12, 64.0F, 64.0F);
             }
 
-            fontRenderer.drawString(playerName, this.width/2 - 165, (verticalReference + 17) + 25 * i, colour);
         }
         refreshAndSetButtons();
         ScreenRenderer.endGL();
@@ -156,14 +158,16 @@ public class PartyManagementUI extends GuiScreen {
         fieldText = fieldText.replaceAll("[, ]+", ","); // commas and spaces to just comma
         if (fieldText.equals("")) return;
 
+        // Create party if we aren't in one
         if (PlayerInfo.get(SocialData.class).getPlayerParty().getOwner().equals("")) {
-            // Create party if we aren't in one
             McIf.player().sendChatMessage("/party create");
         }
 
-        String[] players = fieldText.split(",");
-
+        // HashSet to remove duplicates
+        HashSet<String> players = new HashSet<>(Arrays.asList(fieldText.split(",")));
         for (String player : players) {
+            // ignore those already in party
+            if (PlayerInfo.get(SocialData.class).getPlayerParty().getPartyMembers().contains(player)) continue;
             McIf.player().sendChatMessage("/party invite " + player);
         }
     }
