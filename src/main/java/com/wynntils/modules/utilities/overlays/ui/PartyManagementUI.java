@@ -10,10 +10,11 @@ import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.utils.Utils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiButton;
-import net.minecraft.client.gui.GuiLabel;
-import net.minecraft.client.gui.GuiScreen;
-import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.gui.*;
+import net.minecraft.client.network.NetHandlerPlayClient;
+import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 
@@ -61,7 +62,7 @@ public class PartyManagementUI extends GuiScreen {
         }
         setManagementButtonStatuses();
 
-        fontRenderer.drawString(TextFormatting.BOLD + "Icon", this.width/2 - 205, verticalReference, 0xFFFFFF);
+        fontRenderer.drawString(TextFormatting.BOLD + "Head", this.width/2 - 205, verticalReference, 0xFFFFFF);
         fontRenderer.drawString(TextFormatting.BOLD + "Name", this.width / 2 - 165, verticalReference, 0xFFFFFF);
         drawCenteredString(fontRenderer, TextFormatting.BOLD + "Promote", this.width/2 + 120, verticalReference, 0xFFFFFF);
         drawCenteredString(fontRenderer, TextFormatting.BOLD + "Kick", this.width/2 + 172, verticalReference, 0xFFFFFF);
@@ -74,6 +75,7 @@ public class PartyManagementUI extends GuiScreen {
         }
 
         ScreenRenderer.beginGL(0, 0);
+        NetHandlerPlayClient netHandlerPlayClient = McIf.mc().getConnection();
         // Draw names
         for (int i = 0, lim = Math.min(pageHeight, partyMembers.size()); i < lim; i++) {
             String playerName = partyMembers.get(i);
@@ -88,13 +90,16 @@ public class PartyManagementUI extends GuiScreen {
                 colour = 0xFFFFFF;
             }
 
-//            MapWaypointIcon wpIcon = new MapWaypointIcon(wp);
-//            float centreZ = 64 + 25 * i;
-//            float multiplier = 9f / Math.max(wpIcon.getSizeX(), wpIcon.getSizeZ());
-//            wpIcon.renderAt(renderer, this.width / 2f - 151, centreZ, multiplier, 1);
+            // Player heads
+            NetworkPlayerInfo networkPlayerInfo = netHandlerPlayClient.getPlayerInfo(playerName);
+            McIf.mc().getTextureManager().bindTexture(networkPlayerInfo.getLocationSkin());
+            drawScaledCustomSizeModalRect(this.width/2 - 197, (verticalReference + 16) + 25 * i, 8.0F, 8.0F, 8, 8, 12, 12, 64.0F, 64.0F);
+            EntityPlayer entityPlayer = McIf.mc().world.getPlayerEntityByName(playerName);
+            if (entityPlayer != null && entityPlayer.isWearing(EnumPlayerModelParts.HAT)) {
+                drawScaledCustomSizeModalRect(this.width/2 - 197, (verticalReference + 16) + 25 * i, 40.0F, 8, 8, 8, 12, 12, 64.0F, 64.0F);
+            }
 
             fontRenderer.drawString(playerName, this.width/2 - 165, (verticalReference + 17) + 25 * i, colour);
-//            drawCenteredString(fontRenderer, Integer.toString((int) wp.getX()), this.width/2 + 120, 60 + 25 * i, colour);
         }
         refreshAndSetButtons();
         ScreenRenderer.endGL();
