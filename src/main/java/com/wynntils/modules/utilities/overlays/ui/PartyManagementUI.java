@@ -190,7 +190,7 @@ public class PartyManagementUI extends GuiScreen {
             } // No promote button for self
 
             String kickLeaveText = (isSelf) ? "Leave" : "Kick";
-            buttons.add(new GuiButton(9 + 10 * i, this.width/2 + 151, (verticalReference + 11) + 25 * i, 40, 20, kickLeaveText));
+            buttons.add(new GuiButton(9 + 10 * i, this.width/2 + 153, (verticalReference + 11) + 25 * i, 38, 20, kickLeaveText));
         }
         this.buttonList.addAll(buttons);
     }
