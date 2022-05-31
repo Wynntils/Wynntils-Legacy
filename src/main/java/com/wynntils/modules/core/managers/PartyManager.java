@@ -42,36 +42,41 @@ public class PartyManager {
     }
 
     public static void handleMessages(ITextComponent component) {
-        if (McIf.getUnformattedText(component).startsWith("You have successfully joined the party.")) {
+        String unformattedText = McIf.getUnformattedText(component);
+        if (unformattedText.startsWith("You have successfully joined the party.")) {
             handlePartyList();
             return;
         }
-        if (McIf.getUnformattedText(component).startsWith("You have been removed from the party.")
+        PartyContainer partyContainer = PlayerInfo.get(SocialData.class).getPlayerParty();
+        if (unformattedText.startsWith("You have been removed from the party.")
                 || McIf.getUnformattedText(component).startsWith("Your party has been disbanded since you were the only member remaining.")
                 || McIf.getUnformattedText(component).startsWith("Your party has been disbanded.")) {
-            PartyContainer partyContainer = PlayerInfo.get(SocialData.class).getPlayerParty();
-            partyContainer.removeMember(McIf.player().getName());
+            PlayerInfo.get(SocialData.class).resetPlayerParty();
             return;
         }
-        if (McIf.getUnformattedText(component).startsWith("You have successfully created a party.")) {
-            PartyContainer partyContainer = PlayerInfo.get(SocialData.class).getPlayerParty();
+        if (unformattedText.startsWith("You have successfully created a party.")) {
             partyContainer.setOwner(McIf.player().getName());
             partyContainer.addMember(McIf.player().getName());
             return;
         }
         if (McIf.getFormattedText(component).startsWith("§e") && McIf.getUnformattedText(component).contains("has joined the party.")) {
-            PartyContainer partyContainer = PlayerInfo.get(SocialData.class).getPlayerParty();
-
             String member = McIf.getUnformattedText(component).split(" has joined the party.")[0];
             partyContainer.addMember(member);
             return;
         }
         if (McIf.getFormattedText(component).startsWith("§e") && McIf.getUnformattedText(component).contains("has left the party.")) {
             handlePartyList();
-            PartyContainer partyContainer = PlayerInfo.get(SocialData.class).getPlayerParty();
 
             String member = McIf.getUnformattedText(component).split(" has left the party.")[0];
             partyContainer.removeMember(member);
+            return;
+        }
+        if (unformattedText.startsWith("You are now the leader of this party! Type /party for a list of commands.")) {
+            partyContainer.setOwner(McIf.player().getName());
+            return;
+        }
+        if (unformattedText.startsWith("Successfully promoted ") && unformattedText.endsWith(" to party leader!")) {
+            partyContainer.setOwner(unformattedText.split(" ")[2]);
         }
     }
 

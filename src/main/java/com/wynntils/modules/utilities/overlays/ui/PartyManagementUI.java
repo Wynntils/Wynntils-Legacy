@@ -11,6 +11,7 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.utils.Utils;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.util.text.TextFormatting;
 
 import java.io.IOException;
@@ -22,10 +23,13 @@ public class PartyManagementUI extends GuiScreen {
 
     private GuiButton exitBtn;
     private List<GuiButton> buttons = new ArrayList<>();
+    private GuiTextField inviteField;
 
     private List<String> partyMembers = new ArrayList<>();
     private int page;
     private int pageHeight;
+
+    private final int verticalReference = 160;
 
     @Override
     public void initGui() {
@@ -42,11 +46,13 @@ public class PartyManagementUI extends GuiScreen {
         drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        fontRenderer.drawString(TextFormatting.BOLD + "Icon", this.width/2 - 205, 43, 0xFFFFFF);
-        fontRenderer.drawString(TextFormatting.BOLD + "Name", this.width / 2 - 165, 43, 0xFFFFFF);
-        drawCenteredString(fontRenderer, TextFormatting.BOLD + "Promote", this.width/2 + 120, 43, 0xFFFFFF);
-        drawCenteredString(fontRenderer, TextFormatting.BOLD + "Kick", this.width/2 + 172, 43, 0xFFFFFF);
-        drawRect(this.width/2 - 205, 52, this.width/2 + 190, 53, 0xFFFFFFFF); // Underline
+        inviteField = new GuiTextField(0, McIf.mc().fontRenderer, this.width/2 - 205, this.height/2 - 70, 160, verticalReference - 23);
+
+        fontRenderer.drawString(TextFormatting.BOLD + "Icon", this.width/2 - 205, verticalReference, 0xFFFFFF);
+        fontRenderer.drawString(TextFormatting.BOLD + "Name", this.width / 2 - 165, verticalReference, 0xFFFFFF);
+        drawCenteredString(fontRenderer, TextFormatting.BOLD + "Promote", this.width/2 + 120, verticalReference, 0xFFFFFF);
+        drawCenteredString(fontRenderer, TextFormatting.BOLD + "Kick", this.width/2 + 172, verticalReference, 0xFFFFFF);
+        drawRect(this.width/2 - 205, verticalReference + 9, this.width/2 + 190, verticalReference + 10, 0xFFFFFFFF); // Underline
 
         updatePartyMemberList();
         if (partyMembers.size() < 1) { // Refresh once and return as party could have previously been populated
@@ -59,14 +65,22 @@ public class PartyManagementUI extends GuiScreen {
         for (int i = 0, lim = Math.min(pageHeight, partyMembers.size() - pageHeight * page); i < lim; i++) {
             String playerName = partyMembers.get(page * pageHeight + i);
             if (playerName == null) continue;
-            int colour = (playerName.equals(McIf.player().getName())) ? 0x00FFFF : 0xFFFFFF;
+
+            int colour;
+            if (playerName.equals(PlayerInfo.get(SocialData.class).getPlayerParty().getOwner())) {
+                colour = 0xFFFF00;
+            } else if (playerName.equals(McIf.player().getName())) {
+                colour = 0x00FFFF;
+            } else {
+                colour = 0xFFFFFF;
+            }
 
 //            MapWaypointIcon wpIcon = new MapWaypointIcon(wp);
 //            float centreZ = 64 + 25 * i;
 //            float multiplier = 9f / Math.max(wpIcon.getSizeX(), wpIcon.getSizeZ());
 //            wpIcon.renderAt(renderer, this.width / 2f - 151, centreZ, multiplier, 1);
 
-            fontRenderer.drawString(playerName, this.width/2 - 165, 60 + 25 * i, colour);
+            fontRenderer.drawString(playerName, this.width/2 - 165, (verticalReference + 17) + 25 * i, colour);
 //            drawCenteredString(fontRenderer, Integer.toString((int) wp.getX()), this.width/2 + 120, 60 + 25 * i, colour);
         }
         refreshAndSetButtons();
@@ -103,32 +117,31 @@ public class PartyManagementUI extends GuiScreen {
         for (int i = 0, lim = Math.min(pageHeight, partyMembers.size() - pageHeight * page); i < lim; i++) {
             // TODO: uncomment
             //if (partyMembers.get(i).equals(playerName)) continue; // No buttons for self
-            buttons.add(new GuiButton(3 + 10 * i, this.width/2 + 95, 54 + 25 * i, 50, 20, "Promote"));
-            buttons.add(new GuiButton(5 + 10 * i, this.width/2 + 155, 54 + 25 * i, 35, 20, "Kick"));
+            buttons.add(new GuiButton(3 + 10 * i, this.width/2 + 95, (verticalReference + 11) + 25 * i, 50, 20, "Promote"));
+            buttons.add(new GuiButton(5 + 10 * i, this.width/2 + 155, (verticalReference + 11) + 25 * i, 35, 20, "Kick"));
 
         }
         this.buttonList.addAll(buttons);
     }
 
     private void updatePartyMemberList() {
-        partyMembers = new ArrayList<>(PlayerInfo.get(SocialData.class).getPlayerParty().getPartyMembers());
-        Collections.sort(partyMembers);
+        List<String> temporaryMembers = new ArrayList<>(PlayerInfo.get(SocialData.class).getPlayerParty().getPartyMembers());
+        Collections.sort(temporaryMembers);
+        partyMembers.clear();
 
         // We put ourselves at the top, owner as #2
         String playerName = McIf.player().getName();
         String ownerName = PlayerInfo.get(SocialData.class).getPlayerParty().getOwner();
+        if (ownerName.equals("")) return; // We are not in a party
 
-        for (String member : partyMembers) {
-            if (member.equals(ownerName) && partyMembers.size() > 1 && !partyMembers.get(1).equals(ownerName)) {
-                partyMembers.remove(ownerName);
-                partyMembers.add(1, ownerName);
-            }
-            if (member.equals(playerName) && !partyMembers.get(0).equals(playerName)) {
-                // Set ourselves after so it's higher priority, we will always be first even if owner
-                partyMembers.remove(playerName);
-                partyMembers.add(0, playerName);
-            }
+        temporaryMembers.remove(playerName);
+        temporaryMembers.remove(ownerName);
+
+        partyMembers.add(ownerName);
+        if (!ownerName.equals(playerName)) {
+            partyMembers.add(playerName);
         }
+        partyMembers.addAll(temporaryMembers);
         // List is now sorted in [self, owner, party alphabetically]
     }
 
