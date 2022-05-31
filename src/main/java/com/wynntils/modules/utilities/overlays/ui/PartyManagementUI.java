@@ -9,10 +9,13 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.utils.Utils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.util.text.TextFormatting;
+import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,10 +26,13 @@ public class PartyManagementUI extends GuiScreen {
 
     private GuiButton exitBtn;
     private List<GuiButton> buttons = new ArrayList<>();
+    private GuiLabel inviteFieldLabel;
     private GuiTextField inviteField;
+    private GuiButton inviteBtn;
+    private GuiButton createBtn;
+    private GuiButton disbandBtn;
 
-    private List<String> partyMembers = new ArrayList<>();
-    private int page;
+    private final List<String> partyMembers = new ArrayList<>();
     private int pageHeight;
 
     private final int verticalReference = 160;
@@ -34,11 +40,11 @@ public class PartyManagementUI extends GuiScreen {
     @Override
     public void initGui() {
         super.initGui();
-
+        inviteFieldLabel = new GuiLabel(McIf.mc().fontRenderer, 0, this.width/2 - 205, verticalReference - 51, 40, 10, 0xFFFFFF);
+        inviteFieldLabel.addLine("Invite players:");
+        inviteField = new GuiTextField(0, McIf.mc().fontRenderer, this.width/2 - 205, verticalReference - 40, 160, 20);
         pageHeight = (this.height - 100) / 25;
         this.buttonList.add(exitBtn = new GuiButton(2, this.width - 40, 20, 20, 20, TextFormatting.RED + "X"));
-
-        onMemberListChange();
     }
 
     @Override
@@ -46,7 +52,14 @@ public class PartyManagementUI extends GuiScreen {
         drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        inviteField = new GuiTextField(0, McIf.mc().fontRenderer, this.width/2 - 205, this.height/2 - 70, 160, verticalReference - 23);
+        this.buttonList.add(inviteBtn = new GuiButton(1, this.width / 2 - 40, verticalReference - 40, 40, 20, "Invite"));
+        this.buttonList.add(createBtn = new GuiButton(2, this.width / 2 + 10, verticalReference - 40, 80, 20, "Create Party"));
+        this.buttonList.add(disbandBtn = new GuiButton(3, this.width / 2 + 100, verticalReference - 40, 80, 20, TextFormatting.RED + "Disband Party"));
+        if (inviteField != null) {
+            inviteField.drawTextBox();
+            inviteFieldLabel.drawLabel(McIf.mc(), mouseX, mouseY);
+        }
+        setManagementButtonStatuses();
 
         fontRenderer.drawString(TextFormatting.BOLD + "Icon", this.width/2 - 205, verticalReference, 0xFFFFFF);
         fontRenderer.drawString(TextFormatting.BOLD + "Name", this.width / 2 - 165, verticalReference, 0xFFFFFF);
@@ -62,8 +75,8 @@ public class PartyManagementUI extends GuiScreen {
 
         ScreenRenderer.beginGL(0, 0);
         // Draw names
-        for (int i = 0, lim = Math.min(pageHeight, partyMembers.size() - pageHeight * page); i < lim; i++) {
-            String playerName = partyMembers.get(page * pageHeight + i);
+        for (int i = 0, lim = Math.min(pageHeight, partyMembers.size()); i < lim; i++) {
+            String playerName = partyMembers.get(i);
             if (playerName == null) continue;
 
             int colour;
@@ -90,19 +103,64 @@ public class PartyManagementUI extends GuiScreen {
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
         super.mouseClicked(mouseX, mouseY, mouseButton);
+        inviteField.mouseClicked(mouseX, mouseY, mouseButton);
+    }
+
+    @Override
+    protected void keyTyped(char typedChar, int keyCode) throws IOException {
+        if (keyCode == Keyboard.KEY_RETURN && inviteField.isFocused()) {
+            invitePlayersFromTextField();
+        }
+        super.keyTyped(typedChar, keyCode);
+        inviteField.textboxKeyTyped(typedChar, keyCode);
     }
 
     @Override
     protected void actionPerformed(GuiButton b) {
         if (b == exitBtn) {
             Utils.displayGuiScreen(null);
-        } else if (b.id % 10 == 3) { // Promote
-            McIf.player().sendChatMessage("/party promote " + partyMembers.get(b.id / 10 + page * pageHeight));
-        } else if (b.id % 10 == 5) { // Kick
-            McIf.player().sendChatMessage("/party kick " + partyMembers.get(b.id / 10 + page * pageHeight));
+        } else if (b == inviteBtn) {
+            invitePlayersFromTextField();
+        } else if (b == createBtn) {
+            McIf.player().sendChatMessage("/party create");
+        } else if (b == disbandBtn) {
+            McIf.player().sendChatMessage("/party disband");
+        } else if (b.id % 10 == 7) { // Promote
+            McIf.player().sendChatMessage("/party promote " + partyMembers.get(b.id / 10));
+        } else if (b.id % 10 == 9) { // Kick
+            McIf.player().sendChatMessage("/party kick " + partyMembers.get(b.id / 10));
         }
         refreshAndSetButtons();
-        onMemberListChange();
+    }
+
+    private void setManagementButtonStatuses() {
+        String ownerName = PlayerInfo.get(SocialData.class).getPlayerParty().getOwner();
+        String playerName = McIf.player().getName();
+        if (ownerName == null) return;
+        // text field >= 3chars && (must be owner || party doesn't exist)
+        inviteBtn.enabled = inviteField.getText().length() >= 3 && (ownerName.equals(playerName) || ownerName.equals(""));
+        // not already in party
+        createBtn.enabled = ownerName.equals("");
+        // in party && must be owner
+        disbandBtn.enabled = ownerName.equals(playerName);
+    }
+
+    private void invitePlayersFromTextField() {
+        // Remove anything that isn't possible in a minecraft name, except commas and spaces
+        String fieldText = inviteField.getText().replaceAll("[^\\w, ]+", "");
+        fieldText = fieldText.replaceAll("[, ]+", ","); // commas and spaces to just comma
+        if (fieldText.equals("")) return;
+
+        if (PlayerInfo.get(SocialData.class).getPlayerParty().getOwner().equals("")) {
+            // Create party if we aren't in one
+            McIf.player().sendChatMessage("/party create");
+        }
+
+        String[] players = fieldText.split(",");
+
+        for (String player : players) {
+            McIf.player().sendChatMessage("/party invite " + player);
+        }
     }
 
     private void refreshAndSetButtons() {
@@ -114,11 +172,11 @@ public class PartyManagementUI extends GuiScreen {
         // No buttons if we are not owner, members can't kick/promote
         if (!playerName.equals(PlayerInfo.get(SocialData.class).getPlayerParty().getOwner())) return;
 
-        for (int i = 0, lim = Math.min(pageHeight, partyMembers.size() - pageHeight * page); i < lim; i++) {
+        for (int i = 0, lim = Math.min(pageHeight, partyMembers.size()); i < lim; i++) {
             // TODO: uncomment
             //if (partyMembers.get(i).equals(playerName)) continue; // No buttons for self
-            buttons.add(new GuiButton(3 + 10 * i, this.width/2 + 95, (verticalReference + 11) + 25 * i, 50, 20, "Promote"));
-            buttons.add(new GuiButton(5 + 10 * i, this.width/2 + 155, (verticalReference + 11) + 25 * i, 35, 20, "Kick"));
+            buttons.add(new GuiButton(7 + 10 * i, this.width/2 + 95, (verticalReference + 11) + 25 * i, 50, 20, "Promote"));
+            buttons.add(new GuiButton(9 + 10 * i, this.width/2 + 155, (verticalReference + 11) + 25 * i, 35, 20, "Kick"));
 
         }
         this.buttonList.addAll(buttons);
@@ -143,13 +201,6 @@ public class PartyManagementUI extends GuiScreen {
         }
         partyMembers.addAll(temporaryMembers);
         // List is now sorted in [self, owner, party alphabetically]
-    }
-
-    private void onMemberListChange() {
-        if (partyMembers.size() > 0 && page * pageHeight > partyMembers.size() - 1) {
-            page = (partyMembers.size() - 1) / pageHeight;
-            System.out.println("PAGE IS " + page);
-        }
     }
 
     @Override
