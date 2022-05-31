@@ -96,10 +96,10 @@ public class PartyManagementUI extends GuiScreen {
             // Player heads
             NetworkPlayerInfo networkPlayerInfo = netHandlerPlayClient.getPlayerInfo(playerName);
             McIf.mc().getTextureManager().bindTexture(networkPlayerInfo.getLocationSkin());
-            drawScaledCustomSizeModalRect(this.width/2 - 197, (verticalReference + 16) + 25 * i, 8.0F, 8.0F, 8, 8, 12, 12, 64.0F, 64.0F);
+            drawScaledCustomSizeModalRect(this.width/2 - 197, (verticalReference + 14) + 25 * i, 8.0F, 8.0F, 8, 8, 12, 12, 64.0F, 64.0F);
             EntityPlayer entityPlayer = McIf.mc().world.getPlayerEntityByName(playerName);
             if (entityPlayer != null && entityPlayer.isWearing(EnumPlayerModelParts.HAT)) {
-                drawScaledCustomSizeModalRect(this.width/2 - 197, (verticalReference + 16) + 25 * i, 40.0F, 8, 8, 8, 12, 12, 64.0F, 64.0F);
+                drawScaledCustomSizeModalRect(this.width/2 - 197, (verticalReference + 14) + 25 * i, 40.0F, 8, 8, 8, 12, 12, 64.0F, 64.0F);
             }
 
         }
