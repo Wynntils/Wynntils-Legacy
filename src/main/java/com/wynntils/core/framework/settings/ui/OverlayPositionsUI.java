@@ -157,6 +157,9 @@ public class OverlayPositionsUI extends UI {
 
     @Override
     protected void mouseClicked(int mouseX, int mouseY, int mouseButton) throws IOException {
+        if (mouseButton > 3) {
+            mouseButton = 3; // Set to UNKNOWN
+        }
         super.mouseClicked(mouseX, mouseY, mouseButton);
         if (toClick != null) {
             clickTime = System.currentTimeMillis();
