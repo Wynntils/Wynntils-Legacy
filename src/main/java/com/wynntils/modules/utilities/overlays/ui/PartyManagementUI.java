@@ -42,7 +42,7 @@ public class PartyManagementUI extends GuiScreen {
         super.initGui();
         inviteFieldLabel = new GuiLabel(McIf.mc().fontRenderer, 0, this.width/2 - 205, verticalReference - 51, 40, 10, 0xFFFFFF);
         inviteFieldLabel.addLine("Invite players:");
-        inviteField = new GuiTextField(0, McIf.mc().fontRenderer, this.width/2 - 205, verticalReference - 40, 160, 20);
+        inviteField = new GuiTextField(0, McIf.mc().fontRenderer, this.width/2 - 205, verticalReference - 40, 180, 20);
         pageHeight = (this.height - 100) / 25;
         this.buttonList.add(exitBtn = new GuiButton(2, this.width - 40, 20, 20, 20, TextFormatting.RED + "X"));
     }
@@ -52,9 +52,9 @@ public class PartyManagementUI extends GuiScreen {
         drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        this.buttonList.add(inviteBtn = new GuiButton(1, this.width / 2 - 40, verticalReference - 40, 40, 20, "Invite"));
-        this.buttonList.add(createBtn = new GuiButton(2, this.width / 2 + 10, verticalReference - 40, 80, 20, "Create Party"));
-        this.buttonList.add(disbandBtn = new GuiButton(3, this.width / 2 + 100, verticalReference - 40, 80, 20, TextFormatting.RED + "Disband Party"));
+        this.buttonList.add(inviteBtn = new GuiButton(1, this.width / 2 - 20, verticalReference - 40, 40, 20, "Invite"));
+        this.buttonList.add(createBtn = new GuiButton(2, this.width / 2 + 25, verticalReference - 40, 80, 20, "Create Party"));
+        this.buttonList.add(disbandBtn = new GuiButton(3, this.width / 2 + 110, verticalReference - 40, 80, 20, TextFormatting.RED + "Disband Party"));
         if (inviteField != null) {
             inviteField.drawTextBox();
             inviteFieldLabel.drawLabel(McIf.mc(), mouseX, mouseY);
