@@ -132,12 +132,12 @@ public class PartyManagementUI extends GuiScreen {
             McIf.player().sendChatMessage("/party create");
         } else if (b == disbandLeaveBtn && b.displayString.contains("Disband")) {
             McIf.player().sendChatMessage("/party disband");
-        } else if (b == disbandLeaveBtn && b.displayString.contains("Leave")) {
-            McIf.player().sendChatMessage("/party leave");
         } else if (b.id % 10 == 7) { // Promote
             McIf.player().sendChatMessage("/party promote " + partyMembers.get(b.id / 10));
-        } else if (b.id % 10 == 9) { // Kick
+        } else if (b.id % 10 == 9 && b.displayString.contains("Kick")) { // Kick
             McIf.player().sendChatMessage("/party kick " + partyMembers.get(b.id / 10));
+        } else if (b.displayString.contains("Leave")) { // For both dynamic leave/kick and disband/leave btns
+            McIf.player().sendChatMessage("/party leave");
         }
         refreshAndSetButtons();
     }
