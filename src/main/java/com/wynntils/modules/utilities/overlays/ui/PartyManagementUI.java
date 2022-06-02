@@ -13,6 +13,7 @@ import com.wynntils.core.utils.objects.Pair;
 import net.minecraft.client.gui.*;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.util.text.TextFormatting;
@@ -93,9 +94,9 @@ public class PartyManagementUI extends GuiScreen {
             }
 
             fontRenderer.drawString(playerName, this.width/2 - 165, (verticalReference + 17) + 25 * i, colour);
-            // Blank text to reset colour to white
+            // Reset colour to white
             // This is so player heads don't have the previous self/owner colour overlayed onto them
-            fontRenderer.drawString("", 0, 0, 0xFFFFFF);
+            GlStateManager.color(1, 1, 1, 1);
 
             // Player heads
             NetworkPlayerInfo networkPlayerInfo = netHandlerPlayClient.getPlayerInfo(playerName);

@@ -9,14 +9,16 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.containers.PartyContainer;
 import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.utils.helpers.CommandResponse;
-import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.ITextComponent;
 
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class PartyManager {
 
-    private static final Pattern listPattern = Pattern.compile("(§eParty members:|§eYou must be in a party to list\\.)");
+    private static final Pattern LIST_PATTERN = Pattern.compile("(§eParty members:|§eYou must be in a party to list\\.)");
+    private static final Pattern PROMOTE_PATTERN = Pattern.compile("Successfully promoted (.+) to party leader!");
+
     private static final CommandResponse listExecutor = new CommandResponse("/party list", (matcher, text) -> {
         String entire = matcher.group(0);
         if (entire.contains("You must be in")) {  // clears the party
@@ -35,7 +37,7 @@ public class PartyManager {
             partyContainer.addMember(member);
         }
 
-    }, listPattern);
+    }, LIST_PATTERN);
 
     public static void handlePartyList() {
         listExecutor.executeCommand();
@@ -75,8 +77,9 @@ public class PartyManager {
             partyContainer.setOwner(McIf.player().getName());
             return;
         }
-        if (unformattedText.startsWith("Successfully promoted ") && unformattedText.endsWith(" to party leader!")) {
-            partyContainer.setOwner(unformattedText.split(" ")[2]);
+        Matcher promoteMatcher = PROMOTE_PATTERN.matcher(unformattedText);
+        if (promoteMatcher.find()) {
+            partyContainer.setOwner(promoteMatcher.group(1));
         }
     }
 
