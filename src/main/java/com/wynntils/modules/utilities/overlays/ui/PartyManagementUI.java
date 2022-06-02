@@ -167,7 +167,7 @@ public class PartyManagementUI extends GuiScreen {
         if (fieldText.equals("")) return;
 
         // Create party if we aren't in one
-        if (PlayerInfo.get(SocialData.class).getPlayerParty().getOwner().equals("")) {
+        if (!PlayerInfo.get(SocialData.class).getPlayerParty().isPartying()) {
             McIf.player().sendChatMessage("/party create");
         }
 
