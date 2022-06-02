@@ -209,22 +209,20 @@ public class PartyManagementUI extends GuiScreen {
         if (unsorted.equals(unsortedPartyMembers)) return; // No changes, do not continue
 
         unsortedPartyMembers = unsorted;
-        Collections.sort(temporaryMembers);
-        partyMembers.clear();
-
-        // We put ourselves at the top, owner as #2
         String playerName = McIf.player().getName();
-        if (ownerName.equals("")) return; // We are not in a party
+        Comparator<String> sortPartyMembers = (String s1, String s2) -> {
+            if (s1.equals(playerName)) return -1;
+            if (s2.equals(playerName)) return 1;
 
-        temporaryMembers.remove(playerName);
-        temporaryMembers.remove(ownerName);
+            if (s1.equals(ownerName)) return -1;
+            if (s2.equals(ownerName)) return 1;
 
-        partyMembers.add(ownerName);
-        if (!ownerName.equals(playerName)) {
-            partyMembers.add(playerName);
-        }
+            return s1.compareTo(s2);
+        };
+        temporaryMembers.sort(sortPartyMembers);
+        partyMembers.clear();
         partyMembers.addAll(temporaryMembers);
-        // List is now sorted in [self, owner, party alphabetically]
+        // partyMembers list is now sorted in [self, owner, party alphabetically]
     }
 
     @Override
