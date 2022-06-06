@@ -14,7 +14,7 @@ public class SocialData extends PlayerData {
 
     private Set<String> friendList = new HashSet<>();
     private Set<String> guildMembersList = new HashSet<>();
-    private final PartyContainer playerParty = new PartyContainer();
+    private PartyContainer playerParty = new PartyContainer();
 
     public SocialData() { }
 
@@ -52,6 +52,10 @@ public class SocialData extends PlayerData {
 
     public PartyContainer getPlayerParty() {
         return playerParty;
+    }
+
+    public void resetPlayerParty() {
+        playerParty = new PartyContainer();
     }
 
     public Set<String> getFriendList() {
