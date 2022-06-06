@@ -327,7 +327,9 @@ public class PlayerClassProfile {
             int pvpKills = pvpStats.get("kills").getAsInt();
             int pvpDeaths = pvpStats.get("deaths").getAsInt();
 
-            int chestsFound = playerClass.get("chestsFound").getAsInt();
+            // This field was removed from the Wynncraft API
+            // int chestsFound = playerClass.get("chestsFound").getAsInt();
+            int chestsFound = -1;
             long blocksWalked = playerClass.get("blocksWalked").getAsLong();
             int logins = playerClass.get("logins").getAsInt();
             int deaths = playerClass.get("deaths").getAsInt();
