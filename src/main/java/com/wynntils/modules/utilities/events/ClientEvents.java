@@ -710,7 +710,7 @@ public class ClientEvents implements Listener {
         ItemStack clickedItemStack = e.getGui().getSlotUnderMouse().getStack();
         if (!ItemUtils.getStringLore(clickedItemStack).contains("§aClick to join the queue")) return;
         if (PlayerInfo.get(SocialData.class).getPlayerParty().isPartying()) return; // Already in a party, no need to do anything
-        
+
         PlayerInfo.get(SocialData.class).getPlayerParty().setOwner(McIf.player().getName());
         PlayerInfo.get(SocialData.class).getPlayerParty().addMember(McIf.player().getName());
     }
