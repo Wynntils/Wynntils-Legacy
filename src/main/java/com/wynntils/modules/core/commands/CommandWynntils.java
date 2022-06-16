@@ -7,6 +7,7 @@ package com.wynntils.modules.core.commands;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.helpers.TextAction;
 import com.wynntils.modules.core.config.CoreDBConfig;
@@ -217,6 +218,10 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
         TextComponentString versionText = new TextComponentString("");
         versionText.appendSibling(releaseStreamText);
         versionText.appendSibling(buildText);
+        String copiable = "Wynntils Version " + Reference.VERSION + " " + buildText.getUnformattedText();
+        Utils.copyToClipboard(copiable);
+        TextComponentString copyMsg = new TextComponentString(TextFormatting.GREEN + "Copied version information to clipboard!");
+        sender.sendMessage(copyMsg);
 
         TextComponentString updateCheckText;
         TextFormatting color;
