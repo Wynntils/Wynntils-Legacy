@@ -164,10 +164,10 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
             case "record": {
                 String message;
                 if (LootRunManager.isRecording()) {
-                    message = GREEN + "Stopped to record your movements!\n" + AQUA + "Save your lootrun with /lootrun save <name> or delete with /lootrun clear";
+                    message = GREEN + "Stopped recording your movements!\n" + AQUA + "Save your lootrun with /lootrun save <name> or delete with /lootrun clear";
                     LootRunManager.stopRecording();
                 } else {
-                    message = GREEN + "Started to record your current movements!\n" + RED + "Use the command again to stop.";
+                    message = GREEN + "Started recording your movements!\n" + RED + "Use the command again to stop.";
                     LootRunManager.startRecording();
                 }
 
