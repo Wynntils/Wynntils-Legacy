@@ -8,8 +8,10 @@ import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
 import com.wynntils.core.framework.enums.wynntils.WynntilsSound;
+import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.instances.data.InventoryData;
+import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
@@ -694,6 +696,23 @@ public class ClientEvents implements Listener {
                 return;
             }
         }
+    }
+
+    /**
+     * This method ensures that clicking on a party finder queue updates party data, since you are automatically put
+     * into a party without a chat notification when joining a queue by yourself
+     */
+    @SubscribeEvent
+    public void partyFinderInventoryClick(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
+        // This .contains() check is quite loose because it needs to account for the raid-specific pfinder NPCs at the start of each raid
+        if (!e.getGui().getLowerInv().getName().contains("Party Finder")) return;
+
+        ItemStack clickedItemStack = e.getGui().getSlotUnderMouse().getStack();
+        if (!ItemUtils.getStringLore(clickedItemStack).contains("§aClick to join the queue")) return;
+        if (PlayerInfo.get(SocialData.class).getPlayerParty().isPartying()) return; // Already in a party, no need to do anything
+        
+        PlayerInfo.get(SocialData.class).getPlayerParty().setOwner(McIf.player().getName());
+        PlayerInfo.get(SocialData.class).getPlayerParty().addMember(McIf.player().getName());
     }
 
     @SubscribeEvent
