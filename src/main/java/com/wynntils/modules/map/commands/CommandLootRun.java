@@ -98,6 +98,9 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                     throw new WrongUsageException("/lootrun save [name]");
                 }
                 String name = args[1];
+                if (LootRunManager.hasLootrun(name)) {
+                    throw new CommandException("A loot run with this name already exists!");
+                }
 
                 if (LootRunManager.isRecording()) {
                     sender.sendMessage(new TextComponentString(RED + "You're currently recording a lootrun, to save it first stop recording with /lootrun record!"));
