@@ -88,8 +88,8 @@ public class PartyContainer {
     }
 
     /**
-     * Set the party owner
-     *
+     * Set the party owner.
+     * This does not add the owner to the partyMembers list, you must also call {@link #addMember(String username)}
      * @param owner party owner username
      */
     public void setOwner(String owner) {

@@ -482,7 +482,7 @@ public class UtilitiesConfig extends SettingsClass {
     public static class Market extends SettingsClass {
         public static Market INSTANCE;
 
-        @Setting(displayName = "Open Chat", description = "Should the chat open when the trade market asks you to type a response?")
+        @Setting(displayName = "Automatically Open Chat", description = "Should the chat open when the trade market asks you to type a response?")
         public boolean openChatMarket = true;
     }
 
