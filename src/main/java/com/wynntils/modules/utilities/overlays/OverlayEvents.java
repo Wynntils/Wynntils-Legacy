@@ -402,7 +402,7 @@ public class OverlayEvents implements Listener {
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectClass) {
-            if (messageText.equals("Select a class! Each class is saved individually across all servers, you can come back at any time with /class and select another class!")) {
+            if (messageText.equals("Select a character! Each character is saved individually across all servers, you can come back at any time with /class and select another character!")) {
                 GameUpdateOverlay.queueMessage(GOLD + "Select a character!");
                 e.setCanceled(true);
                 return;
