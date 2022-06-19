@@ -25,6 +25,8 @@ public class CharacterData extends PlayerData {
 
     private int health = -1;
     private int maxHealth = -1;
+    private int mana = -1;
+    private int maxMana = -1;
     private int level = -1;
     private float experiencePercentage = -1;
 
@@ -92,7 +94,7 @@ public class CharacterData extends PlayerData {
     }
 
     public int getMaxMana() {
-        return currentClass == ClassType.NONE ? -1 : 20;
+        return currentClass == ClassType.NONE ? -1 : maxMana;
     }
 
     public int getMaxHealth() {
@@ -104,7 +106,7 @@ public class CharacterData extends PlayerData {
     }
 
     public int getCurrentMana() {
-        return currentClass == ClassType.NONE ? -1 : getPlayer().getFoodStats().getFoodLevel();
+        return currentClass == ClassType.NONE ? -1 : mana;
     }
 
     public int getClassId() {
@@ -136,6 +138,14 @@ public class CharacterData extends PlayerData {
 
     public void setMaxHealth(int maxHealth) {
         this.maxHealth = maxHealth;
+    }
+
+    public void setMana(int mana) {
+        this.mana = mana;
+    }
+
+    public void setMaxMana(int maxMana) {
+        this.maxMana = maxMana;
     }
 
     public void setLevel(int level) {

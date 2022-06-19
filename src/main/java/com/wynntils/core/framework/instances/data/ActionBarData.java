@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 public class ActionBarData extends PlayerData {
 
-    private static final Pattern ACTIONBAR_PATTERN = Pattern.compile("(?:§❤ *([0-9]+)/([0-9]+))?.*? {2,}(?:§([LR])§-(?:§([LR])§-§([LR])?)?)?.*".replace("§", "(?:§[0-9a-fklmnor])*"));
+    private static final Pattern ACTIONBAR_PATTERN = Pattern.compile("(?:§c❤ *(\\d+)\\/(\\d+)§0) {2,5}(?:§a([LR])§7-§7§n([LR?])§7-§r§7([LR?])§r)?(?:.*?)? {2,5}(?:§b✺ *(\\d+)\\/(\\d+))?.*");
 
     private String lastActionBar;
     private String specialActionBar = null;
@@ -46,6 +46,10 @@ public class ActionBarData extends PlayerData {
                 if (match.group(1) != null) {
                     characterData.setHealth(Integer.parseInt(match.group(1)));
                     characterData.setMaxHealth(Integer.parseInt(match.group(2)));
+                }
+                if (match.group(6) != null) {
+                    characterData.setMana(Integer.parseInt(match.group(6)));
+                    characterData.setMaxMana(Integer.parseInt(match.group(7)));
                 }
 
                 if (match.group(3) != null) {
