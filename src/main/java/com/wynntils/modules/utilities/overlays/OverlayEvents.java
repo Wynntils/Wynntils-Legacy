@@ -313,21 +313,14 @@ public class OverlayEvents implements Listener {
             else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has given you 10% resistance\\.")) {
                 GameUpdateOverlay.queueMessage(AQUA + "+10% resistance " + GRAY + "(" + formattedText.split(" ")[0].replace(RESET.toString(), "") + GRAY + ")");
                 if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
-                    ConsumableTimerOverlay.addBasicTimer("War Scream I", 2 * 60);
+                    ConsumableTimerOverlay.addBasicTimer("War Scream", 30);
                 }
                 e.setCanceled(true);
                 return;
-            } else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has given you 15% resistance\\.")) {
-                GameUpdateOverlay.queueMessage(AQUA + "+15% resistance " + GRAY + "(" + formattedText.split(" ")[0].replace(RESET.toString(), "") + GRAY + ")");
+            } else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has given you 10% resistance and 30% strength\\.")) {
+                GameUpdateOverlay.queueMessage(AQUA + "+10% resistance " + GRAY + "& " + AQUA + "+30% strength " + GRAY + "(" + formattedText.split(" ")[0].replace(RESET.toString(), "") + GRAY + ")");
                 if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
-                    ConsumableTimerOverlay.addBasicTimer("War Scream II", 3 * 60);
-                }
-                e.setCanceled(true);
-                return;
-            } else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has given you 20% resistance and 10% strength\\.")) {
-                GameUpdateOverlay.queueMessage(AQUA + "+20% resistance " + GRAY + "& " + AQUA + "+10% strength " + GRAY + "(" + formattedText.split(" ")[0].replace(RESET.toString(), "") + GRAY + ")");
-                if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
-                    ConsumableTimerOverlay.addBasicTimer("War Scream III", 4 * 60);
+                    ConsumableTimerOverlay.addBasicTimer("Ragnarokkr", 30);
                 }
                 e.setCanceled(true);
                 return;
