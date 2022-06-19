@@ -297,7 +297,7 @@ public class OverlayEvents implements Listener {
             } else if (messageText.equals("+2 minutes speed boost.")) {
                 GameUpdateOverlay.queueMessage(AQUA + "+2 minutes " + GRAY + "speed boost");
                 if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
-                    ConsumableTimerOverlay.addBasicTimer("Speed boost", 3 * 60);
+                    ConsumableTimerOverlay.addBasicTimer("Speed boost", 2 * 60);
                 }
                 e.setCanceled(true);
                 return;
