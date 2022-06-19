@@ -104,7 +104,6 @@ public class UtilitiesModule extends Module {
         registerSettings(OverlayConfig.Leveling.class);
         registerSettings(OverlayConfig.Exp.class);
         registerSettings(OverlayConfig.Mana.class);
-        registerSettings(OverlayConfig.ManaTimer.class);
         registerSettings(OverlayConfig.Hotbar.class);
         registerSettings(OverlayConfig.ToastsSettings.class);
         registerSettings(OverlayConfig.WarTimer.class);
