@@ -192,16 +192,18 @@ public class SkillPointOverlay implements Listener {
     @SubscribeEvent
     public void onSlotClicked(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
         if (!Reference.onWorld || !Utils.isCharacterInfoPage(e.getGui())) return;
-        e.setCanceled(true);
-        if (waitingForSkillPointData) return;
 
         if (e.getSlotId() == SAVE_SLOT) {
+            e.setCanceled(true);
+            if (waitingForSkillPointData) return;
             nameField = new GuiTextFieldWynn(200, McIf.mc().fontRenderer, 8, 5, 130, 10);
             nameField.setFocused(true);
             nameField.setText("Enter build name");
             Keyboard.enableRepeatEvents(true);
             skipResettingSkillPointData = true;
         } else if (e.getSlotId() == LOAD_SLOT) {
+            e.setCanceled(true);
+            if (waitingForSkillPointData) return;
             McIf.mc().displayGuiScreen(
                     new SkillPointLoadoutUI(this, McIf.mc().currentScreen,
                             new InventoryBasic("Skill Points Loadouts", false, 54)));
