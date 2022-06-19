@@ -294,8 +294,8 @@ public class OverlayEvents implements Listener {
                 e.setCanceled(true);
                 return;
             // ARCHER
-            } else if (messageText.equals("+3 minutes speed boost.")) {
-                GameUpdateOverlay.queueMessage(AQUA + "+3 minutes " + GRAY + "speed boost");
+            } else if (messageText.equals("+2 minutes speed boost.")) {
+                GameUpdateOverlay.queueMessage(AQUA + "+2 minutes " + GRAY + "speed boost");
                 if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
                     ConsumableTimerOverlay.addBasicTimer("Speed boost", 3 * 60);
                 }
