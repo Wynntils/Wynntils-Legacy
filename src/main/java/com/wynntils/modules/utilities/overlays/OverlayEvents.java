@@ -334,9 +334,9 @@ public class OverlayEvents implements Listener {
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectOther) {
-            if (messageText.matches("You have \\d+ unused Skill Points! Right-Click while holding your compass to use them!")) {
+            if (messageText.matches("You have \\d+ unused Skill Points and \\d+ unused Ability Points! Right-Click while holding your compass to use them")) {
                 String[] res = messageText.split(" ");
-                GameUpdateOverlay.queueMessage(YELLOW + res[2] + GOLD + " skill points available.");
+                GameUpdateOverlay.queueMessage(YELLOW + res[2] + GOLD + " skill points and " + YELLOW + res[7] + GOLD + " ability points available.");
                 e.setCanceled(true);
                 return;
             } else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} is now level \\d+")) {
