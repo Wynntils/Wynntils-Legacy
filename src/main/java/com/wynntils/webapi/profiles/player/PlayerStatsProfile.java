@@ -439,7 +439,9 @@ public class PlayerStatsProfile {
             }
 
             JsonObject globalStats = playerProfile.get("global").getAsJsonObject();
-            int chestsFound = globalStats.get("chestsFound").getAsInt();
+            // This field was removed from the Wynncraft API
+            int chestsFound = 0;
+            // int chestsFound = globalStats.get("chestsFound").getAsInt();
             long blocksWalked = globalStats.get("blocksWalked").getAsLong();
             int itemsIdentified = globalStats.get("itemsIdentified").getAsInt();
             int mobsKilled = globalStats.get("mobsKilled").getAsInt();
