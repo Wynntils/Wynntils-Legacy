@@ -20,13 +20,11 @@ import com.wynntils.modules.utilities.overlays.ui.PartyManagementUI;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommand;
-import net.minecraft.command.ICommandSender;
 import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.settings.KeyConflictContext;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import org.lwjgl.input.Keyboard;
 
-import java.util.Arrays;
 import java.util.Map;
 
 public class KeyManager {
