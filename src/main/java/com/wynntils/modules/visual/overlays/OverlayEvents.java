@@ -12,6 +12,7 @@ import com.wynntils.modules.visual.configs.VisualConfig;
 import com.wynntils.modules.visual.overlays.ui.CharacterSelectorUI;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.lwjgl.input.Keyboard;
 
 public class OverlayEvents implements Listener {
 
@@ -20,7 +21,9 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void initClassMenu(GuiOverlapEvent.ChestOverlap.InitGui e) {
         if (!VisualConfig.CustomSelector.INSTANCE.characterSelector) return;
-        if (!e.getGui().getLowerInv().getName().contains("Select a Class")) return;
+        // item slot check required as compass menu will relay "Select a Character" just before updating
+        if (!e.getGui().getLowerInv().getName().contains("Select a Character")
+                || e.getGui().getLowerInv().getStackInSlot(2).getDisplayName().toLowerCase().contains("character")) return;
 
         WindowedResolution res = new WindowedResolution(480, 254);
         fakeCharacterSelector = new CharacterSelectorUI(null, e.getGui(), res.getScaleFactor());
@@ -29,7 +32,8 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void closeCharacterMenu(GuiOverlapEvent.ChestOverlap.GuiClosed e) {
-        if (!e.getGui().getLowerInv().getName().contains("Select a Class")) return;
+        if (!e.getGui().getLowerInv().getName().contains("Select a Character")
+            || e.getGui().getLowerInv().getStackInSlot(2).getDisplayName().toLowerCase().contains("character")) return;
 
         fakeCharacterSelector = null;
     }
@@ -69,8 +73,11 @@ public class OverlayEvents implements Listener {
     public void replaceKeyTyped(GuiOverlapEvent.ChestOverlap.KeyTyped e) {
         if (fakeCharacterSelector == null) return;
 
-        fakeCharacterSelector.keyTyped(e.getTypedChar(), e.getKeyCode());
-        e.setCanceled(true);
+        if (e.getKeyCode() == Keyboard.KEY_ESCAPE) { // Allow esc during character selection
+            fakeCharacterSelector = null;
+        } else {
+            fakeCharacterSelector.keyTyped(e.getTypedChar(), e.getKeyCode());
+            e.setCanceled(true);
+        }
     }
-
 }

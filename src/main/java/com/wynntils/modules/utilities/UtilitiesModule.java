@@ -62,7 +62,6 @@ public class UtilitiesModule extends Module {
         registerOverlay(new HealthBarOverlay(), Priority.NORMAL);
         registerOverlay(new HotbarOverlay(), Priority.NORMAL);
         registerOverlay(new ManaBarOverlay(), Priority.NORMAL);
-        registerOverlay(new ManaTimerOverlay(), Priority.LOW);
         registerOverlay(new ExpBarOverlay(), Priority.NORMAL);
         registerOverlay(new LevelingOverlay(), Priority.LOW);
         registerOverlay(new BubblesOverlay(), Priority.HIGHEST);
