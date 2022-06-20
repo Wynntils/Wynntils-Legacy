@@ -706,6 +706,7 @@ public class ClientEvents implements Listener {
     public void partyFinderInventoryClick(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
         // This .contains() check is quite loose because it needs to account for the raid-specific pfinder NPCs at the start of each raid
         if (!e.getGui().getLowerInv().getName().contains("Party Finder")) return;
+        if (e.getGui().getSlotUnderMouse() == null || !e.getGui().getSlotUnderMouse().getHasStack()) return;
 
         ItemStack clickedItemStack = e.getGui().getSlotUnderMouse().getStack();
         if (!ItemUtils.getStringLore(clickedItemStack).contains("§aClick to join the queue")) return;
