@@ -114,7 +114,6 @@ public class SkillPointOverlay implements Listener {
 
             // Add the skill point gear info into gearSkillPoints
             addGearSPModifiers(itemStack);
-            System.out.println(gearSkillPoints);
             int pages = (int) ItemUtils.getStringLore(itemStack).chars().filter(num -> num == '■').count();
             if (pages > 0) { // 0 because no squares present when only 1 page
                 // More than one page, set variables and send click
@@ -234,7 +233,6 @@ public class SkillPointOverlay implements Listener {
         int pages = (int) ItemUtils.getStringLore(newStack).chars().filter(num -> num == '■').count();
         // Add the skill point gear info into gearSkillPoints
         addGearSPModifiers(newStack);
-        System.out.println(gearSkillPoints);
         // Determine if we need to go the next page:
         if (currentPage == pages) { // page == max pages now
             waitingForSkillPointData = false;
