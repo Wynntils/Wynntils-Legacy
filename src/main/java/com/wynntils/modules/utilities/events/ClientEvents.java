@@ -779,8 +779,21 @@ public class ClientEvents implements Listener {
             }
         }
 
-        if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().inventory instanceof InventoryPlayer) {
-            if ((!EmeraldPouchManager.isEmeraldPouch(e.getGui().getSlotUnderMouse().getStack()) || e.getMouseButton() == 0) && checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex())) {
+        // Prevent clicking on locked slot functionality
+        if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null &&
+                e.getGui().getSlotUnderMouse().inventory instanceof InventoryPlayer) {
+
+            // Allow left-clicks on locked emerald pouches to open them
+            if (EmeraldPouchManager.isEmeraldPouch(e.getGui().getSlotUnderMouse().getStack()) && e.getMouseButton() == 0) {
+                return;
+            }
+
+            // Do not block any clicks on the ability tree page
+            if (Utils.isAbilityTreePage(e.getGui())) {
+                return;
+            }
+
+            if (checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex())) {
                 e.setCanceled(true);
             }
         }
