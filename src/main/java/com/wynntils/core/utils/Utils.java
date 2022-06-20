@@ -53,7 +53,7 @@ public class Utils {
     public static final Pattern ABILITY_TREE_PATTERN = Pattern.compile("\\[Pg. \\d+] .+ Abilities");
 
     private static ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("wynntils-utilities-%d").build());
-    private static Random random = new Random();
+    private static final Random random = new Random();
 
     private static String previousTeam = null;
 
