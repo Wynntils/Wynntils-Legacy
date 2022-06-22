@@ -97,7 +97,6 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 if (args.length < 2) {
                     throw new WrongUsageException("/lootrun save [name]");
                 }
-                // Iterate through remaining args to allow for spaces in name
                 String name = getNameWithSpaces(args);
                 if (LootRunManager.hasLootrun(name)) {
                     throw new CommandException("A lootrun file with this name already exists!");
