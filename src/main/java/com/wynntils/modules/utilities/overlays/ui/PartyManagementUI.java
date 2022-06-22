@@ -10,12 +10,16 @@ import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Pair;
-import net.minecraft.client.gui.*;
+import net.minecraft.client.gui.GuiButton;
+import net.minecraft.client.gui.GuiLabel;
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EnumPlayerModelParts;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 
@@ -100,7 +104,14 @@ public class PartyManagementUI extends GuiScreen {
 
             // Player heads
             NetworkPlayerInfo networkPlayerInfo = netHandlerPlayClient.getPlayerInfo(playerName);
-            McIf.mc().getTextureManager().bindTexture(networkPlayerInfo.getLocationSkin());
+            if (networkPlayerInfo != null) {
+                McIf.mc().getTextureManager().bindTexture(networkPlayerInfo.getLocationSkin());
+            } else {
+                // If networkPlayerInfo is null, either the player is offline or invisible due to /switch bug
+                // Use the default player head texture, it will automatically update when the player is visible again
+                McIf.mc().getTextureManager().bindTexture(new ResourceLocation("textures/entity/steve.png"));
+            }
+
             drawScaledCustomSizeModalRect(this.width/2 - 197, (verticalReference + 14) + 25 * i, 8.0F, 8.0F, 8, 8, 12, 12, 64.0F, 64.0F);
             EntityPlayer entityPlayer = McIf.mc().world.getPlayerEntityByName(playerName);
             if (entityPlayer != null && entityPlayer.isWearing(EnumPlayerModelParts.HAT)) {
