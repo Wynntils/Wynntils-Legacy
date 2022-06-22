@@ -439,7 +439,9 @@ public class PlayerStatsProfile {
             }
 
             JsonObject globalStats = playerProfile.get("global").getAsJsonObject();
-            int chestsFound = globalStats.get("chestsFound").getAsInt();
+            // Chest stats in API are gone, set to 0 for now
+            // int chestsFound = globalStats.get("chestsFound").getAsInt();
+            int chestsFound = 0;
             long blocksWalked = globalStats.get("blocksWalked").getAsLong();
             int itemsIdentified = globalStats.get("itemsIdentified").getAsInt();
             int mobsKilled = globalStats.get("mobsKilled").getAsInt();
