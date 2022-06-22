@@ -83,12 +83,9 @@ public class EmeraldCountOverlay implements Listener {
             drawIconsMoneyAmount(178, 0, containerMoneyAmount, renderer);
         }
         if (UtilitiesConfig.INSTANCE.emeraldCountInventory && !isInEmeraldPouch) {
-            if (Utils.isCharacterInfoPage(e.getGui())) {
-                // Draw the count a bit lower in the compass menu
-                drawIconsMoneyAmount(178, 2 * (container.getSizeInventory() + 21), inventoryMoneyAmount, renderer);
-            } else {
-                drawIconsMoneyAmount(178, 2 * (container.getSizeInventory() + 10), inventoryMoneyAmount, renderer);
-            }
+            // Draw the count a bit lower in the compass menu
+            int inventoryYoffset = Utils.isCharacterInfoPage(e.getGui()) ? 21 : 10;
+            drawIconsMoneyAmount(178, 2 * (container.getSizeInventory() + inventoryYoffset), inventoryMoneyAmount, renderer);
         }
     }
 
