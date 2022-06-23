@@ -955,8 +955,15 @@ public class ClientEvents implements Listener {
         EntityPlayer ep = (EntityPlayer) clicked;
         if (ep.getTeam() == null) return; // player model npc
 
-        if (!ItemUtils.isWeapon(player.getHeldItemMainhand()))
-            return; // not a weapon
+        ItemStack heldItem = player.getHeldItemMainhand();
+        if (heldItem.isEmpty()) return;
+
+        if (!ItemUtils.isWeapon(heldItem) &&
+            !ItemUtils.isConsumable(heldItem) && // Potions, scrolls, food, etc.
+            !ItemUtils.isHorse(heldItem) &&
+            !ItemUtils.isGatheringTool(heldItem) &&
+            !heldItem.getDisplayName().equals("§bCharacter Info") &&
+            !heldItem.getDisplayName().equals("§dQuest Book")) return;
 
         e.setCanceled(true);
     }
