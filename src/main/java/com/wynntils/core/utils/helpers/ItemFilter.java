@@ -411,11 +411,11 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
 
         // damage ids
         @Type.Alias("MainAtkRawDmg")
-        public static final StatType TYPE_MAIN_ATK_NEUTRAL_DMG = StatType.getIdStat("RawMainAtkDmg", "Main Attack Damage", "rawMainAttackDamage");
+        public static final StatType TYPE_MAIN_ATK_NEUTRAL_DMG = StatType.getIdStat("MainAtkNeutralDmg", "Main Attack Neutral Damage", "rawMainAttackNeutralDamage");
         @Type.Alias({"MainAtkDmg%", "%MainAtkDmg", "Melee%", "%Melee"})
         public static final StatType TYPE_MAIN_ATK_DMG = StatType.getIdStat("MainAtkDmg", "Main Attack Damage %", "mainAttackDamage");
         @Type.Alias("SpellRawDmg")
-        public static final StatType TYPE_SPELL_NEUTRAL_DMG = StatType.getIdStat("RawSpellDmg", "Spell Damage", "rawSpellDamage");
+        public static final StatType TYPE_SPELL_NEUTRAL_DMG = StatType.getIdStat("SpellNeutralDmg", "Neutral Spell Damage", "rawNeutralSpellDamage");
         @Type.Alias({"SpellDmg%", "%SpellDmg", "Spell%", "%Spell", "sd"})
         public static final StatType TYPE_SPELL_DMG = StatType.getIdStat("SpellDmg", "Spell Damage %", "spellDamage");
         @Type.Alias({"EarthDmg%", "%EarthDmg"})
@@ -428,16 +428,6 @@ public interface ItemFilter extends Predicate<ItemProfile>, Comparator<ItemProfi
         public static final StatType TYPE_BONUS_FIRE_DMG = StatType.getIdStat("BonusFireDmg", "Fire Damage %", "fireDamage");
         @Type.Alias({"AirDmg%", "%AirDmg"})
         public static final StatType TYPE_BONUS_AIR_DMG = StatType.getIdStat("BonusAirDmg", "Air Damage %", "airDamage");
-        @Type.Alias("EarthSpellDmg")
-        public static final StatType TYPE_EARTH_SPELL_DMG = StatType.getIdStat("EarthSpellDmg", "Earth Spell Damage", "earthSpellDamage");
-        @Type.Alias("ThunderSpellDmg")
-        public static final StatType TYPE_THUNDER_SPELL_DMG = StatType.getIdStat("ThunderSpellDmg", "Thunder Spell Damage", "thunderSpellDamage");
-        @Type.Alias("WaterSpellDmg")
-        public static final StatType TYPE_WATER_SPELL_DMG = StatType.getIdStat("WaterSpellDmg", "Water Spell Damage", "waterSpellDamage");
-        @Type.Alias("FireSpellDmg")
-        public static final StatType TYPE_FIRE_SPELL_DMG = StatType.getIdStat("FireSpellDmg", "Fire Spell Damage", "fireSpellDamage");
-        @Type.Alias("AirSpellDmg")
-        public static final StatType TYPE_AIR_SPELL_DMG = StatType.getIdStat("AirSpellDmg", "Air Spell Damage", "airSpellDamage");
         @Type.Alias({"SumDmg%", "%SumDmg", "BonusTotalDmg", "TotalDmg%", "%TotalDmg"})
         public static final StatType TYPE_BONUS_SUM_DMG = StatType.sum("BonusSumDmg", "Total Damage %", TYPE_BONUS_EARTH_DMG, TYPE_BONUS_THUNDER_DMG, TYPE_BONUS_WATER_DMG, TYPE_BONUS_FIRE_DMG, TYPE_BONUS_AIR_DMG);
 

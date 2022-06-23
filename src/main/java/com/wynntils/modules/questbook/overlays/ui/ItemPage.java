@@ -735,8 +735,6 @@ public class ItemPage extends QuestBookListPage<ItemProfile> {
                         .with(ByStat.TYPE_FIRE_DMG).with(ByStat.TYPE_AIR_DMG).with(ByStat.TYPE_SUM_DMG)
                         .with(ByStat.TYPE_BONUS_EARTH_DMG).with(ByStat.TYPE_BONUS_THUNDER_DMG).with(ByStat.TYPE_BONUS_WATER_DMG)
                         .with(ByStat.TYPE_BONUS_FIRE_DMG).with(ByStat.TYPE_BONUS_AIR_DMG).with(ByStat.TYPE_BONUS_SUM_DMG)
-                        .with(ByStat.TYPE_EARTH_SPELL_DMG).with(ByStat.TYPE_THUNDER_SPELL_DMG).with(ByStat.TYPE_WATER_SPELL_DMG)
-                        .with(ByStat.TYPE_FIRE_SPELL_DMG).with(ByStat.TYPE_AIR_SPELL_DMG)
                         .with(ByStat.TYPE_MAIN_ATK_DMG).with(ByStat.TYPE_MAIN_ATK_NEUTRAL_DMG)
                         .with(ByStat.TYPE_SPELL_DMG).with(ByStat.TYPE_SPELL_NEUTRAL_DMG)
                         .with(ByStat.TYPE_ATTACK_SPEED).with(ByStat.TYPE_BONUS_ATK_SPD).with(ByStat.TYPE_ATK_SPD_SUM)
