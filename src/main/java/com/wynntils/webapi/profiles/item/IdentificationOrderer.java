@@ -20,7 +20,7 @@ public class IdentificationOrderer {
     public IdentificationOrderer(Map<String, Integer> idOrders, ArrayList<String> groupRanges, ArrayList<String> inveverted) {}
 
     /**
-     * @param id the identification "short" name. Ex: rawMainAttackNeutralDamage
+     * @param id the identification "short" name. Ex: rawMainAttackDamage
      * @return the priority level, if not present returns -1
      */
     public int getOrder(String id) {
@@ -28,7 +28,7 @@ public class IdentificationOrderer {
     }
 
     /**
-     * @param id the identification "short" name. Ex: rawMainAttackNeutralDamage
+     * @param id the identification "short" name. Ex: rawMainAttackDamage
      * @return the group id, if not present returns -1
      */
     public int getGroup(String id) {
@@ -38,7 +38,7 @@ public class IdentificationOrderer {
     }
 
     /**
-     * @param id the identification "short" name. Ex: rawMainAttackNeutralDamage
+     * @param id the identification "short" name. Ex: rawMainAttackDamage
      * @return if the provided identification status is inverted (negative values are positive)
      */
     public boolean isInverted(String id) {

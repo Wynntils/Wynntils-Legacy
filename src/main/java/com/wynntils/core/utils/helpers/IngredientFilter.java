@@ -340,11 +340,11 @@ public interface IngredientFilter extends Predicate<IngredientProfile>, Comparat
 
         // Damage ids
         @Type.Alias("MainAtkRawDmg")
-        public static final ByStat.StatType TYPE_MAIN_ATK_NEUTRAL_DMG = ByStat.StatType.getIdStat("MainAtkNeutralDmg", "Main Attack Neutral Damage", "rawMainAttackNeutralDamage");
+        public static final ByStat.StatType TYPE_MAIN_ATK_NEUTRAL_DMG = ByStat.StatType.getIdStat("RawMainAtkDmg", "Main Attack Damage", "rawMainAttackDamage");
         @Type.Alias({"MainAtkDmg%", "%MainAtkDmg", "Melee%", "%Melee"})
         public static final ByStat.StatType TYPE_MAIN_ATK_DMG = ByStat.StatType.getIdStat("MainAtkDmg", "Main Attack Damage %", "mainAttackDamage");
         @Type.Alias("SpellRawDmg")
-        public static final ByStat.StatType TYPE_SPELL_NEUTRAL_DMG = ByStat.StatType.getIdStat("SpellNeutralDmg", "Neutral Spell Damage", "rawNeutralSpellDamage");
+        public static final ByStat.StatType TYPE_SPELL_NEUTRAL_DMG = ByStat.StatType.getIdStat("RawSpellDmg", "Spell Damage", "rawSpellDamage");
         @Type.Alias({"SpellDmg%", "%SpellDmg", "Spell%", "%Spell", "sd"})
         public static final ByStat.StatType TYPE_SPELL_DMG = ByStat.StatType.getIdStat("SpellDmg", "Spell Damage %", "spellDamage");
         @Type.Alias({"EarthDmg%", "%EarthDmg"})
