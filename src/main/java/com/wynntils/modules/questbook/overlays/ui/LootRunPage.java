@@ -320,7 +320,8 @@ public class LootRunPage extends QuestBookListPage<String> {
         if (mouseButton == 0) { //left click means either load or unload
             if (isTracked) {
                 if (LootRunManager.getActivePath() != null) {
-                    LootRunManager.clear();
+                    // Clear only loaded so recordings are not cleared
+                    LootRunManager.clearOnlyLoaded();
                 }
             } else {
                 boolean result = LootRunManager.loadFromFile(selectedEntry);

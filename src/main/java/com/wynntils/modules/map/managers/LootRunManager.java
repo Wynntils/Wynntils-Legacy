@@ -149,6 +149,12 @@ public class LootRunManager {
         updateMapPath();
     }
 
+    public static void clearOnlyLoaded() {
+        activePath = null;
+        activePathName = null;
+        updateMapPath();
+    }
+
     public static LootRunPath getActivePath() {
         return activePath;
     }

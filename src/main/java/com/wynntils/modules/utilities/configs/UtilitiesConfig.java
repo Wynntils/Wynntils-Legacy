@@ -123,7 +123,7 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Show Leaderboard Badges", description = "Should leaderboard players have badges above their heads?", order = 22)
     public boolean renderLeaderboardBadges = true;
 
-    @Setting(displayName = "Prevent Trades & Duels", description = "Should trade and duel requests be disabled while holding an item?", order = 20)
+    @Setting(displayName = "Prevent Trades & Duels", description = "Should trade and duel requests be disabled while holding an item?\n\n§8Items blocked include weapons, all consumables, horses, compass, and quest book", order = 20)
     public boolean preventTradesDuels = false;
 
     @Setting(displayName = "Bulk Buy on Shift-Click", description = "Should the option to buy scrolls and potions in bulk while holding shift be available?", order = 14)

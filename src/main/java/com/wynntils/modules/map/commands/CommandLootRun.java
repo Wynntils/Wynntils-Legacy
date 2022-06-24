@@ -71,7 +71,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 if (args.length < 2) {
                     throw new WrongUsageException("/lootrun load [name]");
                 }
-                String name = args[1];
+                String name = getNameWithSpaces(args);
                 boolean result = LootRunManager.loadFromFile(name);
 
                 String message;
@@ -97,7 +97,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 if (args.length < 2) {
                     throw new WrongUsageException("/lootrun save [name]");
                 }
-                String name = args[1];
+                String name = getNameWithSpaces(args);
                 if (LootRunManager.hasLootrun(name)) {
                     throw new CommandException("A lootrun file with this name already exists!");
                 }
@@ -124,7 +124,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 if (args.length < 2) {
                     throw new WrongUsageException("/lootrun delete [name]");
                 }
-                String name = args[1];
+                String name = getNameWithSpaces(args);
 
                 boolean result = LootRunManager.delete(name);
 
@@ -273,7 +273,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 if (args.length < 4) {
                     pos = new BlockPos((int) McIf.player().posX, (int) McIf.player().posY, (int) McIf.player().posZ - 1);
                 } else {
-                    int x = 0, y = 0, z = 0;
+                    int x, y, z;
                     try {
                         x = Integer.parseInt(args[1]);
                         y = Integer.parseInt(args[2]);
@@ -352,6 +352,18 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
             default:
                 throw new WrongUsageException("/" + getUsage(sender));
         }
+    }
+
+    private String getNameWithSpaces(String[] args) {
+        // Iterate through remaining args to allow for spaces in names
+        StringBuilder nameBuilder = new StringBuilder();
+        for (int i = 1; i < args.length; i++) {
+            nameBuilder.append(args[i]);
+            if (i < args.length - 1) {
+                nameBuilder.append(" ");
+            }
+        }
+        return nameBuilder.toString();
     }
 
     @Override
