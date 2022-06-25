@@ -439,6 +439,14 @@ public class ItemIdentificationOverlay implements Listener {
                         }
 
                         String shortIdName = toShortIdName(idName, isRaw);
+
+                        // This converts the new 2.0+ id names into the old 1.20 names to be used with Athena
+                        if (shortIdName.equals("rawMainAttackDamage")) {
+                            shortIdName = "rawMainAttackNeutralDamage";
+                        } else if (shortIdName.equals("rawSpellDamage")) {
+                            shortIdName = "rawNeutralSpellDamage";
+                        }
+
                         if (stars != 0) {
                             idTag.setInteger(shortIdName + "*", stars);
                         }
