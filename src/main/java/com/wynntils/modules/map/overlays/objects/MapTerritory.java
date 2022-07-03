@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.overlays.objects;
 
+import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.GuildResource;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -20,9 +21,7 @@ import com.wynntils.modules.map.overlays.renderer.MapInfoUI;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class MapTerritory {
 
@@ -64,6 +63,8 @@ public class MapTerritory {
         description.add("");
         description.add(TextFormatting.GRAY + "✦ Treasury: " + resources.getTreasury());
         description.add(TextFormatting.GRAY + "Territory Defences: " + resources.getDefences());
+        description.add("");
+        description.add(TextFormatting.GRAY + "Time held: " + territory.getTimeHeld().makeReadable() + "ago");
 
         if (resources.isHeadquarters()) {
             description.add(" ");
@@ -136,7 +137,7 @@ public class MapTerritory {
 
         if (territoryArea) {
             renderer.drawRectF(color.setA(MapConfig.WorldMap.INSTANCE.colorAlpha), initX, initY, endX, endY);
-            renderer.drawRectWBordersF(color.setA(1), initX, initY, endX, endY, 2f);
+            renderer.drawRectWBordersF(color.setA(1), initX, initY, endX, endY, 2f, territory.getTimeHeld().isOnCooldown() && MapConfig.WorldMap.INSTANCE.useDashedBordersIfCooldown);
         }
 
         float ppX = getCenterX();

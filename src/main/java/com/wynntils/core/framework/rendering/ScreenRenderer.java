@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -476,9 +477,9 @@ public class ScreenRenderer {
         color.applyColor();
 
         int xMin = Math.min(x1, x2) + drawingOrigin.x,
-            xMax = Math.max(x1, x2) + drawingOrigin.x,
-            yMin = Math.min(y1, y2) + drawingOrigin.y,
-            yMax = Math.max(y1, y2) + drawingOrigin.y;
+                xMax = Math.max(x1, x2) + drawingOrigin.x,
+                yMin = Math.min(y1, y2) + drawingOrigin.y,
+                yMax = Math.max(y1, y2) + drawingOrigin.y;
 
         GlStateManager.glBegin(GL_QUADS);
         GlStateManager.glVertex3f(xMin, yMin, 0);
@@ -511,9 +512,9 @@ public class ScreenRenderer {
         texture.bind();
 
         int xMin = x1 + drawingOrigin.x,
-            xMax = x2 + drawingOrigin.x,
-            yMin = y1 + drawingOrigin.y,
-            yMax = y2 + drawingOrigin.y;
+                xMax = x2 + drawingOrigin.x,
+                yMin = y1 + drawingOrigin.y,
+                yMax = y2 + drawingOrigin.y;
 
         GlStateManager.glBegin(GL_QUADS);
         GlStateManager.glTexCoord2f(tx1, ty1);
@@ -571,13 +572,13 @@ public class ScreenRenderer {
         texture.bind();
 
         float xMin  = x1  + drawingOrigin.x,
-              xMax  = x2  + drawingOrigin.x,
-              yMin  = y1  + drawingOrigin.y,
-              yMax  = y2  + drawingOrigin.y,
-              txMin = tx1 / texture.width,
-              txMax = tx2 / texture.width,
-              tyMin = ty1 / texture.height,
-              tyMax = ty2 / texture.height;
+                xMax  = x2  + drawingOrigin.x,
+                yMin  = y1  + drawingOrigin.y,
+                yMax  = y2  + drawingOrigin.y,
+                txMin = tx1 / texture.width,
+                txMax = tx2 / texture.width,
+                tyMin = ty1 / texture.height,
+                tyMax = ty2 / texture.height;
 
         GlStateManager.glBegin(GL_QUADS);
         GlStateManager.glTexCoord2f(txMin, tyMin);
@@ -608,9 +609,9 @@ public class ScreenRenderer {
         color.applyColor();
 
         float xMin  = Math.min(x1, x2) + drawingOrigin.x,
-              xMax  = Math.max(x1, x2) + drawingOrigin.x,
-              yMin  = Math.min(y1, y2) + drawingOrigin.y,
-              yMax  = Math.max(y1, y2) + drawingOrigin.y;
+                xMax  = Math.max(x1, x2) + drawingOrigin.x,
+                yMin  = Math.min(y1, y2) + drawingOrigin.y,
+                yMax  = Math.max(y1, y2) + drawingOrigin.y;
 
         GlStateManager.glBegin(GL_QUADS);
         GlStateManager.glVertex3f(xMin, yMin, 0);
@@ -623,6 +624,10 @@ public class ScreenRenderer {
     }
 
     public void drawRectWBordersF(CustomColor color, float x1, float y1, float x2, float y2, float lineWidth) {
+        this.drawRectWBordersF(color, x1, y1, x2, y2, lineWidth, false);
+    }
+
+    public void drawRectWBordersF(CustomColor color, float x1, float y1, float x2, float y2, float lineWidth, boolean dashed) {
         if (!rendering) return;
         GlStateManager.enableAlpha();
         GlStateManager.disableTexture2D();
@@ -634,12 +639,20 @@ public class ScreenRenderer {
                 xMax  = Math.max(x1, x2) + drawingOrigin.x,
                 yMin  = Math.min(y1, y2) + drawingOrigin.y,
                 yMax  = Math.max(y1, y2) + drawingOrigin.y;
+        if(dashed) {
+            glLineStipple(1, (short) 0x00FF);
+            GL11.glEnable(GL_LINE_STIPPLE);
+        }
         GlStateManager.glBegin(GL_LINE_LOOP);
+
         GlStateManager.glVertex3f(xMin, yMin, 0);
         GlStateManager.glVertex3f(xMin, yMax, 0);
         GlStateManager.glVertex3f(xMax, yMax, 0);
         GlStateManager.glVertex3f(xMax, yMin, 0);
         GlStateManager.glEnd();
+        if(dashed) {
+            GL11.glDisable(GL11.GL_LINE_STIPPLE);
+        }
         GlStateManager.enableTexture2D();
     }
 
@@ -666,13 +679,13 @@ public class ScreenRenderer {
             GlStateManager.enableTexture2D();
             texture.bind();
             float xMin = Math.min(x1, x2) + drawingOrigin.x,
-                  xMax = Math.max(x1, x2) + drawingOrigin.x,
-                  yMin = Math.min(y1, y2) + drawingOrigin.y,
-                  yMax = Math.max(y1, y2) + drawingOrigin.y,
-                  txMin = (float) Math.min(tx1, tx2) / texture.width,
-                  txMax = (float) Math.max(tx1, tx2) / texture.width,
-                  tyMin = (float) Math.min(ty1, ty2) / texture.height,
-                  tyMax = (float) Math.max(ty1, ty2) / texture.height;
+                    xMax = Math.max(x1, x2) + drawingOrigin.x,
+                    yMin = Math.min(y1, y2) + drawingOrigin.y,
+                    yMax = Math.max(y1, y2) + drawingOrigin.y,
+                    txMin = (float) Math.min(tx1, tx2) / texture.width,
+                    txMax = (float) Math.max(tx1, tx2) / texture.width,
+                    tyMin = (float) Math.min(ty1, ty2) / texture.height,
+                    tyMax = (float) Math.max(ty1, ty2) / texture.height;
 
             GlStateManager.glBegin(GL_QUADS);
             GlStateManager.glTexCoord2f(txMin, tyMin);
@@ -689,13 +702,13 @@ public class ScreenRenderer {
             GlStateManager.enableTexture2D();
             texture.bind();
             float xMin =  Math.min(x1, x2) + drawingOrigin.x,
-                  xMax =  Math.max(x1, x2) + drawingOrigin.x,
-                  yMin =  Math.min(y1, y2) + drawingOrigin.y,
-                  yMax =  Math.max(y1, y2) + drawingOrigin.y - 1.5f,
-                  txMin = (float) Math.min(tx1, tx2) / texture.width,
-                  txMax = (float) Math.max(tx1, tx2) / texture.width,
-                  tyMin = (float) Math.min(ty1, ty2) / texture.height,
-                  tyMax = (float) Math.max(ty1, ty2) / texture.height;
+                    xMax =  Math.max(x1, x2) + drawingOrigin.x,
+                    yMin =  Math.min(y1, y2) + drawingOrigin.y,
+                    yMax =  Math.max(y1, y2) + drawingOrigin.y - 1.5f,
+                    txMin = (float) Math.min(tx1, tx2) / texture.width,
+                    txMax = (float) Math.max(tx1, tx2) / texture.width,
+                    tyMin = (float) Math.min(ty1, ty2) / texture.height,
+                    tyMax = (float) Math.max(ty1, ty2) / texture.height;
 
             if (progress < 1.0f && progress > -1.0f) {
                 if (progress < 0.0f) {
@@ -779,7 +792,7 @@ public class ScreenRenderer {
         drawRect(backColor, x1, y1, x2, y2);
 
         float xMin  = Math.min(x1, x2),
-              xMax  = Math.max(x1, x2);
+                xMax  = Math.max(x1, x2);
 
         if (progress < 0.0f) {
             xMin += (1.0f + progress) * (xMax - xMin);
