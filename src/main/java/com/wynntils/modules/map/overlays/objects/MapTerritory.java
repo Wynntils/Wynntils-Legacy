@@ -5,7 +5,6 @@
 package com.wynntils.modules.map.overlays.objects;
 
 import com.mojang.realmsclient.gui.ChatFormatting;
-import com.wynntils.McIf;
 import com.wynntils.core.framework.enums.GuildResource;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -65,7 +64,7 @@ public class MapTerritory {
         description.add(TextFormatting.GRAY + "✦ Treasury: " + resources.getTreasury());
         description.add(TextFormatting.GRAY + "Territory Defences: " + resources.getDefences());
         description.add("");
-        description.add(TextFormatting.GRAY + "Time held: " + ChatFormatting.AQUA + territory.getTimeHeld().makeReadable());
+        description.add(TextFormatting.GRAY + "Time held: " + ChatFormatting.AQUA + territory.getTimeHeld().asString());
 
         if (resources.isHeadquarters()) {
             description.add(" ");

@@ -638,7 +638,7 @@ public class ScreenRenderer {
                 xMax  = Math.max(x1, x2) + drawingOrigin.x,
                 yMin  = Math.min(y1, y2) + drawingOrigin.y,
                 yMax  = Math.max(y1, y2) + drawingOrigin.y;
-        if(dashed) {
+        if (dashed) {
             glLineStipple(1, (short) 0x00FF);
             GL11.glEnable(GL_LINE_STIPPLE);
         }
@@ -649,7 +649,7 @@ public class ScreenRenderer {
         GlStateManager.glVertex3f(xMax, yMax, 0);
         GlStateManager.glVertex3f(xMax, yMin, 0);
         GlStateManager.glEnd();
-        if(dashed) {
+        if (dashed) {
             GL11.glDisable(GL11.GL_LINE_STIPPLE);
         }
         GlStateManager.enableTexture2D();

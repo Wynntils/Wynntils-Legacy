@@ -182,7 +182,7 @@ public class TerritoryProfile {
             calculate();
         }
 
-        void calculate() {
+        private void calculate() {
             long difference = new Date().getTime() - time + ((long) new Date().getTimezoneOffset() * 60 * 1000);
 
             days = difference / (1000 * 60 * 60 * 24);
@@ -191,7 +191,7 @@ public class TerritoryProfile {
             seconds = (difference % (1000 * 60)) / 1000;
         }
 
-        public String makeReadable() {
+        public String asString() {
             String readable = "";
             if (days > 0)
                 readable += days + "d ";
