@@ -623,6 +623,9 @@ public class ScreenRenderer {
         GlStateManager.color(1f, 1f, 1f, 1f);
     }
 
+    public void drawRectWBordersF(CustomColor color, float x1, float y1, float x2, float y2, float lineWidth) {
+        this.drawRectWBordersF(color, x1, y1, x2, y2, lineWidth, false);
+    }
     public void drawRectWBordersF(CustomColor color, float x1, float y1, float x2, float y2, float lineWidth, boolean dashed) {
         if (!rendering) return;
         GlStateManager.enableAlpha();
