@@ -109,15 +109,20 @@ public class TerritoryProfile {
     }
 
 
-    private long getDifference() {
-        return new Date().getTime() - this.getAcquired().getTime() + ((long) new Date().getTimezoneOffset() * 60 * 1000);
-    }
-    public boolean isOnCooldown(){
-        return getDifference() < 10 * 60 * 1000;
+    private long getTimeHeldInMillis() {
+        return new Date().getTime() - this.getAcquired().getTime() + getTimezoneOffset();
     }
 
-    public String getRelativeTimeAcquired() {
-        long difference = getDifference();
+    private long getTimezoneOffset(){
+        return ((long) new Date().getTimezoneOffset() * 60 * 1000);
+    }
+
+    public boolean isOnCooldown(){
+        return getTimeHeldInMillis() < 10 * 60 * 1000;
+    }
+
+    public String getReadableRelativeTimeAcquired () {
+        long difference = getTimeHeldInMillis();
         long days = difference / (1000 * 60 * 60 * 24);
         long hours = (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
         long minutes = (difference % (1000 * 60 * 60)) / (1000 * 60);

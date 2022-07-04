@@ -64,7 +64,7 @@ public class MapTerritory {
         description.add(TextFormatting.GRAY + "✦ Treasury: " + resources.getTreasury());
         description.add(TextFormatting.GRAY + "Territory Defences: " + resources.getDefences());
         description.add("");
-        description.add(TextFormatting.GRAY + "Time held: " + ChatFormatting.AQUA + territory.getRelativeTimeAcquired());
+        description.add(TextFormatting.GRAY + "Time held: " + ChatFormatting.AQUA + territory.getReadableRelativeTimeAcquired());
 
         if (resources.isHeadquarters()) {
             description.add(" ");
