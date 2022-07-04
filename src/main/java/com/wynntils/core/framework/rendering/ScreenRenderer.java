@@ -637,7 +637,10 @@ public class ScreenRenderer {
                 xMax  = Math.max(x1, x2) + drawingOrigin.x,
                 yMin  = Math.min(y1, y2) + drawingOrigin.y,
                 yMax  = Math.max(y1, y2) + drawingOrigin.y;
-        if (dashed) applyLineStipple();
+        if (dashed) {
+            glLineStipple(1, (short) 0x00FF);
+            GL11.glEnable(GL_LINE_STIPPLE);
+        }
         GlStateManager.glBegin(GL_LINE_LOOP);
 
         GlStateManager.glVertex3f(xMin, yMin, 0);
@@ -648,12 +651,6 @@ public class ScreenRenderer {
         if (dashed) GL11.glDisable(GL11.GL_LINE_STIPPLE);
         GlStateManager.enableTexture2D();
     }
-
-    private void applyLineStipple(){
-        glLineStipple(1, (short) 0x00FF);
-        GL11.glEnable(GL_LINE_STIPPLE);
-    }
-
 
     /** drawProgressBar
      * Draws a textured progress bar, if you dont know how to use it, use the method after.

@@ -64,7 +64,7 @@ public class MapTerritory {
         description.add(TextFormatting.GRAY + "✦ Treasury: " + resources.getTreasury());
         description.add(TextFormatting.GRAY + "Territory Defences: " + resources.getDefences());
         description.add("");
-        description.add(TextFormatting.GRAY + "Time held: " + ChatFormatting.AQUA + territory.getTimeHeld().asString());
+        description.add(TextFormatting.GRAY + "Time held: " + ChatFormatting.AQUA + territory.getRelativeTimeAcquired());
 
         if (resources.isHeadquarters()) {
             description.add(" ");
@@ -131,7 +131,7 @@ public class MapTerritory {
 
         if (territoryArea) {
             renderer.drawRectF(color.setA(MapConfig.WorldMap.INSTANCE.colorAlpha), initX, initY, endX, endY);
-            renderer.drawRectWBordersF(color.setA(1), initX, initY, endX, endY, 2f, territory.getTimeHeld().isOnCooldown() && MapConfig.WorldMap.INSTANCE.useDashedBordersIfCooldown);
+            renderer.drawRectWBordersF(color.setA(1), initX, initY, endX, endY, 2f, territory.isOnCooldown() && MapConfig.WorldMap.INSTANCE.useDashedBordersIfCooldown);
         }
 
         float ppX = getCenterX();

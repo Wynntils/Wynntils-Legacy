@@ -28,8 +28,6 @@ public class TerritoryProfile {
     String attacker;
     Date acquired;
 
-    TimeHeld timeHeld;
-
     int level;
 
     public TerritoryProfile(String name, String friendlyName, String guildPrefix, String guildColor, int level, int startX, int startZ, int endX, int endZ, String guild, String attacker, Date acquired) {
@@ -44,8 +42,6 @@ public class TerritoryProfile {
         this.attacker = attacker;
 
         this.acquired = acquired;
-
-        this.timeHeld = new TimeHeld(acquired.getTime());
 
         if (endX < startX) {
             this.startX = endX;
@@ -70,10 +66,6 @@ public class TerritoryProfile {
 
     public String getFriendlyName() {
         return friendlyName;
-    }
-
-    public TimeHeld getTimeHeld() {
-        return timeHeld;
     }
 
     public String getGuildColor() {
@@ -114,6 +106,28 @@ public class TerritoryProfile {
 
     public Date getAcquired() {
         return acquired;
+    }
+
+
+    private long getDifference() {
+        return new Date().getTime() - this.getAcquired().getTime() + ((long) new Date().getTimezoneOffset() * 60 * 1000);
+    }
+    public boolean isOnCooldown(){
+        return getDifference() < 10 * 60 * 1000;
+    }
+
+    public String getRelativeTimeAcquired() {
+        long difference = getDifference();
+        long days = difference / (1000 * 60 * 60 * 24);
+        long hours = (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
+        long minutes = (difference % (1000 * 60 * 60)) / (1000 * 60);
+        long seconds = (difference % (1000 * 60)) / 1000;
+        String readable = "";
+        if (days > 0) readable += days + "d ";
+        if (hours > 0) readable += hours + "h ";
+        if (minutes > 0) readable += minutes + "m ";
+        if (seconds > 0) readable += seconds + "s ";
+        return readable;
     }
 
     public boolean insideArea(int playerX, int playerZ) {
@@ -167,49 +181,6 @@ public class TerritoryProfile {
             return new TerritoryProfile(territoryName, friendlyName, guildPrefix, guildColor, level, startX, startZ, endX, endZ, guild, attacker, acquired);
         }
 
-    }
-
-    public static class TimeHeld {
-        public long days;
-        public long hours;
-        public long minutes;
-        public long seconds;
-        public long difference;
-        public long time;
-
-        public TimeHeld(long time) {
-            this.time = time;
-            calculate();
-        }
-
-        private void calculate() {
-            long difference = new Date().getTime() - time + ((long) new Date().getTimezoneOffset() * 60 * 1000);
-
-            days = difference / (1000 * 60 * 60 * 24);
-            hours = (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
-            minutes = (difference % (1000 * 60 * 60)) / (1000 * 60);
-            seconds = (difference % (1000 * 60)) / 1000;
-        }
-
-        public String asString() {
-            calculate();
-            String readable = "";
-            if (days > 0)
-                readable += days + "d ";
-            if (hours > 0)
-                readable += hours + "h ";
-            if (minutes > 0)
-                readable += minutes + "m ";
-            if (seconds > 0)
-                readable += seconds + "s ";
-            return readable;
-        }
-
-        public boolean isOnCooldown() {
-            calculate();
-            if (hours > 1) return false;
-            return minutes <= 10;
-        }
     }
 
 }
