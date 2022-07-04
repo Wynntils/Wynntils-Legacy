@@ -127,13 +127,7 @@ public class MapTerritory {
     public void drawScreen(int mouseX, int mouseY, float partialTicks, boolean territoryArea, boolean resourceColor, boolean showHeadquarters, boolean showNames) {
         if (!shouldRender || renderer == null) return;
 
-        CustomColor color;
-        if (!resourceColor) {
-            color = territory.getGuildColor() == null ? StringUtils.colorFromString(territory.getGuild()) :
-                    StringUtils.colorFromHex(territory.getGuildColor());
-        } else {
-            color = resources.getColor();
-        }
+        CustomColor color = getTerritoryColor(resourceColor);
 
         if (territoryArea) {
             renderer.drawRectF(color.setA(MapConfig.WorldMap.INSTANCE.colorAlpha), initX, initY, endX, endY);
@@ -161,6 +155,15 @@ public class MapTerritory {
         else if (alpha <= 0) return;
 
         renderer.drawString(MapConfig.WorldMap.INSTANCE.useGuildShortNames ? territory.getGuildPrefix() : territory.getGuild(), ppX, ppY, color.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+    }
+
+    private CustomColor getTerritoryColor(boolean resourceColor) {
+        if (!resourceColor) {
+            return territory.getGuildColor() == null ? StringUtils.colorFromString(territory.getGuild()) :
+                    StringUtils.colorFromHex(territory.getGuildColor());
+        } else {
+            return resources.getColor();
+        }
     }
 
     public void postDraw(int mouseX, int mouseY, float partialTicks, int width, int height) {
