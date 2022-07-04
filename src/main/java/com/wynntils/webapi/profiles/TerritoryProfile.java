@@ -192,6 +192,7 @@ public class TerritoryProfile {
         }
 
         public String asString() {
+            calculate();
             String readable = "";
             if (days > 0)
                 readable += days + "d ";
@@ -205,6 +206,7 @@ public class TerritoryProfile {
         }
 
         public boolean isOnCooldown() {
+            calculate();
             if (hours > 1) return false;
             return minutes <= 10;
         }
