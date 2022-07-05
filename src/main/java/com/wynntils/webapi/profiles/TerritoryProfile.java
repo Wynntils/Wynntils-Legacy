@@ -5,6 +5,7 @@
 package com.wynntils.webapi.profiles;
 
 import com.google.gson.*;
+import com.wynntils.core.utils.helpers.SimpleRelativeDateFormatter;
 
 import java.lang.reflect.Type;
 import java.text.ParseException;
@@ -29,6 +30,8 @@ public class TerritoryProfile {
     Date acquired;
 
     int level;
+
+    private final SimpleRelativeDateFormatter formatter = new SimpleRelativeDateFormatter();
 
     public TerritoryProfile(String name, String friendlyName, String guildPrefix, String guildColor, int level, int startX, int startZ, int endX, int endZ, String guild, String attacker, Date acquired) {
         this.name = name;
@@ -123,16 +126,7 @@ public class TerritoryProfile {
 
     public String getReadableRelativeTimeAcquired () {
         long difference = getTimeHeldInMillis();
-        long days = difference / (1000 * 60 * 60 * 24);
-        long hours = (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
-        long minutes = (difference % (1000 * 60 * 60)) / (1000 * 60);
-        long seconds = (difference % (1000 * 60)) / 1000;
-        String readable = "";
-        if (days > 0) readable += days + "d ";
-        if (hours > 0) readable += hours + "h ";
-        if (minutes > 0) readable += minutes + "m ";
-        if (seconds > 0) readable += seconds + "s ";
-        return readable;
+        return formatter.format(difference);
     }
 
     public boolean insideArea(int playerX, int playerZ) {
