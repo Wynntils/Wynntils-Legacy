@@ -477,9 +477,9 @@ public class ScreenRenderer {
         color.applyColor();
 
         int xMin = Math.min(x1, x2) + drawingOrigin.x,
-                xMax = Math.max(x1, x2) + drawingOrigin.x,
-                yMin = Math.min(y1, y2) + drawingOrigin.y,
-                yMax = Math.max(y1, y2) + drawingOrigin.y;
+            xMax = Math.max(x1, x2) + drawingOrigin.x,
+            yMin = Math.min(y1, y2) + drawingOrigin.y,
+            yMax = Math.max(y1, y2) + drawingOrigin.y;
 
         GlStateManager.glBegin(GL_QUADS);
         GlStateManager.glVertex3f(xMin, yMin, 0);
