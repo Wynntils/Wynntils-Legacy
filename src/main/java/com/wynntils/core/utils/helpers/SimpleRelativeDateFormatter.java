@@ -34,7 +34,6 @@ public class SimpleRelativeDateFormatter extends DateFormat {
                 sb.append(count).append(value).append(" ");
             }
         });
-        sb.append(" ago");
         return sb;
     }
 
