@@ -21,7 +21,8 @@ import com.wynntils.modules.map.overlays.renderer.MapInfoUI;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MapTerritory {
 

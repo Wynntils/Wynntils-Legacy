@@ -39,6 +39,6 @@ public class SimpleRelativeDateFormatter extends DateFormat {
 
     @Override
     public Date parse(String source, ParsePosition pos) {
-        return new Date(0);
+        throw new UnsupportedOperationException("Parsing relative time is not supported.");
     }
 }
