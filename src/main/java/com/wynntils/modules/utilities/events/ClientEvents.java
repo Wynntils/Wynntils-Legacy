@@ -587,12 +587,20 @@ public class ClientEvents implements Listener {
         }
     }
 
+
+    int timesClosed = 1;
     @SubscribeEvent
     public void keyPressOnChest(GuiOverlapEvent.ChestOverlap.KeyTyped e) {
         if (!Reference.onWorld) return;
 
         if (UtilitiesConfig.INSTANCE.preventMythicChestClose || UtilitiesConfig.INSTANCE.preventFavoritedChestClose) {
+            boolean preventedClose = false;
             if (e.getKeyCode() == 1 || e.getKeyCode() == McIf.mc().gameSettings.keyBindInventory.getKeyCode()) {
+                if(UtilitiesConfig.INSTANCE.preventFavoritedChestCloseTimes != 0 && timesClosed >= UtilitiesConfig.INSTANCE.preventFavoritedChestCloseTimes) {
+                    timesClosed = 1;
+                    return;
+                }
+
                 IInventory inv = e.getGui().getLowerInv();
                 String invName = getTextWithoutFormattingCodes(inv.getName());
                 if ((invName.startsWith("Loot Chest") || invName.contains("Daily Rewards") ||
@@ -607,7 +615,9 @@ public class ClientEvents implements Listener {
                             text = new TextComponentString("You cannot close this loot chest while there is a mythic in it!");
                         } else if (UtilitiesConfig.INSTANCE.preventFavoritedChestClose && stack.hasTagCompound() &&
                                 stack.getTagCompound().getBoolean("wynntilsFavorite")) {
-                            text = new TextComponentString("You cannot close this loot chest while there is a favorited item, ingredient, emerald pouch or powder in it!");
+                            text = new TextComponentString("You cannot close this loot chest while there is a favorited item, ingredient, emerald pouch, emerald or powder in it!"
+                            + (UtilitiesConfig.INSTANCE.preventFavoritedChestCloseTimes != 0 ? " Try closing this chest " +
+                                    (UtilitiesConfig.INSTANCE.preventFavoritedChestCloseTimes-timesClosed) + " more times to forcefully close!" : ""));
                         } else {
                             continue;
                         }
@@ -616,8 +626,14 @@ public class ClientEvents implements Listener {
                         McIf.player().sendMessage(text);
                         McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_BASS, 1f));
                         e.setCanceled(true);
+                        preventedClose = true;
                         break;
                     }
+                }
+                if(!preventedClose){
+                    timesClosed = 1;
+                }else{
+                    timesClosed++;
                 }
                 return;
             }

@@ -53,6 +53,14 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Favorited Item Chest Closing", description = "Should the closing of loot chests be prevented when they contain favorited items?", order = 4)
     public boolean preventFavoritedChestClose = true;
 
+    @Setting(displayName = "Emerald Chest Closing", description = "Should the closing of loot chests be prevented when they contain emeralds?", order = 4)
+    @Setting.Limitations.IntLimit(min = 0, max = 64)
+    public int preventEmeraldChestClose = 0;
+
+    @Setting(displayName = "Favorite Item Close Times", description = "After how many chest closes with favorite items do you want to forcefully close the chest?", order = 4)
+    @Setting.Limitations.IntLimit(min = 0, max = 10)
+    public int preventFavoritedChestCloseTimes = 0;
+
     @Setting(displayName = "Clicking on Pouches in Chests", description = "Should opening ingredient and emerald pouches be blocked when opening loot chests?", order = 6)
     public boolean preventOpeningPouchesChest = true;
 
