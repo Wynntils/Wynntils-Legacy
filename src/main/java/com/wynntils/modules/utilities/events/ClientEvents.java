@@ -122,6 +122,7 @@ public class ClientEvents implements Listener {
     private static int lastProcessedOpenedChest = -1;
     private int lastOpenedChestWindowId = -1;
     private int lastOpenedRewardWindowId = -1;
+    private int timesClosed = 1;
 
 
     @SubscribeEvent
@@ -587,8 +588,6 @@ public class ClientEvents implements Listener {
         }
     }
 
-
-    int timesClosed = 1;
     @SubscribeEvent
     public void keyPressOnChest(GuiOverlapEvent.ChestOverlap.KeyTyped e) {
         if (!Reference.onWorld) return;
@@ -630,9 +629,9 @@ public class ClientEvents implements Listener {
                         break;
                     }
                 }
-                if(!preventedClose){
+                if (!preventedClose) {
                     timesClosed = 1;
-                }else{
+                } else {
                     timesClosed++;
                 }
                 return;
