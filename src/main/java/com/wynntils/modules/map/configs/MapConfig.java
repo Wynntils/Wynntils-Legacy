@@ -100,6 +100,9 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Territory Guild Tags", description = "Should guild names be replaced by their guild tags?")
         public boolean useGuildShortNames = true;
 
+        @Setting(displayName = "Dashed Borders if Cooldown", description = "Should the territory borders on the guild map have dashed lines if the territory is on cooldown?")
+        public boolean useDashedBordersIfCooldown = true;
+
         @Setting(displayName = "Territory Colour Transparency", description = "How transparent should the colour of territories be?")
         @Setting.Limitations.FloatLimit(min = 0.1f, max = 1f)
         public float colorAlpha = 0.4f;

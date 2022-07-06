@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.lwjgl.opengl.GL11;
 
 import java.awt.*;
 import java.util.Arrays;
@@ -623,6 +624,10 @@ public class ScreenRenderer {
     }
 
     public void drawRectWBordersF(CustomColor color, float x1, float y1, float x2, float y2, float lineWidth) {
+        this.drawRectWBordersF(color, x1, y1, x2, y2, lineWidth, false);
+    }
+
+    public void drawRectWBordersF(CustomColor color, float x1, float y1, float x2, float y2, float lineWidth, boolean dashed) {
         if (!rendering) return;
         GlStateManager.enableAlpha();
         GlStateManager.disableTexture2D();
@@ -634,12 +639,19 @@ public class ScreenRenderer {
                 xMax  = Math.max(x1, x2) + drawingOrigin.x,
                 yMin  = Math.min(y1, y2) + drawingOrigin.y,
                 yMax  = Math.max(y1, y2) + drawingOrigin.y;
+        
+        if (dashed) {
+            glLineStipple(1, (short) 0x00FF);
+            GL11.glEnable(GL_LINE_STIPPLE);
+        }
+
         GlStateManager.glBegin(GL_LINE_LOOP);
         GlStateManager.glVertex3f(xMin, yMin, 0);
         GlStateManager.glVertex3f(xMin, yMax, 0);
         GlStateManager.glVertex3f(xMax, yMax, 0);
         GlStateManager.glVertex3f(xMax, yMin, 0);
         GlStateManager.glEnd();
+        if (dashed) GL11.glDisable(GL11.GL_LINE_STIPPLE);
         GlStateManager.enableTexture2D();
     }
 

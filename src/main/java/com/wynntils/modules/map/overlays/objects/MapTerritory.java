@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.overlays.objects;
 
+import com.mojang.realmsclient.gui.ChatFormatting;
 import com.wynntils.core.framework.enums.GuildResource;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -20,7 +21,6 @@ import com.wynntils.modules.map.overlays.renderer.MapInfoUI;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,6 +64,10 @@ public class MapTerritory {
         description.add("");
         description.add(TextFormatting.GRAY + "✦ Treasury: " + resources.getTreasury());
         description.add(TextFormatting.GRAY + "Territory Defences: " + resources.getDefences());
+        description.add("");
+        
+        String treasuryColor = resources.getTreasury().substring(0, 2);
+        description.add(TextFormatting.GRAY + "Time held: " + treasuryColor + territory.getReadableRelativeTimeAcquired());
 
         if (resources.isHeadquarters()) {
             description.add(" ");
@@ -126,17 +130,11 @@ public class MapTerritory {
     public void drawScreen(int mouseX, int mouseY, float partialTicks, boolean territoryArea, boolean resourceColor, boolean showHeadquarters, boolean showNames) {
         if (!shouldRender || renderer == null) return;
 
-        CustomColor color;
-        if (!resourceColor) {
-            color = territory.getGuildColor() == null ? StringUtils.colorFromString(territory.getGuild()) :
-                    StringUtils.colorFromHex(territory.getGuildColor());
-        } else {
-            color = resources.getColor();
-        }
+        CustomColor color = getTerritoryColor(resourceColor);
 
         if (territoryArea) {
             renderer.drawRectF(color.setA(MapConfig.WorldMap.INSTANCE.colorAlpha), initX, initY, endX, endY);
-            renderer.drawRectWBordersF(color.setA(1), initX, initY, endX, endY, 2f);
+            renderer.drawRectWBordersF(color.setA(1), initX, initY, endX, endY, 2f, territory.isOnCooldown() && MapConfig.WorldMap.INSTANCE.useDashedBordersIfCooldown);
         }
 
         float ppX = getCenterX();
@@ -160,6 +158,15 @@ public class MapTerritory {
         else if (alpha <= 0) return;
 
         renderer.drawString(MapConfig.WorldMap.INSTANCE.useGuildShortNames ? territory.getGuildPrefix() : territory.getGuild(), ppX, ppY, color.setA(alpha), SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.OUTLINE);
+    }
+
+    private CustomColor getTerritoryColor(boolean resourceColor) {
+        if (!resourceColor) {
+            return territory.getGuildColor() == null ? StringUtils.colorFromString(territory.getGuild()) :
+                    StringUtils.colorFromHex(territory.getGuildColor());
+        } else {
+            return resources.getColor();
+        }
     }
 
     public void postDraw(int mouseX, int mouseY, float partialTicks, int width, int height) {
