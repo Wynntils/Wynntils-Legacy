@@ -149,8 +149,7 @@ public class Utils {
 
     public static boolean isAbilityTreePage(GuiScreen gui) {
         if (!(gui instanceof GuiContainer)) return false;
-        Matcher m = ABILITY_TREE_PATTERN.matcher(((GuiContainer) gui).inventorySlots.getSlot(0).inventory.getName());
-        return m.find();
+        return (((GuiContainer) gui).inventorySlots.getSlot(0).inventory.getName().endsWith(" Abilities"));
     }
 
     /**
