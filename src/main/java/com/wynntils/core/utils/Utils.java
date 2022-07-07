@@ -50,7 +50,6 @@ public class Utils {
     private static final DataParameter<Boolean> NAME_VISIBLE_KEY = ReflectionFields.Entity_CUSTOM_NAME_VISIBLE.getValue(Entity.class);
     private static final DataParameter<Boolean> ITEM_KEY = ReflectionFields.EntityItemFrame_ITEM.getValue(Entity.class);
     public static final Pattern SERVER_SELECTOR_TITLE = Pattern.compile("Wynncraft Servers(: Page \\d+)?");
-    public static final Pattern ABILITY_TREE_PATTERN = Pattern.compile("\\[Pg. \\d+] .+ Abilities");
 
     private static ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("wynntils-utilities-%d").build());
     private static final Random random = new Random();
