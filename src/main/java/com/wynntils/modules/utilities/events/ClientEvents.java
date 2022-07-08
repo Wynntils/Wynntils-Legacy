@@ -595,7 +595,7 @@ public class ClientEvents implements Listener {
         if (UtilitiesConfig.INSTANCE.preventMythicChestClose || UtilitiesConfig.INSTANCE.preventFavoritedChestClose) {
             boolean preventedClose = false;
             if (e.getKeyCode() == 1 || e.getKeyCode() == McIf.mc().gameSettings.keyBindInventory.getKeyCode()) {
-                if(UtilitiesConfig.INSTANCE.preventFavoritedChestCloseTimes != 0 && timesClosed >= UtilitiesConfig.INSTANCE.preventFavoritedChestCloseTimes) {
+                if (UtilitiesConfig.INSTANCE.preventFavoritedChestCloseTimes != 0 && timesClosed >= UtilitiesConfig.INSTANCE.preventFavoritedChestCloseTimes) {
                     timesClosed = 1;
                     return;
                 }
