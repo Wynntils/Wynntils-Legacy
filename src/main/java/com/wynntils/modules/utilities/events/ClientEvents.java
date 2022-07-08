@@ -595,7 +595,7 @@ public class ClientEvents implements Listener {
         if (UtilitiesConfig.INSTANCE.preventMythicChestClose || UtilitiesConfig.INSTANCE.preventFavoritedChestClose) {
             boolean preventedClose = false;
             if (e.getKeyCode() == 1 || e.getKeyCode() == McIf.mc().gameSettings.keyBindInventory.getKeyCode()) {
-                if (UtilitiesConfig.INSTANCE.preventFavoritedChestCloseTimes != 0 && timesClosed >= UtilitiesConfig.INSTANCE.preventFavoritedChestCloseTimes) {
+                if (UtilitiesConfig.INSTANCE.preventFavoritedChestClosingAmount != 0 && timesClosed >= UtilitiesConfig.INSTANCE.preventFavoritedChestClosingAmount) {
                     timesClosed = 1;
                     return;
                 }
@@ -615,8 +615,8 @@ public class ClientEvents implements Listener {
                         } else if (UtilitiesConfig.INSTANCE.preventFavoritedChestClose && stack.hasTagCompound() &&
                                 stack.getTagCompound().getBoolean("wynntilsFavorite")) {
                             text = new TextComponentString("You cannot close this loot chest while there is a favorited item, ingredient, emerald pouch, emerald or powder in it!"
-                            + (UtilitiesConfig.INSTANCE.preventFavoritedChestCloseTimes != 0 ? " Try closing this chest " +
-                                    (UtilitiesConfig.INSTANCE.preventFavoritedChestCloseTimes-timesClosed) + " more times to forcefully close!" : ""));
+                            + (UtilitiesConfig.INSTANCE.preventFavoritedChestClosingAmount != 0 ? " Try closing this chest " +
+                                    (UtilitiesConfig.INSTANCE.preventFavoritedChestClosingAmount -timesClosed) + " more times to forcefully close!" : ""));
                         } else {
                             continue;
                         }

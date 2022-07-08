@@ -57,9 +57,9 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting.Limitations.IntLimit(min = 0, max = 64)
     public int preventEmeraldChestClose = 0;
 
-    @Setting(displayName = "Favorite Item Close Times", description = "How often should Wynntils prevent you from closing a chest with favorite items in it?\n\n§8Setting it to 0 will make you unable to close a chest with favorite items in", order = 4)
-    @Setting.Limitations.IntLimit(min = 0, max = 10)
-    public int preventFavoritedChestCloseTimes = 0;
+    @Setting(displayName = "Favorited Item Close Times", description = "How often should Wynntils prevent you from closing a chest with favorite items in it?\n\n§8Setting it to 0 will make you unable to close a chest with favorite items in", order = 4)
+    @Setting.Limitations.IntLimit(min = 0, max = 15)
+    public int preventFavoritedChestClosingAmount = 0;
 
     @Setting(displayName = "Clicking on Pouches in Chests", description = "Should opening ingredient and emerald pouches be blocked when opening loot chests?", order = 6)
     public boolean preventOpeningPouchesChest = true;
