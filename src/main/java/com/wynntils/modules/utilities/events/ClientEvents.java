@@ -1188,6 +1188,15 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
+    public void onAbilityTreePathHovered(ItemTooltipEvent e) {
+        if (!(Utils.isAbilityTreePage(McIf.mc().currentScreen))) return;
+        if (e.getItemStack().getItem() != Items.STONE_AXE) return;
+        if (!e.getItemStack().getDisplayName().equals("")) return;
+        // This event is not cancellable, this will do instead
+        e.getToolTip().clear();
+    }
+
+    @SubscribeEvent
     public void onIngredientPouchHovered(ItemTooltipEvent e) {
         ItemStack itemStack = e.getItemStack();
         if (!itemStack.getDisplayName().equals("§6Ingredient Pouch")) return; // Is item Ingredient Pouch
