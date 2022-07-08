@@ -53,7 +53,7 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Favorite Item Chest Closing", description = "How often should Wynntils prevent you from closing a chest with favorite items in it?\n\n§8Setting it to 0 will make you unable to close a chest with favorite items in, no matter how often you try", order = 4)
     public boolean preventFavoritedChestClose = true;
 
-    @Setting(displayName = "Emerald Chest Closing", description = "How many emeralds should there be in a chest for Wynntils to prevent you from closing it?\n\n§8Set to 0 to disable this completely", order = 4)
+    @Setting(displayName = "Emerald Chest Closing", description = "How many emeralds should there be in a chest (in one stack) for Wynntils to prevent you from closing it?\n\n§8Set to 0 to disable this completely", order = 4)
     @Setting.Limitations.IntLimit(min = 0, max = 64)
     public int preventEmeraldChestClose = 0;
 
