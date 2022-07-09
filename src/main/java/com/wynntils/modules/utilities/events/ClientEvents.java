@@ -122,7 +122,7 @@ public class ClientEvents implements Listener {
     private static int lastProcessedOpenedChest = -1;
     private int lastOpenedChestWindowId = -1;
     private int lastOpenedRewardWindowId = -1;
-    private int timesClosed = 1;
+    private int timesClosed = 0;
 
 
     @SubscribeEvent
@@ -595,8 +595,8 @@ public class ClientEvents implements Listener {
         if (UtilitiesConfig.INSTANCE.preventMythicChestClose || UtilitiesConfig.INSTANCE.preventFavoritedChestClose) {
             boolean preventedClose = false;
             if (e.getKeyCode() == 1 || e.getKeyCode() == McIf.mc().gameSettings.keyBindInventory.getKeyCode()) {
-                if (UtilitiesConfig.INSTANCE.preventFavoritedChestClosingAmount != 0 && timesClosed >= UtilitiesConfig.INSTANCE.preventFavoritedChestClosingAmount) {
-                    timesClosed = 1;
+                if (UtilitiesConfig.INSTANCE.preventFavoritedChestClosingAmount != 0 && timesClosed + 1 >= UtilitiesConfig.INSTANCE.preventFavoritedChestClosingAmount) {
+                    timesClosed = 0;
                     return;
                 }
 
@@ -616,7 +616,7 @@ public class ClientEvents implements Listener {
                                 stack.getTagCompound().getBoolean("wynntilsFavorite")) {
                             text = new TextComponentString("You cannot close this loot chest while there is a favorited item, ingredient, emerald pouch, emerald or powder in it!"
                             + (UtilitiesConfig.INSTANCE.preventFavoritedChestClosingAmount != 0 ? " Try closing this chest " +
-                                    (UtilitiesConfig.INSTANCE.preventFavoritedChestClosingAmount -timesClosed) + " more times to forcefully close!" : ""));
+                                    (UtilitiesConfig.INSTANCE.preventFavoritedChestClosingAmount - timesClosed - 1) + " more times to forcefully close!" : ""));
                         } else {
                             continue;
                         }
@@ -625,15 +625,11 @@ public class ClientEvents implements Listener {
                         McIf.player().sendMessage(text);
                         McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_BASS, 1f));
                         e.setCanceled(true);
-                        preventedClose = true;
-                        break;
+                        timesClosed++;
+                        return;
                     }
                 }
-                if (!preventedClose) {
-                    timesClosed = 1;
-                } else {
-                    timesClosed++;
-                }
+                timesClosed = 0;
                 return;
             }
         }
