@@ -53,6 +53,14 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Favorited Item Chest Closing", description = "Should the closing of loot chests be prevented when they contain favorited items?", order = 4)
     public boolean preventFavoritedChestClose = true;
 
+    @Setting(displayName = "Emerald Chest Closing", description = "How many emeralds should there be in a chest (in one stack) for Wynntils to prevent you from closing it?\n\n§8Set to 0 to disable this completely.", order = 4)
+    @Setting.Limitations.IntLimit(min = 0, max = 32)
+    public int preventEmeraldChestClose = 0;
+
+    @Setting(displayName = "Favorited Item Close Times", description = "How many times should you click to force close a chest with favorite items in it?\n\n§8Setting this to 0 will disable this feature.", order = 4)
+    @Setting.Limitations.IntLimit(min = 0, max = 10)
+    public int preventFavoritedChestClosingAmount = 0;
+
     @Setting(displayName = "Clicking on Pouches in Chests", description = "Should opening ingredient and emerald pouches be blocked when opening loot chests?", order = 6)
     public boolean preventOpeningPouchesChest = true;
 
