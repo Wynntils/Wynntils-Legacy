@@ -54,7 +54,7 @@ public class UtilitiesConfig extends SettingsClass {
     public boolean preventFavoritedChestClose = true;
 
     @Setting(displayName = "Emerald Chest Closing", description = "How many emeralds should there be in a chest (in one stack) for Wynntils to prevent you from closing it?\n\n§8Set to 0 to disable this completely.", order = 4)
-    @Setting.Limitations.IntLimit(min = 0, max = 64)
+    @Setting.Limitations.IntLimit(min = 0, max = 32)
     public int preventEmeraldChestClose = 0;
 
     @Setting(displayName = "Favorited Item Close Times", description = "How many times should you click to force close a chest with favorite items in it?\n\n§8Setting this to 0 will disable this feature.", order = 4)
