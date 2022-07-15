@@ -875,4 +875,14 @@ public class OverlayConfig extends SettingsClass {
             }
         }
     }
+
+    @SettingsInfo(name = "horse_settings", displayPath = "Utilities/Overlays/Horse Info")
+    public static class HorseInfo extends SettingsClass {
+        public static HorseInfo INSTANCE;
+
+        @Setting(displayName = "Enable Horse Info", description = "Should the horse information be displayed?")
+        public boolean enableHorseInfo = true;
+
+
+    }
 }
