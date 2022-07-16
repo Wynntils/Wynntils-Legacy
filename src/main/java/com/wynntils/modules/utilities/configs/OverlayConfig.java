@@ -704,7 +704,6 @@ public class OverlayConfig extends SettingsClass {
             HORSE_XP("Current horse xp"),
             HORSE_TIER("Current horse tier"),
             HORSE_TIME_ESTIMATE("Estimated time (in minutes) from current horse level to next horse level"),
-            POTIONS_HEALTH("Amount of health potions in inventory"),
             POTIONS_MANA("Amount of mana potions in inventory"),
             PARTY_COUNT("Amount of members in the players party"),
             PARTY_OWNER("Owner of the current party"),
