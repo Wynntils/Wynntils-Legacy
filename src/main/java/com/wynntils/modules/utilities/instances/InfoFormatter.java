@@ -205,16 +205,7 @@ public class InfoFormatter {
 
         // Approximate time (in minutes) until next horse level
         registerFormatter((input) -> {
-            double mlvl = 3.0 * PlayerInfo.get(HorseData.class).getLevel();
-            double plvl = mlvl + 2;
-            double dlvl = plvl / 6.0;
-            double sxp = 100.0 - PlayerInfo.get(HorseData.class).getXp();
-            double dxp = sxp / 100;
-            double lvlxp = dlvl * dxp;
-            double tenlvlxp = lvlxp * 10;
-            double lvlxpceil = Math.ceil(tenlvlxp);
-            double time_Required = lvlxpceil / 10;
-            return Double.toString((double)time_Required);
+            return Double.toString((double)Math.ceil((3.0 * PlayerInfo.get(HorseData.class).getLevel() + 2) / 6.0 * (100.0 - PlayerInfo.get(HorseData.class).getXp()) / 100 * 10) / 10);
         }, "horse_time_estimate", "h_te");
 
         // Number of items in ingredient pouch

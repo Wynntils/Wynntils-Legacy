@@ -65,7 +65,6 @@ public class UtilitiesModule extends Module {
         registerOverlay(new ManaTimerOverlay(), Priority.LOW);
         registerOverlay(new ExpBarOverlay(), Priority.NORMAL);
         registerOverlay(new LevelingOverlay(), Priority.LOW);
-        //registerOverlay(new HorseOverlay(), Priority.LOW);
         registerOverlay(new BubblesOverlay(), Priority.HIGHEST);
         registerOverlay(new DrowningVignetteOverlay(), Priority.HIGHEST);
         registerOverlay(gameUpdateOverlay = new GameUpdateOverlay(), Priority.NORMAL);
