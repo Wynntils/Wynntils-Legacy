@@ -8,6 +8,7 @@ import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
+import com.wynntils.core.framework.instances.data.HorseData;
 import com.wynntils.core.framework.instances.data.*;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
@@ -201,6 +202,20 @@ public class InfoFormatter {
 
             return cache.get("horsetier");
         }, "horse_tier", "h_tier");
+
+        // Approximate time (in minutes) until next horse level
+        registerFormatter((input) -> {
+            double mlvl = 3.0 * PlayerInfo.get(HorseData.class).getLevel();
+            double plvl = mlvl + 2;
+            double dlvl = plvl / 6.0;
+            double sxp = 100.0 - PlayerInfo.get(HorseData.class).getXp();
+            double dxp = sxp / 100;
+            double lvlxp = dlvl * dxp;
+            double tenlvlxp = lvlxp * 10;
+            double lvlxpceil = Math.ceil(tenlvlxp);
+            double time_Required = lvlxpceil / 10;
+            return Double.toString((double)time_Required);
+        }, "horse_time_estimate", "h_te");
 
         // Number of items in ingredient pouch
         registerFormatter((input) ->
