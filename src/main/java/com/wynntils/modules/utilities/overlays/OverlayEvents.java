@@ -24,6 +24,7 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.network.play.server.*;
 import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -821,7 +822,20 @@ public class OverlayEvents implements Listener {
 
             // When removing speed boost from (archer)
             if (potion == MobEffects.SPEED) {
+                // Remove old speed boost timer
                 ConsumableTimerOverlay.removeBasicTimer("Speed boost");
+
+                // Check if we still have speed, in which case, we just refreshed the timer
+                for (PotionEffect pe : McIf.player().getActivePotionEffects()) {
+                    if (pe.getPotion().getName().equals("effect.moveSpeed")) {
+                        // New timer must wait, then retrieve the new duration from the player's active effects
+                        // Cannot use pe.getPotion().getDuration() directly as it contains the previous duration
+                        new Delay(() ->
+                                // getDuration() / 20 because getDuration() returns the duration in ticks, not seconds
+                                ConsumableTimerOverlay.addBasicTimer("Speed boost", McIf.player().getActivePotionEffect(pe.getPotion()).getDuration() / 20), 5);
+                        return;
+                    }
+                }
             }
             // When removing invisibility from assassin
             else if (potion == MobEffects.INVISIBILITY) {
