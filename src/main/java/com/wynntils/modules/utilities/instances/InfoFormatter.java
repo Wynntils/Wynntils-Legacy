@@ -206,6 +206,7 @@ public class InfoFormatter {
         // Approximate time (in minutes) until next horse level
         registerFormatter((input) -> {
             return Double.toString((double)Math.ceil((3.0 * PlayerInfo.get(HorseData.class).getLevel() + 2) / 6.0 * (100.0 - PlayerInfo.get(HorseData.class).getXp()) / 100 * 10) / 10);
+            // This is based off of a formula from https://wynncraft.fandom.com/wiki/Horses#Levels
         }, "horse_time_estimate", "h_te");
 
         // Number of items in ingredient pouch
