@@ -24,6 +24,7 @@ import com.wynntils.webapi.profiles.item.enums.ItemType;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -37,6 +38,7 @@ import java.util.regex.Pattern;
 public class ItemSpecificationOverlay implements Listener {
 
     private final ScreenRenderer renderer = new ScreenRenderer();
+    private final Pattern ARCHETYPE_UNLOCKED_PATTERN = Pattern.compile("§7Unlocked Abilities: §f(\\d+)§7/\\d+");
 
     private void renderOverlay(GuiContainer gui) {
         if (!Reference.onWorld) return;
@@ -170,6 +172,17 @@ public class ItemSpecificationOverlay implements Listener {
                         specificationChars = ItemLevelOverlay.romanToArabic(EmeraldPouchManager.getPouchTier(stack));
                     }
                     color = MinecraftChatColors.GREEN;
+                    xOffset = -1;
+                    scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;
+                }
+            }
+
+            // Specification numbers for archetypes
+            if (stack.getDisplayName().contains("Archetype") && stack.getDisplayName().contains("§l") && stack.getItem() == Items.STONE_AXE) {
+                Matcher archetypeMatcher = ARCHETYPE_UNLOCKED_PATTERN.matcher(ItemUtils.getStringLore(stack));
+                if (archetypeMatcher.find()) {
+                    specificationChars = archetypeMatcher.group(1);
+                    color = MinecraftChatColors.fromColorCode(stack.getDisplayName().charAt(1));
                     xOffset = -1;
                     scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;
                 }
