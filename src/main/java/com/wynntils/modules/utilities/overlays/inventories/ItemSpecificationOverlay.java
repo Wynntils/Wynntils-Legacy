@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.overlays.inventories;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.enums.Powder;
@@ -25,6 +26,8 @@ import com.wynntils.webapi.profiles.item.enums.ItemType;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -63,6 +66,7 @@ public class ItemSpecificationOverlay implements Listener {
             String specificationChars = null;
             CustomColor color = null;
             int xOffset = 2;
+            int yOffset = 1;
             float scale = 1f;
 
             if (UtilitiesConfig.Items.INSTANCE.unidentifiedSpecification) {
@@ -189,14 +193,18 @@ public class ItemSpecificationOverlay implements Listener {
                 }
             }
 
-            // Specification numbers for archetypes
+            // Specification numbers for archetypes; only draws when >0 on that archetype
             if (stack.getDisplayName().contains("Archetype") && stack.getDisplayName().contains("§l") && stack.getItem() == Items.STONE_AXE) {
                 Matcher archetypeMatcher = ARCHETYPE_UNLOCKED_PATTERN.matcher(ItemUtils.getStringLore(stack));
                 if (archetypeMatcher.find()) {
-                    specificationChars = archetypeMatcher.group(1);
-                    color = MinecraftChatColors.fromColorCode(stack.getDisplayName().charAt(1));
-                    xOffset = -1;
-                    scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;
+                    int archetypeAmount = Integer.parseInt(archetypeMatcher.group(1));
+                    if (archetypeAmount > 0) {
+                        specificationChars = archetypeMatcher.group(1);
+                        color = MinecraftChatColors.fromColorCode(stack.getDisplayName().charAt(1));
+                        xOffset = 5;
+                        yOffset = 5;
+                        scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;
+                    }
                 }
             }
 
@@ -208,7 +216,8 @@ public class ItemSpecificationOverlay implements Listener {
                 // Make a modifiable copy
                 color = new CustomColor(color);
                 color.setA(0.8f);
-                renderer.drawString(specificationChars, (s.xPos + xOffset) / scale, (s.yPos + 1) / scale, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
+                //renderer.drawRect(Textures.UIs.box, s.xPos, s.yPos, 0, 0, 18,18); // TODO remove debug
+                renderer.drawString(specificationChars, (s.xPos + xOffset) / scale, (s.yPos + yOffset) / scale, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
                 ScreenRenderer.endGL();
             }
         }
