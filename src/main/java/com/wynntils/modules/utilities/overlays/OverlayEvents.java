@@ -825,17 +825,15 @@ public class OverlayEvents implements Listener {
                 // Remove old speed boost timer
                 ConsumableTimerOverlay.removeBasicTimer("Speed boost");
 
-                // Check if we still have speed, in which case, we just refreshed the timer
-                for (PotionEffect pe : McIf.player().getActivePotionEffects()) {
-                    if (pe.getPotion().getName().equals("effect.moveSpeed")) {
-                        // New timer must wait, then retrieve the new duration from the player's active effects
-                        // Cannot use pe.getPotion().getDuration() directly as it contains the previous duration
-                        new Delay(() ->
-                                // getDuration() / 20 because getDuration() returns the duration in ticks, not seconds
-                                ConsumableTimerOverlay.addBasicTimer("Speed boost", McIf.player().getActivePotionEffect(pe.getPotion()).getDuration() / 20), 5);
-                        return;
+                new Delay(() -> {
+                    for (PotionEffect pe : McIf.player().getActivePotionEffects()) {
+                        if (pe.getPotion().getName().equals("effect.moveSpeed")) {
+                            // pe.getDuration() is in ticks, so we divide by 20 to get seconds
+                            ConsumableTimerOverlay.addBasicTimer("Speed boost", pe.getDuration() / 20);
+                            return;
+                        }
                     }
-                }
+                }, 1);
             }
             // When removing invisibility from assassin
             else if (potion == MobEffects.INVISIBILITY) {
