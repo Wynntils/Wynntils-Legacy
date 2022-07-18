@@ -16,6 +16,7 @@ import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.CorkianAmplifierManager;
 import com.wynntils.modules.utilities.managers.DungeonKeyManager;
@@ -39,6 +40,7 @@ public class ItemSpecificationOverlay implements Listener {
 
     private final ScreenRenderer renderer = new ScreenRenderer();
     private final Pattern ARCHETYPE_UNLOCKED_PATTERN = Pattern.compile("§7Unlocked Abilities: §f(\\d+)§7/\\d+");
+    private final Pattern SKILL_CRYSTAL_PATTERN = Pattern.compile("§7You have §a(\\d+)§7 skill points§7to be distributed§eShift-Click to reset");
 
     private void renderOverlay(GuiContainer gui) {
         if (!Reference.onWorld) return;
@@ -174,6 +176,16 @@ public class ItemSpecificationOverlay implements Listener {
                     color = MinecraftChatColors.GREEN;
                     xOffset = -1;
                     scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;
+                }
+            }
+
+            // Specification numbers for skill points remaining
+            if (Utils.isCharacterInfoPage(gui) && stack.getDisplayName().equals("§2§lSkill Crystal")) {
+                Matcher skillPointMatcher = SKILL_CRYSTAL_PATTERN.matcher(ItemUtils.getStringLore(stack));
+                if (skillPointMatcher.find()) {
+                    specificationChars = skillPointMatcher.group(1);
+                    color = MinecraftChatColors.GREEN;
+                    xOffset = 1;
                 }
             }
 
