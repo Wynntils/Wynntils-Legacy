@@ -203,7 +203,6 @@ public class ItemSpecificationOverlay implements Listener {
                         color = MinecraftChatColors.fromColorCode(stack.getDisplayName().charAt(1));
                         xOffset = 5;
                         yOffset = 5;
-                        scale = UtilitiesConfig.Items.INSTANCE.specificationTierSize;
                     }
                 }
             }
