@@ -129,14 +129,18 @@ public class SkillPointOverlay implements Listener {
         ItemStack save = new ItemStack(Items.WRITABLE_BOOK);
         save.setStackDisplayName(TextFormatting.GOLD + "[>] Save current loadout");
         ItemUtils.replaceLore(save, (waitingForSkillPointData) ?
-                Arrays.asList(TextFormatting.GRAY + "Allows you to save this loadout with a name.", TextFormatting.RED + "Waiting for skill point data...") :
+                Arrays.asList(TextFormatting.GRAY + "Allows you to save this loadout with a name.",
+                        TextFormatting.RED + "Waiting for skill point data...",
+                        TextFormatting.GRAY + "Click on your player head if this is not loading.") :
                 Collections.singletonList(TextFormatting.GRAY + "Allows you to save this loadout with a name."));
         e.getGui().inventorySlots.getSlot(SAVE_SLOT).putStack(save);
 
         ItemStack load = new ItemStack(Items.ENCHANTED_BOOK);
         load.setStackDisplayName(TextFormatting.GOLD + "[>] Load loadout");
         ItemUtils.replaceLore(load, (waitingForSkillPointData) ?
-                Arrays.asList(TextFormatting.GRAY + "Allows you to load one of your saved loadouts.", TextFormatting.RED + "Waiting for skill point data...") :
+                Arrays.asList(TextFormatting.GRAY + "Allows you to load one of your saved loadouts.",
+                        TextFormatting.RED + "Waiting for skill point data...",
+                        TextFormatting.GRAY + "Click on your player head if this is not loading.") :
                 Collections.singletonList(TextFormatting.GRAY + "Allows you to load one of your saved loadouts."));
         e.getGui().inventorySlots.getSlot(LOAD_SLOT).putStack(load);
 
