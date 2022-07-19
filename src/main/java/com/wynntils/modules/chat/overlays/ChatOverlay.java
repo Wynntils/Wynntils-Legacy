@@ -478,6 +478,7 @@ public class ChatOverlay extends GuiNewChat {
 
         TabManager.getAvailableTabs().forEach(tab -> {
             if (tab == currentTab) return;
+            tab.getCurrentMessages().removeIf(Objects::isNull);
             tab.getCurrentMessages().removeIf(chatline -> chatline.getChatLineID() == id);
         });
 
