@@ -215,7 +215,6 @@ public class ItemSpecificationOverlay implements Listener {
                 // Make a modifiable copy
                 color = new CustomColor(color);
                 color.setA(0.8f);
-                //renderer.drawRect(Textures.UIs.box, s.xPos, s.yPos, 0, 0, 18,18); // TODO remove debug
                 renderer.drawString(specificationChars, (s.xPos + xOffset) / scale, (s.yPos + yOffset) / scale, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
                 ScreenRenderer.endGL();
             }
