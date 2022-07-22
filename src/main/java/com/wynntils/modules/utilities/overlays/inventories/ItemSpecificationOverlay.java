@@ -41,7 +41,7 @@ public class ItemSpecificationOverlay implements Listener {
     private final ScreenRenderer renderer = new ScreenRenderer();
     private final Pattern ARCHETYPE_UNLOCKED_PATTERN = Pattern.compile("§7Unlocked Abilities: §f(\\d+)§7/\\d+");
     private final Pattern SKILL_CRYSTAL_PATTERN = Pattern.compile("§7You have §a(\\d+)§7 skill points§7to be distributed§eShift-Click to reset");
-    private final Pattern ABILITY_POINT_PATTERN = Pattern.compile("§7Ability Points are used§7to unlock new abilities§b✦ Available Points: §f(\\d+)§7/\\d+");
+    private final Pattern ABILITY_POINT_PATTERN = Pattern.compile("✦ (?:Available|Unused) Points: §f(\\d+)§");
 
     private void renderOverlay(GuiContainer gui) {
         if (!Reference.onWorld) return;
@@ -192,7 +192,8 @@ public class ItemSpecificationOverlay implements Listener {
             }
 
             // Specification numbers for ability points remaining
-            if (Utils.isAbilityTreePage(gui) && stack.getDisplayName().equals("§3§lAbility Points")) {
+            // Works on both character info page and ability tree page
+            if ((Utils.isAbilityTreePage(gui) || Utils.isCharacterInfoPage(gui)) && stack.getDisplayName().contains("§lAbility ")) {
                 Matcher abilityPointMatcher = ABILITY_POINT_PATTERN.matcher(ItemUtils.getStringLore(stack));
                 if (abilityPointMatcher.find()) {
                     specificationChars = abilityPointMatcher.group(1);
