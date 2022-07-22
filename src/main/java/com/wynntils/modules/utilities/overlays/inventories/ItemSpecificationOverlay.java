@@ -4,7 +4,6 @@
 
 package com.wynntils.modules.utilities.overlays.inventories;
 
-import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.enums.Powder;
@@ -26,8 +25,6 @@ import com.wynntils.webapi.profiles.item.enums.ItemType;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.block.model.ModelResourceLocation;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.init.Items;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
@@ -44,6 +41,7 @@ public class ItemSpecificationOverlay implements Listener {
     private final ScreenRenderer renderer = new ScreenRenderer();
     private final Pattern ARCHETYPE_UNLOCKED_PATTERN = Pattern.compile("§7Unlocked Abilities: §f(\\d+)§7/\\d+");
     private final Pattern SKILL_CRYSTAL_PATTERN = Pattern.compile("§7You have §a(\\d+)§7 skill points§7to be distributed§eShift-Click to reset");
+    private final Pattern ABILITY_POINT_PATTERN = Pattern.compile("§7Ability Points are used§7to unlock new abilities§b✦ Available Points: §f(\\d+)§7/\\d+");
 
     private void renderOverlay(GuiContainer gui) {
         if (!Reference.onWorld) return;
@@ -189,6 +187,16 @@ public class ItemSpecificationOverlay implements Listener {
                 if (skillPointMatcher.find()) {
                     specificationChars = skillPointMatcher.group(1);
                     color = MinecraftChatColors.GREEN;
+                    xOffset = 1;
+                }
+            }
+
+            // Specification numbers for ability points remaining
+            if (Utils.isAbilityTreePage(gui) && stack.getDisplayName().equals("§3§lAbility Points")) {
+                Matcher abilityPointMatcher = ABILITY_POINT_PATTERN.matcher(ItemUtils.getStringLore(stack));
+                if (abilityPointMatcher.find()) {
+                    specificationChars = abilityPointMatcher.group(1);
+                    color = MinecraftChatColors.AQUA;
                     xOffset = 1;
                 }
             }
