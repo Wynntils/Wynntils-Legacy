@@ -202,7 +202,7 @@ public class ItemSpecificationOverlay implements Listener {
                         specificationChars = archetypeMatcher.group(1);
                         color = MinecraftChatColors.fromColorCode(stack.getDisplayName().charAt(1));
                         xOffset = 5;
-                        yOffset = 5;
+                        yOffset = -10;
                     }
                 }
             }
