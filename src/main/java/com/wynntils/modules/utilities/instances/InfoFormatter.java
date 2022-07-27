@@ -8,6 +8,7 @@ import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
+import com.wynntils.core.framework.instances.data.HorseData;
 import com.wynntils.core.framework.instances.data.*;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
@@ -201,6 +202,17 @@ public class InfoFormatter {
 
             return cache.get("horsetier");
         }, "horse_tier", "h_tier");
+
+        // Approximate time (in minutes) until next horse level
+        registerFormatter((input) -> {
+            if (PlayerInfo.get(HorseData.class).getLevel() != PlayerInfo.get(HorseData.class).getMaxLevel() && PlayerInfo.get(HorseData.class).getInventorySlot() >= 1 && PlayerInfo.get(HorseData.class).getInventorySlot() <= 9) {
+                return Double.toString((double) Math.ceil((3.0 * PlayerInfo.get(HorseData.class).getLevel() + 2) / 6.0 * (100.0 - PlayerInfo.get(HorseData.class).getXp()) / 100 * 10) / 10);
+                // This is based off of a formula from https://wynncraft.fandom.com/wiki/Horses#Levels
+            }
+            else {
+                return "-";
+            }
+        }, "horse_time_estimate", "h_te");
 
         // Number of items in ingredient pouch
         registerFormatter((input) ->
