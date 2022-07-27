@@ -210,7 +210,7 @@ public class ItemSpecificationOverlay implements Listener {
                     if (archetypeAmount > 0) {
                         specificationChars = archetypeMatcher.group(1);
                         color = MinecraftChatColors.fromColorCode(stack.getDisplayName().charAt(1));
-                        xOffset = 5;
+                        xOffset = specificationChars.length() > 1 ? 2 : 5; // Alignment for 2-digit numbers
                         yOffset = -10;
                     }
                 }
