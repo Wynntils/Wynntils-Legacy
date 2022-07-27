@@ -237,19 +237,11 @@ public class MapConfig extends SettingsClass {
             COMPACT(1),
             DEFAULT(0);
 
-            private int sizeArrayIndex;  // Array starts at 1 :P
-            //private String[] tiers = new String[]{"Default", "Compact", "Decreased Size"};
+            private int sizeArrayIndex;
             public int getSizeArrayIndex() { return this.sizeArrayIndex; }
             WaypointSpacing(int sizeArrayIndex) {
                 this.sizeArrayIndex = sizeArrayIndex;
             }
-            /*
-            public boolean isTierAboveThis(String testTier) {
-                List<String> allowedTiers = new ArrayList<>(Arrays.asList(Arrays.copyOfRange(tiers, 0, tierArrayIndex)));
-                return allowedTiers.contains(testTier);
-            }
-
-             */
         }
 
         @Override
