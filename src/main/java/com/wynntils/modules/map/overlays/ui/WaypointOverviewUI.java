@@ -51,13 +51,17 @@ public class WaypointOverviewUI extends GuiScreen {
     private int group = ungroupedIndex;
     private int groupWidth;
     private int groupScroll = 0;
+    private int[] spacingArr = {25, 20, 14};
+    private int sizeArrayIndex = MapConfig.Waypoints.INSTANCE.waypointSpacing.getSizeArrayIndex();
+    private boolean decreasedSize = (spacingArr[sizeArrayIndex] == 14);
 
     @Override
     public void initGui() {
         super.initGui();
         waypoints = MapConfig.Waypoints.INSTANCE.waypoints;
 
-        pageHeight = (this.height - 100) / 25;
+        pageHeight = (this.height - 100) / spacingArr[sizeArrayIndex];
+
         this.buttonList.add(nextPageBtn = new GuiButton(0, this.width/2 + 2, this.height - 45, 20, 20, ">"));
         this.buttonList.add(previousPageBtn = new GuiButton(1, this.width/2 - 22, this.height - 45, 20, 20, "<"));
         this.buttonList.add(exitBtn = new GuiButton(2, this.width - 40, 20, 20, 20, TextFormatting.RED + "X"));
@@ -123,10 +127,10 @@ public class WaypointOverviewUI extends GuiScreen {
                 GuiButtonImageBetter.setColour(false, true);
             }
 
-            fontRenderer.drawString(wp.getName(), this.width/2 - 130, 60 + 25 * i, colour);
-            drawCenteredString(fontRenderer, Integer.toString((int) wp.getX()), this.width/2 - 15, 60 + 25 * i, colour);
-            drawCenteredString(fontRenderer, Integer.toString((int) wp.getZ()), this.width/2 + 40, 60 + 25 * i, colour);
-            drawCenteredString(fontRenderer, Integer.toString((int) wp.getY()), this.width/2 + 80, 60 + 25 * i, colour);
+            fontRenderer.drawString(wp.getName(), this.width/2 - 130, 60 + spacingArr[sizeArrayIndex] * i, colour);
+            drawCenteredString(fontRenderer, Integer.toString((int) wp.getX()), this.width/2 - 15, 60 + spacingArr[sizeArrayIndex] * i, colour);
+            drawCenteredString(fontRenderer, Integer.toString((int) wp.getZ()), this.width/2 + 40, 60 + spacingArr[sizeArrayIndex] * i, colour);
+            drawCenteredString(fontRenderer, Integer.toString((int) wp.getY()), this.width/2 + 80, 60 + spacingArr[sizeArrayIndex] * i, colour);
 
             if (hidden) {
                 drawHorizontalLine(this.width / 2 - 135, this.width / 2 + 95, (int) centreZ - 1, colour | 0xFF000000);
@@ -389,10 +393,10 @@ public class WaypointOverviewUI extends GuiScreen {
         editButtons.clear();
         int groupShift = group == ungroupedIndex ? 20 : 0;
         for (int i = 0, lim = Math.min(pageHeight, getWaypoints().size() - pageHeight * page); i < lim; i++) {
-            editButtons.add(new GuiButton(3 + 10 * i, this.width/2 + 85 + groupShift, 54 + 25 * i, 40, 20,"Edit..."));
-            editButtons.add(new GuiButton(5 + 10 * i, this.width/2 + 130 + groupShift, 54 + 25 * i, 40, 20, "Delete"));
-            GuiButton up = new GuiButton(6 + 10 * i, this.width/2 + 172 + groupShift, 54 + 25 * i, 9, 9, "\u028C");
-            GuiButton down = new GuiButton(7 + 10 * i, this.width/2 + 172 + groupShift, 65 + 25 * i, 9, 9, "v");
+            editButtons.add(new GuiButton(3 + 10 * i, this.width/2 + 85 + groupShift, 54 + spacingArr[sizeArrayIndex] * i, (int)Math.round(40.0 * (decreasedSize ? 0.6 : 1.0)), (int)Math.round(20.0 * (decreasedSize ? 0.6 : 1.0)),"Edit..."));
+            editButtons.add(new GuiButton(5 + 10 * i, this.width/2 + 130 + groupShift, 54 + spacingArr[sizeArrayIndex] * i, (int)Math.round(40.0 * (decreasedSize ? 0.8 : 1.0)), (int)Math.round(20.0 * (decreasedSize ? 0.6 : 1.0)), "Delete"));
+            GuiButton up = new GuiButton(6 + 10 * i, this.width/2 + 172 + groupShift, 54 + spacingArr[sizeArrayIndex] * i, (int)Math.round(9 * (decreasedSize ? 0.75 : 1.0)), (int)Math.round(9 * (decreasedSize ? 0.75 : 1.0)), "\u028C");
+            GuiButton down = new GuiButton(7 + 10 * i, this.width/2 + 172 + groupShift, 54 + spacingArr[sizeArrayIndex] * i + (int)Math.round(9 * (decreasedSize ? 0.75 : 1.0)), (int)Math.round(9 * (decreasedSize ? 0.75 : 1.0)), (int)Math.round(9 * (decreasedSize ? 0.75 : 1.0)), "\u1D5B");
             up.enabled = i != 0 || previousPageBtn.enabled;
             down.enabled = i == pageHeight - 1 ? nextPageBtn.enabled : i != lim - 1;
             editButtons.add(up);

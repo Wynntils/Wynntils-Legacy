@@ -229,6 +229,29 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Compass Marker", description = "Should a marker appear on the map where the compass location is set to?")
         public boolean compassMarker = true;
 
+        @Setting(displayName = "Waypoint Menu Spacing", description = "What amount of space should be between each set of values in the waypoint menu")
+        public WaypointSpacing waypointSpacing = WaypointSpacing.DEFAULT;
+
+        public enum WaypointSpacing {
+            DECREASED_SIZE(2),
+            COMPACT(1),
+            DEFAULT(0);
+
+            private int sizeArrayIndex;  // Array starts at 1 :P
+            //private String[] tiers = new String[]{"Default", "Compact", "Decreased Size"};
+            public int getSizeArrayIndex() { return this.sizeArrayIndex; }
+            WaypointSpacing(int sizeArrayIndex) {
+                this.sizeArrayIndex = sizeArrayIndex;
+            }
+            /*
+            public boolean isTierAboveThis(String testTier) {
+                List<String> allowedTiers = new ArrayList<>(Arrays.asList(Arrays.copyOfRange(tiers, 0, tierArrayIndex)));
+                return allowedTiers.contains(testTier);
+            }
+
+             */
+        }
+
         @Override
         public void saveSettings(Module m) {
             super.saveSettings(m);
