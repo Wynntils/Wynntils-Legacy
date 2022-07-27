@@ -833,7 +833,7 @@ public class OverlayEvents implements Listener {
                             return;
                         }
                     }
-                }, 1);
+                }, 5);
             }
             // When removing invisibility from assassin
             else if (potion == MobEffects.INVISIBILITY) {
