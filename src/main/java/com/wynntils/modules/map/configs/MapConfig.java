@@ -237,8 +237,9 @@ public class MapConfig extends SettingsClass {
             COMPACT(1),
             DEFAULT(0);
 
+            private int[] spacingArr = {25, 20, 14};
             private int sizeArrayIndex;
-            public int getSizeArrayIndex() { return this.sizeArrayIndex; }
+            public int getSpacingMultiplier() { return spacingArr[this.sizeArrayIndex]; }
             WaypointSpacing(int sizeArrayIndex) {
                 this.sizeArrayIndex = sizeArrayIndex;
             }
