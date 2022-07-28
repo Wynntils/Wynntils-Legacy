@@ -54,7 +54,6 @@ public class WaypointOverviewUI extends GuiScreen {
     private int spacingMultiplier = MapConfig.Waypoints.INSTANCE.waypointSpacing.getSpacingMultiplier();
     private boolean decreasedSize = (spacingMultiplier == 14);
 
-
     @Override
     public void initGui() {
         super.initGui();
