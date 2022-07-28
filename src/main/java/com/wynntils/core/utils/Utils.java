@@ -262,8 +262,8 @@ public class Utils {
     }
 
     public static String getRawItemName(ItemStack stack) {
-        final Pattern PERCENTAGE_PATTERN = Pattern.compile(" +\\[[0-9]+%\\]");
-        final Pattern INGREDIENT_PATTERN = Pattern.compile(" +\\[✫+\\]");
+        final Pattern PERCENTAGE_PATTERN = Pattern.compile(" +\\[\\d+(?:.\\d)*%]");
+        final Pattern INGREDIENT_PATTERN = Pattern.compile(" +\\[✫+]");
 
         String name = stack.getDisplayName();
         name = TextFormatting.getTextWithoutFormattingCodes(name);
@@ -271,6 +271,10 @@ public class Utils {
         name = INGREDIENT_PATTERN.matcher(name).replaceAll("");
         if (name.startsWith("Perfect ")) {
             name = name.substring(8);
+        } else if (name.startsWith("Defective ")) {
+            name = name.substring(10);
+        } else if (name.endsWith(" NEW")) {
+            name = name.substring(0, name.length() - 4);
         }
         name = com.wynntils.core.utils.StringUtils.normalizeBadString(name);
         return name;
