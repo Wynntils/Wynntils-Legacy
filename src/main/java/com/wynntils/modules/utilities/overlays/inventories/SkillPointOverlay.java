@@ -390,13 +390,12 @@ public class SkillPointOverlay implements Listener {
         ItemStack stack = e.getStack();
         if (stack.isEmpty() || !stack.hasDisplayName()) return; // display name also checks for tag compound
 
-        String lore = TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(stack));
         String name = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName());
         String value = e.getOverlayText();
 
         if (!name.contains("Upgrade")) return; // Skill Points
 
-        Matcher spm = SKILLPOINT_PATTERN.matcher(lore);
+        Matcher spm = SKILLPOINT_PATTERN.matcher(ItemUtils.getStringLore(stack));
         if (!spm.find()) return;
 
         SkillPoint skillPoint = SkillPoint.findSkillPoint(name);
