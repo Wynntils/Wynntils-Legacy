@@ -10,6 +10,8 @@ import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Pair;
+import com.wynntils.modules.core.managers.PartyManager;
+import com.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiScreen;
@@ -19,6 +21,7 @@ import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EnumPlayerModelParts;
+import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
@@ -29,14 +32,19 @@ import java.util.*;
 public class PartyManagementUI extends GuiScreen {
 
     private GuiButton exitBtn;
-    private List<GuiButton> buttons = new ArrayList<>();
+    private final List<GuiButton> buttons = new ArrayList<>();
+    // Top row
     private GuiLabel inviteFieldLabel;
     private GuiTextField inviteField;
     private GuiButton inviteBtn;
+    // Bottom row
+    private GuiButton refreshPartyBtn;
+    private GuiButton kickOfflineBtn;
     private GuiButton createBtn;
     private GuiButton disbandLeaveBtn;
 
     private final List<String> partyMembers = new ArrayList<>();
+    private final List<String> offlineMembers = new ArrayList<>();
     private Pair<HashSet<String>, String> unsortedPartyMembers = new Pair<>(new HashSet<>(), "");
     private int pageHeight;
 
@@ -46,9 +54,10 @@ public class PartyManagementUI extends GuiScreen {
     @Override
     public void initGui() {
         super.initGui();
-        inviteFieldLabel = new GuiLabel(McIf.mc().fontRenderer, 0, this.width/2 - 205, verticalReference - 51, 40, 10, 0xFFFFFF);
-        inviteFieldLabel.addLine("Invite players:");
-        inviteField = new GuiTextField(0, McIf.mc().fontRenderer, this.width/2 - 205, verticalReference - 40, 180, 20);
+        inviteFieldLabel = new GuiLabel(McIf.mc().fontRenderer, 0, this.width/2 - 200, verticalReference - 61, 40, 10, 0xFFFFFF);
+        inviteFieldLabel.addLine("Invite players: " + TextFormatting.GRAY + "(Separate with commas)");
+        inviteField = new GuiTextField(0, McIf.mc().fontRenderer, this.width/2 - 200, verticalReference - 50, 355, 20);
+        inviteField.setMaxStringLength(128);
         pageHeight = (this.height - 100) / 25;
         this.buttonList.add(exitBtn = new GuiButton(2, this.width - 40, 20, 20, 20, TextFormatting.RED + "X"));
     }
@@ -58,21 +67,38 @@ public class PartyManagementUI extends GuiScreen {
         drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        this.buttonList.add(inviteBtn = new GuiButton(1, this.width / 2 - 20, verticalReference - 40, 40, 20, "Invite"));
-        this.buttonList.add(createBtn = new GuiButton(2, this.width / 2 + 25, verticalReference - 40, 80, 20, "Create Party"));
-        String disbandLeaveText = (PlayerInfo.get(SocialData.class).getPlayerParty().getOwner().equals(McIf.player().getName())) ? "Disband Party" : "Leave Party";
-        this.buttonList.add(disbandLeaveBtn = new GuiButton(3, this.width / 2 + 110, verticalReference - 40, 80, 20, TextFormatting.RED + disbandLeaveText));
+        // Top row
+        this.buttonList.add(inviteBtn = new GuiButton(1, this.width / 2 + 160, verticalReference - 50, 40, 20, "Invite"));
         if (inviteField != null) {
             inviteField.drawTextBox();
             inviteFieldLabel.drawLabel(McIf.mc(), mouseX, mouseY);
         }
+
+        // Bottom row
+        this.buttonList.add(refreshPartyBtn = new GuiButton(4, this.width / 2 - 200, verticalReference - 25, 96, 20, TextFormatting.GREEN + "Refresh Party"));
+        this.buttonList.add(kickOfflineBtn = new GuiButton(5, this.width / 2 - 100, verticalReference - 25, 96, 20, TextFormatting.RED + "Kick Offline"));
+        this.buttonList.add(createBtn = new GuiButton(2, this.width / 2 + 4, verticalReference - 25, 96, 20, "Create Party"));
+        String disbandLeaveText = (PlayerInfo.get(SocialData.class).getPlayerParty().getOwner().equals(McIf.player().getName())) ? "Disband Party" : "Leave Party";
+        this.buttonList.add(disbandLeaveBtn = new GuiButton(3, this.width / 2 + 104, verticalReference - 25, 96, 20, TextFormatting.RED + disbandLeaveText));
+
         setManagementButtonStatuses();
 
-        fontRenderer.drawString(TextFormatting.BOLD + "Head", this.width/2 - 205, verticalReference, 0xFFFFFF);
-        fontRenderer.drawString(TextFormatting.BOLD + "Name", this.width / 2 - 165, verticalReference, 0xFFFFFF);
-        drawCenteredString(fontRenderer, TextFormatting.BOLD + "Promote", this.width/2 + 120, verticalReference, 0xFFFFFF);
-        drawCenteredString(fontRenderer, TextFormatting.BOLD + "Kick", this.width/2 + 172, verticalReference, 0xFFFFFF);
-        drawRect(this.width/2 - 205, verticalReference + 9, this.width/2 + 190, verticalReference + 10, 0xFFFFFFFF); // Underline
+        // Titles for the actual member list
+        fontRenderer.drawString(TextFormatting.BOLD + "Head", this.width/2 - 200, verticalReference, 0xFFFFFF);
+        fontRenderer.drawString(TextFormatting.BOLD + "Name", this.width / 2 - 160, verticalReference, 0xFFFFFF);
+        drawCenteredString(fontRenderer, TextFormatting.BOLD + "Promote", this.width/2 + 125, verticalReference, 0xFFFFFF);
+        drawCenteredString(fontRenderer, TextFormatting.BOLD + "Kick", this.width/2 + 177, verticalReference, 0xFFFFFF);
+        drawRect(this.width/2 - 200, verticalReference + 9, this.width/2 + 200, verticalReference + 10, 0xFFFFFFFF); // Underline
+
+        // Draw legend
+        fontRenderer.drawString(TextFormatting.BOLD + "Legend", this.width/2 - 400, verticalReference, 0xFFFFFF);
+        drawRect(this.width/2 - 400, verticalReference + 9, this.width/2 - 360, verticalReference + 10, 0xFFFFFFFF); // Underline
+        fontRenderer.drawString("Self", this.width/2 - 400, verticalReference + 15, 0x00FFFF);
+        fontRenderer.drawString("Leader", this.width / 2 - 400, verticalReference + 30, 0xFFFF00);
+        fontRenderer.drawString("Member", this.width / 2 - 400, verticalReference + 45, 0xFFFFFF);
+        fontRenderer.drawString("Offline", this.width/2 - 400, verticalReference + 60, 0xFF0000);
+        fontRenderer.drawString("Leader Offline", this.width/2 - 400, verticalReference + 75, 0xFF8800);
+
 
         updatePartyMemberList();
         if (partyMembers.size() < 1) { // Refresh once and return as party could have previously been populated
@@ -89,17 +115,20 @@ public class PartyManagementUI extends GuiScreen {
             if (playerName == null) continue;
 
             int colour;
-            if (playerName.equals(PlayerInfo.get(SocialData.class).getPlayerParty().getOwner())) {
-                colour = 0xFFFF00;
-            } else if (playerName.equals(McIf.player().getName())) {
+            if (playerName.equals(PlayerInfo.get(SocialData.class).getPlayerParty().getOwner())) { // is owner
+                // orange if leader + offline, yellow if leader + online
+                colour = offlineMembers.contains(PlayerInfo.get(SocialData.class).getPlayerParty().getOwner()) ? 0xFF8800 : 0xFFFF00;
+            } else if (playerName.equals(McIf.player().getName())) { // is yourself
                 colour = 0x00FFFF;
-            } else {
+            } else if (offlineMembers.contains(playerName)) { // is offline
+                colour = 0xFF0000;
+            } else { // is online
                 colour = 0xFFFFFF;
             }
 
-            fontRenderer.drawString(playerName, this.width/2 - 165, (verticalReference + 17) + 25 * i, colour);
+            fontRenderer.drawString(playerName, this.width/2 - 160, (verticalReference + 17) + 25 * i, colour);
             // Reset colour to white
-            // This is so player heads don't have the previous self/owner colour overlayed onto them
+            // This is so player heads don't have the previous self/owner colour overlaid onto them
             GlStateManager.color(1, 1, 1, 1);
 
             // Player heads
@@ -112,10 +141,10 @@ public class PartyManagementUI extends GuiScreen {
                 McIf.mc().getTextureManager().bindTexture(new ResourceLocation("textures/entity/steve.png"));
             }
 
-            drawScaledCustomSizeModalRect(this.width/2 - 197, (verticalReference + 14) + 25 * i, 8.0F, 8.0F, 8, 8, 12, 12, 64.0F, 64.0F);
+            drawScaledCustomSizeModalRect(this.width/2 - 192, (verticalReference + 14) + 25 * i, 8.0F, 8.0F, 8, 8, 12, 12, 64.0F, 64.0F);
             EntityPlayer entityPlayer = McIf.mc().world.getPlayerEntityByName(playerName);
             if (entityPlayer != null && entityPlayer.isWearing(EnumPlayerModelParts.HAT)) {
-                drawScaledCustomSizeModalRect(this.width/2 - 197, (verticalReference + 14) + 25 * i, 40.0F, 8, 8, 8, 12, 12, 64.0F, 64.0F);
+                drawScaledCustomSizeModalRect(this.width/2 - 192, (verticalReference + 14) + 25 * i, 40.0F, 8, 8, 8, 12, 12, 64.0F, 64.0F);
             }
 
         }
@@ -144,6 +173,18 @@ public class PartyManagementUI extends GuiScreen {
             Utils.displayGuiScreen(null);
         } else if (b == inviteBtn) {
             invitePlayersFromTextField();
+        } else if (b == refreshPartyBtn) {
+            PartyManager.handlePartyList();
+        } else if (b == kickOfflineBtn) {
+            // Refresh before kicking offline players
+            PartyManager.handlePartyList();
+            updatePartyMemberList();
+            for (String playerName : offlineMembers) {
+                McIf.player().sendChatMessage("/party kick " + playerName);
+            }
+            // And refresh again after to update the visible list
+            PartyManager.handlePartyList();
+            updatePartyMemberList();
         } else if (b == createBtn) {
             McIf.player().sendChatMessage("/party create");
         } else if (b == disbandLeaveBtn && b.displayString.contains("Disband")) {
@@ -163,12 +204,14 @@ public class PartyManagementUI extends GuiScreen {
         String ownerName = PlayerInfo.get(SocialData.class).getPlayerParty().getOwner();
         String playerName = McIf.player().getName();
         if (ownerName == null) return;
-        // text field >= 3chars && (must be owner || party doesn't exist)
-        inviteBtn.enabled = inviteField.getText().length() >= 3 && (ownerName.equals(playerName) || ownerName.equals(""));
+        // text field >= 2chars && (must be owner || party doesn't exist)
+        inviteBtn.enabled = inviteField.getText().length() >= 2 && (ownerName.equals(playerName) || ownerName.equals(""));
         // not already in party
         createBtn.enabled = ownerName.equals("");
         // in party
         disbandLeaveBtn.enabled = !ownerName.equals("");
+        // owner of party
+        kickOfflineBtn.enabled = ownerName.equals(playerName) && offlineMembers.size() > 0;
     }
 
     private void invitePlayersFromTextField() {
@@ -203,23 +246,34 @@ public class PartyManagementUI extends GuiScreen {
         for (int i = 0, lim = Math.min(pageHeight, partyMembers.size()); i < lim; i++) {
             boolean isSelf = partyMembers.get(i).equals(playerName);
             if (!isSelf) {
-                buttons.add(new GuiButton(7 + 10 * i, this.width/2 + 95, (verticalReference + 11) + 25 * i, 50, 20, "Promote"));
+                buttons.add(new GuiButton(7 + 10 * i, this.width/2 + 100, (verticalReference + 11) + 25 * i, 50, 20, "Promote"));
             } // No promote button for self
 
             String kickLeaveText = (isSelf) ? "Leave" : "Kick";
-            buttons.add(new GuiButton(9 + 10 * i, this.width/2 + 153, (verticalReference + 11) + 25 * i, 38, 20, kickLeaveText));
+            buttons.add(new GuiButton(9 + 10 * i, this.width/2 + 158, (verticalReference + 11) + 25 * i, 38, 20, kickLeaveText));
         }
         this.buttonList.addAll(buttons);
     }
 
     private void updatePartyMemberList() {
+        offlineMembers.clear();
         String ownerName = PlayerInfo.get(SocialData.class).getPlayerParty().getOwner();
         List<String> temporaryMembers = new ArrayList<>(PlayerInfo.get(SocialData.class).getPlayerParty().getPartyMembers());
 
+        // Remove offline members, we can deal with those later
+        for (String member : temporaryMembers) {
+            if (!McIf.mc().world.getScoreboard().getTeamNames().contains(member)) {
+                offlineMembers.add(member);
+            }
+        }
+
         Pair<HashSet<String>, String> unsorted = new Pair<>(new HashSet<>(temporaryMembers), ownerName);
         if (unsorted.equals(unsortedPartyMembers)) return; // No changes, do not continue
-
         unsortedPartyMembers = unsorted;
+
+        temporaryMembers.removeAll(offlineMembers);
+        // temporaryMembers is now unsorted list of online members
+
         String playerName = McIf.player().getName();
         Comparator<String> sortPartyMembers = (String s1, String s2) -> {
             if (s1.equals(playerName)) return -1;
@@ -233,7 +287,8 @@ public class PartyManagementUI extends GuiScreen {
         temporaryMembers.sort(sortPartyMembers);
         partyMembers.clear();
         partyMembers.addAll(temporaryMembers);
-        // partyMembers list is now sorted in [self, owner, party alphabetically]
+        partyMembers.addAll(offlineMembers);
+        // partyMembers list is now sorted in [self, owner, online party alphabetically, offline members]
     }
 
     @Override
