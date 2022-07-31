@@ -107,7 +107,7 @@ public class WaypointOverviewUI extends GuiScreen {
             }
 
             MapWaypointIcon wpIcon = new MapWaypointIcon(wp);
-            float centreZ = 64 + 25 * i;
+            float centreZ = 64 + spacingMultiplier * i;
             float multiplier = 9f / Math.max(wpIcon.getSizeX(), wpIcon.getSizeZ());
             wpIcon.renderAt(renderer, this.width / 2f - 151, centreZ, multiplier, 1);
 
@@ -148,8 +148,8 @@ public class WaypointOverviewUI extends GuiScreen {
     // Returns the index of the waypoint (on the current page) that is being hovered over (Or -1 if no hover)
     private int getHoveredWaypoint(int mouseX, int mouseY) {
         if (this.width / 2f - 205 <= mouseX && mouseX <= this.width / 2f - 170) {
-            int i = Math.round((mouseY - 64) / 25f);
-            int offset = mouseY - 25 * i - 64;
+            int i = Math.round((mouseY - 64) / (float)spacingMultiplier);
+            int offset = mouseY - spacingMultiplier * i - 64;
             if (i >= 0 && -10 <= offset && offset <= 10 && i < Math.min(pageHeight, getWaypoints().size() - pageHeight * page)) {
                 return i;
             }
@@ -392,8 +392,8 @@ public class WaypointOverviewUI extends GuiScreen {
         editButtons.clear();
         int groupShift = group == ungroupedIndex ? 20 : 0;
         for (int i = 0, lim = Math.min(pageHeight, getWaypoints().size() - pageHeight * page); i < lim; i++) {
-            editButtons.add(new GuiButton(3 + 10 * i, this.width/2 + 85 + groupShift, 54 + spacingMultiplier * i, (int)Math.round(40.0 * (decreasedSize ? 0.6 : 1.0)), (int)Math.round(20.0 * (decreasedSize ? 0.6 : 1.0)),"Edit..."));
-            editButtons.add(new GuiButton(5 + 10 * i, this.width/2 + 130 + groupShift, 54 + spacingMultiplier * i, (int)Math.round(40.0 * (decreasedSize ? 0.8 : 1.0)), (int)Math.round(20.0 * (decreasedSize ? 0.6 : 1.0)), "Delete"));
+            editButtons.add(new GuiButton(3 + 10 * i, this.width/2 + 85 + groupShift, 54 + spacingMultiplier * i, (int)Math.round(40.0 * (decreasedSize ? 0.7 : 1.0)), (int)Math.round(20.0 * (decreasedSize ? 0.6 : 1.0)),"Edit..."));
+            editButtons.add(new GuiButton(5 + 10 * i, this.width/2 + 130 + groupShift, 54 + spacingMultiplier * i, (int)Math.round(40.0 * (decreasedSize ? 0.9 : 1.0)), (int)Math.round(20.0 * (decreasedSize ? 0.6 : 1.0)), "Delete"));
             GuiButton up = new GuiButton(6 + 10 * i, this.width/2 + 172 + groupShift, 54 + spacingMultiplier * i, (int)Math.round(9 * (decreasedSize ? 0.75 : 1.0)), (int)Math.round(9 * (decreasedSize ? 0.75 : 1.0)), "\u028C");
             GuiButton down = new GuiButton(7 + 10 * i, this.width/2 + 172 + groupShift, 54 + spacingMultiplier * i + (int)Math.round(9 * (decreasedSize ? 0.75 : 1.0)), (int)Math.round(9 * (decreasedSize ? 0.75 : 1.0)), (int)Math.round(9 * (decreasedSize ? 0.75 : 1.0)), "\u1D5B");
             up.enabled = i != 0 || previousPageBtn.enabled;

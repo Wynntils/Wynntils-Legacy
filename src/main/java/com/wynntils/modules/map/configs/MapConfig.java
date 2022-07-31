@@ -233,15 +233,14 @@ public class MapConfig extends SettingsClass {
         public WaypointSpacing waypointSpacing = WaypointSpacing.DEFAULT;
 
         public enum WaypointSpacing {
-            DECREASED_SIZE(2),
-            COMPACT(1),
-            DEFAULT(0);
+            DECREASED_SIZE(14),
+            COMPACT(20),
+            DEFAULT(25);
 
-            private int[] spacingArr = {25, 20, 14};
-            private int sizeArrayIndex;
-            public int getSpacingMultiplier() { return spacingArr[this.sizeArrayIndex]; }
-            WaypointSpacing(int sizeArrayIndex) {
-                this.sizeArrayIndex = sizeArrayIndex;
+            private int spacingMultiplier;
+            public int getSpacingMultiplier() { return spacingMultiplier; }
+            WaypointSpacing(int spacingMultiplier) {
+                this.spacingMultiplier = spacingMultiplier;
             }
         }
 
