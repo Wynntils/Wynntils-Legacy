@@ -392,10 +392,10 @@ public class WaypointOverviewUI extends GuiScreen {
         editButtons.clear();
         int groupShift = group == ungroupedIndex ? 20 : 0;
         for (int i = 0, lim = Math.min(pageHeight, getWaypoints().size() - pageHeight * page); i < lim; i++) {
-            editButtons.add(new GuiButton(3 + 10 * i, this.width/2 + 85 + groupShift, 54 + spacingMultiplier * i, (int)Math.round(40.0 * (decreasedSize ? 0.7 : 1.0)), (int)Math.round(20.0 * (decreasedSize ? 0.6 : 1.0)),"Edit..."));
+            editButtons.add(new GuiButton(3 + 10 * i, this.width/2 + 85 + groupShift, 54 + spacingMultiplier * i, (int)Math.round(40.0 * (decreasedSize ? 0.7 : 1.0)), (int)Math.round(20.0 * (decreasedSize ? 0.6 : 1.0)),"Edit"));
             editButtons.add(new GuiButton(5 + 10 * i, this.width/2 + 130 + groupShift, 54 + spacingMultiplier * i, (int)Math.round(40.0 * (decreasedSize ? 0.9 : 1.0)), (int)Math.round(20.0 * (decreasedSize ? 0.6 : 1.0)), "Delete"));
             GuiButton up = new GuiButton(6 + 10 * i, this.width/2 + 172 + groupShift, 54 + spacingMultiplier * i, (int)Math.round(9 * (decreasedSize ? 0.75 : 1.0)), (int)Math.round(9 * (decreasedSize ? 0.75 : 1.0)), "\u028C");
-            GuiButton down = new GuiButton(7 + 10 * i, this.width/2 + 172 + groupShift, 54 + spacingMultiplier * i + (int)Math.round(9 * (decreasedSize ? 0.75 : 1.0)), (int)Math.round(9 * (decreasedSize ? 0.75 : 1.0)), (int)Math.round(9 * (decreasedSize ? 0.75 : 1.0)), "\u1D5B");
+            GuiButton down = new GuiButton(7 + 10 * i, this.width/2 + 172 + groupShift, 54 + spacingMultiplier * i + (int)Math.round(9 * (decreasedSize ? 0.75 : 1.0)), (int)Math.round(9 * (decreasedSize ? 0.75 : 1.0)), (int)Math.round(9 * (decreasedSize ? 0.75 : 1.0)), "\u1D5B"); // This is the ᵛ character
             up.enabled = i != 0 || previousPageBtn.enabled;
             down.enabled = i == pageHeight - 1 ? nextPageBtn.enabled : i != lim - 1;
             editButtons.add(up);

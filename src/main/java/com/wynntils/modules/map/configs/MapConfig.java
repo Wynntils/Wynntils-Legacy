@@ -230,12 +230,12 @@ public class MapConfig extends SettingsClass {
         public boolean compassMarker = true;
 
         @Setting(displayName = "Waypoint Menu Spacing", description = "What amount of space should be between each set of values in the waypoint menu")
-        public WaypointSpacing waypointSpacing = WaypointSpacing.DEFAULT;
+        public WaypointSpacing waypointSpacing = WaypointSpacing.MEDIUM;
 
         public enum WaypointSpacing {
-            DECREASED_SIZE(14),
-            COMPACT(20),
-            DEFAULT(25);
+            SMALL(14),
+            MEDIUM(20),
+            LARGE(25);
 
             private int spacingMultiplier;
             public int getSpacingMultiplier() { return spacingMultiplier; }
