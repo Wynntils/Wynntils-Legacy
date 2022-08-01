@@ -229,6 +229,21 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Compass Marker", description = "Should a marker appear on the map where the compass location is set to?")
         public boolean compassMarker = true;
 
+        @Setting(displayName = "Waypoint Menu Spacing", description = "What amount of space should be between each set of values in the waypoint menu")
+        public WaypointSpacing waypointSpacing = WaypointSpacing.MEDIUM;
+
+        public enum WaypointSpacing {
+            SMALL(14),
+            MEDIUM(20),
+            LARGE(25);
+
+            private int spacingMultiplier;
+            public int getSpacingMultiplier() { return spacingMultiplier; }
+            WaypointSpacing(int spacingMultiplier) {
+                this.spacingMultiplier = spacingMultiplier;
+            }
+        }
+
         @Override
         public void saveSettings(Module m) {
             super.saveSettings(m);
