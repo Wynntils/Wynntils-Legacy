@@ -151,7 +151,6 @@ public class PartyManagementUI extends GuiScreen {
                 // Use the default player head texture, it will automatically update when the player is visible again
                 McIf.mc().getTextureManager().bindTexture(new ResourceLocation("textures/entity/steve.png"));
             }
-
             drawScaledCustomSizeModalRect(this.width/2 + 288, (verticalReference + 14) + 25 * suggestedPlayers.indexOf(playerName), 8.0F, 8.0F, 8, 8, 12, 12, 64.0F, 64.0F);
             EntityPlayer entityPlayer = McIf.mc().world.getPlayerEntityByName(playerName);
             if (entityPlayer != null && entityPlayer.isWearing(EnumPlayerModelParts.HAT)) {
@@ -210,7 +209,6 @@ public class PartyManagementUI extends GuiScreen {
                 // Use the default player head texture, it will automatically update when the player is visible again
                 McIf.mc().getTextureManager().bindTexture(new ResourceLocation("textures/entity/steve.png"));
             }
-
             drawScaledCustomSizeModalRect(this.width/2 - 192, (verticalReference + 14) + 25 * i, 8.0F, 8.0F, 8, 8, 12, 12, 64.0F, 64.0F);
             EntityPlayer entityPlayer = McIf.mc().world.getPlayerEntityByName(rawPlayerName);
             if (entityPlayer != null && entityPlayer.isWearing(EnumPlayerModelParts.HAT)) {
