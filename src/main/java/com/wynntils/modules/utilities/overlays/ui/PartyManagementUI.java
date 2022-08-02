@@ -11,7 +11,6 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.core.managers.PartyManager;
-import com.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiScreen;
@@ -21,8 +20,8 @@ import net.minecraft.client.network.NetworkPlayerInfo;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EnumPlayerModelParts;
-import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 
@@ -45,11 +44,31 @@ public class PartyManagementUI extends GuiScreen {
 
     private final List<String> partyMembers = new ArrayList<>();
     private final List<String> offlineMembers = new ArrayList<>();
+    private final List<String> nearbyPlayers = new ArrayList<>();
+    private final List<String> suggestedPlayers = new ArrayList<>();
     private Pair<HashSet<String>, String> unsortedPartyMembers = new Pair<>(new HashSet<>(), "");
     private int pageHeight;
 
+    private final int nearbyRadius = 30;
     private final int verticalReference = 160;
     private boolean partyLeaveSent = false;
+
+    private enum PartyManagementColors {
+        LEADER(0xFFFF00), // Yellow
+        MEMBER(0xFFFFFF), // White
+        FRIEND(0x00FF00), // Green
+        NEARBY(0x00FFFF); // Cyan
+
+        private final int colour;
+
+        PartyManagementColors(int colour) {
+            this.colour = colour;
+        }
+
+        public int getColor() {
+            return colour;
+        }
+    }
 
     @Override
     public void initGui() {
@@ -67,14 +86,14 @@ public class PartyManagementUI extends GuiScreen {
         drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        // Top row
+        // Top row buttons
         this.buttonList.add(inviteBtn = new GuiButton(1, this.width / 2 + 160, verticalReference - 50, 40, 20, "Invite"));
         if (inviteField != null) {
             inviteField.drawTextBox();
             inviteFieldLabel.drawLabel(McIf.mc(), mouseX, mouseY);
         }
 
-        // Bottom row
+        // Bottom row buttons
         this.buttonList.add(refreshPartyBtn = new GuiButton(4, this.width / 2 - 200, verticalReference - 25, 96, 20, TextFormatting.GREEN + "Refresh Party"));
         this.buttonList.add(kickOfflineBtn = new GuiButton(5, this.width / 2 - 100, verticalReference - 25, 96, 20, TextFormatting.RED + "Kick Offline"));
         this.buttonList.add(createBtn = new GuiButton(2, this.width / 2 + 4, verticalReference - 25, 96, 20, "Create Party"));
@@ -92,41 +111,33 @@ public class PartyManagementUI extends GuiScreen {
 
         // Draw legend
         fontRenderer.drawString(TextFormatting.BOLD + "Legend", this.width/2 - 400, verticalReference, 0xFFFFFF);
-        drawRect(this.width/2 - 400, verticalReference + 9, this.width/2 - 360, verticalReference + 10, 0xFFFFFFFF); // Underline
-        fontRenderer.drawString("Self", this.width/2 - 400, verticalReference + 15, 0x00FFFF);
-        fontRenderer.drawString("Leader", this.width / 2 - 400, verticalReference + 30, 0xFFFF00);
-        fontRenderer.drawString("Member", this.width / 2 - 400, verticalReference + 45, 0xFFFFFF);
-        fontRenderer.drawString("Offline", this.width/2 - 400, verticalReference + 60, 0xFF0000);
-        fontRenderer.drawString("Leader Offline", this.width/2 - 400, verticalReference + 75, 0xFF8800);
+        drawRect(this.width/2 - 400, verticalReference + 9, this.width/2 - 359, verticalReference + 10, 0xFFFFFFFF); // Underline
+        fontRenderer.drawString(TextFormatting.BOLD + "Self", this.width/2 - 400, verticalReference + 15, PartyManagementColors.MEMBER.getColor());
+        fontRenderer.drawString("Leader", this.width / 2 - 400, verticalReference + 30, PartyManagementColors.LEADER.getColor());
+        fontRenderer.drawString(TextFormatting.STRIKETHROUGH + "Offline", this.width/2 - 400, verticalReference + 45, PartyManagementColors.MEMBER.getColor());
+        fontRenderer.drawString("Friend", this.width/2 - 400, verticalReference + 60, PartyManagementColors.FRIEND.getColor());
+        fontRenderer.drawString("Nearby", this.width/2 - 400, verticalReference + 75, PartyManagementColors.NEARBY.getColor());
 
+        // Draw title for suggestions
+        fontRenderer.drawString(TextFormatting.BOLD + "Head", this.width/2 + 280, verticalReference, 0xFFFFFF);
+        fontRenderer.drawString(TextFormatting.BOLD + "Suggestions", this.width/2 + 320, verticalReference, 0xFFFFFF);
+        fontRenderer.drawString(TextFormatting.BOLD + "Invite", this.width/2 + 470, verticalReference, 0xFFFFFF);
+        drawRect(this.width/2 + 280, verticalReference + 9, this.width/2 + 504, verticalReference + 10, 0xFFFFFFFF); // Underline
 
-        updatePartyMemberList();
-        if (partyMembers.size() < 1) { // Refresh once and return as party could have previously been populated
-            refreshAndSetButtons();
-            partyLeaveSent = false;
-            return;
-        }
-
-        ScreenRenderer.beginGL(0, 0);
+        updateNearbyPlayers();
+        updateSuggestionsList();
         NetHandlerPlayClient netHandlerPlayClient = McIf.mc().getConnection();
-        // Draw names
-        for (int i = 0, lim = Math.min(pageHeight, partyMembers.size()); i < lim; i++) {
-            String playerName = partyMembers.get(i);
-            if (playerName == null) continue;
-
-            int colour;
-            if (playerName.equals(PlayerInfo.get(SocialData.class).getPlayerParty().getOwner())) { // is owner
-                // orange if leader + offline, yellow if leader + online
-                colour = offlineMembers.contains(PlayerInfo.get(SocialData.class).getPlayerParty().getOwner()) ? 0xFF8800 : 0xFFFF00;
-            } else if (playerName.equals(McIf.player().getName())) { // is yourself
-                colour = 0x00FFFF;
-            } else if (offlineMembers.contains(playerName)) { // is offline
-                colour = 0xFF0000;
-            } else { // is online
-                colour = 0xFFFFFF;
+        // Draw details for people in suggestions
+        for (String playerName : suggestedPlayers) {
+            int colour = PartyManagementColors.MEMBER.getColor(); // White - shouldn't happen, but just in case neither criteria is met
+            if (PlayerInfo.get(SocialData.class).getFriendList().contains(playerName)) {
+                colour = PartyManagementColors.FRIEND.getColor();
+            } else if (nearbyPlayers.contains(playerName)) {
+                colour = PartyManagementColors.NEARBY.getColor();
             }
 
-            fontRenderer.drawString(playerName, this.width/2 - 160, (verticalReference + 17) + 25 * i, colour);
+            fontRenderer.drawString(playerName, this.width/2 + 320, (verticalReference + 17) + 25 * suggestedPlayers.indexOf(playerName), colour);
+
             // Reset colour to white
             // This is so player heads don't have the previous self/owner colour overlaid onto them
             GlStateManager.color(1, 1, 1, 1);
@@ -141,8 +152,67 @@ public class PartyManagementUI extends GuiScreen {
                 McIf.mc().getTextureManager().bindTexture(new ResourceLocation("textures/entity/steve.png"));
             }
 
-            drawScaledCustomSizeModalRect(this.width/2 - 192, (verticalReference + 14) + 25 * i, 8.0F, 8.0F, 8, 8, 12, 12, 64.0F, 64.0F);
+            drawScaledCustomSizeModalRect(this.width/2 + 288, (verticalReference + 14) + 25 * suggestedPlayers.indexOf(playerName), 8.0F, 8.0F, 8, 8, 12, 12, 64.0F, 64.0F);
             EntityPlayer entityPlayer = McIf.mc().world.getPlayerEntityByName(playerName);
+            if (entityPlayer != null && entityPlayer.isWearing(EnumPlayerModelParts.HAT)) {
+                drawScaledCustomSizeModalRect(this.width/2 + 288, (verticalReference + 14) + 25 * suggestedPlayers.indexOf(playerName), 40.0F, 8, 8, 8, 12, 12, 64.0F, 64.0F);
+            }
+        }
+
+        updatePartyMemberList();
+        if (partyMembers.size() < 1) { // Refresh once and return as party could have previously been populated
+            refreshAndSetButtons();
+            partyLeaveSent = false;
+            return;
+        }
+
+        ScreenRenderer.beginGL(0, 0);
+        // Draw details for people in party
+        for (int i = 0, lim = Math.min(pageHeight, partyMembers.size()); i < lim; i++) {
+            String playerName = partyMembers.get(i);
+            if (playerName == null) continue;
+
+            String rawPlayerName = playerName;
+            int colour;
+
+            if (playerName.equals(McIf.player().getName())) { // Self
+                playerName = TextFormatting.BOLD + playerName;
+            }
+            if (offlineMembers.contains(playerName)) { // Offline
+                playerName = TextFormatting.STRIKETHROUGH + playerName;
+            }
+
+
+            // Priority list is leader, friend, nearby, member
+            // Colors override from the top down
+            if (playerName.equals(PlayerInfo.get(SocialData.class).getPlayerParty().getOwner())) { // is owner
+                colour = PartyManagementColors.LEADER.getColor();
+            } else if (PlayerInfo.get(SocialData.class).getFriendList().contains(playerName)) {
+                colour = PartyManagementColors.FRIEND.getColor();
+            } else if (nearbyPlayers.contains(playerName)) {
+                colour = PartyManagementColors.NEARBY.getColor();
+            } else {
+                colour = PartyManagementColors.MEMBER.getColor();
+            }
+
+            fontRenderer.drawString(playerName, this.width/2 - 160, (verticalReference + 17) + 25 * i, colour);
+
+            // Reset colour to white
+            // This is so player heads don't have the previous self/owner colour overlaid onto them
+            GlStateManager.color(1, 1, 1, 1);
+
+            // Player heads
+            NetworkPlayerInfo networkPlayerInfo = netHandlerPlayClient.getPlayerInfo(rawPlayerName);
+            if (networkPlayerInfo != null) {
+                McIf.mc().getTextureManager().bindTexture(networkPlayerInfo.getLocationSkin());
+            } else {
+                // If networkPlayerInfo is null, either the player is offline or invisible due to /switch bug
+                // Use the default player head texture, it will automatically update when the player is visible again
+                McIf.mc().getTextureManager().bindTexture(new ResourceLocation("textures/entity/steve.png"));
+            }
+
+            drawScaledCustomSizeModalRect(this.width/2 - 192, (verticalReference + 14) + 25 * i, 8.0F, 8.0F, 8, 8, 12, 12, 64.0F, 64.0F);
+            EntityPlayer entityPlayer = McIf.mc().world.getPlayerEntityByName(rawPlayerName);
             if (entityPlayer != null && entityPlayer.isWearing(EnumPlayerModelParts.HAT)) {
                 drawScaledCustomSizeModalRect(this.width/2 - 192, (verticalReference + 14) + 25 * i, 40.0F, 8, 8, 8, 12, 12, 64.0F, 64.0F);
             }
@@ -189,6 +259,12 @@ public class PartyManagementUI extends GuiScreen {
             McIf.player().sendChatMessage("/party create");
         } else if (b == disbandLeaveBtn && b.displayString.contains("Disband")) {
             McIf.player().sendChatMessage("/party disband");
+        } else if (b.id % 10 == 6) { // Suggestion invites
+            // Create party if we aren't in one
+            if (!PlayerInfo.get(SocialData.class).getPlayerParty().isPartying()) {
+                McIf.player().sendChatMessage("/party create");
+            }
+            McIf.player().sendChatMessage("/party invite " + suggestedPlayers.get(b.id / 10));
         } else if (b.id % 10 == 7) { // Promote
             McIf.player().sendChatMessage("/party promote " + partyMembers.get(b.id / 10));
         } else if (b.id % 10 == 9 && b.displayString.contains("Kick")) { // Kick
@@ -237,20 +313,25 @@ public class PartyManagementUI extends GuiScreen {
     private void refreshAndSetButtons() {
         this.buttonList.removeAll(buttons);
         buttons.clear();
+
+        // Suggestion invite buttons
+        for (int i = 0; suggestedPlayers.size() > i; i++) {
+            buttons.add(new GuiButton(i * 10 + 6, this.width/2 + 469, (verticalReference + 14) + 24 * i, 36, 20, "Invite"));
+        }
+
         updatePartyMemberList();
-        if (partyMembers.isEmpty()) return; // No party
-        String playerName = McIf.player().getName();
-        // No buttons if we are not owner, members can't kick/promote
-        if (!playerName.equals(PlayerInfo.get(SocialData.class).getPlayerParty().getOwner())) return;
 
-        for (int i = 0, lim = Math.min(pageHeight, partyMembers.size()); i < lim; i++) {
-            boolean isSelf = partyMembers.get(i).equals(playerName);
-            if (!isSelf) {
-                buttons.add(new GuiButton(7 + 10 * i, this.width/2 + 100, (verticalReference + 11) + 25 * i, 50, 20, "Promote"));
-            } // No promote button for self
+        // Leave/Kick and promote buttons
+        if (!partyMembers.isEmpty() && McIf.player().getName().equals(PlayerInfo.get(SocialData.class).getPlayerParty().getOwner())) {
+            for (int i = 0, lim = Math.min(pageHeight, partyMembers.size()); i < lim; i++) {
+                boolean isSelf = partyMembers.get(i).equals(McIf.player().getName());
+                if (!isSelf) {
+                    buttons.add(new GuiButton(7 + 10 * i, this.width / 2 + 100, (verticalReference + 11) + 25 * i, 50, 20, "Promote"));
+                } // No promote button for self
 
-            String kickLeaveText = (isSelf) ? "Leave" : "Kick";
-            buttons.add(new GuiButton(9 + 10 * i, this.width/2 + 158, (verticalReference + 11) + 25 * i, 38, 20, kickLeaveText));
+                String kickLeaveText = (isSelf) ? "Leave" : "Kick";
+                buttons.add(new GuiButton(9 + 10 * i, this.width / 2 + 158, (verticalReference + 11) + 25 * i, 38, 20, kickLeaveText));
+            }
         }
         this.buttonList.addAll(buttons);
     }
@@ -285,10 +366,44 @@ public class PartyManagementUI extends GuiScreen {
             return s1.compareTo(s2);
         };
         temporaryMembers.sort(sortPartyMembers);
+        offlineMembers.sort(sortPartyMembers);
         partyMembers.clear();
         partyMembers.addAll(temporaryMembers);
         partyMembers.addAll(offlineMembers);
-        // partyMembers list is now sorted in [self, owner, online party alphabetically, offline members]
+        // partyMembers list is now sorted in [self, owner, online party alphabetically, offline members alphabetically]
+        // Unless owner is offline, in which case it will be [self, online party alphabetically, owner (offline), offline members alphabetically]
+    }
+
+    private void updateNearbyPlayers() {
+        nearbyPlayers.clear();
+        for (EntityPlayer entity : McIf.mc().world.getEntitiesWithinAABB(EntityPlayer.class,
+                new AxisAlignedBB(McIf.mc().player.posX - nearbyRadius,
+                        McIf.mc().player.posY - nearbyRadius,
+                        McIf.mc().player.posZ - nearbyRadius,
+                        McIf.mc().player.posX + nearbyRadius,
+                        McIf.mc().player.posY + nearbyRadius,
+                        McIf.mc().player.posZ + nearbyRadius))) {
+            if (entity != null // Null check
+                    && !entity.getName().startsWith("§") // Ignore fake players
+                    && !entity.getName().equals(McIf.player().getName()) // Ignore self
+                    && McIf.mc().world.getScoreboard().getTeamNames().contains(entity.getName())) { // Only players in this world
+                nearbyPlayers.add(entity.getName());
+            }
+        }
+    }
+
+    private void updateSuggestionsList() {
+        suggestedPlayers.clear();
+        suggestedPlayers.addAll(nearbyPlayers);
+        // Add friends that are online in the player's world
+        for (String player : PlayerInfo.get(SocialData.class).getFriendList()) {
+            if (McIf.mc().world.getScoreboard().getTeamNames().contains(player) && !nearbyPlayers.contains(player)) {
+                // !nearbyPlayers.contains(player) to prevent duplicates
+                suggestedPlayers.add(player);
+            }
+        }
+        suggestedPlayers.removeAll(partyMembers); // Remove those already in party from suggestions
+        suggestedPlayers.sort(String.CASE_INSENSITIVE_ORDER);
     }
 
     @Override
