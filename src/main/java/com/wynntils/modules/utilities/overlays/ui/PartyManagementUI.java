@@ -40,7 +40,7 @@ public class PartyManagementUI extends GuiScreen {
     private GuiButton refreshPartyBtn;
     private GuiButton kickOfflineBtn;
     private GuiButton createBtn;
-    private GuiButton disbandLeaveBtn;
+    private GuiButton leaveBtn;
 
     private final List<String> partyMembers = new ArrayList<>();
     private final List<String> offlineMembers = new ArrayList<>();
@@ -48,6 +48,8 @@ public class PartyManagementUI extends GuiScreen {
     private final List<String> suggestedPlayers = new ArrayList<>();
     private Pair<HashSet<String>, String> unsortedPartyMembers = new Pair<>(new HashSet<>(), "");
     private int pageHeight;
+
+    private final NetHandlerPlayClient netHandlerPlayClient = McIf.mc().getConnection();
 
     private final int nearbyRadius = 30;
     private final int verticalReference = 160;
@@ -79,6 +81,13 @@ public class PartyManagementUI extends GuiScreen {
         inviteField.setMaxStringLength(128);
         pageHeight = (this.height - 100) / 25;
         this.buttonList.add(exitBtn = new GuiButton(2, this.width - 40, 20, 20, 20, TextFormatting.RED + "X"));
+
+        // Static buttons
+        this.buttonList.add(inviteBtn = new GuiButton(1, this.width / 2 + 160, verticalReference - 50, 40, 20, "Invite"));
+        this.buttonList.add(refreshPartyBtn = new GuiButton(4, this.width / 2 - 200, verticalReference - 25, 96, 20, TextFormatting.GREEN + "Refresh Party"));
+        this.buttonList.add(kickOfflineBtn = new GuiButton(5, this.width / 2 - 100, verticalReference - 25, 96, 20, TextFormatting.RED + "Kick Offline"));
+        this.buttonList.add(createBtn = new GuiButton(2, this.width / 2 + 4, verticalReference - 25, 96, 20, "Create Party"));
+        this.buttonList.add(leaveBtn = new GuiButton(3, this.width / 2 + 104, verticalReference - 25, 96, 20, TextFormatting.RED + "Leave Party"));
     }
 
     @Override
@@ -86,19 +95,11 @@ public class PartyManagementUI extends GuiScreen {
         drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
 
-        // Top row buttons
-        this.buttonList.add(inviteBtn = new GuiButton(1, this.width / 2 + 160, verticalReference - 50, 40, 20, "Invite"));
+        // Invite field
         if (inviteField != null) {
             inviteField.drawTextBox();
             inviteFieldLabel.drawLabel(McIf.mc(), mouseX, mouseY);
         }
-
-        // Bottom row buttons
-        this.buttonList.add(refreshPartyBtn = new GuiButton(4, this.width / 2 - 200, verticalReference - 25, 96, 20, TextFormatting.GREEN + "Refresh Party"));
-        this.buttonList.add(kickOfflineBtn = new GuiButton(5, this.width / 2 - 100, verticalReference - 25, 96, 20, TextFormatting.RED + "Kick Offline"));
-        this.buttonList.add(createBtn = new GuiButton(2, this.width / 2 + 4, verticalReference - 25, 96, 20, "Create Party"));
-        String disbandLeaveText = (PlayerInfo.get(SocialData.class).getPlayerParty().getOwner().equals(McIf.player().getName())) ? "Disband Party" : "Leave Party";
-        this.buttonList.add(disbandLeaveBtn = new GuiButton(3, this.width / 2 + 104, verticalReference - 25, 96, 20, TextFormatting.RED + disbandLeaveText));
 
         setManagementButtonStatuses();
 
@@ -126,7 +127,6 @@ public class PartyManagementUI extends GuiScreen {
 
         updateNearbyPlayers();
         updateSuggestionsList();
-        NetHandlerPlayClient netHandlerPlayClient = McIf.mc().getConnection();
         // Draw details for people in suggestions
         for (String playerName : suggestedPlayers) {
             int colour = PartyManagementColors.MEMBER.getColor(); // White - shouldn't happen, but just in case neither criteria is met
@@ -255,8 +255,9 @@ public class PartyManagementUI extends GuiScreen {
             updatePartyMemberList();
         } else if (b == createBtn) {
             McIf.player().sendChatMessage("/party create");
-        } else if (b == disbandLeaveBtn && b.displayString.contains("Disband")) {
-            McIf.player().sendChatMessage("/party disband");
+        } else if (b == leaveBtn && !partyLeaveSent) {
+            McIf.player().sendChatMessage("/party leave");
+            partyLeaveSent = true;
         } else if (b.id % 10 == 6) { // Suggestion invites
             // Create party if we aren't in one
             if (!PlayerInfo.get(SocialData.class).getPlayerParty().isPartying()) {
@@ -267,9 +268,8 @@ public class PartyManagementUI extends GuiScreen {
             McIf.player().sendChatMessage("/party promote " + partyMembers.get(b.id / 10));
         } else if (b.id % 10 == 9 && b.displayString.contains("Kick")) { // Kick
             McIf.player().sendChatMessage("/party kick " + partyMembers.get(b.id / 10));
-        } else if (b.displayString.contains("Leave") && !partyLeaveSent) { // For both dynamic leave/kick and disband/leave btns
-            McIf.player().sendChatMessage("/party leave");
-            partyLeaveSent = true;
+        } else if (b.displayString.contains("Disband"))  {
+            McIf.player().sendChatMessage("/party disband");
         }
         refreshAndSetButtons();
     }
@@ -283,7 +283,7 @@ public class PartyManagementUI extends GuiScreen {
         // not already in party
         createBtn.enabled = ownerName.equals("");
         // in party
-        disbandLeaveBtn.enabled = !ownerName.equals("");
+        leaveBtn.enabled = !ownerName.equals("");
         // owner of party
         kickOfflineBtn.enabled = ownerName.equals(playerName) && offlineMembers.size() > 0;
     }
@@ -327,8 +327,8 @@ public class PartyManagementUI extends GuiScreen {
                     buttons.add(new GuiButton(7 + 10 * i, this.width / 2 + 100, (verticalReference + 11) + 25 * i, 50, 20, "Promote"));
                 } // No promote button for self
 
-                String kickLeaveText = (isSelf) ? "Leave" : "Kick";
-                buttons.add(new GuiButton(9 + 10 * i, this.width / 2 + 158, (verticalReference + 11) + 25 * i, 38, 20, kickLeaveText));
+                String disbandKickText = (isSelf) ? "Disband" : "Kick";
+                buttons.add(new GuiButton(9 + 10 * i, this.width / 2 + 155, (verticalReference + 11) + 25 * i, 47, 20, disbandKickText));
             }
         }
         this.buttonList.addAll(buttons);
