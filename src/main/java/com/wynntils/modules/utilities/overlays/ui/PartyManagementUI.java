@@ -44,7 +44,6 @@ public class PartyManagementUI extends GuiScreen {
 
     private final List<String> partyMembers = new ArrayList<>();
     private final List<String> offlineMembers = new ArrayList<>();
-    private final List<String> nearbyPlayers = new ArrayList<>();
     private final List<String> suggestedPlayers = new ArrayList<>();
     private Pair<HashSet<String>, String> unsortedPartyMembers = new Pair<>(new HashSet<>(), "");
     private int pageHeight;
@@ -58,8 +57,7 @@ public class PartyManagementUI extends GuiScreen {
     private enum PartyManagementColors {
         LEADER(0xFFFF00), // Yellow
         MEMBER(0xFFFFFF), // White
-        FRIEND(0x00FF00), // Green
-        NEARBY(0x00FFFF); // Cyan
+        FRIEND(0x00FF00); // Green
 
         private final int colour;
 
@@ -105,7 +103,7 @@ public class PartyManagementUI extends GuiScreen {
 
         // Titles for the actual member list
         fontRenderer.drawString(TextFormatting.BOLD + "Head", this.width/2 - 200, verticalReference, 0xFFFFFF);
-        fontRenderer.drawString(TextFormatting.BOLD + "Name", this.width / 2 - 160, verticalReference, 0xFFFFFF);
+        fontRenderer.drawString(TextFormatting.BOLD + "Member", this.width / 2 - 160, verticalReference, 0xFFFFFF);
         drawCenteredString(fontRenderer, TextFormatting.BOLD + "Promote", this.width/2 + 125, verticalReference, 0xFFFFFF);
         drawCenteredString(fontRenderer, TextFormatting.BOLD + "Kick", this.width/2 + 177, verticalReference, 0xFFFFFF);
         drawRect(this.width/2 - 200, verticalReference + 9, this.width/2 + 200, verticalReference + 10, 0xFFFFFFFF); // Underline
@@ -117,7 +115,6 @@ public class PartyManagementUI extends GuiScreen {
         fontRenderer.drawString("Leader", this.width / 2 - 400, verticalReference + 30, PartyManagementColors.LEADER.getColor());
         fontRenderer.drawString(TextFormatting.STRIKETHROUGH + "Offline", this.width/2 - 400, verticalReference + 45, PartyManagementColors.MEMBER.getColor());
         fontRenderer.drawString("Friend", this.width/2 - 400, verticalReference + 60, PartyManagementColors.FRIEND.getColor());
-        fontRenderer.drawString("Nearby", this.width/2 - 400, verticalReference + 75, PartyManagementColors.NEARBY.getColor());
 
         // Draw title for suggestions
         fontRenderer.drawString(TextFormatting.BOLD + "Head", this.width/2 + 280, verticalReference, 0xFFFFFF);
@@ -125,15 +122,12 @@ public class PartyManagementUI extends GuiScreen {
         fontRenderer.drawString(TextFormatting.BOLD + "Invite", this.width/2 + 470, verticalReference, 0xFFFFFF);
         drawRect(this.width/2 + 280, verticalReference + 9, this.width/2 + 504, verticalReference + 10, 0xFFFFFFFF); // Underline
 
-        updateNearbyPlayers();
         updateSuggestionsList();
         // Draw details for people in suggestions
         for (String playerName : suggestedPlayers) {
-            int colour = PartyManagementColors.MEMBER.getColor(); // White - shouldn't happen, but just in case neither criteria is met
+            int colour = PartyManagementColors.MEMBER.getColor(); // White - shouldn't happen, but just in case
             if (PlayerInfo.get(SocialData.class).getFriendList().contains(playerName)) {
                 colour = PartyManagementColors.FRIEND.getColor();
-            } else if (nearbyPlayers.contains(playerName)) {
-                colour = PartyManagementColors.NEARBY.getColor();
             }
 
             fontRenderer.drawString(playerName, this.width/2 + 320, (verticalReference + 17) + 25 * suggestedPlayers.indexOf(playerName), colour);
@@ -181,15 +175,12 @@ public class PartyManagementUI extends GuiScreen {
                 playerName = TextFormatting.STRIKETHROUGH + playerName;
             }
 
-
-            // Priority list is leader, friend, nearby, member
+            // Priority list is leader, friend, member
             // Colors override from the top down
-            if (playerName.equals(PlayerInfo.get(SocialData.class).getPlayerParty().getOwner())) { // is owner
+            if (rawPlayerName.equals(PlayerInfo.get(SocialData.class).getPlayerParty().getOwner())) { // is owner
                 colour = PartyManagementColors.LEADER.getColor();
             } else if (PlayerInfo.get(SocialData.class).getFriendList().contains(playerName)) {
                 colour = PartyManagementColors.FRIEND.getColor();
-            } else if (nearbyPlayers.contains(playerName)) {
-                colour = PartyManagementColors.NEARBY.getColor();
             } else {
                 colour = PartyManagementColors.MEMBER.getColor();
             }
@@ -372,30 +363,11 @@ public class PartyManagementUI extends GuiScreen {
         // Unless owner is offline, in which case it will be [self, online party alphabetically, owner (offline), offline members alphabetically]
     }
 
-    private void updateNearbyPlayers() {
-        nearbyPlayers.clear();
-        for (EntityPlayer entity : McIf.mc().world.getEntitiesWithinAABB(EntityPlayer.class,
-                new AxisAlignedBB(McIf.mc().player.posX - nearbyRadius,
-                        McIf.mc().player.posY - nearbyRadius,
-                        McIf.mc().player.posZ - nearbyRadius,
-                        McIf.mc().player.posX + nearbyRadius,
-                        McIf.mc().player.posY + nearbyRadius,
-                        McIf.mc().player.posZ + nearbyRadius))) {
-            if (entity != null // Null check
-                    && !entity.getName().startsWith("§") // Ignore fake players
-                    && !entity.getName().equals(McIf.player().getName()) // Ignore self
-                    && McIf.mc().world.getScoreboard().getTeamNames().contains(entity.getName())) { // Only players in this world
-                nearbyPlayers.add(entity.getName());
-            }
-        }
-    }
-
     private void updateSuggestionsList() {
         suggestedPlayers.clear();
-        suggestedPlayers.addAll(nearbyPlayers);
         // Add friends that are online in the player's world
         for (String player : PlayerInfo.get(SocialData.class).getFriendList()) {
-            if (McIf.mc().world.getScoreboard().getTeamNames().contains(player) && !nearbyPlayers.contains(player)) {
+            if (McIf.mc().world.getScoreboard().getTeamNames().contains(player)) {
                 // !nearbyPlayers.contains(player) to prevent duplicates
                 suggestedPlayers.add(player);
             }
