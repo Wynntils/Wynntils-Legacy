@@ -125,12 +125,7 @@ public class PartyManagementUI extends GuiScreen {
         updateSuggestionsList();
         // Draw details for people in suggestions
         for (String playerName : suggestedPlayers) {
-            int colour = PartyManagementColors.MEMBER.getColor(); // White - shouldn't happen, but just in case
-            if (PlayerInfo.get(SocialData.class).getFriendList().contains(playerName)) {
-                colour = PartyManagementColors.FRIEND.getColor();
-            }
-
-            fontRenderer.drawString(playerName, this.width/2 + 320, (verticalReference + 17) + 25 * suggestedPlayers.indexOf(playerName), colour);
+            fontRenderer.drawString(playerName, this.width/2 + 320, (verticalReference + 17) + 25 * suggestedPlayers.indexOf(playerName), PartyManagementColors.FRIEND.getColor());
 
             // Reset colour to white
             // This is so player heads don't have the previous self/owner colour overlaid onto them
