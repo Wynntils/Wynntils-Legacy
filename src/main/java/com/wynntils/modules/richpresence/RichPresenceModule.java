@@ -9,18 +9,18 @@ import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
 import com.wynntils.modules.richpresence.configs.RichPresenceConfig;
 import com.wynntils.modules.richpresence.events.ClientEvents;
 import com.wynntils.modules.richpresence.events.ServerEvents;
-import com.wynntils.modules.richpresence.profiles.RichProfile;
+import com.wynntils.modules.richpresence.profiles.CoreWrapper;
 
 @ModuleInfo(name = "rich_presence", displayName = "Rich Presence")
 public class RichPresenceModule extends Module {
 
     private static RichPresenceModule module;
 
-    private RichProfile richPresence;
+    private CoreWrapper coreWrapper;
 
     public void onEnable() {
         try {
-            richPresence = new RichProfile(387266678607577088L);
+            coreWrapper = new CoreWrapper(387266678607577088L);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -37,12 +37,8 @@ public class RichPresenceModule extends Module {
         return module;
     }
 
-    /**
-     * Get the current RichPresence online instance
-     * @return RichPresence profile
-     */
-    public RichProfile getRichPresence() {
-        return richPresence;
+    public CoreWrapper getCoreWrapper() {
+        return coreWrapper;
     }
 
 }
