@@ -52,14 +52,14 @@ public class GuildMemberManageOverlay implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void onDrawBackground(GuiOverlapEvent.ChestOverlap.DrawGuiContainerBackgroundLayer e) {
-        if (!inMemberManageMenu) return;
+        if (!inMemberManageMenu || searchField == null) return;
 
         // search highlight
         for (Slot s : e.getGui().inventorySlots.inventorySlots) {
             if (s.getStack().isEmpty() || !s.getStack().hasDisplayName() || s.getStack().getItem() != Items.SKULL) continue;
             if (!s.getStack().getDisplayName().startsWith(TextFormatting.WHITE + TextFormatting.BOLD.toString())) continue;
-            String displayName = StringUtils.stripControlCodes(s.getStack().getDisplayName()).toLowerCase(Locale.ROOT);
-            if (searchField.getText().isEmpty() || !displayName.contains(searchField.getText().toLowerCase(Locale.ROOT))) continue;
+            String displayName = StringUtils.stripControlCodes(s.getStack().getDisplayName()).toLowerCase();
+            if (searchField.getText().isEmpty() || !displayName.contains(searchField.getText().toLowerCase())) continue;
 
             SpecialRendering.renderGodRays(e.getGui().getGuiLeft() + s.xPos + 5,
                     e.getGui().getGuiTop() + s.yPos + 6, 0, 5f, 35, UtilitiesConfig.INSTANCE.guildMemberMenuSearchHighlightColor);

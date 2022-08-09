@@ -84,6 +84,13 @@ public class FavoriteItemsOverlay implements Listener {
                 continue;
             }
 
+            if (stack.getItem() == Items.EMERALD && stack.getDisplayName().contains("Emerald")) {
+                if (UtilitiesConfig.INSTANCE.preventEmeraldChestClose != 0 && stack.getCount() >= UtilitiesConfig.INSTANCE.preventEmeraldChestClose) {
+                    nbt.setBoolean("wynntilsFavorite", true);
+                    continue;
+                }
+            }
+
             if (!itemName.contains("Unidentified")) {
                 nbt.setBoolean("wynntilsFavorite", false);
                 continue; // don't care about identified items

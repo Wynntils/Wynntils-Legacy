@@ -100,6 +100,9 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Territory Guild Tags", description = "Should guild names be replaced by their guild tags?")
         public boolean useGuildShortNames = true;
 
+        @Setting(displayName = "Dashed Borders if Cooldown", description = "Should the territory borders on the guild map have dashed lines if the territory is on cooldown?")
+        public boolean useDashedBordersIfCooldown = true;
+
         @Setting(displayName = "Territory Colour Transparency", description = "How transparent should the colour of territories be?")
         @Setting.Limitations.FloatLimit(min = 0.1f, max = 1f)
         public float colorAlpha = 0.4f;
@@ -225,6 +228,21 @@ public class MapConfig extends SettingsClass {
 
         @Setting(displayName = "Compass Marker", description = "Should a marker appear on the map where the compass location is set to?")
         public boolean compassMarker = true;
+
+        @Setting(displayName = "Waypoint Menu Spacing", description = "What amount of space should be between each set of values in the waypoint menu")
+        public WaypointSpacing waypointSpacing = WaypointSpacing.MEDIUM;
+
+        public enum WaypointSpacing {
+            SMALL(14),
+            MEDIUM(20),
+            LARGE(25);
+
+            private int spacingMultiplier;
+            public int getSpacingMultiplier() { return spacingMultiplier; }
+            WaypointSpacing(int spacingMultiplier) {
+                this.spacingMultiplier = spacingMultiplier;
+            }
+        }
 
         @Override
         public void saveSettings(Module m) {

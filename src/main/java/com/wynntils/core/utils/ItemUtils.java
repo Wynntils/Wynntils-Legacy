@@ -30,9 +30,7 @@ import java.util.regex.Pattern;
 public class ItemUtils {
 
     private static final Pattern LEVEL_PATTERN = Pattern.compile("(?:Combat|Crafting|Mining|Woodcutting|Farming|Fishing) Lv\\. Min: ([0-9]+)");
-    private static final Pattern LEVEL_RANGE_PATTERN = Pattern.compile("Lv\\. Range: " + TextFormatting.WHITE.toString() + "([0-9]+)-([0-9]+)");
-    private static final Pattern WEAPON_SPEED_PATTERN = Pattern.compile("§7.+ Attack Speed");
-
+    private static final Pattern LEVEL_RANGE_PATTERN = Pattern.compile("Lv\\. Range: " + TextFormatting.WHITE + "([0-9]+)-([0-9]+)");
     public static final NBTTagCompound UNBREAKABLE = new NBTTagCompound();
 
     /**
@@ -211,18 +209,36 @@ public class ItemUtils {
         UNBREAKABLE.setBoolean("Unbreakable", true);
     }
 
+    /**
+     * @param heldItem The ItemStack to check
+     * @return true if the item has an attack speed specification
+     */
     public static boolean isWeapon(ItemStack heldItem) {
-        List<String> lore = ItemUtils.getLore(heldItem);
+        String lore = ItemUtils.getStringLore(heldItem);
+        return lore.contains("Attack Speed") && lore.contains("§7");
+    }
 
-        //If item has attack speed line, it is a weapon
-        boolean isWeapon = false;
-        for (String s : lore) {
-            if (WEAPON_SPEED_PATTERN.matcher(s).matches()) {
-                isWeapon = true;
-                break;
-            }
-        }
+    /**
+     * @param itemStack The ItemStack to check
+     * @return true if the item is a potion, scroll, or food
+     */
+    public static boolean isConsumable(ItemStack itemStack) {
+        return itemStack.getDisplayName().matches(".+\\[\\d+/\\d+]");
+    }
 
-        return isWeapon;
+    /**
+     * @param itemStack The ItemStack to check
+     * @return true if the item is horse
+     */
+    public static boolean isHorse(ItemStack itemStack) {
+        return itemStack.getDisplayName().endsWith(" Horse") && itemStack.getItem() == Items.SADDLE;
+    }
+
+    /**
+     * @param itemStack The ItemStack to check
+     * @return true if the item is a gathering tool
+     */
+    public static boolean isGatheringTool(ItemStack itemStack) {
+        return itemStack.getDisplayName().matches("§f. Gathering .+ T\\d+");
     }
 }

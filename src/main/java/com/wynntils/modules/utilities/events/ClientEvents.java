@@ -121,6 +121,7 @@ public class ClientEvents implements Listener {
     private static int lastProcessedOpenedChest = -1;
     private int lastOpenedChestWindowId = -1;
     private int lastOpenedRewardWindowId = -1;
+    private int timesClosed = 0;
 
 
     @SubscribeEvent
@@ -587,7 +588,13 @@ public class ClientEvents implements Listener {
         if (!Reference.onWorld) return;
 
         if (UtilitiesConfig.INSTANCE.preventMythicChestClose || UtilitiesConfig.INSTANCE.preventFavoritedChestClose) {
+            boolean preventedClose = false;
             if (e.getKeyCode() == 1 || e.getKeyCode() == McIf.mc().gameSettings.keyBindInventory.getKeyCode()) {
+                if (UtilitiesConfig.INSTANCE.preventFavoritedChestClosingAmount != 0 && timesClosed + 1 >= UtilitiesConfig.INSTANCE.preventFavoritedChestClosingAmount) {
+                    timesClosed = 0;
+                    return;
+                }
+
                 IInventory inv = e.getGui().getLowerInv();
                 String invName = getTextWithoutFormattingCodes(inv.getName());
                 if ((invName.startsWith("Loot Chest") || invName.contains("Daily Rewards") ||
@@ -602,7 +609,9 @@ public class ClientEvents implements Listener {
                             text = new TextComponentString("You cannot close this loot chest while there is a mythic in it!");
                         } else if (UtilitiesConfig.INSTANCE.preventFavoritedChestClose && stack.hasTagCompound() &&
                                 stack.getTagCompound().getBoolean("wynntilsFavorite")) {
-                            text = new TextComponentString("You cannot close this loot chest while there is a favorited item, ingredient, emerald pouch or powder in it!");
+                            text = new TextComponentString("You cannot close this loot chest while there is a favorited item, ingredient, emerald pouch, emerald or powder in it!"
+                            + (UtilitiesConfig.INSTANCE.preventFavoritedChestClosingAmount != 0 ? " Try closing this chest " +
+                                    (UtilitiesConfig.INSTANCE.preventFavoritedChestClosingAmount - timesClosed - 1) + " more times to forcefully close!" : ""));
                         } else {
                             continue;
                         }
@@ -611,9 +620,11 @@ public class ClientEvents implements Listener {
                         McIf.player().sendMessage(text);
                         McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_BASS, 1f));
                         e.setCanceled(true);
-                        break;
+                        timesClosed++;
+                        return;
                     }
                 }
+                timesClosed = 0;
                 return;
             }
         }
@@ -702,6 +713,7 @@ public class ClientEvents implements Listener {
     public void partyFinderInventoryClick(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
         // This .contains() check is quite loose because it needs to account for the raid-specific pfinder NPCs at the start of each raid
         if (!e.getGui().getLowerInv().getName().contains("Party Finder")) return;
+        if (e.getGui().getSlotUnderMouse() == null || !e.getGui().getSlotUnderMouse().getHasStack()) return;
 
         ItemStack clickedItemStack = e.getGui().getSlotUnderMouse().getStack();
         if (!ItemUtils.getStringLore(clickedItemStack).contains("§aClick to join the queue")) return;
@@ -963,8 +975,15 @@ public class ClientEvents implements Listener {
         EntityPlayer ep = (EntityPlayer) clicked;
         if (ep.getTeam() == null) return; // player model npc
 
-        if (!ItemUtils.isWeapon(player.getHeldItemMainhand()))
-            return; // not a weapon
+        ItemStack heldItem = player.getHeldItemMainhand();
+        if (heldItem.isEmpty()) return;
+
+        if (!ItemUtils.isWeapon(heldItem) &&
+            !ItemUtils.isConsumable(heldItem) && // Potions, scrolls, food, etc.
+            !ItemUtils.isHorse(heldItem) &&
+            !ItemUtils.isGatheringTool(heldItem) &&
+            !heldItem.getDisplayName().equals("§bCharacter Info") &&
+            !heldItem.getDisplayName().equals("§dQuest Book")) return;
 
         e.setCanceled(true);
     }

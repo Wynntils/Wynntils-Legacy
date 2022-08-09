@@ -5,6 +5,7 @@
 package com.wynntils.webapi.profiles;
 
 import com.google.gson.*;
+import com.wynntils.core.utils.helpers.SimpleRelativeDateFormatter;
 
 import java.lang.reflect.Type;
 import java.text.ParseException;
@@ -29,6 +30,8 @@ public class TerritoryProfile {
     Date acquired;
 
     int level;
+
+    private final SimpleRelativeDateFormatter formatter = new SimpleRelativeDateFormatter();
 
     public TerritoryProfile(String name, String friendlyName, String guildPrefix, String guildColor, int level, int startX, int startZ, int endX, int endZ, String guild, String attacker, Date acquired) {
         this.name = name;
@@ -108,6 +111,24 @@ public class TerritoryProfile {
         return acquired;
     }
 
+
+    private long getTimeHeldInMillis() {
+        return new Date().getTime() - this.getAcquired().getTime() + getTimezoneOffset();
+    }
+
+    private long getTimezoneOffset(){
+        return ((long) new Date().getTimezoneOffset() * 60 * 1000);
+    }
+
+    public boolean isOnCooldown(){
+        return getTimeHeldInMillis() < 10 * 60 * 1000;
+    }
+
+    public String getReadableRelativeTimeAcquired () {
+        long difference = getTimeHeldInMillis();
+        return formatter.format(difference);
+    }
+
     public boolean insideArea(int playerX, int playerZ) {
         return startX <= playerX && endX >= playerX && startZ <= playerZ && endZ >= playerZ;
     }
@@ -148,7 +169,7 @@ public class TerritoryProfile {
 
             String guildPrefix;
             if (territory.get("guildPrefix").isJsonNull()) guildPrefix = "UNK";
-            else guildPrefix= territory.get("guildPrefix").getAsString();
+            else guildPrefix = territory.get("guildPrefix").getAsString();
 
             int level = territory.get("level").getAsInt();
 
@@ -162,3 +183,4 @@ public class TerritoryProfile {
     }
 
 }
+
