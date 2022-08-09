@@ -112,14 +112,10 @@ public class WebManager {
 
     private static final int REQUEST_TIMEOUT_MILLIS = 16000;
 
-    private static final String USER_AGENT;
-
-    static {
-        USER_AGENT = String.format("Wynntils\\%s-%d (%s)",
+    private static final String USER_AGENT = String.format("Wynntils\\%s-%d (%s)",
                 Reference.VERSION,
                 Reference.BUILD_NUMBER,
                 Reference.developmentEnvironment ? "dev" : "client");
-    }
 
     public static void reset() {
         apiUrls = null;
