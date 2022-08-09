@@ -24,6 +24,7 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.network.play.server.*;
 import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -780,7 +781,7 @@ public class OverlayEvents implements Listener {
             timerName = "Speed boost";
         }
         // if the effect is invisibility timer is "Vanish"
-        else if (potion == MobEffects.INVISIBILITY && effect.getDuration() < 200) {
+        else if (potion == MobEffects.WITHER && effect.getDuration() < 200) {
             timerName = "Vanish";
             isVanished = true;
         }
@@ -821,12 +822,25 @@ public class OverlayEvents implements Listener {
 
             // When removing speed boost from (archer)
             if (potion == MobEffects.SPEED) {
+                // Remove old speed boost timer
                 ConsumableTimerOverlay.removeBasicTimer("Speed boost");
+
+                new Delay(() -> {
+                    for (PotionEffect pe : McIf.player().getActivePotionEffects()) {
+                        if (pe.getPotion().getName().equals("effect.moveSpeed")) {
+                            // pe.getDuration() is in ticks, so we divide by 20 to get seconds
+                            ConsumableTimerOverlay.addBasicTimer("Speed boost", pe.getDuration() / 20);
+                            return;
+                        }
+                    }
+                }, 5);
             }
             // When removing invisibility from assassin
-            else if (potion == MobEffects.INVISIBILITY) {
+            else if (potion == MobEffects.WITHER) {
                 isVanished = false; // So it won't skip
                 ConsumableTimerOverlay.removeBasicTimer("Vanish");
+                // Bit of a delay until Wynn starts the cooldown timer; we need to copy it
+                new Delay(() -> ConsumableTimerOverlay.addBasicTimer("Vanish Cooldown", 5), 9);
             }
         });
     }

@@ -64,10 +64,10 @@ public class KeyManager {
 
         zoomOutKey = CoreModule.getModule().registerKeyBinding("Zoom Out", Keyboard.KEY_MINUS, "Wynntils", KeyConflictContext.IN_GAME, false, () -> MiniMapOverlay.zoomBy(-1));
 
-        CoreModule.getModule().registerKeyBinding("Cast 1st Spell", Keyboard.KEY_Z, "Wynntils", KeyConflictContext.IN_GAME, true, QuickCastManager::castFirstSpell);
-        CoreModule.getModule().registerKeyBinding("Cast 2nd Spell", Keyboard.KEY_X, "Wynntils", KeyConflictContext.IN_GAME, true, QuickCastManager::castSecondSpell);
-        CoreModule.getModule().registerKeyBinding("Cast 3rd Spell", Keyboard.KEY_C, "Wynntils", KeyConflictContext.IN_GAME, true, QuickCastManager::castThirdSpell);
-        CoreModule.getModule().registerKeyBinding("Cast 4th Spell", Keyboard.KEY_V, "Wynntils", KeyConflictContext.IN_GAME, true, QuickCastManager::castFourthSpell);
+        CoreModule.getModule().registerKeyBinding("Cast R-L-R Spell", Keyboard.KEY_Z, "Wynntils", KeyConflictContext.IN_GAME, true, QuickCastManager::castFirstSpell);
+        CoreModule.getModule().registerKeyBinding("Cast R-R-R Spell", Keyboard.KEY_X, "Wynntils", KeyConflictContext.IN_GAME, true, QuickCastManager::castSecondSpell);
+        CoreModule.getModule().registerKeyBinding("Cast R-L-L Spell", Keyboard.KEY_C, "Wynntils", KeyConflictContext.IN_GAME, true, QuickCastManager::castThirdSpell);
+        CoreModule.getModule().registerKeyBinding("Cast R-R-L Spell", Keyboard.KEY_V, "Wynntils", KeyConflictContext.IN_GAME, true, QuickCastManager::castFourthSpell);
 
         CoreModule.getModule().registerKeyBinding("Mount Horse", Keyboard.KEY_Y, "Wynntils", KeyConflictContext.IN_GAME, true, MountHorseManager::mountHorseAndShowMessage);
 

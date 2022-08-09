@@ -21,9 +21,7 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void initClassMenu(GuiOverlapEvent.ChestOverlap.InitGui e) {
         if (!VisualConfig.CustomSelector.INSTANCE.characterSelector) return;
-        // item slot check required as compass menu will relay "Select a Character" just before updating
-        if (!e.getGui().getLowerInv().getName().contains("Select a Character")
-                || e.getGui().getLowerInv().getStackInSlot(2).getDisplayName().toLowerCase().contains("character")) return;
+        if (!e.getGui().getLowerInv().getName().contains("Select a Character")) return;
 
         WindowedResolution res = new WindowedResolution(480, 254);
         fakeCharacterSelector = new CharacterSelectorUI(null, e.getGui(), res.getScaleFactor());
@@ -32,9 +30,8 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void closeCharacterMenu(GuiOverlapEvent.ChestOverlap.GuiClosed e) {
-        if (!e.getGui().getLowerInv().getName().contains("Select a Character")
-            || e.getGui().getLowerInv().getStackInSlot(2).getDisplayName().toLowerCase().contains("character")) return;
-
+        if (!VisualConfig.CustomSelector.INSTANCE.characterSelector) return;
+        // Literally impossible to have a character selector open after any inventory close; might as well clear it every time
         fakeCharacterSelector = null;
     }
 

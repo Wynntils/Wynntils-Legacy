@@ -67,6 +67,8 @@ public class WynnBuilderOverlay implements Listener {
         if (slot == null || slot.inventory == null || !slot.getHasStack()) return;
 
         ItemStack stack = slot.getStack();
+        if (ItemUtils.getStringLore(stack).contains("§3Crafted")) return; // Crafteds are not on wynnbuilder
+
         Utils.openUrl("https://wynnbuilder.github.io/item.html#" + Utils.getRawItemName(stack).replace(" ", "%20"));
         e.setCanceled(true);
     }
