@@ -29,7 +29,6 @@ public class VisualModule extends Module {
 
         registerSettings(VisualConfig.class);
         registerSettings(VisualConfig.Fireflies.class);
-        registerSettings(VisualConfig.DamageSplash.class);
         registerSettings(VisualConfig.Ashes.class);
         registerSettings(VisualConfig.Snowflakes.class);
         registerSettings(VisualConfig.Flames.class);

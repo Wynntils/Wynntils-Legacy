@@ -14,22 +14,6 @@ import com.wynntils.modules.visual.managers.CachedChunkManager;
 public class VisualConfig extends SettingsClass {
     public static VisualConfig INSTANCE;
 
-    @SettingsInfo(name = "damageSplash", displayPath = "Visual/Damage Splash")
-    public static class DamageSplash extends SettingsClass {
-        public static DamageSplash INSTANCE;
-
-        @Setting(displayName = "Replace Damage Splashes", description = "Should Wynncraft damage splashes be replaced?")
-        public boolean enabled = true;
-
-        @Setting(displayName = "Splash Duration", description = "In ticks, how long should splashes last for?")
-        @Setting.Limitations.IntLimit(min = 50, max = 800)
-        public int maxLiving = 150;
-
-        @Setting(displayName = "Initial Splash Scale", description = "How large should the initial size of the splash be?")
-        @Setting.Limitations.FloatLimit(min = 1f, max = 4f)
-        public float initialScale = 2.5f;
-    }
-
     @SettingsInfo(name = "fireflies", displayPath = "Visual/Fireflies")
     public static class Fireflies extends SettingsClass {
         public static Fireflies INSTANCE;
