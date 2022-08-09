@@ -128,7 +128,6 @@ public class JoinHandler {
             String content = TextFormatting.getTextWithoutFormattingCodes(m.group(4).substring(1));
             String user = TextFormatting.getTextWithoutFormattingCodes(m.group(2));
 
-            //if (!RichPresenceModule.getModule().getRichPresence().validSecret(content.substring(0, content.length() - 1)))
             if (!RichPresenceModule.getModule().getCoreWrapper().validSecret(content.substring(0, content.length() - 1)))
                 return;
 
