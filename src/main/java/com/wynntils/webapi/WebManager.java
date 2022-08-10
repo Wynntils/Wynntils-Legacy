@@ -5,7 +5,12 @@
 package com.wynntils.webapi;
 
 import com.google.common.reflect.TypeToken;
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynnGuildWarEvent;
@@ -15,7 +20,16 @@ import com.wynntils.modules.core.overlays.UpdateOverlay;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.overlays.objects.MapApiIcon;
 import com.wynntils.webapi.account.WynntilsAccount;
-import com.wynntils.webapi.profiles.*;
+import com.wynntils.webapi.profiles.DiscoveryProfile;
+import com.wynntils.webapi.profiles.LeaderboardProfile;
+import com.wynntils.webapi.profiles.LocationProfile;
+import com.wynntils.webapi.profiles.MapLabelProfile;
+import com.wynntils.webapi.profiles.MapMarkerProfile;
+import com.wynntils.webapi.profiles.MusicProfile;
+import com.wynntils.webapi.profiles.SeaskipperProfile;
+import com.wynntils.webapi.profiles.ServerProfile;
+import com.wynntils.webapi.profiles.TerritoryProfile;
+import com.wynntils.webapi.profiles.UpdateProfile;
 import com.wynntils.webapi.profiles.guild.GuildProfile;
 import com.wynntils.webapi.profiles.ingredient.IngredientProfile;
 import com.wynntils.webapi.profiles.item.IdentificationOrderer;
@@ -34,10 +48,6 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nullable;
-import javax.net.ssl.HttpsURLConnection;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManagerFactory;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -46,16 +56,15 @@ import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.security.KeyManagementException;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.NoSuchAlgorithmException;
-import java.security.cert.Certificate;
-import java.security.cert.CertificateException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -102,6 +111,11 @@ public class WebManager {
     private static RequestHandler handler = new RequestHandler();
 
     private static final int REQUEST_TIMEOUT_MILLIS = 16000;
+
+    private static final String USER_AGENT = String.format("Wynntils\\%s-%d (%s)",
+                Reference.VERSION,
+                Reference.BUILD_NUMBER,
+                Reference.developmentEnvironment ? "dev" : "client");
 
     public static void reset() {
         apiUrls = null;
@@ -224,7 +238,9 @@ public class WebManager {
         return updateProfile;
     }
 
-    public static HashMap<String, ItemGuessProfile> getItemGuesses() { return itemGuesses; }
+    public static HashMap<String, ItemGuessProfile> getItemGuesses() {
+        return itemGuesses;
+    }
 
     public static Collection<ItemProfile> getDirectItems() {
         return directItems;
@@ -305,20 +321,21 @@ public class WebManager {
         if (apiUrls == null) return;
         String url = apiUrls.get("Athena") + "/cache/get/territoryList";
         handler.addRequest(new Request(url, "territory")
-            .cacheTo(new File(API_CACHE_ROOT, "territories.json"))
-            .handleJsonObject(json -> {
-                if (!json.has("territories")) return false;
+                .cacheTo(new File(API_CACHE_ROOT, "territories.json"))
+                .handleJsonObject(json -> {
+                    if (!json.has("territories")) return false;
 
-                Type type = new TypeToken<HashMap<String, TerritoryProfile>>() {}.getType();
+                    Type type = new TypeToken<HashMap<String, TerritoryProfile>>() {
+                    }.getType();
 
-                GsonBuilder builder = new GsonBuilder();
-                builder.registerTypeHierarchyAdapter(TerritoryProfile.class, new TerritoryProfile.TerritoryDeserializer());
-                Gson gson = builder.create();
+                    GsonBuilder builder = new GsonBuilder();
+                    builder.registerTypeHierarchyAdapter(TerritoryProfile.class, new TerritoryProfile.TerritoryDeserializer());
+                    Gson gson = builder.create();
 
-                territories.clear();
-                territories.putAll(gson.fromJson(json.get("territories"), type));
-                return true;
-            })
+                    territories.clear();
+                    territories.putAll(gson.fromJson(json.get("territories"), type));
+                    return true;
+                })
         );
     }
 
@@ -334,7 +351,7 @@ public class WebManager {
      *
      * @return a {@link ArrayList} containing all guild names, or an empty list if an error occurred
      */
-    public static List<String> getGuilds()  {
+    public static List<String> getGuilds() {
         class ResultHolder {
             private ArrayList<String> result;
         }
@@ -343,14 +360,14 @@ public class WebManager {
         if (apiUrls == null) return Collections.emptyList();
         String url = apiUrls.get("GuildList");
         handler.addRequest(new Request(url, "guild_list")
-            .cacheTo(new File(API_CACHE_ROOT, "guilds.json"))
-            .handleJsonObject(json -> {
-                if (!json.has("guilds")) return false;
-                Type type = new TypeToken<ArrayList<String>>() {
-                }.getType();
-                resultHolder.result = gson.fromJson(json.get("guilds"), type);
-                return true;
-            })
+                .cacheTo(new File(API_CACHE_ROOT, "guilds.json"))
+                .handleJsonObject(json -> {
+                    if (!json.has("guilds")) return false;
+                    Type type = new TypeToken<ArrayList<String>>() {
+                    }.getType();
+                    resultHolder.result = gson.fromJson(json.get("guilds"), type);
+                    return true;
+                })
         );
         handler.dispatch();
 
@@ -364,7 +381,6 @@ public class WebManager {
      * Request a guild info to WynnAPI
      *
      * @param guild Name of the guild
-     *
      * @return A wrapper for all guild info
      * @throws IOException thrown by URLConnection
      */
@@ -372,7 +388,7 @@ public class WebManager {
         if (apiUrls == null) return null;
 
         URLConnection st = new URL(apiUrls.get("GuildInfo") + Utils.encodeUrl(guild)).openConnection();
-        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OSX10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        st.setRequestProperty("User-Agent", USER_AGENT);
         st.setRequestProperty("apikey", apiUrls.get("WynnApiKey"));
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
         st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
@@ -398,17 +414,17 @@ public class WebManager {
 
         handler.addAndDispatch(
                 new Request(url, "leaderboard")
-                .handleJsonObject((json) -> {
-                    HashMap<UUID, LeaderboardProfile> result = new HashMap<>();
+                        .handleJsonObject((json) -> {
+                            HashMap<UUID, LeaderboardProfile> result = new HashMap<>();
 
-                    for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
-                        result.put(UUID.fromString(entry.getKey()), gson.fromJson(entry.getValue(), LeaderboardProfile.class));
-                    }
+                            for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+                                result.put(UUID.fromString(entry.getKey()), gson.fromJson(entry.getValue(), LeaderboardProfile.class));
+                            }
 
-                    onReceive.accept(result);
-                    return true;
-                })
-        , true);
+                            onReceive.accept(result);
+                            return true;
+                        })
+                , true);
     }
 
     /**
@@ -423,22 +439,22 @@ public class WebManager {
 
         handler.addAndDispatch(
                 new Request(url, "serverList")
-                .handleJsonObject((con, json) -> {
-                    JsonObject servers = json.getAsJsonObject("servers");
-                    HashMap<String, ServerProfile> result = new HashMap<>();
+                        .handleJsonObject((con, json) -> {
+                            JsonObject servers = json.getAsJsonObject("servers");
+                            HashMap<String, ServerProfile> result = new HashMap<>();
 
-                    long serverTime = Long.parseLong(con.getHeaderField("timestamp"));
-                    for (Map.Entry<String, JsonElement> entry : servers.entrySet()) {
-                        ServerProfile profile = gson.fromJson(entry.getValue(), ServerProfile.class);
-                        profile.matchTime(serverTime);
+                            long serverTime = Long.parseLong(con.getHeaderField("timestamp"));
+                            for (Map.Entry<String, JsonElement> entry : servers.entrySet()) {
+                                ServerProfile profile = gson.fromJson(entry.getValue(), ServerProfile.class);
+                                profile.matchTime(serverTime);
 
-                        result.put(entry.getKey(), profile);
-                    }
+                                result.put(entry.getKey(), profile);
+                            }
 
-                    onReceive.accept(result);
-                    return true;
-                })
-        , true);
+                            onReceive.accept(result);
+                            return true;
+                        })
+                , true);
     }
 
     /**
@@ -451,7 +467,7 @@ public class WebManager {
         if (apiUrls == null) return new HashMap<>();
 
         URLConnection st = new URL(apiUrls.get("OnlinePlayers")).openConnection();
-        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        st.setRequestProperty("User-Agent", USER_AGENT);
         st.setRequestProperty("apikey", apiUrls.get("WynnApiKey"));
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
         st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
@@ -460,7 +476,8 @@ public class WebManager {
         if (!main.has("message")) {
             main.remove("request");
 
-            Type type = new TypeToken<LinkedHashMap<String, ArrayList<String>>>() {}.getType();
+            Type type = new TypeToken<LinkedHashMap<String, ArrayList<String>>>() {
+            }.getType();
 
             return gson.fromJson(main, type);
         } else {
@@ -475,33 +492,35 @@ public class WebManager {
         if (apiUrls == null) return;
         String url = apiUrls.get("Athena") + "/cache/get/itemList";
         handler.addRequest(new Request(url, "itemList")
-            .cacheTo(new File(API_CACHE_ROOT, "item_list.json"))
-            .cacheMD5Validator(() -> getAccount().getMD5Verification("itemList"))
-            .handleJsonObject(j -> {
-                translatedReferences = gson.fromJson(j.getAsJsonObject("translatedReferences"), HashMap.class);
-                internalIdentifications = gson.fromJson(j.getAsJsonObject("internalIdentifications"), HashMap.class);
-                Type majorIdsType = new TypeToken<HashMap<String, MajorIdentification>>(){}.getType();
-                majorIds = gson.fromJson(j.getAsJsonObject("majorIdentifications"), majorIdsType);
-                Type materialTypesType = new TypeToken<HashMap<ItemType, String[]>>(){}.getType();
-                materialTypes = gson.fromJson(j.getAsJsonObject("materialTypes"), materialTypesType);
-                IdentificationOrderer.INSTANCE = gson.fromJson(j.getAsJsonObject("identificationOrder"), IdentificationOrderer.class);
+                .cacheTo(new File(API_CACHE_ROOT, "item_list.json"))
+                .cacheMD5Validator(() -> getAccount().getMD5Verification("itemList"))
+                .handleJsonObject(j -> {
+                    translatedReferences = gson.fromJson(j.getAsJsonObject("translatedReferences"), HashMap.class);
+                    internalIdentifications = gson.fromJson(j.getAsJsonObject("internalIdentifications"), HashMap.class);
+                    Type majorIdsType = new TypeToken<HashMap<String, MajorIdentification>>() {
+                    }.getType();
+                    majorIds = gson.fromJson(j.getAsJsonObject("majorIdentifications"), majorIdsType);
+                    Type materialTypesType = new TypeToken<HashMap<ItemType, String[]>>() {
+                    }.getType();
+                    materialTypes = gson.fromJson(j.getAsJsonObject("materialTypes"), materialTypesType);
+                    IdentificationOrderer.INSTANCE = gson.fromJson(j.getAsJsonObject("identificationOrder"), IdentificationOrderer.class);
 
-                ItemProfile[] gItems = gson.fromJson(j.getAsJsonArray("items"), ItemProfile[].class);
+                    ItemProfile[] gItems = gson.fromJson(j.getAsJsonArray("items"), ItemProfile[].class);
 
-                HashMap<String, ItemProfile> citems = new HashMap<>();
-                for (ItemProfile prof : gItems) {
-                    prof.getStatuses().values().forEach(IdentificationContainer::calculateMinMax);
-                    prof.addMajorIds(majorIds);
-                    citems.put(prof.getDisplayName(), prof);
-                }
+                    HashMap<String, ItemProfile> citems = new HashMap<>();
+                    for (ItemProfile prof : gItems) {
+                        prof.getStatuses().values().forEach(IdentificationContainer::calculateMinMax);
+                        prof.addMajorIds(majorIds);
+                        citems.put(prof.getDisplayName(), prof);
+                    }
 
-                citems.values().forEach(ItemProfile::registerIdTypes);
+                    citems.values().forEach(ItemProfile::registerIdTypes);
 
-                directItems = citems.values();
-                items = citems;
+                    directItems = citems.values();
+                    items = citems;
 
-                return true;
-            })
+                    return true;
+                })
         );
     }
 
@@ -539,32 +558,32 @@ public class WebManager {
         if (apiUrls == null) return;
         String url = apiUrls.get("Athena") + "/cache/get/mapLocations";
         handler.addRequest(new Request(url, "map_locations")
-            .cacheTo(new File(API_CACHE_ROOT, "map_locations.json"))
-            .cacheMD5Validator(() -> getAccount().getMD5Verification("mapLocations"))
-            .handleJsonObject(main -> {
-                JsonArray locationArray = main.getAsJsonArray("locations");
-                Type locationType = new TypeToken<ArrayList<MapMarkerProfile>>() {
-                }.getType();
+                .cacheTo(new File(API_CACHE_ROOT, "map_locations.json"))
+                .cacheMD5Validator(() -> getAccount().getMD5Verification("mapLocations"))
+                .handleJsonObject(main -> {
+                    JsonArray locationArray = main.getAsJsonArray("locations");
+                    Type locationType = new TypeToken<ArrayList<MapMarkerProfile>>() {
+                    }.getType();
 
-                mapMarkers = gson.fromJson(locationArray, locationType);
-                mapMarkers.removeIf(m -> m.getName().equals("~~~~~~~~~") && m.getIcon().equals(""));
-                mapMarkers.forEach(MapMarkerProfile::ensureNormalized);
+                    mapMarkers = gson.fromJson(locationArray, locationType);
+                    mapMarkers.removeIf(m -> m.getName().equals("~~~~~~~~~") && m.getIcon().equals(""));
+                    mapMarkers.forEach(MapMarkerProfile::ensureNormalized);
 
-                JsonArray labelArray = main.getAsJsonArray("labels");
-                Type labelType = new TypeToken<ArrayList<MapLabelProfile>>() {
-                }.getType();
+                    JsonArray labelArray = main.getAsJsonArray("labels");
+                    Type labelType = new TypeToken<ArrayList<MapLabelProfile>>() {
+                    }.getType();
 
-                mapLabels = gson.fromJson(labelArray, labelType);
+                    mapLabels = gson.fromJson(labelArray, labelType);
 
-                JsonArray npcLocationArray = main.getAsJsonArray("npc-locations");
-                Type npcLocationType = new TypeToken<ArrayList<LocationProfile>>() {
-                }.getType();
+                    JsonArray npcLocationArray = main.getAsJsonArray("npc-locations");
+                    Type npcLocationType = new TypeToken<ArrayList<LocationProfile>>() {
+                    }.getType();
 
-                npcLocations = gson.fromJson(npcLocationArray, npcLocationType);
+                    npcLocations = gson.fromJson(npcLocationArray, npcLocationType);
 
-                MapApiIcon.resetApiMarkers();
-                return true;
-            })
+                    MapApiIcon.resetApiMarkers();
+                    return true;
+                })
         );
     }
 
@@ -575,18 +594,18 @@ public class WebManager {
         if (apiUrls == null) return;
         String url = apiUrls.get("ItemGuesses");
         handler.addRequest(new Request(url, "item_guesses")
-            .cacheTo(new File(API_CACHE_ROOT, "item_guesses.json"))
-            .handleJsonObject(json -> {
-                Type type = new TypeToken<HashMap<String, ItemGuessProfile>>() {
-                }.getType();
+                .cacheTo(new File(API_CACHE_ROOT, "item_guesses.json"))
+                .handleJsonObject(json -> {
+                    Type type = new TypeToken<HashMap<String, ItemGuessProfile>>() {
+                    }.getType();
 
-                GsonBuilder gsonBuilder = new GsonBuilder();
-                gsonBuilder.registerTypeHierarchyAdapter(HashMap.class, new ItemGuessProfile.ItemGuessDeserializer());
-                Gson gson = gsonBuilder.create();
+                    GsonBuilder gsonBuilder = new GsonBuilder();
+                    gsonBuilder.registerTypeHierarchyAdapter(HashMap.class, new ItemGuessProfile.ItemGuessDeserializer());
+                    Gson gson = gsonBuilder.create();
 
-                itemGuesses = new HashMap<>(gson.fromJson(json, type));
-                return true;
-            })
+                    itemGuesses = new HashMap<>(gson.fromJson(json, type));
+                    return true;
+                })
         );
     }
 
@@ -594,19 +613,19 @@ public class WebManager {
         if (apiUrls == null) return;
         String url = apiUrls.get("PlayerStatsv2") + McIf.mc().getSession().getProfile().getId() + "/stats";
         handler.addRequest(new Request(url, "player_profile")
-            .cacheTo(new File(API_CACHE_ROOT, "player_stats.json"))
-            .addHeader("apikey", apiUrls.get("WynnApiKey"))
-            .handleJsonObject(json -> {
-                Type type = new TypeToken<PlayerStatsProfile>() {
-                }.getType();
+                .cacheTo(new File(API_CACHE_ROOT, "player_stats.json"))
+                .addHeader("apikey", apiUrls.get("WynnApiKey"))
+                .handleJsonObject(json -> {
+                    Type type = new TypeToken<PlayerStatsProfile>() {
+                    }.getType();
 
-                GsonBuilder gsonBuilder = new GsonBuilder();
-                gsonBuilder.registerTypeAdapter(type, new PlayerStatsProfile.PlayerStatsProfileDeserializer());
-                Gson gson = gsonBuilder.create();
+                    GsonBuilder gsonBuilder = new GsonBuilder();
+                    gsonBuilder.registerTypeAdapter(type, new PlayerStatsProfile.PlayerStatsProfileDeserializer());
+                    Gson gson = gsonBuilder.create();
 
-                playerProfile = gson.fromJson(json, type);
-                return true;
-            })
+                    playerProfile = gson.fromJson(json, type);
+                    return true;
+                })
         );
     }
 
@@ -614,13 +633,14 @@ public class WebManager {
         if (apiUrls == null) return;
         String url = apiUrls.get("Discoveries");
         handler.addRequest(new Request(url, "discoveries")
-            .cacheTo(new File(API_CACHE_ROOT, "discoveries.json"))
-            .handleJsonArray(discoveriesJson -> {
-                Type type = new TypeToken<ArrayList<DiscoveryProfile>>() {}.getType();
+                .cacheTo(new File(API_CACHE_ROOT, "discoveries.json"))
+                .handleJsonArray(discoveriesJson -> {
+                    Type type = new TypeToken<ArrayList<DiscoveryProfile>>() {
+                    }.getType();
 
-                discoveries = gson.fromJson(discoveriesJson, type);
-                return true;
-            }));
+                    discoveries = gson.fromJson(discoveriesJson, type);
+                    return true;
+                }));
     }
 
     public static void updateMusicLocations(RequestHandler handler) {
@@ -639,18 +659,19 @@ public class WebManager {
         if (apiUrls == null) return;
         String url = apiUrls.get("Seaskipper");
         handler.addRequest(new Request(url, "seaskipper")
-            .cacheTo(new File(API_CACHE_ROOT, "seaskipper.json"))
-            .handleJsonArray(seaskipperJson -> {
-                Type type = new TypeToken<ArrayList<SeaskipperProfile>>() {}.getType();
+                .cacheTo(new File(API_CACHE_ROOT, "seaskipper.json"))
+                .handleJsonArray(seaskipperJson -> {
+                    Type type = new TypeToken<ArrayList<SeaskipperProfile>>() {
+                    }.getType();
 
-                seaskipperLocations = gson.fromJson(seaskipperJson, type);
-                return true;
-            }));
+                    seaskipperLocations = gson.fromJson(seaskipperJson, type);
+                    return true;
+                }));
     }
 
     public static String getStableJarFileUrl() throws IOException {
         URLConnection st = new URL(apiUrls.get("Jars") + "api/json").openConnection();
-        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        st.setRequestProperty("User-Agent", USER_AGENT);
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
         st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
@@ -660,7 +681,7 @@ public class WebManager {
 
     public static String getStableJarFileMD5() throws IOException {
         URLConnection st = new URL(apiUrls.get("Jars") + "api/json?depth=2&tree=fingerprint[fileName,hash]{0,}").openConnection();
-        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        st.setRequestProperty("User-Agent", USER_AGENT);
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
         st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
@@ -670,7 +691,7 @@ public class WebManager {
 
     public static String getStableJarVersion() throws IOException {
         URLConnection st = new URL(apiUrls.get("Jars") + "api/json?tree=artifacts[fileName]").openConnection();
-        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        st.setRequestProperty("User-Agent", USER_AGENT);
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
         st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
@@ -680,7 +701,7 @@ public class WebManager {
 
     public static String getCuttingEdgeJarFileUrl() throws IOException {
         URLConnection st = new URL(apiUrls.get("DevJars") + "api/json").openConnection();
-        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        st.setRequestProperty("User-Agent", USER_AGENT);
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
         st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
@@ -690,7 +711,7 @@ public class WebManager {
 
     public static String getCuttingEdgeJarFileMD5() throws IOException {
         URLConnection st = new URL(apiUrls.get("DevJars") + "api/json?depth=2&tree=fingerprint[fileName,hash]{0,}").openConnection();
-        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        st.setRequestProperty("User-Agent", USER_AGENT);
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
         st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
@@ -700,7 +721,7 @@ public class WebManager {
 
     public static int getCuttingEdgeBuildNumber() throws IOException {
         URLConnection st = new URL(apiUrls.get("DevJars") + "api/json?tree=number").openConnection();
-        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        st.setRequestProperty("User-Agent", USER_AGENT);
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
         st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
@@ -710,7 +731,7 @@ public class WebManager {
 
     public static ArrayList<MusicProfile> getCurrentAvailableSongs() throws IOException {
         URLConnection st = new URL(apiUrls.get("WynnSounds")).openConnection();
-        st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+        st.setRequestProperty("User-Agent", USER_AGENT);
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
         st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
@@ -749,7 +770,7 @@ public class WebManager {
     /**
      * Attempt to store an {@link InputStream} to a file on disk
      *
-     * @param stream The {@link InputStream} to read
+     * @param stream   The {@link InputStream} to read
      * @param fileName The filename to save to (file saved in /apicache directory)
      * @return A {@link InputStream} for the saved result
      */
@@ -820,7 +841,8 @@ public class WebManager {
                     }
                     Thread.sleep(30000);
                 }
-            } catch (InterruptedException ignored) {}
+            } catch (InterruptedException ignored) {
+            }
             Reference.LOGGER.info("Terminating territory update thread.");
         }
     }
@@ -858,12 +880,13 @@ public class WebManager {
 
         if (major) {
             HashMap<String, ArrayList<String>> changelogs = null;
-            Type type = new TypeToken<HashMap<String, ArrayList<String>>>() { }.getType();
+            Type type = new TypeToken<HashMap<String, ArrayList<String>>>() {
+            }.getType();
             String url = apiUrls.get("Changelog");
             Reference.LOGGER.info("Requesting changelog from " + url);
             try {
                 URLConnection st = new URL(url).openConnection();
-                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+                st.setRequestProperty("User-Agent", USER_AGENT);
                 st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
                 st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
@@ -893,7 +916,7 @@ public class WebManager {
             Reference.LOGGER.info("Requesting changelog from " + url);
 
             URLConnection st = new URL(url).openConnection();
-            st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+            st.setRequestProperty("User-Agent", USER_AGENT);
             st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
             st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
@@ -902,7 +925,7 @@ public class WebManager {
             }
 
             JsonArray changesArray = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8))
-                .getAsJsonObject().getAsJsonObject("changeSet").getAsJsonArray("items");
+                    .getAsJsonObject().getAsJsonObject("changeSet").getAsJsonArray("items");
 
             ArrayList<String> changelog = new ArrayList<>(changesArray.size());
             for (JsonElement el : changesArray) {
@@ -931,15 +954,15 @@ public class WebManager {
     private static void tryReloadApiUrls(boolean async, boolean inSetup) {
         if (apiUrls == null) {
             handler.addRequest(new Request("https://api.wynntils.com/webapi", "webapi")
-                .cacheTo(new File(API_CACHE_ROOT, "webapi.txt"))
-                .handleWebReader(reader -> {
-                    apiUrls = reader;
-                    if (!inSetup) {
-                        WebManager.setupWebApi(false);
-                        MapModule.getModule().getMainMap().updateMap();
-                    }
-                    return true;
-                })
+                    .cacheTo(new File(API_CACHE_ROOT, "webapi.txt"))
+                    .handleWebReader(reader -> {
+                        apiUrls = reader;
+                        if (!inSetup) {
+                            WebManager.setupWebApi(false);
+                            MapModule.getModule().getMainMap().updateMap();
+                        }
+                        return true;
+                    })
             );
             if (async) {
                 handler.dispatchAsync();
@@ -961,5 +984,9 @@ public class WebManager {
         if (apiUrls == null) return null;
 
         return apiUrls.get(key);
+    }
+
+    public static String getUserAgent() {
+        return USER_AGENT;
     }
 }
