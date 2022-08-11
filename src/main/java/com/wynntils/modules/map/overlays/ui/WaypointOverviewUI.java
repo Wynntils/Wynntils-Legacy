@@ -51,11 +51,11 @@ public class WaypointOverviewUI extends GuiScreen {
     private int pageHeight;
     private int group = ungroupedIndex;
     private int groupWidth;
+    int clearCount = 0;
+    final int clearCountMax = 3;
     private int groupScroll = 0;
     private int spacingMultiplier = MapConfig.Waypoints.INSTANCE.waypointSpacing.getSpacingMultiplier();
     private boolean decreasedSize = (spacingMultiplier == 14);
-    private int clearCount = 0;
-    private final int clearCountMax = 3;
 
     @Override
     public void initGui() {
@@ -218,16 +218,16 @@ public class WaypointOverviewUI extends GuiScreen {
         } else if (b == exportBtn) {
             Utils.copyToClipboard(WaypointProfile.encode(getWaypoints(), WaypointProfile.currentFormat));
             exportText = Arrays.asList(
-                    "Export  ==  SUCCESS",
-                    "Copied to clipboard!"
+                "Export  ==  SUCCESS",
+                "Copied to clipboard!"
             );
         } else if (b == importBtn) {
             String data = Utils.pasteFromClipboard();
             if (data != null) data = data.replaceAll("\\s+", "");
             if (data == null || data.isEmpty()) {
                 importText = Arrays.asList(
-                        "Import  ==  ERROR",
-                        "Clipboard is empty"
+                    "Import  ==  ERROR",
+                    "Clipboard is empty"
                 );
                 return;
             }
@@ -257,8 +257,8 @@ public class WaypointOverviewUI extends GuiScreen {
                 onWaypointChange();
             }
             importText = Arrays.asList(
-                    "Import  ==  SUCCESS",
-                    String.format("Imported %d waypoints", newWaypoints)
+                "Import  ==  SUCCESS",
+                String.format("Imported %d waypoints", newWaypoints)
             );
         } else if (b == clearBtn) {
             clearCount++;
@@ -337,14 +337,14 @@ public class WaypointOverviewUI extends GuiScreen {
         resetGroupButtons();
 
         exportText = Arrays.asList(
-                "Export",
-                "Copy importable text to the clipboard",
-                "Will export current group only"
+            "Export",
+            "Copy importable text to the clipboard",
+            "Will export current group only"
         );
         importText = Arrays.asList(
-                "Import",
-                "Import waypoints from text in the clipboard",
-                "Will not import waypoints with the same coordinates"
+            "Import",
+            "Import waypoints from text in the clipboard",
+            "Will not import waypoints with the same coordinates"
         );
 
         if (this.group != ungroupedIndex && !enabledGroups[this.group]) {
