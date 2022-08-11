@@ -51,11 +51,11 @@ public class WaypointOverviewUI extends GuiScreen {
     private int pageHeight;
     private int group = ungroupedIndex;
     private int groupWidth;
-    int clearCount = 0;
-    final int clearCountMax = 3;
     private int groupScroll = 0;
     private int spacingMultiplier = MapConfig.Waypoints.INSTANCE.waypointSpacing.getSpacingMultiplier();
     private boolean decreasedSize = (spacingMultiplier == 14);
+    private int clearCount = 0;
+    private final int clearCountMax = 3;
 
     @Override
     public void initGui() {
