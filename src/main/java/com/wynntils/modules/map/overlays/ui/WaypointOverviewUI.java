@@ -34,6 +34,7 @@ public class WaypointOverviewUI extends GuiScreen {
     private GuiButton exitBtn;
     private GuiButton exportBtn;
     private GuiButton importBtn;
+    private GuiButton clearBtn;
     private List<GuiButton> editButtons = new ArrayList<>();
 
     private List<String> exportText;
@@ -50,6 +51,8 @@ public class WaypointOverviewUI extends GuiScreen {
     private int pageHeight;
     private int group = ungroupedIndex;
     private int groupWidth;
+    int clearCount = 0;
+    final int clearCountMax = 3;
     private int groupScroll = 0;
     private int spacingMultiplier = MapConfig.Waypoints.INSTANCE.waypointSpacing.getSpacingMultiplier();
     private boolean decreasedSize = (spacingMultiplier == 14);
@@ -76,6 +79,7 @@ public class WaypointOverviewUI extends GuiScreen {
 
         this.buttonList.add(exportBtn = new GuiButton(8, this.width/2 + 26, this.height - 45, 50, 20, "EXPORT"));
         this.buttonList.add(importBtn = new GuiButton(9, this.width/2 - 76, this.height - 45, 50, 20, "IMPORT"));
+        this.buttonList.add(clearBtn = new GuiButton(9, 25, this.height - 45, fontRenderer.getStringWidth("CLEAR (Press " + clearCountMax + " times)") + 15, 20, "CLEAR (Press " + clearCountMax + " times)"));
 
         onWaypointChange();
     }
@@ -214,16 +218,16 @@ public class WaypointOverviewUI extends GuiScreen {
         } else if (b == exportBtn) {
             Utils.copyToClipboard(WaypointProfile.encode(getWaypoints(), WaypointProfile.currentFormat));
             exportText = Arrays.asList(
-                "Export  ==  SUCCESS",
-                "Copied to clipboard!"
+                    "Export  ==  SUCCESS",
+                    "Copied to clipboard!"
             );
         } else if (b == importBtn) {
             String data = Utils.pasteFromClipboard();
             if (data != null) data = data.replaceAll("\\s+", "");
             if (data == null || data.isEmpty()) {
                 importText = Arrays.asList(
-                    "Import  ==  ERROR",
-                    "Clipboard is empty"
+                        "Import  ==  ERROR",
+                        "Clipboard is empty"
                 );
                 return;
             }
@@ -253,9 +257,19 @@ public class WaypointOverviewUI extends GuiScreen {
                 onWaypointChange();
             }
             importText = Arrays.asList(
-                "Import  ==  SUCCESS",
-                String.format("Imported %d waypoints", newWaypoints)
+                    "Import  ==  SUCCESS",
+                    String.format("Imported %d waypoints", newWaypoints)
             );
+        } else if (b == clearBtn) {
+            clearCount++;
+            if(clearCount == clearCountMax){
+                waypoints.clear();
+                onWaypointChange();
+                clearCount = 0;
+                clearBtn.displayString = "CLEARED!";
+            } else {
+                clearBtn.displayString = "CLEAR (Press " + (clearCountMax-clearCount) + " times)";
+            }
         } else if (b.id < 0) {
             // A group button
             if (b == nextGroupBtn) {
@@ -323,14 +337,14 @@ public class WaypointOverviewUI extends GuiScreen {
         resetGroupButtons();
 
         exportText = Arrays.asList(
-            "Export",
-            "Copy importable text to the clipboard",
-            "Will export current group only"
+                "Export",
+                "Copy importable text to the clipboard",
+                "Will export current group only"
         );
         importText = Arrays.asList(
-            "Import",
-            "Import waypoints from text in the clipboard",
-            "Will not import waypoints with the same coordinates"
+                "Import",
+                "Import waypoints from text in the clipboard",
+                "Will not import waypoints with the same coordinates"
         );
 
         if (this.group != ungroupedIndex && !enabledGroups[this.group]) {
