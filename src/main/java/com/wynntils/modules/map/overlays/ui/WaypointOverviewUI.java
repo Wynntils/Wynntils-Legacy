@@ -264,6 +264,7 @@ public class WaypointOverviewUI extends GuiScreen {
             clearCount++;
             if(clearCount == clearCountMax){
                 waypoints.clear();
+                MapConfig.Waypoints.INSTANCE.waypoints.clear();
                 onWaypointChange();
                 clearCount = 0;
                 clearBtn.displayString = "CLEARED!";
