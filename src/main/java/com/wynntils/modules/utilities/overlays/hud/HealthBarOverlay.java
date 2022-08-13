@@ -43,10 +43,9 @@ public class HealthBarOverlay extends Overlay {
                 && !(health >= (float) get(CharacterData.class).getMaxHealth())) {
             health -= (OverlayConfig.Health.INSTANCE.animated * 0.1f)
                     * (health - (float) get(CharacterData.class).getCurrentHealth());
-            return;
+        } else {
+            health = get(CharacterData.class).getCurrentHealth();
         }
-
-        health = get(CharacterData.class).getCurrentHealth();
     }
 
     @Override
