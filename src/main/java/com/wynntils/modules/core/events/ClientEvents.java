@@ -15,6 +15,7 @@ import com.wynntils.core.framework.enums.professions.GatheringMaterial;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.ActionBarData;
+import com.wynntils.core.framework.instances.data.BossBarData;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.instances.data.SpellData;
 import com.wynntils.core.framework.interfaces.Listener;
@@ -33,6 +34,7 @@ import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
+import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.managers.KillsManager;
 import com.wynntils.modules.utilities.managers.LevelingManager;
 import com.wynntils.modules.utilities.managers.QuickCastManager;
@@ -69,7 +71,6 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -321,6 +322,19 @@ public class ClientEvents implements Listener {
 
         PlayerInfo.get(ActionBarData.class).updateActionBar(McIf.getUnformattedText(e.getPacket().getChatComponent()));
         if (UtilitiesModule.getModule().getActionBarOverlay().active) e.setCanceled(true); // only disable when the wynntils action bar is enabled
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void updateBossBar(PacketEvent<SPacketUpdateBossInfo> e) {
+        if (!Reference.onServer) return;
+
+        PlayerInfo.get(BossBarData.class).updateBloodPoolBar(e.getPacket());
+
+        if (OverlayConfig.BloodPool.INSTANCE.hideDefaultBar && e.getPacket() != null && e.getPacket().getName() != null) {
+            // (!) Do not remove .getName() check, Intellij is wrong about it
+            Matcher bpBarMatcher = BossBarData.BLOOD_POOL_PATTERN.matcher(e.getPacket().getName().getFormattedText());
+            if (bpBarMatcher.matches()) e.setCanceled(true);
+        }
     }
 
     @SubscribeEvent

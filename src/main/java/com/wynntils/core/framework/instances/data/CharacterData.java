@@ -27,6 +27,8 @@ public class CharacterData extends PlayerData {
     private int maxHealth = -1;
     private int mana = -1;
     private int maxMana = -1;
+    private int bloodPool = -1;
+    private int maxBloodPool = -1;
     private int level = -1;
     private float experiencePercentage = -1;
 
@@ -101,12 +103,20 @@ public class CharacterData extends PlayerData {
         return currentClass == ClassType.NONE ? -1 : maxHealth;
     }
 
+    public int getMaxBloodPool() {
+        return currentClass == ClassType.NONE ? -1 : maxBloodPool;
+    }
+
     public int getCurrentHealth() {
         return currentClass == ClassType.NONE ? -1 : health;
     }
 
     public int getCurrentMana() {
         return currentClass == ClassType.NONE ? -1 : mana;
+    }
+
+    public int getCurrentBloodPool() {
+        return currentClass == ClassType.NONE ? -1 : bloodPool;
     }
 
     public int getClassId() {
@@ -146,6 +156,14 @@ public class CharacterData extends PlayerData {
 
     public void setMaxMana(int maxMana) {
         this.maxMana = maxMana;
+    }
+
+    public void setBloodPool(int bloodPool) {
+        this.bloodPool = bloodPool;
+    }
+
+    public void setMaxBloodPool(int maxBloodPool) {
+        this.maxBloodPool = maxBloodPool;
     }
 
     public void setLevel(int level) {

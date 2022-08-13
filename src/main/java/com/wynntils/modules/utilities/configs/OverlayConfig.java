@@ -115,7 +115,6 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
-
         public enum ManaTextures {
             Wynn,
             Brune,
@@ -131,6 +130,46 @@ public class OverlayConfig extends SettingsClass {
             // following the format, to add more textures, register them here with a name and create a special case in the render method
         }
 
+    }
+
+    @SettingsInfo(name = "blood_pool_settings", displayPath = "Utilities/Overlays/Blood Pool")
+    public static class BloodPool extends SettingsClass {
+        public static BloodPool INSTANCE;
+
+        @Setting(displayName = "Hide Default Blood Pool Bar", description = "Should the blood pool boss bar be hidden?")
+        public boolean hideDefaultBar = true;
+
+        @Setting(displayName = "Blood Pool Width", description = "How wide should the blood pool be in pixels?\n\n§8This will be adjusted using Minecraft's scaling.")
+        @Setting.Limitations.IntLimit(min = 0, max = 81)
+        public int width = 81;
+
+        @Setting(displayName = "Blood Pool Orientation", description = "How orientated in degrees should the blood pool bar be?\n\n§8Accompanied text will be removed.")
+        public OverlayRotation overlayRotation = OverlayRotation.NORMAL;
+
+        @Setting(displayName = "Blood Pool Texture", description = "What texture should be used for the blood pool bar?")
+        public BloodPoolTextures bloodPoolTexture = BloodPoolTextures.a;
+
+        @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
+        @Setting(displayName = "Animation Speed", description = "How fast should the animation be played?\n\n§8Set this to 0 for it to display instantly.")
+        public float animated = 2f;
+
+        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
+        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+
+        public enum BloodPoolTextures {
+            Wynn,
+            Brune,
+            Aether,
+            Skull,
+            Inverse,
+            Skyrim,
+            Rune,
+            a,
+            b,
+            c,
+            d
+            // following the format, to add more textures, register them here with a name and create a special case in the render method
+        }
     }
 
     @SettingsInfo(name = "hotbar_settings", displayPath = "Utilities/Overlays/Hotbar")
