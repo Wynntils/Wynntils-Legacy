@@ -262,7 +262,7 @@ public class WaypointOverviewUI extends GuiScreen {
             );
         } else if (b == clearBtn) {
             clearCount++;
-            if(clearCount == clearCountMax){
+            if (clearCount == clearCountMax){
                 waypoints.clear();
                 MapConfig.Waypoints.INSTANCE.waypoints.clear();
                 onWaypointChange();
