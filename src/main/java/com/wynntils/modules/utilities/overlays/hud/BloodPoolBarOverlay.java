@@ -77,7 +77,7 @@ public class BloodPoolBarOverlay extends Overlay {
 
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2, CustomColor cc) {
         if (OverlayConfig.BloodPool.INSTANCE.overlayRotation == OverlayRotation.NORMAL) {
-            drawString(get(CharacterData.class).getCurrentBloodPool() + " ❣ " + get(CharacterData.class).getMaxBloodPool(), textPositionOffset.a  - (81-OverlayConfig.BloodPool.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.BloodPool.INSTANCE.textShadow);
+            drawString(get(CharacterData.class).getCurrentBloodPool() + " ⚕ " + get(CharacterData.class).getMaxBloodPool(), textPositionOffset.a  - (81-OverlayConfig.BloodPool.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.BloodPool.INSTANCE.textShadow);
         }
 
         rotate(OverlayConfig.BloodPool.INSTANCE.overlayRotation.getDegrees());
