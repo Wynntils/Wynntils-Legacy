@@ -17,7 +17,6 @@ import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.managers.PingManager;
-import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.interfaces.InfoModule;
 import com.wynntils.modules.utilities.managers.*;
@@ -141,6 +140,12 @@ public class InfoFormatter {
             double maxHealth = PlayerInfo.get(CharacterData.class).getMaxHealth();
             return Integer.toString((int)Math.round(currentHealth / maxHealth * 100));
         }, "health_pct");
+
+        // Elemental special
+        registerFormatter((input) -> {
+            if (PlayerInfo.get(CharacterData.class).getElementalSpecialString().equals("")) return "N/A";
+            return PlayerInfo.get(CharacterData.class).getElementalSpecialString();
+        }, "elemental_special", "es");
 
         // Current XP (formatted)
         registerFormatter((input) ->

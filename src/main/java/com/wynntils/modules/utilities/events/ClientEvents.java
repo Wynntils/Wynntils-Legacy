@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.events;
 
+import com.google.common.eventbus.Subscribe;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
@@ -16,6 +17,7 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
@@ -1335,5 +1337,14 @@ public class ClientEvents implements Listener {
         nbt.setBoolean("groupedItems", true);
         nbt.setIntArray("originalItems", originalSlots);
         ItemUtils.replaceLore(itemStack, groupedItemLore);
+    }
+
+    @SubscribeEvent
+    public void onHeldItemChange(PacketEvent<CPacketHeldItemChange> e) {
+        // scrolling off the weapon resets elemental special
+        CharacterData cd = get(CharacterData.class);
+        if (cd.getElementalSpecialString().isEmpty()) return;
+        // delay because ActionBar update may be late
+        new Delay(() -> cd.setElementalSpecialString(""), 4);
     }
 }

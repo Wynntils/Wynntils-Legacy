@@ -31,6 +31,7 @@ public class CharacterData extends PlayerData {
     private int maxBloodPool = -1;
     private int level = -1;
     private float experiencePercentage = -1;
+    private String elementalSpecialString = "";
 
     int lastLevel = 0;
     int lastXp = 0;
@@ -119,6 +120,10 @@ public class CharacterData extends PlayerData {
         return currentClass == ClassType.NONE ? -1 : bloodPool;
     }
 
+    public String getElementalSpecialString() {
+        return elementalSpecialString;
+    }
+
     public int getClassId() {
         return classId;
     }
@@ -164,6 +169,10 @@ public class CharacterData extends PlayerData {
 
     public void setMaxBloodPool(int maxBloodPool) {
         this.maxBloodPool = maxBloodPool;
+    }
+
+    public void setElementalSpecialString(String elementalSpecialString) {
+        this.elementalSpecialString = elementalSpecialString;
     }
 
     public void setLevel(int level) {

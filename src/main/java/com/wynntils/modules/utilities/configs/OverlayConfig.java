@@ -642,6 +642,7 @@ public class OverlayConfig extends SettingsClass {
             HEALTH("Current health"),
             HEALTH_MAX("Max health"),
             HEALTH_PCT("Current health percentage"),
+            ELEMENTAL_SPECIAL("Current elemental special %"),
             XP("Current XP (Formatted)"),
             XP_RAW("Current XP (Raw)"),
             XP_REQ("Required XP to level up (Formatted)"),
