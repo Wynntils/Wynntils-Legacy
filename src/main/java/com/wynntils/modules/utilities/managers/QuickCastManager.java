@@ -41,9 +41,8 @@ public class QuickCastManager {
     private static final CPacketPlayerTryUseItem rightClick = new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND);
     private static final CPacketPlayerDigging releaseClick = new CPacketPlayerDigging(CPacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN);
 
-    private static final int[] spellUnlock = { 1, 11, 21, 31 };
+    private static final int[] spellUnlock = { 1, 6, 10, 10};
 
-    private static final Pattern WEAPON_SPEED_PATTERN = Pattern.compile("§7.+ Attack Speed");
     private static final Pattern CLASS_REQ_OK_PATTERN = Pattern.compile("§a✔§7 Class Req:.+");
     private static final Pattern COMBAT_LVL_REQ_OK_PATTERN = Pattern.compile("§a✔§7 Combat Lv. Min:.+");
     private static final Pattern SPELL_POINT_MIN_NOT_REACHED_PATTERN = Pattern.compile("§c✖§7 (.+) Min: (\\d+)");
@@ -113,7 +112,7 @@ public class QuickCastManager {
 
         if (PlayerInfo.get(CharacterData.class).getLevel() < spellUnlock[spell - 1]) {
             McIf.player().sendMessage(new TextComponentString(
-                    TextFormatting.GRAY + "You have not yet unlocked this spell! You need to be level " + spellUnlock[spell - 1]
+                    TextFormatting.GRAY + "You have not yet unlocked this spell! You need to be level " + spellUnlock[spell - 1] + " with the spell unlocked in the ability tree!"
             ));
             return NO_SPELL;
         }
