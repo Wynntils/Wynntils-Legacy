@@ -86,6 +86,12 @@ public class ClientEvents implements Listener {
 
         Location compass = CompassManager.getCompassLocation();
         BeaconManager.drawBeam(new Location(compass.getX(), compass.getY(), compass.getZ()), MapConfig.INSTANCE.compassBeaconColor, e.getPartialTicks());
+        if (MapConfig.INSTANCE.showWaypointsAsBeacons) {
+            for (WaypointProfile waypoint : MapConfig.Waypoints.INSTANCE.waypoints) {
+                Location location = new Location(waypoint.getX(), waypoint.getY(), waypoint.getZ());
+                BeaconManager.drawBeam(location, waypoint.getColor(), e.getPartialTicks());
+            }
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)

@@ -32,6 +32,9 @@ public class MapConfig extends SettingsClass {
     @Setting(displayName = "Show Compass Directions", description = "Should the cardinal directions be displayed on the minimap?\n\n§8Cardinal directions are the north, east, south, and west points on a compass.", order = 1)
     public boolean showCompass = true;
 
+    @Setting(displayName = "Show Waypoints as Beacons", description = "Should a beacon beam be displayed at all of your waypoints?", order = 2)
+    public boolean showWaypointsAsBeacons = false;
+
     @Setting(displayName = "Show Compass Distance", description = "Should the distance to the compass position be displayed on the minimap?", order = 2)
     public DistanceMarkerType compassDistanceType = DistanceMarkerType.OFF_MAP;
 
