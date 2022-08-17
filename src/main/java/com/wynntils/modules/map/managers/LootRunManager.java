@@ -31,9 +31,9 @@ import java.util.stream.Collectors;
 public class LootRunManager {
 
     private static final Gson GSON = new GsonBuilder()
-            .setPrettyPrinting()
-            .registerTypeHierarchyAdapter(Vec3i.class, new BlockPosSerializer())
-            .create();
+        .setPrettyPrinting()
+        .registerTypeHierarchyAdapter(Vec3i.class, new BlockPosSerializer())
+        .create();
     public static final File STORAGE_FOLDER = new File(Reference.MOD_STORAGE_ROOT, "lootruns");
 
     private final static Map<String, LootRunPath> activePaths = new HashMap<>();
