@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.questbook.overlays.ui;
 
+import com.mojang.realmsclient.gui.ChatFormatting;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
@@ -35,6 +36,7 @@ import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
+
 
 import java.io.File;
 import java.io.IOException;
@@ -109,7 +111,8 @@ public class LootRunPage extends QuestBookListPage<String> {
 
             int width = Math.min(animationTick, 133);
             animationTick -= 133 + 200;
-            if (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(entryInfo)) {
+            Set<String> activePathNames = LootRunManager.getActivePath().keySet();
+            if (!activePathNames.isEmpty() && activePathNames.contains(entryInfo)) {
                 render.drawRectF(background_3, x + 9, y - 96 + currentY, x + 13 + width, y - 87 + currentY);
                 render.drawRectF(background_4, x + 9, y - 96 + currentY, x + 146, y - 87 + currentY);
             } else {
@@ -124,8 +127,8 @@ public class LootRunPage extends QuestBookListPage<String> {
 
                 if (!showAnimation) lastTick = 0;
             }
-
-            if (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(entryInfo)) {
+            Set<String> activePathNames = LootRunManager.getActivePath().keySet();
+            if (!activePathNames.isEmpty() && activePathNames.contains(entryInfo)) {
                 render.drawRectF(background_4, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
             } else {
                 render.drawRectF(background_2, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
@@ -168,13 +171,13 @@ public class LootRunPage extends QuestBookListPage<String> {
         int mapWidth = 145;
         int mapHeight = 58;
 
-        if (LootRunManager.getActivePathName() != null) {
+        if (LootRunManager.getLastLootrun() != null) {
             //render info
             ScreenRenderer.scale(1.2f);
-            render.drawString(LootRunManager.getActivePathName(), x/1.2f - 154/1.2f, y/1.2f - 35/1.2f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            render.drawString(LootRunManager.getLastLootrun().a + ChatFormatting.GRAY + " (" + (LootRunManager.getActivePath().size()-1) + " others)", x/1.2f - 154/1.2f, y/1.2f - 35/1.2f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             ScreenRenderer.resetScale();
 
-            LootRunPath path = LootRunManager.getActivePath();
+            LootRunPath path = LootRunManager.getLastLootrun().b;
             Location start = path.getPoints().get(0);
             render.drawString("Chests: " + path.getChests().size(), x - 154, y - 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             render.drawString("Notes: " + path.getNotes().size(), x - 154, y - 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
@@ -266,7 +269,7 @@ public class LootRunPage extends QuestBookListPage<String> {
 
     @Override
     protected List<String> getHoveredText(String entryInfo) {
-        if (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(entryInfo)) {
+        if (!LootRunManager.getActivePath().isEmpty() && LootRunManager.getActivePath().containsKey(entryInfo)) {
             return Arrays.asList(TextFormatting.BOLD + entryInfo, TextFormatting.YELLOW + "Loaded", TextFormatting.GOLD + "Middle click to open lootrun in folder",  TextFormatting.GREEN + "Left click to unload this lootrun");
         }
 
@@ -299,12 +302,12 @@ public class LootRunPage extends QuestBookListPage<String> {
 
         checkMenuButton(posX, posY);
 
-        if (mapHovered && LootRunManager.getActivePathName() != null) {
+        if (mapHovered && LootRunManager.getLastLootrun() != null) {
             if (Reference.onWorld) {
                 if (WebManager.getApiUrls() == null) {
                     WebManager.tryReloadApiUrls(true);
                 } else {
-                    Location start = LootRunManager.getActivePath().getPoints().get(0);
+                    Location start = LootRunManager.getLastLootrun().b.getPoints().get(0);
                     Utils.displayGuiScreen(new MainWorldMapUI((int) start.x, (int) start.z));
                 }
             }
@@ -315,21 +318,21 @@ public class LootRunPage extends QuestBookListPage<String> {
 
     @Override
     protected void handleEntryClick(String itemInfo, int mouseButton) {
-        boolean isTracked = (LootRunManager.getActivePathName() != null && LootRunManager.getActivePathName().equals(selectedEntry));
+        boolean isTracked = (!LootRunManager.getActivePath().isEmpty() && LootRunManager.getActivePath().containsKey(selectedEntry));
 
         if (mouseButton == 0) { //left click means either load or unload
             if (isTracked) {
-                if (LootRunManager.getActivePath() != null) {
+                if (LootRunManager.getLastLootrun() != null) {
                     // Clear only loaded so recordings are not cleared
-                    LootRunManager.clearOnlyLoaded();
+                    LootRunManager.unloadLootrun(selectedEntry);
                 }
             } else {
-                boolean result = LootRunManager.loadFromFile(selectedEntry);
+                Optional<LootRunPath> result = LootRunManager.loadFromFile(selectedEntry);
 
-                if (result) {
+                if (result.isPresent()) {
                     try {
-                        Location start = LootRunManager.getActivePath().getPoints().get(0);
-                        String message = TextFormatting.GREEN + "Loaded loot run " + LootRunManager.getActivePathName() + " successfully! " + TextFormatting.GRAY + "(" + LootRunManager.getActivePath().getChests().size() + " chests)";
+                        Location start = result.get().getPoints().get(0);
+                        String message = TextFormatting.GREEN + "Loaded loot run " + LootRunManager.getLastLootrun().a + " successfully! " + TextFormatting.GRAY + "(" + result.get().getChests().size() + " chests)";
 
                         Minecraft.getMinecraft().player.sendMessage(new TextComponentString(message));
 

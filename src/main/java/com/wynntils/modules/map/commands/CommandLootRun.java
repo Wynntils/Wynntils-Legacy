@@ -9,6 +9,7 @@ import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.map.instances.LootRunNote;
+import com.wynntils.modules.map.instances.LootRunPath;
 import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.questbook.enums.QuestBookPages;
 import com.wynntils.modules.utilities.UtilitiesModule;
@@ -29,6 +30,7 @@ import net.minecraftforge.client.IClientCommand;
 
 import java.net.URI;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static net.minecraft.util.text.TextFormatting.*;
 
@@ -66,24 +68,34 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
         }
 
         switch (args[0].toLowerCase(Locale.ROOT)) {
+            case "current": {
+                if(LootRunManager.getActivePath().isEmpty()){
+                    sender.sendMessage(new TextComponentString(RED + "You dont have any active loot run path"));
+                    return;
+                }
+                LootRunManager.getActivePath().forEach((name, path) -> {
+                    sender.sendMessage(new TextComponentString(AQUA + "- " + name + ": " + path.getChests().size() + " chests"));
+                });
+                return;
+            }
             case "l":
             case "load": {
                 if (args.length < 2) {
                     throw new WrongUsageException("/lootrun load [name]");
                 }
                 String name = getNameWithSpaces(args);
-                boolean result = LootRunManager.loadFromFile(name);
+                Optional<LootRunPath> result = LootRunManager.loadFromFile(name);
 
                 String message;
-                if (result) message = GREEN + "Loaded lootrun " + name + " successfully! " + GRAY + "(" + LootRunManager.getActivePath().getChests().size() + " chests)";
+                if (result.isPresent()) message = GREEN + "Loaded lootrun " + name + " successfully! " + GRAY + "(" + result.get().getChests().size() + " chests)";
                 else {
                     throw new CommandException("The specified lootrun file doesn't exist!");
                 }
 
                 sender.sendMessage(new TextComponentString(message));
 
-                if (!LootRunManager.getActivePath().getPoints().isEmpty()) {
-                    Location start = LootRunManager.getActivePath().getPoints().get(0);
+                if (!result.get().getPoints().isEmpty()) {
+                    Location start = result.get().getPoints().get(0);
                     ITextComponent startingPointMsg = new TextComponentString("Lootrun starts at [" +
                             (int) start.getX() + ", " + (int) start.getZ() + "]");
                     startingPointMsg.getStyle().setColor(GRAY);
@@ -107,7 +119,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                     return;
                 }
 
-                boolean result = LootRunManager.saveToFile(name);
+                boolean result = LootRunManager.saveToFile(name, true);
 
                 String message;
                 if (result) {
@@ -131,8 +143,8 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                 String message;
                 if (result) {
                     message = GREEN + "Deleted run " + name + " successfully!";
-                    if (LootRunManager.getActivePath() != null && LootRunManager.getActivePathName().equals(name)) {
-                        LootRunManager.clear();
+                    if (LootRunManager.getActivePath() != null && LootRunManager.getActivePath().containsKey(name)) {
+                        LootRunManager.clearLootrun(name);
                     }
                 } else {
                     message = RED + "The provided lootrun file doesn't exist!";
@@ -204,7 +216,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                     if (LootRunManager.isRecording()) {
                         notes = LootRunManager.getRecordingPath().getNotes();
                     } else if (LootRunManager.getActivePath() != null) {
-                        notes = LootRunManager.getActivePath().getNotes();
+                        notes = LootRunManager.getActivePath().values().stream().flatMap(path -> path.getNotes().stream()).collect(Collectors.toSet());
                     }
 
                     if (notes == null) {
@@ -383,7 +395,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
             case "resetdry":
             default:
                 if (args.length > 1) return Collections.emptyList();
-                return getListOfStringsMatchingLastWord(args, "load", "save", "delete", "rename", "record", "list", "folder", "clear", "help", "undo", "resetdry");
+                return getListOfStringsMatchingLastWord(args, "load", "save", "delete", "rename", "record", "list", "folder", "clear", "help", "undo", "resetdry", "current");
         }
     }
 

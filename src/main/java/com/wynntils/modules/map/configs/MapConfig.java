@@ -12,6 +12,7 @@ import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
+import com.wynntils.modules.map.instances.LootRunPath;
 import com.wynntils.modules.map.instances.PathWaypointProfile;
 import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.map.managers.LootRunManager;
@@ -289,8 +290,8 @@ public class MapConfig extends SettingsClass {
 
         @Override
         public void onSettingChanged(String name) {
-            if (name.equals("cycleDistance") && LootRunManager.getActivePath() != null) {
-                LootRunManager.getActivePath().changed();
+            if (name.equals("cycleDistance") && !LootRunManager.getActivePath().isEmpty()) {
+                LootRunManager.getActivePath().values().forEach(LootRunPath::changed);
             }
         }
 

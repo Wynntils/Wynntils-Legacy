@@ -10,6 +10,7 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.objects.Location;
+import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.LootRunNote;
 import com.wynntils.modules.map.instances.LootRunPath;
@@ -18,18 +19,14 @@ import com.wynntils.modules.map.overlays.objects.MapIcon;
 import com.wynntils.modules.map.overlays.objects.MapPathWaypointIcon;
 import com.wynntils.modules.map.rendering.PointRenderer;
 
-import net.minecraft.client.renderer.EntityRenderer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 
 import java.io.*;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class LootRunManager {
 
@@ -39,10 +36,10 @@ public class LootRunManager {
         .create();
     public static final File STORAGE_FOLDER = new File(Reference.MOD_STORAGE_ROOT, "lootruns");
 
-    private static LootRunPath activePath = null;
-    private static String activePathName = null;
+    private static Map<String, LootRunPath> activePaths = new HashMap<>();
     private static LootRunPath recordingPath = null;
-    private static PathWaypointProfile mapPath = null;
+    private static LootRunPath lastRecorded = null;
+    private static List<PathWaypointProfile> mapPath = new ArrayList<>();
 
     public static void setup() {
         // Make sure lootrun folder exists at startup to simplify for users wanting to import lootruns
@@ -76,47 +73,48 @@ public class LootRunManager {
     }
 
     public static void hide() {
-        activePath = null;
-        activePathName = null;
+        activePaths.clear();
         updateMapPath();
     }
 
-    public static boolean loadFromFile(String lootRunName) {
+    public static Optional<LootRunPath> loadFromFile(String lootRunName) {
         File file = new File(STORAGE_FOLDER, lootRunName + ".json");
-        if (!file.exists()) return false;
+        if (!file.exists()) return Optional.empty();
 
         try {
             InputStreamReader reader = new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8);
-            activePath = GSON.fromJson(reader, LootRunPathIntermediary.class).toPath();
+            LootRunPath path = GSON.fromJson(reader, LootRunPathIntermediary.class).toPath();
+            activePaths.put(lootRunName, path);
             updateMapPath();
 
             reader.close();
+
+            return Optional.of(path);
         } catch (Exception ex) {
             ex.printStackTrace();
-            return false;
+            return Optional.empty();
         }
-
-        activePathName = lootRunName;
-        return true;
     }
 
-    public static boolean saveToFile(String lootRunName) {
+    public static boolean saveToFile(String lootRunName, boolean recording) {
         try {
             File file = new File(STORAGE_FOLDER, lootRunName + ".json");
             if (!file.exists()) file.createNewFile();
 
             try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), StandardCharsets.UTF_8)) {
-                GSON.toJson(new LootRunPathIntermediary(activePath), writer);
+                LootRunPathIntermediary intermediary = new LootRunPathIntermediary(recording ? lastRecorded : activePaths.get(lootRunName));
+                GSON.toJson(intermediary, writer);
             }
         } catch (Exception ex) {
             ex.printStackTrace();
             return false;
         }
-
-        activePathName = lootRunName;
         return true;
     }
 
+    public static boolean saveToFile(String lootRunName) {
+        return saveToFile(lootRunName, false);
+    }
     public static boolean delete(String lootRunName) {
         try {
             File f = new File(STORAGE_FOLDER, lootRunName + ".json");
@@ -143,37 +141,31 @@ public class LootRunManager {
     }
 
     public static void clear() {
-        activePath = null;
-        activePathName = null;
+        activePaths.clear();
         recordingPath = null;
         updateMapPath();
     }
 
     public static void clearOnlyLoaded() {
-        activePath = null;
-        activePathName = null;
+        clear();
         updateMapPath();
     }
 
-    public static LootRunPath getActivePath() {
-        return activePath;
-    }
-
-    public static String getActivePathName() {
-        return activePathName;
+    public static Map<String, LootRunPath> getActivePath() {
+        return activePaths;
     }
 
     public static LootRunPath getRecordingPath() {
         return recordingPath;
     }
 
-    public static PathWaypointProfile getMapPath() {
+    public static List<PathWaypointProfile> getMapPath() {
         return mapPath;
     }
 
     public static List<MapIcon> getMapPathWaypoints() {
-        if (mapPath != null && MapConfig.LootRun.INSTANCE.displayLootrunOnMap)
-            return Arrays.asList(new MapPathWaypointIcon(mapPath));
+        if (!mapPath.isEmpty() && MapConfig.LootRun.INSTANCE.displayLootrunOnMap)
+            return mapPath.stream().map(MapPathWaypointIcon::new).collect(Collectors.toList());
         else
             return new ArrayList<>();
     }
@@ -183,9 +175,8 @@ public class LootRunManager {
     }
 
     public static void stopRecording() {
-        activePath = recordingPath;
+        lastRecorded = recordingPath;
         recordingPath = null;
-        activePathName = null;
     }
 
     public static void startRecording() {
@@ -235,9 +226,11 @@ public class LootRunManager {
             return true;
         }
 
-        if (activePath != null) {
-            activePath.addChest(pos);
-            if (activePathName != null) saveToFile(activePathName);
+        if (!activePaths.isEmpty()) {
+            Pair<String, LootRunPath> lastAdded = getLastLootrun();
+            if(lastAdded == null) return false;
+            lastAdded.b.addChest(pos);
+            saveToFile(lastAdded.a);
             return true;
         }
 
@@ -250,9 +243,11 @@ public class LootRunManager {
             return true;
         }
 
-        if (activePath != null) {
-            activePath.removeChest(pos);
-            if (activePathName != null) saveToFile(activePathName);
+        if (!activePaths.isEmpty()) {
+            Pair<String, LootRunPath> lastAdded = getLastLootrun();
+            if(lastAdded == null) return false;
+            lastAdded.b.removeChest(pos);
+            saveToFile(lastAdded.a);
             return true;
         }
 
@@ -265,9 +260,11 @@ public class LootRunManager {
             return true;
         }
 
-        if (activePath != null) {
-            activePath.addNote(note);
-            if (activePathName != null) saveToFile(activePathName);
+        if (!activePaths.isEmpty()) {
+            Pair<String, LootRunPath> lastAdded = getLastLootrun();
+            if(lastAdded == null) return false;
+            lastAdded.b.addNote(note);
+            saveToFile(lastAdded.a);
             return true;
         }
 
@@ -280,27 +277,45 @@ public class LootRunManager {
             return true;
         }
 
-        if (activePath != null) {
-            activePath.removeNote(location);
-            if (activePathName != null) saveToFile(activePathName);
+        if (!activePaths.isEmpty()) {
+            Pair<String, LootRunPath> lastAdded = getLastLootrun();
+            if(lastAdded == null) return false;
+            lastAdded.b.removeNote(location);
+            saveToFile(lastAdded.a);
             return true;
         }
 
         return false;
     }
 
+    public static Pair<String, LootRunPath> getLastLootrun() {
+        String[] names = activePaths.keySet().stream().toArray(String[]::new);
+        if(names.length == 0) return null;
+        String lootrunName = names[names.length - 1];
+        if(lootrunName == null) return null;
+        LootRunPath lastAdded = activePaths.get(lootrunName);
+        return new Pair<>(lootrunName, lastAdded);
+    }
+
     public static void renderActivePaths() {
-        if (activePath != null) {
+        if (!activePaths.isEmpty()) {
             CustomColor color = MapConfig.LootRun.INSTANCE.rainbowLootRun ? CommonColors.RAINBOW : MapConfig.LootRun.INSTANCE.activePathColour;
             if (MapConfig.LootRun.INSTANCE.pathType == MapConfig.LootRun.PathType.TEXTURED) {
-                PointRenderer.drawTexturedLines(Textures.World.path_arrow, activePath.getRoughPointsByChunk(),
-                        activePath.getRoughDirectionsByChunk(), color, .5f);
+               for(LootRunPath path : activePaths.values()) {
+                   PointRenderer.drawTexturedLines(Textures.World.path_arrow, path.getRoughPointsByChunk(),
+                           path.getRoughDirectionsByChunk(), color, .5f);
+               }
             } else {
-                PointRenderer.drawLines(activePath.getSmoothPointsByChunk(), color);
+                for(LootRunPath path : activePaths.values()) {
+                    PointRenderer.drawLines(path.getSmoothPointsByChunk(), color);
+                }
             }
 
-            activePath.getChests().forEach(c -> PointRenderer.drawCube(c, MapConfig.LootRun.INSTANCE.activePathColour));
-            if (MapConfig.LootRun.INSTANCE.showNotes) activePath.getNotes().forEach(n -> n.drawNote(MapConfig.LootRun.INSTANCE.activePathColour));
+            activePaths.values().forEach(path -> {
+                path.getChests().forEach(c -> PointRenderer.drawCube(c, MapConfig.LootRun.INSTANCE.activePathColour));
+            });
+            if (MapConfig.LootRun.INSTANCE.showNotes)
+                activePaths.values().forEach(path -> path.getNotes().forEach(n -> n.drawNote(MapConfig.LootRun.INSTANCE.activePathColour)));
         }
 
         if (recordingPath != null) {
@@ -311,10 +326,21 @@ public class LootRunManager {
     }
 
     private static void updateMapPath() {
-        mapPath = null;
-        if (activePath != null) {
-            mapPath = new PathWaypointProfile(activePath);
+        mapPath = new ArrayList<>();
+        if (!activePaths.isEmpty()) {
+            mapPath = activePaths.values().stream().map(PathWaypointProfile::new).collect(Collectors.toList());
         }
+    }
+
+    public static void clearLootrun(String name) {
+        activePaths.remove(name);
+        recordingPath = null;
+        updateMapPath();
+    }
+
+    public static void unloadLootrun(String name) {
+        activePaths.remove(name);
+        updateMapPath();
     }
 
     private static class LootRunPathIntermediary {
