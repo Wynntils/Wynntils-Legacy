@@ -171,13 +171,13 @@ public class LootRunPage extends QuestBookListPage<String> {
         int mapWidth = 145;
         int mapHeight = 58;
 
-        if (LootRunManager.getLastLootrun() != null) {
+        if (LootRunManager.getLastLootrun().isPresent()) {
             //render info
             ScreenRenderer.scale(1.2f);
-            render.drawString(LootRunManager.getLastLootrun().a + ChatFormatting.GRAY + " (" + (LootRunManager.getActivePath().size()-1) + " others)", x/1.2f - 154/1.2f, y/1.2f - 35/1.2f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            render.drawString(LootRunManager.getLastLootrun().get().a + ChatFormatting.GRAY + " (" + (LootRunManager.getActivePath().size() - 1) + " others)", x / 1.2f - 154 / 1.2f, y / 1.2f - 35 / 1.2f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             ScreenRenderer.resetScale();
 
-            LootRunPath path = LootRunManager.getLastLootrun().b;
+            LootRunPath path = LootRunManager.getLastLootrun().get().b;
             Location start = path.getPoints().get(0);
             render.drawString("Chests: " + path.getChests().size(), x - 154, y - 20, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             render.drawString("Notes: " + path.getNotes().size(), x - 154, y - 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
@@ -235,7 +235,7 @@ public class LootRunPage extends QuestBookListPage<String> {
                     if (MapConfig.LootRun.INSTANCE.displayLootrunOnMap) {
                         List<MapIcon> icons = LootRunManager.getMapPathWaypoints();
                         for (MapIcon mapIcon : icons) {
-                            mapIcon.renderAt(render, (float) (mapX + mapWidth / 2f + (mapIcon.getPosX() - start.getX())/(float) mapScale), (float) (mapY + mapHeight / 2f + (mapIcon.getPosZ() - start.getZ())/(float) mapScale), 1/((float) mapScale + 1/4f) + 0.2f, 1/(float) mapScale);
+                            mapIcon.renderAt(render, (float) (mapX + mapWidth / 2f + (mapIcon.getPosX() - start.getX()) / (float) mapScale), (float) (mapY + mapHeight / 2f + (mapIcon.getPosZ() - start.getZ()) / (float) mapScale), 1 / ((float) mapScale + 1 / 4f) + 0.2f, 1 / (float) mapScale);
                         }
                     }
 
@@ -244,7 +244,7 @@ public class LootRunPage extends QuestBookListPage<String> {
                         hoveredText = Arrays.asList(TextFormatting.YELLOW + "Click to open Map!", TextFormatting.WHITE + "Scroll to change map size!");
                     }
 
-                } catch (Exception ignored) { }
+                } catch (Exception ignored) {}
 
                 //reset settings
                 disableAlpha();
@@ -270,7 +270,7 @@ public class LootRunPage extends QuestBookListPage<String> {
     @Override
     protected List<String> getHoveredText(String entryInfo) {
         if (!LootRunManager.getActivePath().isEmpty() && LootRunManager.getActivePath().containsKey(entryInfo)) {
-            return Arrays.asList(TextFormatting.BOLD + entryInfo, TextFormatting.YELLOW + "Loaded", TextFormatting.GOLD + "Middle click to open lootrun in folder",  TextFormatting.GREEN + "Left click to unload this lootrun");
+            return Arrays.asList(TextFormatting.BOLD + entryInfo, TextFormatting.YELLOW + "Loaded", TextFormatting.GOLD + "Middle click to open lootrun in folder", TextFormatting.GREEN + "Left click to unload this lootrun");
         }
 
         return Arrays.asList(TextFormatting.BOLD + entryInfo, TextFormatting.GREEN + "Left click to load", TextFormatting.GOLD + "Middle click to open lootrun in folder", TextFormatting.RED + "Shift-Right click to delete");
@@ -278,7 +278,7 @@ public class LootRunPage extends QuestBookListPage<String> {
 
     @Override
     protected String getEmptySearchString() {
-        return  "No Lootruns were found!\nTry changing your search.";
+        return "No Lootruns were found!\nTry changing your search.";
     }
 
     @Override
@@ -302,12 +302,12 @@ public class LootRunPage extends QuestBookListPage<String> {
 
         checkMenuButton(posX, posY);
 
-        if (mapHovered && LootRunManager.getLastLootrun() != null) {
+        if (mapHovered && LootRunManager.getLastLootrun().isPresent()) {
             if (Reference.onWorld) {
                 if (WebManager.getApiUrls() == null) {
                     WebManager.tryReloadApiUrls(true);
                 } else {
-                    Location start = LootRunManager.getLastLootrun().b.getPoints().get(0);
+                    Location start = LootRunManager.getLastLootrun().get().b.getPoints().get(0);
                     Utils.displayGuiScreen(new MainWorldMapUI((int) start.x, (int) start.z));
                 }
             }
@@ -329,10 +329,10 @@ public class LootRunPage extends QuestBookListPage<String> {
             } else {
                 Optional<LootRunPath> result = LootRunManager.loadFromFile(selectedEntry);
 
-                if (result.isPresent()) {
+                if (result.isPresent() && LootRunManager.getLastLootrun().isPresent()) {
                     try {
                         Location start = result.get().getPoints().get(0);
-                        String message = TextFormatting.GREEN + "Loaded loot run " + LootRunManager.getLastLootrun().a + " successfully! " + TextFormatting.GRAY + "(" + result.get().getChests().size() + " chests)";
+                        String message = TextFormatting.GREEN + "Loaded loot run " + LootRunManager.getLastLootrun().get().a + " successfully! " + TextFormatting.GRAY + "(" + result.get().getChests().size() + " chests)";
 
                         Minecraft.getMinecraft().player.sendMessage(new TextComponentString(message));
 
