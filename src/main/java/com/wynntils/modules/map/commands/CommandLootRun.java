@@ -69,14 +69,12 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
 
         switch (args[0].toLowerCase(Locale.ROOT)) {
             case "current": {
-                if(LootRunManager.getActivePath().isEmpty()){
+                if (LootRunManager.getActivePath().isEmpty()) {
                     sender.sendMessage(new TextComponentString(RED + "You dont have any active lootrun path"));
                     return;
                 }
                 sender.sendMessage(new TextComponentString(AQUA + "Active lootrun paths:"));
-                LootRunManager.getActivePath().forEach((name, path) -> {
-                    sender.sendMessage(new TextComponentString(GRAY + "- " + name + ": " + path.getChests().size() + " chests"));
-                });
+                LootRunManager.getActivePath().forEach((name, path) -> sender.sendMessage(new TextComponentString(GRAY + "- " + name + ": " + path.getChests().size() + " chests")));
                 return;
             }
             case "l":

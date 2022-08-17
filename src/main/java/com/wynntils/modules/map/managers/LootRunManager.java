@@ -36,10 +36,10 @@ public class LootRunManager {
         .create();
     public static final File STORAGE_FOLDER = new File(Reference.MOD_STORAGE_ROOT, "lootruns");
 
-    private static Map<String, LootRunPath> activePaths = new HashMap<>();
+    private final static Map<String, LootRunPath> activePaths = new HashMap<>();
     private static LootRunPath recordingPath = null;
     private static LootRunPath lastRecorded = null;
-    private static List<PathWaypointProfile> mapPath = new ArrayList<>();
+    private final static List<PathWaypointProfile> mapPath = new ArrayList<>();
 
     public static void setup() {
         // Make sure lootrun folder exists at startup to simplify for users wanting to import lootruns
@@ -289,7 +289,7 @@ public class LootRunManager {
     }
 
     public static Pair<String, LootRunPath> getLastLootrun() {
-        String[] names = activePaths.keySet().stream().toArray(String[]::new);
+        String[] names = activePaths.keySet().toArray(new String[0]);
         if(names.length == 0) return null;
         String lootrunName = names[names.length - 1];
         if(lootrunName == null) return null;
@@ -311,9 +311,7 @@ public class LootRunManager {
                 }
             }
 
-            activePaths.values().forEach(path -> {
-                path.getChests().forEach(c -> PointRenderer.drawCube(c, MapConfig.LootRun.INSTANCE.activePathColour));
-            });
+            activePaths.values().forEach(path -> path.getChests().forEach(c -> PointRenderer.drawCube(c, MapConfig.LootRun.INSTANCE.activePathColour)));
             if (MapConfig.LootRun.INSTANCE.showNotes)
                 activePaths.values().forEach(path -> path.getNotes().forEach(n -> n.drawNote(MapConfig.LootRun.INSTANCE.activePathColour)));
         }
@@ -326,9 +324,9 @@ public class LootRunManager {
     }
 
     private static void updateMapPath() {
-        mapPath = new ArrayList<>();
+        mapPath.clear();
         if (!activePaths.isEmpty()) {
-            mapPath = activePaths.values().stream().map(PathWaypointProfile::new).collect(Collectors.toList());
+            mapPath.addAll(activePaths.values().stream().map(PathWaypointProfile::new).collect(Collectors.toList()));
         }
     }
 
