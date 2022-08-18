@@ -27,8 +27,13 @@ public class WaypointProfile {
     WaypointType type;
     WaypointType group = null;
 
+    boolean showBeaconBeam;
+
+    public WaypointProfile(String name, double x, double y, double z, CustomColor color, WaypointType type, int zoomNeeded, boolean showBeaconBeam) {
+        this.name = name; this.x = x; this.y = y; this.z = z; this.color = color; this.type = type; this.zoomNeeded = zoomNeeded; this.showBeaconBeam = showBeaconBeam;
+    }
     public WaypointProfile(String name, double x, double y, double z, CustomColor color, WaypointType type, int zoomNeeded) {
-        this.name = name; this.x = x; this.y = y; this.z = z; this.color = color; this.type = type; this.zoomNeeded = zoomNeeded;
+        this(name, x, y, z, color, type, zoomNeeded, false);
     }
 
     public String getName() {
@@ -49,6 +54,10 @@ public class WaypointProfile {
 
     public double getZ() {
         return z;
+    }
+
+    public boolean shouldShowBeaconBeam() {
+        return showBeaconBeam;
     }
 
     public int getZoomNeeded() {
@@ -139,6 +148,7 @@ public class WaypointProfile {
         } else {
             buf.put((byte) group.ordinal());
         }
+        buf.put(showBeaconBeam ? (byte) 1 : (byte) 0);
     }
 
     public String encode(byte format) {
@@ -257,6 +267,7 @@ public class WaypointProfile {
         } else {
             this.group = WaypointType.values()[group];
         }
+        this.showBeaconBeam = buf.get() == 1;
     }
 
     public static List<WaypointProfile> decode(String base64) throws IllegalArgumentException {
@@ -302,7 +313,7 @@ public class WaypointProfile {
         }
         List<WaypointProfile> result = new ArrayList<>(size);
         while (size-- > 0) {
-            WaypointProfile wp = new WaypointProfile(null, 0, 0, 0, null, null, 0);
+            WaypointProfile wp = new WaypointProfile(null, 0, 0, 0, null, null, 0, false);
             wp.decode(format, buf);
             result.add(wp);
         }

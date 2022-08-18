@@ -187,6 +187,14 @@ public class MapConfig extends SettingsClass {
 
     }
 
+    @SettingsInfo(name = "grouped_beaconbeams", displayPath = "Map/Beacon Beams")
+    public static class BeaconBeams extends SettingsClass {
+        public static BeaconBeams INSTANCE;
+
+        @Setting(upload = true)
+        public Map<WaypointProfile.WaypointType, Boolean> groupSettings = new HashMap<>();
+    }
+
     @SettingsInfo(name = "waypoints", displayPath = "Map/Waypoints")
     public static class Waypoints extends SettingsClass {
         public static Waypoints INSTANCE;
