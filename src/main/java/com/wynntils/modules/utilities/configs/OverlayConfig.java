@@ -94,14 +94,6 @@ public class OverlayConfig extends SettingsClass {
 
     }
 
-    @SettingsInfo(name ="trade_market", displayPath = "Utilities/Overlays/Trade Market")
-    public static class TradeMarket extends SettingsClass {
-        public static TradeMarket INSTANCE;
-
-        @Setting(displayName = "Show Trade Market Item Amount", description = "Should the total amount of the item you are selling on the trade market be shown?")
-        public boolean tradeMarketItemAmount = true;
-    }
-
     @SettingsInfo(name = "mana_settings", displayPath = "Utilities/Overlays/Mana")
     public static class Mana extends SettingsClass {
         public static Mana INSTANCE;
