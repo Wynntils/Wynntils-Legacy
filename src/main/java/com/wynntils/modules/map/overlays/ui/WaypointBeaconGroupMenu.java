@@ -75,7 +75,7 @@ public class WaypointBeaconGroupMenu extends UI {
       MapWaypointIcon icon = MapWaypointIcon.getFree(type);
 
       float multiplier = 9f / Math.max(icon.getSizeX(), icon.getSizeZ());
-      int renderY = currentY + (int)(icon.getSizeZ() / 2) + (fontRenderer.FONT_HEIGHT / 2);
+      int renderY = currentY + (int)(icon.getSizeZ() / 2) + (fontRenderer.FONT_HEIGHT) - 2;
       icon.renderAt(render, currentX, renderY, multiplier, 1);
       currentY +=30 ;
     }
