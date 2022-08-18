@@ -42,6 +42,7 @@ public class UtilitiesModule extends Module {
         registerEvents(new ItemLevelOverlay());
         registerEvents(new HotbarChargeOverlay());
         registerEvents(new SkillPointOverlay());
+        registerEvents(new TradeMarketOverlay());
         registerEvents(new ItemLockOverlay());
         registerEvents(new FavoriteTradesOverlay());
         registerEvents(new MenuButtonsOverlay());
@@ -105,6 +106,7 @@ public class UtilitiesModule extends Module {
         registerSettings(OverlayConfig.Leveling.class);
         registerSettings(OverlayConfig.Exp.class);
         registerSettings(OverlayConfig.Mana.class);
+        registerSettings(OverlayConfig.TradeMarket.class);
         registerSettings(OverlayConfig.ManaTimer.class);
         registerSettings(OverlayConfig.Hotbar.class);
         registerSettings(OverlayConfig.ToastsSettings.class);
