@@ -278,6 +278,9 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Show Paths as Rainbow", description = "Should paths be shown in the colours of a rainbow?", order = 4)
         public boolean rainbowLootRun = false;
 
+        @Setting(displayName = "Show different colors if multiple", description = "Should paths be colored differently if multiple lootruns are active?\nDoes not work with rainbow paths enabled", order = 4)
+        public boolean differentColorsMultipleLootruns = false;
+
         @Setting(displayName = "Rainbow Path Transitioning", description = "How many blocks should paths be shown in a colour before transitioning to a different colour?", order = 5)
         @Setting.Limitations.IntLimit(min = 1, max = 500)
         public int cycleDistance = 20;
@@ -290,8 +293,8 @@ public class MapConfig extends SettingsClass {
 
         @Override
         public void onSettingChanged(String name) {
-            if (name.equals("cycleDistance") && !LootRunManager.getActivePath().isEmpty()) {
-                LootRunManager.getActivePath().values().forEach(LootRunPath::changed);
+            if (name.equals("cycleDistance") && !LootRunManager.getActivePaths().isEmpty()) {
+                LootRunManager.getActivePaths().values().forEach(LootRunPath::changed);
             }
         }
 

@@ -111,7 +111,7 @@ public class LootRunPage extends QuestBookListPage<String> {
 
             int width = Math.min(animationTick, 133);
             animationTick -= 133 + 200;
-            Set<String> activePathNames = LootRunManager.getActivePath().keySet();
+            Set<String> activePathNames = LootRunManager.getActivePaths().keySet();
             if (!activePathNames.isEmpty() && activePathNames.contains(entryInfo)) {
                 render.drawRectF(background_3, x + 9, y - 96 + currentY, x + 13 + width, y - 87 + currentY);
                 render.drawRectF(background_4, x + 9, y - 96 + currentY, x + 146, y - 87 + currentY);
@@ -127,7 +127,7 @@ public class LootRunPage extends QuestBookListPage<String> {
 
                 if (!showAnimation) lastTick = 0;
             }
-            Set<String> activePathNames = LootRunManager.getActivePath().keySet();
+            Set<String> activePathNames = LootRunManager.getActivePaths().keySet();
             if (!activePathNames.isEmpty() && activePathNames.contains(entryInfo)) {
                 render.drawRectF(background_4, x + 13, y - 96 + currentY, x + 146, y - 87 + currentY);
             } else {
@@ -174,7 +174,7 @@ public class LootRunPage extends QuestBookListPage<String> {
         if (LootRunManager.getLastLootrun().isPresent()) {
             //render info
             ScreenRenderer.scale(1.2f);
-            render.drawString(LootRunManager.getLastLootrun().get().a + ChatFormatting.GRAY + " (" + (LootRunManager.getActivePath().size() - 1) + " others)", x / 1.2f - 154 / 1.2f, y / 1.2f - 35 / 1.2f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            render.drawString(LootRunManager.getLastLootrun().get().a + ChatFormatting.GRAY + " (" + (LootRunManager.getActivePaths().size() - 1) + " others)", x / 1.2f - 154 / 1.2f, y / 1.2f - 35 / 1.2f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             ScreenRenderer.resetScale();
 
             LootRunPath path = LootRunManager.getLastLootrun().get().b;
@@ -269,7 +269,7 @@ public class LootRunPage extends QuestBookListPage<String> {
 
     @Override
     protected List<String> getHoveredText(String entryInfo) {
-        if (!LootRunManager.getActivePath().isEmpty() && LootRunManager.getActivePath().containsKey(entryInfo)) {
+        if (!LootRunManager.getActivePaths().isEmpty() && LootRunManager.getActivePaths().containsKey(entryInfo)) {
             return Arrays.asList(TextFormatting.BOLD + entryInfo, TextFormatting.YELLOW + "Loaded", TextFormatting.GOLD + "Middle click to open lootrun in folder", TextFormatting.GREEN + "Left click to unload this lootrun");
         }
 
@@ -318,7 +318,7 @@ public class LootRunPage extends QuestBookListPage<String> {
 
     @Override
     protected void handleEntryClick(String itemInfo, int mouseButton) {
-        boolean isTracked = (!LootRunManager.getActivePath().isEmpty() && LootRunManager.getActivePath().containsKey(selectedEntry));
+        boolean isTracked = (!LootRunManager.getActivePaths().isEmpty() && LootRunManager.getActivePaths().containsKey(selectedEntry));
 
         if (mouseButton == 0) { //left click means either load or unload
             if (isTracked) {

@@ -35,7 +35,7 @@ public class CommonColors extends CustomColor.SetBase {
     public static final CommonColors WHITE = new CommonColors(0xffffff);
     public static final CommonColors RAINBOW = new CommonColors();
 
-    private static final CommonColors[] colors = {
+    public static final CommonColors[] colors = {
         BLACK,      RED,     GREEN,  BLUE,
         YELLOW,     BROWN,   PURPLE, CYAN,
         LIGHT_GRAY, GRAY,    PINK,   LIGHT_GREEN,

@@ -21,6 +21,7 @@ import com.wynntils.modules.map.rendering.PointRenderer;
 
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
+import org.apache.commons.lang3.ArrayUtils;
 
 import java.io.*;
 import java.lang.reflect.Type;
@@ -72,11 +73,6 @@ public class LootRunManager {
             if (new File(STORAGE_FOLDER, file).equals(expectedFile)) return true;
         }
         return false;
-    }
-
-    public static void hide() {
-        activePaths.clear();
-        updateMapPath();
     }
 
     public static Optional<LootRunPath> loadFromFile(String lootRunName) {
@@ -151,21 +147,12 @@ public class LootRunManager {
         updateMapPath();
     }
 
-    public static void clearOnlyLoaded() {
-        clear();
-        updateMapPath();
-    }
-
-    public static Map<String, LootRunPath> getActivePath() {
+    public static Map<String, LootRunPath> getActivePaths() {
         return activePaths;
     }
 
     public static LootRunPath getRecordingPath() {
         return recordingPath;
-    }
-
-    public static List<PathWaypointProfile> getMapPath() {
-        return mapPath;
     }
 
     public static List<MapIcon> getMapPathWaypoints() {
@@ -300,21 +287,22 @@ public class LootRunManager {
 
     public static void renderActivePaths() {
         if (!activePaths.isEmpty()) {
-            CustomColor color = MapConfig.LootRun.INSTANCE.rainbowLootRun ? CommonColors.RAINBOW : MapConfig.LootRun.INSTANCE.activePathColour;
             if (MapConfig.LootRun.INSTANCE.pathType == MapConfig.LootRun.PathType.TEXTURED) {
                 for (LootRunPath path : activePaths.values()) {
+                    CustomColor color = getPathColor(path);
                     PointRenderer.drawTexturedLines(Textures.World.path_arrow, path.getRoughPointsByChunk(),
                             path.getRoughDirectionsByChunk(), color, .5f);
                 }
             } else {
                 for (LootRunPath path : activePaths.values()) {
+                    CustomColor color = getPathColor(path);
                     PointRenderer.drawLines(path.getSmoothPointsByChunk(), color);
                 }
             }
 
-            activePaths.values().forEach(path -> path.getChests().forEach(c -> PointRenderer.drawCube(c, MapConfig.LootRun.INSTANCE.activePathColour)));
+            activePaths.values().forEach(path -> path.getChests().forEach(c -> PointRenderer.drawCube(c, getPathColor(path))));
             if (MapConfig.LootRun.INSTANCE.showNotes)
-                activePaths.values().forEach(path -> path.getNotes().forEach(n -> n.drawNote(MapConfig.LootRun.INSTANCE.activePathColour)));
+                activePaths.values().forEach(path -> path.getNotes().forEach(n -> n.drawNote(getPathColor(path))));
         }
 
         if (recordingPath != null) {
@@ -322,6 +310,14 @@ public class LootRunManager {
             recordingPath.getChests().forEach(c -> PointRenderer.drawCube(c, MapConfig.LootRun.INSTANCE.recordingPathColour));
             recordingPath.getNotes().forEach(n -> n.drawNote(MapConfig.LootRun.INSTANCE.recordingPathColour));
         }
+    }
+
+    private static CustomColor getPathColor(LootRunPath path){
+        CustomColor defaultColor = MapConfig.LootRun.INSTANCE.rainbowLootRun ? CommonColors.RAINBOW : MapConfig.LootRun.INSTANCE.activePathColour;
+        if (!MapConfig.LootRun.INSTANCE.differentColorsMultipleLootruns || getActivePaths().size() == 1 || MapConfig.LootRun.INSTANCE.rainbowLootRun) return defaultColor;
+
+        int index = ArrayUtils.indexOf(getActivePaths().values().toArray(), path) % CommonColors.colors.length;
+        return CommonColors.colors[index];
     }
 
     private static void updateMapPath() {
@@ -337,11 +333,15 @@ public class LootRunManager {
         updateMapPath();
     }
 
-    public static void unloadLootrun(String name) {
-        if(activePaths.getOrDefault(name, null) == latestLootrun)
+    public static boolean unloadLootrun(String name) {
+        if(!activePaths.containsKey(name)) {
+            return false;
+        }
+        if(activePaths.get(name) == latestLootrun)
             latestLootrun = null;
         activePaths.remove(name);
         updateMapPath();
+        return true;
     }
 
     private static class LootRunPathIntermediary {
