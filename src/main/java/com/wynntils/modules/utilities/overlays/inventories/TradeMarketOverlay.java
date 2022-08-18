@@ -38,8 +38,7 @@ public class TradeMarketOverlay implements Listener {
         int amount = 0;
         for (ItemStack item : McIf.player().inventory.mainInventory) {
             if (ChatFormatting.stripFormatting(item.getDisplayName()).equals(itemName)) {
-                int itemAmount = item.getCount();
-                amount += itemAmount;
+                amount += item.getCount();
             }
         }
         String text = "You have " + amount + " " + itemName + " in your inventory";
