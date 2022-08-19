@@ -44,6 +44,20 @@ public class LootRunManager {
     private static LootRunPath lastRecorded = null;
     private final static List<PathWaypointProfile> mapPath = new ArrayList<>();
 
+    private final static List<CustomColor> pathColors = Arrays.asList(
+        CommonColors.BLUE,
+        CommonColors.GREEN,
+        CommonColors.RED,
+        CommonColors.YELLOW,
+        CommonColors.PURPLE,
+        CommonColors.CYAN,
+        CommonColors.ORANGE,
+        CommonColors.PINK,
+        CommonColors.LIGHT_BLUE,
+        CommonColors.LIGHT_GREEN,
+        CommonColors.LIGHT_GRAY
+    );
+
     public static void setup() {
         // Make sure lootrun folder exists at startup to simplify for users wanting to import lootruns
         if (!LootRunManager.STORAGE_FOLDER.exists()) {
@@ -316,8 +330,8 @@ public class LootRunManager {
         CustomColor defaultColor = MapConfig.LootRun.INSTANCE.rainbowLootRun ? CommonColors.RAINBOW : MapConfig.LootRun.INSTANCE.activePathColour;
         if (!MapConfig.LootRun.INSTANCE.differentColorsMultipleLootruns || getActivePaths().size() == 1 || MapConfig.LootRun.INSTANCE.rainbowLootRun) return defaultColor;
 
-        int index = ArrayUtils.indexOf(getActivePaths().values().toArray(), path) % CommonColors.colors.length;
-        return CommonColors.colors[index];
+        int index = ArrayUtils.indexOf(getActivePaths().values().toArray(), path) % pathColors.size();
+        return pathColors.get(index);
     }
 
     private static void updateMapPath() {
