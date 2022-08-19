@@ -29,8 +29,8 @@ public class TradeMarketOverlay implements Listener {
         }
         if (inventory.getStackInSlot(20) != ItemStack.EMPTY && !inventory.getStackInSlot(20).getDisplayName().isEmpty()) return;
 
-        ItemStack itemStack = new ItemStack(buildNBT());
-        itemStack.setTagCompound(buildNBT());
+        ItemStack itemStack = new ItemStack(buildNBT(inventory));
+        itemStack.setTagCompound(buildNBT(inventory));
 
         inventory.setInventorySlotContents(20, itemStack);
         shouldSend = true;
@@ -42,28 +42,13 @@ public class TradeMarketOverlay implements Listener {
         if (!inventory.getName().contains("What would you like to sell?")) return;
         if (e.getSlotId() != 20) return;
 
-        ItemStack itemStack = inventory.getStackInSlot(10);
-
-        if (itemStack == ItemStack.EMPTY) return;
-        if (itemStack.getDisplayName().contains("Click an Item to sell")) return;
-
-        Matcher matcher = ITEM_NAME_PATTERN.matcher(itemStack.getDisplayName());
-
-        if (!matcher.matches()) return;
-
-        String itemName = matcher.group(1);
-        int amount = 0;
-
-        for (ItemStack item : McIf.player().inventory.mainInventory) {
-            if (item.getDisplayName().toLowerCase().trim().equals(itemName.toLowerCase().trim())) {
-                int itemAmount = item.getCount();
-                amount += itemAmount;
-            }
-        }
+        String itemName = getItemName(inventory);
+        if(itemName == null) return;
 
         int slotId = 11;
         shouldSend = true;
-        amountToSend = amount;
+        amountToSend = getAmount(itemName);
+
         e.getGui().handleMouseClick(e.getGui().inventorySlots.getSlot(slotId), slotId, 2, ClickType.PICKUP);
     }
 
@@ -78,7 +63,9 @@ public class TradeMarketOverlay implements Listener {
         shouldSend = false;
     }
 
-    public NBTTagCompound buildNBT() {
+    public NBTTagCompound buildNBT(InventoryBasic inventory) {
+        String itemName = getItemName(inventory);
+
         NBTTagCompound nbt = new NBTTagCompound();
         NBTTagCompound tag = new NBTTagCompound();
 
@@ -90,6 +77,11 @@ public class TradeMarketOverlay implements Listener {
 
         NBTTagList lore = new NBTTagList();
         lore.appendTag(new NBTTagString("§7Click to sell all items in your inventory"));
+
+        if(itemName != null)
+            lore.appendTag(new NBTTagString("§7You have: §6" + getAmount(itemName) + " §7of " + itemName));
+        else lore.appendTag(new NBTTagString("§cYou have not yet selected an item to sell!"));
+
         display.setTag("Lore", lore);
 
         tag.setFloat("Unbreakable", 1);
@@ -101,4 +93,29 @@ public class TradeMarketOverlay implements Listener {
 
         return nbt;
     }
+
+    public int getAmount(String name) {
+        int amount = 0;
+
+        for (ItemStack item : McIf.player().inventory.mainInventory) {
+            if (item.getDisplayName().toLowerCase().trim().equals(name.toLowerCase().trim())) {
+                int itemAmount = item.getCount();
+                amount += itemAmount;
+            }
+        }
+
+        return amount;
+    }
+
+    public String getItemName(InventoryBasic inventory) {
+        ItemStack itemStack = inventory.getStackInSlot(10);
+        if (itemStack == ItemStack.EMPTY) return null;
+        if (itemStack.getDisplayName().contains("Click an Item to sell")) return null;
+
+        Matcher matcher = ITEM_NAME_PATTERN.matcher(itemStack.getDisplayName());
+
+        if (!matcher.matches()) return null;
+        return matcher.group(1);
+    }
+
 }
