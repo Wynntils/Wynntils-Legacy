@@ -151,11 +151,11 @@ public class TotemTracker {
     }
 
     public void onTotemSpellCast(SpellEvent.Cast e) {
-        if (e.getSpell().equals("Totem") || e.getSpell().equals("Sky Emblem")) {
+        if (e.getSpell().equals("Totem")) {
             totemCastTimestamp = System.currentTimeMillis();
             heldWeaponSlot =  McIf.player().inventory.currentItem;
             checkTotemSummoned();
-        } else if (e.getSpell().equals("Uproot") || e.getSpell().equals("Gale Funnel")) {
+        } else if (e.getSpell().equals("Uproot")) {
             totemCastTimestamp = System.currentTimeMillis();
         }
     }
