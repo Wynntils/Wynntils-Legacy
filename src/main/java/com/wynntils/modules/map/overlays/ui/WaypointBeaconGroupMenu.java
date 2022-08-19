@@ -88,7 +88,8 @@ public class WaypointBeaconGroupMenu extends UI {
     super.drawScreen(mouseX, mouseY, partialTicks);
 
     drawCenteredString(fontRenderer,  ChatFormatting.GRAY + "Toggling any of these waypoint groups will result in all waypoints of that type to be rendered as a beacon beam on your gui", width / 2, 50, 0xFFFFFF);
-    drawCenteredString(fontRenderer,  ChatFormatting.GRAY + " Disabling the beacon beam on the waypoint itself will not override it", width / 2, 62, 0xFFFFFF);
+    drawCenteredString(fontRenderer,  ChatFormatting.GRAY + "Disabling the beacon beam on the waypoint itself will not override it", width / 2, 62, 0xFFFFFF);
+    drawCenteredString(fontRenderer,  ChatFormatting.GRAY + "Beacons will only render if you are less than 60 blocks away from them, or if the visibility is set to `Always Visible`", width / 2, 74, 0xFFFFFF);
   }
 
   @Override
@@ -97,7 +98,6 @@ public class WaypointBeaconGroupMenu extends UI {
       if (b == button) {
         groupValues.put(type, !groupValues.getOrDefault(type, false));
         button.displayString = getText(type);
-        button.width = fontRenderer.getStringWidth(button.displayString);
       }
     });
 

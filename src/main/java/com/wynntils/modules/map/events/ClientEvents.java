@@ -84,7 +84,7 @@ public class ClientEvents implements Listener {
     public void renderWorld(RenderWorldLastEvent e) {
         LootRunManager.renderActivePaths();
 
-        if (MapConfig.INSTANCE.showWaypointsAsBeacons) {
+        if (MapConfig.BeaconBeams.INSTANCE.showBeaconBeams) {
             Location playerLoc = new Location(McIf.player().posX, McIf.player().posY, McIf.player().posZ);
             for (WaypointProfile waypoint : MapConfig.Waypoints.INSTANCE.waypoints) {
                 boolean groupValue = MapConfig.BeaconBeams.INSTANCE.groupSettings.getOrDefault(waypoint.getType(), false);

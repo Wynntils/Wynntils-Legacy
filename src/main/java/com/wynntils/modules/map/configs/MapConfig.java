@@ -32,9 +32,6 @@ public class MapConfig extends SettingsClass {
     @Setting(displayName = "Show Compass Directions", description = "Should the cardinal directions be displayed on the minimap?\n\n§8Cardinal directions are the north, east, south, and west points on a compass.", order = 1)
     public boolean showCompass = true;
 
-    @Setting(displayName = "Show Waypoints as Beacons", description = "Should a beacon beam be displayed at all of your waypoints?", order = 2)
-    public boolean showWaypointsAsBeacons = false;
-
     @Setting(displayName = "Show Compass Distance", description = "Should the distance to the compass position be displayed on the minimap?", order = 2)
     public DistanceMarkerType compassDistanceType = DistanceMarkerType.OFF_MAP;
 
@@ -187,12 +184,14 @@ public class MapConfig extends SettingsClass {
 
     }
 
-    @SettingsInfo(name = "grouped_beaconbeams", displayPath = "Map/Beacon Beams")
+    @SettingsInfo(name = "beacon_beams", displayPath = "Map/Beacon Beams")
     public static class BeaconBeams extends SettingsClass {
         public static BeaconBeams INSTANCE;
-
         @Setting(upload = true)
         public Map<WaypointProfile.WaypointType, Boolean> groupSettings = new HashMap<>();
+
+        @Setting(displayName = "Show Beacon Beams", description = "Should beacon beams be displayed?\nDisabling this will globally disable beacon beams for all waypoints/groups.")
+        public boolean showBeaconBeams = true;
     }
 
     @SettingsInfo(name = "waypoints", displayPath = "Map/Waypoints")
