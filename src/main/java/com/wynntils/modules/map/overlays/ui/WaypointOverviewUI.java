@@ -263,13 +263,13 @@ public class WaypointOverviewUI extends GuiScreen {
             );
         } else if (b == clearBtn) {
             clearCount++;
-            if(clearCount == clearCountMax){
+            if (clearCount == clearCountMax) {
                 waypoints.clear();
                 onWaypointChange();
                 clearCount = 0;
                 clearBtn.displayString = "CLEARED!";
             } else {
-                clearBtn.displayString = "CLEAR (Press " + (clearCountMax-clearCount) + " times)";
+                clearBtn.displayString = "CLEAR (Press " + (clearCountMax - clearCount) + " times)";
             }
         } else if (b.id < 0) {
             // A group button
