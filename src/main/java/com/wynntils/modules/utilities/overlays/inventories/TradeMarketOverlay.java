@@ -19,26 +19,30 @@ public class TradeMarketOverlay implements Listener {
 
     @SubscribeEvent
     public void onRender(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
-        if (McIf.player() == null) return;
-        if (McIf.player().openContainer == null) return;
         InventoryBasic inventory = (InventoryBasic) e.getGui().getLowerInv();
+
         if (!inventory.getName().contains("What would you like to sell?")) return;
         if(e.getSlotId() != 11) return;
+
         ItemStack itemStack = inventory.getStackInSlot(10);
+
         if (itemStack == ItemStack.EMPTY) return;
         if (itemStack.getDisplayName().contains("Click an Item to Sell")) return;
-        System.out.println(itemStack.getDisplayName());
-        Matcher matcher = ITEM_NAME_PATTERN.matcher(itemStack.getDisplayName());
-        if (!matcher.matches()) return;
-        String itemName = matcher.group(1);
 
+        Matcher matcher = ITEM_NAME_PATTERN.matcher(itemStack.getDisplayName());
+
+        if (!matcher.matches()) return;
+
+        String itemName = matcher.group(1);
         int amount = 0;
+
         for (ItemStack item : McIf.player().inventory.mainInventory) {
             if (ChatFormatting.stripFormatting(item.getDisplayName()).equals(ChatFormatting.stripFormatting(itemName))) {
                 int itemAmount = item.getCount();
                 amount += itemAmount;
             }
         }
+
         Minecraft.getMinecraft().player.sendMessage(new TextComponentString(ChatFormatting.DARK_GRAY + "You have " + ChatFormatting.GOLD + ChatFormatting.BOLD + amount + " " + itemName + ChatFormatting.DARK_GRAY + " in your inventory"));
     }
 }
