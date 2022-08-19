@@ -30,7 +30,6 @@ public class TradeMarketOverlay implements Listener {
         if (inventory.getStackInSlot(20) != ItemStack.EMPTY && !inventory.getStackInSlot(20).getDisplayName().isEmpty()) return;
 
         ItemStack itemStack = new ItemStack(buildNBT(inventory));
-        itemStack.setTagCompound(buildNBT(inventory));
 
         inventory.setInventorySlotContents(20, itemStack);
         shouldSend = true;
@@ -65,14 +64,15 @@ public class TradeMarketOverlay implements Listener {
 
     public NBTTagCompound buildNBT(InventoryBasic inventory) {
         String itemName = getItemName(inventory);
+        int amount = itemName != null ? getAmount(itemName) : 1;
 
         NBTTagCompound nbt = new NBTTagCompound();
-        NBTTagCompound tag = new NBTTagCompound();
+        NBTTagCompound tag = nbt.getCompoundTag("tag");
 
-        nbt.setString("id", "minecraft:emerald");
-        nbt.setInteger("Count", 1);
+        nbt.setString("id", "minecraft:diamond_axe");
+        nbt.setInteger("Count", Math.min(amount, 64));
 
-        NBTTagCompound display = new NBTTagCompound();
+        NBTTagCompound display = tag.getCompoundTag("display");
         display.setString("Name", "§aSell All");
 
         NBTTagList lore = new NBTTagList();
@@ -83,12 +83,13 @@ public class TradeMarketOverlay implements Listener {
 
         display.setTag("Lore", lore);
 
-        tag.setFloat("Unbreakable", 1);
-        tag.setInteger("HideFlags", 6);
+        tag.setInteger("Unbreakable", 1);
+        tag.setInteger("HideFlags", 255);
 
-        nbt.setTag("display", display);
+        nbt.setShort("Damage", (short) 95);
+
+        tag.setTag("display", display);
         nbt.setTag("tag", tag);
-        nbt.setFloat("Damage", 0);
 
         return nbt;
     }
