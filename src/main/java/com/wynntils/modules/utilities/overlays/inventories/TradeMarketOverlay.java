@@ -78,8 +78,7 @@ public class TradeMarketOverlay implements Listener {
         NBTTagList lore = new NBTTagList();
         lore.appendTag(new NBTTagString("§7Click to sell all items in your inventory"));
 
-        if(itemName != null)
-            lore.appendTag(new NBTTagString("§7You have: §6" + getAmount(itemName) + " §7of " + itemName));
+        if (itemName != null) lore.appendTag(new NBTTagString("§7You have: §6" + getAmount(itemName) + " §7of " + itemName));
         else lore.appendTag(new NBTTagString("§cYou have not yet selected an item to sell!"));
 
         display.setTag("Lore", lore);
