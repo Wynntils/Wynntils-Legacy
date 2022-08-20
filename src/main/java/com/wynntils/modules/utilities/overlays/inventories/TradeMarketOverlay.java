@@ -43,7 +43,7 @@ public class TradeMarketOverlay implements Listener {
         if (e.getSlotId() != 20) return;
 
         String itemName = getItemName(inventory);
-        if(itemName == null) return;
+        if (itemName == null) return;
 
         int slotId = 11;
         shouldSend = true;
