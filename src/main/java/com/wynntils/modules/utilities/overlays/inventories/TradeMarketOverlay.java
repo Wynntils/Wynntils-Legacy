@@ -28,6 +28,7 @@ public class TradeMarketOverlay implements Listener {
             return;
         }
         if (inventory.getStackInSlot(20) != ItemStack.EMPTY && !inventory.getStackInSlot(20).getDisplayName().isEmpty()) return;
+        if (getItemName(inventory) == null || getAmount(getItemName(inventory)) <= 1) return;
 
         ItemStack itemStack = new ItemStack(buildNBT(inventory));
 
@@ -62,7 +63,7 @@ public class TradeMarketOverlay implements Listener {
         shouldSend = false;
     }
 
-    public NBTTagCompound buildNBT(InventoryBasic inventory) {
+    private NBTTagCompound buildNBT(InventoryBasic inventory) {
         String itemName = getItemName(inventory);
         int amount = itemName != null ? getAmount(itemName) : 1;
 
@@ -94,7 +95,7 @@ public class TradeMarketOverlay implements Listener {
         return nbt;
     }
 
-    public int getAmount(String name) {
+    private int getAmount(String name) {
         int amount = 0;
 
         for (ItemStack item : McIf.player().inventory.mainInventory) {
@@ -107,7 +108,7 @@ public class TradeMarketOverlay implements Listener {
         return amount;
     }
 
-    public String getItemName(InventoryBasic inventory) {
+    private String getItemName(InventoryBasic inventory) {
         ItemStack itemStack = inventory.getStackInSlot(10);
         if (itemStack == ItemStack.EMPTY) return null;
         if (itemStack.getDisplayName().contains("Click an Item to sell")) return null;
