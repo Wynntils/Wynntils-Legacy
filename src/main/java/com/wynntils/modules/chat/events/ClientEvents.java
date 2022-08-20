@@ -4,7 +4,6 @@
 
 package com.wynntils.modules.chat.events;
 
-import com.mojang.realmsclient.gui.ChatFormatting;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.PacketEvent;
@@ -42,6 +41,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
+import org.w3c.dom.Text;
 
 import java.awt.*;
 import java.awt.datatransfer.StringSelection;
@@ -206,7 +206,7 @@ public class ClientEvents implements Listener {
             copy.getSiblings().remove(copy.getSiblings().size() - 1);
 
             String message = copy.getFormattedText();
-            if (!Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) message = (ChatFormatting.stripFormatting(message));
+            if (!Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) message = (TextFormatting.getTextWithoutFormattingCodes(message));
 
             Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(message.replace("§", "&")), null);
             McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1f));
