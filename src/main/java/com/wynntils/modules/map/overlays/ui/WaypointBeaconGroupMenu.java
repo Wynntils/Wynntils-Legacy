@@ -101,7 +101,7 @@ public class WaypointBeaconGroupMenu extends UI {
       }
     });
 
-    if(b == doneButton) {
+    if (b == doneButton) {
       save();
       mc.displayGuiScreen(prev);
     }

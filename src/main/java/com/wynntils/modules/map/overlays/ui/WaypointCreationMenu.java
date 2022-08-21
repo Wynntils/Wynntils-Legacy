@@ -4,7 +4,6 @@
 
 package com.wynntils.modules.map.overlays.ui;
 
-import com.mojang.realmsclient.gui.ChatFormatting;
 import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -22,6 +21,7 @@ import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
@@ -103,7 +103,7 @@ public class WaypointCreationMenu extends UI {
         saveButton.enabled = false;
 
         beaconBeam = wp != null && wp.shouldShowBeaconBeam();
-        buttonList.add(toggleBeaconBeam = new GuiButton(104, this.width/2 - 150, this.height/2 + 10, 18, 18, beaconBeam ? ChatFormatting.GREEN + "✔" : ChatFormatting.RED + "╳"));
+        buttonList.add(toggleBeaconBeam = new GuiButton(104, this.width/2 - 150, this.height/2 + 10, 18, 18, beaconBeam ? TextFormatting.GREEN + "✔" : TextFormatting.RED + "X"));
 
         xCoordField.setText(Integer.toString(initialX));
         zCoordField.setText(Integer.toString(initialZ));
@@ -300,9 +300,9 @@ public class WaypointCreationMenu extends UI {
             setZoomNeeded(MapWaypointIcon.ANY_ZOOM);
         } else if (button == hiddenButton) {
             setZoomNeeded(MapWaypointIcon.HIDDEN_ZOOM);
-        } else if(button == toggleBeaconBeam) {
+        } else if (button == toggleBeaconBeam) {
             beaconBeam = !beaconBeam;
-            toggleBeaconBeam.displayString = beaconBeam ? ChatFormatting.GREEN + "✔" : ChatFormatting.RED + "╳";
+            toggleBeaconBeam.displayString = beaconBeam ? TextFormatting.GREEN + "✔" : TextFormatting.RED + "X";
         }
     }
 
