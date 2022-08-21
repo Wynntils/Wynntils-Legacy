@@ -93,7 +93,7 @@ public class ClientEvents implements Listener {
                 boolean inRange = waypoint.getZoomNeeded() == MapWaypointIcon.ANY_ZOOM || location.distance(playerLoc) <= 60;
                 if (!inRange) continue;
                 BeaconManager.drawBeam(location, waypoint.getColor(), e.getPartialTicks());
-                NametagManager.renderWaypointName(waypoint.getName(), location.x, location.y, location.z, e.getPartialTicks());
+                NametagManager.renderWaypointName(waypoint.getName(), location.x, location.y, location.z);
             }
         }
 
