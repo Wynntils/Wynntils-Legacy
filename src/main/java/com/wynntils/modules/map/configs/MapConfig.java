@@ -185,6 +185,16 @@ public class MapConfig extends SettingsClass {
 
     }
 
+    @SettingsInfo(name = "beacon_beams", displayPath = "Map/Beacon Beams")
+    public static class BeaconBeams extends SettingsClass {
+        public static BeaconBeams INSTANCE;
+        @Setting(upload = true)
+        public Map<WaypointProfile.WaypointType, Boolean> groupSettings = new HashMap<>();
+
+        @Setting(displayName = "Show Beacon Beams", description = "Should beacon beams be displayed?\nDisabling this will globally disable beacon beams for all waypoints/groups.")
+        public boolean showBeaconBeams = true;
+    }
+
     @SettingsInfo(name = "waypoints", displayPath = "Map/Waypoints")
     public static class Waypoints extends SettingsClass {
         public static Waypoints INSTANCE;
