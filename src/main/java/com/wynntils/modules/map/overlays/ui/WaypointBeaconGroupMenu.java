@@ -43,11 +43,11 @@ public class WaypointBeaconGroupMenu extends UI {
       currentY += 30;
     }
 
-    doneButton = new GuiButton(0,this.width/2-fontRenderer.getStringWidth("Done"), this.height - 100, 45, 18, "Done");
+    doneButton = new GuiButton(0, this.width/2-fontRenderer.getStringWidth("Done"), this.height - 100, 45, 18, "Done");
     buttonList.add(doneButton);
   }
 
-  public String getText(WaypointProfile.WaypointType type){
+  public String getText(WaypointProfile.WaypointType type) {
     boolean toggled = groupValues.getOrDefault(type, false);
     ChatFormatting color = toggled ? ChatFormatting.GREEN : ChatFormatting.RED;
     return String.format("%s%s: %s", color, type, toggled ? "Enabled" : "Disabled");
@@ -71,7 +71,7 @@ public class WaypointBeaconGroupMenu extends UI {
     int currentX = width / 2 - 160;
     int currentY = 100;
 
-    for(WaypointProfile.WaypointType type : WaypointProfile.WaypointType.values()){
+    for (WaypointProfile.WaypointType type : WaypointProfile.WaypointType.values()) {
       MapWaypointIcon icon = MapWaypointIcon.getFree(type);
 
       float multiplier = 9f / Math.max(icon.getSizeX(), icon.getSizeZ());
@@ -107,7 +107,7 @@ public class WaypointBeaconGroupMenu extends UI {
     }
   }
 
-  void save(){
+  void save() {
     MapConfig.BeaconBeams.INSTANCE.groupSettings = groupValues;
     MapConfig.BeaconBeams.INSTANCE.saveSettings(MapModule.getModule());
   }
