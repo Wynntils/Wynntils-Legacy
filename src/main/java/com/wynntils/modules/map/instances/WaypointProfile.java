@@ -30,7 +30,14 @@ public class WaypointProfile {
     boolean showBeaconBeam;
 
     public WaypointProfile(String name, double x, double y, double z, CustomColor color, WaypointType type, int zoomNeeded, boolean showBeaconBeam) {
-        this.name = name; this.x = x; this.y = y; this.z = z; this.color = color; this.type = type; this.zoomNeeded = zoomNeeded; this.showBeaconBeam = showBeaconBeam;
+        this.name = name;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.color = color;
+        this.type = type;
+        this.zoomNeeded = zoomNeeded;
+        this.showBeaconBeam = showBeaconBeam;
     }
     public WaypointProfile(String name, double x, double y, double z, CustomColor color, WaypointType type, int zoomNeeded) {
         this(name, x, y, z, color, type, zoomNeeded, false);
