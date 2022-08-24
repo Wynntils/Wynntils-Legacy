@@ -33,7 +33,7 @@ public class TotemTracker {
     private static final Pattern MOB_TOTEM_NAME = Pattern.compile("^§f§l(.*)'s§6§l Mob Totem$");
     private static final Pattern MOB_TOTEM_TIMER = Pattern.compile("^§c§l([0-9]+):([0-9]+)$");
 
-    public enum TotemState { NONE, SUMMONED, LANDING, PREPARING, ACTIVE}
+    public enum TotemState { NONE, SUMMONED, LANDING, PREPARING, ACTIVE }
     private TotemState totemState = TotemState.NONE;
 
     private int totemId = -1;
@@ -60,7 +60,7 @@ public class TotemTracker {
     private static boolean isClose(double a, double b)
     {
         double diff = Math.abs(a - b);
-        return  (diff < 3);
+        return (diff < 3);
     }
 
     private void postEvent(Event event) {
@@ -153,7 +153,7 @@ public class TotemTracker {
     public void onTotemSpellCast(SpellEvent.Cast e) {
         if (e.getSpell().equals("Totem")) {
             totemCastTimestamp = System.currentTimeMillis();
-            heldWeaponSlot =  McIf.player().inventory.currentItem;
+            heldWeaponSlot = McIf.player().inventory.currentItem;
             checkTotemSummoned();
         } else if (e.getSpell().equals("Uproot")) {
             totemCastTimestamp = System.currentTimeMillis();
