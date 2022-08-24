@@ -105,7 +105,7 @@ public enum SpellType {
     public static SpellType forClass(ClassType classRequired, int spellNumber) {
         for (SpellType spellType : values()) {
             if (spellType.classType.equals(classRequired)
-                    && spellType.spellNumber ==spellNumber) {
+                    && spellType.spellNumber == spellNumber) {
                 return spellType;
             }
         }

@@ -193,7 +193,7 @@ public class TotemTracker {
                 // We got a armor stand with a timer nametag
                 if (totemState == TotemState.PREPARING ) {
                     // Widen search range until found
-                    double acceptableDistance = 3.0 + (System.currentTimeMillis() - totemPreparedTimestamp)/1000d;
+                    double acceptableDistance = 3.0 + (System.currentTimeMillis() - totemPreparedTimestamp) / 1000d;
                     double distanceXZ = Math.abs(entity.posX - totemX) + Math.abs(entity.posZ - totemZ);
                     if (distanceXZ < acceptableDistance && entity.posY <= (totemY + 2.0 + (acceptableDistance/3.0)) && entity.posY >= ((totemY + 2.0))) {
                         // Update totem location if it was too far away
