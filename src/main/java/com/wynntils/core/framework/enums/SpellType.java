@@ -36,23 +36,10 @@ public enum SpellType {
     THIRD_SPELL(ClassType.NONE, 3, "3rd Spell", "3rd Spell", 0, 0),
     FOURTH_SPELL(ClassType.NONE, 4, "4th Spell", "4th Spell", 0, 0);
 
-    static final int[][] MANA_REDUCTION_LEVELS = new int[][] {
-        {},
-        {68},
-        {41, 105},
-        {29, 68, 129},
-        {23, 51, 89, 147},
-        {19, 41, 68, 105},
-        {16, 34, 55, 82, 118},
-        {14, 29, 47, 68, 94, 129},
-        {12, 26, 41, 58, 79, 105, 139},
-        {11, 23, 36, 51, 68, 89, 114, 147}
-    };
 
     private ClassType classType;
     private int spellNumber;
     private String name;
-    private String reskinnedName;
     private int startManaCost;
     private int gradeManaChange;
 
@@ -66,10 +53,6 @@ public enum SpellType {
 
     public String getName() {
         return name;
-    }
-
-    public String getReskinned() {
-        return reskinnedName;
     }
 
     public int getUnlockLevel(int grade) {
@@ -99,39 +82,17 @@ public enum SpellType {
         return startManaCost + (getGrade(level)-1) * gradeManaChange;
     }
 
-    public int getManaCost(int level, int intelligenceLevel) {
-        int manaReduction = 0;
-        for (int i : MANA_REDUCTION_LEVELS[getUnreducedManaCost(level)-1]) {
-            if (intelligenceLevel >= i) {
-                manaReduction++;
-            } else {
-                break;
-            }
-        }
-        return getUnreducedManaCost(level) - manaReduction;
-    }
-
-    public int getNextManaReduction(int level, int intelligenceLevel) {
-        for (int i : MANA_REDUCTION_LEVELS[getUnreducedManaCost(level)-1]) {
-            if (i > intelligenceLevel) {
-                return i;
-            }
-        }
-        return Integer.MAX_VALUE;
-    }
-
     SpellType(ClassType classType, int spellNumber, String name, String reskinnedName, int startManaCost, int gradeManaChange) {
         this.classType = classType;
         this.spellNumber = spellNumber;
         this.name = name;
-        this.reskinnedName = reskinnedName;
         this.startManaCost = startManaCost;
         this.gradeManaChange = gradeManaChange;
     }
 
     public static SpellType fromName(String name) {
         for (SpellType spellType : values()) {
-            if (name.matches("^" + spellType.name + "\\b.*") || name.matches("^" + spellType.reskinnedName + "\\b.*")) {
+            if (name.matches("^" + spellType.name + "\\b.*")) {
                 return spellType;
             }
         }
