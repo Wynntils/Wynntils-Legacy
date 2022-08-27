@@ -58,6 +58,7 @@ public class MapModule extends Module {
         registerSettings(MapConfig.class);
         registerSettings(MapConfig.Textures.class);
         registerSettings(MapConfig.Waypoints.class);
+        registerSettings(MapConfig.BeaconBeams.class);
         registerSettings(MapConfig.WorldMap.class);
         registerSettings(MapConfig.LootRun.class);
         registerSettings(MapConfig.Telemetry.class);

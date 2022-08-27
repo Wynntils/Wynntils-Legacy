@@ -20,11 +20,13 @@ import com.wynntils.modules.utilities.managers.MountHorseManager;
 import com.wynntils.modules.utilities.overlays.hud.*;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.enums.ItemTier;
+import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.network.play.server.*;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -35,6 +37,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -860,6 +863,13 @@ public class OverlayEvents implements Listener {
         ConsumableTimerOverlay.removeBasicTimer(totemName);
         totemName = "Totem " + e.getLocation();
         ConsumableTimerOverlay.addBasicTimer(totemName, e.getTime());
+
+        // Glowing totems
+        List<EntityArmorStand> possibleTotems = McIf.mc().world.getEntitiesWithinAABB(EntityArmorStand.class,
+                new AxisAlignedBB(e.getLocation().getX(), e.getLocation().getY(), e.getLocation().getZ(), e.getLocation().getX(), e.getLocation().getY(), e.getLocation().getZ()));
+        possibleTotems.forEach(entityArmorStand -> {
+            if (entityArmorStand.getDisplayName().getUnformattedText().equals("Armor Stand")) entityArmorStand.setGlowing(true);
+        });
     }
 
     @SubscribeEvent

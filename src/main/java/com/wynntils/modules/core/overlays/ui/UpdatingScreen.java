@@ -10,6 +10,7 @@ import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
 
+import com.wynntils.webapi.WebManager;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.math.MathHelper;
@@ -71,7 +72,7 @@ public class UpdatingScreen extends GuiScreen {
     private void downloadUpdate(String url, File directory, String jarName) {
         try {
             HttpURLConnection st = (HttpURLConnection) new URL(url).openConnection();
-            st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+            st.setRequestProperty("User-Agent", WebManager.getUserAgent());
             st.connect();
 
             if (st.getResponseCode() != HttpURLConnection.HTTP_OK) {
