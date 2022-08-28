@@ -91,12 +91,6 @@ public class SkillPointOverlay implements Listener {
     }
 
     @SubscribeEvent
-    public void onDrawScreen(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
-        if (!Reference.onWorld) return;
-        if (!Utils.isCharacterInfoPage(e.getGui())) return;
-    }
-
-    @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawScreen.Pre e) {
         if (!e.getGui().getLowerInv().getName().equals("Character Info") || !e.getGui().getLowerInv().getStackInSlot(4).getDisplayName().equals("§2§lSkill Crystal")) return;
         Matcher spMatcher = REMAINING_SKILLPOINT_PATTERN.matcher(ItemUtils.getStringLore(e.getGui().getLowerInv().getStackInSlot(4)));
