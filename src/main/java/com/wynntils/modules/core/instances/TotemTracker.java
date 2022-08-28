@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 public class TotemTracker {
-    private static final Pattern SHAMAN_TOTEM_TIMER = Pattern.compile("^§c([0-9][0-9]?)s$");
+    private static final Pattern SHAMAN_TOTEM_TIMER = Pattern.compile("§c(\\d+)s");
     private static final Pattern MOB_TOTEM_NAME = Pattern.compile("^§f§l(.*)'s§6§l Mob Totem$");
     private static final Pattern MOB_TOTEM_TIMER = Pattern.compile("^§c§l([0-9]+):([0-9]+)$");
 
@@ -189,36 +189,35 @@ public class TotemTracker {
 
         if (totemState == TotemState.PREPARING || totemState == TotemState.SUMMONED || totemState == TotemState.ACTIVE) {
             Matcher m = SHAMAN_TOTEM_TIMER.matcher(name);
-            if (m.find()) {
+            if (m.matches()) {
                 // We got a armor stand with a timer nametag
-                if (totemState == TotemState.PREPARING ) {
+                if (totemState == TotemState.PREPARING) {
                     // Widen search range until found
                     double acceptableDistance = 3.0 + (System.currentTimeMillis() - totemPreparedTimestamp) / 1000d;
                     double distanceXZ = Math.abs(entity.posX - totemX) + Math.abs(entity.posZ - totemZ);
-                    if (distanceXZ < acceptableDistance && entity.posY <= (totemY + 2.0 + (acceptableDistance/3.0)) && entity.posY >= ((totemY + 2.0))) {
+                    if (distanceXZ < acceptableDistance && entity.posY <= (totemY + 2.0 + (acceptableDistance / 3.0)) && entity.posY >= totemY) {
                         // Update totem location if it was too far away
                         totemX = entity.posX;
-                        totemY = entity.posY - 2.0;
+                        totemY = entity.posY - 3.0;
                         totemZ = entity.posZ;
                     }
+                } else if (totemState == TotemState.ACTIVE) {
+                    totemX = entity.posX;
+                    totemY = entity.posY - 3.0;
+                    totemZ = entity.posZ;
                 }
 
-                double distanceXZ = Math.abs(entity.posX - totemX) + Math.abs(entity.posZ - totemZ);
-                if (distanceXZ < 1.0 && entity.posY <= (totemY + 3.0) && entity.posY >= ((totemY + 2.0))) {
-                    // ... and it's close to our totem; regard this as our timer
-                    int time = Integer.parseInt(m.group(1));
-
-                    if (totemTime == -1) {
-                        totemTime = time;
-                        totemState = TotemState.ACTIVE;
-                        postEvent(new SpellEvent.TotemActivated(totemTime, new Location(totemX, totemY, totemZ)));
-                    } else if (time != totemTime) {
-                        if (time > totemTime) {
-                            // Timer restarted using uproot
-                            postEvent(new SpellEvent.TotemRenewed(time, new Location(totemX, totemY, totemZ)));
-                        }
-                        totemTime = time;
+                int time = Integer.parseInt(m.group(1));
+                if (totemTime == -1) {
+                    totemTime = time;
+                    totemState = TotemState.ACTIVE;
+                    postEvent(new SpellEvent.TotemActivated(totemTime, new Location(totemX, totemY, totemZ)));
+                } else if (time != totemTime) {
+                    if (time > totemTime) {
+                        // Timer restarted using uproot
+                        postEvent(new SpellEvent.TotemRenewed(time, new Location(totemX, totemY, totemZ)));
                     }
+                    totemTime = time;
                 }
                 return;
             }
