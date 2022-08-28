@@ -42,6 +42,7 @@ public class UtilitiesModule extends Module {
         registerEvents(new ItemLevelOverlay());
         registerEvents(new HotbarChargeOverlay());
         registerEvents(new SkillPointOverlay());
+        registerEvents(new TradeMarketOverlay());
         registerEvents(new ItemLockOverlay());
         registerEvents(new FavoriteTradesOverlay());
         registerEvents(new MenuButtonsOverlay());

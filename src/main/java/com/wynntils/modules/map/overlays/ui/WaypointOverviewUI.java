@@ -34,6 +34,7 @@ public class WaypointOverviewUI extends GuiScreen {
     private GuiButton exitBtn;
     private GuiButton exportBtn;
     private GuiButton importBtn;
+    private GuiButton editGroupsBtn;
     private List<GuiButton> editButtons = new ArrayList<>();
 
     private List<String> exportText;
@@ -76,6 +77,9 @@ public class WaypointOverviewUI extends GuiScreen {
 
         this.buttonList.add(exportBtn = new GuiButton(8, this.width/2 + 26, this.height - 45, 50, 20, "EXPORT"));
         this.buttonList.add(importBtn = new GuiButton(9, this.width/2 - 76, this.height - 45, 50, 20, "IMPORT"));
+
+        String text = "EDIT BEACON GROUPS";
+        this.buttonList.add(editGroupsBtn = new GuiButton(10, 10, 10, fontRenderer.getStringWidth(text) + 25, 20, text));
 
         onWaypointChange();
     }
@@ -256,6 +260,8 @@ public class WaypointOverviewUI extends GuiScreen {
                 "Import  ==  SUCCESS",
                 String.format("Imported %d waypoints", newWaypoints)
             );
+        } else if (b == editGroupsBtn) {
+            McIf.mc().displayGuiScreen(new WaypointBeaconGroupMenu(this));
         } else if (b.id < 0) {
             // A group button
             if (b == nextGroupBtn) {
