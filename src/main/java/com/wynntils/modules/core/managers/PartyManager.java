@@ -20,6 +20,8 @@ public class PartyManager {
     private static final Pattern PROMOTE_PATTERN = Pattern.compile("Successfully promoted (.+) to party leader!");
 
     private static final CommandResponse listExecutor = new CommandResponse("/party list", (matcher, text) -> {
+        PlayerInfo.get(SocialData.class).resetPlayerParty();
+
         String entire = matcher.group(0);
         if (entire.contains("You must be in")) {  // clears the party
             PlayerInfo.get(SocialData.class).getPlayerParty().removeMember(McIf.player().getName());
