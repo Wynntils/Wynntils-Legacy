@@ -34,6 +34,7 @@ public class WaypointOverviewUI extends GuiScreen {
     private GuiButton exitBtn;
     private GuiButton exportBtn;
     private GuiButton importBtn;
+    private GuiButton editGroupsBtn;
     private List<GuiButton> editButtons = new ArrayList<>();
 
     private List<String> exportText;
@@ -51,13 +52,16 @@ public class WaypointOverviewUI extends GuiScreen {
     private int group = ungroupedIndex;
     private int groupWidth;
     private int groupScroll = 0;
+    private int spacingMultiplier = MapConfig.Waypoints.INSTANCE.waypointSpacing.getSpacingMultiplier();
+    private boolean decreasedSize = (spacingMultiplier == 14);
 
     @Override
     public void initGui() {
         super.initGui();
         waypoints = MapConfig.Waypoints.INSTANCE.waypoints;
 
-        pageHeight = (this.height - 100) / 25;
+        pageHeight = (this.height - 100) / spacingMultiplier;
+
         this.buttonList.add(nextPageBtn = new GuiButton(0, this.width/2 + 2, this.height - 45, 20, 20, ">"));
         this.buttonList.add(previousPageBtn = new GuiButton(1, this.width/2 - 22, this.height - 45, 20, 20, "<"));
         this.buttonList.add(exitBtn = new GuiButton(2, this.width - 40, 20, 20, 20, TextFormatting.RED + "X"));
@@ -73,6 +77,9 @@ public class WaypointOverviewUI extends GuiScreen {
 
         this.buttonList.add(exportBtn = new GuiButton(8, this.width/2 + 26, this.height - 45, 50, 20, "EXPORT"));
         this.buttonList.add(importBtn = new GuiButton(9, this.width/2 - 76, this.height - 45, 50, 20, "IMPORT"));
+
+        String text = "EDIT BEACON GROUPS";
+        this.buttonList.add(editGroupsBtn = new GuiButton(10, 10, 10, fontRenderer.getStringWidth(text) + 25, 20, text));
 
         onWaypointChange();
     }
@@ -104,7 +111,7 @@ public class WaypointOverviewUI extends GuiScreen {
             }
 
             MapWaypointIcon wpIcon = new MapWaypointIcon(wp);
-            float centreZ = 64 + 25 * i;
+            float centreZ = 64 + spacingMultiplier * i;
             float multiplier = 9f / Math.max(wpIcon.getSizeX(), wpIcon.getSizeZ());
             wpIcon.renderAt(renderer, this.width / 2f - 151, centreZ, multiplier, 1);
 
@@ -123,10 +130,10 @@ public class WaypointOverviewUI extends GuiScreen {
                 GuiButtonImageBetter.setColour(false, true);
             }
 
-            fontRenderer.drawString(wp.getName(), this.width/2 - 130, 60 + 25 * i, colour);
-            drawCenteredString(fontRenderer, Integer.toString((int) wp.getX()), this.width/2 - 15, 60 + 25 * i, colour);
-            drawCenteredString(fontRenderer, Integer.toString((int) wp.getZ()), this.width/2 + 40, 60 + 25 * i, colour);
-            drawCenteredString(fontRenderer, Integer.toString((int) wp.getY()), this.width/2 + 80, 60 + 25 * i, colour);
+            fontRenderer.drawString(wp.getName(), this.width/2 - 130, 60 + spacingMultiplier * i, colour);
+            drawCenteredString(fontRenderer, Integer.toString((int) wp.getX()), this.width/2 - 15, 60 + spacingMultiplier * i, colour);
+            drawCenteredString(fontRenderer, Integer.toString((int) wp.getZ()), this.width/2 + 40, 60 + spacingMultiplier * i, colour);
+            drawCenteredString(fontRenderer, Integer.toString((int) wp.getY()), this.width/2 + 80, 60 + spacingMultiplier * i, colour);
 
             if (hidden) {
                 drawHorizontalLine(this.width / 2 - 135, this.width / 2 + 95, (int) centreZ - 1, colour | 0xFF000000);
@@ -145,8 +152,8 @@ public class WaypointOverviewUI extends GuiScreen {
     // Returns the index of the waypoint (on the current page) that is being hovered over (Or -1 if no hover)
     private int getHoveredWaypoint(int mouseX, int mouseY) {
         if (this.width / 2f - 205 <= mouseX && mouseX <= this.width / 2f - 170) {
-            int i = Math.round((mouseY - 64) / 25f);
-            int offset = mouseY - 25 * i - 64;
+            int i = Math.round((mouseY - 64) / (float)spacingMultiplier);
+            int offset = mouseY - spacingMultiplier * i - 64;
             if (i >= 0 && -10 <= offset && offset <= 10 && i < Math.min(pageHeight, getWaypoints().size() - pageHeight * page)) {
                 return i;
             }
@@ -253,6 +260,8 @@ public class WaypointOverviewUI extends GuiScreen {
                 "Import  ==  SUCCESS",
                 String.format("Imported %d waypoints", newWaypoints)
             );
+        } else if (b == editGroupsBtn) {
+            McIf.mc().displayGuiScreen(new WaypointBeaconGroupMenu(this));
         } else if (b.id < 0) {
             // A group button
             if (b == nextGroupBtn) {
@@ -389,10 +398,10 @@ public class WaypointOverviewUI extends GuiScreen {
         editButtons.clear();
         int groupShift = group == ungroupedIndex ? 20 : 0;
         for (int i = 0, lim = Math.min(pageHeight, getWaypoints().size() - pageHeight * page); i < lim; i++) {
-            editButtons.add(new GuiButton(3 + 10 * i, this.width/2 + 85 + groupShift, 54 + 25 * i, 40, 20,"Edit..."));
-            editButtons.add(new GuiButton(5 + 10 * i, this.width/2 + 130 + groupShift, 54 + 25 * i, 40, 20, "Delete"));
-            GuiButton up = new GuiButton(6 + 10 * i, this.width/2 + 172 + groupShift, 54 + 25 * i, 9, 9, "\u028C");
-            GuiButton down = new GuiButton(7 + 10 * i, this.width/2 + 172 + groupShift, 65 + 25 * i, 9, 9, "v");
+            editButtons.add(new GuiButton(3 + 10 * i, this.width/2 + 85 + groupShift, 54 + spacingMultiplier * i, (int)Math.round(40.0 * (decreasedSize ? 0.7 : 1.0)), (int)Math.round(20.0 * (decreasedSize ? 0.6 : 1.0)),"Edit"));
+            editButtons.add(new GuiButton(5 + 10 * i, this.width/2 + 130 + groupShift, 54 + spacingMultiplier * i, (int)Math.round(40.0 * (decreasedSize ? 0.9 : 1.0)), (int)Math.round(20.0 * (decreasedSize ? 0.6 : 1.0)), "Delete"));
+            GuiButton up = new GuiButton(6 + 10 * i, this.width/2 + 172 + groupShift, 54 + spacingMultiplier * i, (int)Math.round(9 * (decreasedSize ? 0.75 : 1.0)), (int)Math.round(9 * (decreasedSize ? 0.75 : 1.0)), "\u028C");
+            GuiButton down = new GuiButton(7 + 10 * i, this.width/2 + 172 + groupShift, 54 + spacingMultiplier * i + (int)Math.round(9 * (decreasedSize ? 0.75 : 1.0)), (int)Math.round(9 * (decreasedSize ? 0.75 : 1.0)), (int)Math.round(9 * (decreasedSize ? 0.75 : 1.0)), "\u1D5B"); // This is the ᵛ character
             up.enabled = i != 0 || previousPageBtn.enabled;
             down.enabled = i == pageHeight - 1 ? nextPageBtn.enabled : i != lim - 1;
             editButtons.add(up);

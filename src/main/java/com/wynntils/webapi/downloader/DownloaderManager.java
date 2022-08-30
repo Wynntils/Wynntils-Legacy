@@ -5,6 +5,7 @@
 package com.wynntils.webapi.downloader;
 
 import com.wynntils.Reference;
+import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.downloader.enums.DownloadAction;
 import com.wynntils.webapi.downloader.enums.DownloadPhase;
 
@@ -87,7 +88,7 @@ public class DownloaderManager {
         new Thread(() -> {
             try {
                 HttpURLConnection st = (HttpURLConnection)new URL(pf.getUrl()).openConnection();
-                st.setRequestProperty("User-Agent", "Mozilla/5.0 (Macintosh; U; Intel Mac OS X 10.4; en-US; rv:1.9.2.2) Gecko/20100316 Firefox/3.6.2");
+                st.setRequestProperty("User-Agent", WebManager.getUserAgent());
                 st.connect();
 
                 if (st.getResponseCode() != HttpURLConnection.HTTP_OK) {

@@ -235,7 +235,7 @@ public class Request {
 
     public HttpURLConnection establishConnection() throws IOException {
         HttpURLConnection st = (HttpURLConnection) new URL(url).openConnection();
-        st.setRequestProperty("User-Agent", "WynntilsClient v" + Reference.VERSION + "/B" + Reference.BUILD_NUMBER);
+        st.setRequestProperty("User-Agent", WebManager.getUserAgent());
         if (WebManager.isAthenaOnline()) {
             st.setRequestProperty("authToken", WebManager.getAccount().getToken());
         }

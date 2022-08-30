@@ -12,6 +12,7 @@ import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
+import com.wynntils.modules.map.instances.LootRunPath;
 import com.wynntils.modules.map.instances.PathWaypointProfile;
 import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.map.managers.LootRunManager;
@@ -184,6 +185,16 @@ public class MapConfig extends SettingsClass {
 
     }
 
+    @SettingsInfo(name = "beacon_beams", displayPath = "Map/Beacon Beams")
+    public static class BeaconBeams extends SettingsClass {
+        public static BeaconBeams INSTANCE;
+        @Setting(upload = true)
+        public Map<WaypointProfile.WaypointType, Boolean> groupSettings = new HashMap<>();
+
+        @Setting(displayName = "Show Beacon Beams", description = "Should beacon beams be displayed?\nDisabling this will globally disable beacon beams for all waypoints/groups.")
+        public boolean showBeaconBeams = true;
+    }
+
     @SettingsInfo(name = "waypoints", displayPath = "Map/Waypoints")
     public static class Waypoints extends SettingsClass {
         public static Waypoints INSTANCE;
@@ -229,6 +240,21 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Compass Marker", description = "Should a marker appear on the map where the compass location is set to?")
         public boolean compassMarker = true;
 
+        @Setting(displayName = "Waypoint Menu Spacing", description = "What amount of space should be between each set of values in the waypoint menu")
+        public WaypointSpacing waypointSpacing = WaypointSpacing.MEDIUM;
+
+        public enum WaypointSpacing {
+            SMALL(14),
+            MEDIUM(20),
+            LARGE(25);
+
+            private int spacingMultiplier;
+            public int getSpacingMultiplier() { return spacingMultiplier; }
+            WaypointSpacing(int spacingMultiplier) {
+                this.spacingMultiplier = spacingMultiplier;
+            }
+        }
+
         @Override
         public void saveSettings(Module m) {
             super.saveSettings(m);
@@ -262,6 +288,9 @@ public class MapConfig extends SettingsClass {
         @Setting(displayName = "Show Paths as Rainbow", description = "Should paths be shown in the colours of a rainbow?", order = 4)
         public boolean rainbowLootRun = false;
 
+        @Setting(displayName = "Differentiate Path Colors", description = "Should paths be colored differently if multiple lootruns are active?\nDoes not work with rainbow paths enabled", order = 4)
+        public boolean differentColorsMultipleLootruns = true;
+
         @Setting(displayName = "Rainbow Path Transitioning", description = "How many blocks should paths be shown in a colour before transitioning to a different colour?", order = 5)
         @Setting.Limitations.IntLimit(min = 1, max = 500)
         public int cycleDistance = 20;
@@ -274,8 +303,8 @@ public class MapConfig extends SettingsClass {
 
         @Override
         public void onSettingChanged(String name) {
-            if (name.equals("cycleDistance") && LootRunManager.getActivePath() != null) {
-                LootRunManager.getActivePath().changed();
+            if (name.equals("cycleDistance") && !LootRunManager.getActivePaths().isEmpty()) {
+                LootRunManager.getActivePaths().values().forEach(LootRunPath::changed);
             }
         }
 
