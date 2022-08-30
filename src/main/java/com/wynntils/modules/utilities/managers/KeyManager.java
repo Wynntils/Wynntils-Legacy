@@ -10,6 +10,7 @@ import com.wynntils.core.framework.enums.wynntils.WynntilsConflictContext;
 import com.wynntils.core.framework.instances.KeyHolder;
 import com.wynntils.core.framework.settings.ui.SettingsUI;
 import com.wynntils.modules.core.CoreModule;
+import com.wynntils.modules.core.managers.PartyManager;
 import com.wynntils.modules.map.overlays.MiniMapOverlay;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
@@ -83,7 +84,10 @@ public class KeyManager {
 
         showLevelOverlayKey = UtilitiesModule.getModule().registerKeyBinding("Show Item Level Overlay", Keyboard.KEY_LCONTROL, "Wynntils", WynntilsConflictContext.AMBIENT, true, () -> {});
 
-        CoreModule.getModule().registerKeyBinding("Open Party Management UI", Keyboard.KEY_RBRACKET, "Wynntils", KeyConflictContext.IN_GAME, true, () -> McIf.mc().displayGuiScreen(new PartyManagementUI()));
+        CoreModule.getModule().registerKeyBinding("Open Party Management UI", Keyboard.KEY_RBRACKET, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
+            PartyManager.handlePartyList(); // Refresh list just before opening
+            McIf.mc().displayGuiScreen(new PartyManagementUI());
+        });
 
         RegisterCustomCommandKeybinds();
     }
