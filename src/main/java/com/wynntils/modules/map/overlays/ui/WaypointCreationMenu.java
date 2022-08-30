@@ -17,11 +17,11 @@ import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.map.instances.WaypointProfile.WaypointType;
 import com.wynntils.modules.map.overlays.objects.MapWaypointIcon;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiLabel;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 
 import java.io.IOException;
@@ -44,6 +44,8 @@ public class WaypointCreationMenu extends UI {
     private GuiButton cancelButton;
     private GuiButton waypointTypeNext;
     private GuiButton waypointTypeBack;
+    private GuiButton toggleBeaconBeam;
+    private GuiLabel beaconLabel;
 
     private boolean isUpdatingExisting;
     private WaypointProfile wp;
@@ -52,6 +54,7 @@ public class WaypointCreationMenu extends UI {
 
     private int initialX;
     private int initialZ;
+    private boolean beaconBeam = false;
 
     private WaypointCreationMenuState state;
 
@@ -99,6 +102,9 @@ public class WaypointCreationMenu extends UI {
         buttonList.add(saveButton = new GuiButton(103, this.width/2 + 25, saveButtonHeight, 45, 18, "Save"));
         saveButton.enabled = false;
 
+        beaconBeam = wp != null && wp.shouldShowBeaconBeam();
+        buttonList.add(toggleBeaconBeam = new GuiButton(104, this.width/2 - 150, this.height/2 + 10, 18, 18, beaconBeam ? TextFormatting.GREEN + "✔" : TextFormatting.RED + "X"));
+
         xCoordField.setText(Integer.toString(initialX));
         zCoordField.setText(Integer.toString(initialZ));
         yCoordField.setText(Integer.toString(McIf.player().getPosition().getY()));
@@ -111,8 +117,10 @@ public class WaypointCreationMenu extends UI {
         yCoordFieldLabel.addLine("Y");
         zCoordFieldLabel = new GuiLabel(McIf.mc().fontRenderer, 3, this.width/2 - 15, this.height/2 - 24, 40, 10, 0xFFFFFF);
         zCoordFieldLabel.addLine("Z");
-        coordinatesLabel = new GuiLabel(McIf.mc().fontRenderer, 3, this.width/2 - 80, this.height/2 - 41, 40, 10, 0xFFFFFF);
+        coordinatesLabel = new GuiLabel(McIf.mc().fontRenderer, 4, this.width/2 - 80, this.height/2 - 41, 40, 10, 0xFFFFFF);
         coordinatesLabel.addLine("Coordinates:");
+        beaconLabel = new GuiLabel(McIf.mc().fontRenderer, 5, this.width/2 - 160, this.height/2 - 1, 40, 10, 0xFFFFFF);
+        beaconLabel.addLine("Beacon beam:");
 
         boolean returning = state != null;  // true if reusing gui (i.e., returning from another gui)
 
@@ -223,6 +231,7 @@ public class WaypointCreationMenu extends UI {
         yCoordFieldLabel.drawLabel(McIf.mc(), mouseX, mouseY);
         zCoordFieldLabel.drawLabel(McIf.mc(), mouseX, mouseY);
         coordinatesLabel.drawLabel(McIf.mc(), mouseX, mouseY);
+        beaconLabel.drawLabel(McIf.mc(), mouseX, mouseY);
 
         fontRenderer.drawString("Icon:", this.width / 2.0f - 80, this.height / 2.0f, 0xFFFFFF, true);
         fontRenderer.drawString("Colour:", this.width / 2.0f, this.height / 2.0f, 0xFFFFFF, true);
@@ -268,7 +277,7 @@ public class WaypointCreationMenu extends UI {
             WaypointProfile newWp = new WaypointProfile(
                     nameField.getText().trim(),
                     Integer.parseInt(xCoordField.getText().trim()), Integer.parseInt(yCoordField.getText().trim()), Integer.parseInt(zCoordField.getText().trim()),
-                    getColor(), getWaypointType(), getZoomNeeded()
+                    getColor(), getWaypointType(), getZoomNeeded(), beaconBeam
             );
             if (isUpdatingExisting) {
                 newWp.setGroup(wp.getGroup());
@@ -291,6 +300,9 @@ public class WaypointCreationMenu extends UI {
             setZoomNeeded(MapWaypointIcon.ANY_ZOOM);
         } else if (button == hiddenButton) {
             setZoomNeeded(MapWaypointIcon.HIDDEN_ZOOM);
+        } else if (button == toggleBeaconBeam) {
+            beaconBeam = !beaconBeam;
+            toggleBeaconBeam.displayString = beaconBeam ? TextFormatting.GREEN + "✔" : TextFormatting.RED + "X";
         }
     }
 
