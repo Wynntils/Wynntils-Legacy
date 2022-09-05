@@ -155,7 +155,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void classDialog(GuiOverlapEvent.ChestOverlap.DrawGuiContainerBackgroundLayer e) {
-        if (!e.getGui().getLowerInv().getName().contains("Select a Class")) return;
+        if (!e.getGui().getLowerInv().getName().contains("Select a Character")) return;
         if (!afkProtectionActivated) return;
 
         InventoryBasic inv = (InventoryBasic) e.getGui().getLowerInv();
