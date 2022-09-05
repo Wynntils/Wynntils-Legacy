@@ -7,6 +7,7 @@ package com.wynntils.modules.utilities.overlays;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
+import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
@@ -314,15 +315,15 @@ public class OverlayEvents implements Listener {
                 return;
             }
             // WARRIOR
-            else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has given you 10% resistance\\.")) {
-                GameUpdateOverlay.queueMessage(AQUA + "+10% resistance " + GRAY + "(" + formattedText.split(" ")[0].replace(RESET.toString(), "") + GRAY + ")");
+            else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has given you 20% resistance\\.")) {
+                GameUpdateOverlay.queueMessage(AQUA + "+20% resistance " + GRAY + "(" + formattedText.split(" ")[0].replace(RESET.toString(), "") + GRAY + ")");
                 if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
                     ConsumableTimerOverlay.addBasicTimer("War Scream", 30);
                 }
                 e.setCanceled(true);
                 return;
-            } else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has given you 10% resistance and 30% strength\\.")) {
-                GameUpdateOverlay.queueMessage(AQUA + "+10% resistance " + GRAY + "& " + AQUA + "+30% strength " + GRAY + "(" + formattedText.split(" ")[0].replace(RESET.toString(), "") + GRAY + ")");
+            } else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has given you 20% resistance and 30% strength\\.")) {
+                GameUpdateOverlay.queueMessage(AQUA + "+20% resistance " + GRAY + "& " + AQUA + "+30% strength " + GRAY + "(" + formattedText.split(" ")[0].replace(RESET.toString(), "") + GRAY + ")");
                 if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
                     ConsumableTimerOverlay.addBasicTimer("Ragnarokkr", 30);
                 }
@@ -839,7 +840,7 @@ public class OverlayEvents implements Listener {
                 }, 5);
             }
             // When removing invisibility from assassin
-            else if (potion == MobEffects.WITHER) {
+            else if (potion == MobEffects.WITHER && PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ASSASSIN) {
                 isVanished = false; // So it won't skip
                 ConsumableTimerOverlay.removeBasicTimer("Vanish");
                 // Bit of a delay until Wynn starts the cooldown timer; we need to copy it
