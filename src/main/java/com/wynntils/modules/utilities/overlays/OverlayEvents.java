@@ -785,7 +785,7 @@ public class OverlayEvents implements Listener {
             timerName = "Speed boost";
         }
         // if the effect is invisibility timer is "Vanish"
-        else if (potion == MobEffects.WITHER && PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ASSASSIN && effect.getDuration() < 200) {
+        else if ((potion == MobEffects.WITHER || potion == MobEffects.INVISIBILITY) && PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ASSASSIN && effect.getDuration() < 200) {
             timerName = "Vanish";
             isVanished = true;
         } else {
@@ -823,7 +823,7 @@ public class OverlayEvents implements Listener {
                 }, 5);
             }
             // When removing invisibility from assassin
-            else if (potion == MobEffects.WITHER && PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ASSASSIN) {
+            else if ((potion == MobEffects.WITHER || potion == MobEffects.INVISIBILITY) && PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ASSASSIN) {
                 isVanished = false; // So it won't skip
                 ConsumableTimerOverlay.removeBasicTimer("Vanish");
                 // Bit of a delay until Wynn starts the cooldown timer; we need to copy it
