@@ -325,7 +325,7 @@ public class OverlayEvents implements Listener {
             } else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has given you 20% resistance and 30% strength\\.")) {
                 GameUpdateOverlay.queueMessage(AQUA + "+20% resistance " + GRAY + "& " + AQUA + "+30% strength " + GRAY + "(" + formattedText.split(" ")[0].replace(RESET.toString(), "") + GRAY + ")");
                 if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
-                    ConsumableTimerOverlay.addBasicTimer("Ragnarokkr", 30);
+                    ConsumableTimerOverlay.addBasicTimer("Ragnarokkr", 120);
                 }
                 e.setCanceled(true);
                 return;
@@ -785,26 +785,9 @@ public class OverlayEvents implements Listener {
             timerName = "Speed boost";
         }
         // if the effect is invisibility timer is "Vanish"
-        else if (potion == MobEffects.WITHER && effect.getDuration() < 200) {
+        else if (potion == MobEffects.WITHER && PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ASSASSIN && effect.getDuration() < 200) {
             timerName = "Vanish";
             isVanished = true;
-        }
-        // if the player isn't invisible (didn't use vanish)
-        else if (potion == MobEffects.RESISTANCE) { // War Scream effect
-            if (isVanished) { // remove the vanish indicator
-                isVanished = false;
-                return;
-            }
-
-            if (effect.getAmplifier() == 0) {
-                timerName = "War Scream I";
-            } else if (effect.getAmplifier() == 1) {
-                timerName = "War Scream II";
-            } else if (effect.getAmplifier() == 2) {
-                timerName = "War Scream III";
-            } else {
-                return;
-            }
         } else {
             return;
         }
