@@ -438,7 +438,7 @@ public class ClientEvents implements Listener {
      */
     @SubscribeEvent
     public void changeClass(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
-        if (!e.getGui().getLowerInv().getName().contains("Select a Class")) return;
+        if (!e.getGui().getLowerInv().getName().contains("Select a Character")) return;
 
         if (e.getMouseButton() != 0
             || e.getSlotIn() == null
