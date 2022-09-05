@@ -785,9 +785,15 @@ public class OverlayEvents implements Listener {
             timerName = "Speed boost";
         }
         // if the effect is invisibility timer is "Vanish"
-        else if ((potion == MobEffects.WITHER || potion == MobEffects.INVISIBILITY) && PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ASSASSIN && effect.getDuration() < 200) {
+        else if (potion == MobEffects.WITHER && PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ASSASSIN && effect.getDuration() < 200) {
             timerName = "Vanish";
             isVanished = true;
+        } else if (potion == MobEffects.INVISIBILITY && PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ASSASSIN) {
+            // Special case for weathered; the invisibility effect does not have a duration
+            isVanished = true;
+            McIf.mc().addScheduledTask(() ->
+                    ConsumableTimerOverlay.addBasicTimer("Vanish", 5));
+            return;
         } else {
             return;
         }
