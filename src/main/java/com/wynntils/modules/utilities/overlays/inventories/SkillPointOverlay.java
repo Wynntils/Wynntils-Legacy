@@ -34,13 +34,11 @@ import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.InventoryBasic;
-import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketClickWindow;
 import net.minecraft.network.play.server.SPacketCustomSound;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
-import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.input.Keyboard;
 
@@ -119,6 +117,9 @@ public class SkillPointOverlay implements Listener {
 
             String lore = TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(stack));
             String name = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName());
+
+            if(lore.contains("Crafted by") || name.contains("%]")) continue;
+
             int value;
             if (name.contains("Profession [")) { // Profession Icons
                 int start = lore.indexOf("Level: ") + 7;
@@ -135,10 +136,9 @@ public class SkillPointOverlay implements Listener {
                 int min = Integer.parseInt(m2.group(1));
                 int max = Integer.parseInt(m2.group(2));
                 value = Math.round((max + min) / 2.0f);
-            } else if (name.contains("Daily Rewards")) { //Daily Reward Multiplier
+            } else if (name.contains("Daily Rewards")) {//Daily Reward Multiplier
                 int start = lore.indexOf("Streak Multiplier: ") + 19;
                 int end = lore.indexOf("Log in everyday to");
-                if(end == -1) continue;
                 value = Integer.parseInt(lore.substring(start, end));
             } else continue;
             stack.setCount(value <= 0 ? 1 : value);
