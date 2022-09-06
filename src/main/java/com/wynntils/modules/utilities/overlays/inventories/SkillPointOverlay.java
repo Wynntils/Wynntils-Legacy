@@ -136,7 +136,7 @@ public class SkillPointOverlay implements Listener {
                 int min = Integer.parseInt(m2.group(1));
                 int max = Integer.parseInt(m2.group(2));
                 value = Math.round((max + min) / 2.0f);
-            } else if (name.contains("Daily Rewards")) {//Daily Reward Multiplier
+            } else if (name.contains("Daily Rewards")) { //Daily Reward Multiplier
                 int start = lore.indexOf("Streak Multiplier: ") + 19;
                 int end = lore.indexOf("Log in everyday to");
                 value = Integer.parseInt(lore.substring(start, end));
