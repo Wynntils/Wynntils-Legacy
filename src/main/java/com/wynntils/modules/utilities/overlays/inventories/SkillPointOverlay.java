@@ -118,7 +118,7 @@ public class SkillPointOverlay implements Listener {
             String lore = TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(stack));
             String name = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName());
 
-            if(lore.contains("Crafted by") || name.contains("%]")) continue;
+            if(lore.contains("Crafted by")) continue;
 
             int value;
             if (name.contains("Profession [")) { // Profession Icons
