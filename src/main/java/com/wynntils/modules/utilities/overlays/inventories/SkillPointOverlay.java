@@ -138,6 +138,7 @@ public class SkillPointOverlay implements Listener {
             } else if (name.contains("Daily Rewards")) { //Daily Reward Multiplier
                 int start = lore.indexOf("Streak Multiplier: ") + 19;
                 int end = lore.indexOf("Log in everyday to");
+                if(end == -1) continue;
                 value = Integer.parseInt(lore.substring(start, end));
             } else continue;
             stack.setCount(value <= 0 ? 1 : value);
