@@ -157,7 +157,16 @@ public class ItemIdentificationOverlay implements Listener {
                     if (requiredClass != null) {
                         longName = spell.forOtherClass(requiredClass).getName() + " Spell Cost";
                     } else {
-                        longName = spell.forOtherClass(PlayerInfo.get(CharacterData.class).getCurrentClass()).getGenericAndSpecificName() + " Cost";
+                        longName = spell.forOtherClass(PlayerInfo.get(CharacterData.class).getCurrentClass()).getName() + " Cost";
+                    }
+                }
+
+                { // Manually change some lore labels to be consistent with vanilla in 2.0
+                    // See override on line 451, this file
+                    if (longName.equals("Main Attack Neutral Damage")) {
+                        longName = "Main Attack Damage";
+                    } else if (longName.equals("Neutral Spell Damage")) {
+                        longName = "Spell Damage";
                     }
                 }
 
@@ -439,6 +448,14 @@ public class ItemIdentificationOverlay implements Listener {
                         }
 
                         String shortIdName = toShortIdName(idName, isRaw);
+
+                        // This converts the new 2.0+ id names into the old 1.20 names to be used with Athena
+                        if (shortIdName.equals("rawMainAttackDamage")) {
+                            shortIdName = "rawMainAttackNeutralDamage";
+                        } else if (shortIdName.equals("rawSpellDamage")) {
+                            shortIdName = "rawNeutralSpellDamage";
+                        }
+
                         if (stars != 0) {
                             idTag.setInteger(shortIdName + "*", stars);
                         }

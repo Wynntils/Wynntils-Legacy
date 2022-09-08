@@ -290,7 +290,7 @@ public class GearViewerUI extends FakeGuiContainer {
                     if (requiredClass != null) {
                         longName = spell.forOtherClass(requiredClass).getName() + " Spell Cost";
                     } else {
-                        longName = spell.forOtherClass(PlayerInfo.get(CharacterData.class).getCurrentClass()).getGenericAndSpecificName() + " Cost";
+                        longName = spell.forOtherClass(PlayerInfo.get(CharacterData.class).getCurrentClass()).getName() + " Cost";
                     }
                 }
 

@@ -16,6 +16,7 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.AssetsTexture;
 import com.wynntils.core.framework.rendering.textures.Texture;
 import com.wynntils.core.utils.ItemUtils;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.renderer.GlStateManager;
@@ -61,29 +62,35 @@ public class EmeraldCountOverlay implements Listener {
 
         IInventory inventory = e.getGui().getUpperInv();
 
-        boolean emeraldPouch = containerName.equals("EmeraldÀÀÀÀPouchÀ");
+        boolean isInEmeraldPouch = containerName.equals("EmeraldÀÀÀÀPouchÀ");
 
         //Only render text and icons if there are emeralds in the container, fixes a lot of overlapping issues in containers, where emerald count is irrelevant, but we don't filter them manually
         int containerMoneyAmount = ItemUtils.countMoney(container);
         int inventoryMoneyAmount = ItemUtils.countMoney(inventory);
 
         if (UtilitiesConfig.INSTANCE.emeraldCountText) {
-            if (UtilitiesConfig.INSTANCE.emeraldCountChest && containerMoneyAmount > 0)
+            if (UtilitiesConfig.INSTANCE.emeraldCountChest && containerMoneyAmount > 0) {
                 drawTextMoneyAmount(170, 5, containerMoneyAmount, renderer, textColor);
-            if (UtilitiesConfig.INSTANCE.emeraldCountInventory)
+            }
+            if (UtilitiesConfig.INSTANCE.emeraldCountInventory) {
                 drawTextMoneyAmount(170, 2 * (container.getSizeInventory() + 10), inventoryMoneyAmount, renderer, textColor);
+            }
             return;
         }
 
         // Don't draw emerald count for single row containers like the trade market ones, draw it for emerald pouch though
-        if (UtilitiesConfig.INSTANCE.emeraldCountChest && containerMoneyAmount > 0 && (container.getSizeInventory() > 9 || emeraldPouch))
+        if (UtilitiesConfig.INSTANCE.emeraldCountChest && containerMoneyAmount > 0 && (container.getSizeInventory() > 9 || isInEmeraldPouch)) {
             drawIconsMoneyAmount(178, 0, containerMoneyAmount, renderer);
-        if (UtilitiesConfig.INSTANCE.emeraldCountInventory && !emeraldPouch)
-            drawIconsMoneyAmount(178, 2 * (container.getSizeInventory() + 10), inventoryMoneyAmount, renderer);
+        }
+        if (UtilitiesConfig.INSTANCE.emeraldCountInventory && !isInEmeraldPouch) {
+            // Draw the count a bit lower in the compass menu
+            int inventoryYoffset = Utils.isCharacterInfoPage(e.getGui()) ? 21 : 10;
+            drawIconsMoneyAmount(178, 2 * (container.getSizeInventory() + inventoryYoffset), inventoryMoneyAmount, renderer);
+        }
     }
 
     @SubscribeEvent
-    public void onChestInventory(GuiOverlapEvent.HorseOverlap.DrawGuiContainerForegroundLayer e) {
+    public void onHorseInventory(GuiOverlapEvent.HorseOverlap.DrawGuiContainerForegroundLayer e) {
         if (!Reference.onWorld || !UtilitiesConfig.INSTANCE.emeraldCountInventory) return;
 
         IInventory lowerInv = e.getGui().getLowerInv();

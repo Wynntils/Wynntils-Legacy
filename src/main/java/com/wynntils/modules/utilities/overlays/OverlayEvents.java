@@ -7,6 +7,7 @@ package com.wynntils.modules.utilities.overlays;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
+import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
@@ -25,6 +26,7 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.network.play.server.*;
 import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -297,10 +299,10 @@ public class OverlayEvents implements Listener {
                 e.setCanceled(true);
                 return;
             // ARCHER
-            } else if (messageText.equals("+3 minutes speed boost.")) {
-                GameUpdateOverlay.queueMessage(AQUA + "+3 minutes " + GRAY + "speed boost");
+            } else if (messageText.equals("+2 minutes speed boost.")) {
+                GameUpdateOverlay.queueMessage(AQUA + "+2 minutes " + GRAY + "speed boost");
                 if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
-                    ConsumableTimerOverlay.addBasicTimer("Speed boost", 3 * 60);
+                    ConsumableTimerOverlay.addBasicTimer("Speed boost", 2 * 60);
                 }
                 e.setCanceled(true);
                 return;
@@ -313,33 +315,26 @@ public class OverlayEvents implements Listener {
                 return;
             }
             // WARRIOR
-            else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has given you 10% resistance\\.")) {
-                GameUpdateOverlay.queueMessage(AQUA + "+10% resistance " + GRAY + "(" + formattedText.split(" ")[0].replace(RESET.toString(), "") + GRAY + ")");
+            else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has given you 20% resistance\\.")) {
+                GameUpdateOverlay.queueMessage(AQUA + "+20% resistance " + GRAY + "(" + formattedText.split(" ")[0].replace(RESET.toString(), "") + GRAY + ")");
                 if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
-                    ConsumableTimerOverlay.addBasicTimer("War Scream I", 2 * 60);
+                    ConsumableTimerOverlay.addBasicTimer("War Scream", 30);
                 }
                 e.setCanceled(true);
                 return;
-            } else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has given you 15% resistance\\.")) {
-                GameUpdateOverlay.queueMessage(AQUA + "+15% resistance " + GRAY + "(" + formattedText.split(" ")[0].replace(RESET.toString(), "") + GRAY + ")");
+            } else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has given you 20% resistance and 30% strength\\.")) {
+                GameUpdateOverlay.queueMessage(AQUA + "+20% resistance " + GRAY + "& " + AQUA + "+30% strength " + GRAY + "(" + formattedText.split(" ")[0].replace(RESET.toString(), "") + GRAY + ")");
                 if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
-                    ConsumableTimerOverlay.addBasicTimer("War Scream II", 3 * 60);
-                }
-                e.setCanceled(true);
-                return;
-            } else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has given you 20% resistance and 10% strength\\.")) {
-                GameUpdateOverlay.queueMessage(AQUA + "+20% resistance " + GRAY + "& " + AQUA + "+10% strength " + GRAY + "(" + formattedText.split(" ")[0].replace(RESET.toString(), "") + GRAY + ")");
-                if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
-                    ConsumableTimerOverlay.addBasicTimer("War Scream III", 4 * 60);
+                    ConsumableTimerOverlay.addBasicTimer("Ragnarokkr", 120);
                 }
                 e.setCanceled(true);
                 return;
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectOther) {
-            if (messageText.matches("You have \\d+ unused Skill Points! Right-Click while holding your compass to use them!")) {
+            if (messageText.matches("You have \\d+ unused Skill Points and \\d+ unused Ability Points! Right-Click while holding your compass to use them")) {
                 String[] res = messageText.split(" ");
-                GameUpdateOverlay.queueMessage(YELLOW + res[2] + GOLD + " skill points available.");
+                GameUpdateOverlay.queueMessage(YELLOW + res[2] + GOLD + " skill points and " + YELLOW + res[7] + GOLD + " ability points available.");
                 e.setCanceled(true);
                 return;
             } else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} is now level \\d+")) {
@@ -405,7 +400,7 @@ public class OverlayEvents implements Listener {
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectClass) {
-            if (messageText.equals("Select a class! Each class is saved individually across all servers, you can come back at any time with /class and select another class!")) {
+            if (messageText.equals("Select a character! Each character is saved individually across all servers, you can come back at any time with /class and select another character!")) {
                 GameUpdateOverlay.queueMessage(GOLD + "Select a character!");
                 e.setCanceled(true);
                 return;
@@ -790,26 +785,15 @@ public class OverlayEvents implements Listener {
             timerName = "Speed boost";
         }
         // if the effect is invisibility timer is "Vanish"
-        else if (potion == MobEffects.INVISIBILITY && effect.getDuration() < 200) {
+        else if (potion == MobEffects.WITHER && PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ASSASSIN && effect.getDuration() < 200) {
             timerName = "Vanish";
             isVanished = true;
-        }
-        // if the player isn't invisible (didn't use vanish)
-        else if (potion == MobEffects.RESISTANCE) { // War Scream effect
-            if (isVanished) { // remove the vanish indicator
-                isVanished = false;
-                return;
-            }
-
-            if (effect.getAmplifier() == 0) {
-                timerName = "War Scream I";
-            } else if (effect.getAmplifier() == 1) {
-                timerName = "War Scream II";
-            } else if (effect.getAmplifier() == 2) {
-                timerName = "War Scream III";
-            } else {
-                return;
-            }
+        } else if (potion == MobEffects.INVISIBILITY && PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ASSASSIN) {
+            // Special case for weathered; the invisibility effect does not have a duration
+            isVanished = true;
+            McIf.mc().addScheduledTask(() ->
+                    ConsumableTimerOverlay.addBasicTimer("Vanish", 5));
+            return;
         } else {
             return;
         }
@@ -831,12 +815,25 @@ public class OverlayEvents implements Listener {
 
             // When removing speed boost from (archer)
             if (potion == MobEffects.SPEED) {
+                // Remove old speed boost timer
                 ConsumableTimerOverlay.removeBasicTimer("Speed boost");
+
+                new Delay(() -> {
+                    for (PotionEffect pe : McIf.player().getActivePotionEffects()) {
+                        if (pe.getPotion().getName().equals("effect.moveSpeed")) {
+                            // pe.getDuration() is in ticks, so we divide by 20 to get seconds
+                            ConsumableTimerOverlay.addBasicTimer("Speed boost", pe.getDuration() / 20);
+                            return;
+                        }
+                    }
+                }, 5);
             }
             // When removing invisibility from assassin
-            else if (potion == MobEffects.INVISIBILITY) {
+            else if ((potion == MobEffects.WITHER || potion == MobEffects.INVISIBILITY) && PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ASSASSIN) {
                 isVanished = false; // So it won't skip
                 ConsumableTimerOverlay.removeBasicTimer("Vanish");
+                // Bit of a delay until Wynn starts the cooldown timer; we need to copy it
+                new Delay(() -> ConsumableTimerOverlay.addBasicTimer("Vanish Cooldown", 5), 9);
             }
         });
     }
