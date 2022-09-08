@@ -1,0 +1,75 @@
+name: Publish Release
+on:
+  push:
+    branches:
+      - development
+      - production
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Create changelog
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          preset: conventionalcommits
+          release-count: 1
+          pre-commit: .pre-commit.js
+          create-summary: true
+          version-file: ./version.json
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v2
+        with:
+          distribution: "temurin"
+          java-version: 8
+          cache: "gradle"
+
+      - name: Build
+        run: ./gradlew build
+
+      - name: Rename output file
+        run: mv build/libs/wynntils-*.jar build/Wynntils-v${{ steps.changelog.outputs.version }}.jar
+
+      - name: Set Release or Beta
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        id: release_or_beta
+        run: |
+          if [$GITHUB_REF_NAME == 'production']
+          then
+            echo ::set-output name=is_release::release
+            echo ::set-output name=pre_release::false
+          else
+            echo ::set-output name=is_release::beta
+            echo ::set-output name=pre_release::true
+          fi
+
+      - name: Create release
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/Wynntils-v${{ steps.changelog.outputs.version }}.jar
+          tag_name: ${{ steps.changelog.outputs.tag }}
+          prerelease: ${{ steps.release_or_beta.outputs.pre_release }}
+          body: ${{ steps.changelog.outputs.clean_changelog }}
+
+      - name: Upload to CurseForge
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        uses: itsmeow/curseforge-upload@v3
+        with:
+          file_path: build/Wynntils-v${{ steps.changelog.outputs.version }}.jar
+          game_endpoint: minecraft
+          # Minecraft 1.12.2: 6756
+          # Forge 14.23.5.2859: 8867
+          # Java 8: 4458
+          game_versions: "Minecraft 1.12:1.12.2,java:Java 8,Forge"
+          project_id: 303451
+          token: ${{ secrets.CF_API_TOKEN }}
+          release_type: ${{ steps.release_or_beta.outputs.is_release }}
+          display_name: Wynntils-${{ steps.changelog.outputs.tag }}
+          changelog_type: markdown
+          changelog: ${{ steps.changelog.outputs.changelog }}
