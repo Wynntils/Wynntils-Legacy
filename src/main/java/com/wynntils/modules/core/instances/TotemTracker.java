@@ -10,6 +10,7 @@ import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.SpellEvent;
 import com.wynntils.core.events.custom.WynnClassChangeEvent;
 import com.wynntils.core.framework.FrameworkManager;
+import com.wynntils.core.framework.enums.SpellType;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
 import net.minecraft.entity.Entity;
@@ -151,11 +152,11 @@ public class TotemTracker {
     }
 
     public void onTotemSpellCast(SpellEvent.Cast e) {
-        if (e.getSpell().equals("Totem")) {
+        if (SpellType.TOTEM.getName().equals(e.getSpell())) {
             totemCastTimestamp = System.currentTimeMillis();
             heldWeaponSlot = McIf.player().inventory.currentItem;
             checkTotemSummoned();
-        } else if (e.getSpell().equals("Uproot")) {
+        } else if (SpellType.UPROOT.getName().equals(e.getSpell())) {
             totemCastTimestamp = System.currentTimeMillis();
         }
     }
