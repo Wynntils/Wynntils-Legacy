@@ -1,0 +1,40 @@
+name: "Upload to CurseForge"
+on:
+  workflow_run:
+    workflows: ["Java CI with Gradle"]
+    branches:
+      - production
+      - development
+    types:
+      - completed
+jobs:
+  upload:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set Release or Beta
+        id: release_or_beta
+        run: |
+          if [$GITHUB_REF_NAME == 'production']
+          then
+            echo "::set-output name=is_release::release"
+          else
+            echo "::set-output name=is_release::beta"
+          fi
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v3.0.0
+        with:
+          name: build
+          path: build\libs
+      - name: "Upload to CurseForge"
+        uses: itsmeow/curseforge-upload@v3
+        with:
+          file_path: "build/libs/wynntils-*.jar"
+          game_endpoint: "minecraft"
+          # Minecraft 1.12.2: 6756
+          # Forge 14.23.5.2859: 8867
+          # Java 8: 4458
+          game_versions: "6756,8867,4458"
+          project_id: "303451"
+          token: "${{ secrets.CF_API_TOKEN }}"
+          release_type: "${{ steps.release_or_beta.outputs.is_release }}"
