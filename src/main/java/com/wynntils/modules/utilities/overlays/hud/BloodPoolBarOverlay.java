@@ -18,10 +18,10 @@ import com.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-public class HealthBarOverlay extends Overlay {
+public class BloodPoolBarOverlay extends Overlay {
 
-    public HealthBarOverlay() {
-        super("Health Bar", 81, 21, true, 0.5f, 1.0f, -10, -38, OverlayGrowFrom.MIDDLE_RIGHT, RenderGameOverlayEvent.ElementType.HEALTH);
+    public BloodPoolBarOverlay() {
+        super("Acolyte (Blood Pool) Bar", 81, 21, true, 0.43f, 1.03f, -10, -38, OverlayGrowFrom.BOTTOM_RIGHT, RenderGameOverlayEvent.ElementType.HEALTH);
     }
 
     @Setting(displayName = "Flip", description = "Should the filling of the bar be flipped?")
@@ -31,27 +31,26 @@ public class HealthBarOverlay extends Overlay {
     public Pair<Integer, Integer> textPositionOffset = new Pair<>(-40, -10);
 
     @Setting(displayName = "Text Name", description = "What should the colour of the text be?")
-    public CustomColor textColor = CommonColors.RED;
+    public CustomColor textColor = CommonColors.DARK_RED;
 
-    private static float health = 0.0f;
+    private static float bloodPool = 0.0f;
 
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
-        if (!(visible = (get(CharacterData.class).getCurrentHealth() != -1 && !Reference.onLobby))) return;
+        if (!(visible = (get(CharacterData.class).getCurrentBloodPool() != -1 && !Reference.onLobby))) return;
 
-        if (OverlayConfig.Health.INSTANCE.animated > 0.0f && OverlayConfig.Health.INSTANCE.animated < 10.0f
-                && !(health >= (float) get(CharacterData.class).getMaxHealth())) {
-            health -= (OverlayConfig.Health.INSTANCE.animated * 0.1f)
-                    * (health - (float) get(CharacterData.class).getCurrentHealth());
+        if (OverlayConfig.BloodPool.INSTANCE.animated > 0.0f && OverlayConfig.BloodPool.INSTANCE.animated < 10.0f && !(bloodPool >= (float) get(CharacterData.class).getMaxBloodPool())) {
+            bloodPool -= (OverlayConfig.BloodPool.INSTANCE.animated * 0.1f) * (bloodPool - (float) get(CharacterData.class).getCurrentBloodPool());
         } else {
-            health = get(CharacterData.class).getCurrentHealth();
+            bloodPool = get(CharacterData.class).getCurrentBloodPool();
         }
     }
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
-        switch (OverlayConfig.Health.INSTANCE.healthTexture) {
-            case Wynn: drawDefaultBar(-1, 8, 0, 17, textColor);
+        switch (OverlayConfig.BloodPool.INSTANCE.bloodPoolTexture) {
+            case Wynn:
+                drawDefaultBar(-1, 8, 0, 17, textColor);
                 break;
             case a: drawDefaultBar(-1, 7, 18, 33, textColor);
                 break;
@@ -60,8 +59,6 @@ public class HealthBarOverlay extends Overlay {
             case c: drawDefaultBar(-1, 7, 52, 67, textColor);
                 break;
             case d: drawDefaultBar(-1, 7, 68, 83, textColor);
-                break;
-            case Grune: drawDefaultBar(-1, 7, 84, 99, CommonColors.GREEN);
                 break;
             case Aether:
                 drawDefaultBar(-1, 7, 100, 115, textColor);
@@ -79,12 +76,12 @@ public class HealthBarOverlay extends Overlay {
     }
 
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2, CustomColor cc) {
-        if (OverlayConfig.Health.INSTANCE.overlayRotation == OverlayRotation.NORMAL) {
-            drawString(get(CharacterData.class).getCurrentHealth() + " ❤ " + get(CharacterData.class).getMaxHealth(), textPositionOffset.a  - (81-OverlayConfig.Health.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Health.INSTANCE.textShadow);
+        if (OverlayConfig.BloodPool.INSTANCE.overlayRotation == OverlayRotation.NORMAL) {
+            drawString(get(CharacterData.class).getCurrentBloodPool() + " ⚕ " + get(CharacterData.class).getMaxBloodPool(), textPositionOffset.a  - (81-OverlayConfig.BloodPool.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.BloodPool.INSTANCE.textShadow);
         }
 
-        rotate(OverlayConfig.Health.INSTANCE.overlayRotation.getDegrees());
-        drawProgressBar(Textures.Overlays.bars_health, -OverlayConfig.Health.INSTANCE.width, y1, 0, y2, 0, ty1, 81, ty2, (flip ? -health : health) / (float) get(CharacterData.class).getMaxHealth());
+        rotate(OverlayConfig.BloodPool.INSTANCE.overlayRotation.getDegrees());
+        drawProgressBar(Textures.Overlays.bars_health, -OverlayConfig.BloodPool.INSTANCE.width, y1, 0, y2, 0, ty1, 81, ty2, (flip ? -bloodPool : bloodPool) / (float) get(CharacterData.class).getMaxBloodPool());
     }
 
 }

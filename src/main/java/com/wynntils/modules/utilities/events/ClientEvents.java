@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.events;
 
+import com.google.common.eventbus.Subscribe;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
@@ -16,6 +17,7 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
@@ -35,7 +37,6 @@ import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.*;
 import com.wynntils.modules.utilities.overlays.hud.ConsumableTimerOverlay;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
-import com.wynntils.modules.utilities.overlays.hud.ManaTimerOverlay;
 import com.wynntils.modules.utilities.overlays.ui.FakeGuiContainer;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
@@ -154,7 +155,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void classDialog(GuiOverlapEvent.ChestOverlap.DrawGuiContainerBackgroundLayer e) {
-        if (!e.getGui().getLowerInv().getName().contains("Select a Class")) return;
+        if (!e.getGui().getLowerInv().getName().contains("Select a Character")) return;
         if (!afkProtectionActivated) return;
 
         InventoryBasic inv = (InventoryBasic) e.getGui().getLowerInv();
@@ -367,10 +368,6 @@ public class ClientEvents implements Listener {
         String msg = McIf.getUnformattedText(e.getMessage());
         if (msg.startsWith("[Daily Rewards:")) {
             DailyReminderManager.openedDaily();
-        }
-
-        if (msg.startsWith("[!] Darkness has been enabled.") || msg.startsWith("[!] Twilight has been enabled.")) {
-            ManaTimerOverlay.isTimeFrozen = true;
         }
     }
 
@@ -694,14 +691,15 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void clickOnInventory(GuiOverlapEvent.InventoryOverlap.HandleMouseClick e) {
         if (!Reference.onWorld) return;
+        if (e.getGui().getSlotUnderMouse() == null) return;
 
         // Dungeon key middle click functionality
-        if (e.getMouseButton() == 2 && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().getHasStack()) {
+        if (e.getMouseButton() == 2 && e.getGui().getSlotUnderMouse().getHasStack()) {
             ItemStack is = e.getGui().getSlotUnderMouse().getStack();
             handleDungeonKeyMClick(is);
         }
 
-        if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().inventory instanceof InventoryPlayer) {
+        if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse().inventory instanceof InventoryPlayer) {
             if ((!EmeraldPouchManager.isEmeraldPouch(e.getGui().getSlotUnderMouse().getStack()) || e.getMouseButton() == 0) && checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex())) {
                 e.setCanceled(true);
                 return;
@@ -796,8 +794,21 @@ public class ClientEvents implements Listener {
             }
         }
 
-        if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().inventory instanceof InventoryPlayer) {
-            if ((!EmeraldPouchManager.isEmeraldPouch(e.getGui().getSlotUnderMouse().getStack()) || e.getMouseButton() == 0) && checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex())) {
+        // Prevent clicking on locked slot functionality
+        if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null &&
+                e.getGui().getSlotUnderMouse().inventory instanceof InventoryPlayer) {
+
+            // Allow left-clicks on locked emerald pouches to open them
+            if (EmeraldPouchManager.isEmeraldPouch(e.getGui().getSlotUnderMouse().getStack()) && e.getMouseButton() == 0) {
+                return;
+            }
+
+            // Do not block any clicks on the ability tree page
+            if (Utils.isAbilityTreePage(e.getGui())) {
+                return;
+            }
+
+            if (checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex())) {
                 e.setCanceled(true);
             }
         }
@@ -987,7 +998,6 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void onWorldLeave(WynnWorldEvent.Leave e) {
         ConsumableTimerOverlay.clearConsumables(true); // clear consumable list
-        ManaTimerOverlay.isTimeFrozen = false;
     }
 
     // tooltip scroller
@@ -1200,6 +1210,15 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
+    public void onAbilityTreePathHovered(ItemTooltipEvent e) {
+        if (!(Utils.isAbilityTreePage(McIf.mc().currentScreen))) return;
+        if (e.getItemStack().getItem() != Items.STONE_AXE) return;
+        if (!e.getItemStack().getDisplayName().equals("")) return;
+        // This event is not cancellable, this will do instead
+        e.getToolTip().clear();
+    }
+
+    @SubscribeEvent
     public void onIngredientPouchHovered(ItemTooltipEvent e) {
         ItemStack itemStack = e.getItemStack();
         if (!itemStack.getDisplayName().equals("§6Ingredient Pouch")) return; // Is item Ingredient Pouch
@@ -1318,5 +1337,14 @@ public class ClientEvents implements Listener {
         nbt.setBoolean("groupedItems", true);
         nbt.setIntArray("originalItems", originalSlots);
         ItemUtils.replaceLore(itemStack, groupedItemLore);
+    }
+
+    @SubscribeEvent
+    public void onHeldItemChange(PacketEvent<CPacketHeldItemChange> e) {
+        // scrolling off the weapon resets elemental special
+        CharacterData cd = get(CharacterData.class);
+        if (cd.getElementalSpecialString().isEmpty()) return;
+        // delay because ActionBar update may be late
+        new Delay(() -> cd.setElementalSpecialString(""), 4);
     }
 }

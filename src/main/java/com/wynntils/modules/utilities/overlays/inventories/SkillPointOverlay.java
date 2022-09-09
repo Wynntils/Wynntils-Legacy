@@ -11,9 +11,6 @@ import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.RenderEvent;
 import com.wynntils.core.framework.enums.MouseButton;
 import com.wynntils.core.framework.enums.SkillPoint;
-import com.wynntils.core.framework.enums.SpellType;
-import com.wynntils.core.framework.instances.PlayerInfo;
-import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -34,24 +31,27 @@ import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.ClickType;
+import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketClickWindow;
 import net.minecraft.network.play.server.SPacketCustomSound;
+import net.minecraft.network.play.server.SPacketSetSlot;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import org.lwjgl.input.Keyboard;
 
 import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Collections;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SkillPointOverlay implements Listener {
 
-    private static final Pattern SKILLPOINT_PATTERN = Pattern.compile(".*?([-0-9]+)(?=\\spoints).*");
+    private static final Pattern REMAINING_SKILLPOINT_PATTERN = Pattern.compile("§7You have §a(\\d+)§7 skill points§7to be distributed");
+    private static final Pattern PLAYER_INFO_PAGE_PATTERN = Pattern.compile("§fPage (\\d+)§7");
+    private static final Pattern SKILLPOINT_PATTERN = Pattern.compile(".*?§7(\\d+) points");
     private static final Pattern[] MODIFIER_PATTERNS = {
             Pattern.compile("- Strength: ([-+0-9]+)"),
             Pattern.compile("- Dexterity: ([-+0-9]+)"),
@@ -60,8 +60,9 @@ public class SkillPointOverlay implements Listener {
             Pattern.compile("- Agility: ([-+0-9]+)"),
     };
 
-    private static final int SAVE_SLOT = 1;
-    private static final int LOAD_SLOT = 3;
+    private static final int SAVE_SLOT = 3;
+    private static final int LOAD_SLOT = 5;
+    private static final int PLAYER_INFO_SLOT = 7;
 
     private final ScreenRenderer renderer = new ScreenRenderer();
 
@@ -73,38 +74,69 @@ public class SkillPointOverlay implements Listener {
     private boolean itemsLoaded = false;
     private float buildPercentage = 0.0f;
 
+    private int[] currentSp = new int[5];
+    private boolean gotInitialSp = false;
+
+    private boolean skipResettingSkillPointData = false;
+    private boolean waitingForSkillPointData = false;
+    private Container playerInfoInventorySlots = null;
+    private int[] gearSkillPoints = new int[5];
+
     @SubscribeEvent
     public void onChestClose(GuiOverlapEvent.ChestOverlap.GuiClosed e) {
         nameField = null;
         itemsLoaded = false;
+        skipResettingSkillPointData = false;
 
         Keyboard.enableRepeatEvents(false);
     }
 
     @SubscribeEvent
-    public void onDrawScreen(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
-        if (!Reference.onWorld) return;
-        if (!Utils.isCharacterInfoPage(e.getGui())) return;
-
-        addManaTables(e.getGui());
-    }
-
-    @SubscribeEvent
     public void onChestInventory(GuiOverlapEvent.ChestOverlap.DrawScreen.Pre e) {
-        Matcher m = Utils.CHAR_INFO_PAGE_TITLE.matcher(e.getGui().getLowerInv().getName());
-        if (!m.find()) return;
+        if (!e.getGui().getLowerInv().getName().equals("Character Info") || !e.getGui().getLowerInv().getStackInSlot(4).getDisplayName().equals("§2§lSkill Crystal")) return;
+        Matcher spMatcher = REMAINING_SKILLPOINT_PATTERN.matcher(ItemUtils.getStringLore(e.getGui().getLowerInv().getStackInSlot(4)));
+        if (!spMatcher.find()) return;
+        skillPointsRemaining = Integer.parseInt(spMatcher.group(1));
 
-        skillPointsRemaining = Integer.parseInt(m.group(1));
+        if (!skipResettingSkillPointData && !waitingForSkillPointData) {
+            gearSkillPoints = new int[5];
+            skipResettingSkillPointData = true;
+            // Here, we will need to start going through the player information pages as we don't want to continuously do this
+            // while builds are loading - that creates noise and requires many delays as we wait for the information
+            // Additionally, gear should not be able to change while we are loading a skill point build
+            // We need to check the first page here manually, since SPacketSetSlot will only detect updates
+            ItemStack itemStack = e.getGui().getLowerInv().getStackInSlot(PLAYER_INFO_SLOT);
+
+            // Add the skill point gear info into gearSkillPoints
+            addGearSPModifiers(itemStack);
+            int pages = (int) ItemUtils.getStringLore(itemStack).chars().filter(num -> num == '■').count();
+            if (pages > 0) { // 0 because no squares present when only 1 page
+                // More than one page, set variables and send click
+                waitingForSkillPointData = true;
+                playerInfoInventorySlots = e.getGui().inventorySlots;
+                CPacketClickWindow packet = new CPacketClickWindow(e.getGui().inventorySlots.windowId, PLAYER_INFO_SLOT, 0,
+                        ClickType.PICKUP, itemStack, playerInfoInventorySlots.getNextTransactionID(McIf.player().inventory));
+                McIf.mc().getConnection().sendPacket(packet);
+            }
+        }
 
         // load/save loadout items
         ItemStack save = new ItemStack(Items.WRITABLE_BOOK);
         save.setStackDisplayName(TextFormatting.GOLD + "[>] Save current loadout");
-        ItemUtils.replaceLore(save, Arrays.asList(TextFormatting.GRAY + "Allows you to save this loadout with a name."));
+        ItemUtils.replaceLore(save, (waitingForSkillPointData) ?
+                Arrays.asList(TextFormatting.GRAY + "Allows you to save this loadout with a name.",
+                        TextFormatting.RED + "Waiting for skill point data...",
+                        TextFormatting.GRAY + "Click on your player head if this is not loading.") :
+                Collections.singletonList(TextFormatting.GRAY + "Allows you to save this loadout with a name."));
         e.getGui().inventorySlots.getSlot(SAVE_SLOT).putStack(save);
 
         ItemStack load = new ItemStack(Items.ENCHANTED_BOOK);
         load.setStackDisplayName(TextFormatting.GOLD + "[>] Load loadout");
-        ItemUtils.replaceLore(load, Arrays.asList(TextFormatting.GRAY + "Allows you to load one of your saved loadouts."));
+        ItemUtils.replaceLore(load, (waitingForSkillPointData) ?
+                Arrays.asList(TextFormatting.GRAY + "Allows you to load one of your saved loadouts.",
+                        TextFormatting.RED + "Waiting for skill point data...",
+                        TextFormatting.GRAY + "Click on your player head if this is not loading.") :
+                Collections.singletonList(TextFormatting.GRAY + "Allows you to load one of your saved loadouts."));
         e.getGui().inventorySlots.getSlot(LOAD_SLOT).putStack(load);
 
         // skill point allocating
@@ -165,19 +197,62 @@ public class SkillPointOverlay implements Listener {
         if (!Reference.onWorld || !Utils.isCharacterInfoPage(e.getGui())) return;
 
         if (e.getSlotId() == SAVE_SLOT) {
+            e.setCanceled(true);
+            if (waitingForSkillPointData) return;
             nameField = new GuiTextFieldWynn(200, McIf.mc().fontRenderer, 8, 5, 130, 10);
             nameField.setFocused(true);
             nameField.setText("Enter build name");
             Keyboard.enableRepeatEvents(true);
-
-            e.setCanceled(true);
+            skipResettingSkillPointData = true;
         } else if (e.getSlotId() == LOAD_SLOT) {
+            e.setCanceled(true);
+            if (waitingForSkillPointData) return;
             McIf.mc().displayGuiScreen(
                     new SkillPointLoadoutUI(this, McIf.mc().currentScreen,
-                            new InventoryBasic("Skill Points Loadouts", false, 54))
-            );
+                            new InventoryBasic("Skill Points Loadouts", false, 54)));
+            skipResettingSkillPointData = true;
+        }
+    }
 
-            e.setCanceled(true);
+    @SubscribeEvent
+    public void onPlayerInfoUpdated(PacketEvent<SPacketSetSlot> e) {
+        ItemStack newStack = e.getPacket().getStack();
+        if (!waitingForSkillPointData || !newStack.hasDisplayName() || !newStack.getDisplayName().endsWith("'s Info")) return;
+
+        // Send click, either to progress pages or to put pages back to 1
+        // Done immediately so Wynn has time to respond
+        CPacketClickWindow packet = new CPacketClickWindow(e.getPacket().getWindowId(), PLAYER_INFO_SLOT, 0,
+                ClickType.PICKUP, newStack, playerInfoInventorySlots.getNextTransactionID(McIf.player().inventory));
+        McIf.mc().getConnection().sendPacket(packet);
+
+        // Get current page, should be 2 or higher since we triggered first page in onSlotClicked
+        Matcher pageMatcher = PLAYER_INFO_PAGE_PATTERN.matcher(ItemUtils.getStringLore(newStack));
+        int currentPage = 0;
+        if (pageMatcher.find()) {
+            currentPage = Integer.parseInt(pageMatcher.group(1));
+        }
+        if (currentPage < 2) return;
+
+        // Get total pages
+        int pages = (int) ItemUtils.getStringLore(newStack).chars().filter(num -> num == '■').count();
+        // Add the skill point gear info into gearSkillPoints
+        addGearSPModifiers(newStack);
+        // Determine if we need to go the next page:
+        if (currentPage == pages) { // page == max pages now
+            waitingForSkillPointData = false;
+        }
+    }
+
+    private void addGearSPModifiers(ItemStack itemStack) {
+        for (String line : ItemUtils.getLore(itemStack)) {
+            String unformattedLine = TextFormatting.getTextWithoutFormattingCodes(line);
+            for (int i = 0; i < 5; i++) {
+                Matcher m = MODIFIER_PATTERNS[i].matcher(unformattedLine);
+                if (!m.find()) continue;
+
+                int modifier = Integer.parseInt(m.group(1));
+                gearSkillPoints[i] += modifier;
+            }
         }
     }
 
@@ -237,85 +312,17 @@ public class SkillPointOverlay implements Listener {
         e.setCanceled(true);
     }
 
-    private String remainingLevelsDescription(int remainingLevels) {
-        return "" + TextFormatting.GOLD + remainingLevels + TextFormatting.GRAY + " point" + (remainingLevels == 1 ? "" : "s");
-    }
-
-    private int getIntelligencePoints(ItemStack stack) {
-        String lore = TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(stack));
-        int start = lore.indexOf(" points ") - 3;
-
-        return (start < 0) ? 0 : Integer.parseInt(lore.substring(start, start + 3).trim());
-    }
-
-    public void addManaTables(ChestReplacer gui) {
-        ItemStack stack = gui.getLowerInv().getStackInSlot(11);
-        if (stack.isEmpty() || !stack.hasDisplayName()) return; // display name also checks for tag compound
-
-        int intelligencePoints = getIntelligencePoints(stack);
-        if (stack.getTagCompound().hasKey("wynntilsAnalyzed")) return;
-
-        int closestUpgradeLevel = Integer.MAX_VALUE;
-        int level = PlayerInfo.get(CharacterData.class).getLevel();
-
-        List<String> newLore = new LinkedList<>();
-
-        for (int j = 0; j < 4; j++) {
-            SpellType spell = SpellType.forClass(PlayerInfo.get(CharacterData.class).getCurrentClass(), j + 1);
-
-            if (spell.getUnlockLevel(1) <= level) {
-                int nextUpgrade = spell.getNextManaReduction(level, intelligencePoints);
-                if (nextUpgrade < closestUpgradeLevel) {
-                    closestUpgradeLevel = nextUpgrade;
-                }
-                int manaCost = spell.getManaCost(level, intelligencePoints);
-                String spellName = PlayerInfo.get(CharacterData.class).isReskinned() ? spell.getReskinned() : spell.getName();
-                String spellInfo = TextFormatting.LIGHT_PURPLE + spellName + " Spell: " + TextFormatting.AQUA
-                        + "-" + manaCost + " ✺";
-                if (nextUpgrade < Integer.MAX_VALUE) {
-                    spellInfo += TextFormatting.GRAY + " (-" + (manaCost - 1) + " ✺ in "
-                            + remainingLevelsDescription(nextUpgrade - intelligencePoints) + ")";
-                }
-                newLore.add(spellInfo);
-            }
-        }
-
-        List<String> loreTag = new LinkedList<>(ItemUtils.getLore(stack));
-        if (closestUpgradeLevel < Integer.MAX_VALUE) {
-            loreTag.add("");
-            loreTag.add(TextFormatting.GRAY + "Next upgrade: At " + TextFormatting.WHITE + closestUpgradeLevel
-                    + TextFormatting.GRAY + " points (in " + remainingLevelsDescription(closestUpgradeLevel - intelligencePoints) + ")");
-        }
-
-        loreTag.add("");
-        loreTag.addAll(newLore);
-
-        ItemUtils.replaceLore(stack, loreTag);
-        stack.getTagCompound().setBoolean("wynntilsAnalyzed", true);
-    }
 
     private SkillPointAllocation getSkillPoints(ChestReplacer gui) {
         int[] sp = new int[5];
 
         for (int i = 0; i < 5; i++) {
-            ItemStack stack = gui.getLowerInv().getStackInSlot(i + 9); // sp indicators start at 9
-            Matcher m = SKILLPOINT_PATTERN.matcher(TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(stack)));
+            ItemStack stack = gui.getLowerInv().getStackInSlot(11 + i); // sp indicators start at 11
+            Matcher m = SKILLPOINT_PATTERN.matcher(ItemUtils.getStringLore(stack));
             if (!m.find()) continue;
 
             sp[i] = Integer.parseInt(m.group(1));
-        }
-
-        // following code subtracts gear sp from total sp to find player-allocated sp
-        ItemStack info = gui.getLowerInv().getStackInSlot(6); // player info slot
-        for (String line : ItemUtils.getLore(info)) {
-            String unformattedLine = TextFormatting.getTextWithoutFormattingCodes(line);
-            for (int i = 0; i < 5; i++) {
-                Matcher m = MODIFIER_PATTERNS[i].matcher(unformattedLine);
-                if (!m.find()) continue;
-
-                int modifier = Integer.parseInt(m.group(1));
-                sp[i] -= modifier;
-            }
+            sp[i] -= gearSkillPoints[i];
         }
 
         return new SkillPointAllocation(sp[0], sp[1], sp[2], sp[3], sp[4]);
@@ -337,30 +344,39 @@ public class SkillPointOverlay implements Listener {
 
     private void allocateSkillPoints(ChestReplacer gui) {
         if (loadedBuild == null) return;
-        if (gui.inventorySlots.getSlot(9).getStack().isEmpty()) return;
+        if (gui.inventorySlots.getSlot(11).getStack().isEmpty()) return;
         itemsLoaded = true;
 
-        int[] currentSp = getSkillPoints(gui).getAsArray();
+
+        if (!gotInitialSp) {
+            currentSp = getSkillPoints(gui).getAsArray();
+            gotInitialSp = true;
+        }
+
         int[] buildSp = loadedBuild.getAsArray();
 
         float perSkill = 1 / (float) loadedBuild.getTotalSkillPoints();
 
         for (int i = 0; i < 5; i++) {
+            startBuild = true;
             if (currentSp[i] >= buildSp[i]) continue;
-            int button = (buildSp[i] - currentSp[i] >= 5) ? 1 : 0; // right click if difference >= 5 for efficiency
+            ClickType clickType = (buildSp[i] - currentSp[i] >= 5) ? ClickType.QUICK_MOVE : ClickType.PICKUP; // shift click if difference >= 5 for efficiency
+            int spAdded = (clickType == ClickType.QUICK_MOVE) ? 5 : 1;
+            buildPercentage += perSkill * (spAdded);
 
-            buildPercentage += perSkill * (button == 1 ? 5 : 0);
-
-            CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, 9 + i, button,
-                    ClickType.PICKUP, gui.inventorySlots.getSlot(9 + i).getStack(),
+            CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, 11 + i, 0,
+                    clickType, gui.inventorySlots.getSlot(11 + i).getStack(),
                     gui.inventorySlots.getNextTransactionID(McIf.player().inventory));
 
             McIf.mc().getSoundHandler().playSound(
                     PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_ITEM_PICKUP, 0.3f + (1.2f * buildPercentage)));
 
             McIf.mc().getConnection().sendPacket(packet);
+            currentSp[i] += spAdded;
             return; // can only click once at a time
         }
+        startBuild = false;
+        gotInitialSp = false;
 
         McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.ENTITY_PLAYER_LEVELUP, 1f));
         loadedBuild = null; // we've fully loaded the build if we reach this point
@@ -374,13 +390,12 @@ public class SkillPointOverlay implements Listener {
         ItemStack stack = e.getStack();
         if (stack.isEmpty() || !stack.hasDisplayName()) return; // display name also checks for tag compound
 
-        String lore = TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(stack));
         String name = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName());
         String value = e.getOverlayText();
 
         if (!name.contains("Upgrade")) return; // Skill Points
 
-        Matcher spm = SKILLPOINT_PATTERN.matcher(lore);
+        Matcher spm = SKILLPOINT_PATTERN.matcher(ItemUtils.getStringLore(stack));
         if (!spm.find()) return;
 
         SkillPoint skillPoint = SkillPoint.findSkillPoint(name);

@@ -115,7 +115,6 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
-
         public enum ManaTextures {
             Wynn,
             Brune,
@@ -133,41 +132,31 @@ public class OverlayConfig extends SettingsClass {
 
     }
 
-    @SettingsInfo(name = "mana_timer_settings", displayPath = "Utilities/Overlays/Mana Timer")
-    public static class ManaTimer extends SettingsClass {
-        public static ManaTimer INSTANCE;
+    @SettingsInfo(name = "blood_pool_settings", displayPath = "Utilities/Overlays/Blood Pool")
+    public static class BloodPool extends SettingsClass {
+        public static BloodPool INSTANCE;
 
-        @Setting(displayName = "Show Mana Timer", description = "Disabling this will hide the mana timer regardless of overlay config status.")
-        public boolean showManaTimer = false;
+        @Setting(displayName = "Hide Default Blood Pool Bar", description = "Should the blood pool boss bar be hidden?")
+        public boolean hideDefaultBar = true;
 
-        @Setting(displayName = "Mana Timer Percentage", description = "Should the mana timer use percentages instead of seconds?")
-        public boolean manaTimerUsePercentage = false;
-
-        @Setting(displayName = "Mana Timer Second Decimal", description = "How many decimals should the mana timer have when displaying seconds?")
-        public ManaTimerDecimalFormats manaTimerDecimal = ManaTimerDecimalFormats.One;
-
-        @Setting(displayName = "Mana Timer Seconds Count Down", description = "Should the mana timer count down instead of up when displaying seconds?")
-        public boolean manaTimerCountDown = true;
-
-        @Setting(displayName = "Mana Timer Bar Width", description = "How wide should the mana bar be in pixels?\n\n§8This will be adjusted using Minecraft's scaling.")
+        @Setting(displayName = "Blood Pool Width", description = "How wide should the blood pool be in pixels?\n\n§8This will be adjusted using Minecraft's scaling.")
         @Setting.Limitations.IntLimit(min = 0, max = 81)
         public int width = 81;
 
-        @Setting(displayName = "Mana Timer Bar Orientation", description = "How orientated in degrees should the mana bar be?\n\n§8Accompanied text will be removed.")
+        @Setting(displayName = "Blood Pool Orientation", description = "How orientated in degrees should the blood pool bar be?\n\n§8Accompanied text will be removed.")
         public OverlayRotation overlayRotation = OverlayRotation.NORMAL;
 
-        @Setting(displayName = "Mana Timer Texture", description = "What texture should be used for the mana bar?")
-        public ManaTimerTextures manaTexture = ManaTimerTextures.a;
+        @Setting(displayName = "Blood Pool Texture", description = "What texture should be used for the blood pool bar?")
+        public BloodPoolTextures bloodPoolTexture = BloodPoolTextures.a;
 
         @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
         @Setting(displayName = "Animation Speed", description = "How fast should the animation be played?\n\n§8Set this to 0 for it to display instantly.")
-        public float animated = 5f;
+        public float animated = 2f;
 
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
-
-        public enum ManaTimerTextures {
+        public enum BloodPoolTextures {
             Wynn,
             Brune,
             Aether,
@@ -180,23 +169,6 @@ public class OverlayConfig extends SettingsClass {
             c,
             d
             // following the format, to add more textures, register them here with a name and create a special case in the render method
-        }
-
-        public enum ManaTimerDecimalFormats {
-            Zero("%.0f"),
-            One("%.1f"),
-            Two("%.2f");
-
-            final String decimalFormat;
-
-            ManaTimerDecimalFormats(String decimalFormat) {
-                this.decimalFormat = decimalFormat;
-            }
-
-            public String getDecimalFormat() {
-                return this.decimalFormat;
-            }
-
         }
     }
 
@@ -670,6 +642,7 @@ public class OverlayConfig extends SettingsClass {
             HEALTH("Current health"),
             HEALTH_MAX("Max health"),
             HEALTH_PCT("Current health percentage"),
+            ELEMENTAL_SPECIAL("Current elemental special %"),
             XP("Current XP (Formatted)"),
             XP_RAW("Current XP (Raw)"),
             XP_REQ("Required XP to level up (Formatted)"),
