@@ -35,10 +35,10 @@ jobs:
     needs: [build]
     runs-on: ubuntu-latest
     outputs:
-      tag: ${{ steps.changelog.tag }}
-      skipped: ${{ steps.changelog.skipped }}
-      clean_changelog: ${{ steps.changelog.clean_changelog }}
-      changelog: ${{ steps.changelog.changelog }}
+      tag: ${{ steps.changelog.outputs.tag }}
+      skipped: ${{ steps.changelog.outputs.skipped }}
+      clean_changelog: ${{ steps.changelog.outputs.clean_changelog }}
+      changelog: ${{ steps.changelog.outputs.changelog }}
       is_release: ${{ steps.release_or_beta.outputs.is_release }}
       pre_release: ${{ steps.release_or_beta.outputs.pre_release }}
     steps:
