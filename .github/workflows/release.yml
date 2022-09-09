@@ -71,53 +71,10 @@ jobs:
             echo ::set-output name=pre_release::true
           fi
 
-  debug:
-    name: Debug
-    needs: [changelog]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Debug
-        run: |
-          echo "tag: ${{ needs.changelog.outputs.tag }}"
-          echo "skipped: ${{ needs.changelog.outputs.skipped }}"
-          echo "clean_changelog: ${{ needs.changelog.outputs.clean_changelog }}"
-          echo "changelog: ${{ needs.changelog.outputs.changelog }}"
-          echo "is_release: ${{ needs.changelog.outputs.is_release }}"
-          echo "pre_release: ${{ needs.changelog.outputs.pre_release }}"
-
-  debug_if_not_skipped:
-    name: Debug if not skipped
-    needs: [changelog]
-    if: ${{ needs.changelog.outputs.skipped == 'false' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Debug
-        run: |
-          echo "tag: ${{ needs.changelog.outputs.tag }}"
-          echo "skipped: ${{ needs.changelog.outputs.skipped }}"
-          echo "clean_changelog: ${{ needs.changelog.outputs.clean_changelog }}"
-          echo "changelog: ${{ needs.changelog.outputs.changelog }}"
-          echo "is_release: ${{ needs.changelog.outputs.is_release }}"
-          echo "pre_release: ${{ needs.changelog.outputs.pre_release }}"
-
-  debug_if_skipped:
-    name: Debug if skipped
-    needs: [changelog]
-    if: ${{ needs.changelog.outputs.skipped == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Debug
-        run: |
-          echo "tag: ${{ needs.changelog.outputs.tag }}"
-          echo "skipped: ${{ needs.changelog.outputs.skipped }}"
-          echo "clean_changelog: ${{ needs.changelog.outputs.clean_changelog }}"
-          echo "changelog: ${{ needs.changelog.outputs.changelog }}"
-          echo "is_release: ${{ needs.changelog.outputs.is_release }}"
-          echo "pre_release: ${{ needs.changelog.outputs.pre_release }}"
-
   artifact:
     name: Rename Artifact
     needs: [build, changelog]
+    if: ${{ needs.changelog.outputs.skipped == 'false' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v3
@@ -140,13 +97,11 @@ jobs:
     needs: [changelog, artifact]
     steps:
       - uses: actions/download-artifact@v3
-        if: ${{ needs.changelog.outputs.skipped == 'false' }}
         with:
           name: Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}
           path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
 
       - name: Create release
-        if: ${{ needs.changelog.outputs.skipped == 'false' }}
         uses: softprops/action-gh-release@v1
         with:
           files: build/Wynntils-${{ needs.changelog.outputs.tag }}.jar
@@ -160,13 +115,11 @@ jobs:
     needs: [changelog, artifact]
     steps:
       - uses: actions/download-artifact@v3
-        if: ${{ needs.changelog.outputs.skipped == 'false' }}
         with:
           name: Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}
           path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
 
       - name: Upload to CurseForge
-        if: ${{ needs.changelog.outputs.skipped == 'false' }}
         uses: itsmeow/curseforge-upload@v3
         with:
           file_path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
@@ -188,13 +141,11 @@ jobs:
     needs: [changelog, artifact]
     steps:
       - uses: actions/download-artifact@v3
-        if: ${{ needs.changelog.outputs.skipped == 'false' }}
         with:
           name: Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}
           path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
 
       - name: Upload to Modrinth
-        if: ${{ needs.changelog.outputs.skipped == 'false' }}
         uses: RubixDev/modrinth-upload@v1.0.0
         with:
           token: ${{ secrets.MODRINTH_API_TOKEN }}
