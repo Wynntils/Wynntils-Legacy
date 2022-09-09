@@ -33,7 +33,6 @@ public class TradeMarketOverlay implements Listener {
         ItemStack itemStack = new ItemStack(buildNBT(inventory));
 
         inventory.setInventorySlotContents(20, itemStack);
-        shouldSend = true;
     }
 
     @SubscribeEvent
