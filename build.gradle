@@ -97,3 +97,12 @@ class Version {
 }
 
 jar.dependsOn("shadowJar")
+
+task installLocalGitHook(type: Copy) {
+    from new File(rootProject.rootDir, '.github/hooks/commit-msg')
+    into { new File(rootProject.rootDir, '.git/hooks') }
+    fileMode 0775
+}
+
+prepareKotlinBuildScriptModel.dependsOn installLocalGitHook
+build.dependsOn installLocalGitHook
