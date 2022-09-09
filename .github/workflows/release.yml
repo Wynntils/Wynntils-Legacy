@@ -73,6 +73,7 @@ jobs:
 
   artifact:
     name: Rename Artifact
+    if: ${{ needs.changelog.outputs.skipped == 'false' }}
     needs: [build, changelog]
     runs-on: ubuntu-latest
     steps:
@@ -101,7 +102,6 @@ jobs:
           path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
 
       - name: Create release
-        if: ${{ needs.changelog.outputs.skipped == 'false' }}
         uses: softprops/action-gh-release@v1
         with:
           files: build/Wynntils-${{ needs.changelog.outputs.tag }}.jar
@@ -120,7 +120,6 @@ jobs:
           path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
 
       - name: Upload to CurseForge
-        if: ${{ needs.changelog.outputs.skipped == 'false' }}
         uses: itsmeow/curseforge-upload@v3
         with:
           file_path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
@@ -147,7 +146,7 @@ jobs:
           path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
 
       - name: Upload to Modrinth
-        uses: RubixDev/modrinth-upload@v1
+        uses: RubixDev/modrinth-upload@v1.0.0
         with:
           token: ${{ secrets.MODRINTH_API_TOKEN }}
           file_path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
