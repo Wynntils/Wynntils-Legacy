@@ -18,6 +18,7 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.framework.ui.elements.GuiTextFieldWynn;
 import com.wynntils.core.utils.ItemUtils;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
@@ -149,15 +150,18 @@ public class SkillPointOverlay implements Listener {
 
             String lore = TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(stack));
             String name = TextFormatting.getTextWithoutFormattingCodes(stack.getDisplayName());
+
             int value;
             if (name.contains("Profession [")) { // Profession Icons
                 int start = lore.indexOf("Level: ") + 7;
                 int end = lore.indexOf("XP: ");
-                value = Integer.parseInt(lore.substring(start, end));
+                if (end == -1) continue;
+                value = StringUtils.parseIntOr(lore.substring(start, end), -1);
             } else if (name.contains("'s Info")) { // Combat level on Info
                 int start = lore.indexOf("Combat Lv: ") + 11;
                 int end = lore.indexOf("Class: ");
-                value = Integer.parseInt(lore.substring(start, end));
+                if (end == -1) continue;
+                value = StringUtils.parseIntOr(lore.substring(start, end), -1);
             } else if (name.contains("Damage Info")) { //Average Damage
                 Pattern pattern = Pattern.compile("Total Damage \\(\\+Bonus\\): ([0-9]+)-([0-9]+)");
                 Matcher m2  = pattern.matcher(lore);
@@ -168,8 +172,10 @@ public class SkillPointOverlay implements Listener {
             } else if (name.contains("Daily Rewards")) { //Daily Reward Multiplier
                 int start = lore.indexOf("Streak Multiplier: ") + 19;
                 int end = lore.indexOf("Log in everyday to");
-                value = Integer.parseInt(lore.substring(start, end));
+                if (end == -1) continue;
+                value = StringUtils.parseIntOr(lore.substring(start, end), -1);
             } else continue;
+            if (value == -1) continue;
             stack.setCount(value <= 0 ? 1 : value);
         }
     }
