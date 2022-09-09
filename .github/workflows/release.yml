@@ -9,6 +9,7 @@ on:
 
 jobs:
   build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -30,6 +31,7 @@ jobs:
           path: build/libs
 
   changelog:
+    name: Generate Changelog
     needs: [build]
     runs-on: ubuntu-latest
     outputs:
@@ -40,6 +42,10 @@ jobs:
       is_release: ${{ steps.release_or_beta.outputs.is_release }}
       pre_release: ${{ steps.release_or_beta.outputs.pre_release }}
     steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
       - name: Create changelog
         id: changelog
         uses: TriPSs/conventional-changelog-action@v3
@@ -50,6 +56,7 @@ jobs:
           pre-commit: .pre-commit.js
           create-summary: true
           version-file: ./version.json
+          skip-git-pull: true
 
       - name: Set Release or Beta
         if: ${{ needs.changelog.outputs.skipped == 'false' }}
@@ -65,6 +72,7 @@ jobs:
           fi
 
   artifact:
+    name: Rename Artifact
     needs: [build, changelog]
     runs-on: ubuntu-latest
     steps:
