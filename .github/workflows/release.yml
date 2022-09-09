@@ -5,7 +5,6 @@ on:
     branches:
       - development
       - production
-      - feature/publish-release-workflow
 
 jobs:
   build:
@@ -125,13 +124,13 @@ jobs:
           file_path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
           game_endpoint: minecraft
           # Minecraft 1.12.2: 6756
-          # Forge 14.23.5.2859: 8867
+          # Forge: 7498
           # Java 8: 4458
-          game_versions: "6756,8867,4458"
+          game_versions: "6756,7498,4458"
           project_id: 303451
           token: ${{ secrets.CF_API_TOKEN }}
           release_type: ${{ needs.changelog.outputs.is_release }}
-          display_name: Wynntils-${{ needs.changelog.outputs.tag }}
+          display_name: Wynntils ${{ needs.changelog.outputs.tag }}
           changelog_type: markdown
           changelog: "${{ needs.changelog.outputs.changelog }}"
 
