@@ -1,0 +1,159 @@
+name: Publish Release
+
+on:
+  push:
+    branches:
+      - development
+      - production
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v2
+        with:
+          distribution: "temurin"
+          java-version: 8
+          cache: "gradle"
+
+      - name: Build
+        run: ./gradlew build
+
+      - name: Upload build
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: build/libs
+
+  changelog:
+    name: Generate Changelog
+    needs: [build]
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.changelog.outputs.tag }}
+      skipped: ${{ steps.changelog.outputs.skipped }}
+      clean_changelog: ${{ steps.changelog.outputs.clean_changelog }}
+      changelog: ${{ steps.changelog.outputs.changelog }}
+      is_release: ${{ steps.release_or_beta.outputs.is_release }}
+      pre_release: ${{ steps.release_or_beta.outputs.pre_release }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Create changelog
+        id: changelog
+        uses: TriPSs/conventional-changelog-action@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          preset: conventionalcommits
+          release-count: 1
+          pre-commit: .pre-commit.js
+          create-summary: true
+          version-file: ./version.json
+          skip-git-pull: true
+
+      - name: Set Release or Beta
+        if: ${{ steps.changelog.outputs.skipped == 'false' }}
+        id: release_or_beta
+        run: |
+          if [$GITHUB_REF_NAME == 'production']
+          then
+            echo ::set-output name=is_release::release
+            echo ::set-output name=pre_release::false
+          else
+            echo ::set-output name=is_release::beta
+            echo ::set-output name=pre_release::true
+          fi
+
+  artifact:
+    name: Rename Artifact
+    needs: [build, changelog]
+    if: ${{ needs.changelog.outputs.skipped == 'false' }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: build
+          path: build/libs
+
+      - name: Rename artifact
+        run: mv build/libs/wynntils-*.jar build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
+
+      - name: Upload renamed artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}
+          path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
+
+  release-to-gh:
+    name: Release to GitHub
+    runs-on: ubuntu-latest
+    needs: [changelog, artifact]
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}
+          path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
+
+      - name: Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
+          tag_name: ${{ needs.changelog.outputs.tag }}
+          prerelease: ${{ needs.changelog.outputs.pre_release }}
+          body: ${{ needs.changelog.outputs.clean_changelog }}
+
+  release-to-cf:
+    name: Release to CurseForge
+    runs-on: ubuntu-latest
+    needs: [changelog, artifact]
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}
+          path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
+
+      - name: Upload to CurseForge
+        uses: itsmeow/curseforge-upload@v3
+        with:
+          file_path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
+          game_endpoint: minecraft
+          # Minecraft 1.12.2: 6756
+          # Forge: 7498
+          # Java 8: 4458
+          game_versions: "6756,7498,4458"
+          project_id: 303451
+          token: ${{ secrets.CF_API_TOKEN }}
+          release_type: ${{ needs.changelog.outputs.is_release }}
+          display_name: Wynntils ${{ needs.changelog.outputs.tag }}
+          changelog_type: markdown
+          changelog: "${{ needs.changelog.outputs.changelog }}"
+
+  release-to-modrinth:
+    name: Release to Modrinth
+    runs-on: ubuntu-latest
+    needs: [changelog, artifact]
+    steps:
+      - uses: actions/download-artifact@v3
+        with:
+          name: Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}
+          path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
+
+      - name: Upload to Modrinth
+        uses: RubixDev/modrinth-upload@v1.0.0
+        with:
+          token: ${{ secrets.MODRINTH_API_TOKEN }}
+          file_path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
+          name: Wynntils ${{ needs.changelog.outputs.tag }}
+          version: ${{ needs.changelog.outputs.tag }}
+          changelog: "${{ needs.changelog.outputs.changelog }}"
+          game_versions: 1.12.2
+          release_type: ${{ needs.changelog.outputs.is_release }}
+          loaders: forge
+          featured: true
+          project_id: dU5Gb9Ab

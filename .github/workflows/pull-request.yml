@@ -1,11 +1,6 @@
 name: Java CI with Gradle
 
 on:
-  push:
-    branches:
-      - development
-    paths-ignore:
-      - '**.md'
   pull_request:
 
 jobs:
@@ -25,7 +20,7 @@ jobs:
         run: ./gradlew build
 
       - name: Upload build
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: build
           path: build/libs
