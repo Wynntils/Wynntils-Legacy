@@ -5,6 +5,7 @@ on:
     branches:
       - development
       - production
+      - feature/publish-release-workflow
 
 jobs:
   build:
