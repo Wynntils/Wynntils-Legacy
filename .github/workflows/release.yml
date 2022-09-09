@@ -73,7 +73,6 @@ jobs:
 
   artifact:
     name: Rename Artifact
-    if: ${{ needs.changelog.outputs.skipped == 'false' }}
     needs: [build, changelog]
     runs-on: ubuntu-latest
     steps:
@@ -94,14 +93,16 @@ jobs:
   release-to-gh:
     name: Release to GitHub
     runs-on: ubuntu-latest
-    needs: [build, changelog, artifact]
+    needs: [changelog, artifact]
     steps:
       - uses: actions/download-artifact@v3
+        if: ${{ needs.changelog.outputs.skipped == 'false' }}
         with:
           name: Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}
           path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
 
       - name: Create release
+        if: ${{ needs.changelog.outputs.skipped == 'false' }}
         uses: softprops/action-gh-release@v1
         with:
           files: build/Wynntils-${{ needs.changelog.outputs.tag }}.jar
@@ -112,14 +113,16 @@ jobs:
   release-to-cf:
     name: Release to CurseForge
     runs-on: ubuntu-latest
-    needs: [build, changelog, artifact]
+    needs: [changelog, artifact]
     steps:
       - uses: actions/download-artifact@v3
+        if: ${{ needs.changelog.outputs.skipped == 'false' }}
         with:
           name: Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}
           path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
 
       - name: Upload to CurseForge
+        if: ${{ needs.changelog.outputs.skipped == 'false' }}
         uses: itsmeow/curseforge-upload@v3
         with:
           file_path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
@@ -138,14 +141,16 @@ jobs:
   release-to-modrinth:
     name: Release to Modrinth
     runs-on: ubuntu-latest
-    needs: [build, changelog, artifact]
+    needs: [changelog, artifact]
     steps:
       - uses: actions/download-artifact@v3
+        if: ${{ needs.changelog.outputs.skipped == 'false' }}
         with:
           name: Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}
           path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
 
       - name: Upload to Modrinth
+        if: ${{ needs.changelog.outputs.skipped == 'false' }}
         uses: RubixDev/modrinth-upload@v1.0.0
         with:
           token: ${{ secrets.MODRINTH_API_TOKEN }}
