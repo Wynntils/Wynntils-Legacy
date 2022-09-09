@@ -4,6 +4,7 @@ import com.mojang.realmsclient.gui.ChatFormatting;
 import com.wynntils.McIf;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.item.ItemStack;
@@ -22,6 +23,7 @@ public class TradeMarketOverlay implements Listener {
 
     @SubscribeEvent
     public void onGuiUpdate(GuiOverlapEvent.ChestOverlap.DrawScreen e) {
+        if (!UtilitiesConfig.Market.INSTANCE.showSellAllButton) return;
         InventoryBasic inventory = (InventoryBasic) e.getGui().getLowerInv();
         if (!inventory.getName().startsWith("What would you like to sell?")) {
             shouldSend = false;
