@@ -104,7 +104,7 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
-          files: build/Wynntils-${{ needs.changelog.outputs.tag }}.jar
+          files: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
           tag_name: ${{ needs.changelog.outputs.tag }}
           prerelease: ${{ needs.changelog.outputs.pre_release }}
           body: ${{ needs.changelog.outputs.clean_changelog }}
@@ -133,7 +133,7 @@ jobs:
           release_type: ${{ needs.changelog.outputs.is_release }}
           display_name: Wynntils-${{ needs.changelog.outputs.tag }}
           changelog_type: markdown
-          changelog: ${{ needs.changelog.outputs.changelog }}
+          changelog: "${{ needs.changelog.outputs.changelog }}"
 
   release-to-modrinth:
     name: Release to Modrinth
@@ -152,7 +152,7 @@ jobs:
           file_path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
           name: Wynntils ${{ needs.changelog.outputs.tag }}
           version: ${{ needs.changelog.outputs.tag }}
-          changelog: ${{ needs.changelog.outputs.changelog }}
+          changelog: "${{ needs.changelog.outputs.changelog }}"
           game_versions: 1.12.2
           release_type: ${{ needs.changelog.outputs.is_release }}
           loaders: forge
