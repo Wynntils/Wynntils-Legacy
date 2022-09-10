@@ -172,6 +172,46 @@ public class OverlayConfig extends SettingsClass {
         }
     }
 
+    @SettingsInfo(name = "awakening_progress", displayPath = "Utilities/Overlays/Awakening Progress")
+    public static class AwakeningProgress extends SettingsClass {
+        public static AwakeningProgress INSTANCE;
+
+        @Setting(displayName = "Hide Default Awakening Progress Bar", description = "Should the awakening progress boss bar be hidden?")
+        public boolean hideDefaultBar = true;
+
+        @Setting(displayName = "Awakening Progress Width", description = "How wide should the awakening progress be in pixels?\n\n§8This will be adjusted using Minecraft's scaling.")
+        @Setting.Limitations.IntLimit(min = 0, max = 81)
+        public int width = 81;
+
+        @Setting(displayName = "Awakening Progress Orientation", description = "How orientated in degrees should the awakening progress bar be?\n\n§8Accompanied text will be removed.")
+        public OverlayRotation overlayRotation = OverlayRotation.NORMAL;
+
+        @Setting(displayName = "Awakening Progress Texture", description = "What texture should be used for the awakening progress bar?")
+        public AwakeningProgressTextures awakeningProgressTexture = AwakeningProgressTextures.a;
+
+        @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
+        @Setting(displayName = "Animation Speed", description = "How fast should the animation be played?\n\n§8Set this to 0 for it to display instantly.")
+        public float animated = 2f;
+
+        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
+        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+
+        public enum AwakeningProgressTextures {
+            Wynn,
+            Brune,
+            Aether,
+            Skull,
+            Inverse,
+            Skyrim,
+            Rune,
+            a,
+            b,
+            c,
+            d
+            // following the format, to add more textures, register them here with a name and create a special case in the render method
+        }
+    }
+
     @SettingsInfo(name = "hotbar_settings", displayPath = "Utilities/Overlays/Hotbar")
     public static class Hotbar extends SettingsClass {
         public static Hotbar INSTANCE;

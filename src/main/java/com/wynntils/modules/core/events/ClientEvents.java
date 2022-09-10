@@ -14,7 +14,6 @@ import com.wynntils.core.framework.enums.DamageType;
 import com.wynntils.core.framework.enums.professions.GatheringMaterial;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
 import com.wynntils.core.framework.instances.PlayerInfo;
-import com.wynntils.core.framework.instances.containers.PlayerData;
 import com.wynntils.core.framework.instances.data.ActionBarData;
 import com.wynntils.core.framework.instances.data.BossBarData;
 import com.wynntils.core.framework.instances.data.CharacterData;
@@ -329,12 +328,20 @@ public class ClientEvents implements Listener {
     public void updateBossBar(PacketEvent<SPacketUpdateBossInfo> e) {
         if (!Reference.onServer) return;
 
-        PlayerInfo.get(BossBarData.class).updateBloodPoolBar(e.getPacket());
+        PlayerInfo.get(BossBarData.class).updateBossbarStats(e.getPacket());
 
-        if (OverlayConfig.BloodPool.INSTANCE.hideDefaultBar && e.getPacket() != null && e.getPacket().getName() != null) {
+        if (e.getPacket() == null ||e.getPacket().getName() == null) return;
+
+        if (OverlayConfig.BloodPool.INSTANCE.hideDefaultBar) {
             // (!) Do not remove .getName() check, Intellij is wrong about it
             Matcher bpBarMatcher = BossBarData.BLOOD_POOL_PATTERN.matcher(e.getPacket().getName().getFormattedText());
             if (bpBarMatcher.matches()) e.setCanceled(true);
+        }
+
+        if (OverlayConfig.AwakeningProgress.INSTANCE.hideDefaultBar) {
+            // (!) Do not remove .getName() check, Intellij is wrong about it
+            Matcher awakeningBarMatcher = BossBarData.AWAKENING_PROGRESS_PATTERN.matcher(e.getPacket().getName().getFormattedText());
+            if (awakeningBarMatcher.matches()) e.setCanceled(true);
         }
     }
 
