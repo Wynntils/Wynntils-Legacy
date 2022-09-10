@@ -428,6 +428,9 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting.Limitations.IntLimit(min = 1, max = 3)
         public int minCraftingIngredientHighlightTier = 1;
 
+        @Setting(displayName = "Highlight Duplicate Cosmetics", description = "Should duplicate cosmetic items be highlighted in the scrap menu?", order = 41)
+        public boolean highlightCosmeticDuplicates = true;
+
         @Setting(displayName = "Minimum Powder Tier Highlight", description = "What should the minimum tier of powders be for it to be highlighted?\n\n§8Set the value to 0 to disable this setting.", order = 42)
         @Setting.Limitations.IntLimit(min = 0, max = 6)
         public int minPowderTier = 4;
