@@ -492,6 +492,9 @@ public class UtilitiesConfig extends SettingsClass {
 
         @Setting(displayName = "Automatically Open Chat", description = "Should the chat open when the trade market asks you to type a response?")
         public boolean openChatMarket = true;
+
+        @Setting(displayName = "Add Sell all button", description = "Should a sell all button be added to the market gui?")
+        public boolean showSellAllButton = true;
     }
 
     @SettingsInfo(name = "bank", displayPath = "Utilities/Bank")
