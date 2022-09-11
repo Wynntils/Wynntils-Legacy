@@ -70,6 +70,7 @@ public class UtilitiesModule extends Module {
         registerOverlay(new ManaBankBarOverlay(), Priority.NORMAL);
         registerOverlay(new AwakenedProgressBarOverlay(), Priority.NORMAL);
         registerOverlay(new ExpBarOverlay(), Priority.NORMAL);
+        registerOverlay(new CurrentMaskOverlay(), Priority.NORMAL);
         registerOverlay(new LevelingOverlay(), Priority.LOW);
         registerOverlay(new BubblesOverlay(), Priority.HIGHEST);
         registerOverlay(new DrowningVignetteOverlay(), Priority.HIGHEST);
@@ -114,6 +115,7 @@ public class UtilitiesModule extends Module {
         registerSettings(OverlayConfig.BloodPool.class);
         registerSettings(OverlayConfig.ManaBank.class);
         registerSettings(OverlayConfig.AwakenedProgress.class);
+        registerSettings(OverlayConfig.MaskOverlay.class);
         registerSettings(OverlayConfig.Hotbar.class);
         registerSettings(OverlayConfig.ToastsSettings.class);
         registerSettings(OverlayConfig.WarTimer.class);

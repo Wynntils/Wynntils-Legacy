@@ -255,6 +255,17 @@ public class OverlayConfig extends SettingsClass {
         }
     }
 
+    @SettingsInfo(name = "mask_overlay", displayPath = "Utilities/Overlays/Mask")
+    public static class MaskOverlay extends SettingsClass {
+        public static MaskOverlay INSTANCE;
+
+        @Setting(displayName = "Hide Default Mask Title", description = "Should the mask switching title be hidden?")
+        public boolean hideSwitchingTitle = true;
+
+        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
+        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+    }
+
     @SettingsInfo(name = "hotbar_settings", displayPath = "Utilities/Overlays/Hotbar")
     public static class Hotbar extends SettingsClass {
         public static Hotbar INSTANCE;
