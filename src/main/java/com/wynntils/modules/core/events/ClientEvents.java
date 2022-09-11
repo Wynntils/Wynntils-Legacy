@@ -38,6 +38,7 @@ import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.managers.KillsManager;
 import com.wynntils.modules.utilities.managers.LevelingManager;
 import com.wynntils.modules.utilities.managers.QuickCastManager;
+import com.wynntils.modules.utilities.overlays.hud.CurrentMaskOverlay;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiIngameMenu;
@@ -327,7 +328,7 @@ public class ClientEvents implements Listener {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void updateBossBar(PacketEvent<SPacketUpdateBossInfo> e) {
         if (!Reference.onServer) return;
-      
+
         PlayerInfo.get(BossBarData.class).updateBossbarStats(e.getPacket());
 
         if (e.getPacket() == null || e.getPacket().getName() == null) return;
@@ -340,7 +341,7 @@ public class ClientEvents implements Listener {
                 return;
             }
         }
-      
+
         if (OverlayConfig.ManaBank.INSTANCE.hideDefaultBar) {
             Matcher barMatcher = BossBarData.MANA_BANK_PATTERN.matcher(e.getPacket().getName().getFormattedText());
             if (barMatcher.matches()) {
@@ -590,6 +591,7 @@ public class ClientEvents implements Listener {
         // Reset blood pools if class changes
         get(CharacterData.class).setMaxBloodPool(-1);
         get(CharacterData.class).setBloodPool(-1);
+        CurrentMaskOverlay.currentMask = CurrentMaskOverlay.MaskType.NONE;
         get(CharacterData.class).setAwakenedProgress(-1);
 
         // Reset mana bank

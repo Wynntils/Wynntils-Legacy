@@ -1,6 +1,8 @@
 package com.wynntils.modules.utilities.overlays.hud;
 
 import com.wynntils.core.events.custom.PacketEvent;
+import com.wynntils.core.framework.enums.ClassType;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
@@ -22,9 +24,9 @@ public class CurrentMaskOverlay extends Overlay {
   @Setting(displayName = "Text Position", description = "The position offset of the text")
   public Pair<Integer, Integer> textPositionOffset = new Pair<>(-40, -10);
 
-  private static MaskType currentMask = MaskType.NONE;
+  private static final Pattern SINGLE_PATTERN = Pattern.compile("§cMask of the (Coward|Lunatic|Fanatic)§r");
 
-  private static final Pattern SINGLE_PATTERN = Pattern.compile("/§cMask of the (Coward|Lunatic|Fanatic)");
+  public static MaskType currentMask = MaskType.NONE;
 
   public static void onTitle(PacketEvent<SPacketTitle> e) {
     if (e.getPacket() == null || e.getPacket().getMessage() == null) return;
@@ -43,8 +45,9 @@ public class CurrentMaskOverlay extends Overlay {
   @Override
   public void render(RenderGameOverlayEvent.Pre event) {
     if (!visible) return;
+    if (get(CharacterData.class).getCurrentClass() != ClassType.SHAMAN) return;
     String text = "Mask: " + currentMask.name;
-    drawString(text, textPositionOffset.a  - (81- getStringWidth(text)), textPositionOffset.b, CustomColor.fromTextFormatting(currentMask.color), SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.MaskOverlay.INSTANCE.textShadow);
+    drawString(text, textPositionOffset.a, textPositionOffset.b, CustomColor.fromTextFormatting(currentMask.color), SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.MaskOverlay.INSTANCE.textShadow);
   }
 
   private static void parseMultiple(String title) {
@@ -55,7 +58,7 @@ public class CurrentMaskOverlay extends Overlay {
   }
 
   private static void parseSingle(String title) {
-    if (title.startsWith(TextFormatting.GRAY.toString())) {
+    if (title.startsWith("§8")) {
       currentMask = MaskType.NONE;
       return;
     }
@@ -66,11 +69,15 @@ public class CurrentMaskOverlay extends Overlay {
     }
 
     Matcher matcher = SINGLE_PATTERN.matcher(title);
-    if (!matcher.matches()) return;
+    if (!matcher.matches()) {
+      currentMask = MaskType.NONE;
+      return;
+    }
 
     currentMask = MaskType.find(matcher.group(1));
   }
-  enum MaskType {
+
+  public enum MaskType {
     NONE("None", TextFormatting.GRAY, "None"),
     LUNATIC("L", TextFormatting.RED, "Lunatic"),
     FANATIC("F", TextFormatting.GOLD, "Fanatic"),
