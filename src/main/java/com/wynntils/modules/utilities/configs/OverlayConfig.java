@@ -172,9 +172,9 @@ public class OverlayConfig extends SettingsClass {
         }
     }
 
-    @SettingsInfo(name = "awakening_progress", displayPath = "Utilities/Overlays/Awakening Progress")
-    public static class AwakeningProgress extends SettingsClass {
-        public static AwakeningProgress INSTANCE;
+    @SettingsInfo(name = "mask_of_awakened_progress", displayPath = "Utilities/Overlays/Mask of the Awakened Progress")
+    public static class AwakenedProgress extends SettingsClass {
+        public static AwakenedProgress INSTANCE;
 
         @Setting(displayName = "Hide Default Awakening Progress Bar", description = "Should the awakening progress boss bar be hidden?")
         public boolean hideDefaultBar = true;
@@ -187,7 +187,7 @@ public class OverlayConfig extends SettingsClass {
         public OverlayRotation overlayRotation = OverlayRotation.NORMAL;
 
         @Setting(displayName = "Awakening Progress Texture", description = "What texture should be used for the awakening progress bar?")
-        public AwakeningProgressTextures awakeningProgressTexture = AwakeningProgressTextures.a;
+        public AwakenedProgressTexture awakenedProgressTexture = AwakenedProgressTexture.a;
 
         @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
         @Setting(displayName = "Animation Speed", description = "How fast should the animation be played?\n\n§8Set this to 0 for it to display instantly.")
@@ -196,7 +196,7 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
-        public enum AwakeningProgressTextures {
+        public enum AwakenedProgressTexture {
             Wynn,
             Brune,
             Aether,

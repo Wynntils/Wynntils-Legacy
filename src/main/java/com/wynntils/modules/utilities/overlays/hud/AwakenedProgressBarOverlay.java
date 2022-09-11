@@ -18,10 +18,10 @@ import com.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-public class AwakeningProgressBarOverlay extends Overlay {
+public class AwakenedProgressBarOverlay extends Overlay {
 
-    public AwakeningProgressBarOverlay() {
-        super("Awakening Progress Bar", 81, 21, true, 0.65f, 1.03f, -10, -38, OverlayGrowFrom.BOTTOM_RIGHT, RenderGameOverlayEvent.ElementType.HEALTH);
+    public AwakenedProgressBarOverlay() {
+        super("Mask of the Awakened Progress Bar", 81, 21, true, 0.65f, 1.03f, -10, -38, OverlayGrowFrom.BOTTOM_RIGHT, RenderGameOverlayEvent.ElementType.HEALTH);
     }
 
     @Setting(displayName = "Flip", description = "Should the filling of the bar be flipped?")
@@ -37,18 +37,18 @@ public class AwakeningProgressBarOverlay extends Overlay {
 
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
-        if (!(visible = (get(CharacterData.class).getCurrentAwakeningProgress() != -1 && !Reference.onLobby))) return;
+        if (!(visible = (get(CharacterData.class).getCurrentAwakenedProgress() != -1 && !Reference.onLobby))) return;
 
-        if (OverlayConfig.AwakeningProgress.INSTANCE.animated > 0.0f && OverlayConfig.AwakeningProgress.INSTANCE.animated < 10.0f && !(awakeningProgress >= (float) get(CharacterData.class).getMaxAwakeningProgress())) {
-            awakeningProgress -= (OverlayConfig.AwakeningProgress.INSTANCE.animated * 0.1f) * (awakeningProgress - (float) get(CharacterData.class).getCurrentAwakeningProgress());
+        if (OverlayConfig.AwakenedProgress.INSTANCE.animated > 0.0f && OverlayConfig.AwakenedProgress.INSTANCE.animated < 10.0f && !(awakeningProgress >= (float) get(CharacterData.class).getMaxAwakenedProgress())) {
+            awakeningProgress -= (OverlayConfig.AwakenedProgress.INSTANCE.animated * 0.1f) * (awakeningProgress - (float) get(CharacterData.class).getCurrentAwakenedProgress());
         } else {
-            awakeningProgress = get(CharacterData.class).getCurrentAwakeningProgress();
+            awakeningProgress = get(CharacterData.class).getCurrentAwakenedProgress();
         }
     }
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
-        switch (OverlayConfig.AwakeningProgress.INSTANCE.awakeningProgressTexture) {
+        switch (OverlayConfig.AwakenedProgress.INSTANCE.awakenedProgressTexture) {
             case Wynn:
                 drawDefaultBar(-1, 8, 0, 17, textColor);
                 break;
@@ -76,12 +76,12 @@ public class AwakeningProgressBarOverlay extends Overlay {
     }
 
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2, CustomColor cc) {
-        if (OverlayConfig.AwakeningProgress.INSTANCE.overlayRotation == OverlayRotation.NORMAL) {
-            drawString(get(CharacterData.class).getCurrentAwakeningProgress() + " ۞ " + get(CharacterData.class).getMaxAwakeningProgress(), textPositionOffset.a  - (81-OverlayConfig.AwakeningProgress.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.AwakeningProgress.INSTANCE.textShadow);
+        if (OverlayConfig.AwakenedProgress.INSTANCE.overlayRotation == OverlayRotation.NORMAL) {
+            drawString(get(CharacterData.class).getCurrentAwakenedProgress() + " ۞ " + get(CharacterData.class).getMaxAwakenedProgress(), textPositionOffset.a  - (81- OverlayConfig.AwakenedProgress.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.AwakenedProgress.INSTANCE.textShadow);
         }
 
-        rotate(OverlayConfig.AwakeningProgress.INSTANCE.overlayRotation.getDegrees());
-        drawProgressBar(Textures.Overlays.bars_health, -OverlayConfig.AwakeningProgress.INSTANCE.width, y1, 0, y2, 0, ty1, 81, ty2, (flip ? -awakeningProgress : awakeningProgress) / (float) get(CharacterData.class).getMaxAwakeningProgress());
+        rotate(OverlayConfig.AwakenedProgress.INSTANCE.overlayRotation.getDegrees());
+        drawProgressBar(Textures.Overlays.bars_health, -OverlayConfig.AwakenedProgress.INSTANCE.width, y1, 0, y2, 0, ty1, 81, ty2, (flip ? -awakeningProgress : awakeningProgress) / (float) get(CharacterData.class).getMaxAwakenedProgress());
     }
 
 }

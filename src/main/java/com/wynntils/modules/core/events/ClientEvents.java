@@ -338,9 +338,9 @@ public class ClientEvents implements Listener {
             if (bpBarMatcher.matches()) e.setCanceled(true);
         }
 
-        if (OverlayConfig.AwakeningProgress.INSTANCE.hideDefaultBar) {
+        if (OverlayConfig.AwakenedProgress.INSTANCE.hideDefaultBar) {
             // (!) Do not remove .getName() check, Intellij is wrong about it
-            Matcher awakeningBarMatcher = BossBarData.AWAKENING_PROGRESS_PATTERN.matcher(e.getPacket().getName().getFormattedText());
+            Matcher awakeningBarMatcher = BossBarData.AWAKENED_PROGRESS_PATTERN.matcher(e.getPacket().getName().getFormattedText());
             if (awakeningBarMatcher.matches()) e.setCanceled(true);
         }
     }
