@@ -21,7 +21,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 public class AwakeningProgressBarOverlay extends Overlay {
 
     public AwakeningProgressBarOverlay() {
-        super("Awakening Progress (Shaman masks) Bar", 81, 21, true, 0.43f, 1.03f, 30, -38, OverlayGrowFrom.BOTTOM_RIGHT, RenderGameOverlayEvent.ElementType.HEALTH);
+        super("Awakening Progress Bar", 81, 21, true, 0.65f, 1.03f, -10, -38, OverlayGrowFrom.BOTTOM_RIGHT, RenderGameOverlayEvent.ElementType.HEALTH);
     }
 
     @Setting(displayName = "Flip", description = "Should the filling of the bar be flipped?")
@@ -31,7 +31,7 @@ public class AwakeningProgressBarOverlay extends Overlay {
     public Pair<Integer, Integer> textPositionOffset = new Pair<>(-40, -10);
 
     @Setting(displayName = "Text Name", description = "What should the colour of the text be?")
-    public CustomColor textColor = CommonColors.BLUE;
+    public CustomColor textColor = CommonColors.WHITE;
 
     private static float awakeningProgress = 0.0f;
 
