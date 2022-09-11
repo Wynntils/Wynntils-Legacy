@@ -62,7 +62,9 @@ public class QuickCastManager {
         connection.sendPacket(first ? rightClick : leftClick);
         new Delay(() -> connection.sendPacket(second ? rightClick : leftClick), delayTicks);
         new Delay(() -> connection.sendPacket(third ? rightClick : leftClick), delayTicks * 2);
-        earliestCastable = System.currentTimeMillis() + 1 + delayTicks * 2L * 50L; // *50 to convert to ms
+        // earliestCastable = (current time) + (delay in ticks * 3) * (50ms per tick)
+        // * 3 so there is still a delay between separate casts
+        earliestCastable = System.currentTimeMillis() + delayTicks * 3L * 50L;
     }
 
     private static CastCheckStatus checkSpellCastRequest(int spellNumber) {
