@@ -255,7 +255,7 @@ public class OverlayConfig extends SettingsClass {
         }
     }
 
-    @SettingsInfo(name = "mask_overlay", displayPath = "Utilities/Overlays/Mask")
+    @SettingsInfo(name = "current_mask_overlay", displayPath = "Utilities/Overlays/Mask")
     public static class MaskOverlay extends SettingsClass {
         public static MaskOverlay INSTANCE;
 
