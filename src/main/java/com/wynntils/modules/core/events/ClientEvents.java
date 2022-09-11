@@ -579,6 +579,7 @@ public class ClientEvents implements Listener {
         // Reset blood pools if class changes
         get(CharacterData.class).setMaxBloodPool(-1);
         get(CharacterData.class).setBloodPool(-1);
+        get(CharacterData.class).setAwakenedProgress(-1);
 
         SpellData spellData = PlayerInfo.get(SpellData.class);
 
