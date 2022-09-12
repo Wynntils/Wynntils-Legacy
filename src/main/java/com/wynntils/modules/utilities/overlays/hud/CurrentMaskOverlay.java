@@ -13,6 +13,7 @@ import net.minecraft.network.play.server.SPacketTitle;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
+import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -46,7 +47,7 @@ public class CurrentMaskOverlay extends Overlay {
   public void render(RenderGameOverlayEvent.Pre event) {
     if (!visible) return;
     if (get(CharacterData.class).getCurrentClass() != ClassType.SHAMAN) return;
-    String text = "Mask: " + currentMask.name;
+    String text = currentMask.getText();
     drawString(text, textPositionOffset.a, textPositionOffset.b, CustomColor.fromTextFormatting(currentMask.color), SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.MaskOverlay.INSTANCE.textShadow);
   }
 
@@ -78,19 +79,22 @@ public class CurrentMaskOverlay extends Overlay {
   }
 
   public enum MaskType {
-    NONE("None", TextFormatting.GRAY, "None"),
-    LUNATIC("L", TextFormatting.RED, "Lunatic"),
-    FANATIC("F", TextFormatting.GOLD, "Fanatic"),
-    COWARD("C", TextFormatting.AQUA, "Coward"),
-    AWAKENED("A", TextFormatting.DARK_PURPLE, "Awakened");
+    NONE("None", TextFormatting.GRAY, "None", () -> OverlayConfig.MaskOverlay.INSTANCE.displayStringNone),
+    LUNATIC("L", TextFormatting.RED, "Lunatic", () -> OverlayConfig.MaskOverlay.INSTANCE.displayStringLunatic),
+    FANATIC("F", TextFormatting.GOLD, "Fanatic", () -> OverlayConfig.MaskOverlay.INSTANCE.displayStringFanatic),
+    COWARD("C", TextFormatting.AQUA, "Coward", () -> OverlayConfig.MaskOverlay.INSTANCE.displayStringCoward),
+    AWAKENED("A", TextFormatting.DARK_PURPLE, "Awakened", () -> OverlayConfig.MaskOverlay.INSTANCE.displayStringAwakened);
 
-    String alias;
-    TextFormatting color;
-    String name;
-    MaskType(String alias, TextFormatting color, String name) {
+    private final String alias;
+    private final TextFormatting color;
+    private final String name;
+    private final Supplier<String> display;
+
+    MaskType(String alias, TextFormatting color, String name, Supplier<String> display) {
       this.alias = alias;
       this.color = color;
       this.name = name;
+      this.display = display;
     }
 
     public static MaskType find(String text) {
@@ -98,6 +102,10 @@ public class CurrentMaskOverlay extends Overlay {
         if (type.alias.equals(text) || type.name.equals(text)) return type;
       }
       return NONE;
+    }
+
+    public String getText() {
+      return display.get().replace("%mask%", name).replace("&", "§");
     }
   }
 

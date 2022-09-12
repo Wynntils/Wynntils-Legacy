@@ -259,6 +259,17 @@ public class OverlayConfig extends SettingsClass {
     public static class MaskOverlay extends SettingsClass {
         public static MaskOverlay INSTANCE;
 
+        @Setting(displayName = "No mask display string", description = "What text should be displayed if no mask is applied? Color will be automatically applied. Use %mask% to display the mask name.")
+        public String displayStringNone = "No mask equipped";
+        @Setting(displayName = "Lunatic display string", description = "What text should be displayed if the Lunatic mask is applied? Color will be automatically applied. Use %mask% to display the mask name.")
+        public String displayStringLunatic = "%mask% mask equipped";
+        @Setting(displayName = "Fanatic display string", description = "What text should be displayed if the Fanatic mask is applied? Color will be automatically applied. Use %mask% to display the mask name.")
+        public String displayStringFanatic = "%mask% mask equipped";
+        @Setting(displayName = "Coward display string", description = "What text should be displayed if the Coward mask is applied? Color will be automatically applied. Use %mask% to display the mask name.")
+        public String displayStringCoward = "%mask% mask equipped";
+        @Setting(displayName = "Awakened display string", description = "What text should be displayed if the Awakened mask is applied? Color will be automatically applied. Use %mask% to display the mask name.")
+        public String displayStringAwakened = "%mask% mask equipped";
+
         @Setting(displayName = "Hide Default Mask Title", description = "Should the mask switching title be hidden?")
         public boolean hideSwitchingTitle = true;
 
