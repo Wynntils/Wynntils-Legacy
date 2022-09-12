@@ -29,6 +29,8 @@ public class CharacterData extends PlayerData {
     private int maxMana = -1;
     private int bloodPool = -1;
     private int maxBloodPool = -1;
+    private int manaBank = -1;
+    private int maxManaBank = -1;
     private int level = -1;
     private float experiencePercentage = -1;
     private String elementalSpecialString = "";
@@ -100,6 +102,10 @@ public class CharacterData extends PlayerData {
         return currentClass == ClassType.NONE ? -1 : maxMana;
     }
 
+    public int getMaxManaBank(){
+        return maxManaBank;
+    }
+
     public int getMaxHealth() {
         return currentClass == ClassType.NONE ? -1 : maxHealth;
     }
@@ -114,6 +120,10 @@ public class CharacterData extends PlayerData {
 
     public int getCurrentMana() {
         return currentClass == ClassType.NONE ? -1 : mana;
+    }
+
+    public int getManaBank(){
+        return manaBank;
     }
 
     public int getCurrentBloodPool() {
@@ -157,6 +167,14 @@ public class CharacterData extends PlayerData {
 
     public void setMana(int mana) {
         this.mana = mana;
+    }
+
+    public void setManaBank(int manaBank){
+        this.manaBank = manaBank;
+    }
+
+    public void setMaxManaBank(int maxManaBank){
+        this.maxManaBank = maxManaBank;
     }
 
     public void setMaxMana(int maxMana) {

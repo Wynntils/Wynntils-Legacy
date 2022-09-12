@@ -330,11 +330,25 @@ public class ClientEvents implements Listener {
         if (!Reference.onServer) return;
 
         PlayerInfo.get(BossBarData.class).updateBloodPoolBar(e.getPacket());
+        PlayerInfo.get(BossBarData.class).updateManaBankBar(e.getPacket());
 
-        if (OverlayConfig.BloodPool.INSTANCE.hideDefaultBar && e.getPacket() != null && e.getPacket().getName() != null) {
-            // (!) Do not remove .getName() check, Intellij is wrong about it
-            Matcher bpBarMatcher = BossBarData.BLOOD_POOL_PATTERN.matcher(e.getPacket().getName().getFormattedText());
-            if (bpBarMatcher.matches()) e.setCanceled(true);
+        if (e.getPacket() != null && e.getPacket().getName() != null){
+
+            if (OverlayConfig.BloodPool.INSTANCE.hideDefaultBar){
+                Matcher bpBarMatcher = BossBarData.BLOOD_POOL_PATTERN.matcher(e.getPacket().getName().getFormattedText());
+                if (bpBarMatcher.matches()){
+                    e.setCanceled(true);
+                    return;
+                }
+            }
+
+            if (OverlayConfig.ManaBank.INSTANCE.hideDefaultBar){
+                Matcher barMatcher = BossBarData.MANA_BANK_PATTERN.matcher(e.getPacket().getName().getFormattedText());
+                if (barMatcher.matches()) {
+                    e.setCanceled(true);
+                }
+            }
+
         }
     }
 
@@ -572,6 +586,10 @@ public class ClientEvents implements Listener {
         // Reset blood pools if class changes
         get(CharacterData.class).setMaxBloodPool(-1);
         get(CharacterData.class).setBloodPool(-1);
+        
+        // Reset mana bank
+        get(CharacterData.class).setManaBank(-1);
+        get(CharacterData.class).setMaxManaBank(-1);
 
         SpellData spellData = PlayerInfo.get(SpellData.class);
 
