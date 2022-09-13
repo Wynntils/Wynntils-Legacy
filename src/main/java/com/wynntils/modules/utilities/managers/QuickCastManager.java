@@ -54,7 +54,12 @@ public class QuickCastManager {
      * true in boolean fields represents right click.
      */
     private static void queueSpell(boolean first, boolean second, boolean third) {
-        if (System.currentTimeMillis() < earliestCastable) return;
+        if (System.currentTimeMillis() < earliestCastable) {
+            McIf.player().sendMessage(new TextComponentString(
+                    TextFormatting.GRAY + "Cannot start casting a spell while another spell cast is in progress."
+            ));
+            return;
+        }
 
         NetHandlerPlayClient connection = McIf.mc().getConnection();
         if (connection == null) return;
