@@ -33,7 +33,7 @@ public class BossBarData extends PlayerData {
         }
     }
 
-    public void updateManaBankBar(SPacketUpdateBossInfo packet){
+    public void updateManaBankBar(SPacketUpdateBossInfo packet) {
         if (packet == null || packet.getName() == null) return; // Ignore IntelliJ warning
         Matcher m = MANA_BANK_PATTERN.matcher(packet.getName().getFormattedText());
         if (m.matches()) {
