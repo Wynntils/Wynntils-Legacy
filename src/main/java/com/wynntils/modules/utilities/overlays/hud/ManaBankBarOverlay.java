@@ -44,7 +44,7 @@ public class ManaBankBarOverlay extends Overlay {
         }
 
         // Arcane Transfer detection - Workaround since it's undetectable through SpellEvent.Cast
-        if (lastMana != -1 && get(CharacterData.class).getCurrentMana() >= lastMana + trueManaBank - 1) { // can add leeway for arcane transfer detection here
+        if (lastMana != -1 && get(CharacterData.class).getCurrentMana() >= Math.min(lastMana + trueManaBank - 1, 399)) { // can add leeway for arcane transfer detection here
             get(CharacterData.class).setManaBank(0);
             trueManaBank = 0;
         }
