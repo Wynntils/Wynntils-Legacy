@@ -196,6 +196,9 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
+        @Setting(displayName = "Play Sound at 120 Mana Bank", description = "Should reaching 120 Mana Bank play a sound (for Chaos Explosion)?")
+        public boolean playSound = true;
+
         public enum ManaBankTextures {
             Wynn,
             Brune,

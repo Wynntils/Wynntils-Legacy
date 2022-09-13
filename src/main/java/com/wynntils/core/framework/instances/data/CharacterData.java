@@ -102,7 +102,7 @@ public class CharacterData extends PlayerData {
         return currentClass == ClassType.NONE ? -1 : maxMana;
     }
 
-    public int getMaxManaBank(){
+    public int getMaxManaBank() {
         return maxManaBank;
     }
 
@@ -122,7 +122,7 @@ public class CharacterData extends PlayerData {
         return currentClass == ClassType.NONE ? -1 : mana;
     }
 
-    public int getManaBank(){
+    public int getManaBank() {
         return manaBank;
     }
 
@@ -169,11 +169,11 @@ public class CharacterData extends PlayerData {
         this.mana = mana;
     }
 
-    public void setManaBank(int manaBank){
+    public void setManaBank(int manaBank) {
         this.manaBank = manaBank;
     }
 
-    public void setMaxManaBank(int maxManaBank){
+    public void setMaxManaBank(int maxManaBank) {
         this.maxManaBank = maxManaBank;
     }
 

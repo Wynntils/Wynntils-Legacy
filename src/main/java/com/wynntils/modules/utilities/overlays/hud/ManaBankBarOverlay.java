@@ -1,5 +1,6 @@
 package com.wynntils.modules.utilities.overlays.hud;
 
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.overlays.Overlay;
@@ -11,6 +12,8 @@ import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.core.enums.OverlayRotation;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+import net.minecraft.client.audio.PositionedSoundRecord;
+import net.minecraft.init.SoundEvents;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
@@ -26,12 +29,19 @@ public class ManaBankBarOverlay extends Overlay {
     public CustomColor textColor = CommonColors.LIGHT_BLUE;
 
     private static int manaBankDisplay = 0, lastMana = -1;
+    private static boolean over120 = false;
 
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
         visible = get(CharacterData.class).getManaBank() != -1 && !Reference.onLobby;
         if (!visible) return;
         int trueManaBank = get(CharacterData.class).getManaBank();
+        if (!over120 && trueManaBank >= 120) {
+            over120 = true;
+            textColor = CommonColors.MAGENTA;
+            if (OverlayConfig.ManaBank.INSTANCE.playSound)
+                McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getRecord(SoundEvents.BLOCK_NOTE_CHIME, 1.8f, 1f));
+        }
 
         // Arcane Transfer detection - Workaround since it's undetectable through SpellEvent.Cast
         if (lastMana != -1 && get(CharacterData.class).getCurrentMana() >= lastMana + trueManaBank - 1) { // can add leeway for arcane transfer detection here
@@ -39,6 +49,12 @@ public class ManaBankBarOverlay extends Overlay {
             trueManaBank = 0;
         }
         lastMana = get(CharacterData.class).getCurrentMana();
+
+        // Revert to blue bar at < 120 mana bank
+        if (over120 && trueManaBank < 120) {
+            over120 = false;
+            textColor = CommonColors.LIGHT_BLUE;
+        }
 
         if (OverlayConfig.ManaBank.INSTANCE.animated > 0 && OverlayConfig.ManaBank.INSTANCE.animated < 10) {
             manaBankDisplay += (OverlayConfig.ManaBank.INSTANCE.animated * 0.1f) * (trueManaBank - manaBankDisplay);
