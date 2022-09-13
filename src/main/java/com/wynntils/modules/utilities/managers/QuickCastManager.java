@@ -53,7 +53,7 @@ public class QuickCastManager {
      * Queues the spell to be sent to the server.
      * true in boolean fields represents right click.
      */
-    private static void queueSpell(boolean first, boolean second, boolean third) {
+    private static void queueSpell(boolean second, boolean third) {
         if (System.currentTimeMillis() < earliestCastable) {
             McIf.player().sendMessage(new TextComponentString(
                     TextFormatting.GRAY + "Cannot start casting a spell while another spell cast is in progress."
@@ -64,9 +64,20 @@ public class QuickCastManager {
         NetHandlerPlayClient connection = McIf.mc().getConnection();
         if (connection == null) return;
 
+        boolean first = SPELL_RIGHT;
+        if (PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ARCHER) {
+            // Archer spells are inverted
+            first = !first;
+            second = !second;
+            third = !third;
+        }
+        // Variables used in the lambda expressions below should be final
+        final boolean finalSecond = second;
+        final boolean finalThird = third;
+
         connection.sendPacket(first ? rightClick : leftClick);
-        new Delay(() -> connection.sendPacket(second ? rightClick : leftClick), delayTicks);
-        new Delay(() -> connection.sendPacket(third ? rightClick : leftClick), delayTicks * 2);
+        new Delay(() -> connection.sendPacket(finalSecond ? rightClick : leftClick), delayTicks);
+        new Delay(() -> connection.sendPacket(finalThird ? rightClick : leftClick), delayTicks * 2);
         // earliestCastable = (current time) + (delay in ticks * 3) * (50ms per tick) + (10ms buffer)
         // * 3 so there is still a delay between separate casts
         // + 10L as another buffer to prevent issues when spamming
@@ -124,44 +135,21 @@ public class QuickCastManager {
 
     public static void castFirstSpell() {
         if (checkSpellCastRequest(1) != CastCheckStatus.OK) return;
-
-        if (PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ARCHER) {
-            queueSpell(SPELL_LEFT, SPELL_RIGHT, SPELL_LEFT);
-            return;
-        }
-        queueSpell(SPELL_RIGHT, SPELL_LEFT, SPELL_RIGHT);
+        queueSpell(SPELL_LEFT, SPELL_RIGHT);
     }
 
     public static void castSecondSpell() {
         if (checkSpellCastRequest(2) != CastCheckStatus.OK) return;
-
-        if (PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ARCHER) {
-            queueSpell(SPELL_LEFT, SPELL_LEFT, SPELL_LEFT);
-            return;
-        }
-
-        queueSpell(SPELL_RIGHT, SPELL_RIGHT, SPELL_RIGHT);
+        queueSpell(SPELL_RIGHT, SPELL_RIGHT);
     }
 
     public static void castThirdSpell() {
         if (checkSpellCastRequest(3) != CastCheckStatus.OK) return;
-
-        if (PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ARCHER) {
-            queueSpell(SPELL_LEFT, SPELL_RIGHT, SPELL_RIGHT);
-            return;
-        }
-
-        queueSpell(SPELL_RIGHT, SPELL_LEFT, SPELL_LEFT);
+        queueSpell(SPELL_LEFT, SPELL_LEFT);
     }
 
     public static void castFourthSpell() {
         if (checkSpellCastRequest(4) != CastCheckStatus.OK) return;
-
-        if (PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ARCHER) {
-            queueSpell(SPELL_LEFT, SPELL_LEFT, SPELL_RIGHT);
-            return;
-        }
-
-        queueSpell(SPELL_RIGHT, SPELL_RIGHT, SPELL_LEFT);
+        queueSpell(SPELL_RIGHT, SPELL_LEFT);
     }
 }
