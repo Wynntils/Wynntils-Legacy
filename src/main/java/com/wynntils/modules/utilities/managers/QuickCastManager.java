@@ -67,7 +67,7 @@ public class QuickCastManager {
         connection.sendPacket(first ? rightClick : leftClick);
         new Delay(() -> connection.sendPacket(second ? rightClick : leftClick), delayTicks);
         new Delay(() -> connection.sendPacket(third ? rightClick : leftClick), delayTicks * 2);
-        // earliestCastable = (current time) + (delay in ticks * 3) * (50ms per tick)
+        // earliestCastable = (current time) + (delay in ticks * 3) * (50ms per tick) + (10ms buffer)
         // * 3 so there is still a delay between separate casts
         // + 10L as another buffer to prevent issues when spamming
         earliestCastable = System.currentTimeMillis() + delayTicks * 3L * 50L + 10L;
