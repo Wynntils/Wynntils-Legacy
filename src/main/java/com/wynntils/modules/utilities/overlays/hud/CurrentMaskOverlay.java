@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 
 public class CurrentMaskOverlay extends Overlay {
   public CurrentMaskOverlay() {
-    super("Current shaman mask overlay", 66, 10, true, 0.66f, 1f, -10, -38, OverlayGrowFrom.BOTTOM_RIGHT);
+    super("Current Shaman Mask Display", 66, 10, true, 0.66f, 1f, -10, -38, OverlayGrowFrom.BOTTOM_RIGHT);
   }
 
   @Setting(displayName = "Text Position", description = "The position offset of the text")
