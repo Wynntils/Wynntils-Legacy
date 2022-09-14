@@ -332,23 +332,20 @@ public class ClientEvents implements Listener {
         PlayerInfo.get(BossBarData.class).updateBloodPoolBar(e.getPacket());
         PlayerInfo.get(BossBarData.class).updateManaBankBar(e.getPacket());
 
-        if (e.getPacket() != null && e.getPacket().getName() != null) {
+        if (e.getPacket() == null || e.getPacket().getName() == null) return; // Ignore IntelliJ warning
 
-            if (OverlayConfig.BloodPool.INSTANCE.hideDefaultBar) {
-                Matcher bpBarMatcher = BossBarData.BLOOD_POOL_PATTERN.matcher(e.getPacket().getName().getFormattedText());
-                if (bpBarMatcher.matches()) {
-                    e.setCanceled(true);
-                    return;
-                }
+        if (OverlayConfig.BloodPool.INSTANCE.hideDefaultBar) {
+            Matcher bpBarMatcher = BossBarData.BLOOD_POOL_PATTERN.matcher(e.getPacket().getName().getFormattedText());
+            if (bpBarMatcher.matches()) {
+                e.setCanceled(true);
+                return;
             }
-
-            if (OverlayConfig.ManaBank.INSTANCE.hideDefaultBar) {
-                Matcher barMatcher = BossBarData.MANA_BANK_PATTERN.matcher(e.getPacket().getName().getFormattedText());
-                if (barMatcher.matches()) {
-                    e.setCanceled(true);
-                }
+        }
+        if (OverlayConfig.ManaBank.INSTANCE.hideDefaultBar) {
+            Matcher barMatcher = BossBarData.MANA_BANK_PATTERN.matcher(e.getPacket().getName().getFormattedText());
+            if (barMatcher.matches()) {
+                e.setCanceled(true);
             }
-
         }
     }
 

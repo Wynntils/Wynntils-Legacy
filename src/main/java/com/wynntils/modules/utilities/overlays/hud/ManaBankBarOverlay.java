@@ -28,7 +28,8 @@ public class ManaBankBarOverlay extends Overlay {
     @Setting(displayName = "Text Name", description = "What should the colour of the text be?")
     public CustomColor textColor = CommonColors.LIGHT_BLUE;
 
-    private static int manaBankDisplay = 0, lastMana = -1;
+    private static int manaBankDisplay = 0;
+    private static int lastMana = -1;
     private static boolean over120 = false;
 
     @Override
