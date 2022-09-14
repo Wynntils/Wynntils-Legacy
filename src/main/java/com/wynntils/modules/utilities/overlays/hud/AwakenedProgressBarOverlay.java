@@ -77,7 +77,7 @@ public class AwakenedProgressBarOverlay extends Overlay {
 
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2, CustomColor cc) {
         if (OverlayConfig.AwakenedProgress.INSTANCE.overlayRotation == OverlayRotation.NORMAL) {
-            drawString(get(CharacterData.class).getCurrentAwakenedProgress() + " ۞ " + get(CharacterData.class).getMaxAwakenedProgress(), textPositionOffset.a  - (81- OverlayConfig.AwakenedProgress.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.AwakenedProgress.INSTANCE.textShadow);
+            drawString(get(CharacterData.class).getCurrentAwakenedProgress() + " ۞ " + get(CharacterData.class).getMaxAwakenedProgress(), textPositionOffset.a  - (81 - OverlayConfig.AwakenedProgress.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.AwakenedProgress.INSTANCE.textShadow);
         }
 
         rotate(OverlayConfig.AwakenedProgress.INSTANCE.overlayRotation.getDegrees());
