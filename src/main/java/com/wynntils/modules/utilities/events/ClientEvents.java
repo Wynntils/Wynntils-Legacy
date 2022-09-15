@@ -1360,6 +1360,8 @@ public class ClientEvents implements Listener {
         if(!lowerInv.getName().endsWith("Abilities")) return;
 
         boolean up = scrollAmount > 0;
+        if(UtilitiesConfig.INSTANCE.invertAbilityScroll) up = !up;
+
         int slot = up ? 57 : 59;
 
         ItemStack itemStack = lowerInv.getStackInSlot(slot);
