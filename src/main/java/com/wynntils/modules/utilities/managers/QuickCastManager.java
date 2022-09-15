@@ -46,7 +46,6 @@ public class QuickCastManager implements Listener {
     // private static final CPacketPlayerDigging releaseClick = new CPacketPlayerDigging(CPacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN);
 
     private enum CastCheckStatus {
-        CHAR_LEVEL_REQ_NOT_MET,
         NOT_HOLDING_WEAPON,
         WEAPON_WRONG_CLASS,
         WEAPON_LEVEL_REQ_NOT_MET,
@@ -54,7 +53,6 @@ public class QuickCastManager implements Listener {
         OK
     }
 
-    private static final int[] spellUnlock = { 1, 6, 10, 10 };
     private static final Pattern SPELL_PATTERN =
             StringUtils.compileCCRegex("§([LR]|Right|Left)§-§([LR?]|Right|Left)§-§([LR?]|Right|Left)§");
     private static final Pattern CLASS_REQ_OK_PATTERN = Pattern.compile("§a✔§7 Class Req:.+");
@@ -89,7 +87,6 @@ public class QuickCastManager implements Listener {
         spell.add(isArcher != second);
         spell.add(isArcher != third);
 
-        System.out.println(spellInProgress);
         for (int i = 0; i < spellInProgress.size(); i++) {
             if (spellInProgress.get(i) != spell.get(i)) {
                 McIf.player().sendMessage(new TextComponentString(
@@ -184,15 +181,6 @@ public class QuickCastManager implements Listener {
     }
 
     private static CastCheckStatus checkSpellCastRequest(int spellNumber) {
-        // Check that the player has the minimum level required for the spell
-        // These levels are implicit as you only need a certain number of AP to unlock the spell
-        if (PlayerInfo.get(CharacterData.class).getLevel() < spellUnlock[spellNumber - 1]) {
-            McIf.player().sendMessage(new TextComponentString(
-                    TextFormatting.GRAY + "You have not yet unlocked this spell! You need to be level " + spellUnlock[spellNumber - 1] + " with the spell unlocked in the ability tree!"
-            ));
-            return CastCheckStatus.CHAR_LEVEL_REQ_NOT_MET;
-        }
-
         // Check that the player is holding a weapon
         ItemStack heldItem = McIf.player().getHeldItemMainhand();
         if (heldItem.isEmpty() || !ItemUtils.getStringLore(heldItem).contains("§7 Class Req:")) {
