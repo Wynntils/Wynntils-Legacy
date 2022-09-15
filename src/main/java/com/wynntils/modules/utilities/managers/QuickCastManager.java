@@ -180,7 +180,7 @@ public class QuickCastManager implements Listener {
         return spell;
     }
 
-    private static CastCheckStatus checkSpellCastRequest(int spellNumber) {
+    private static CastCheckStatus checkSpellCastRequest() {
         // Check that the player is holding a weapon
         ItemStack heldItem = McIf.player().getHeldItemMainhand();
         if (heldItem.isEmpty() || !ItemUtils.getStringLore(heldItem).contains("§7 Class Req:")) {
@@ -225,22 +225,22 @@ public class QuickCastManager implements Listener {
     }
 
     public static void castFirstSpell() {
-        if (checkSpellCastRequest(1) != CastCheckStatus.OK) return;
+        if (checkSpellCastRequest() != CastCheckStatus.OK) return;
         queueSpell(SPELL_RIGHT, SPELL_LEFT, SPELL_RIGHT);
     }
 
     public static void castSecondSpell() {
-        if (checkSpellCastRequest(2) != CastCheckStatus.OK) return;
+        if (checkSpellCastRequest() != CastCheckStatus.OK) return;
         queueSpell(SPELL_RIGHT, SPELL_RIGHT, SPELL_RIGHT);
     }
 
     public static void castThirdSpell() {
-        if (checkSpellCastRequest(3) != CastCheckStatus.OK) return;
+        if (checkSpellCastRequest() != CastCheckStatus.OK) return;
         queueSpell(SPELL_RIGHT, SPELL_LEFT, SPELL_LEFT);
     }
 
     public static void castFourthSpell() {
-        if (checkSpellCastRequest(4) != CastCheckStatus.OK) return;
+        if (checkSpellCastRequest() != CastCheckStatus.OK) return;
         queueSpell(SPELL_RIGHT, SPELL_RIGHT, SPELL_LEFT);
     }
 }
