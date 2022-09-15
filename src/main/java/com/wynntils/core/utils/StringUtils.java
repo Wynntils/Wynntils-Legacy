@@ -506,4 +506,8 @@ public class StringUtils {
             return defaultValue;
         }
     }
+
+    public static Pattern compileCCRegex(String regex) {
+        return Pattern.compile(regex.replace("§", "(?:§[0-9a-fklmnor])*"));
+    }
 }
