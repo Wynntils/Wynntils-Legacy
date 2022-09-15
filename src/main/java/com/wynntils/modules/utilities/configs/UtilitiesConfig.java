@@ -79,6 +79,9 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Clicking on Locked Items", description = "Should moving items to and from locked inventory slots be prevented?", order = 5)
     public boolean preventSlotClicking = false;
 
+    @Setting(displayName = "Scrolling in Ability Tree", description = "Should using the scroll wheel in the ability tree move a page down/up?", order = 5)
+    public boolean shouldAbilityScroll = false;
+
     @Setting(displayName = "Bank Dump Behaviour", description = "What should happen when the bank inventory dump button is clicked?", order = 18)
     public BankButtonSetting bankDumpButton = BankButtonSetting.Confirm;
 

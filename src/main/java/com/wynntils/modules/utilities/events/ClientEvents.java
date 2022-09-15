@@ -50,7 +50,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
-import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.ClickType;import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.Item;
@@ -76,7 +76,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
-import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Keyboard;import org.lwjgl.input.Mouse;
 
 import java.sql.Timestamp;
 import java.time.*;
@@ -1347,4 +1347,27 @@ public class ClientEvents implements Listener {
         // delay because ActionBar update may be late
         new Delay(() -> cd.setElementalSpecialString(""), 4);
     }
+
+    @SubscribeEvent
+    public void onAbilityTreeScroll(GuiOverlapEvent.ChestOverlap.HandleMouseInput e) {
+        if (!Reference.onWorld) return;
+        if(!UtilitiesConfig.INSTANCE.shouldAbilityScroll) return;
+
+        int scrollAmount = Mouse.getDWheel() / 120;
+        if(scrollAmount == 0) return;
+
+        IInventory lowerInv = e.getGui().getLowerInv();
+        if(!lowerInv.getName().endsWith("Abilities")) return;
+
+        boolean up = scrollAmount > 0;
+        int slot = up ? 57 : 59;
+
+        ItemStack itemStack = lowerInv.getStackInSlot(slot);
+
+        McIf.player().connection.sendPacket(new CPacketClickWindow(
+            McIf.player().openContainer.windowId,
+            slot, 2,  ClickType.PICKUP, itemStack,
+            McIf.player().openContainer.getNextTransactionID(McIf.player().inventory)));
+        }
+
 }
