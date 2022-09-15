@@ -498,4 +498,12 @@ public class StringUtils {
         }
         return treemap.get(l) + integerToRoman(number - l);
     }
+
+    public static int parseIntOr(String string, int defaultValue) {
+        try {
+            return Integer.parseInt(string);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+    }
 }
