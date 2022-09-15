@@ -330,7 +330,7 @@ public class ClientEvents implements Listener {
 
         PlayerInfo.get(BossBarData.class).updateBossbarStats(e.getPacket());
 
-        if (e.getPacket() == null ||e.getPacket().getName() == null) return;
+        if (e.getPacket() == null || e.getPacket().getName() == null) return;
 
         if (OverlayConfig.BloodPool.INSTANCE.hideDefaultBar) {
             // (!) Do not remove .getName() check, Intellij is wrong about it
