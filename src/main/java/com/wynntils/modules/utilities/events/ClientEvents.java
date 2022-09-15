@@ -1353,16 +1353,16 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void onAbilityTreeScroll(GuiOverlapEvent.ChestOverlap.HandleMouseInput e) {
         if (!Reference.onWorld) return;
-        if(!UtilitiesConfig.INSTANCE.shouldAbilityScroll) return;
+        if (!UtilitiesConfig.INSTANCE.shouldAbilityScroll) return;
 
         int scrollAmount = Mouse.getDWheel() / 120;
-        if(scrollAmount == 0) return;
+        if (scrollAmount == 0) return;
 
         IInventory lowerInv = e.getGui().getLowerInv();
-        if(!lowerInv.getName().endsWith("Abilities")) return;
+        if (!lowerInv.getName().endsWith("Abilities")) return;
 
         boolean up = scrollAmount > 0;
-        if(UtilitiesConfig.INSTANCE.invertAbilityScroll) up = !up;
+        if (UtilitiesConfig.INSTANCE.invertAbilityScroll) up = !up;
 
         int slot = up ? 57 : 59;
 
