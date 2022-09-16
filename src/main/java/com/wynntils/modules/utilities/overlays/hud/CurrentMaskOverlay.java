@@ -33,12 +33,8 @@ public class CurrentMaskOverlay extends Overlay {
         if (e.getPacket() == null || e.getPacket().getMessage() == null) return;
 
         String title = e.getPacket().getMessage().getFormattedText();
-        if (title.contains("Mask of the ")) {
-            parseSingle(title);
-            if (OverlayConfig.MaskOverlay.INSTANCE.hideSwitchingTitle) e.setCanceled(true);
-        }
-        else if (title.contains("➤")) {
-            parseMultiple(title);
+        if (title.contains("Mask of the ") || title.contains("➤")) {
+            parseMask(title);
             if (OverlayConfig.MaskOverlay.INSTANCE.hideSwitchingTitle) e.setCanceled(true);
         }
     }
@@ -51,31 +47,16 @@ public class CurrentMaskOverlay extends Overlay {
         drawString(text, textPositionOffset.a, textPositionOffset.b, CustomColor.fromTextFormatting(currentMask.color), SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.MaskOverlay.INSTANCE.textShadow);
     }
 
-    private static void parseMultiple(String title) {
-        if (title.contains("§cL")) currentMask = MaskType.LUNATIC;
+    private static void parseMask(String title) {
+        Matcher matcher = SINGLE_PATTERN.matcher(title);
+
+        if(title.contains("Awakened")) currentMask = MaskType.AWAKENED;
+        else if (title.contains("§cL")) currentMask = MaskType.LUNATIC;
         else if (title.contains("§6F")) currentMask = MaskType.FANATIC;
         else if (title.contains("§bC")) currentMask = MaskType.COWARD;
+        else if(title.startsWith("§8")) currentMask = MaskType.NONE;
+        else if(matcher.matches()) currentMask = MaskType.find(matcher.group(1));
         else currentMask = MaskType.NONE;
-    }
-
-    private static void parseSingle(String title) {
-        if (title.startsWith("§8")) {
-            currentMask = MaskType.NONE;
-            return;
-        }
-
-        if (title.contains("Awakened")) {
-            currentMask = MaskType.AWAKENED;
-            return;
-        }
-
-        Matcher matcher = SINGLE_PATTERN.matcher(title);
-        if (!matcher.matches()) {
-            currentMask = MaskType.NONE;
-            return;
-        }
-
-        currentMask = MaskType.find(matcher.group(1));
     }
 
     public enum MaskType {
