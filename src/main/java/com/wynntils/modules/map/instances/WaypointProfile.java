@@ -281,7 +281,7 @@ public class WaypointProfile {
             this.group = WaypointType.values()[group];
         }
 
-        if(format == 2) {
+        if (format == 2) {
             this.showBeaconBeam = buf.get() == 1;
         }
     }
