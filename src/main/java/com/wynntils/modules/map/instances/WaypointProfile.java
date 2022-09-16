@@ -95,7 +95,7 @@ public class WaypointProfile {
      * Returns an upper bound of the length (in bytes) encoding this waypoint will be (with the given format)
      */
     public int encodeLength(byte format) {
-        assert 0 <= format && format <= 2;
+        assert 0 <= format && format <= currentFormat;
 
         int sizeofInt = 4;
         // int sizeofLong = 8;
@@ -121,7 +121,7 @@ public class WaypointProfile {
     }
 
     public void encodeTo(byte format, ByteBuffer buf) {
-        assert 0 <= format && format <= 2;
+        assert 0 <= format && format <= currentFormat;
 
         byte[] name = this.name.getBytes(StandardCharsets.UTF_8);
 
@@ -162,7 +162,7 @@ public class WaypointProfile {
     }
 
     public String encode(byte format) {
-        assert 0 <= format && format <= 2;
+        assert 0 <= format && format <= currentFormat;
 
         ByteBuffer buf = ByteBuffer.allocateDirect(encodeLength(format));
         encodeTo(format, buf);
@@ -173,7 +173,7 @@ public class WaypointProfile {
     }
 
     public static void encodeTo(List<WaypointProfile> list, byte format, ByteBuffer buf) {
-        assert 0 <= format && format <= 2;
+        assert 0 <= format && format <= currentFormat;
 
         switch (format) {
             case 0:
@@ -193,7 +193,7 @@ public class WaypointProfile {
     }
 
     public static String encode(List<WaypointProfile> list, byte format) {
-        assert 0 <= format && format <= 2;
+        assert 0 <= format && format <= currentFormat;
 
         int size = 4 + 4 + list.stream().mapToInt(wp -> wp.encodeLength(format)).sum();
         ByteBuffer buf = ByteBuffer.allocateDirect(size);
@@ -205,7 +205,7 @@ public class WaypointProfile {
     }
 
     public void decode(byte format, String base64) throws IllegalArgumentException {
-        assert 0 <= format && format <= 1;
+        assert 0 <= format && format <= currentFormat;
 
         decode(format, Base64.getDecoder().decode(base64));
     }
@@ -219,7 +219,7 @@ public class WaypointProfile {
     }
 
     public void decode(byte format, ByteBuffer buf) throws IllegalArgumentException, BufferUnderflowException {
-        assert 0 <= format && format <= 2;
+        assert 0 <= format && format <= currentFormat;
 
         int nameSize = 0;
         switch (format) {
