@@ -142,18 +142,22 @@ public class TradeMarketOverlay implements Listener {
     }
 
     private void addCustomSellItems(String itemName, InventoryBasic inventory) {
-        if (StringUtils.parseIntOr(UtilitiesConfig.Market.INSTANCE.customSellButton1, 0) > 0) {
-            ItemStack itemStack = new ItemStack(buildNBT(itemName, StringUtils.parseIntOr(UtilitiesConfig.Market.INSTANCE.customSellButton1, 0), 1));
+
+        int firstAmount = StringUtils.parseIntOr(UtilitiesConfig.Market.INSTANCE.customSellButton1, 0);
+        if (firstAmount > 0) {
+            ItemStack itemStack = new ItemStack(buildNBT(itemName, firstAmount, 1));
             inventory.setInventorySlotContents(1, itemStack);
         }
 
-        if (StringUtils.parseIntOr(UtilitiesConfig.Market.INSTANCE.customSellButton2, 0) > 0) {
-            ItemStack itemStack = new ItemStack(buildNBT(itemName, StringUtils.parseIntOr(UtilitiesConfig.Market.INSTANCE.customSellButton2, 0), 2));
+        int secondAmount = StringUtils.parseIntOr(UtilitiesConfig.Market.INSTANCE.customSellButton2, 0);
+        if (secondAmount > 0) {
+            ItemStack itemStack = new ItemStack(buildNBT(itemName, secondAmount, 2));
             inventory.setInventorySlotContents(2, itemStack);
         }
 
-        if (StringUtils.parseIntOr(UtilitiesConfig.Market.INSTANCE.customSellButton3, 0) > 0) {
-            ItemStack itemStack = new ItemStack(buildNBT(itemName, StringUtils.parseIntOr(UtilitiesConfig.Market.INSTANCE.customSellButton3, 0), 3));
+        int thirdAmount = StringUtils.parseIntOr(UtilitiesConfig.Market.INSTANCE.customSellButton3, 0);
+        if (thirdAmount > 0) {
+            ItemStack itemStack = new ItemStack(buildNBT(itemName, thirdAmount, 3));
             inventory.setInventorySlotContents(3, itemStack);
         }
     }
