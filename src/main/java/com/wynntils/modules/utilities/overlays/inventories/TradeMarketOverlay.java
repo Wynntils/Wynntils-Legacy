@@ -40,7 +40,6 @@ public class TradeMarketOverlay implements Listener {
         if (amount <= 1) return;
 
         ItemStack itemStack = new ItemStack(buildNBT(itemName, amount, 0));
-        itemStack.setCount(100);
 
         inventory.setInventorySlotContents(20, itemStack);
 
@@ -56,11 +55,8 @@ public class TradeMarketOverlay implements Listener {
 
         NBTTagCompound nbtTagCompound = itemStack.serializeNBT().getCompoundTag("tag");
 
-        if (!nbtTagCompound.hasKey("wynntilsSellAmount")) {
-            System.out.println("does not have key");
-            System.out.println(nbtTagCompound);
-            return;
-        }
+        if (!nbtTagCompound.hasKey("wynntilsSellAmount")) return;
+
         amountToSend = nbtTagCompound.getInteger("wynntilsSellAmount");
         if (amountToSend <= 1) return;
 
@@ -90,7 +86,7 @@ public class TradeMarketOverlay implements Listener {
         nbt.setString("id", "minecraft:diamond_axe");
 
         if (isCustomSellButton) nbt.setInteger("Count", customSellAmountIndex);
-        else nbt.setInteger("Count", Math.min(64, amount));
+        else nbt.setInteger("Count", Math.min(amount, 64));
 
         NBTTagCompound display = tag.getCompoundTag("display");
         display.setString("Name", "§aSell All");
