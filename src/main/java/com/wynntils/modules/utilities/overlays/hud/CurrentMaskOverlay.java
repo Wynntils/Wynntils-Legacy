@@ -54,8 +54,8 @@ public class CurrentMaskOverlay extends Overlay {
         else if (title.contains("§cL")) currentMask = MaskType.LUNATIC;
         else if (title.contains("§6F")) currentMask = MaskType.FANATIC;
         else if (title.contains("§bC")) currentMask = MaskType.COWARD;
-        else if(title.startsWith("§8")) currentMask = MaskType.NONE;
-        else if(matcher.matches()) currentMask = MaskType.find(matcher.group(1));
+        else if (title.startsWith("§8")) currentMask = MaskType.NONE;
+        else if (matcher.matches()) currentMask = MaskType.find(matcher.group(1));
         else currentMask = MaskType.NONE;
     }
 
