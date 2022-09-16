@@ -101,6 +101,7 @@ public class TradeMarketOverlay implements Listener {
         lore.appendTag(new NBTTagString("§7This will sell: §6" + amount + " §7of " + itemName));
 
         if (isCustomSellButton) {
+            lore.appendTag(new NBTTagString(""));
             lore.appendTag(new NBTTagString("§cThis is a custom sell button. Change the amount by going into the settings"));
             lore.appendTag(new NBTTagString("§8(§7Utilities>Market>Custom Sell Amount§8)"));
         }
