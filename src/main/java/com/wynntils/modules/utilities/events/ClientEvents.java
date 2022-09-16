@@ -1359,7 +1359,7 @@ public class ClientEvents implements Listener {
         if (!Reference.onWorld) return;
         if (!UtilitiesConfig.INSTANCE.shouldAbilityScroll) return;
 
-        int scrollAmount = Mouse.getDWheel() / 120;
+        int scrollAmount = Mouse.getDWheel();
         if (scrollAmount == 0) return;
 
         IInventory lowerInv = e.getGui().getLowerInv();
