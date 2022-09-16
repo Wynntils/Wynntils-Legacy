@@ -44,14 +44,6 @@ public class QuickCastManager implements Listener {
     private static final CPacketAnimation leftClick = new CPacketAnimation(EnumHand.MAIN_HAND);
     private static final CPacketPlayerTryUseItem rightClick = new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND);
 
-    private enum CastCheckStatus {
-        NOT_HOLDING_WEAPON,
-        WEAPON_WRONG_CLASS,
-        WEAPON_LEVEL_REQ_NOT_MET,
-        WEAPON_SP_REQ_NOT_MET,
-        OK
-    }
-
     private static final Pattern SPELL_PATTERN =
             StringUtils.compileCCRegex("§([LR]|Right|Left)§-§([LR?]|Right|Left)§-§([LR?]|Right|Left)§");
     private static final Pattern CLASS_REQ_OK_PATTERN = Pattern.compile("§a✔§7 Class Req:.+");
@@ -184,39 +176,20 @@ public class QuickCastManager implements Listener {
     private static CastCheckStatus checkSpellCastRequest() {
         // Check that the player is holding a weapon
         ItemStack heldItem = McIf.player().getHeldItemMainhand();
-        if (heldItem.isEmpty() || !ItemUtils.getStringLore(heldItem).contains("§7 Class Req:")) {
-            McIf.player().sendMessage(new TextComponentString(
-                    TextFormatting.GRAY + "The held item is not a weapon."
-            ));
-            return CastCheckStatus.NOT_HOLDING_WEAPON;
-        }
+        if (heldItem.isEmpty() || !ItemUtils.getStringLore(heldItem).contains("§7 Class Req:")) return CastCheckStatus.NOT_HOLDING_WEAPON;
 
         // Check that the held weapon is the correct class
         Matcher weaponClassMatcher = CLASS_REQ_OK_PATTERN.matcher(ItemUtils.getStringLore(heldItem));
-        if (!weaponClassMatcher.find()) {
-            McIf.player().sendMessage(new TextComponentString(
-                    TextFormatting.GRAY + "The held weapon is not for this class."
-            ));
-            return CastCheckStatus.WEAPON_WRONG_CLASS;
-        }
+        if (!weaponClassMatcher.find()) return CastCheckStatus.WEAPON_WRONG_CLASS;
 
         // Check that the the user meets the level requirement for the weapon
         Matcher weaponLevelMatcher = COMBAT_LVL_REQ_OK_PATTERN.matcher(ItemUtils.getStringLore(heldItem));
-        if (!weaponLevelMatcher.find()) {
-            McIf.player().sendMessage(new TextComponentString(
-                    TextFormatting.GRAY + "You must level up your character to use this weapon."
-            ));
-            return CastCheckStatus.WEAPON_LEVEL_REQ_NOT_MET;
-        }
+        if (!weaponLevelMatcher.find()) return CastCheckStatus.WEAPON_LEVEL_REQ_NOT_MET;
 
         // Make sure that the user has enough skill points for the weapon
         Matcher weaponSkillPointMatcher = SKILL_POINT_MIN_NOT_REACHED_PATTERN.matcher(ItemUtils.getStringLore(heldItem));
-        if (weaponSkillPointMatcher.find()) { // (!) Not a negated check; the pattern matches when the skill point requirement is not met
-            McIf.player().sendMessage(new TextComponentString(
-                    TextFormatting.GRAY + "The current class does not have enough " + weaponSkillPointMatcher.group(1) + " assigned to use the held weapon."
-            ));
-            return CastCheckStatus.WEAPON_SP_REQ_NOT_MET;
-        }
+        // (!) Not a negated check; the pattern matches when the skill point requirement is not met
+        if (weaponSkillPointMatcher.find()) return CastCheckStatus.WEAPON_SP_REQ_NOT_MET;
 
         return CastCheckStatus.OK;
     }
@@ -226,22 +199,58 @@ public class QuickCastManager implements Listener {
     }
 
     public static void castFirstSpell() {
-        if (checkSpellCastRequest() != CastCheckStatus.OK) return;
+        CastCheckStatus status = checkSpellCastRequest();
+        if (status != CastCheckStatus.OK) {
+            status.sendMessage();
+            return;
+        }
         queueSpell(SPELL_RIGHT, SPELL_LEFT, SPELL_RIGHT);
     }
 
     public static void castSecondSpell() {
-        if (checkSpellCastRequest() != CastCheckStatus.OK) return;
+        CastCheckStatus status = checkSpellCastRequest();
+        if (status != CastCheckStatus.OK) {
+            status.sendMessage();
+            return;
+        }
         queueSpell(SPELL_RIGHT, SPELL_RIGHT, SPELL_RIGHT);
     }
 
     public static void castThirdSpell() {
-        if (checkSpellCastRequest() != CastCheckStatus.OK) return;
+        CastCheckStatus status = checkSpellCastRequest();
+        if (status != CastCheckStatus.OK) {
+            status.sendMessage();
+            return;
+        }
         queueSpell(SPELL_RIGHT, SPELL_LEFT, SPELL_LEFT);
     }
 
     public static void castFourthSpell() {
-        if (checkSpellCastRequest() != CastCheckStatus.OK) return;
+        CastCheckStatus status = checkSpellCastRequest();
+        if (status != CastCheckStatus.OK) {
+            status.sendMessage();
+            return;
+        }
         queueSpell(SPELL_RIGHT, SPELL_RIGHT, SPELL_LEFT);
+    }
+
+    private enum CastCheckStatus {
+        NOT_HOLDING_WEAPON("The held item is not a weapon."),
+        WEAPON_WRONG_CLASS("The held weapon is not for this class."),
+        WEAPON_LEVEL_REQ_NOT_MET("You must level up your character to use this weapon."),
+        WEAPON_SP_REQ_NOT_MET("The current class does not have enough %s assigned to use the held weapon."),
+        OK("");
+
+        private final String message;
+
+        CastCheckStatus(String message) {
+            this.message = message;
+        }
+
+        public void sendMessage() {
+            McIf.player().sendMessage(new TextComponentString(
+                    TextFormatting.GRAY + message)
+            );
+        }
     }
 }
