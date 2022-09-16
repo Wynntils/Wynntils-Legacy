@@ -113,6 +113,7 @@ public class ClientEvents implements Listener {
     private static final Pattern PRICE_REPLACER = Pattern.compile("§6 - §a. §f([1-9]\\d*)§7" + EmeraldSymbols.E_STRING);
     private static final Pattern INGREDIENT_SPLIT_PATTERN = Pattern.compile("§f(\\d+) x (.+)");
     private static final Pattern WAR_CHAT_MESSAGE_PATTERN = Pattern.compile("§3\\[WAR§3\\] The war for (.+) will start in \\d+ minutes.");
+    private static final Pattern ABILITY_TREE_PATTERN = Pattern.compile("(Shaman|Warrior|Assassin|Archer|Mage) Abilities");
 
     public static boolean isAwaitingHorseMount = false;
     private static int lastHorseId = -1;
@@ -1359,7 +1360,7 @@ public class ClientEvents implements Listener {
         if (scrollAmount == 0) return;
 
         IInventory lowerInv = e.getGui().getLowerInv();
-        if (!lowerInv.getName().endsWith("Abilities")) return;
+        if (!ABILITY_TREE_PATTERN.matcher(lowerInv.getName()).matches()) return;
 
         boolean up = scrollAmount > 0;
         if (UtilitiesConfig.INSTANCE.invertAbilityScroll) up = !up;
