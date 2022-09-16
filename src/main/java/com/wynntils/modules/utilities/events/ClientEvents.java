@@ -128,6 +128,9 @@ public class ClientEvents implements Listener {
     private int lastOpenedRewardWindowId = -1;
     private int timesClosed = 0;
 
+    private final int abilityTreePreviousSlot = 57;
+    private final int abilityTreeNextSlot = 59;
+
 
     @SubscribeEvent
     public void onMoveEvent(InputEvent.MouseInputEvent e) {
@@ -1365,7 +1368,7 @@ public class ClientEvents implements Listener {
         boolean up = scrollAmount > 0;
         if (UtilitiesConfig.INSTANCE.invertAbilityScroll) up = !up;
 
-        int slot = up ? 57 : 59;
+        int slot = up ? abilityTreePreviousSlot : abilityTreeNextSlot;
 
         ItemStack itemStack = lowerInv.getStackInSlot(slot);
 
