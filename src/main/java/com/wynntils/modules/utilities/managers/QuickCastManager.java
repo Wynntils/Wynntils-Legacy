@@ -19,20 +19,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.client.CPacketAnimation;
 import net.minecraft.network.play.client.CPacketHeldItemChange;
-import net.minecraft.network.play.client.CPacketPlayerDigging;
 import net.minecraft.network.play.client.CPacketPlayerTryUseItem;
 import net.minecraft.network.play.server.SPacketChat;
 import net.minecraft.network.play.server.SPacketTitle;
-import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,6 +57,8 @@ public class QuickCastManager implements Listener {
     private static final Pattern CLASS_REQ_OK_PATTERN = Pattern.compile("§a✔§7 Class Req:.+");
     private static final Pattern COMBAT_LVL_REQ_OK_PATTERN = Pattern.compile("§a✔§7 Combat Lv. Min:.+");
     private static final Pattern SKILL_POINT_MIN_NOT_REACHED_PATTERN = Pattern.compile("§c✖§7 (.+) Min: \\d+");
+
+    private static final int QUEUE_TICK_DELAY = 4;
 
     private static final Queue<Packet<?>> spellPacketQueue = new LinkedList<>();
     private static List<Boolean> spellInProgress = new ArrayList<>(3);
@@ -125,7 +127,7 @@ public class QuickCastManager implements Listener {
         if (slotChanged) connection.sendPacket(new CPacketHeldItemChange(currentSelectedSlot));
 
         // Number of ticks to delay between spell cast button inputs
-        if (!spellPacketQueue.isEmpty()) packetQueueCountdown = 4;
+        if (!spellPacketQueue.isEmpty()) packetQueueCountdown = QUEUE_TICK_DELAY;
     }
 
     @SubscribeEvent
