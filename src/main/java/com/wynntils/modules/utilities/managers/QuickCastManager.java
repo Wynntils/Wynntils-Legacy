@@ -43,7 +43,6 @@ public class QuickCastManager implements Listener {
 
     private static final CPacketAnimation leftClick = new CPacketAnimation(EnumHand.MAIN_HAND);
     private static final CPacketPlayerTryUseItem rightClick = new CPacketPlayerTryUseItem(EnumHand.MAIN_HAND);
-    // private static final CPacketPlayerDigging releaseClick = new CPacketPlayerDigging(CPacketPlayerDigging.Action.RELEASE_USE_ITEM, BlockPos.ORIGIN, EnumFacing.DOWN);
 
     private enum CastCheckStatus {
         NOT_HOLDING_WEAPON,
