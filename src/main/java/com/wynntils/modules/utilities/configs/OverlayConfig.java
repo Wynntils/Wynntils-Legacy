@@ -189,8 +189,8 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Mana Bank Texture", description = "What texture should be used for the mana bank bar?")
         public ManaBankTextures manaBankTexture = ManaBankTextures.b;
 
-        @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
         @Setting(displayName = "Animation Speed", description = "How fast should the animation be played?\n\n§8Set this to 0 for it to display instantly.")
+        @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
         public float animated = 2f;
 
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
