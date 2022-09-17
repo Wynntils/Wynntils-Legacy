@@ -30,15 +30,15 @@ public class ManaBankBarOverlay extends Overlay {
 
     private static int manaBankDisplay = 0;
     private static int lastMana = -1;
-    private static boolean over120 = false;
+    private static boolean chaosExplosionReady = false;
 
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
         visible = get(CharacterData.class).getManaBank() != -1 && !Reference.onLobby;
         if (!visible) return;
         int trueManaBank = get(CharacterData.class).getManaBank();
-        if (!over120 && trueManaBank >= 120) {
-            over120 = true;
+        if (!chaosExplosionReady && trueManaBank >= 120) {
+            chaosExplosionReady = true;
             textColor = CommonColors.MAGENTA;
             if (OverlayConfig.ManaBank.INSTANCE.playSound)
                 McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getRecord(SoundEvents.BLOCK_NOTE_CHIME, 1.8f, 1f));
@@ -52,8 +52,8 @@ public class ManaBankBarOverlay extends Overlay {
         lastMana = get(CharacterData.class).getCurrentMana();
 
         // Revert to blue bar at < 120 mana bank
-        if (over120 && trueManaBank < 120) {
-            over120 = false;
+        if (chaosExplosionReady && trueManaBank < 120) {
+            chaosExplosionReady = false;
             textColor = CommonColors.LIGHT_BLUE;
         }
 
