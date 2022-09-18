@@ -13,14 +13,21 @@ public class BossBarData extends PlayerData {
     public static final Pattern BLOOD_POOL_PATTERN = Pattern.compile("§cBlood Pool §4\\[§c(\\d+)%§4]§r");
     private static final DecimalFormat maxBloodPoolFormat = new DecimalFormat("#0");
 
+    public static final Pattern AWAKENED_PROGRESS_PATTERN = Pattern.compile("§fAwakening §7\\[§f(\\d+)/200§7]§r");
+
     public BossBarData() {
         maxBloodPoolFormat.setRoundingMode(RoundingMode.DOWN);
     }
 
-    public void updateBloodPoolBar(SPacketUpdateBossInfo packet) {
+    public void updateBossbarStats(SPacketUpdateBossInfo packet) {
         // (!) Do not remove .getName() check, Intellij is wrong about it
         if (packet == null || packet.getName() == null) return;
 
+        updateBloodPool(packet);
+        updateAwakenedBar(packet);
+    }
+
+    private void updateBloodPool(SPacketUpdateBossInfo packet) {
         Matcher m = BLOOD_POOL_PATTERN.matcher(packet.getName().getFormattedText());
         if (!m.matches()) return;
 
@@ -30,5 +37,13 @@ public class BossBarData extends PlayerData {
             int maxBloodPool = Integer.parseInt(maxBloodPoolFormat.format(bloodPool / packet.getPercent()));
             get(CharacterData.class).setMaxBloodPool(maxBloodPool);
         }
+    }
+
+    private void updateAwakenedBar(SPacketUpdateBossInfo packet) {
+        Matcher m = AWAKENED_PROGRESS_PATTERN.matcher(packet.getName().getFormattedText());
+        if (!m.matches()) return;
+
+        int awakeningProgress = Integer.parseInt(m.group(1));
+        get(CharacterData.class).setAwakenedProgress(awakeningProgress);
     }
 }

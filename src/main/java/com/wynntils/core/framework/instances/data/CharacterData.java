@@ -29,6 +29,7 @@ public class CharacterData extends PlayerData {
     private int maxMana = -1;
     private int bloodPool = -1;
     private int maxBloodPool = -1;
+    private int awakenedProgress = -1;
     private int level = -1;
     private float experiencePercentage = -1;
     private String elementalSpecialString = "";
@@ -119,6 +120,13 @@ public class CharacterData extends PlayerData {
     public int getCurrentBloodPool() {
         return currentClass == ClassType.NONE ? -1 : bloodPool;
     }
+    public int getCurrentAwakenedProgress() {
+        return currentClass == ClassType.NONE ? -1 : awakenedProgress;
+    }
+
+    public int getMaxAwakenedProgress() {
+        return currentClass == ClassType.NONE ? -1 : 200;
+    }
 
     public String getElementalSpecialString() {
         return elementalSpecialString;
@@ -169,6 +177,9 @@ public class CharacterData extends PlayerData {
 
     public void setMaxBloodPool(int maxBloodPool) {
         this.maxBloodPool = maxBloodPool;
+    }
+    public void setAwakenedProgress(int awakenedProgress) {
+        this.awakenedProgress = awakenedProgress;
     }
 
     public void setElementalSpecialString(String elementalSpecialString) {
