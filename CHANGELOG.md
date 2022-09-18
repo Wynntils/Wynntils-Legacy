@@ -1,7 +1,7 @@
-## [1.13.0](https://github.com/Wynntils/Wynntils/compare/v1.12.3...v1.13.0) (2022-09-18)
+## [1.14.0](https://github.com/Wynntils/Wynntils/compare/v1.13.0...v1.14.0) (2022-09-18)
 
 
 ### Features
 
-* add awakening mask progress bar ([#576](https://github.com/Wynntils/Wynntils/issues/576)) ([6a7d857](https://github.com/Wynntils/Wynntils/commit/6a7d8573c061c82c43773c1534fdae6612dc3af7))
+* click to copy message ([#565](https://github.com/Wynntils/Wynntils/issues/565)) ([c26b811](https://github.com/Wynntils/Wynntils/commit/c26b8118878269ce0bdb6fca32fb695ffac1e5af))
 
