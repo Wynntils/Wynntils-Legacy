@@ -1,7 +1,7 @@
-## [1.14.0](https://github.com/Wynntils/Wynntils/compare/v1.13.0...v1.14.0) (2022-09-18)
+### [1.14.1](https://github.com/Wynntils/Wynntils/compare/v1.14.0...v1.14.1) (2022-09-18)
 
 
-### Features
+### Bug Fixes
 
-* click to copy message ([#565](https://github.com/Wynntils/Wynntils/issues/565)) ([c26b811](https://github.com/Wynntils/Wynntils/commit/c26b8118878269ce0bdb6fca32fb695ffac1e5af))
+* old waypoints being invalid when trying to import ([#583](https://github.com/Wynntils/Wynntils/issues/583)) ([05d4b83](https://github.com/Wynntils/Wynntils/commit/05d4b832c69767b9caa52ef6d1aadecb0432b9fc))
 
