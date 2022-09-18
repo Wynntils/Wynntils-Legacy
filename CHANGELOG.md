@@ -1,7 +1,7 @@
-### [1.12.3](https://github.com/Wynntils/Wynntils/compare/v1.12.2...v1.12.3) (2022-09-16)
+## [1.13.0](https://github.com/Wynntils/Wynntils/compare/v1.12.3...v1.13.0) (2022-09-18)
 
 
-### Bug Fixes
+### Features
 
-* Remove shortid fix ([#581](https://github.com/Wynntils/Wynntils/issues/581)) ([2b8ad6b](https://github.com/Wynntils/Wynntils/commit/2b8ad6bb827f91493208fc47260170e43735af5c))
+* add awakening mask progress bar ([#576](https://github.com/Wynntils/Wynntils/issues/576)) ([6a7d857](https://github.com/Wynntils/Wynntils/commit/6a7d8573c061c82c43773c1534fdae6612dc3af7))
 
