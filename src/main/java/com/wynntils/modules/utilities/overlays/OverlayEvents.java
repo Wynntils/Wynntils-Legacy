@@ -16,6 +16,7 @@ import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+import com.wynntils.modules.utilities.instances.ShamanMaskType;
 import com.wynntils.modules.utilities.instances.Toast;
 import com.wynntils.modules.utilities.managers.MountHorseManager;
 import com.wynntils.modules.utilities.overlays.hud.*;
@@ -49,6 +50,7 @@ public class OverlayEvents implements Listener {
     private static final Pattern CHEST_COOLDOWN_PATTERN = Pattern.compile("§7Please wait an additional ([0-9]+) minutes? before opening this chest.");
     private static final Pattern GATHERING_COOLDOWN_PATTERN = Pattern.compile("^You need to wait ([0-9]+) seconds after logging in to gather from this resource!");
     private static final Pattern SERVER_RESTART_PATTERN = Pattern.compile("§cThis world will restart in ([0-9]+) (minutes?|seconds?)\\.");
+    private static final Pattern MASK_PATTERN = Pattern.compile("§cMask of the (Coward|Lunatic|Fanatic)§r");
 
     //private static boolean wynnExpTimestampNotified = false;
     private long loginTime;
@@ -70,8 +72,29 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void onTitle(PacketEvent<SPacketTitle> e) {
+        if (e.getPacket() == null || e.getPacket().getMessage() == null) return;
+
         WarTimerOverlay.onTitle(e);
-        UtilitiesModule.getModule().getCurrentMaskOverlay().onTitle(e);
+
+        String title = e.getPacket().getMessage().getFormattedText();
+        if (title.contains("Mask of the ") || title.contains("➤")) {
+            parseMask(title);
+            if (OverlayConfig.MaskOverlay.INSTANCE.hideSwitchingTitle) e.setCanceled(true);
+        }
+    }
+
+    private void parseMask(String title) {
+        Matcher matcher = MASK_PATTERN.matcher(title);
+
+        ShamanMaskType currentMask = ShamanMaskType.NONE;
+        if(title.contains("Awakened")) currentMask = ShamanMaskType.AWAKENED;
+        else if (title.contains("§cL")) currentMask = ShamanMaskType.LUNATIC;
+        else if (title.contains("§6F")) currentMask = ShamanMaskType.FANATIC;
+        else if (title.contains("§bC")) currentMask = ShamanMaskType.COWARD;
+        else if (title.startsWith("§8")) currentMask = ShamanMaskType.NONE;
+        else if (matcher.matches()) currentMask = ShamanMaskType.find(matcher.group(1));
+
+        PlayerInfo.get(CharacterData.class).setCurrentShamanMask(currentMask);
     }
 
     @SubscribeEvent
