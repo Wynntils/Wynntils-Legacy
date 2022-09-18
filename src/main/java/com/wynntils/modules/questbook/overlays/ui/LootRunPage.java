@@ -4,7 +4,6 @@
 
 package com.wynntils.modules.questbook.overlays.ui;
 
-import com.mojang.realmsclient.gui.ChatFormatting;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
@@ -174,7 +173,7 @@ public class LootRunPage extends QuestBookListPage<String> {
         if (LootRunManager.getLastLootrun().isPresent()) {
             //render info
             ScreenRenderer.scale(1.2f);
-            render.drawString(LootRunManager.getLastLootrun().get().a + ChatFormatting.GRAY + " (" + (LootRunManager.getActivePaths().size() - 1) + " others)", x / 1.2f - 154 / 1.2f, y / 1.2f - 35 / 1.2f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+            render.drawString(LootRunManager.getLastLootrun().get().a + TextFormatting.GRAY + " (" + (LootRunManager.getActivePaths().size() - 1) + " others)", x / 1.2f - 154 / 1.2f, y / 1.2f - 35 / 1.2f, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
             ScreenRenderer.resetScale();
 
             LootRunPath path = LootRunManager.getLastLootrun().get().b;

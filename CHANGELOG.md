@@ -1,7 +1,7 @@
-### [1.12.3](https://github.com/Wynntils/Wynntils/compare/v1.12.2...v1.12.3) (2022-09-16)
+## [1.14.0](https://github.com/Wynntils/Wynntils/compare/v1.13.0...v1.14.0) (2022-09-18)
 
 
-### Bug Fixes
+### Features
 
-* Remove shortid fix ([#581](https://github.com/Wynntils/Wynntils/issues/581)) ([2b8ad6b](https://github.com/Wynntils/Wynntils/commit/2b8ad6bb827f91493208fc47260170e43735af5c))
+* click to copy message ([#565](https://github.com/Wynntils/Wynntils/issues/565)) ([c26b811](https://github.com/Wynntils/Wynntils/commit/c26b8118878269ce0bdb6fca32fb695ffac1e5af))
 
