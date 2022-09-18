@@ -6,7 +6,7 @@ plugins {
 	id "com.github.johnrengelman.shadow" version "7.1.0"
 }
 
-def versionObj = new Version(major: 1, minor: 11, revision: 4)
+def versionObj = new Version(major: 1, minor: 12, revision: 3)
 
 version = versionObj.toString()
 group = mod_base_package
@@ -97,3 +97,12 @@ class Version {
 }
 
 jar.dependsOn("shadowJar")
+
+task installLocalGitHook(type: Copy) {
+    from new File(rootProject.rootDir, '.github/hooks/commit-msg')
+    into { new File(rootProject.rootDir, '.git/hooks') }
+    fileMode 0775
+}
+
+prepareKotlinBuildScriptModel.dependsOn installLocalGitHook
+build.dependsOn installLocalGitHook

@@ -83,6 +83,7 @@ public class CommandLootRun extends CommandBase implements IClientCommand {
                     throw new WrongUsageException("/lootrun load [name]");
                 }
                 String name = getNameWithSpaces(args);
+
                 Optional<LootRunPath> result = LootRunManager.loadFromFile(name);
 
                 if (result.isPresent()) sender.sendMessage(new TextComponentString(GREEN + "Loaded lootrun " + name + " successfully! " + GRAY + "(" + result.get().getChests().size() + " chests)"));

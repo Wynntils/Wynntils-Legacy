@@ -25,8 +25,13 @@ public class CharacterData extends PlayerData {
 
     private int health = -1;
     private int maxHealth = -1;
+    private int mana = -1;
+    private int maxMana = -1;
+    private int bloodPool = -1;
+    private int maxBloodPool = -1;
     private int level = -1;
     private float experiencePercentage = -1;
+    private String elementalSpecialString = "";
 
     int lastLevel = 0;
     int lastXp = 0;
@@ -92,11 +97,15 @@ public class CharacterData extends PlayerData {
     }
 
     public int getMaxMana() {
-        return currentClass == ClassType.NONE ? -1 : 20;
+        return currentClass == ClassType.NONE ? -1 : maxMana;
     }
 
     public int getMaxHealth() {
         return currentClass == ClassType.NONE ? -1 : maxHealth;
+    }
+
+    public int getMaxBloodPool() {
+        return currentClass == ClassType.NONE ? -1 : maxBloodPool;
     }
 
     public int getCurrentHealth() {
@@ -104,7 +113,15 @@ public class CharacterData extends PlayerData {
     }
 
     public int getCurrentMana() {
-        return currentClass == ClassType.NONE ? -1 : getPlayer().getFoodStats().getFoodLevel();
+        return currentClass == ClassType.NONE ? -1 : mana;
+    }
+
+    public int getCurrentBloodPool() {
+        return currentClass == ClassType.NONE ? -1 : bloodPool;
+    }
+
+    public String getElementalSpecialString() {
+        return elementalSpecialString;
     }
 
     public int getClassId() {
@@ -136,6 +153,26 @@ public class CharacterData extends PlayerData {
 
     public void setMaxHealth(int maxHealth) {
         this.maxHealth = maxHealth;
+    }
+
+    public void setMana(int mana) {
+        this.mana = mana;
+    }
+
+    public void setMaxMana(int maxMana) {
+        this.maxMana = maxMana;
+    }
+
+    public void setBloodPool(int bloodPool) {
+        this.bloodPool = bloodPool;
+    }
+
+    public void setMaxBloodPool(int maxBloodPool) {
+        this.maxBloodPool = maxBloodPool;
+    }
+
+    public void setElementalSpecialString(String elementalSpecialString) {
+        this.elementalSpecialString = elementalSpecialString;
     }
 
     public void setLevel(int level) {
