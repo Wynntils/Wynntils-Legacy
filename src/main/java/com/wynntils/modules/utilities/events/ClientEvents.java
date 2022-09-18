@@ -24,6 +24,7 @@ import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.core.utils.reference.RequirementSymbols;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
+import com.wynntils.modules.core.enums.ScrollDirection;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
@@ -1365,9 +1366,7 @@ public class ClientEvents implements Listener {
         IInventory lowerInv = e.getGui().getLowerInv();
         if (!ABILITY_TREE_PATTERN.matcher(lowerInv.getName()).matches()) return;
 
-        boolean up = scrollAmount > 0;
-        if (UtilitiesConfig.INSTANCE.invertAbilityScroll) up = !up;
-
+        boolean up = (scrollAmount > 0) ^ UtilitiesConfig.INSTANCE.abilityScrollDirection == ScrollDirection.UP;
         int slot = up ? abilityTreePreviousSlot : abilityTreeNextSlot;
 
         ItemStack itemStack = lowerInv.getStackInSlot(slot);
