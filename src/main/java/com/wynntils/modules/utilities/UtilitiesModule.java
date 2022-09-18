@@ -27,6 +27,7 @@ public class UtilitiesModule extends Module {
     private GameUpdateOverlay gameUpdateOverlay;
     private ActionBarOverlay actionBarOverlay;
     private InfoFormatter infoFormatter;
+    private CurrentMaskOverlay currentMaskOverlay;
 
     public void onEnable() {
         module = this;
@@ -70,7 +71,7 @@ public class UtilitiesModule extends Module {
         registerOverlay(new ManaBankBarOverlay(), Priority.NORMAL);
         registerOverlay(new AwakenedProgressBarOverlay(), Priority.NORMAL);
         registerOverlay(new ExpBarOverlay(), Priority.NORMAL);
-        registerOverlay(new CurrentMaskOverlay(), Priority.NORMAL);
+        registerOverlay(currentMaskOverlay = new CurrentMaskOverlay(), Priority.NORMAL);
         registerOverlay(new LevelingOverlay(), Priority.LOW);
         registerOverlay(new BubblesOverlay(), Priority.HIGHEST);
         registerOverlay(new DrowningVignetteOverlay(), Priority.HIGHEST);
@@ -144,6 +145,10 @@ public class UtilitiesModule extends Module {
 
     public ActionBarOverlay getActionBarOverlay() {
         return actionBarOverlay;
+    }
+
+    public CurrentMaskOverlay getCurrentMaskOverlay() {
+        return currentMaskOverlay;
     }
 
     public InfoFormatter getInfoFormatter() {

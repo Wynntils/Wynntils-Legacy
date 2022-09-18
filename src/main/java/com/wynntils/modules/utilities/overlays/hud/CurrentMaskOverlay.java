@@ -9,11 +9,10 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+import com.wynntils.modules.utilities.instances.ShamanMaskType;
 import net.minecraft.network.play.server.SPacketTitle;
-import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
-import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,9 +26,7 @@ public class CurrentMaskOverlay extends Overlay {
 
     private static final Pattern SINGLE_PATTERN = Pattern.compile("§cMask of the (Coward|Lunatic|Fanatic)§r");
 
-    public static MaskType currentMask = MaskType.NONE;
-
-    public static void onTitle(PacketEvent<SPacketTitle> e) {
+    public void onTitle(PacketEvent<SPacketTitle> e) {
         if (e.getPacket() == null || e.getPacket().getMessage() == null) return;
 
         String title = e.getPacket().getMessage().getFormattedText();
@@ -43,51 +40,24 @@ public class CurrentMaskOverlay extends Overlay {
     public void render(RenderGameOverlayEvent.Pre event) {
         if (!visible) return;
         if (get(CharacterData.class).getCurrentClass() != ClassType.SHAMAN) return;
+        ShamanMaskType currentMask = get(CharacterData.class).getCurrentShamanMask();
         String text = currentMask.getText();
-        drawString(text, textPositionOffset.a, textPositionOffset.b, CustomColor.fromTextFormatting(currentMask.color), SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.MaskOverlay.INSTANCE.textShadow);
+        drawString(text, textPositionOffset.a, textPositionOffset.b, CustomColor.fromTextFormatting(currentMask.getColor()), SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.MaskOverlay.INSTANCE.textShadow);
     }
 
-    private static void parseMask(String title) {
+    private void parseMask(String title) {
         Matcher matcher = SINGLE_PATTERN.matcher(title);
 
-        if(title.contains("Awakened")) currentMask = MaskType.AWAKENED;
-        else if (title.contains("§cL")) currentMask = MaskType.LUNATIC;
-        else if (title.contains("§6F")) currentMask = MaskType.FANATIC;
-        else if (title.contains("§bC")) currentMask = MaskType.COWARD;
-        else if (title.startsWith("§8")) currentMask = MaskType.NONE;
-        else if (matcher.matches()) currentMask = MaskType.find(matcher.group(1));
-        else currentMask = MaskType.NONE;
+        ShamanMaskType currentMask = ShamanMaskType.NONE;
+        if(title.contains("Awakened")) currentMask = ShamanMaskType.AWAKENED;
+        else if (title.contains("§cL")) currentMask = ShamanMaskType.LUNATIC;
+        else if (title.contains("§6F")) currentMask = ShamanMaskType.FANATIC;
+        else if (title.contains("§bC")) currentMask = ShamanMaskType.COWARD;
+        else if (title.startsWith("§8")) currentMask = ShamanMaskType.NONE;
+        else if (matcher.matches()) currentMask = ShamanMaskType.find(matcher.group(1));
+
+        get(CharacterData.class).setCurrentShamanMask(currentMask);
     }
 
-    public enum MaskType {
-        NONE("None", TextFormatting.GRAY, "None", () -> OverlayConfig.MaskOverlay.INSTANCE.displayStringNone),
-        LUNATIC("L", TextFormatting.RED, "Lunatic", () -> OverlayConfig.MaskOverlay.INSTANCE.displayStringLunatic),
-        FANATIC("F", TextFormatting.GOLD, "Fanatic", () -> OverlayConfig.MaskOverlay.INSTANCE.displayStringFanatic),
-        COWARD("C", TextFormatting.AQUA, "Coward", () -> OverlayConfig.MaskOverlay.INSTANCE.displayStringCoward),
-        AWAKENED("A", TextFormatting.DARK_PURPLE, "Awakened", () -> OverlayConfig.MaskOverlay.INSTANCE.displayStringAwakened);
-
-        private final String alias;
-        private final TextFormatting color;
-        private final String name;
-        private final Supplier<String> display;
-
-        MaskType(String alias, TextFormatting color, String name, Supplier<String> display) {
-            this.alias = alias;
-            this.color = color;
-            this.name = name;
-            this.display = display;
-        }
-
-        public static MaskType find(String text) {
-            for(MaskType type : values()) {
-                if (type.alias.equals(text) || type.name.equals(text)) return type;
-            }
-            return NONE;
-        }
-
-        public String getText() {
-            return display.get().replace("%mask%", name).replace("&", "§");
-        }
-    }
 
 }

@@ -35,10 +35,10 @@ import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+import com.wynntils.modules.utilities.instances.ShamanMaskType;
 import com.wynntils.modules.utilities.managers.KillsManager;
 import com.wynntils.modules.utilities.managers.LevelingManager;
 import com.wynntils.modules.utilities.managers.QuickCastManager;
-import com.wynntils.modules.utilities.overlays.hud.CurrentMaskOverlay;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiIngameMenu;
@@ -591,7 +591,7 @@ public class ClientEvents implements Listener {
         // Reset blood pools if class changes
         get(CharacterData.class).setMaxBloodPool(-1);
         get(CharacterData.class).setBloodPool(-1);
-        CurrentMaskOverlay.currentMask = CurrentMaskOverlay.MaskType.NONE;
+        get(CharacterData.class).setCurrentShamanMask(ShamanMaskType.NONE);
         get(CharacterData.class).setAwakenedProgress(-1);
 
         // Reset mana bank
