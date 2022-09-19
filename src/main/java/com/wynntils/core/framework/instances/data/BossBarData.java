@@ -42,7 +42,6 @@ public class BossBarData extends PlayerData {
     }
 
     private void updateManaBankBar(SPacketUpdateBossInfo packet) {
-        if (packet == null || packet.getName() == null) return; // Ignore IntelliJ warning
         Matcher m = MANA_BANK_PATTERN.matcher(packet.getName().getFormattedText());
         if (!m.matches()) return;
         get(CharacterData.class).setManaBank(Integer.parseInt(m.group(1)));

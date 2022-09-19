@@ -130,6 +130,7 @@ public class CharacterData extends PlayerData {
     public int getCurrentBloodPool() {
         return currentClass == ClassType.NONE ? -1 : bloodPool;
     }
+
     public int getCurrentAwakenedProgress() {
         return currentClass == ClassType.NONE ? -1 : awakenedProgress;
     }
@@ -196,6 +197,7 @@ public class CharacterData extends PlayerData {
     public void setMaxBloodPool(int maxBloodPool) {
         this.maxBloodPool = maxBloodPool;
     }
+
     public void setAwakenedProgress(int awakenedProgress) {
         this.awakenedProgress = awakenedProgress;
     }

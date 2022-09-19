@@ -171,7 +171,7 @@ public class OverlayConfig extends SettingsClass {
             // following the format, to add more textures, register them here with a name and create a special case in the render method
         }
     }
-  
+
     @SettingsInfo(name = "mana_bank_settings", displayPath = "Utilities/Overlays/Mana Bank")
     public static class ManaBank extends SettingsClass {
         public static ManaBank INSTANCE;
@@ -211,6 +211,7 @@ public class OverlayConfig extends SettingsClass {
             b,
             c,
             d
+            // following the format, to add more textures, register them here with a name and create a special case in the render method
         }
     }
 
