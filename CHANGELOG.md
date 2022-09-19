@@ -1,7 +1,7 @@
-### [1.14.1](https://github.com/Wynntils/Wynntils/compare/v1.14.0...v1.14.1) (2022-09-18)
+### [1.14.2](https://github.com/Wynntils/Wynntils/compare/v1.14.1...v1.14.2) (2022-09-19)
 
 
 ### Bug Fixes
 
-* old waypoints being invalid when trying to import ([#583](https://github.com/Wynntils/Wynntils/issues/583)) ([05d4b83](https://github.com/Wynntils/Wynntils/commit/05d4b832c69767b9caa52ef6d1aadecb0432b9fc))
+* Fix quick cast keys ([#574](https://github.com/Wynntils/Wynntils/issues/574)) ([ef10a7a](https://github.com/Wynntils/Wynntils/commit/ef10a7a55b8ca4e4a1df9b6f91b0f1d815f372fb))
 
