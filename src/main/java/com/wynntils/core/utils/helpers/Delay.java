@@ -15,6 +15,11 @@ public class Delay {
     private boolean isRunning = true;
     private boolean onPause = false;
 
+    /**
+     * Creates a new Delay which is registered to the event bus
+     * @param function the function to run after the delay
+     * @param delay the delay in ticks
+     */
     public Delay(Runnable function, int delay) {
         this.function = function;
         this.delay = delay;
