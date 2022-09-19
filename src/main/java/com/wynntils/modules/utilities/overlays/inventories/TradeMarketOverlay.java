@@ -89,19 +89,11 @@ public class TradeMarketOverlay implements Listener {
         else nbt.setInteger("Count", Math.min(amount, 64));
 
         NBTTagCompound display = tag.getCompoundTag("display");
-        display.setString("Name", "§aSell All");
+        if(isCustomSellButton) display.setString("Name", "§aSell " + amount);
+        else display.setString("Name", "§aSell All");
 
         NBTTagList lore = new NBTTagList();
-        lore.appendTag(new NBTTagString("§7Click to sell all items in your inventory"));
-
         lore.appendTag(new NBTTagString("§7This will sell: §6" + amount + " §7of " + itemName));
-
-        if (isCustomSellButton) {
-            lore.appendTag(new NBTTagString(""));
-            lore.appendTag(new NBTTagString("§cThis is a custom sell button. Change the amount by going into the settings"));
-            lore.appendTag(new NBTTagString("§8(§7Utilities>Market>Custom Sell Amount§8)"));
-        }
-
         display.setTag("Lore", lore);
 
         tag.setInteger("Unbreakable", 1);
