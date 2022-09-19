@@ -586,6 +586,5 @@ public class ClientEvents implements Listener {
         if (spellData == null) return;
 
         spellData.setLastSpell(SpellData.NO_SPELL, -1);
-        QuickCastManager.spellInProgress = QuickCastManager.NO_SPELL;
     }
 }
