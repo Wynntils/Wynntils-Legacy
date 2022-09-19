@@ -327,7 +327,7 @@ public class ClientEvents implements Listener {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void updateBossBar(PacketEvent<SPacketUpdateBossInfo> e) {
         if (!Reference.onServer) return;
-
+      
         PlayerInfo.get(BossBarData.class).updateBossbarStats(e.getPacket());
 
         if (e.getPacket() == null || e.getPacket().getName() == null) return;
@@ -335,7 +335,18 @@ public class ClientEvents implements Listener {
         if (OverlayConfig.BloodPool.INSTANCE.hideDefaultBar) {
             // (!) Do not remove .getName() check, Intellij is wrong about it
             Matcher bpBarMatcher = BossBarData.BLOOD_POOL_PATTERN.matcher(e.getPacket().getName().getFormattedText());
-            if (bpBarMatcher.matches()) e.setCanceled(true);
+            if (bpBarMatcher.matches()) {
+                e.setCanceled(true);
+                return;
+            }
+        }
+      
+        if (OverlayConfig.ManaBank.INSTANCE.hideDefaultBar) {
+            Matcher barMatcher = BossBarData.MANA_BANK_PATTERN.matcher(e.getPacket().getName().getFormattedText());
+            if (barMatcher.matches()) {
+                e.setCanceled(true);
+                return;
+            }
         }
 
         if (OverlayConfig.AwakenedProgress.INSTANCE.hideDefaultBar) {
@@ -580,6 +591,10 @@ public class ClientEvents implements Listener {
         get(CharacterData.class).setMaxBloodPool(-1);
         get(CharacterData.class).setBloodPool(-1);
         get(CharacterData.class).setAwakenedProgress(-1);
+
+        // Reset mana bank
+        get(CharacterData.class).setManaBank(-1);
+        get(CharacterData.class).setMaxManaBank(-1);
 
         SpellData spellData = PlayerInfo.get(SpellData.class);
 

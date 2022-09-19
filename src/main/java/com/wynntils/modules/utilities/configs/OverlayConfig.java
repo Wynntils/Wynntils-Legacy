@@ -172,6 +172,49 @@ public class OverlayConfig extends SettingsClass {
         }
     }
 
+    @SettingsInfo(name = "mana_bank_settings", displayPath = "Utilities/Overlays/Mana Bank")
+    public static class ManaBank extends SettingsClass {
+        public static ManaBank INSTANCE;
+
+        @Setting(displayName = "Hide Default Mana Bank Bar", description = "Should the mana bank boss bar be hidden?")
+        public boolean hideDefaultBar = true;
+
+        @Setting(displayName = "Mana Bank Bar Width", description = "How wide should the mana bank bar be in pixels?\n\n§8This will be adjusted using Minecraft's scaling.")
+        @Setting.Limitations.IntLimit(min = 0, max = 81)
+        public int width = 81;
+
+        @Setting(displayName = "Mana Bank Bar Orientation", description = "How orientated in degrees should the mana bank bar be?\n\n§8Accompanied text will be removed.")
+        public OverlayRotation overlayRotation = OverlayRotation.NORMAL;
+
+        @Setting(displayName = "Mana Bank Texture", description = "What texture should be used for the mana bank bar?")
+        public ManaBankTextures manaBankTexture = ManaBankTextures.b;
+
+        @Setting(displayName = "Animation Speed", description = "How fast should the animation be played?\n\n§8Set this to 0 for it to display instantly.")
+        @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
+        public float animated = 2f;
+
+        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
+        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+
+        @Setting(displayName = "Play Sound at 120 Mana Bank", description = "Should reaching 120 Mana Bank play a sound (for Chaos Explosion)?")
+        public boolean playSound = true;
+
+        public enum ManaBankTextures {
+            Wynn,
+            Brune,
+            Aether,
+            Skull,
+            Inverse,
+            Skyrim,
+            Rune,
+            a,
+            b,
+            c,
+            d
+            // following the format, to add more textures, register them here with a name and create a special case in the render method
+        }
+    }
+
     @SettingsInfo(name = "mask_of_awakened_progress", displayPath = "Utilities/Overlays/Mask of the Awakened Progress")
     public static class AwakenedProgress extends SettingsClass {
         public static AwakenedProgress INSTANCE;
