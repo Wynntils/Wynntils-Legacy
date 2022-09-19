@@ -1,7 +1,20 @@
 #!/bin/bash
 
 function set_config_values() {
-    types=('build' 'docs' 'feat' 'fix' 'perf' 'refactor' 'style' 'test' 'chore')
+    types=(
+    'feat'
+    'feature'
+    'fix'
+    'perf'
+    'revert'
+    'docs'
+    'style'
+    'chore'
+    'refactor'
+    'test'
+    'build'
+    'ci'
+    )
 }
 
 # build the regex pattern based on the config file

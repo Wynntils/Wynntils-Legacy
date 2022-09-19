@@ -14,4 +14,16 @@ exports.preCommit = (props) => {
     replace("./build.gradle", /(?<=major: )\d+/g, major);
     replace("./build.gradle", /(?<=minor: )\d+/g, minor);
     replace("./build.gradle", /(?<=revision: )\d+/g, revision);
+
+    // Find pre-release workflow filename using fs
+    const workflow = fs.readdirSync("./.github/workflows").find((file) => file.match(/pre-release/));
+    if (workflow) {
+        fs.rename(`./.github/workflows/${workflow}`, "./.github/workflows/pre-release-" + props.tag + ".yml", (err) => {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(`".github/workflows/pre-release.yml" renamed`);
+            }
+        });
+    }
 };
