@@ -10,6 +10,7 @@ import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.containers.PlayerData;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
+import com.wynntils.modules.utilities.instances.ShamanMaskType;
 import net.minecraft.client.entity.EntityPlayerSP;
 
 import java.text.DecimalFormat;
@@ -37,6 +38,7 @@ public class CharacterData extends PlayerData {
     private int level = -1;
     private float experiencePercentage = -1;
     private String elementalSpecialString = "";
+    private ShamanMaskType currentShamanMask = ShamanMaskType.NONE;
 
     int lastLevel = 0;
     int lastXp = 0;
@@ -169,6 +171,8 @@ public class CharacterData extends PlayerData {
         return reskinned;
     }
 
+    public ShamanMaskType getCurrentShamanMask() { return currentShamanMask; }
+
     public void setClassId(int id) {
         this.classId = id;
 
@@ -228,4 +232,7 @@ public class CharacterData extends PlayerData {
         this.experiencePercentage = experiencePercentage;
     }
 
+    public void setCurrentShamanMask(ShamanMaskType currentShamanMask) {
+        this.currentShamanMask = currentShamanMask;
+    }
 }
