@@ -114,7 +114,7 @@ public class ChangelogUI extends GuiScreen {
         float middleX = width/2f; float middleY = height/2f;
 
         renderer.drawRect(Textures.UIs.changelog, (int)middleX - 150, (int)middleY - 100, 0, 0, 300, 200);
-        renderer.drawString("Changelog " + (CoreDBConfig.INSTANCE.updateStream == UpdateStream.CUTTING_EDGE && !major ? "B" + Reference.BUILD_NUMBER : "v" + Reference.VERSION), middleX - 105, middleY - 83, CommonColors.RED, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+        renderer.drawString("Changelog " + (CoreDBConfig.INSTANCE.updateStream == UpdateStream.CUTTING_EDGE && !major ? String.format("%s-beta+%d", Reference.VERSION, Reference.BUILD_NUMBER) : "v" + Reference.VERSION), middleX - 105, middleY - 83, CommonColors.RED, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
         // scrollbar
         renderer.drawRect(SCROLL_BACKGROUND, (int)middleX + 119, (int)middleY - 80, (int)middleX + 119 + 5, (int)middleY + 40);

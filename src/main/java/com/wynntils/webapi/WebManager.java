@@ -669,6 +669,7 @@ public class WebManager {
     }
 
     public static String getStableJarFileUrl() throws IOException {
+        // TODO: Change
         URLConnection st = new URL(apiUrls.get("Jars") + "api/json").openConnection();
         st.setRequestProperty("User-Agent", USER_AGENT);
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
@@ -679,6 +680,7 @@ public class WebManager {
     }
 
     public static String getStableJarFileMD5() throws IOException {
+        // TODO: Change
         URLConnection st = new URL(apiUrls.get("Jars") + "api/json?depth=2&tree=fingerprint[fileName,hash]{0,}").openConnection();
         st.setRequestProperty("User-Agent", USER_AGENT);
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
@@ -689,6 +691,7 @@ public class WebManager {
     }
 
     public static String getStableJarVersion() throws IOException {
+        // TODO: Change
         URLConnection st = new URL(apiUrls.get("Jars") + "api/json?tree=artifacts[fileName]").openConnection();
         st.setRequestProperty("User-Agent", USER_AGENT);
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
@@ -699,6 +702,7 @@ public class WebManager {
     }
 
     public static String getCuttingEdgeJarFileUrl() throws IOException {
+        // TODO: Change
         URLConnection st = new URL(apiUrls.get("DevJars") + "api/json").openConnection();
         st.setRequestProperty("User-Agent", USER_AGENT);
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
@@ -709,6 +713,7 @@ public class WebManager {
     }
 
     public static String getCuttingEdgeJarFileMD5() throws IOException {
+        // TODO: Change
         URLConnection st = new URL(apiUrls.get("DevJars") + "api/json?depth=2&tree=fingerprint[fileName,hash]{0,}").openConnection();
         st.setRequestProperty("User-Agent", USER_AGENT);
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
@@ -719,6 +724,7 @@ public class WebManager {
     }
 
     public static int getCuttingEdgeBuildNumber() throws IOException {
+        // TODO: Change
         URLConnection st = new URL(apiUrls.get("DevJars") + "api/json?tree=number").openConnection();
         st.setRequestProperty("User-Agent", USER_AGENT);
         st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
@@ -907,6 +913,7 @@ public class WebManager {
         }
 
         try {
+            // TODO: Change
             String url = apiUrls.get("DevJars");
             if (!forceLatest && Reference.BUILD_NUMBER != -1) {
                 url = StringUtils.removeEnd(url, "lastSuccessfulBuild/") + Reference.BUILD_NUMBER + "/";
