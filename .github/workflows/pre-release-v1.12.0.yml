@@ -1,9 +1,10 @@
-name: Publish Release
+name: Publish Pre Release
 
 on:
   push:
     branches:
-      - production
+      - development
+      - feature/rework-ci
 
 jobs:
   changelog:
@@ -37,6 +38,7 @@ jobs:
           create-summary: true
           version-file: ./version.json
           skip-git-pull: true
+          git-push: false
 
       - name: Upload version information
         uses: actions/upload-artifact@v3
@@ -85,13 +87,13 @@ jobs:
           path: build/libs
 
       - name: Rename artifact
-        run: mv build/libs/wynntils-*.jar build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
+        run: mv build/libs/wynntils-*.jar build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}-beta+${{ github.run_number }}.jar
 
       - name: Upload renamed artifact
         uses: actions/upload-artifact@v3
         with:
-          name: Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}
-          path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
+          name: build
+          path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}-beta+${{ github.run_number }}.jar
 
   release-to-gh:
     name: Release to GitHub
@@ -100,15 +102,16 @@ jobs:
     steps:
       - uses: actions/download-artifact@v3
         with:
-          name: Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}
-          path: build
+          name: build
 
       - name: Create release
         uses: softprops/action-gh-release@v1
         with:
-          files: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
-          tag_name: ${{ needs.changelog.outputs.tag }}
+          files: Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}-beta+${{ github.run_number }}.jar
+          tag_name: ${{ needs.changelog.outputs.tag }}-beta+${{ github.run_number }}
+          prerelease: true
           body: ${{ needs.changelog.outputs.clean_changelog }}
+          target_commitish: ${{ github.sha }}
 
   release-to-cf:
     name: Release to CurseForge
@@ -117,13 +120,12 @@ jobs:
     steps:
       - uses: actions/download-artifact@v3
         with:
-          name: Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}
-          path: build
+          name: build
 
       - name: Upload to CurseForge
         uses: itsmeow/curseforge-upload@v3
         with:
-          file_path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
+          file_path: Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}-beta+${{ github.run_number }}.jar
           game_endpoint: minecraft
           # Minecraft 1.12.2: 6756
           # Forge: 7498
@@ -131,10 +133,10 @@ jobs:
           game_versions: "6756,7498,4458"
           project_id: 303451
           token: ${{ secrets.CF_API_TOKEN }}
-          release_type: release
-          display_name: Wynntils ${{ needs.changelog.outputs.tag }}
+          release_type: beta
+          display_name: Wynntils ${{ needs.changelog.outputs.tag }} Beta Build ${{ github.run_number }}
           changelog_type: markdown
-          changelog: "${{ needs.changelog.outputs.changelog }}"
+          changelog: "${{ needs.changelog.outputs.clean_changelog }}"
 
   release-to-modrinth:
     name: Release to Modrinth
@@ -143,19 +145,18 @@ jobs:
     steps:
       - uses: actions/download-artifact@v3
         with:
-          name: Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}
-          path: build
+          name: build
 
       - name: Upload to Modrinth
         uses: RubixDev/modrinth-upload@v1.0.0
         with:
           token: ${{ secrets.MODRINTH_API_TOKEN }}
-          file_path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
-          name: Wynntils ${{ needs.changelog.outputs.tag }}
-          version: ${{ needs.changelog.outputs.tag }}
-          changelog: "${{ needs.changelog.outputs.changelog }}"
+          file_path: Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}-beta+${{ github.run_number }}.jar
+          name: Wynntils ${{ needs.changelog.outputs.tag }} Beta Build ${{ github.run_number }}
+          version: ${{ needs.changelog.outputs.tag }}-beta+${{ github.run_number }}
+          changelog: "${{ needs.changelog.outputs.clean_changelog }}"
           game_versions: 1.12.2
-          release_type: release
+          release_type: beta
           loaders: forge
           featured: true
           project_id: dU5Gb9Ab

@@ -853,13 +853,6 @@ public class OverlayEvents implements Listener {
         ConsumableTimerOverlay.removeBasicTimer(totemName);
         totemName = "Totem " + e.getLocation();
         ConsumableTimerOverlay.addBasicTimer(totemName, e.getTime());
-
-        // Glowing totems
-        List<EntityArmorStand> possibleTotems = McIf.mc().world.getEntitiesWithinAABB(EntityArmorStand.class,
-                new AxisAlignedBB(e.getLocation().getX() - 1, e.getLocation().getY(), e.getLocation().getZ() - 1, e.getLocation().getX() + 1, e.getLocation().getY() + 3, e.getLocation().getZ() + 1));
-        possibleTotems.forEach(entityArmorStand -> {
-            if (entityArmorStand.getDisplayName().getUnformattedText().equals("Armor Stand")) entityArmorStand.setGlowing(true);
-        });
     }
 
     @SubscribeEvent
