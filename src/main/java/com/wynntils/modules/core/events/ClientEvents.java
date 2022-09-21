@@ -355,6 +355,12 @@ public class ClientEvents implements Listener {
             Matcher awakeningBarMatcher = BossBarData.AWAKENED_PROGRESS_PATTERN.matcher(e.getPacket().getName().getFormattedText());
             if (awakeningBarMatcher.matches()) e.setCanceled(true);
         }
+
+        if (OverlayConfig.Focus.INSTANCE.hideDefaultBar) {
+            // (!) Do not remove .getName() check, Intellij is wrong about it
+            Matcher focusMatcher = BossBarData.FOCUS_PATTERN.matcher(e.getPacket().getName().getFormattedText());
+            if (focusMatcher.matches()) e.setCanceled(true);
+        }
     }
 
     @SubscribeEvent
@@ -597,6 +603,9 @@ public class ClientEvents implements Listener {
         // Reset mana bank
         get(CharacterData.class).setManaBank(-1);
         get(CharacterData.class).setMaxManaBank(-1);
+
+        get(CharacterData.class).setFocus(-1);
+        get(CharacterData.class).setMaxFocus(-1);
 
         SpellData spellData = PlayerInfo.get(SpellData.class);
 

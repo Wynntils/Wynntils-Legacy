@@ -33,6 +33,8 @@ public class CharacterData extends PlayerData {
     private int manaBank = -1;
     private int maxManaBank = -1;
     private int awakenedProgress = -1;
+    private int focus = -1;
+    private int maxFocus = -1;
     private int level = -1;
     private float experiencePercentage = -1;
     private String elementalSpecialString = "";
@@ -141,6 +143,14 @@ public class CharacterData extends PlayerData {
         return currentClass == ClassType.NONE ? -1 : 200;
     }
 
+    public int getFocus() {
+        return currentClass == ClassType.NONE ? -1 : focus;
+    }
+
+    public int getMaxFocus() {
+        return currentClass == ClassType.NONE ? -1 : maxFocus;
+    }
+
     public String getElementalSpecialString() {
         return elementalSpecialString;
     }
@@ -205,6 +215,10 @@ public class CharacterData extends PlayerData {
     public void setAwakenedProgress(int awakenedProgress) {
         this.awakenedProgress = awakenedProgress;
     }
+
+    public void setFocus(int focus) { this.focus = focus; }
+
+    public void setMaxFocus(int maxFocus) { this.maxFocus = maxFocus; }
 
     public void setElementalSpecialString(String elementalSpecialString) {
         this.elementalSpecialString = elementalSpecialString;
