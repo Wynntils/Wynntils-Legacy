@@ -81,7 +81,7 @@ public class UtilitiesConfig extends SettingsClass {
     public boolean preventSlotClicking = false;
 
     @Setting(displayName = "Scrolling in Ability Tree", description = "Should using the scroll wheel in the ability tree move a page down/up?", order = 6)
-    public boolean shouldAbilityScroll = false;
+    public boolean shouldAbilityScroll = true;
 
     @Setting(displayName = "Scroll Direction", description = "Which direction should your mouse scroll for the page to scroll down?", order = 7)
     public ScrollDirection abilityScrollDirection = ScrollDirection.DOWN;
