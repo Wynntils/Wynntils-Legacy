@@ -7,7 +7,6 @@ package com.wynntils.modules.utilities.overlays.ui;
 import com.wynntils.McIf;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.SocialData;
-import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.modules.core.managers.PartyManager;
@@ -21,7 +20,6 @@ import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EnumPlayerModelParts;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Keyboard;
 
@@ -50,8 +48,6 @@ public class PartyManagementUI extends GuiScreen {
 
     private final NetHandlerPlayClient netHandlerPlayClient = McIf.mc().getConnection();
 
-    private final int nearbyRadius = 30;
-    private final int verticalReference = 160;
     private boolean partyLeaveSent = false;
 
     private enum PartyManagementColors {
@@ -70,28 +66,94 @@ public class PartyManagementUI extends GuiScreen {
         }
     }
 
+    private static class DispRef {
+        public static final int btmRowButtonWidth = 75; // Width of each button on the bottom row
+        public static final int buttonGap = 4; // Gap between buttons
+
+        /*
+        mainBodyWidth refers to the width of the main section of the GUI, which is where the party members are displayed.
+        This includes the four buttons on the bottom row, as well as the invite field, invite label, and invite button.
+        (!) This is calculated based on the four buttons on the bottom row (line 101)
+        First (refresh): Starts at -166, ends at -86, gap of 4, so -82
+        Second (kick): Starts at -82, ends at -2, gap of 4, so +2
+        Third (create): Starts at +2, ends at +82, gap of 4, so +86
+        Fourth (leave): Starts at +86, ends at +166, no gap because last button
+
+        Also, mainBodyLeftX and mainBodyRightX are relative to (this.width/2), and should be referenced with
+        (this.width/2) + mainBodyLeftX and (this.width/2) + mainBodyRightX.
+         */
+        public static final int mainBodyWidth = btmRowButtonWidth*4 + buttonGap*3;
+        public static final int mainBodyLeftX = -mainBodyWidth / 2;
+        public static final int mainBodyRightX = mainBodyWidth / 2;
+        public static final int verticalReference = 160;
+
+        public static final int inviteButtonWidth = 40; // Width of the invite button
+        public static final int buttonHeight = 20; // All buttons use this
+
+        public static final int headOffset = 8; // Used to center the player head under headers
+        public static final int memberOffset = 40; // Used to align the member header and names
+
+        public static final int promoteButtonWidth = 50;
+        public static final int disbandKickButtonWidth = 47;
+
+        /*
+        legendBodyWidth is relative to (this.width/4), and should be referenced with
+        (this.width/4) + legendBodyWidth
+         */
+        public static final int legendBodyWidth = 41;
+
+        /*
+        suggestionBodyWidth is relative to (this.width/4 + this.width/2), and should be referenced with
+        (this.width/4 + this.width/2) + suggestionBodyWidth
+         */
+        public static final int suggestionBodyWidth = 180;
+    }
+
     @Override
     public void initGui() {
         super.initGui();
-        inviteFieldLabel = new GuiLabel(McIf.mc().fontRenderer, 0, this.width/2 - 200, verticalReference - 61, 40, 10, 0xFFFFFF);
-        inviteFieldLabel.addLine("Invite players: " + TextFormatting.GRAY + "(Separate with commas)");
-        inviteField = new GuiTextField(0, McIf.mc().fontRenderer, this.width/2 - 200, verticalReference - 50, 355, 20);
-        inviteField.setMaxStringLength(128);
         pageHeight = (this.height - 100) / 25;
-        this.buttonList.add(exitBtn = new GuiButton(2, this.width - 40, 20, 20, 20, TextFormatting.RED + "X"));
 
-        // Static buttons
-        this.buttonList.add(inviteBtn = new GuiButton(1, this.width / 2 + 160, verticalReference - 50, 40, 20, "Invite"));
-        this.buttonList.add(refreshPartyBtn = new GuiButton(4, this.width / 2 - 200, verticalReference - 25, 96, 20, TextFormatting.GREEN + "Refresh Party"));
-        this.buttonList.add(kickOfflineBtn = new GuiButton(5, this.width / 2 - 100, verticalReference - 25, 96, 20, TextFormatting.RED + "Kick Offline"));
-        this.buttonList.add(createBtn = new GuiButton(2, this.width / 2 + 4, verticalReference - 25, 96, 20, "Create Party"));
-        this.buttonList.add(leaveBtn = new GuiButton(3, this.width / 2 + 104, verticalReference - 25, 96, 20, TextFormatting.RED + "Leave Party"));
+        // Invite field row and label
+        inviteFieldLabel = new GuiLabel(McIf.mc().fontRenderer, 0, this.width/2 + DispRef.mainBodyLeftX, DispRef.verticalReference - 61, 20, 10, 0xFFFFFF);
+        inviteFieldLabel.addLine("Invite players: " + TextFormatting.GRAY + "(Separate with commas)");
+        inviteField = new GuiTextField(0, McIf.mc().fontRenderer, this.width/2 + DispRef.mainBodyLeftX, DispRef.verticalReference - 50,
+                DispRef.mainBodyWidth - DispRef.inviteButtonWidth - DispRef.buttonGap, DispRef.buttonHeight);
+        inviteField.setMaxStringLength(128);
+        // Invite button +126 comes from +166 (next row ending) - 40 (button width)
+        this.buttonList.add(inviteBtn = new GuiButton(1, this.width/2 + DispRef.mainBodyRightX - DispRef.inviteButtonWidth,
+                DispRef.verticalReference - 50, DispRef.inviteButtonWidth, DispRef.buttonHeight, "Invite"));
+
+        // Bottom row buttons
+        this.buttonList.add(refreshPartyBtn = new GuiButton(4,
+                this.width/2 + DispRef.mainBodyLeftX + 0*(DispRef.buttonGap+DispRef.btmRowButtonWidth), DispRef.verticalReference - 25,
+                DispRef.btmRowButtonWidth, DispRef.buttonHeight,
+                TextFormatting.GREEN + "Refresh"));
+        this.buttonList.add(kickOfflineBtn = new GuiButton(5,
+                this.width/2 + DispRef.mainBodyLeftX + 1*(DispRef.buttonGap+DispRef.btmRowButtonWidth), DispRef.verticalReference - 25,
+                DispRef.btmRowButtonWidth, DispRef.buttonHeight,
+                TextFormatting.RED + "Kick Offline"));
+        this.buttonList.add(createBtn = new GuiButton(2,
+                this.width/2 + DispRef.mainBodyLeftX + 2*(DispRef.buttonGap+DispRef.btmRowButtonWidth), DispRef.verticalReference - 25,
+                DispRef.btmRowButtonWidth, DispRef.buttonHeight,
+                TextFormatting.WHITE + "Create Party"));
+        this.buttonList.add(leaveBtn = new GuiButton(3,
+                this.width/2 + DispRef.mainBodyLeftX + 3*(DispRef.buttonGap+DispRef.btmRowButtonWidth), DispRef.verticalReference - 25,
+                DispRef.btmRowButtonWidth, DispRef.buttonHeight,
+                TextFormatting.RED + "Leave Party"));
+
+        // Exit button; does not use any of the above references because it is a special case
+        this.buttonList.add(exitBtn = new GuiButton(2, this.width - 40, 20, 20, 20, TextFormatting.RED + "X"));
     }
 
     @Override
     public void drawScreen(int mouseX, int mouseY, float partialTicks) {
         drawDefaultBackground();
         super.drawScreen(mouseX, mouseY, partialTicks);
+
+        int halfWidth = this.width / 2;
+        int quarterWidth = this.width / 4;
+        int threeQWidth = quarterWidth * 3;
 
         // Invite field
         if (inviteField != null) {
@@ -102,48 +164,40 @@ public class PartyManagementUI extends GuiScreen {
         setManagementButtonStatuses();
 
         // Titles for the actual member list
-        fontRenderer.drawString(TextFormatting.BOLD + "Head", this.width/2 - 200, verticalReference, 0xFFFFFF);
-        fontRenderer.drawString(TextFormatting.BOLD + "Member", this.width / 2 - 160, verticalReference, 0xFFFFFF);
-        drawCenteredString(fontRenderer, TextFormatting.BOLD + "Promote", this.width/2 + 125, verticalReference, 0xFFFFFF);
-        drawCenteredString(fontRenderer, TextFormatting.BOLD + "Kick", this.width/2 + 177, verticalReference, 0xFFFFFF);
-        drawRect(this.width/2 - 200, verticalReference + 9, this.width/2 + 200, verticalReference + 10, 0xFFFFFFFF); // Underline
+        fontRenderer.drawString(TextFormatting.BOLD + "Head", halfWidth + DispRef.mainBodyLeftX, DispRef.verticalReference, 0xFFFFFF);
+        fontRenderer.drawString(TextFormatting.BOLD + "Member", halfWidth + DispRef.mainBodyLeftX + DispRef.memberOffset, DispRef.verticalReference, 0xFFFFFF);
+        drawCenteredString(fontRenderer, TextFormatting.BOLD + "Promote", halfWidth + DispRef.mainBodyRightX - 76, DispRef.verticalReference, 0xFFFFFF);
+        drawCenteredString(fontRenderer, TextFormatting.BOLD + "Kick", halfWidth + DispRef.mainBodyRightX - 23, DispRef.verticalReference, 0xFFFFFF);
+        drawRect(halfWidth + DispRef.mainBodyLeftX, DispRef.verticalReference + 9, halfWidth + DispRef.mainBodyRightX, DispRef.verticalReference + 10, 0xFFFFFFFF); // Underline
 
         // Draw legend
-        fontRenderer.drawString(TextFormatting.BOLD + "Legend", this.width/2 - 400, verticalReference, 0xFFFFFF);
-        drawRect(this.width/2 - 400, verticalReference + 9, this.width/2 - 359, verticalReference + 10, 0xFFFFFFFF); // Underline
-        fontRenderer.drawString(TextFormatting.BOLD + "Self", this.width/2 - 400, verticalReference + 15, PartyManagementColors.MEMBER.getColor());
-        fontRenderer.drawString("Leader", this.width / 2 - 400, verticalReference + 30, PartyManagementColors.LEADER.getColor());
-        fontRenderer.drawString(TextFormatting.STRIKETHROUGH + "Offline", this.width/2 - 400, verticalReference + 45, PartyManagementColors.MEMBER.getColor());
-        fontRenderer.drawString("Friend", this.width/2 - 400, verticalReference + 60, PartyManagementColors.FRIEND.getColor());
+        fontRenderer.drawString(TextFormatting.BOLD + "Legend", quarterWidth - DispRef.legendBodyWidth, DispRef.verticalReference, 0xFFFFFF);
+        drawRect(quarterWidth - DispRef.legendBodyWidth, DispRef.verticalReference + 9, quarterWidth, DispRef.verticalReference + 10, 0xFFFFFFFF); // Underline
+        fontRenderer.drawString(TextFormatting.BOLD + "Self", quarterWidth - DispRef.legendBodyWidth, DispRef.verticalReference + 15, PartyManagementColors.MEMBER.getColor());
+        fontRenderer.drawString("Leader", quarterWidth - DispRef.legendBodyWidth, DispRef.verticalReference + 30, PartyManagementColors.LEADER.getColor());
+        fontRenderer.drawString(TextFormatting.STRIKETHROUGH + "Offline", quarterWidth - DispRef.legendBodyWidth, DispRef.verticalReference + 45, PartyManagementColors.MEMBER.getColor());
+        fontRenderer.drawString("Friend", quarterWidth - DispRef.legendBodyWidth, DispRef.verticalReference + 60, PartyManagementColors.FRIEND.getColor());
 
         // Draw title for suggestions
-        fontRenderer.drawString(TextFormatting.BOLD + "Head", this.width/2 + 280, verticalReference, 0xFFFFFF);
-        fontRenderer.drawString(TextFormatting.BOLD + "Suggestions", this.width/2 + 320, verticalReference, 0xFFFFFF);
-        fontRenderer.drawString(TextFormatting.BOLD + "Invite", this.width/2 + 470, verticalReference, 0xFFFFFF);
-        drawRect(this.width/2 + 280, verticalReference + 9, this.width/2 + 504, verticalReference + 10, 0xFFFFFFFF); // Underline
+        fontRenderer.drawString(TextFormatting.BOLD + "Head", threeQWidth, DispRef.verticalReference, 0xFFFFFF);
+        fontRenderer.drawString(TextFormatting.BOLD + "Suggestions", threeQWidth + DispRef.memberOffset, DispRef.verticalReference, 0xFFFFFF);
+        fontRenderer.drawString(TextFormatting.BOLD + "Invite", threeQWidth + DispRef.suggestionBodyWidth - DispRef.inviteButtonWidth, DispRef.verticalReference, 0xFFFFFF);
+        drawRect(threeQWidth, DispRef.verticalReference + 9, threeQWidth + DispRef.suggestionBodyWidth, DispRef.verticalReference + 10, 0xFFFFFFFF); // Underline
 
         updateSuggestionsList();
         // Draw details for people in suggestions
         for (String playerName : suggestedPlayers) {
-            fontRenderer.drawString(playerName, this.width/2 + 320, (verticalReference + 17) + 25 * suggestedPlayers.indexOf(playerName), PartyManagementColors.FRIEND.getColor());
+            fontRenderer.drawString(playerName, threeQWidth + DispRef.memberOffset, (DispRef.verticalReference + 17) + 25 * suggestedPlayers.indexOf(playerName), PartyManagementColors.FRIEND.getColor());
 
             // Reset colour to white
             // This is so player heads don't have the previous self/owner colour overlaid onto them
             GlStateManager.color(1, 1, 1, 1);
 
-            // Player heads
-            NetworkPlayerInfo networkPlayerInfo = netHandlerPlayClient.getPlayerInfo(playerName);
-            if (networkPlayerInfo != null) {
-                McIf.mc().getTextureManager().bindTexture(networkPlayerInfo.getLocationSkin());
-            } else {
-                // If networkPlayerInfo is null, either the player is offline or invisible due to /switch bug
-                // Use the default player head texture, it will automatically update when the player is visible again
-                McIf.mc().getTextureManager().bindTexture(new ResourceLocation("textures/entity/steve.png"));
-            }
-            drawScaledCustomSizeModalRect(this.width/2 + 288, (verticalReference + 14) + 25 * suggestedPlayers.indexOf(playerName), 8.0F, 8.0F, 8, 8, 12, 12, 64.0F, 64.0F);
+            bindPlayerHeadTexture(playerName);
+            drawScaledCustomSizeModalRect(threeQWidth + DispRef.headOffset, (DispRef.verticalReference + 14) + 25 * suggestedPlayers.indexOf(playerName), 8.0F, 8.0F, 8, 8, 12, 12, 64.0F, 64.0F);
             EntityPlayer entityPlayer = McIf.mc().world.getPlayerEntityByName(playerName);
             if (entityPlayer != null && entityPlayer.isWearing(EnumPlayerModelParts.HAT)) {
-                drawScaledCustomSizeModalRect(this.width/2 + 288, (verticalReference + 14) + 25 * suggestedPlayers.indexOf(playerName), 40.0F, 8, 8, 8, 12, 12, 64.0F, 64.0F);
+                drawScaledCustomSizeModalRect(threeQWidth + DispRef.headOffset, (DispRef.verticalReference + 14) + 25 * suggestedPlayers.indexOf(playerName), 40.0F, 8, 8, 8, 12, 12, 64.0F, 64.0F);
             }
         }
 
@@ -153,57 +207,43 @@ public class PartyManagementUI extends GuiScreen {
             partyLeaveSent = false;
             return;
         }
-
-        ScreenRenderer.beginGL(0, 0);
         // Draw details for people in party
         for (int i = 0, lim = Math.min(pageHeight, partyMembers.size()); i < lim; i++) {
             String playerName = partyMembers.get(i);
             if (playerName == null) continue;
 
-            String rawPlayerName = playerName;
+            String formattedPlayerName = playerName;
             int colour;
 
-            if (playerName.equals(McIf.player().getName())) { // Self
-                playerName = TextFormatting.BOLD + playerName;
-            }
-            if (offlineMembers.contains(playerName)) { // Offline
-                playerName = TextFormatting.STRIKETHROUGH + playerName;
-            }
+            if (formattedPlayerName.equals(McIf.player().getName())) { formattedPlayerName = TextFormatting.BOLD + formattedPlayerName; } // Bold self
+            if (offlineMembers.contains(formattedPlayerName)) { formattedPlayerName = TextFormatting.STRIKETHROUGH + formattedPlayerName; }// Strikethrough offline members
 
             // Priority list is leader, friend, member
             // Colors override from the top down
-            if (rawPlayerName.equals(PlayerInfo.get(SocialData.class).getPlayerParty().getOwner())) { // is owner
+            if (playerName.equals(PlayerInfo.get(SocialData.class).getPlayerParty().getOwner())) { // is owner
                 colour = PartyManagementColors.LEADER.getColor();
-            } else if (PlayerInfo.get(SocialData.class).getFriendList().contains(playerName)) {
+            } else if (PlayerInfo.get(SocialData.class).getFriendList().contains(formattedPlayerName)) {
                 colour = PartyManagementColors.FRIEND.getColor();
             } else {
                 colour = PartyManagementColors.MEMBER.getColor();
             }
 
-            fontRenderer.drawString(playerName, this.width/2 - 160, (verticalReference + 17) + 25 * i, colour);
+            fontRenderer.drawString(formattedPlayerName, this.width/2 + DispRef.mainBodyLeftX + DispRef.memberOffset, (DispRef.verticalReference + 17) + 25 * i, colour);
 
             // Reset colour to white
-            // This is so player heads don't have the previous self/owner colour overlaid onto them
+            // This is so player heads don't have the previous friend/owner colour overlaid onto them
             GlStateManager.color(1, 1, 1, 1);
 
-            // Player heads
-            NetworkPlayerInfo networkPlayerInfo = netHandlerPlayClient.getPlayerInfo(rawPlayerName);
-            if (networkPlayerInfo != null) {
-                McIf.mc().getTextureManager().bindTexture(networkPlayerInfo.getLocationSkin());
-            } else {
-                // If networkPlayerInfo is null, either the player is offline or invisible due to /switch bug
-                // Use the default player head texture, it will automatically update when the player is visible again
-                McIf.mc().getTextureManager().bindTexture(new ResourceLocation("textures/entity/steve.png"));
-            }
-            drawScaledCustomSizeModalRect(this.width/2 - 192, (verticalReference + 14) + 25 * i, 8.0F, 8.0F, 8, 8, 12, 12, 64.0F, 64.0F);
-            EntityPlayer entityPlayer = McIf.mc().world.getPlayerEntityByName(rawPlayerName);
+            bindPlayerHeadTexture(playerName);
+            // +8 to center head
+            drawScaledCustomSizeModalRect(this.width/2 + DispRef.mainBodyLeftX + DispRef.headOffset, (DispRef.verticalReference + 14) + 25 * i, 8.0F, 8.0F, 8, 8, 12, 12, 64.0F, 64.0F);
+            EntityPlayer entityPlayer = McIf.mc().world.getPlayerEntityByName(playerName);
             if (entityPlayer != null && entityPlayer.isWearing(EnumPlayerModelParts.HAT)) {
-                drawScaledCustomSizeModalRect(this.width/2 - 192, (verticalReference + 14) + 25 * i, 40.0F, 8, 8, 8, 12, 12, 64.0F, 64.0F);
+                drawScaledCustomSizeModalRect(this.width/2 + DispRef.mainBodyLeftX + DispRef.headOffset, (DispRef.verticalReference + 14) + 25 * i, 40.0F, 8, 8, 8, 12, 12, 64.0F, 64.0F);
             }
 
         }
         refreshAndSetButtons();
-        ScreenRenderer.endGL();
     }
 
     @Override
@@ -300,7 +340,7 @@ public class PartyManagementUI extends GuiScreen {
 
         // Suggestion invite buttons
         for (int i = 0; suggestedPlayers.size() > i; i++) {
-            buttons.add(new GuiButton(i * 10 + 6, this.width/2 + 469, (verticalReference + 14) + 24 * i, 36, 20, "Invite"));
+            buttons.add(new GuiButton(i * 10 + 6, this.width/4*3 + DispRef.suggestionBodyWidth - DispRef.inviteButtonWidth, (DispRef.verticalReference + 11) + 24 * i, 36, 20, "Invite"));
         }
 
         updatePartyMemberList();
@@ -310,11 +350,13 @@ public class PartyManagementUI extends GuiScreen {
             for (int i = 0, lim = Math.min(pageHeight, partyMembers.size()); i < lim; i++) {
                 boolean isSelf = partyMembers.get(i).equals(McIf.player().getName());
                 if (!isSelf) {
-                    buttons.add(new GuiButton(7 + 10 * i, this.width / 2 + 100, (verticalReference + 11) + 25 * i, 50, 20, "Promote"));
+                    buttons.add(new GuiButton(7 + 10 * i, this.width/2 + DispRef.mainBodyRightX - DispRef.buttonGap - DispRef.disbandKickButtonWidth - DispRef.promoteButtonWidth,
+                            (DispRef.verticalReference + 11) + 25 * i, DispRef.promoteButtonWidth, DispRef.buttonHeight, "Promote"));
                 } // No promote button for self
 
                 String disbandKickText = (isSelf) ? "Disband" : "Kick";
-                buttons.add(new GuiButton(9 + 10 * i, this.width / 2 + 155, (verticalReference + 11) + 25 * i, 47, 20, disbandKickText));
+                buttons.add(new GuiButton(9 + 10 * i, this.width/2 + DispRef.mainBodyRightX - DispRef.disbandKickButtonWidth, (DispRef.verticalReference + 11) + 25 * i,
+                        DispRef.disbandKickButtonWidth, DispRef.buttonHeight, disbandKickText));
             }
         }
         this.buttonList.addAll(buttons);
@@ -369,6 +411,17 @@ public class PartyManagementUI extends GuiScreen {
         }
         suggestedPlayers.removeAll(partyMembers); // Remove those already in party from suggestions
         suggestedPlayers.sort(String.CASE_INSENSITIVE_ORDER);
+    }
+
+    private void bindPlayerHeadTexture(String rawPlayerName) {
+        NetworkPlayerInfo networkPlayerInfo = netHandlerPlayClient.getPlayerInfo(rawPlayerName);
+        if (networkPlayerInfo != null) {
+            McIf.mc().getTextureManager().bindTexture(networkPlayerInfo.getLocationSkin());
+        } else {
+            // If networkPlayerInfo is null, either the player is offline or invisible due to /switch bug
+            // Use the default player head texture, it will automatically update when the player is visible again
+            McIf.mc().getTextureManager().bindTexture(new ResourceLocation("textures/entity/steve.png"));
+        }
     }
 
     @Override
