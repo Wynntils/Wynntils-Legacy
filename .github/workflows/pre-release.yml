@@ -139,7 +139,7 @@ jobs:
           project_id: 303451
           token: ${{ secrets.CF_API_TOKEN }}
           release_type: beta
-          display_name: Wynntils ${{ needs.changelog.outputs.tag }} Beta Build ${{ needs.changelog.outputs.build_number }}
+          display_name: Wynntils ${{ needs.changelog.outputs.tag }}
           changelog_type: markdown
           changelog: "${{ needs.changelog.outputs.changelog }}"
 
@@ -157,7 +157,7 @@ jobs:
         with:
           token: ${{ secrets.MODRINTH_API_TOKEN }}
           file_path: Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
-          name: Wynntils ${{ needs.changelog.outputs.tag }} Beta Build ${{ needs.changelog.outputs.build_number }}
+          name: Wynntils ${{ needs.changelog.outputs.tag }}
           version: ${{ needs.changelog.outputs.tag }}
           changelog: "${{ needs.changelog.outputs.changelog }}"
           game_versions: 1.12.2
