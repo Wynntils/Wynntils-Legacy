@@ -327,7 +327,7 @@ public class ClientEvents implements Listener {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void updateBossBar(PacketEvent<SPacketUpdateBossInfo> e) {
         if (!Reference.onServer) return;
-      
+
         PlayerInfo.get(BossBarData.class).updateBossbarStats(e.getPacket());
 
         if (e.getPacket() == null || e.getPacket().getName() == null) return;
@@ -340,7 +340,7 @@ public class ClientEvents implements Listener {
                 return;
             }
         }
-      
+
         if (OverlayConfig.ManaBank.INSTANCE.hideDefaultBar) {
             Matcher barMatcher = BossBarData.MANA_BANK_PATTERN.matcher(e.getPacket().getName().getFormattedText());
             if (barMatcher.matches()) {
@@ -353,6 +353,12 @@ public class ClientEvents implements Listener {
             // (!) Do not remove .getName() check, Intellij is wrong about it
             Matcher awakeningBarMatcher = BossBarData.AWAKENED_PROGRESS_PATTERN.matcher(e.getPacket().getName().getFormattedText());
             if (awakeningBarMatcher.matches()) e.setCanceled(true);
+        }
+
+        if (OverlayConfig.Focus.INSTANCE.hideDefaultBar) {
+            // (!) Do not remove .getName() check, Intellij is wrong about it
+            Matcher focusMatcher = BossBarData.FOCUS_PATTERN.matcher(e.getPacket().getName().getFormattedText());
+            if (focusMatcher.matches()) e.setCanceled(true);
         }
     }
 
@@ -595,6 +601,9 @@ public class ClientEvents implements Listener {
         // Reset mana bank
         get(CharacterData.class).setManaBank(-1);
         get(CharacterData.class).setMaxManaBank(-1);
+
+        get(CharacterData.class).setFocus(-1);
+        get(CharacterData.class).setMaxFocus(-1);
 
         SpellData spellData = PlayerInfo.get(SpellData.class);
 
