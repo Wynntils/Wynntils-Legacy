@@ -502,6 +502,16 @@ public class UtilitiesConfig extends SettingsClass {
 
         @Setting(displayName = "Add Sell all button", description = "Should a sell all button be added to the market gui?")
         public boolean showSellAllButton = true;
+
+        @Setting(displayName = "Custom Sell button 1 amount", description = "What amount should be selected when the custom sell button 1 is clicked?\n\n§8Set the value to 0 to disable this")
+        public String customSellButton1 = "64";
+
+        @Setting(displayName = "Custom Sell button 2 amount", description = "What amount should be selected when the custom sell button 2 is clicked?\n\n§8Set the value to 0 to disable this")
+        public String customSellButton2 = "1728";
+
+        @Setting(displayName = "Custom Sell button 3 amount", description = "What amount should be selected when the custom sell button 3 is clicked?\n\n§8Set the value to 0 to disable this")
+        public String customSellButton3 = "6399";
+
     }
 
     @SettingsInfo(name = "bank", displayPath = "Utilities/Bank")
