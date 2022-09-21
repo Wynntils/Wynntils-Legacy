@@ -11,6 +11,7 @@ import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
 import com.wynntils.core.framework.settings.ui.SettingsUI;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.core.enums.ScrollDirection;
 import com.wynntils.modules.utilities.events.ServerEvents;
 import com.wynntils.modules.utilities.instances.SkillPointAllocation;
 import com.wynntils.modules.utilities.managers.WindowIconManager;
@@ -78,6 +79,12 @@ public class UtilitiesConfig extends SettingsClass {
 
     @Setting(displayName = "Clicking on Locked Items", description = "Should moving items to and from locked inventory slots be prevented?", order = 5)
     public boolean preventSlotClicking = false;
+
+    @Setting(displayName = "Scrolling in Ability Tree", description = "Should using the scroll wheel in the ability tree move a page down/up?", order = 6)
+    public boolean shouldAbilityScroll = true;
+
+    @Setting(displayName = "Scroll Direction", description = "Which direction should your mouse scroll for the page to scroll down?", order = 7)
+    public ScrollDirection abilityScrollDirection = ScrollDirection.DOWN;
 
     @Setting(displayName = "Bank Dump Behaviour", description = "What should happen when the bank inventory dump button is clicked?", order = 18)
     public BankButtonSetting bankDumpButton = BankButtonSetting.Confirm;

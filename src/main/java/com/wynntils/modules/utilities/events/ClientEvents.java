@@ -24,6 +24,7 @@ import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.core.utils.reference.RequirementSymbols;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
+import com.wynntils.modules.core.enums.ScrollDirection;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
@@ -50,6 +51,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
@@ -77,6 +79,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 import java.sql.Timestamp;
 import java.time.*;
@@ -111,6 +114,7 @@ public class ClientEvents implements Listener {
     private static final Pattern PRICE_REPLACER = Pattern.compile("§6 - §a. §f([1-9]\\d*)§7" + EmeraldSymbols.E_STRING);
     private static final Pattern INGREDIENT_SPLIT_PATTERN = Pattern.compile("§f(\\d+) x (.+)");
     private static final Pattern WAR_CHAT_MESSAGE_PATTERN = Pattern.compile("§3\\[WAR§3\\] The war for (.+) will start in \\d+ minutes.");
+    private static final Pattern ABILITY_TREE_PATTERN = Pattern.compile("(?:Warrior|Shaman|Mage|Assassin|Archer) Abilities");
 
     public static boolean isAwaitingHorseMount = false;
     private static int lastHorseId = -1;
@@ -124,6 +128,9 @@ public class ClientEvents implements Listener {
     private int lastOpenedChestWindowId = -1;
     private int lastOpenedRewardWindowId = -1;
     private int timesClosed = 0;
+
+    private final int abilityTreePreviousSlot = 57;
+    private final int abilityTreeNextSlot = 59;
 
 
     @SubscribeEvent
@@ -1347,4 +1354,27 @@ public class ClientEvents implements Listener {
         // delay because ActionBar update may be late
         new Delay(() -> cd.setElementalSpecialString(""), 4);
     }
+
+    @SubscribeEvent
+    public void onAbilityTreeScroll(GuiOverlapEvent.ChestOverlap.HandleMouseInput e) {
+        if (!Reference.onWorld) return;
+        if (!UtilitiesConfig.INSTANCE.shouldAbilityScroll) return;
+
+        int scrollAmount = Mouse.getDWheel();
+        if (scrollAmount == 0) return;
+
+        IInventory lowerInv = e.getGui().getLowerInv();
+        if (!ABILITY_TREE_PATTERN.matcher(lowerInv.getName()).matches()) return;
+
+        boolean up = (scrollAmount > 0) ^ UtilitiesConfig.INSTANCE.abilityScrollDirection == ScrollDirection.UP;
+        int slot = up ? abilityTreePreviousSlot : abilityTreeNextSlot;
+
+        ItemStack itemStack = lowerInv.getStackInSlot(slot);
+
+        McIf.player().connection.sendPacket(new CPacketClickWindow(
+            McIf.player().openContainer.windowId,
+            slot, 2,  ClickType.PICKUP, itemStack,
+            McIf.player().openContainer.getNextTransactionID(McIf.player().inventory)));
+        }
+
 }
