@@ -97,20 +97,16 @@ public class PartyManagementUI extends GuiScreen {
         public static final int disbandKickButtonWidth = 47;
 
         /*
-        legendBodyLeftX and legendBodyRightX are relative to (this.width/4), and should be referenced with
-        (this.width/4) + legendBodyLeftX and (this.width/4) + legendBodyRightX.
+        legendBodyWidth is relative to (this.width/4), and should be referenced with
+        (this.width/4) + legendBodyWidth
          */
         public static final int legendBodyWidth = 41;
-        public static final int legendBodyLeftX = -legendBodyWidth / 2;
-        public static final int legendBodyRightX = legendBodyWidth / 2;
 
         /*
-        suggestionBodyLeftX and suggestionBodyRightX are relative to (this.width/4 + this.width/2), and should be referenced with
-        (this.width/4 + this.width/2) + suggestionBodyLeftX and (this.width/4 + this.width/2) + suggestionBodyRightX.
+        suggestionBodyWidth is relative to (this.width/4 + this.width/2), and should be referenced with
+        (this.width/4 + this.width/2) + suggestionBodyWidth
          */
         public static final int suggestionBodyWidth = 180;
-        public static final int suggestionBodyLeftX = -suggestionBodyWidth / 2;
-        public static final int suggestionBodyRightX = suggestionBodyWidth / 2;
     }
 
     @Override
