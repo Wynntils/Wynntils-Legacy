@@ -37,13 +37,13 @@ public class TradeMarketOverlay implements Listener {
         if (itemName == null) return;
 
         int amount = getAmount(itemName);
+
+        addCustomSellItems(itemName, inventory);
+
         if (amount <= 1) return;
 
         ItemStack itemStack = new ItemStack(buildNBT(itemName, amount, 0));
-
         inventory.setInventorySlotContents(20, itemStack);
-
-        addCustomSellItems(itemName, inventory);
     }
 
     @SubscribeEvent
