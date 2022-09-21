@@ -4,6 +4,7 @@ import com.mojang.realmsclient.gui.ChatFormatting;
 import com.wynntils.McIf;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.InventoryBasic;
@@ -17,7 +18,8 @@ import java.util.regex.Pattern;
 
 public class TradeMarketOverlay implements Listener {
 
-    private final Pattern ITEM_NAME_PATTERN = Pattern.compile(".*Selling §f\\d+ (.*)§6 for .* Each");
+    private final Pattern ITEM_NAME_PATTERN = Pattern.compile(".*Selling §f(\\d+|\\d+,\\d+) (.*)§6 for .* Each");
+
     private boolean shouldSend = false;
     private int amountToSend = 0;
 
@@ -30,10 +32,17 @@ public class TradeMarketOverlay implements Listener {
             return;
         }
         if (inventory.getStackInSlot(20) != ItemStack.EMPTY && !inventory.getStackInSlot(20).getDisplayName().isEmpty()) return;
-        if (getItemName(inventory) == null || getAmount(getItemName(inventory)) <= 1) return;
 
-        ItemStack itemStack = new ItemStack(buildNBT(inventory));
+        String itemName = getItemName(inventory);
+        if (itemName == null) return;
 
+        int amount = getAmount(itemName);
+
+        addCustomSellItems(itemName, inventory);
+
+        if (amount <= 1) return;
+
+        ItemStack itemStack = new ItemStack(buildNBT(itemName, amount, 0));
         inventory.setInventorySlotContents(20, itemStack);
     }
 
@@ -41,16 +50,20 @@ public class TradeMarketOverlay implements Listener {
     public void onClick(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
         InventoryBasic inventory = (InventoryBasic) e.getGui().getLowerInv();
         if (!inventory.getName().contains("What would you like to sell?")) return;
-        if (e.getSlotId() != 20) return;
 
-        String itemName = getItemName(inventory);
-        if (itemName == null) return;
+        ItemStack itemStack = e.getGui().getLowerInv().getStackInSlot(e.getSlotId());
 
-        int slotId = 11;
+        NBTTagCompound nbtTagCompound = itemStack.serializeNBT().getCompoundTag("tag");
+
+        if (!nbtTagCompound.hasKey("wynntilsSellAmount")) return;
+
+        amountToSend = nbtTagCompound.getInteger("wynntilsSellAmount");
+        if (amountToSend <= 1) return;
+
         shouldSend = true;
-        amountToSend = getAmount(itemName);
 
-        e.getGui().handleMouseClick(e.getGui().inventorySlots.getSlot(slotId), slotId, 2, ClickType.PICKUP);
+        e.setCanceled(true);
+        e.getGui().handleMouseClick(e.getGui().inventorySlots.getSlot(11), 11, 2, ClickType.PICKUP);
     }
 
     @SubscribeEvent
@@ -64,33 +77,33 @@ public class TradeMarketOverlay implements Listener {
         shouldSend = false;
     }
 
-    private NBTTagCompound buildNBT(InventoryBasic inventory) {
-        String itemName = getItemName(inventory);
-        int amount = itemName != null ? getAmount(itemName) : 1;
+    private NBTTagCompound buildNBT(String itemName, int amount, int customSellAmountIndex) {
+        boolean isCustomSellButton = customSellAmountIndex != 0;
 
         NBTTagCompound nbt = new NBTTagCompound();
         NBTTagCompound tag = nbt.getCompoundTag("tag");
 
         nbt.setString("id", "minecraft:diamond_axe");
-        nbt.setInteger("Count", Math.min(amount, 64));
+
+        if (isCustomSellButton) nbt.setInteger("Count", customSellAmountIndex);
+        else nbt.setInteger("Count", Math.min(amount, 64));
 
         NBTTagCompound display = tag.getCompoundTag("display");
-        display.setString("Name", "§aSell All");
+        if(isCustomSellButton) display.setString("Name", "§aSell " + amount);
+        else display.setString("Name", "§aSell All");
 
         NBTTagList lore = new NBTTagList();
-        lore.appendTag(new NBTTagString("§7Click to sell all items in your inventory"));
-
-        if (itemName != null) lore.appendTag(new NBTTagString("§7You have: §6" + getAmount(itemName) + " §7of " + itemName));
-        else lore.appendTag(new NBTTagString("§cYou have not yet selected an item to sell!"));
-
+        lore.appendTag(new NBTTagString("§7This will sell: §6" + amount + " §7of " + itemName));
         display.setTag("Lore", lore);
 
         tag.setInteger("Unbreakable", 1);
         tag.setInteger("HideFlags", 255);
 
-        nbt.setShort("Damage", (short) 95);
+        if (isCustomSellButton) nbt.setShort("Damage", (short) (96 + customSellAmountIndex));
+        else nbt.setShort("Damage", (short) (95));
 
         tag.setTag("display", display);
+        tag.setInteger("wynntilsSellAmount", amount);
         nbt.setTag("tag", tag);
 
         return nbt;
@@ -117,7 +130,28 @@ public class TradeMarketOverlay implements Listener {
         Matcher matcher = ITEM_NAME_PATTERN.matcher(itemStack.getDisplayName());
 
         if (!matcher.matches()) return null;
-        return matcher.group(1);
+        return matcher.group(2);
+    }
+
+    private void addCustomSellItems(String itemName, InventoryBasic inventory) {
+
+        int firstAmount = StringUtils.parseIntOr(UtilitiesConfig.Market.INSTANCE.customSellButton1, 0);
+        if (firstAmount > 0) {
+            ItemStack itemStack = new ItemStack(buildNBT(itemName, firstAmount, 1));
+            inventory.setInventorySlotContents(1, itemStack);
+        }
+
+        int secondAmount = StringUtils.parseIntOr(UtilitiesConfig.Market.INSTANCE.customSellButton2, 0);
+        if (secondAmount > 0) {
+            ItemStack itemStack = new ItemStack(buildNBT(itemName, secondAmount, 2));
+            inventory.setInventorySlotContents(2, itemStack);
+        }
+
+        int thirdAmount = StringUtils.parseIntOr(UtilitiesConfig.Market.INSTANCE.customSellButton3, 0);
+        if (thirdAmount > 0) {
+            ItemStack itemStack = new ItemStack(buildNBT(itemName, thirdAmount, 3));
+            inventory.setInventorySlotContents(3, itemStack);
+        }
     }
 
 }
