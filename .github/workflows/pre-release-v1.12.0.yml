@@ -111,6 +111,7 @@ jobs:
           tag_name: ${{ needs.changelog.outputs.tag }}-beta+${{ github.run_number }}
           prerelease: true
           body: ${{ needs.changelog.outputs.clean_changelog }}
+          target_commitish: ${{ github.sha }}
 
   release-to-cf:
     name: Release to CurseForge
