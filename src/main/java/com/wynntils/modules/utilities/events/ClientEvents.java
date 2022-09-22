@@ -1146,7 +1146,7 @@ public class ClientEvents implements Listener {
         // Only run at first time we get items, don't care about updating
         if (e.getPacket().getWindowId() == lastProcessedOpenedChest) return;
 
-        List<ItemStack> actualItems = e.getPacket().getItemStacks().subList(0, 27).stream().filter(item -> !item.isEmpty() && item.hasDisplayName() && !item.getDisplayName().equalsIgnoreCase("AIR")).collect(Collectors.toList());
+        List<ItemStack> actualItems = e.getPacket().getItemStacks().subList(0, 27).stream().filter(item -> !item.isEmpty() && item.hasDisplayName() && item.getItem() != Items.AIR).collect(Collectors.toList());
         if (actualItems.size() == 0) return;
 
         lastProcessedOpenedChest = e.getPacket().getWindowId();
