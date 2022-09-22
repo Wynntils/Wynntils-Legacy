@@ -87,7 +87,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.*;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.Pattern;import java.util.stream.Collectors;
 
 import static com.wynntils.core.framework.instances.PlayerInfo.get;
 import static net.minecraft.util.text.TextFormatting.getTextWithoutFormattingCodes;
@@ -1146,6 +1146,9 @@ public class ClientEvents implements Listener {
         // Only run at first time we get items, don't care about updating
         if (e.getPacket().getWindowId() == lastProcessedOpenedChest) return;
 
+        List<ItemStack> actualItems = e.getPacket().getItemStacks().subList(0, 27).stream().filter(item -> !item.isEmpty() && item.hasDisplayName() && !item.getDisplayName().equalsIgnoreCase("AIR")).collect(Collectors.toList());
+        if (actualItems.size() == 0) return;
+
         lastProcessedOpenedChest = e.getPacket().getWindowId();
 
         // Dry streak counter and sound sfx
@@ -1171,7 +1174,6 @@ public class ClientEvents implements Listener {
                     }
                 }
 
-
                 if (UtilitiesConfig.INSTANCE.enableDryStreak && UtilitiesConfig.INSTANCE.dryStreakEndedMessage) {
                     ITextComponent textComponent = new TextComponentString(UtilitiesConfig.INSTANCE.dryStreakCount + " long dry streak broken! Mythic found! Found boxes since last mythic: " + UtilitiesConfig.INSTANCE.dryStreakBoxes);
                     textComponent.getStyle()
@@ -1191,28 +1193,6 @@ public class ClientEvents implements Listener {
                 UtilitiesConfig.INSTANCE.dryStreakCount += 1;
 
             UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
-            return;
-        }
-
-        // Mythic found sfx for daily rewards and objective rewards
-        if (!MusicConfig.SoundEffects.INSTANCE.mythicFound) return;
-
-        // Size should be at least 27, checked for it earlier
-        int size = 27;
-        for (int i = 0; i < size; i++) {
-            ItemStack stack = e.getPacket().getItemStacks().get(i);
-            if (stack.isEmpty() || !stack.hasDisplayName()) continue;
-            if (!stack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString())) continue;
-            if (!stack.getDisplayName().contains("Unidentified")) continue;
-
-            try {
-                SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("mythicFound"),
-                        true, false, false, false, true, false, true);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-
-            break;
         }
     }
 
