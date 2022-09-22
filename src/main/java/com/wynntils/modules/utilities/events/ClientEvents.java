@@ -4,7 +4,6 @@
 
 package com.wynntils.modules.utilities.events;
 
-import com.google.common.eventbus.Subscribe;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
@@ -87,7 +86,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.*;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;import java.util.stream.Collectors;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static com.wynntils.core.framework.instances.PlayerInfo.get;
 import static net.minecraft.util.text.TextFormatting.getTextWithoutFormattingCodes;
