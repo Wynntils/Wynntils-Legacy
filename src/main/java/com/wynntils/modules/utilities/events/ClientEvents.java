@@ -1146,6 +1146,8 @@ public class ClientEvents implements Listener {
         // Only run at first time we get items, don't care about updating
         if (e.getPacket().getWindowId() == lastProcessedOpenedChest) return;
 
+        // Wynncraft sends you two packets when opening the chest. The first is empty, the second one has the actual items.
+        // By returning here, we only process the second packet, whilst still only handling each chest once.
         List<ItemStack> actualItems = e.getPacket().getItemStacks().subList(0, 27).stream().filter(item -> !item.isEmpty() && item.hasDisplayName() && item.getItem() != Items.AIR).collect(Collectors.toList());
         if (actualItems.size() == 0) return;
 
