@@ -78,7 +78,7 @@ public class CorruptedBarOverlay extends Overlay {
 
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2, CustomColor cc) {
         if (OverlayConfig.CorruptedBar.INSTANCE.overlayRotation == OverlayRotation.NORMAL) {
-            drawString(get(CharacterData.class).getCorruptedProgressPercent() + " ۞ " + maxCorruptedPercent, textPositionOffset.a  - (81 - OverlayConfig.CorruptedBar.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.CorruptedBar.INSTANCE.textShadow);
+            drawString(get(CharacterData.class).getCorruptedProgressPercent() + " ☠ " + maxCorruptedPercent, textPositionOffset.a  - (81 - OverlayConfig.CorruptedBar.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.CorruptedBar.INSTANCE.textShadow);
         }
 
         rotate(OverlayConfig.CorruptedBar.INSTANCE.overlayRotation.getDegrees());
