@@ -70,6 +70,7 @@ public class UtilitiesModule extends Module {
         registerOverlay(new BloodPoolBarOverlay(), Priority.NORMAL);
         registerOverlay(new ManaBankBarOverlay(), Priority.NORMAL);
         registerOverlay(new AwakenedProgressBarOverlay(), Priority.NORMAL);
+        registerOverlay(new CorruptedBarOverlay(), Priority.NORMAL);
         registerOverlay(new FocusBarOverlay(), Priority.NORMAL);
         registerOverlay(new ExpBarOverlay(), Priority.NORMAL);
         registerOverlay(currentMaskOverlay = new CurrentMaskOverlay(), Priority.NORMAL);
@@ -116,6 +117,7 @@ public class UtilitiesModule extends Module {
         registerSettings(OverlayConfig.Mana.class);
         registerSettings(OverlayConfig.BloodPool.class);
         registerSettings(OverlayConfig.ManaBank.class);
+        registerSettings(OverlayConfig.CorruptedBar.class);
         registerSettings(OverlayConfig.AwakenedProgress.class);
         registerSettings(OverlayConfig.MaskOverlay.class);
         registerSettings(OverlayConfig.Focus.class);
@@ -147,10 +149,6 @@ public class UtilitiesModule extends Module {
 
     public ActionBarOverlay getActionBarOverlay() {
         return actionBarOverlay;
-    }
-
-    public CurrentMaskOverlay getCurrentMaskOverlay() {
-        return currentMaskOverlay;
     }
 
     public InfoFormatter getInfoFormatter() {
