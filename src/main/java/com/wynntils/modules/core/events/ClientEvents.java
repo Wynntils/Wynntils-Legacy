@@ -356,6 +356,12 @@ public class ClientEvents implements Listener {
             if (awakeningBarMatcher.matches()) e.setCanceled(true);
         }
 
+        if (OverlayConfig.CorruptedBar.INSTANCE.hideDefaultBar) {
+            // (!) Do not remove .getName() check, Intellij is wrong about it
+            Matcher corruptedMatcher = BossBarData.CORRUPTED_PROGRESS_PATTERN.matcher(e.getPacket().getName().getFormattedText());
+            if (corruptedMatcher.matches()) e.setCanceled(true);
+        }
+
         if (OverlayConfig.Focus.INSTANCE.hideDefaultBar) {
             // (!) Do not remove .getName() check, Intellij is wrong about it
             Matcher focusMatcher = BossBarData.FOCUS_PATTERN.matcher(e.getPacket().getName().getFormattedText());

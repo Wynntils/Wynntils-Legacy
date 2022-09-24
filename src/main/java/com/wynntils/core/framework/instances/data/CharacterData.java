@@ -33,6 +33,7 @@ public class CharacterData extends PlayerData {
     private int manaBank = -1;
     private int maxManaBank = -1;
     private int awakenedProgress = -1;
+    private int corruptedProgressPercent = -1;
     private int focus = -1;
     private int maxFocus = -1;
     private int level = -1;
@@ -143,6 +144,8 @@ public class CharacterData extends PlayerData {
         return currentClass == ClassType.NONE ? -1 : 200;
     }
 
+    public int getCorruptedProgressPercent() { return currentClass == ClassType.NONE ? -1 : corruptedProgressPercent; }
+
     public int getFocus() {
         return currentClass == ClassType.NONE ? -1 : focus;
     }
@@ -215,6 +218,8 @@ public class CharacterData extends PlayerData {
     public void setAwakenedProgress(int awakenedProgress) {
         this.awakenedProgress = awakenedProgress;
     }
+
+    public void setCorruptedProgressPercent(int corruptedProgressPercent) { this.corruptedProgressPercent = corruptedProgressPercent; }
 
     public void setFocus(int focus) { this.focus = focus; }
 

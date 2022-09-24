@@ -255,6 +255,46 @@ public class OverlayConfig extends SettingsClass {
         }
     }
 
+    @SettingsInfo(name = "corrupted_bar", displayPath = "Utilities/Overlays/Corrupted Bar")
+    public static class CorruptedBar extends SettingsClass {
+        public static CorruptedBar INSTANCE;
+
+        @Setting(displayName = "Hide Default Corrupted Progress Bar", description = "Should the corrupted progress boss bar be hidden?")
+        public boolean hideDefaultBar = true;
+
+        @Setting(displayName = "Corrupted Progress Width", description = "How wide should the corrupted progress be in pixels?\n\n§8This will be adjusted using Minecraft's scaling.")
+        @Setting.Limitations.IntLimit(min = 0, max = 81)
+        public int width = 81;
+
+        @Setting(displayName = "Corrupted Progress Orientation", description = "How orientated in degrees should the corrupted progress bar be?\n\n§8Accompanied text will be removed.")
+        public OverlayRotation overlayRotation = OverlayRotation.NORMAL;
+
+        @Setting(displayName = "Corrupted Progress Texture", description = "What texture should be used for the corrupted progress bar?")
+        public CorruptedProgressTexture corruptedProgressTexture = CorruptedProgressTexture.a;
+
+        @Setting(displayName = "Animation Speed", description = "How fast should the animation be played?\n\n§8Set this to 0 for it to display instantly.")
+        @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
+        public float animated = 2f;
+
+        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
+        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+
+        public enum CorruptedProgressTexture {
+            Wynn,
+            Brune,
+            Aether,
+            Skull,
+            Inverse,
+            Skyrim,
+            Rune,
+            a,
+            b,
+            c,
+            d
+            // following the format, to add more textures, register them here with a name and create a special case in the render method
+        }
+    }
+
     @SettingsInfo(name = "current_mask_overlay", displayPath = "Utilities/Overlays/Mask")
     public static class MaskOverlay extends SettingsClass {
         public static MaskOverlay INSTANCE;
