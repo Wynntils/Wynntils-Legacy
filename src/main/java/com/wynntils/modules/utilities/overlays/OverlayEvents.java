@@ -22,13 +22,11 @@ import com.wynntils.modules.utilities.managers.MountHorseManager;
 import com.wynntils.modules.utilities.overlays.hud.*;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.enums.ItemTier;
-import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.network.play.server.*;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -37,6 +35,7 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
@@ -55,9 +54,9 @@ public class OverlayEvents implements Listener {
     //private static boolean wynnExpTimestampNotified = false;
     private long loginTime;
 
-    private static String totemName;
-
-    private boolean isVanished = false; // used in onEffectApplied
+    private static final List<String> displayedTotemEntries = new ArrayList<>(Arrays.asList("", ""));
+    private static String totem1Entry = "";
+    private static String totem2Entry = "";
 
     @SubscribeEvent
     public void onChatMessageReceived(ClientChatReceivedEvent e) {
@@ -811,10 +810,8 @@ public class OverlayEvents implements Listener {
         // if the effect is invisibility timer is "Vanish"
         else if (potion == MobEffects.WITHER && PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ASSASSIN && effect.getDuration() < 200) {
             timerName = "Vanish";
-            isVanished = true;
         } else if (potion == MobEffects.INVISIBILITY && PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ASSASSIN) {
             // Special case for weathered; the invisibility effect does not have a duration
-            isVanished = true;
             McIf.mc().addScheduledTask(() ->
                     ConsumableTimerOverlay.addBasicTimer("Vanish", 5));
             return;
@@ -854,7 +851,6 @@ public class OverlayEvents implements Listener {
             }
             // When removing invisibility from assassin
             else if ((potion == MobEffects.WITHER || potion == MobEffects.INVISIBILITY) && PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ASSASSIN) {
-                isVanished = false; // So it won't skip
                 ConsumableTimerOverlay.removeBasicTimer("Vanish");
                 // Bit of a delay until Wynn starts the cooldown timer; we need to copy it
                 new Delay(() -> ConsumableTimerOverlay.addBasicTimer("Vanish Cooldown", 5), 9);
@@ -866,25 +862,45 @@ public class OverlayEvents implements Listener {
     public void onTotemEvent(SpellEvent.TotemSummoned e) {
         if (!OverlayConfig.ConsumableTimer.INSTANCE.trackTotem) return;
 
-        ConsumableTimerOverlay.addBasicTimer("Totem Summoned", 59);
+        String newMessage = "Totem " + e.getTotemNumber() + " Summoned";
+        if (e.getTotemNumber() == 1) {
+            ConsumableTimerOverlay.removeBasicTimer(totem1Entry);
+            totem1Entry = newMessage;
+            ConsumableTimerOverlay.addBasicTimer(totem1Entry, 59);
+        } else if (e.getTotemNumber() == 2) {
+            ConsumableTimerOverlay.removeBasicTimer(totem2Entry);
+            totem2Entry = newMessage;
+            ConsumableTimerOverlay.addBasicTimer(totem2Entry, 59);
+        }
     }
 
     @SubscribeEvent
     public void onTotemEvent(SpellEvent.TotemActivated e) {
         if (!OverlayConfig.ConsumableTimer.INSTANCE.trackTotem) return;
 
-        ConsumableTimerOverlay.removeBasicTimer("Totem Summoned");
-        ConsumableTimerOverlay.removeBasicTimer(totemName);
-        totemName = "Totem " + e.getLocation();
-        ConsumableTimerOverlay.addBasicTimer(totemName, e.getTime());
+        String newMessage = "Totem " + e.getTotemNumber() + " " + e.getLocation();
+        if (e.getTotemNumber() == 1) {
+            ConsumableTimerOverlay.removeBasicTimer(totem1Entry);
+            totem1Entry = newMessage;
+            ConsumableTimerOverlay.addBasicTimer(totem1Entry, e.getTime());
+        } else if (e.getTotemNumber() == 2) {
+            ConsumableTimerOverlay.removeBasicTimer(totem2Entry);
+            totem2Entry = newMessage;
+            ConsumableTimerOverlay.addBasicTimer(totem2Entry, e.getTime());
+        }
     }
 
     @SubscribeEvent
     public void onTotemEvent(SpellEvent.TotemRemoved e) {
         if (!OverlayConfig.ConsumableTimer.INSTANCE.trackTotem) return;
 
-        ConsumableTimerOverlay.removeBasicTimer("Totem Summoned");
-        ConsumableTimerOverlay.removeBasicTimer(totemName);
+        if (e.getTotemNumber() == 1) {
+            ConsumableTimerOverlay.removeBasicTimer(totem1Entry);
+            totem1Entry = "";
+        } else if (e.getTotemNumber() == 2) {
+            ConsumableTimerOverlay.removeBasicTimer(totem2Entry);
+            totem2Entry = "";
+        }
     }
 
     @SubscribeEvent
