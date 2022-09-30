@@ -122,12 +122,12 @@ public class ShamanTotemTracker {
                 // No totem slots available?
                 Reference.LOGGER.log(Level.WARN, "Received a new totem " + entityId + ", but no totem slots are available");
             }
-        } else if (getBoundTotem(entityId) == totem1) {
+        } else if (getBoundTotem(entityId) == totem1 && totem1 != null) {
             // Update totem 1
             totem1.setTime(parsedTime);
             totem1.setLocation(parsedLocation);
             postEvent(new SpellEvent.TotemActivated(1, parsedTime, parsedLocation));
-        } else if (getBoundTotem(entityId) == totem2) {
+        } else if (getBoundTotem(entityId) == totem2 && totem2 != null) {
             // Update totem 2
             totem2.setTime(parsedTime);
             totem2.setLocation(parsedLocation);

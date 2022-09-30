@@ -13,6 +13,7 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.helpers.Delay;
+import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
@@ -54,9 +55,8 @@ public class OverlayEvents implements Listener {
     //private static boolean wynnExpTimestampNotified = false;
     private long loginTime;
 
-    private static final List<String> displayedTotemEntries = new ArrayList<>(Arrays.asList("", ""));
-    private static String totem1Entry = "";
-    private static String totem2Entry = "";
+    private static Boolean totem1Active = false;
+    private static Boolean totem2Active = false;
 
     @SubscribeEvent
     public void onChatMessageReceived(ClientChatReceivedEvent e) {
@@ -859,34 +859,22 @@ public class OverlayEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void onTotemEvent(SpellEvent.TotemSummoned e) {
-        if (!OverlayConfig.ConsumableTimer.INSTANCE.trackTotem) return;
-
-        String newMessage = "Totem " + e.getTotemNumber() + " Summoned";
-        if (e.getTotemNumber() == 1) {
-            ConsumableTimerOverlay.removeBasicTimer(totem1Entry);
-            totem1Entry = newMessage;
-            ConsumableTimerOverlay.addBasicTimer(totem1Entry, 59);
-        } else if (e.getTotemNumber() == 2) {
-            ConsumableTimerOverlay.removeBasicTimer(totem2Entry);
-            totem2Entry = newMessage;
-            ConsumableTimerOverlay.addBasicTimer(totem2Entry, 59);
-        }
-    }
-
-    @SubscribeEvent
     public void onTotemEvent(SpellEvent.TotemActivated e) {
         if (!OverlayConfig.ConsumableTimer.INSTANCE.trackTotem) return;
 
         String newMessage = "Totem " + e.getTotemNumber() + " " + e.getLocation();
-        if (e.getTotemNumber() == 1) {
-            ConsumableTimerOverlay.removeBasicTimer(totem1Entry);
-            totem1Entry = newMessage;
-            ConsumableTimerOverlay.addBasicTimer(totem1Entry, e.getTime());
+
+        if (e.getTotemNumber() == 1 && !totem1Active) { // First totem, add it
+            totem1Active = true;
+            ConsumableTimerOverlay.addBasicTimer(newMessage, e.getTime());
+        } else if (e.getTotemNumber() == 1) { // Totem already exists, edit it
+            ConsumableTimerOverlay.editBasicTimerContaining("Totem 1", newMessage, e.getTime());
+
+        } else if (e.getTotemNumber() == 2 && !totem2Active) {
+            totem2Active = true;
+            ConsumableTimerOverlay.addBasicTimer(newMessage, e.getTime());
         } else if (e.getTotemNumber() == 2) {
-            ConsumableTimerOverlay.removeBasicTimer(totem2Entry);
-            totem2Entry = newMessage;
-            ConsumableTimerOverlay.addBasicTimer(totem2Entry, e.getTime());
+            ConsumableTimerOverlay.editBasicTimerContaining("Totem 2", newMessage, e.getTime());
         }
     }
 
@@ -895,11 +883,12 @@ public class OverlayEvents implements Listener {
         if (!OverlayConfig.ConsumableTimer.INSTANCE.trackTotem) return;
 
         if (e.getTotemNumber() == 1) {
-            ConsumableTimerOverlay.removeBasicTimer(totem1Entry);
-            totem1Entry = "";
+            // Uses removeBasicTimerContaining to remove timers even if totem1Entry is no longer accurate
+            ConsumableTimerOverlay.removeBasicTimerContaining("Totem 1");
+            totem1Active = false;
         } else if (e.getTotemNumber() == 2) {
-            ConsumableTimerOverlay.removeBasicTimer(totem2Entry);
-            totem2Entry = "";
+            ConsumableTimerOverlay.removeBasicTimerContaining("Totem 2");
+            totem2Active = false;
         }
     }
 

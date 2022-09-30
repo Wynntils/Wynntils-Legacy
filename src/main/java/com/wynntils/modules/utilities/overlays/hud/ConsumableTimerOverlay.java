@@ -16,7 +16,6 @@ import com.wynntils.modules.utilities.instances.ConsumableContainer;
 import com.wynntils.modules.utilities.instances.IdentificationHolder;
 import com.wynntils.modules.utilities.overlays.inventories.ItemIdentificationOverlay;
 import com.wynntils.webapi.profiles.item.enums.IdentificationModifier;
-import net.minecraft.client.Minecraft;
 import net.minecraft.init.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.text.TextFormatting;
@@ -300,6 +299,42 @@ public class ConsumableTimerOverlay extends Overlay {
                 return;
             }
         }
+    }
+
+    /**
+     * Removes all timers with names containing the given string.
+     * @param partialName The string to search for
+     */
+    public static void removeBasicTimerContaining(String partialName) {
+        for (Iterator<ConsumableContainer> iterator = activeConsumables.iterator(); iterator.hasNext();) {
+            ConsumableContainer consumableContainer = iterator.next();
+            if (consumableContainer.getName().contains(partialName)) {
+                iterator.remove();
+            }
+        }
+    }
+
+    /**
+     * Edit an existing timer, keeping the position of the timer in the list.
+     * The first timer that matches the given previousName will be edited.
+     * Persistence will be false.
+     * @param previousName The partial name of the timer to look for
+     * @param newName The new name of the timer
+     * @param timeInSeconds The new time in seconds, or -1 to keep the same time
+     */
+    public static void editBasicTimerContaining(String previousName, String newName, int timeInSeconds) {
+        int prevIndex = -1;
+        for (ConsumableContainer cc : activeConsumables) {
+            if (cc.getName().contains(previousName)) {
+                prevIndex = activeConsumables.indexOf(cc);
+            }
+        }
+        if (prevIndex == -1) return;
+
+        ConsumableContainer newCC = new ConsumableContainer(TextFormatting.GRAY + newName);
+        newCC.setExpirationTime(timeInSeconds == -1 ? activeConsumables.get(prevIndex).getExpirationTime() : McIf.getSystemTime() + timeInSeconds*1000 - 1000);
+
+        activeConsumables.set(prevIndex, newCC);
     }
 
     @Override
