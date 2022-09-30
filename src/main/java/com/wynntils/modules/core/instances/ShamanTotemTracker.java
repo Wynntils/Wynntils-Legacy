@@ -38,11 +38,6 @@ public class ShamanTotemTracker {
     private long totemCastTimestamp = 0;
     private int summonWeaponSlot = -1; // Weapon used to summon totem(s)
 
-    private int bufferedId = -1;
-    private double bufferedX = -1;
-    private double bufferedY = -1;
-    private double bufferedZ = -1;
-
     private void postEvent(Event event) {
         McIf.mc().addScheduledTask(() -> FrameworkManager.getEventBus().post(event));
     }
@@ -51,8 +46,8 @@ public class ShamanTotemTracker {
         Entity entity = McIf.world().getEntityByID(entityId);
         if (entity != null) return entity;
 
-        if (entityId == bufferedId) {
-            return new EntityArmorStand(McIf.world(), bufferedX, bufferedY, bufferedZ);
+        if (entityId == -1) {
+            return new EntityArmorStand(McIf.world(), 0, 0, 0);
         }
 
         return null;
