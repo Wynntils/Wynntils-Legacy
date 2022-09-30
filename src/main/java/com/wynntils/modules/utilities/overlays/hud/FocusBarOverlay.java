@@ -18,10 +18,10 @@ import com.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-public class BloodPoolBarOverlay extends Overlay {
+public class FocusBarOverlay extends Overlay {
 
-    public BloodPoolBarOverlay() {
-        super("Acolyte (Blood Pool) Bar", 81, 21, true, 0.43f, 1.03f, -10, -38, OverlayGrowFrom.BOTTOM_RIGHT, RenderGameOverlayEvent.ElementType.HEALTH);
+    public FocusBarOverlay() {
+        super("Focus Bar Overlay", 81, 21, true, 0.65f, 1.03f, -10, -38, OverlayGrowFrom.BOTTOM_RIGHT, RenderGameOverlayEvent.ElementType.HEALTH);
     }
 
     @Setting(displayName = "Flip", description = "Should the filling of the bar be flipped?")
@@ -31,24 +31,24 @@ public class BloodPoolBarOverlay extends Overlay {
     public Pair<Integer, Integer> textPositionOffset = new Pair<>(-40, -10);
 
     @Setting(displayName = "Text Name", description = "What should the colour of the text be?")
-    public CustomColor textColor = CommonColors.DARK_RED;
+    public CustomColor textColor = CommonColors.YELLOW;
 
-    private static float bloodPool = 0.0f;
+    private static float focusProgress = 0.0f;
 
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
-        if (!(visible = (get(CharacterData.class).getCurrentBloodPool() != -1 && !Reference.onLobby))) return;
+        if (!(visible = (get(CharacterData.class).getFocus() != -1 && !Reference.onLobby))) return;
 
-        if (OverlayConfig.BloodPool.INSTANCE.animated > 0.0f && OverlayConfig.BloodPool.INSTANCE.animated < 10.0f && !(bloodPool >= (float) get(CharacterData.class).getMaxBloodPool())) {
-            bloodPool -= (OverlayConfig.BloodPool.INSTANCE.animated * 0.1f) * (bloodPool - (float) get(CharacterData.class).getCurrentBloodPool());
+        if (OverlayConfig.Focus.INSTANCE.animated > 0.0f && OverlayConfig.Focus.INSTANCE.animated < 10.0f && !(focusProgress >= (float) get(CharacterData.class).getMaxFocus())) {
+            focusProgress -= (OverlayConfig.Focus.INSTANCE.animated * 0.1f) * (focusProgress - (float) get(CharacterData.class).getFocus());
         } else {
-            bloodPool = get(CharacterData.class).getCurrentBloodPool();
+            focusProgress = get(CharacterData.class).getFocus();
         }
     }
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
-        switch (OverlayConfig.BloodPool.INSTANCE.bloodPoolTexture) {
+        switch (OverlayConfig.Focus.INSTANCE.focusBarTexture) {
             case Wynn:
                 drawDefaultBar(-1, 8, 0, 17, textColor);
                 break;
@@ -76,13 +76,12 @@ public class BloodPoolBarOverlay extends Overlay {
     }
 
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2, CustomColor cc) {
-        if (OverlayConfig.BloodPool.INSTANCE.overlayRotation == OverlayRotation.NORMAL) {
-            drawString(get(CharacterData.class).getCurrentBloodPool() + " ⚕ " + get(CharacterData.class).getMaxBloodPool(), textPositionOffset.a  - (81 - OverlayConfig.BloodPool.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.BloodPool.INSTANCE.textShadow);
+        if (OverlayConfig.Focus.INSTANCE.overlayRotation == OverlayRotation.NORMAL) {
+            drawString(get(CharacterData.class).getFocus() + " ➸ " + get(CharacterData.class).getMaxFocus(), textPositionOffset.a  - (81 - OverlayConfig.Focus.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Focus.INSTANCE.textShadow);
         }
 
-        rotate(OverlayConfig.BloodPool.INSTANCE.overlayRotation.getDegrees());
-        drawProgressBar(Textures.Overlays.bars_health, -OverlayConfig.BloodPool.INSTANCE.width, y1, 0, y2, 0, ty1, 81, ty2, (flip ? -bloodPool : bloodPool) / (float) get(CharacterData.class).getMaxBloodPool());
+        rotate(OverlayConfig.Focus.INSTANCE.overlayRotation.getDegrees());
+        drawProgressBar(Textures.Overlays.bars_health, -OverlayConfig.Focus.INSTANCE.width, y1, 0, y2, 0, ty1, 81, ty2, (flip ? -focusProgress : focusProgress) / (float) get(CharacterData.class).getMaxFocus());
     }
 
 }
-

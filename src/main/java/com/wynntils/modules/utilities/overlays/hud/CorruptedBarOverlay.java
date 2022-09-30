@@ -18,10 +18,10 @@ import com.wynntils.modules.utilities.configs.OverlayConfig;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-public class BloodPoolBarOverlay extends Overlay {
+public class CorruptedBarOverlay extends Overlay {
 
-    public BloodPoolBarOverlay() {
-        super("Acolyte (Blood Pool) Bar", 81, 21, true, 0.43f, 1.03f, -10, -38, OverlayGrowFrom.BOTTOM_RIGHT, RenderGameOverlayEvent.ElementType.HEALTH);
+    public CorruptedBarOverlay() {
+        super("Corrupted Bar", 81, 21, true, 0.65f, 1.03f, -10, -38, OverlayGrowFrom.BOTTOM_RIGHT, RenderGameOverlayEvent.ElementType.HEALTH);
     }
 
     @Setting(displayName = "Flip", description = "Should the filling of the bar be flipped?")
@@ -31,24 +31,25 @@ public class BloodPoolBarOverlay extends Overlay {
     public Pair<Integer, Integer> textPositionOffset = new Pair<>(-40, -10);
 
     @Setting(displayName = "Text Name", description = "What should the colour of the text be?")
-    public CustomColor textColor = CommonColors.DARK_RED;
+    public CustomColor textColor = CommonColors.RED;
 
-    private static float bloodPool = 0.0f;
+    private static int corruptedPercent = 0;
+    private static final int maxCorruptedPercent = 100;
 
     @Override
     public void tick(TickEvent.ClientTickEvent event, long ticks) {
-        if (!(visible = (get(CharacterData.class).getCurrentBloodPool() != -1 && !Reference.onLobby))) return;
+        if (!(visible = (get(CharacterData.class).getCorruptedProgressPercent() != -1 && !Reference.onLobby))) return;
 
-        if (OverlayConfig.BloodPool.INSTANCE.animated > 0.0f && OverlayConfig.BloodPool.INSTANCE.animated < 10.0f && !(bloodPool >= (float) get(CharacterData.class).getMaxBloodPool())) {
-            bloodPool -= (OverlayConfig.BloodPool.INSTANCE.animated * 0.1f) * (bloodPool - (float) get(CharacterData.class).getCurrentBloodPool());
+        if (OverlayConfig.CorruptedBar.INSTANCE.animated > 0.0f && OverlayConfig.CorruptedBar.INSTANCE.animated < 10.0f && !(corruptedPercent >= maxCorruptedPercent)) {
+            corruptedPercent -= (OverlayConfig.CorruptedBar.INSTANCE.animated * 0.1f) * (corruptedPercent - (float) get(CharacterData.class).getCorruptedProgressPercent());
         } else {
-            bloodPool = get(CharacterData.class).getCurrentBloodPool();
+            corruptedPercent = get(CharacterData.class).getCorruptedProgressPercent();
         }
     }
 
     @Override
     public void render(RenderGameOverlayEvent.Pre event) {
-        switch (OverlayConfig.BloodPool.INSTANCE.bloodPoolTexture) {
+        switch (OverlayConfig.CorruptedBar.INSTANCE.corruptedProgressTexture) {
             case Wynn:
                 drawDefaultBar(-1, 8, 0, 17, textColor);
                 break;
@@ -76,13 +77,12 @@ public class BloodPoolBarOverlay extends Overlay {
     }
 
     private void drawDefaultBar(int y1, int y2, int ty1, int ty2, CustomColor cc) {
-        if (OverlayConfig.BloodPool.INSTANCE.overlayRotation == OverlayRotation.NORMAL) {
-            drawString(get(CharacterData.class).getCurrentBloodPool() + " ⚕ " + get(CharacterData.class).getMaxBloodPool(), textPositionOffset.a  - (81 - OverlayConfig.BloodPool.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.BloodPool.INSTANCE.textShadow);
+        if (OverlayConfig.CorruptedBar.INSTANCE.overlayRotation == OverlayRotation.NORMAL) {
+            drawString(get(CharacterData.class).getCorruptedProgressPercent() + " ☠ " + maxCorruptedPercent, textPositionOffset.a  - (81 - OverlayConfig.CorruptedBar.INSTANCE.width), textPositionOffset.b, cc, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.CorruptedBar.INSTANCE.textShadow);
         }
 
-        rotate(OverlayConfig.BloodPool.INSTANCE.overlayRotation.getDegrees());
-        drawProgressBar(Textures.Overlays.bars_health, -OverlayConfig.BloodPool.INSTANCE.width, y1, 0, y2, 0, ty1, 81, ty2, (flip ? -bloodPool : bloodPool) / (float) get(CharacterData.class).getMaxBloodPool());
+        rotate(OverlayConfig.CorruptedBar.INSTANCE.overlayRotation.getDegrees());
+        drawProgressBar(Textures.Overlays.bars_health, -OverlayConfig.CorruptedBar.INSTANCE.width, y1, 0, y2, 0, ty1, 81, ty2, (flip ? -corruptedPercent : corruptedPercent) / (float) get(CharacterData.class).getCorruptedProgressPercent());
     }
 
 }
-

@@ -172,7 +172,7 @@ public class ServerEvents implements Listener {
             waitingForGuildList = false;
             e.setCanceled(true);
         }
-        if (messageText.startsWith("#") && messageText.contains(" XP -")) {
+        if (messageText.startsWith("#") && messageText.contains(" XP")) {
             if (waitingForGuildList) e.setCanceled(true);
 
             String[] splitMessage = messageText.split(" ");
