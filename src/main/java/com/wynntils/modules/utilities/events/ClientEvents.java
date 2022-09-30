@@ -136,7 +136,7 @@ public class ClientEvents implements Listener {
     private final int abilityTreePreviousSlot = 57;
     private final int abilityTreeNextSlot = 59;
 
-    private final double totemHighlightMaxOffset = 0.3;
+    private final double totemHighlightMaxOffset = 0.8; // Ensures totem highlights work even on slabs
     private final String totemHighlightTeamBase = "wynntilsTH";
 
     @SubscribeEvent
@@ -1383,9 +1383,12 @@ public class ClientEvents implements Listener {
         team.setPrefix(color.toString()); // set color of team
 
         List<EntityArmorStand> possibleTotems = McIf.mc().world.getEntitiesWithinAABB(EntityArmorStand.class, new AxisAlignedBB(
-                x-totemHighlightMaxOffset, y, z-totemHighlightMaxOffset,
-                x+totemHighlightMaxOffset, y, z+totemHighlightMaxOffset));
+                x-totemHighlightMaxOffset, y-totemHighlightMaxOffset, z-totemHighlightMaxOffset,
+                x+totemHighlightMaxOffset, y+totemHighlightMaxOffset, z+totemHighlightMaxOffset));
+
         possibleTotems.forEach(entityArmorStand -> {
+            // If (entityArmorStand is not on ground or slab) && (entityArmorStand-carpetHeight is not on ground), it is not a totem
+            if (entityArmorStand.posY % 0.5 != 0 && (entityArmorStand.posY - 0.0625) % 1 != 0) return;
             scoreboard.addPlayerToTeam(entityArmorStand.getCachedUniqueIdString(), totemHighlightTeamBase + e.getTotemNumber());
             entityArmorStand.setGlowing(true);
         });

@@ -16,6 +16,7 @@ import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.instances.ShamanMaskType;
 import com.wynntils.modules.utilities.instances.Toast;
 import com.wynntils.modules.utilities.managers.MountHorseManager;
@@ -863,13 +864,13 @@ public class OverlayEvents implements Listener {
 
         if (e.getTotemNumber() == 1 && !totem1Active) { // First totem, add it
             totem1Active = true;
-            ConsumableTimerOverlay.addBasicTimer(newMessage, e.getTime());
+            ConsumableTimerOverlay.addColoredTimer(newMessage, e.getTime(), false, UtilitiesConfig.INSTANCE.totem1Color);
         } else if (e.getTotemNumber() == 1) { // Totem already exists, edit it
             ConsumableTimerOverlay.editTotemTimer("Totem 1", newMessage, e.getTime());
 
         } else if (e.getTotemNumber() == 2 && !totem2Active) {
             totem2Active = true;
-            ConsumableTimerOverlay.addBasicTimer(newMessage, e.getTime());
+            ConsumableTimerOverlay.addColoredTimer(newMessage, e.getTime(), false, UtilitiesConfig.INSTANCE.totem2Color);
         } else if (e.getTotemNumber() == 2) {
             ConsumableTimerOverlay.editTotemTimer("Totem 2", newMessage, e.getTime());
         }
