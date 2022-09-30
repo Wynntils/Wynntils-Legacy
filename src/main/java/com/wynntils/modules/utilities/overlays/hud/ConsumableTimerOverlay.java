@@ -12,6 +12,7 @@ import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.instances.ConsumableContainer;
 import com.wynntils.modules.utilities.instances.IdentificationHolder;
 import com.wynntils.modules.utilities.overlays.inventories.ItemIdentificationOverlay;
@@ -269,7 +270,15 @@ public class ConsumableTimerOverlay extends Overlay {
      * @param persistent If this timer should persist over class change or player death
      */
     public static void addBasicTimer(String name, int timeInSeconds, boolean persistent) {
-        String formattedName = GRAY + name;
+        addColoredTimer(name, timeInSeconds, persistent, GRAY);
+    }
+
+    public static void addBasicTimer(String name, int timeInSeconds) {
+        addBasicTimer(name, timeInSeconds, false);
+    }
+
+    public static void addColoredTimer(String name, int timeInSeconds, boolean persistent, TextFormatting color) {
+        String formattedName = color + name;
         // setExpirationTime adds an extra 1000 so compensate for that here
         long expirationTime = McIf.getSystemTime() + timeInSeconds*1000 - 1000;
 
@@ -285,12 +294,12 @@ public class ConsumableTimerOverlay extends Overlay {
         activeConsumables.add(consumable);
     }
 
-    public static void addBasicTimer(String name, int timeInSeconds) {
-        addBasicTimer(name, timeInSeconds, false);
+    public static void removeBasicTimer(String name) {
+        removeColoredTimer(name, GRAY);
     }
 
-    public static void removeBasicTimer(String name) {
-        String formattedName = GRAY + name;
+    public static void removeColoredTimer(String name, TextFormatting color) {
+        String formattedName = color + name;
 
         for (Iterator<ConsumableContainer> iterator = activeConsumables.iterator(); iterator.hasNext();) {
             ConsumableContainer consumableContainer = iterator.next();
@@ -306,23 +315,16 @@ public class ConsumableTimerOverlay extends Overlay {
      * @param partialName The string to search for
      */
     public static void removeBasicTimerContaining(String partialName) {
-        for (Iterator<ConsumableContainer> iterator = activeConsumables.iterator(); iterator.hasNext();) {
-            ConsumableContainer consumableContainer = iterator.next();
-            if (consumableContainer.getName().contains(partialName)) {
-                iterator.remove();
-            }
-        }
+        activeConsumables.removeIf(consumableContainer -> consumableContainer.getName().contains(partialName));
     }
 
     /**
-     * Edit an existing timer, keeping the position of the timer in the list.
-     * The first timer that matches the given previousName will be edited.
-     * Persistence will be false.
+     * Edit an existing totem timer, keeping the position of the timer in the list.
      * @param previousName The partial name of the timer to look for
      * @param newName The new name of the timer
      * @param timeInSeconds The new time in seconds, or -1 to keep the same time
      */
-    public static void editBasicTimerContaining(String previousName, String newName, int timeInSeconds) {
+    public static void editTotemTimer(String previousName, String newName, int timeInSeconds) {
         int prevIndex = -1;
         for (ConsumableContainer cc : activeConsumables) {
             if (cc.getName().contains(previousName)) {
@@ -331,7 +333,9 @@ public class ConsumableTimerOverlay extends Overlay {
         }
         if (prevIndex == -1) return;
 
-        ConsumableContainer newCC = new ConsumableContainer(TextFormatting.GRAY + newName);
+        TextFormatting color = previousName.contains("1") ? UtilitiesConfig.INSTANCE.totem1Color : UtilitiesConfig.INSTANCE.totem2Color;
+
+        ConsumableContainer newCC = new ConsumableContainer(color + newName);
         newCC.setExpirationTime(timeInSeconds == -1 ? activeConsumables.get(prevIndex).getExpirationTime() : McIf.getSystemTime() + timeInSeconds*1000 - 1000);
 
         activeConsumables.set(prevIndex, newCC);

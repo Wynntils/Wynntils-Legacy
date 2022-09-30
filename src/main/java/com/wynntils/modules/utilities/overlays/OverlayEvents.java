@@ -13,7 +13,6 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.helpers.Delay;
-import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
@@ -36,10 +35,8 @@ import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.commons.lang3.StringUtils;
 
 import java.text.DecimalFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -868,13 +865,13 @@ public class OverlayEvents implements Listener {
             totem1Active = true;
             ConsumableTimerOverlay.addBasicTimer(newMessage, e.getTime());
         } else if (e.getTotemNumber() == 1) { // Totem already exists, edit it
-            ConsumableTimerOverlay.editBasicTimerContaining("Totem 1", newMessage, e.getTime());
+            ConsumableTimerOverlay.editTotemTimer("Totem 1", newMessage, e.getTime());
 
         } else if (e.getTotemNumber() == 2 && !totem2Active) {
             totem2Active = true;
             ConsumableTimerOverlay.addBasicTimer(newMessage, e.getTime());
         } else if (e.getTotemNumber() == 2) {
-            ConsumableTimerOverlay.editBasicTimerContaining("Totem 2", newMessage, e.getTime());
+            ConsumableTimerOverlay.editTotemTimer("Totem 2", newMessage, e.getTime());
         }
     }
 
