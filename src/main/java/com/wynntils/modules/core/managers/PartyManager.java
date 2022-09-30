@@ -24,7 +24,7 @@ public class PartyManager {
     private static final CommandResponse listExecutor = new CommandResponse("/party list", (matcher, text) -> {
 
         SocialData socialData = PlayerInfo.get(SocialData.class);
-        if(socialData == null) {
+        if (socialData == null) {
             return;
         }
         socialData.resetPlayerParty();
@@ -62,7 +62,7 @@ public class PartyManager {
         }
 
         SocialData socialData = PlayerInfo.get(SocialData.class);
-        if(socialData == null) {
+        if (socialData == null) {
             return;
         }
 
