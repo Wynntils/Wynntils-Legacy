@@ -98,14 +98,14 @@ public class ServerEvents implements Listener {
      */
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void joinWorldEvent(WynnWorldEvent.Join e) {
-        if (PlayerInfo.get(CharacterData.class).getClassId() == -1 || CoreDBConfig.INSTANCE.lastClass == ClassType.NONE)
+        CharacterData data = PlayerInfo.get(CharacterData.class);
+        if ((data != null && data.getClassId() == -1) || CoreDBConfig.INSTANCE.lastClass == ClassType.NONE)
             McIf.player().sendChatMessage("/class");
 
         // This codeblock will only be executed if the Wynncraft AUTOJOIN setting is enabled
         // Reason: When you join a world with autojoin enabled, your current class is NONE,
         // while joining without autojoin will make your current class into the selected over the character selection.
-        CharacterData data = PlayerInfo.get(CharacterData.class);
-        if (data.getCurrentClass() == ClassType.NONE && CoreDBConfig.INSTANCE.lastClass != ClassType.NONE) {
+        if (data != null && data.getCurrentClass() == ClassType.NONE && CoreDBConfig.INSTANCE.lastClass != ClassType.NONE) {
             data.updatePlayerClass(CoreDBConfig.INSTANCE.lastClass, CoreDBConfig.INSTANCE.lastClassIsReskinned);
         }
 
@@ -142,15 +142,20 @@ public class ServerEvents implements Listener {
         }
         PartyManager.handleMessages(e.getMessage());  // party messages here
 
+        SocialData socialData = PlayerInfo.get(SocialData.class);
+        if(socialData == null) {
+            return;
+        }
+
         String messageText = McIf.getUnformattedText(e.getMessage());
         String formatted = McIf.getFormattedText(e.getMessage());
         Matcher m = FRIENDS_LIST.matcher(formatted);
         if (m.find() && m.group(1).equals(McIf.player().getName())) {
             String[] friends = m.group(2).split(", ");
 
-            Set<String> friendsList = PlayerInfo.get(SocialData.class).getFriendList();
+            Set<String> friendsList = socialData.getFriendList();
             Set<String> newFriendsList = new HashSet<>(Arrays.asList(friends));
-            PlayerInfo.get(SocialData.class).setFriendList(newFriendsList);
+            socialData.setFriendList(newFriendsList);
 
             FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Remove(Sets.difference(friendsList, newFriendsList), false));
             FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Add(Sets.difference(newFriendsList, friendsList), false));
@@ -176,7 +181,7 @@ public class ServerEvents implements Listener {
             if (waitingForGuildList) e.setCanceled(true);
 
             String[] splitMessage = messageText.split(" ");
-            if (PlayerInfo.get(SocialData.class).addGuildMember(splitMessage[1])) {
+            if (socialData.addGuildMember(splitMessage[1])) {
                 FrameworkManager.getEventBus().post(new WynnSocialEvent.Guild.Join(splitMessage[1]));
             }
             return;
@@ -186,14 +191,14 @@ public class ServerEvents implements Listener {
             if (!splittedText[1].equalsIgnoreCase("has")) return;
 
             if (splittedText[2].equalsIgnoreCase("joined")) {
-                if (PlayerInfo.get(SocialData.class).addGuildMember(splittedText[0])) {
+                if (socialData.addGuildMember(splittedText[0])) {
                     FrameworkManager.getEventBus().post(new WynnSocialEvent.Guild.Join(splittedText[0]));
                 }
                 return;
             }
 
             if (splittedText[2].equalsIgnoreCase("kicked")) {
-                if (PlayerInfo.get(SocialData.class).removeGuildMember(splittedText[3])) {
+                if (socialData.removeGuildMember(splittedText[3])) {
                     FrameworkManager.getEventBus().post(new WynnSocialEvent.Guild.Leave(splittedText[3]));
                 }
             }
@@ -210,14 +215,19 @@ public class ServerEvents implements Listener {
      */
     @SubscribeEvent
     public void addFriend(ClientChatEvent e) {
+        SocialData socialData = PlayerInfo.get(SocialData.class);
+        if(socialData == null) {
+            return;
+        }
+
         if (e.getMessage().startsWith("/friend add ")) {
             String addedFriend = e.getMessage().replace("/friend add ", "");
-            if (PlayerInfo.get(SocialData.class).addFriend(addedFriend)) {
+            if (socialData.addFriend(addedFriend)) {
                 FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Add(Collections.singleton(addedFriend), true));
             }
         } else if (e.getMessage().startsWith("/friend remove ")) {
             String removedFriend = e.getMessage().replace("/friend remove ", "");
-            if (PlayerInfo.get(SocialData.class).removeFriend(removedFriend)) {
+            if (socialData.removeFriend(removedFriend)) {
                 FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Remove(Collections.singleton(removedFriend), true));
             }
         } else if (e.getMessage().startsWith("/guild list") || e.getMessage().startsWith("/gu list")) {
@@ -333,6 +343,10 @@ public class ServerEvents implements Listener {
             FrameworkManager.getEventBus().post(new SchedulerEvent.RegionUpdate());
 
             LocationData data = PlayerInfo.get(LocationData.class);
+            if(data == null) {
+                return;
+            }
+
             if (!data.inUnknownLocation()) {
                 String location = data.getLocation();
                 if (!WebManager.getTerritories().containsKey(location)) {
