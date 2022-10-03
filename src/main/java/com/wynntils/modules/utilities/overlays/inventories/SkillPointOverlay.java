@@ -111,7 +111,7 @@ public class SkillPointOverlay implements Listener {
                 if (item.isEmpty()) continue;
 
                 for (int j = 0; j < MODIFIER_PATTERNS.length; j++) {
-                    Matcher matcher = MODIFIER_PATTERNS[j].matcher(ItemUtils.getStringLore(item));
+                    Matcher matcher = MODIFIER_PATTERNS[j].matcher(ItemUtils.getStringLore(item).split("Set Bonus")[0]); // Make sure set bonus is not counted
                     if (!matcher.find()) continue;
                     if (matcher.group(1).equals("+")) {
                         gearSP[j] += Integer.parseInt(matcher.group(2));
