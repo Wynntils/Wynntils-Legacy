@@ -30,8 +30,8 @@ public class ObjectivesOverlay extends Overlay {
     public static final Pattern OBJECTIVE_PARSER_PATTERN = Pattern.compile("^[- ] (.*): *(\\d+)/(\\d+)$");
     public static final Pattern OBJECTIVE_PATTERN = Pattern.compile("^§[a|c][- ]\\s§7(.*): *§f(\\d+)§7/(\\d+)$");
     public static final Pattern GUILD_OBJECTIVE_PATTERN = Pattern.compile("^§b[- ]\\s§7(.*): *§f(\\d+)§7/(\\d+)$");
-    public static final Pattern OBJECTIVE_HEADER_PATTERN = Pattern.compile("(★ )?(Daily )?Objectives?:");
-    public static final Pattern GUILD_OBJECTIVE_HEADER_PATTERN = Pattern.compile("(★ )?Guild Obj: (.+)");
+    public static final Pattern OBJECTIVE_HEADER_PATTERN = Pattern.compile("([★⭑] )?(Daily )?Objectives?:");
+    public static final Pattern GUILD_OBJECTIVE_HEADER_PATTERN = Pattern.compile("([★⭑] )?Guild Obj: (.+)");
 
     private static final int WIDTH = 130;
     private static final int HEIGHT = 70;

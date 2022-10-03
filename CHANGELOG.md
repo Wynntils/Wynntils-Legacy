@@ -1,7 +1,7 @@
-## [1.12.1-beta.2](https://github.com/Wynntils/Wynntils/compare/v1.12.1-beta.1...v1.12.1-beta.2) (2022-09-24)
+## [1.12.1-beta.3](https://github.com/Wynntils/Wynntils/compare/v1.12.1-beta.2...v1.12.1-beta.3) (2022-10-01)
 
 
-### New Features
+### Bug Fixes
 
-* add corrupted bar ([#595](https://github.com/Wynntils/Wynntils/issues/595)) ([f821b79](https://github.com/Wynntils/Wynntils/commit/f821b799a020ba32d61a4e08a1b5b5edc74d980c))
+* ObjectivesOverlay: Fix patterns ([#601](https://github.com/Wynntils/Wynntils/issues/601)) ([fe06649](https://github.com/Wynntils/Wynntils/commit/fe0664940a7a5b47e9ed3a07689577edad9dd1fd))
 
