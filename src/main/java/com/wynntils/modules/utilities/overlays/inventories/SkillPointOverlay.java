@@ -77,7 +77,7 @@ public class SkillPointOverlay implements Listener {
     private int[] currentSPActual = new int[5];
     private int[] currentSPWithoutGearTome = new int[5];
     private int[] gearSP = new int[5];
-    private int[] tomeSP = new int[5];
+    private int[] tomeAndSetBonusSP = new int[5];
 
     @SubscribeEvent
     public void onChestClose(GuiOverlapEvent.ChestOverlap.GuiClosed e) {
@@ -100,7 +100,7 @@ public class SkillPointOverlay implements Listener {
             // Reset all skill point data
             currentSPActual = getSkillPoints(e.getGui()).getAsArray();
             gearSP = new int[5];
-            tomeSP = new int[5];
+            tomeAndSetBonusSP = new int[5];
 
             // Set gearSkillPoints to the number of skill points that our armour and accessories give us
             // We will do this by going through all our armour and accessory slots and adding the skill point modifiers to gearSkillPoints
@@ -125,13 +125,13 @@ public class SkillPointOverlay implements Listener {
             // Get the current number of skill points we have as shown in the current compass menu
             // Then subtract gearSkillPoints to get the number of skill points we have from our tomes
             for (int i = 0; i < 5; i++) {
-                tomeSP[i] = currentSPActual[i] - gearSP[i];
+                tomeAndSetBonusSP[i] = currentSPActual[i] - gearSP[i];
             }
 
             currentSPWithoutGearTome = Arrays.copyOf(currentSPActual, currentSPActual.length);
             for (int i = 0; i < 5; i++) {
                 currentSPWithoutGearTome[i] -= gearSP[i];
-                currentSPWithoutGearTome[i] -= tomeSP[i];
+                currentSPWithoutGearTome[i] -= tomeAndSetBonusSP[i];
             }
             shouldUpdateSkillPoints = false;
         }
