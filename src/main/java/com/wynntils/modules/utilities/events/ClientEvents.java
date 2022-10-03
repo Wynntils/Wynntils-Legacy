@@ -1387,8 +1387,8 @@ public class ClientEvents implements Listener {
                 x+totemHighlightMaxOffset, y+totemHighlightMaxOffset, z+totemHighlightMaxOffset));
 
         possibleTotems.forEach(entityArmorStand -> {
-            // If (entityArmorStand is not on ground or slab) && (entityArmorStand-carpetHeight is not on ground), it is not a totem
-            if (entityArmorStand.posY % 0.5 != 0 && (entityArmorStand.posY - 0.0625) % 1 != 0) return;
+            // If (entityArmorStand is not on ground or slab) && (entityArmorStand y position > 0.5 of that block), it is not a totem
+            if (entityArmorStand.posY % 0.5 != 0 && entityArmorStand.posY % 1 < 0.5) return;
             scoreboard.addPlayerToTeam(entityArmorStand.getCachedUniqueIdString(), totemHighlightTeamBase + e.getTotemNumber());
             entityArmorStand.setGlowing(true);
         });
