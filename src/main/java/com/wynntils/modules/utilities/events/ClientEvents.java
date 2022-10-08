@@ -746,7 +746,7 @@ public class ClientEvents implements Listener {
 
         // Queue messages into game update ticker when clicking on emeralds in loot chest
         if (getTextWithoutFormattingCodes(chestInv.getName()).startsWith("Loot Chest") && OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
-            // Check if item is actually an emerald, if we're left clicking, and make sure we're not shift clicking
+            // Check if item is actually an emerald, if we're left clicking, and if we're shift clicking
             if (currentLootChest.getStackInSlot(e.getSlotId()).getDisplayName().equals("§aEmerald") && e.getMouseButton() == 0 && GuiScreen.isShiftKeyDown()) {
                 // Find all emerald pouches in inventory
                 NonNullList<Integer> availableCapacities = NonNullList.create();
