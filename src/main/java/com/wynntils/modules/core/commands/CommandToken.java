@@ -29,17 +29,17 @@ public class CommandToken extends CommandBase implements IClientCommand {
 
     @Override
     public String getUsage(ICommandSender sender) {
-        return "Returns your Wynntils auth token";
+        return "Sets up your Wynntils account";
     }
 
     @Override
     public void execute(MinecraftServer server, ICommandSender sender, String[] args) {
         if (WebManager.getAccount().getToken() != null) {
             TextComponentString text = new TextComponentString("");
-            text.appendText("Wynntils Token ");
+            text.appendText("Continue setting up your Wynntils account ");
             text.getStyle().setColor(TextFormatting.AQUA);
 
-            TextComponentString token = new TextComponentString(WebManager.getAccount().getToken());
+            TextComponentString token = new TextComponentString("here!");
 
             token.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL,
                     "https://account.wynntils.com/register.php?token=" + WebManager.getAccount().getToken()));
