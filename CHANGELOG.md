@@ -1,7 +1,7 @@
-## [1.12.1-beta.5](https://github.com/Wynntils/Wynntils/compare/v1.12.1-beta.4...v1.12.1-beta.5) (2022-10-10)
+## [1.12.1-beta.6](https://github.com/Wynntils/Wynntils/compare/v1.12.1-beta.5...v1.12.1-beta.6) (2022-10-10)
 
 
-### Code Refactoring
+### Bug Fixes
 
-* applying minor caching of variables in a few files. ([#599](https://github.com/Wynntils/Wynntils/issues/599)) ([7af5f79](https://github.com/Wynntils/Wynntils/commit/7af5f7949bba980ae4c50fc958089b98596d2086))
+* Fix log spam ([#600](https://github.com/Wynntils/Wynntils/issues/600)) ([c3e0de4](https://github.com/Wynntils/Wynntils/commit/c3e0de490e5ba9c8e5c3fa310519384a37432aac))
 
