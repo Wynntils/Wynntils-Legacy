@@ -55,23 +55,24 @@ public class SettingsUI extends UI {
     public UIESlider holdersScrollbar = new UIESlider.Vertical(null, Textures.UIs.button_scrollbar, 0.5f, 0.5f, -178, -88, 161, false, -85, 1, 1f, 0, null, 0, 0, 5, 27);
     public UIESlider settingsScrollbar = new UIESlider.Vertical(CommonColors.LIGHT_GRAY, Textures.UIs.button_scrollbar, 0.5f, 0.5f, 185, -100, 200, true, -95, -150, 1f, 0, null, 0, 0, 5, 27);
 
-    private int resetButtonCount = 3;
-    private String resetCountText = "Click " + resetButtonCount + " more times to reset";
+    private int resetButtonCount = 4;
+    private String resetCountText = "Click " + resetButtonCount + " more times to reset and save";
     public UIEButton resetButton = new UIEButton("R", Textures.UIs.button_a, 0.5f, 0.5f, -187, 85, -10, true, (ui, mouseButton) -> {
         resetButtonCount--;
         if (resetButtonCount == 0) {
             registeredSettings.forEach((k, v) -> {
                 try {
                     v.resetValues();
+                    v.saveSettings();
                 }
                 catch (Exception e) {
                     e.printStackTrace();
                 }
             });
-            resetCountText = "All settings reset, remember to click save!";
-            resetButtonCount = 3;
+            resetCountText = "All settings reset, relaunch your game";
+            resetButtonCount = 4;
         } else {
-            resetCountText = "Click " + resetButtonCount + " more times to reset";
+            resetCountText = "Click " + resetButtonCount + " more times to reset and save";
         }
     }, 0, 0, 17, 45);
     public UIEButton cancelButton = new UIEButton("Cancel", Textures.UIs.button_a, 0.5f, 0.5f, -170, 85, -10, true, (ui, mouseButton) -> {
