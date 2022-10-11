@@ -25,13 +25,10 @@ public class UpdateProfile {
     public UpdateProfile() {
         new Thread(() -> {
             try {
-                System.out.println("Checking for updates...");
-//                MD5Verification md5Installed = new MD5Verification(ModCore.jarFile);
-                String md5Installed = "test";
+                MD5Verification md5Installed = new MD5Verification(ModCore.jarFile);
                 HashMap<String, String> updateData = WebManager.getUpdateData(CoreDBConfig.INSTANCE.updateStream);
 
                 if (!md5Installed.equals(updateData.get("md5"))) {
-                    System.out.println("Update found!");
                     hasUpdate = true;
                     latestUpdate = updateData.get("version");
                     downloadUrl = updateData.get("url");
