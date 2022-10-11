@@ -59,7 +59,7 @@ public class ModCore {
 
         Reference.developmentEnvironment = ((boolean) Launch.blackboard.get("fml.deobfuscatedEnvironment"))
                 || (System.getProperty("wynntils.development") != null && System.getProperty("wynntils.development").equals("true"));
-        Reference.developmentEnvironment = false;  // Uncomment to test updater
+        // Reference.developmentEnvironment = false;  // Uncomment to test updater
 
         if (Reference.developmentEnvironment)
             Reference.LOGGER.info("Development environment detected, automatic update detection disabled");
