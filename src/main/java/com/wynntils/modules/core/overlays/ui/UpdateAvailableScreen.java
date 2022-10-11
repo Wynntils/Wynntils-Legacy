@@ -6,6 +6,7 @@ package com.wynntils.modules.core.overlays.ui;
 
 import com.wynntils.McIf;
 import com.wynntils.Reference;
+import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.utils.ServerUtils;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
@@ -23,11 +24,8 @@ public class UpdateAvailableScreen extends GuiScreen {
 
     public UpdateAvailableScreen(ServerData server) {
         this.server = server;
-        if (WebManager.getUpdate().getLatestUpdate().startsWith("B")) {
-            text = TextFormatting.YELLOW + "Build " + WebManager.getUpdate().getLatestUpdate().replace("B", "") + TextFormatting.WHITE + " is available.";
-        } else {
-            text = "A new update is available " + TextFormatting.YELLOW + "v" + WebManager.getUpdate().getLatestUpdate();
-        }
+        text = "A new update is available " + TextFormatting.YELLOW + WebManager.getUpdate().getLatestUpdate();
+        text += TextFormatting.GRAY + " (you are on " + TextFormatting.YELLOW + "v" + Reference.VERSION + TextFormatting.GRAY + ")";
     }
 
     @Override
