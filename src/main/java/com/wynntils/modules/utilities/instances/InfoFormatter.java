@@ -252,36 +252,40 @@ public class InfoFormatter {
 
         // Current guild that owns current territory
         registerFormatter((input) -> {
-                    String territory = PlayerInfo.get(LocationData.class).getLocation();
-                    if (territory.isEmpty()) return "";
+                LocationData data = PlayerInfo.get(LocationData.class);
+                if (data.inUnknownLocation() || data.inHousing() || data.inWars()) return "";
+                String territory = data.getLocation();
 
-                    TerritoryProfile profile = WebManager.getTerritories().get(territory);
+                if (!WebManager.getTerritories().containsKey(territory)) {
+                    territory = territory.replace('\'', '’');
+                }
 
-                    if (profile == null) {
-                        Reference.LOGGER.warn(String.format("Invalid territory for %%territory_owner%% %s", territory));
-                        return "?";
-                    }
+                TerritoryProfile profile = WebManager.getTerritories().get(territory);
 
-                    return profile.getGuild();
-                },
-                "territory_owner", "terguild");
+                if (profile == null) return "Unknown";
+
+                return profile.getGuild();
+            },
+            "territory_owner", "terguild");
 
 
         // Current guild that owns current territory (prefix)
         registerFormatter((input) -> {
-                    String territory = PlayerInfo.get(LocationData.class).getLocation();
-                    if (territory.isEmpty()) return "";
+                LocationData data = PlayerInfo.get(LocationData.class);
+                if (data.inUnknownLocation() || data.inHousing() || data.inWars()) return "";
+                String territory = data.getLocation();
 
-                    TerritoryProfile profile = WebManager.getTerritories().get(territory);
+                if (!WebManager.getTerritories().containsKey(territory)) {
+                    territory = territory.replace('\'', '’');
+                }
 
-                    if (profile == null) {
-                        Reference.LOGGER.warn(String.format("Invalid territory for %%territory_owner_prefix%% %s", territory));
-                        return "?";
-                    }
+                TerritoryProfile profile = WebManager.getTerritories().get(territory);
 
-                    return profile.getGuildPrefix();
-                    },
-                "territory_owner_prefix", "terguild_pref");
+                if (profile == null) return "UNK";
+
+                return profile.getGuildPrefix();
+            },
+            "territory_owner_prefix", "terguild_pref");
 
         // Distance from compass beacon
         registerFormatter((input) ->{
