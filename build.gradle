@@ -48,6 +48,12 @@ if (!project.hasProperty("wynntilsForgeVersion")) {
     ext.wynntilsForgeVersion=forge_version
 }
 
+sourceSets {
+    main {
+        output.resourcesDir = output.classesDirs.singleFile
+    }
+}
+
 configurations {
     include
     implementation.extendsFrom(include)
