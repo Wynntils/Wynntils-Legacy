@@ -1,7 +1,7 @@
-## [1.12.1-beta.7](https://github.com/Wynntils/Wynntils/compare/v1.12.1-beta.6...v1.12.1-beta.7) (2022-10-12)
+## [1.12.1-beta.8](https://github.com/Wynntils/Wynntils/compare/v1.12.1-beta.7...v1.12.1-beta.8) (2022-10-12)
 
 
-### Miscellaneous Chores
+### Bug Fixes
 
-* enhance devauth integration ([ec88608](https://github.com/Wynntils/Wynntils/commit/ec88608d6cf5a0c6ac2f216756bb745bde3a9d8b))
+* emerald pouch message in chest not being sent ([#605](https://github.com/Wynntils/Wynntils/issues/605)) ([b597ad5](https://github.com/Wynntils/Wynntils/commit/b597ad51c19b42204efc914b633bbbbeabe6170d))
 
