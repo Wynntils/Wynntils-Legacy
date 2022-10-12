@@ -6,7 +6,6 @@ package com.wynntils.modules.core.overlays.ui;
 
 import com.wynntils.McIf;
 import com.wynntils.Reference;
-import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.utils.ServerUtils;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
@@ -67,7 +66,7 @@ public class UpdateAvailableScreen extends GuiScreen {
         } else if (button.id == 0) {
             // View changelog
             boolean major = CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
-            ChangelogUI.loadChangelogAndShow(this, major, true);
+            ChangelogUI.loadChangelogAndShow(this, major);
         }
     }
 

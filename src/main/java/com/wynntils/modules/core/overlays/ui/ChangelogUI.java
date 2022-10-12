@@ -15,7 +15,6 @@ import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.webapi.WebManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.input.Mouse;
 
@@ -72,7 +71,7 @@ public class ChangelogUI extends GuiScreen {
      * whilst a web request is made in a separate thread.
      *
      * @param previousGui The gui to return to when exiting both the loading GUI and the changelog when it opens
-     * @param forceLatest {@link WebManager#getChangelog(boolean, boolean)}'s second argument (Latest or current changelog?)
+     * @param forceLatest {@link WebManager#getChangelog(boolean)}'s second argument (Latest or current changelog?)
      */
     public static void loadChangelogAndShow(GuiScreen previousGui, boolean forceLatest) {
 
