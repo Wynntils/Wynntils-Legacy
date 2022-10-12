@@ -277,13 +277,12 @@ public class ServerEvents implements Listener {
             triedToShowChangelog = true;
         }
 
-        boolean major = !CoreDBConfig.INSTANCE.lastVersion.equals(Reference.VERSION) || CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
         new Thread(() -> {
-            List<String> changelog = WebManager.getChangelog(major, false);
+            List<String> changelog = WebManager.getChangelog(false);
             if (changelog == null) return;
 
             McIf.mc().addScheduledTask(() -> {
-                McIf.mc().displayGuiScreen(new ChangelogUI(changelog, major));
+                McIf.mc().displayGuiScreen(new ChangelogUI(changelog));
 
                 // Showed changelog; Don't show next time.
                 CoreDBConfig.INSTANCE.showChangelogs = false;

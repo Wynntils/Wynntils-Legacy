@@ -57,15 +57,7 @@ import java.lang.reflect.Type;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -824,82 +816,35 @@ public class WebManager {
     };
 
     /**
-     * Fetches a hand written changelog from the Wynntils API (if download stream is set to stable)
-     * Fetches current build changes from Jenkins (Wynntils-DEV)
+     * Fetches the changelog from the API for the current version of Wynntils
      *
      * @return an ArrayList of ChangelogProfile's
      */
-    public static ArrayList<String> getChangelog(boolean major, boolean forceLatest) {
+    public static List<String> getChangelog(boolean forceLatest) {
         if (apiUrls == null) return null;
 
-        // TODO: Get the changelog from the version api
+        String version = "v" + Reference.VERSION;
 
-        boolean failed = false;
-
-        if (major) {
-            HashMap<String, ArrayList<String>> changelogs = null;
-            Type type = new TypeToken<HashMap<String, ArrayList<String>>>() {
-            }.getType();
-            String url = apiUrls.get("Changelog");
-            Reference.LOGGER.info("Requesting changelog from " + url);
-            try {
-                URLConnection st = new URL(url).openConnection();
-                st.setRequestProperty("User-Agent", USER_AGENT);
-                st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
-                st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
-
-                changelogs = gson.fromJson(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8), type);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                failed = true;
-            }
-
-            if (failed) {
-                Reference.LOGGER.warn("Error while fetching changelog");
-                return null;
-            }
-            if (!forceLatest && changelogs.containsKey(Reference.VERSION)) {
-                return changelogs.get(Reference.VERSION);
-            }
-
-            return changelogs.get(Collections.max(changelogs.keySet(), SEM_VER_COMPARATOR));
+        if (forceLatest) {
+            version = "latest";
         }
 
+        String url = apiUrls.get("Athena") + "/version/changelog/" + version;
+        Reference.LOGGER.info("Requesting changelog from " + url);
         try {
-            // TODO: Change
-            String url = apiUrls.get("DevJars");
-            if (!forceLatest && Reference.BUILD_NUMBER != -1) {
-                url = StringUtils.removeEnd(url, "lastSuccessfulBuild/") + Reference.BUILD_NUMBER + "/";
-            }
-            url += "api/json?tree=changeSet[items[msg]]";
-            Reference.LOGGER.info("Requesting changelog from " + url);
-
             URLConnection st = new URL(url).openConnection();
             st.setRequestProperty("User-Agent", USER_AGENT);
             st.setConnectTimeout(REQUEST_TIMEOUT_MILLIS);
             st.setReadTimeout(REQUEST_TIMEOUT_MILLIS);
 
-            if (!st.getContentType().contains("application/json")) {
-                throw new RuntimeException("DevJars/api/json does not have Content-Type application/json; Found " + st.getContentType());
-            }
+            JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
 
-            JsonArray changesArray = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8))
-                    .getAsJsonObject().getAsJsonObject("changeSet").getAsJsonArray("items");
-
-            ArrayList<String> changelog = new ArrayList<>(changesArray.size());
-            for (JsonElement el : changesArray) {
-                changelog.add(el.getAsJsonObject().get("msg").getAsString());
-            }
-
-            return changelog;
+            return Arrays.asList(main.get("changelog").getAsString().split("\n"));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
 
-        if (!forceLatest) {
-            return getChangelog(false, true);
-        }
-
+        Reference.LOGGER.warn("Error while fetching changelog");
         return null;
     }
 

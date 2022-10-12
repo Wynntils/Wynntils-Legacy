@@ -41,11 +41,11 @@ public class ChangelogUI extends GuiScreen {
 
     boolean major;
 
-    public ChangelogUI(List<String> changelogContent, boolean major) {
-        this(null, changelogContent, major);
+    public ChangelogUI(List<String> changelogContent) {
+        this(null, changelogContent);
     }
 
-    public ChangelogUI(GuiScreen previousGui, List<String> changelogContent, boolean major) {
+    public ChangelogUI(GuiScreen previousGui, List<String> changelogContent) {
         this.previousGui = previousGui;
 
         this.major = major;
@@ -63,8 +63,8 @@ public class ChangelogUI extends GuiScreen {
         }
     }
 
-    public static void loadChangelogAndShow(boolean major, boolean forceLatest) {
-        loadChangelogAndShow(null, major, forceLatest);
+    public static void loadChangelogAndShow(boolean forceLatest) {
+        loadChangelogAndShow(null, forceLatest);
     }
 
     /**
@@ -72,12 +72,11 @@ public class ChangelogUI extends GuiScreen {
      * whilst a web request is made in a separate thread.
      *
      * @param previousGui The gui to return to when exiting both the loading GUI and the changelog when it opens
-     * @param major {@link WebManager#getChangelog(boolean, boolean)}'s first argument (Stable or CE?)
      * @param forceLatest {@link WebManager#getChangelog(boolean, boolean)}'s second argument (Latest or current changelog?)
      */
-    public static void loadChangelogAndShow(GuiScreen previousGui, boolean major, boolean forceLatest) {
+    public static void loadChangelogAndShow(GuiScreen previousGui, boolean forceLatest) {
 
-        GuiScreen loadingScreen = new ChangelogUI(previousGui, Collections.singletonList("Loading..."), major);
+        GuiScreen loadingScreen = new ChangelogUI(previousGui, Collections.singletonList("Loading..."));
         McIf.mc().displayGuiScreen(loadingScreen);
         if (McIf.mc().currentScreen != loadingScreen) {
             // Changed by an event handler
@@ -88,7 +87,7 @@ public class ChangelogUI extends GuiScreen {
             if (McIf.mc().currentScreen != loadingScreen) {
                 return;
             }
-            List<String> changelog = WebManager.getChangelog(major, forceLatest);
+            List<String> changelog = WebManager.getChangelog(forceLatest);
             if (McIf.mc().currentScreen != loadingScreen) {
                 return;
             }
@@ -98,7 +97,7 @@ public class ChangelogUI extends GuiScreen {
                     return;
                 }
 
-                ChangelogUI gui = new ChangelogUI(previousGui, changelog, major);
+                ChangelogUI gui = new ChangelogUI(previousGui, changelog);
                 McIf.mc().displayGuiScreen(gui);
             });
 
