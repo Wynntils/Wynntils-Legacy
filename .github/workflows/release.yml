@@ -39,12 +39,6 @@ jobs:
           version-file: ./version.json
           skip-git-pull: true
 
-      - name: Update development branch
-        run: |
-          git checkout development
-          git merge --no-ff production -m "chore(release): ${{ steps.changelog.outputs.tag }} [skip ci]"
-          git push
-
       - name: Upload version information
         uses: actions/upload-artifact@v3
         with:
