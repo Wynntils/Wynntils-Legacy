@@ -21,17 +21,26 @@ public class UpdateProfile {
     boolean updateCheckFailed = false;
     String latestUpdate = Reference.VERSION;
     String downloadUrl = null;
+    String downloadMD5 = null;
+    String md5Installed = null;
 
     public UpdateProfile() {
         new Thread(() -> {
             try {
-                MD5Verification md5Installed = new MD5Verification(ModCore.jarFile);
                 HashMap<String, String> updateData = WebManager.getUpdateData(CoreDBConfig.INSTANCE.updateStream);
+                latestUpdate = updateData.get("version").replace("v", "");
+                downloadUrl = updateData.get("url");
+                downloadMD5 = updateData.get("md5");
 
-                if (!md5Installed.equals(updateData.get("md5"))) {
+                md5Installed = new MD5Verification(ModCore.jarFile).getMd5();
+                if (md5Installed == null) {
+                    updateCheckFailed = true;
+                    return;
+                }
+
+                if (!md5Installed.equals(downloadMD5)) {
+                    Reference.LOGGER.info("Update found for version " + latestUpdate + " (" + downloadMD5 + ") Current version: " + Reference.VERSION + " (" + md5Installed + ")");
                     hasUpdate = true;
-                    latestUpdate = updateData.get("version");
-                    downloadUrl = updateData.get("url");
                     UpdateOverlay.reset();
                 }
 
@@ -61,6 +70,14 @@ public class UpdateProfile {
 
     public String getDownloadUrl() {
         return downloadUrl;
+    }
+
+    public String getDownloadMD5() {
+        return downloadMD5;
+    }
+
+    public String getMd5Installed() {
+        return md5Installed;
     }
 
     public boolean updateCheckFailed() {
