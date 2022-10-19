@@ -77,8 +77,7 @@ public class MainMenuButtons {
     }
 
     private static boolean hasUpdate() {
-        return true;
-//        return !Reference.developmentEnvironment && WebManager.getUpdate() != null && WebManager.getUpdate().hasUpdate();
+        return !Reference.developmentEnvironment && WebManager.getUpdate() != null && WebManager.getUpdate().hasUpdate();
     }
 
     private static ServerData getWynncraftServerData() {
