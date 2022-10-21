@@ -153,13 +153,10 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                 WebManager.setupWebApi(false);
                 break;
             case "changelog":
-                new Delay(() -> ChangelogUI.loadChangelogAndShow(CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE, false), 1);
+                new Delay(() -> ChangelogUI.loadChangelogAndShow(false), 1);
                 break;
             case "changeloglatest":
-                new Delay(() -> ChangelogUI.loadChangelogAndShow(CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE, true), 1);
-                break;
-            case "changelogmajor":
-                new Delay(() -> ChangelogUI.loadChangelogAndShow(true, false), 1);
+                new Delay(() -> ChangelogUI.loadChangelogAndShow(true), 1);
                 break;
             case "debug":
                 if (!Reference.developmentEnvironment) {
