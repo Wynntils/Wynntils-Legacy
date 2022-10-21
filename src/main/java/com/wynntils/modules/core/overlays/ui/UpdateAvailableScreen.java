@@ -23,11 +23,8 @@ public class UpdateAvailableScreen extends GuiScreen {
 
     public UpdateAvailableScreen(ServerData server) {
         this.server = server;
-        if (WebManager.getUpdate().getLatestUpdate().startsWith("B")) {
-            text = TextFormatting.YELLOW + "Build " + WebManager.getUpdate().getLatestUpdate().replace("B", "") + TextFormatting.WHITE + " is available.";
-        } else {
-            text = "A new update is available " + TextFormatting.YELLOW + "v" + WebManager.getUpdate().getLatestUpdate();
-        }
+        text = "A new update is available " + TextFormatting.YELLOW + WebManager.getUpdate().getLatestUpdate();
+        text += TextFormatting.GRAY + " (you are on " + TextFormatting.YELLOW + "v" + Reference.VERSION + TextFormatting.GRAY + ")";
     }
 
     @Override
@@ -69,7 +66,7 @@ public class UpdateAvailableScreen extends GuiScreen {
         } else if (button.id == 0) {
             // View changelog
             boolean major = CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
-            ChangelogUI.loadChangelogAndShow(this, major, true);
+            ChangelogUI.loadChangelogAndShow(this, major);
         }
     }
 

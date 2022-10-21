@@ -6,7 +6,7 @@ plugins {
 	id "com.github.johnrengelman.shadow" version "7.1.0"
 }
 
-def versionObj = new Version(major: 1, minor: 12, revision: 1)
+def versionObj = new Version(major: 1, minor: 13, revision: 0)
 
 version = versionObj.toString()
 group = mod_base_package
@@ -46,6 +46,12 @@ minecraft {
 // allow local forge version override
 if (!project.hasProperty("wynntilsForgeVersion")) {
     ext.wynntilsForgeVersion=forge_version
+}
+
+sourceSets {
+    main {
+        output.resourcesDir = output.classesDirs.singleFile
+    }
 }
 
 configurations {
