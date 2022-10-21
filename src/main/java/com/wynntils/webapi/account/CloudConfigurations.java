@@ -5,12 +5,15 @@
 package com.wynntils.webapi.account;
 
 import com.google.gson.Gson;
+import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.request.PostRequest;
 import com.wynntils.webapi.request.multipart.IMultipartFormPart;
 import com.wynntils.webapi.request.multipart.MultipartFormDataPart;
 import com.wynntils.webapi.request.multipart.MultipartFormFilePart;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -39,6 +42,7 @@ public class CloudConfigurations {
 
     public void queueConfig(File f) {
         synchronized (toUpload) {
+            Reference.LOGGER.info("Queued config " + f.getName() + " for upload");
             toUpload.put(f.getName(), f);
 
             startUploadQueue();
@@ -61,20 +65,29 @@ public class CloudConfigurations {
 
             formParts.add(new MultipartFormDataPart("authToken", token.getBytes(StandardCharsets.UTF_8)));
 
-            Iterator it = toUpload.values().iterator();
+            int count = 0;
+            Reference.LOGGER.info("Uploading " + toUpload.size() + " config files");
+            Iterator<File> it = toUpload.values().iterator();
             while (it.hasNext()) {
-                File f = (File) it.next();
+                File f = it.next();
+
+                Reference.LOGGER.info("Adding config " + f.getName() + " to upload queue");
 
                 formParts.add(new MultipartFormFilePart("config[]", f));
 
                 it.remove();
+                count++;
             }
 
             request.postMultipart(formParts);
             WebManager.getHandler().addAndDispatch(request);
 
-            Reference.LOGGER.info("Configuration upload complete!");
-        }, 0, 10, TimeUnit.SECONDS);
+            Reference.LOGGER.info("Finished uploading " + count + " config files");
+
+            // Send message to the player
+            if (count > 0)
+                McIf.player().sendMessage(new TextComponentString(TextFormatting.GREEN + "Successfully uploaded " + count + " config files to the cloud"));
+        }, 5, 10, TimeUnit.SECONDS);
     }
 
 }
