@@ -10,7 +10,13 @@ exports.preCommit = (props) => {
     };
 
     const [major, minor, patch, build] = props.version.split(".");
-    const [revision, identifier] = patch.split("-");
+    let revision, identifier;
+    if (props.version.includes("-")) { // e.g. v1.12.1-beta.6
+        [revision, identifier] = patch.split("-");
+    } else { // e.g. v1.12.1
+        revision = patch;
+        identifier = "";
+    }
 
     replace("./build.gradle", /(?<=major: )\d+/g, major);
     replace("./build.gradle", /(?<=minor: )\d+/g, minor);
