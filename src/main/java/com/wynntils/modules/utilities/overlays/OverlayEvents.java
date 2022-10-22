@@ -52,12 +52,9 @@ public class OverlayEvents implements Listener {
     private static final Pattern SERVER_RESTART_PATTERN = Pattern.compile("§cThis world will restart in ([0-9]+) (minutes?|seconds?)\\.");
     private static final Pattern MASK_PATTERN = Pattern.compile("§cMask of the (Coward|Lunatic|Fanatic)§r");
 
-    //private static boolean wynnExpTimestampNotified = false;
     private long loginTime;
 
     private static String totemName;
-
-    private boolean isVanished = false; // used in onEffectApplied
 
     @SubscribeEvent
     public void onChatMessageReceived(ClientChatReceivedEvent e) {
@@ -811,10 +808,8 @@ public class OverlayEvents implements Listener {
         // if the effect is invisibility timer is "Vanish"
         else if (potion == MobEffects.WITHER && PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ASSASSIN && effect.getDuration() < 200) {
             timerName = "Vanish";
-            isVanished = true;
         } else if (potion == MobEffects.INVISIBILITY && PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ASSASSIN) {
             // Special case for weathered; the invisibility effect does not have a duration
-            isVanished = true;
             McIf.mc().addScheduledTask(() ->
                     ConsumableTimerOverlay.addBasicTimer("Vanish", 5));
             return;
@@ -854,7 +849,6 @@ public class OverlayEvents implements Listener {
             }
             // When removing invisibility from assassin
             else if ((potion == MobEffects.WITHER || potion == MobEffects.INVISIBILITY) && PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ASSASSIN) {
-                isVanished = false; // So it won't skip
                 ConsumableTimerOverlay.removeBasicTimer("Vanish");
                 // Bit of a delay until Wynn starts the cooldown timer; we need to copy it
                 new Delay(() -> ConsumableTimerOverlay.addBasicTimer("Vanish Cooldown", 5), 9);
