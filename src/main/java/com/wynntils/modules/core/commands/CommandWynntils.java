@@ -243,7 +243,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
         } else if (args.length == 2) {
             switch (args[0]) {
                 case "changelog":
-                    return getListOfStringsMatchingLastWord(args, "major", "latest");
+                    return getListOfStringsMatchingLastWord(args, "latest");
                 case "help":
                     return getListOfStringsMatchingLastWord(args, "1", "2");
             }
