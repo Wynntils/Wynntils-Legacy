@@ -20,7 +20,7 @@ public class TabListData extends PlayerData {
     CG2 is the actual name of the effect
     CG3 is the duration string (eg. "1:23")
      */
-    private static final Pattern TAB_EFFECT_PATTERN = Pattern.compile("(.+?§7(?:\\d+(?:\\.\\d+)?%)?) ([a-zA-Z\\s]+?) §[84]\\((.+?)\\).*");
+    private static final Pattern TAB_EFFECT_PATTERN = Pattern.compile("(.+?§7 ?(?:\\d+(?:\\.\\d+)?%)?) ([-+\\da-zA-Z\\s]+?) §[84]\\((.+?)\\).*");
 
     /**
      * Updates the ConsumableTimerOverlay with the effects from the tab list
