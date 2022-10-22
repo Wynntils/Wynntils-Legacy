@@ -21,7 +21,6 @@ import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
-import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.instances.packet.PacketIncomingFilter;
 import com.wynntils.modules.core.instances.packet.PacketOutgoingFilter;
 import com.wynntils.modules.core.managers.CompassManager;
@@ -278,7 +277,7 @@ public class ServerEvents implements Listener {
         }
 
         new Thread(() -> {
-            List<String> changelog = WebManager.getChangelog(false);
+            Map<String, String> changelog = WebManager.getChangelog(false);
             if (changelog == null) return;
 
             McIf.mc().addScheduledTask(() -> {
