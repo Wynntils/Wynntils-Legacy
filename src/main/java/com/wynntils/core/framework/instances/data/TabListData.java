@@ -30,6 +30,7 @@ public class TabListData extends PlayerData {
         if (!OverlayConfig.ConsumableTimer.INSTANCE.showEffects) return;
 
         String text = packet.getFooter().getFormattedText();
+        if (text.isEmpty()) ConsumableTimerOverlay.clearStaticTimers(false); // No timers, get rid of them
         if (!text.startsWith("§d§lStatus Effects§r")) return;
 
         ConsumableTimerOverlay.clearStaticTimers(false);
