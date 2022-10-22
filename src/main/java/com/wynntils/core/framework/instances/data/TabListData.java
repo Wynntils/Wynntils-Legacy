@@ -19,6 +19,10 @@ public class TabListData extends PlayerData {
       NCG2 is the decimal point and second \d+ option for strength modifiers with a decimal
     CG2 is the actual name of the effect
     CG3 is the duration string (eg. "1:23")
+
+    Note: Buffs like "+190 Main Attack Damage" will have the +190 be considered as part of the name.
+    Buffs like "17% Frenzy" will have the 17% be considered as part of the prefix.
+    This is because the 17% in Frenzy (and certain other buffs) can change, but the static scroll buffs cannot.
      */
     private static final Pattern TAB_EFFECT_PATTERN = Pattern.compile("(.+?§7 ?(?:\\d+(?:\\.\\d+)?%)?) ([%-+\\da-zA-Z\\s]+?) §[84]\\((.+?)\\).*");
 
