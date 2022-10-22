@@ -844,48 +844,6 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void onConsumable(PacketEvent<SPacketSetSlot> e) {
-        if (!Reference.onWorld || e.getPacket().getWindowId() != 0) return;
-
-        // the reason of the +36, is because in the client the hotbar is handled between 0-8
-        // the hotbar in the packet starts in 36, counting from up to down
-        if (e.getPacket().getSlot() != McIf.player().inventory.currentItem + 36) return;
-
-        InventoryPlayer inventory = McIf.player().inventory;
-        ItemStack oldStack = inventory.getStackInSlot(e.getPacket().getSlot() - 36);
-        ItemStack newStack = e.getPacket().getStack();
-
-        if (lastWasDrop) {
-            lastWasDrop = false;
-            return;
-        }
-
-        if (oldStack.isEmpty() || !newStack.isEmpty() && !oldStack.isItemEqual(newStack)) return; // invalid move
-        if (!oldStack.hasDisplayName()) return; // old item is not a valid item
-
-        String oldName = getTextWithoutFormattingCodes(oldStack.getDisplayName());
-        Matcher oldMatcher = CRAFTED_USES.matcher(oldName);
-        if (!oldMatcher.matches()) return;
-        int oldUses = Integer.parseInt(oldMatcher.group(1));
-
-        int newUses = 0;
-        if (!newStack.isEmpty()) {
-            String newName = getTextWithoutFormattingCodes(StringUtils.normalizeBadString(newStack.getDisplayName()));
-            Matcher newMatcher = CRAFTED_USES.matcher(newName);
-            if (newMatcher.matches()) {
-                newUses = Integer.parseInt(newMatcher.group(1));
-            } else {
-                return;
-            }
-        }
-
-        if (oldUses - 1 != newUses) {
-            return;
-        }
-        McIf.mc().addScheduledTask(() -> ConsumableTimerOverlay.addConsumable(oldStack));
-    }
-
-    @SubscribeEvent
     public void removePotionGui(RenderGameOverlayEvent.Pre e) {
         if (UtilitiesConfig.INSTANCE.hidePotionGui && e.getType() == RenderGameOverlayEvent.ElementType.POTION_ICONS) {
             e.setCanceled(true);
@@ -999,12 +957,12 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
-        ConsumableTimerOverlay.clearConsumables(false); // clear consumable list
+        ConsumableTimerOverlay.clearTimers(false); // clear consumable list
     }
 
     @SubscribeEvent
     public void onWorldLeave(WynnWorldEvent.Leave e) {
-        ConsumableTimerOverlay.clearConsumables(true); // clear consumable list
+        ConsumableTimerOverlay.clearTimers(true); // clear consumable list
     }
 
     // tooltip scroller
