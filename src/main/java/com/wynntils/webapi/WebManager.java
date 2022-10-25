@@ -820,7 +820,7 @@ public class WebManager {
      *
      * @return an ArrayList of ChangelogProfile's
      */
-    public static List<String> getChangelog(boolean forceLatest) {
+    public static Map<String, String> getChangelog(boolean forceLatest) {
         if (apiUrls == null) return null;
 
         String version = "v" + Reference.VERSION;
@@ -839,7 +839,10 @@ public class WebManager {
 
             JsonObject main = new JsonParser().parse(IOUtils.toString(st.getInputStream(), StandardCharsets.UTF_8)).getAsJsonObject();
 
-            return Arrays.asList(main.get("changelog").getAsString().split("\n"));
+            return new HashMap<String, String>() {{
+                put("version", main.get("version").getAsString());
+                put("changelog", main.get("changelog").getAsString());
+            }};
         } catch (Exception ex) {
             ex.printStackTrace();
         }
