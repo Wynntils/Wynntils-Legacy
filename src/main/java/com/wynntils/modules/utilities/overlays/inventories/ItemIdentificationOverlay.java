@@ -161,15 +161,6 @@ public class ItemIdentificationOverlay implements Listener {
                     }
                 }
 
-                { // Manually change some lore labels to be consistent with vanilla in 2.0
-                    // See override on line 451, this file
-                    if (longName.equals("Main Attack Neutral Damage")) {
-                        longName = "Main Attack Damage";
-                    } else if (longName.equals("Neutral Spell Damage")) {
-                        longName = "Spell Damage";
-                    }
-                }
-
                 String lore;
                 if (isInverted)
                     lore = (currentValue < 0 ? GREEN.toString() : currentValue > 0 ? RED + "+" : GRAY.toString())
