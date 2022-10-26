@@ -57,7 +57,7 @@ public class SettingsUI extends UI {
     public UIESlider settingsScrollbar = new UIESlider.Vertical(CommonColors.LIGHT_GRAY, Textures.UIs.button_scrollbar, 0.5f, 0.5f, 185, -100, 200, true, -95, -150, 1f, 0, null, 0, 0, 5, 27);
 
     private int resetButtonCount = 4;
-    private int gameRestartSeconds = 7;
+    private final int gameRestartCD = 7;
     private String resetCountText = "Click " + resetButtonCount + " more times to reset and save.\n§8Your game will be closed on reset.";
     public UIEButton resetButton = new UIEButton("R", Textures.UIs.button_a, 0.5f, 0.5f, -187, 85, -10, true, (ui, mouseButton) -> {
         if (resetButtonCount == 0) {
@@ -71,19 +71,17 @@ public class SettingsUI extends UI {
                 try {
                     v.resetValues();
                     v.saveSettings();
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             });
-            resetCountText = "All settings reset, game will be closed in " + gameRestartSeconds + " seconds";
-            new Delay(() -> resetCountText = "All settings reset, game will be closed in 6 seconds", 20);
-            new Delay(() -> resetCountText = "All settings reset, game will be closed in 5 seconds", 40);
-            new Delay(() -> resetCountText = "All settings reset, game will be closed in 4 seconds", 60);
-            new Delay(() -> resetCountText = "All settings reset, game will be closed in 3 second", 80);
-            new Delay(() -> resetCountText = "All settings reset, game will be closed in 2 seconds", 100);
-            new Delay(() -> resetCountText = "All settings reset, game will be closed in 1 second", 120);
-            new Delay(() -> McIf.mc().shutdown(), 140); // 140 tick delay (7 seconds)
+            // make timer counting down from gameRestartCD seconds
+            for (int i = 0; i <= gameRestartCD; i++) {
+                int finalI = i;
+                // *20 for delay because it's in ticks
+                new Delay(() -> resetCountText = "All settings reset, game will be closed in " + (gameRestartCD - finalI) + " seconds", i * 20);
+            }
+            new Delay(() -> McIf.mc().shutdown(), gameRestartCD * 20);
         } else {
             resetCountText = "Click " + resetButtonCount + " more times to reset and save.\n§8Your game will be closed on reset.";
         }
