@@ -7,7 +7,7 @@ package com.wynntils.core.framework.enums;
 public enum SpellType {
     ARROW_STORM(ClassType.ARCHER, 1, "Arrow Storm", 6, 0),
     ESCAPE(ClassType.ARCHER, 2, "Escape", 3, 0),
-    BOMB(ClassType.ARCHER, 3, "Bomb", 8, 0),
+    BOMB(ClassType.ARCHER, 3, "Arrow Bomb", 8, 0),
     ARROW_SHIELD(ClassType.ARCHER, 4, "Arrow Shield", 8, 1),
 
     SPIN_ATTACK(ClassType.ASSASSIN, 1, "Spin Attack", 6, 0),
