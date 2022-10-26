@@ -20,8 +20,9 @@ import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.ui.UI;
 import com.wynntils.core.framework.ui.UIElement;
 import com.wynntils.core.framework.ui.elements.*;
+import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.modules.core.config.CoreDBConfig;
-import net.minecraft.client.Minecraft;
+import com.wynntils.webapi.WebManager;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.math.MathHelper;
@@ -56,9 +57,15 @@ public class SettingsUI extends UI {
     public UIESlider settingsScrollbar = new UIESlider.Vertical(CommonColors.LIGHT_GRAY, Textures.UIs.button_scrollbar, 0.5f, 0.5f, 185, -100, 200, true, -95, -150, 1f, 0, null, 0, 0, 5, 27);
 
     private int resetButtonCount = 4;
-    private String resetCountText = "Click " + resetButtonCount + " more times to reset and save";
+    private int gameRestartSeconds = 7;
+    private String resetCountText = "Click " + resetButtonCount + " more times to reset and save.\n§8Your game will be closed on reset.";
     public UIEButton resetButton = new UIEButton("R", Textures.UIs.button_a, 0.5f, 0.5f, -187, 85, -10, true, (ui, mouseButton) -> {
-        resetButtonCount--;
+        if (resetButtonCount == 0) {
+            // button has already been zero'ed, do nothing
+            return;
+        } else {
+            resetButtonCount--;
+        }
         if (resetButtonCount == 0) {
             registeredSettings.forEach((k, v) -> {
                 try {
@@ -69,10 +76,16 @@ public class SettingsUI extends UI {
                     e.printStackTrace();
                 }
             });
-            resetCountText = "All settings reset, relaunch your game";
-            resetButtonCount = 4;
+            resetCountText = "All settings reset, game will be closed in " + gameRestartSeconds + " seconds";
+            new Delay(() -> resetCountText = "All settings reset, game will be closed in 6 seconds", 20);
+            new Delay(() -> resetCountText = "All settings reset, game will be closed in 5 seconds", 40);
+            new Delay(() -> resetCountText = "All settings reset, game will be closed in 4 seconds", 60);
+            new Delay(() -> resetCountText = "All settings reset, game will be closed in 3 second", 80);
+            new Delay(() -> resetCountText = "All settings reset, game will be closed in 2 seconds", 100);
+            new Delay(() -> resetCountText = "All settings reset, game will be closed in 1 second", 120);
+            new Delay(() -> McIf.mc().shutdown(), 140); // 140 tick delay (7 seconds)
         } else {
-            resetCountText = "Click " + resetButtonCount + " more times to reset and save";
+            resetCountText = "Click " + resetButtonCount + " more times to reset and save.\n§8Your game will be closed on reset.";
         }
     }, 0, 0, 17, 45);
     public UIEButton cancelButton = new UIEButton("Cancel", Textures.UIs.button_a, 0.5f, 0.5f, -170, 85, -10, true, (ui, mouseButton) -> {
