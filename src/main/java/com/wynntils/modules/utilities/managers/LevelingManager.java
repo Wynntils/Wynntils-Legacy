@@ -3,6 +3,7 @@ package com.wynntils.modules.utilities.managers;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.utils.objects.TimedSet;
+import ibxm.Player;
 
 import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
@@ -40,6 +41,31 @@ public class LevelingManager {
 
         XP_SET.releaseEntries();
     }
+
+    /**
+     * Get Excepted Grind Time for leveling up
+     * @return The Grind Time for Leveling Up in Minutes
+     */
+    public static int getLevelingGrindTime(){
+        CharacterData p = PlayerInfo.get(CharacterData.class);
+        int perminute = getXpPerMinute();
+        int required = p.getXpNeededToLevelUp() - p.getCurrentXP();
+
+
+        if((!(required == 0)) && (!(perminute == 0))){
+            return required / perminute;
+        }
+        else {
+            return 0;
+        }
+
+
+    }
+
+
+
+
+
 
     /**
      * Get XP/Minute as a raw integer

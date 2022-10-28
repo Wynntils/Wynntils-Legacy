@@ -134,7 +134,10 @@ public class OverlayEvents implements Listener {
                                         .replace("%xc%", Integer.toString(data.getCurrentXP() - oldxp))
                                         .replace("%po%", oldxppercent)
                                         .replace("%pn%", data.getCurrentXPAsPercentage())
-                                        .replace("%pc%", df.format(xpchange)));
+                                        .replace("%pc%", com.wynntils.core.utils.StringUtils.integerToShortString((int) xpchange))
+                                        .replace("%pc_raw%", df.format(xpchange)));
+
+
                             }
                             oldxp = data.getCurrentXP();
                             oldxppercent = data.getCurrentXPAsPercentage();

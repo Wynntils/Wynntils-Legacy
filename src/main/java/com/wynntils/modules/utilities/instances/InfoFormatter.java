@@ -64,6 +64,16 @@ public class InfoFormatter {
                 CharacterData.PER_FORMAT.format(SpeedometerManager.getCurrentSpeed() * 3.6),
                 "kmph");
 
+        // Time in seconds to get to the beacon (raw)
+        registerFormatter((input ->
+                Integer.toString(SpeedometerManager.getTravelingTime())
+        ), "travel_raw");
+
+        // Time in seconds to get to the beacon
+        registerFormatter((input ->
+                StringUtils.DurationintegerToShortString(SpeedometerManager.getTravelingTime())
+        ), "travel");
+
         // X coordinate
         registerFormatter((input) ->
                 Integer.toString((int) McIf.player().posX),
@@ -133,6 +143,8 @@ public class InfoFormatter {
         registerFormatter((input) ->
                 Integer.toString(PlayerInfo.get(CharacterData.class).getMaxHealth()),
                 "health_max");
+
+
 
         // Health percentage
         registerFormatter((input) -> {
