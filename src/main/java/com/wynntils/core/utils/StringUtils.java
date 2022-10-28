@@ -459,10 +459,10 @@ public class StringUtils {
         }
         else {
             if(count > 3600){
-                return "" + count / 3600 + "h";
+                return count / 3600 + "h";
             }
             else {
-                return "" + count / 60 + "m";
+                return count / 60 + "m";
             }
         }
     }
