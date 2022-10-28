@@ -22,23 +22,16 @@ public class SpeedometerManager {
         return (MathHelper.sqrt((distX * distX) + (distZ * distZ))) * 20d;
     }
 
-    public static int getTravelingTime(){
+    public static int getTravelingTime() {
         Location compass = CompassManager.getCompassLocation();
         if(compass != null){
             Location playerPos = new Location(McIf.player());
             double distance = compass.distance(playerPos);
             double bps = getCurrentSpeed();
             if(bps != 0){
-                return (int) ((int)distance / bps);
+                return (int) (distance / bps);
             }
-            else {
-                return 0;
-            }
-
         }
-        else {
-            return 0;
-        }
+        return 0;
     }
-
 }

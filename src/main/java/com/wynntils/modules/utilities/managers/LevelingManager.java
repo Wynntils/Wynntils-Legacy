@@ -46,7 +46,7 @@ public class LevelingManager {
      * Get Excepted Grind Time for leveling up
      * @return The Grind Time for Leveling Up in Minutes
      */
-    public static int getLevelingGrindTime(){
+    public static int getLevelingGrindTime() {
         CharacterData p = PlayerInfo.get(CharacterData.class);
         int perminute = getXpPerMinute();
         int required = p.getXpNeededToLevelUp() - p.getCurrentXP();
