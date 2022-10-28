@@ -910,21 +910,17 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Player List Opening Duration", description = "How long should the opening animation of the custom player list last?", order = 3)
         @Setting.Limitations.DoubleLimit(min = 0D, max = 500D, precision = 5D)
         public double openingDuration = 125D;
-
     }
 
     @SettingsInfo(name = "consumable_timer_settings", displayPath = "Utilities/Overlays/Consumable Timer")
     public static class ConsumableTimer extends SettingsClass {
         public static ConsumableTimer INSTANCE;
 
-        @Setting(displayName = "Active Effects", description = "Should active effects be displayed as a timer?")
+        @Setting(displayName = "Active Effects", description = "Should active effects be displayed as a timer?\n\n§8These are the effects in the tab list.")
         public boolean showEffects = true;
 
         @Setting(displayName = "Loot Chest Cooldown", description = "Should the cooldown of loot chests be displayed as a timer?")
         public boolean showCooldown = true;
-
-        @Setting(displayName = "Spell Effects", description = "Should spell effects be displayed as a timer?")
-        public boolean showSpellEffects = true;
 
         @Setting(displayName = "Track Totem", description = "Should shamans' totem be displayed as a timer?\n\n§8This setting is currently experimental.")
         public boolean trackTotem = false;

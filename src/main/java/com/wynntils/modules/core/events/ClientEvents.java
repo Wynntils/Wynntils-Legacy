@@ -14,10 +14,7 @@ import com.wynntils.core.framework.enums.DamageType;
 import com.wynntils.core.framework.enums.professions.GatheringMaterial;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
 import com.wynntils.core.framework.instances.PlayerInfo;
-import com.wynntils.core.framework.instances.data.ActionBarData;
-import com.wynntils.core.framework.instances.data.BossBarData;
-import com.wynntils.core.framework.instances.data.CharacterData;
-import com.wynntils.core.framework.instances.data.SpellData;
+import com.wynntils.core.framework.instances.data.*;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.Utils;
@@ -38,7 +35,6 @@ import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.instances.ShamanMaskType;
 import com.wynntils.modules.utilities.managers.KillsManager;
 import com.wynntils.modules.utilities.managers.LevelingManager;
-import com.wynntils.modules.utilities.managers.QuickCastManager;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiIngameMenu;
@@ -367,6 +363,13 @@ public class ClientEvents implements Listener {
             Matcher focusMatcher = BossBarData.FOCUS_PATTERN.matcher(e.getPacket().getName().getFormattedText());
             if (focusMatcher.matches()) e.setCanceled(true);
         }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void updateTabListHeaderFooter(PacketEvent<SPacketPlayerListHeaderFooter> e) {
+        if (!Reference.onServer) return;
+
+        PlayerInfo.get(TabListData.class).updateTabListFooterEffects(e.getPacket());
     }
 
     @SubscribeEvent
