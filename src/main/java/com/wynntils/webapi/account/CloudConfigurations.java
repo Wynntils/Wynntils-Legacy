@@ -5,15 +5,12 @@
 package com.wynntils.webapi.account;
 
 import com.google.gson.Gson;
-import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.request.PostRequest;
 import com.wynntils.webapi.request.multipart.IMultipartFormPart;
 import com.wynntils.webapi.request.multipart.MultipartFormDataPart;
 import com.wynntils.webapi.request.multipart.MultipartFormFilePart;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.TextFormatting;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;
@@ -83,10 +80,6 @@ public class CloudConfigurations {
             WebManager.getHandler().addAndDispatch(request);
 
             Reference.LOGGER.info("Finished uploading " + count + " config files");
-
-            // Send message to the player
-            if (count > 0)
-                McIf.player().sendMessage(new TextComponentString(TextFormatting.GREEN + "Successfully uploaded " + count + " config files to the cloud"));
         }, 5, 10, TimeUnit.SECONDS);
     }
 
