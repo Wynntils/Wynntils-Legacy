@@ -300,7 +300,6 @@ public class SkillPointOverlay implements Listener {
 
     public void loadBuild(SkillPointAllocation build) {
         String errorMsg = "";
-        System.out.println(currentSPActual[0] + " " + currentSPActual[1] + " " + currentSPActual[2] + " " + currentSPActual[3] + " " + currentSPActual[4]);
         if (build.getStrength() < currentSPWithoutGearTome[0] ||
                 build.getDexterity() < currentSPWithoutGearTome[1] ||
                 build.getIntelligence() < currentSPWithoutGearTome[2] ||
