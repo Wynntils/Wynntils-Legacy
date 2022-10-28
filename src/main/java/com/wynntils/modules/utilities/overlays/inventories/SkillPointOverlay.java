@@ -79,6 +79,9 @@ public class SkillPointOverlay implements Listener {
     private int[] gearSP = new int[5];
     private int[] tomeAndSetBonusSP = new int[5];
 
+    // 36-39 inclusive is armour, 9-12 inclusive is accessories
+    private static final int[] gearSlotsToCheck = {36, 37, 38, 39, 9, 10, 11, 12};
+
     @SubscribeEvent
     public void onChestClose(GuiOverlapEvent.ChestOverlap.GuiClosed e) {
         nameField = null;
@@ -104,8 +107,6 @@ public class SkillPointOverlay implements Listener {
 
             // Set gearSkillPoints to the number of skill points that our armour and accessories give us
             // We will do this by going through all our armour and accessory slots and adding the skill point modifiers to gearSkillPoints
-            // 36-39 inclusive is armour, 9-12 inclusive is accessories
-            int[] gearSlotsToCheck = {36, 37, 38, 39, 9, 10, 11, 12};
             for (int i : gearSlotsToCheck) {
                 ItemStack item = McIf.player().inventory.getStackInSlot(i);
                 if (item.isEmpty()) continue;
@@ -214,7 +215,6 @@ public class SkillPointOverlay implements Listener {
             nameField.setFocused(true);
             nameField.setText("Enter build name");
             Keyboard.enableRepeatEvents(true);
-
         } else if (e.getSlotId() == LOAD_SLOT) {
             e.setCanceled(true);
             McIf.mc().displayGuiScreen(
