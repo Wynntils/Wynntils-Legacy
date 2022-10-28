@@ -78,7 +78,8 @@ public class SettingsUI extends UI {
             // make timer counting down from gameRestartCD seconds
             for (int i = gameRestartCD; i > 0; i--) {
                 int finalI = i;
-                new Delay(() -> resetCountText = "All settings reset, game will be closed in " + finalI + " seconds", (gameRestartCD - finalI) * 20);
+                String seconds = (finalI == 1) ? " second" : " seconds";
+                new Delay(() -> resetCountText = "All settings reset, game will be closed in " + finalI + seconds, (gameRestartCD - finalI) * 20);
             }
             new Delay(() -> McIf.mc().shutdown(), gameRestartCD * 20);
         } else {
