@@ -102,7 +102,7 @@ public class ConsumableTimerOverlay extends Overlay {
 
         int extraY = 0; // y-offset to make sure each timer does not overlap with the previous timer
         for (TimerContainer timer : activeTimers) {
-            if (timer instanceof DynamicTimerContainer) { // Update the displayed time for DynamicTimerContainers
+            if (timer instanceof DynamicTimerContainer) {
                 // §7 to make the timer grey
                 drawString("§7" + timer.getName() + " (" + StringUtils.timeLeft(((DynamicTimerContainer) timer).getExpirationTime() - McIf.getSystemTime()) + ")",
                         0, extraY, CommonColors.WHITE,
@@ -110,7 +110,7 @@ public class ConsumableTimerOverlay extends Overlay {
                         OverlayConfig.ConsumableTimer.INSTANCE.textShadow);
             }
 
-            if (timer instanceof StaticTimerContainer) { // Update the displayed time for StaticTimerContainers
+            if (timer instanceof StaticTimerContainer) {
                 drawString(((StaticTimerContainer) timer).getPrefix() + " " + timer.getName() + " (" + ((StaticTimerContainer) timer).getDisplayedTime() + ")",
                         0, extraY, CommonColors.WHITE,
                         OverlayConfig.ConsumableTimer.INSTANCE.textAlignment,
