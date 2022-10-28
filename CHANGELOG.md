@@ -1,7 +1,7 @@
-## [1.13.2-beta.0](https://github.com/Wynntils/Wynntils/compare/v1.13.1...v1.13.2-beta.0) (2022-10-28)
+## [1.13.2-beta.1](https://github.com/Wynntils/Wynntils/compare/v1.13.2-beta.0...v1.13.2-beta.1) (2022-10-28)
 
 
-### New Features
+### Bug Fixes
 
-* Tab list effect parsing ([#615](https://github.com/Wynntils/Wynntils/issues/615)) ([76e5bdb](https://github.com/Wynntils/Wynntils/commit/76e5bdbecded9d71ee6848da60bd8893f7eac426))
+* improve skill point loadouts ([#597](https://github.com/Wynntils/Wynntils/issues/597)) ([312aa90](https://github.com/Wynntils/Wynntils/commit/312aa90e4172caf36fa8b21e95b24ed5e1f4ff77))
 
