@@ -314,7 +314,7 @@ public class SkillPointOverlay implements Listener {
             errorMsg = "You don't have enough skill points to load this build.";
         }
 
-        if (errorMsg.length() > 0) {
+        if (!errorMsg.isEmpty()) {
             TextComponentString text = new TextComponentString(errorMsg);
             text.getStyle().setColor(TextFormatting.RED);
 
