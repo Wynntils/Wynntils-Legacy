@@ -51,7 +51,7 @@ public class LevelingManager {
         int perminute = getXpPerMinute();
         int required = p.getXpNeededToLevelUp() - p.getCurrentXP();
         if(perminute != 0){
-            return required / perminute;
+            return required / perminute * 60;
         }
         else {
             return 0;
