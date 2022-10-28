@@ -60,8 +60,6 @@ public class CharacterData extends PlayerData {
         reskinned = newClassIsReskinned;
     }
 
-
-
     public int getXpNeededToLevelUp() {
         // Quick fix for crash bug - more investigation to be done.
         EntityPlayerSP player = getPlayer();

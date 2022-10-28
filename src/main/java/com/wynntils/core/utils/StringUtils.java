@@ -453,7 +453,7 @@ public class StringUtils {
         return String.format("%s%c", value, "kMBTPE".charAt(exp - 1));
     }
 
-    public static String DurationintegerToShortString(int count){
+    public static String durationIntegerToShortString(int count){
         if(count < 60){
             return "" + count + "s";
         }

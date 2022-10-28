@@ -50,22 +50,13 @@ public class LevelingManager {
         CharacterData p = PlayerInfo.get(CharacterData.class);
         int perminute = getXpPerMinute();
         int required = p.getXpNeededToLevelUp() - p.getCurrentXP();
-
-
-        if((!(required == 0)) && (!(perminute == 0))){
+        if(perminute != 0){
             return required / perminute;
         }
         else {
             return 0;
         }
-
-
     }
-
-
-
-
-
 
     /**
      * Get XP/Minute as a raw integer

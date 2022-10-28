@@ -71,7 +71,7 @@ public class InfoFormatter {
 
         // Time in seconds to get to the beacon
         registerFormatter((input ->
-                StringUtils.DurationintegerToShortString(SpeedometerManager.getTravelingTime())
+                StringUtils.durationIntegerToShortString(SpeedometerManager.getTravelingTime())
         ), "travel");
 
         // X coordinate
@@ -143,8 +143,6 @@ public class InfoFormatter {
         registerFormatter((input) ->
                 Integer.toString(PlayerInfo.get(CharacterData.class).getMaxHealth()),
                 "health_max");
-
-
 
         // Health percentage
         registerFormatter((input) -> {

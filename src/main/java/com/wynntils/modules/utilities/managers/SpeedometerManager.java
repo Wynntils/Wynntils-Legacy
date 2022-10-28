@@ -24,11 +24,11 @@ public class SpeedometerManager {
 
     public static int getTravelingTime(){
         Location compass = CompassManager.getCompassLocation();
-        if(!(compass == null)){
+        if(compass != null){
             Location playerPos = new Location(McIf.player());
             double distance = compass.distance(playerPos);
             double bps = getCurrentSpeed();
-            if(!(bps == 0)){
+            if(bps != 0){
                 return (int) ((int)distance / bps);
             }
             else {
