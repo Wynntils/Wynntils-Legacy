@@ -6,22 +6,22 @@ package com.wynntils.modules.utilities.instances;
 
 public class DynamicTimerContainer extends TimerContainer {
 
-    private long expirationTime; // The time remaining for the consumable in seconds
+    private long expirationTime; // The timestamp when the timer expires
 
-    public DynamicTimerContainer(String name, long timeRemaining, boolean persistent) {
+    public DynamicTimerContainer(String name, long expirationTime, boolean persistent) {
         super(name, persistent);
-        this.expirationTime = timeRemaining;
+        this.expirationTime = expirationTime;
     }
 
     /**
-     * @return The time remaining for the consumable in seconds
+     * @return The timestamp when the timer expires
      */
     public long getExpirationTime() {
         return expirationTime;
     }
 
     /**
-     * @param expirationTime The new time remaining for the consumable in seconds
+     * @param expirationTime The new timestamp for when the timer expires
      */
     public void setExpirationTime(long expirationTime) {
         this.expirationTime = expirationTime;
