@@ -26,6 +26,7 @@ public class PlayerInfo {
         register(SocialData.class);
         register(SpellData.class);
         register(HorseData.class);
+        register(TabListData.class);
     }
 
     /**
