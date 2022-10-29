@@ -45,14 +45,14 @@ public class LevelingOverlay extends Overlay {
         if (((event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) || (event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR)) && Reference.onWorld && data.isLoaded()) {
             String text = OverlayConfig.Leveling.INSTANCE.levelingText.replace("%actual%", "" + data.getCurrentXP())
                     .replace("%max%", "" + data.getXpNeededToLevelUp())
-                    .replace("%actual_formated%", StringUtils.integerToShortString(data.getCurrentXP()))
+                    .replace("%actual_formatted%", StringUtils.integerToShortString(data.getCurrentXP()))
                     .replace("%percent%", data.getCurrentXPAsPercentage())
                     .replace("%needed%", "" + (data.getXpNeededToLevelUp() - data.getCurrentXP()))
                     .replace("%actualg%", GROUPED_FORMAT.format(data.getCurrentXP()))
                     .replace("%maxg%", GROUPED_FORMAT.format(data.getXpNeededToLevelUp()))
                     .replace("%neededg%", GROUPED_FORMAT.format(data.getXpNeededToLevelUp() - data.getCurrentXP()))
-                    .replace("%needed_formated%", StringUtils.integerToShortString(data.getXpNeededToLevelUp() - data.getCurrentXP()))
-                    .replace("%max_formated%", StringUtils.integerToShortString(data.getXpNeededToLevelUp()))
+                    .replace("%needed_formatted%", StringUtils.integerToShortString(data.getXpNeededToLevelUp() - data.getCurrentXP()))
+                    .replace("%max_formatted%", StringUtils.integerToShortString(data.getXpNeededToLevelUp()))
                     .replace("%curlvl%", "" + data.getLevel())
                     .replace("%nextlvl%", data.getLevel() == 104 ? "" : "" + (data.getLevel() + 1))
                     .replace("%grindtime%","" + StringUtils.durationIntegerToShortString(LevelingManager.getLevelingGrindTime()));
