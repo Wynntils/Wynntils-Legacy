@@ -8,7 +8,7 @@ import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Idea: Maybe add a "Time Left" option to see how long leveling up takes at the current XP rate?
+ * Idea: Maybe add a "Time Left" option to see how long leveling up takes at the current XP rate? Done
  */
 
 @SuppressWarnings("ConstantConditions")
