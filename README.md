@@ -28,19 +28,13 @@ When launching a run configuration use the generated run configuration
 
 <h2>Authenticating</h2>
 
-You will need to edit your `GRADLE_HOME/gradle.properties`,
-
-* Windows - `C:\Users\<your username>\.gradle\gradle.properties`
-* Unix - `~/.gradle/gradle.properties`
-
-to include your UUID, username, and access token.
-
-* `mc_uuid=` is your minecraft uuid, trimmed / without the dashes
-* `mc_username=` is your minecraft username, not email
-* `mc_accessToken=` is your access token, you may be able to find it at `.minecraft/launcher_accounts.json` or `.minecraft/launcher_profiles.json`
-
-Alternatively, you may use <a href="https://github.com/DJtheRedstoner/DevAuth">DevAuth</a> to authenticate.
-<br> Place the `forge-legacy` .jar in `run/mods` and configure as documented in the DevAuth readme.
+To authenticate in the development environment, you should use <a href="https://github.com/DJtheRedstoner/DevAuth">DevAuth</a> to authenticate.
+<br> Download, then place the `forge-legacy`.jar in `run/mods`.
+<br> When you first launch the game with the generated `runClient` task, there will be a prompt in the console with a link to authenticate. No other configuration is required.
+<h3>Alternative Accounts</h3>
+This repository is pre-configured with one main and one alternative account. To use the alternative account, you should duplicate, then edit the generated `runClient` configuration.
+<br> In the JVM arguments, add `-Ddevauth.account=alt`. You will be promoted to authenticate with the new account when you run the new instance.
+<br> To add more alternative accounts, you should edit `.devauth/config.toml` and follow the existing entries as examples. You may also refer to the DevAuth repository for more information.
 
 Pull Request
 ========
