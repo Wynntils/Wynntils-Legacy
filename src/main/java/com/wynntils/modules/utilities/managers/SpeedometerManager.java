@@ -28,7 +28,7 @@ public class SpeedometerManager {
             Location playerPos = new Location(McIf.player());
             double distance = compass.distance(playerPos);
             double bps = getCurrentSpeed();
-            if(bps != 0){
+            if (bps != 0) {
                 return (int) (distance / bps);
             }
         }
