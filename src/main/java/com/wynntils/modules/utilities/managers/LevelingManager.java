@@ -36,7 +36,7 @@ public class LevelingManager {
 
         if (newXp > currentXp) { // update if changed
             XP_SET.put(newXp - currentXp);
-            sessionXP += newXp - currentXp;
+         
             currentXp = newXp;
         }
 
@@ -56,14 +56,6 @@ public class LevelingManager {
         } else {
             return 0;
         }
-    }
-
-    /**
-     * Get the Combat XP Obtained During this session
-     * @return the combat Xp obtained during the playing session
-     */
-    public static int getSessionXP() {
-        return sessionXP;
     }
 
     /**
