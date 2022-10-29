@@ -3,7 +3,6 @@ package com.wynntils.modules.utilities.managers;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.utils.objects.TimedSet;
-import ibxm.Player;
 
 import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
@@ -52,8 +51,7 @@ public class LevelingManager {
         int required = p.getXpNeededToLevelUp() - p.getCurrentXP();
         if (perminute != 0) {
             return required / perminute * 60;
-        }
-        else {
+        } else {
             return 0;
         }
     }
