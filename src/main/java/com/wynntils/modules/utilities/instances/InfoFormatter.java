@@ -182,17 +182,7 @@ public class InfoFormatter {
         registerFormatter((input) ->
                 PlayerInfo.get(CharacterData.class).getCurrentXPAsPercentage(),
                 "xp_pct");
-
-        //XP Obtained during this playing session (raw)
-        registerFormatter((input) ->
-                        String.valueOf(LevelingManager.getSessionXP()),
-                "sxp_raw");
-
-        //XP Obtained during this playing session (formatted)
-        registerFormatter((input) ->
-                        StringUtils.integerToShortString(LevelingManager.getSessionXP()),
-                "sxp");
-
+        
         // Horse XP
         registerFormatter((input) -> {
             if (!cache.containsKey("horsexp")) {
