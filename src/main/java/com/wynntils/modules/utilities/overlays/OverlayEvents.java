@@ -323,6 +323,14 @@ public class OverlayEvents implements Listener {
                 return;
             }
         }
+
+        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectRefresh) {
+            if (formattedText.matches("§8\\[§r§7⬤§r§8\\] §r§7(.+)§r§8 has been refreshed!§r")) {
+                GameUpdateOverlay.queueMessage(formattedText);
+                e.setCanceled(true);
+            }
+        }
+
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectOther) {
             if (messageText.matches("You have \\d+ unused Skill Points and \\d+ unused Ability Points! Right-Click while holding your compass to use them")) {
                 String[] res = messageText.split(" ");
