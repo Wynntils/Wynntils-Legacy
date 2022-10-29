@@ -33,7 +33,7 @@ To authenticate in the development environment, you should use <a href="https://
 <br> When you first launch the game with the generated `runClient` task, there will be a prompt in the console with a link to authenticate. No other configuration is required.
 <h3>Alternative Accounts</h3>
 This repository is pre-configured with one main and one alternative account. To use the alternative account, you should duplicate, then edit the generated `runClient` configuration.
-<br> In the JVM arguments, add `-Ddevauth.account=alt`. You will be promoted to authenticate with the new account when you run the new instance.
+<br> In the JVM arguments, add `-Ddevauth.account=alt`. You will be prompted to authenticate with the new account when you run the new instance.
 <br> To add more alternative accounts, you should edit `.devauth/config.toml` and follow the existing entries as examples. You may also refer to the DevAuth repository for more information.
 
 Pull Request
