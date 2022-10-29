@@ -462,7 +462,7 @@ public class StringUtils {
                 return count / 60 + "m";
             }
         }
-    }
+    
 
     public static boolean fuzzyMatch(String toCheck, String searchText) {
         int i = 0, j = 0;
