@@ -43,7 +43,7 @@ public class LevelingManager {
     }
 
     /**
-     * Get Excepted Grind Time for leveling up
+     * Get expected grind time for leveling up
      * @return The Grind Time for Leveling Up in Minutes
      */
     public static int getLevelingGrindTime() {
