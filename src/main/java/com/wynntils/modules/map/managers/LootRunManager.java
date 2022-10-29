@@ -43,6 +43,10 @@ public class LootRunManager {
     private static LootRunPath recordingPath = null;
     private static LootRunPath lastRecorded = null;
     private final static List<PathWaypointProfile> mapPath = new ArrayList<>();
+    private static int sessionLootruns = 0;
+    private static int sessionLootrunChests = 0;
+    private static boolean isLootrunLoaded = false;
+    private static int latestLootrunOpenedChests = 0;
 
     private final static List<CustomColor> pathColors = Arrays.asList(
         CommonColors.BLUE,
@@ -102,7 +106,8 @@ public class LootRunManager {
             reader.close();
             latestLootrun = path;
             latestLootrunName = lootRunName;
-
+            addLootruntoSession();
+            isLootrunLoaded = true;
             return Optional.of(path);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -158,6 +163,8 @@ public class LootRunManager {
     public static void clear() {
         activePaths.clear();
         recordingPath = null;
+        isLootrunLoaded = false;
+        latestLootrunOpenedChests = 0;
         updateMapPath();
     }
 
@@ -355,7 +362,54 @@ public class LootRunManager {
             latestLootrun = null;
         activePaths.remove(name);
         updateMapPath();
+        isLootrunLoaded = false;
         return true;
+    }
+
+    public static int getSessionLootruns() {
+        return sessionLootruns;
+    }
+
+    public static int getSessionLootrunChests() {
+        return sessionLootrunChests;
+    }
+
+    public static void addLootruntoSession() {
+        sessionLootruns += 1;
+    }
+
+    public static void addOpenedChestToSession() {
+        sessionLootrunChests += 1;
+    }
+
+    public static boolean isLootrunLoaded() {
+        return isLootrunLoaded;
+    }
+
+    public static String getLatestLootrunName() {
+        return latestLootrunName;
+    }
+
+    public static int getLootrunChests() {
+       if(latestLootrun != null) {
+           return latestLootrun.getChests().size();
+       }
+       return 0;
+    }
+
+    public static int getLootrunPoints() {
+        if(latestLootrun != null) {
+            return latestLootrun.getPoints().size();
+        }
+        return 0;
+    }
+
+    public static int getLatestLootrunOpenedChests() {
+        return latestLootrunOpenedChests;
+    }
+
+    public static void addOpenedChestToLatestLootrun() {
+        latestLootrunOpenedChests += 1;
     }
 
     private static class LootRunPathIntermediary {
@@ -399,5 +453,4 @@ public class LootRunManager {
             return o;
         }
     }
-
 }

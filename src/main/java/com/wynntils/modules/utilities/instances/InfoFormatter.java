@@ -17,6 +17,7 @@ import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.managers.PingManager;
+import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.interfaces.InfoModule;
 import com.wynntils.modules.utilities.managers.*;
@@ -507,6 +508,36 @@ public class InfoFormatter {
         registerFormatter((input) ->
                         !UtilitiesConfig.INSTANCE.enableDryStreak ? "-" : String.valueOf(UtilitiesConfig.INSTANCE.dryStreakBoxes),
                 "dry_boxes", "dry_streak_boxes");
+
+        // Lootrun name
+        registerFormatter((input) ->
+                        LootRunManager.getLatestLootrunName(),
+                "lname", "lootrun_name");
+
+        // Session Lootruns
+        registerFormatter((input) ->
+                        String.valueOf(LootRunManager.getSessionLootruns()),
+                "sl", "session_lootruns");
+
+        // Session Opened Lootrun Chests
+        registerFormatter((input) ->
+                        String.valueOf(LootRunManager.getSessionLootrunChests()),
+                "slc", "session_lootrun_chests");
+
+        // Current Lootrun Chest Amount
+        registerFormatter((input) ->
+                        String.valueOf(LootRunManager.getLootrunChests()),
+                "lc", "lootrun_chests");
+
+        // Current Lootrun Points Amount
+        registerFormatter((input) ->
+                        String.valueOf(LootRunManager.getLootrunPoints()),
+                "lp", "lootrun_points");
+
+        // Current Lootrun Opened Chests
+        registerFormatter((input) ->
+                        String.valueOf(LootRunManager.getLatestLootrunOpenedChests()),
+                "loc", "lootrun_opened_chests");
     }
 
     private void registerFormatter(InfoModule formatter, String... vars) {
