@@ -319,7 +319,7 @@ public class OverlayConfig extends SettingsClass {
 
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
-    }    
+    }
 
     @SettingsInfo(name = "focus_bar", displayPath = "Utilities/Overlays/Focus")
     public static class Focus extends SettingsClass {
@@ -546,6 +546,9 @@ public class OverlayConfig extends SettingsClass {
 
             @Setting(displayName = "Combat Messages", description = "Should combat chat messages be redirected to the update ticker?")
             public boolean redirectCombat = true;
+
+            @Setting(displayName = "Refresh Messages", description = "Should ability refresh chat messages be redirected to the update ticker?")
+            public boolean redirectRefresh = true;
 
             @Setting(displayName = "Horse Messages", description = "Should messages related to your horse be redirected to the update ticker?")
             public boolean redirectHorse = true;
