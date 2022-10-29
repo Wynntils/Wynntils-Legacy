@@ -454,7 +454,7 @@ public class StringUtils {
     }
 
     public static String durationIntegerToShortString(int count){
-        if (count < 60){
+        if (count < 60) {
             return "" + count + "s";
         }
         else {
