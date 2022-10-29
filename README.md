@@ -48,7 +48,6 @@ We welcome all forms of assistance. =)
 
 <strong>If you would like to make a pull request, please compare and merge it with Wynntils:development rather than Wynntils:production.
 <br>Additionally, please name your pull request according to the <a href="https://www.conventionalcommits.org/en/v1.0.0/#summary">Conventional Commits</a> specification.</strong>
-</strong>
 
 License
 ========
