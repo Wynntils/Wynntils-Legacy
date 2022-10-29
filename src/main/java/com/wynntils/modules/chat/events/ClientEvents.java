@@ -53,6 +53,7 @@ public class ClientEvents implements Listener {
 
     private static final Pattern GUILD_RESOURCE_WARNING = Pattern.compile("\\[INFO\\] Territory .+ is producing more .+");
     private static final Pattern GUILD_CHAT_MESSAGE = Pattern.compile("\\[(★{0,5})(.+)\\] (.+)");
+    private static final Pattern PET_MESSAGE = Pattern.compile("§2(.*): §a*(.*)*");
 
     @SubscribeEvent
     public void onGuiOpen(GuiOpenEvent e) {
@@ -98,7 +99,7 @@ public class ClientEvents implements Listener {
                     message.getStyle().setHoverEvent(e.getMessage().getStyle().getHoverEvent());
                 e.setMessage(message);
             }
-        } else if((UtilitiesConfig.INSTANCE.hidePetsMessages) && (McIf.getUnformattedText(e.getMessage()).matches("(.*): *(.*)*"))){
+        } else if((UtilitiesConfig.INSTANCE.hidePetsMessages) && (PET_MESSAGE.matcher(McIf.getFormattedText(e.getMessage())).matches())) {
                 e.setCanceled(true);
         }
     }
