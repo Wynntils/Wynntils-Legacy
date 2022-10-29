@@ -356,11 +356,11 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onSendMessage(ClientChatEvent e) {
-        if(priceInput) {
-            priceInput = false;
-            String price = StringUtils.convertEmeraldPrice(e.getMessage());
-            if (!price.isEmpty()) e.setMessage(price);
-        }
+         if (!priceInput) return;
+
+        priceInput = false;
+        String price = StringUtils.convertEmeraldPrice(e.getMessage());
+        if (!price.isEmpty()) e.setMessage(price);
     }
 
     @SubscribeEvent
