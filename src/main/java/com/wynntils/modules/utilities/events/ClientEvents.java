@@ -116,6 +116,7 @@ public class ClientEvents implements Listener {
     private static final Pattern WAR_CHAT_MESSAGE_PATTERN = Pattern.compile("§3\\[WAR§3\\] The war for (.+) will start in \\d+ minutes.");
     private static final Pattern ABILITY_TREE_PATTERN = Pattern.compile("(?:Warrior|Shaman|Mage|Assassin|Archer) Abilities");
 
+
     public static boolean isAwaitingHorseMount = false;
     private static int lastHorseId = -1;
 
@@ -351,13 +352,15 @@ public class ClientEvents implements Listener {
         }
     }
 
+
+
     @SubscribeEvent
     public void onSendMessage(ClientChatEvent e) {
-        if (!priceInput) return;
-
-        priceInput = false;
-        String price = StringUtils.convertEmeraldPrice(e.getMessage());
-        if (!price.isEmpty()) e.setMessage(price);
+        if(priceInput) {
+            priceInput = false;
+            String price = StringUtils.convertEmeraldPrice(e.getMessage());
+            if (!price.isEmpty()) e.setMessage(price);
+        }
     }
 
     @SubscribeEvent

@@ -21,6 +21,7 @@ import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
 import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.events.custom.QuestBookUpdateEvent;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
 import com.wynntils.webapi.services.TranslationManager;
 import net.minecraft.client.audio.PositionedSoundRecord;
@@ -97,6 +98,8 @@ public class ClientEvents implements Listener {
                     message.getStyle().setHoverEvent(e.getMessage().getStyle().getHoverEvent());
                 e.setMessage(message);
             }
+        } else if((UtilitiesConfig.INSTANCE.hidePetsMessages) && (McIf.getUnformattedText(e.getMessage()).matches("(.*): *(.*)*"))){
+                e.setCanceled(true);
         }
     }
 

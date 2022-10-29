@@ -29,6 +29,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -181,6 +182,16 @@ public class InfoFormatter {
         registerFormatter((input) ->
                 PlayerInfo.get(CharacterData.class).getCurrentXPAsPercentage(),
                 "xp_pct");
+
+        //XP Obtained during this playing session (raw)
+        registerFormatter((input) ->
+                        String.valueOf(LevelingManager.getSessionXP()),
+                "sxp_raw");
+
+        //XP Obtained during this playing session (formatted)
+        registerFormatter((input) ->
+                        StringUtils.integerToShortString(LevelingManager.getSessionXP()),
+                "sxp");
 
         // Horse XP
         registerFormatter((input) -> {

@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 public class LevelingManager {
     private static final TimedSet<Integer> XP_SET = new TimedSet<>(60, TimeUnit.SECONDS);
     private static int currentXp = -1;
+    private static int sessionXP = 0;
 
     /**
      * Update the leveling manager.
@@ -35,6 +36,7 @@ public class LevelingManager {
 
         if (newXp > currentXp) { // update if changed
             XP_SET.put(newXp - currentXp);
+            sessionXP += newXp - currentXp;
             currentXp = newXp;
         }
 
@@ -54,6 +56,14 @@ public class LevelingManager {
         } else {
             return 0;
         }
+    }
+
+    /**
+     * Get the Combat XP Obtained During this session
+     * @return the combat Xp obtained during the playing session
+     */
+    public static int getSessionXP() {
+        return sessionXP;
     }
 
     /**
