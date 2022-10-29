@@ -31,12 +31,11 @@ jobs:
         uses: DevScyu/conventional-changelog-action@v4
         with:
           github-token: ${{ secrets.PRIVATE_TOKEN }}
-          preset: conventionalcommits
-          release-count: 1
+          git-user-name: 'Wynntils'
+          git-user-email: 'admin@wynntils.com'
           pre-commit: ./.github/.pre-commit.js
           config-file-path: ./.github/.config.js
-          create-summary: true
-          version-file: ./version.json
+          skip-version-file: true
           skip-git-pull: true
           pre-release: true
           pre-release-identifier: beta
