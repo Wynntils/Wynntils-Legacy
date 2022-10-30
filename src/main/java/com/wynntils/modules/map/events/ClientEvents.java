@@ -123,7 +123,7 @@ public class ClientEvents implements Listener {
         if (LootRunManager.isRecording())
             LootRunManager.addChest(lastLocation); // add chest to the current lootrun recording
 
-        if(LootRunManager.isLootrunLoaded()){
+        if (LootRunManager.isLootrunLoaded()) {
             LootRunManager.addOpenedChestToSession();
             LootRunManager.addOpenedChestToLatestLootrun();
         }
