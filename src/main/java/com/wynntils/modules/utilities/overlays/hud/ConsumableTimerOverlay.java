@@ -97,17 +97,10 @@ public class ConsumableTimerOverlay extends Overlay {
         event.setCanceled(false);
         if (activeTimers.isEmpty()) return;
 
-        ArrayList<TimerContainer> toRemove = new ArrayList<>();
-        // Remove expired DynamicTimerContainers
-        activeTimers.forEach(c -> {
-            if (c instanceof DynamicTimerContainer && ((DynamicTimerContainer) c).getExpirationTime() < McIf.getSystemTime()) {
-                toRemove.add(c);
-            }
-        });
-        activeTimers.removeAll(toRemove);
+        ArrayList<TimerContainer> activeTimersCopy = new ArrayList<>(activeTimers); // copy to avoid CME
+        activeTimersCopy.removeIf(c -> c instanceof DynamicTimerContainer && ((DynamicTimerContainer) c).getExpirationTime() < McIf.getSystemTime());
 
         int extraY = 0; // y-offset to make sure each timer does not overlap with the previous timer
-        ArrayList<TimerContainer> activeTimersCopy = new ArrayList<>(activeTimers); // copy to avoid CME
         for (TimerContainer timer : activeTimersCopy) {
             if (timer instanceof DynamicTimerContainer) {
                 // §7 to make the timer grey
@@ -126,6 +119,8 @@ public class ConsumableTimerOverlay extends Overlay {
 
             extraY += 10;
         }
+
+        activeTimers = activeTimersCopy;
     }
 
 }
