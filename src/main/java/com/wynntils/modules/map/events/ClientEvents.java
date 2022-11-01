@@ -123,9 +123,11 @@ public class ClientEvents implements Listener {
         if (LootRunManager.isRecording())
             LootRunManager.addChest(lastLocation); // add chest to the current lootrun recording
 
-        if (LootRunManager.isLootrunLoaded()) {
-            LootRunManager.addOpenedChestToSession();
-            LootRunManager.addOpenedChestToLatestLootrun();
+        if(LootRunManager.isLootrunLoaded()){
+            if(LootRunManager.isCheckALootrunChest(lastLocation)){
+                LootRunManager.addOpenedChestToSession();
+                LootRunManager.addOpenedChestToLatestLootrun();
+            }
         }
 
         String tier = e.getGui().getLowerInv().getName().replace("Loot Chest ", "");
