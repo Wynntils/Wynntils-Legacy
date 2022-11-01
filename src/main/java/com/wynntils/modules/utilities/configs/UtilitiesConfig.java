@@ -169,7 +169,7 @@ public class UtilitiesConfig extends SettingsClass {
     @Setting(displayName = "Reverse Ingredient Pouch Order", description = "Should the ingredient pouch sort order be reversed?\n\n§8Click on the ingredient pouch to refresh.", order = 34)
     public boolean sortIngredientPouchReverse = false;
 
-    @Setting(displayName = "Hide Pet Messages", description = "Should Wynntils Hide the Messages from pets", order = 35)
+    @Setting(displayName = "Hide Pet Messages", description = "Should Wynntils hide the messages from pets?", order = 35)
     public boolean hidePetsMessages = false;
 
     @Setting(upload = false)
