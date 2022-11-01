@@ -29,12 +29,15 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.apache.commons.lang3.StringUtils;
 
+
 import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+import static com.wynntils.core.utils.StringUtils.integerToShortString;
 import static net.minecraft.util.text.TextFormatting.*;
 
 public class OverlayEvents implements Listener {
@@ -123,7 +126,7 @@ public class OverlayEvents implements Listener {
                                         .replace("%xc%", Integer.toString(data.getCurrentXP() - oldxp))
                                         .replace("%po%", oldxppercent)
                                         .replace("%pn%", data.getCurrentXPAsPercentage())
-                                        .replace("%pc_formatted%", com.wynntils.core.utils.StringUtils.integerToShortString((int) xpchange))
+                                        .replace("%pc_formatted%", integerToShortString((int) xpchange))
                                         .replace("%pc%", df.format(xpchange)));
                             }
                             oldxp = data.getCurrentXP();
