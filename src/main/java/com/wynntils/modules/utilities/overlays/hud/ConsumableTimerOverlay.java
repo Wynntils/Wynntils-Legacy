@@ -9,12 +9,14 @@ import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
-import com.wynntils.modules.utilities.instances.TimerContainer;
 import com.wynntils.modules.utilities.instances.DynamicTimerContainer;
 import com.wynntils.modules.utilities.instances.StaticTimerContainer;
+import com.wynntils.modules.utilities.instances.TimerContainer;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Predicate;
 
 public class ConsumableTimerOverlay extends Overlay {
 
@@ -36,24 +38,11 @@ public class ConsumableTimerOverlay extends Overlay {
     }
 
     public static void clearStaticTimers(boolean clearPersistent) {
-        if (clearPersistent) {
-            // assigns a new object to avoid CME
-            activeTimers = new ArrayList<>(getDynamicTimers());
-        } else {
-            List<TimerContainer> persistentDynamic = getDynamicTimers();
-            persistentDynamic.removeIf(c -> !c.isPersistent());
-            activeTimers = persistentDynamic;
-        }
-    }
+        Predicate<TimerContainer> staticPersistent = clearPersistent ?
+                c -> c instanceof StaticTimerContainer :
+                c -> c instanceof StaticTimerContainer && !c.isPersistent();
 
-    public static List<TimerContainer> getDynamicTimers() {
-        List<TimerContainer> toReturn = new ArrayList<>();
-        for (TimerContainer c : activeTimers) {
-            if (c instanceof DynamicTimerContainer) {
-                toReturn.add(c);
-            }
-        }
-        return toReturn;
+        activeTimers.removeIf(staticPersistent);
     }
 
     /**
@@ -77,7 +66,7 @@ public class ConsumableTimerOverlay extends Overlay {
      * @param persistent If the consumable should persist through death and character changes
      */
     public static void addDynamicTimer(String name, int initialTimeSeconds, boolean persistent) {
-        long expirationTime = McIf.getSystemTime() + initialTimeSeconds;
+        long expirationTime = McIf.getSystemTime() + initialTimeSeconds*1000L;
 
         // If a DynamicTimerContainer or StaticTimerContainer already exists, get rid of it
         activeTimers.remove(findTimerContainer(name));
@@ -108,29 +97,20 @@ public class ConsumableTimerOverlay extends Overlay {
         event.setCanceled(false);
         if (activeTimers.isEmpty()) return;
 
-        Iterator<TimerContainer> it = activeTimers.iterator();
+        ArrayList<TimerContainer> activeTimersCopy = new ArrayList<>(activeTimers); // copy to avoid CME
+        activeTimersCopy.removeIf(c -> c instanceof DynamicTimerContainer && ((DynamicTimerContainer) c).getExpirationTime() < McIf.getSystemTime());
 
         int extraY = 0; // y-offset to make sure each timer does not overlap with the previous timer
-        while (it.hasNext()) {
-            TimerContainer timer = it.next();
-
-            if (timer instanceof DynamicTimerContainer) { // Remove expired DynamicTimerContainers
-                DynamicTimerContainer dynamicTimer = (DynamicTimerContainer) timer;
-                long timeRemaining = dynamicTimer.getExpirationTime() - McIf.getSystemTime();
-                if (timeRemaining <= 0) {
-                    it.remove();
-                    continue;
-                }
-            }
-
-            if (timer instanceof DynamicTimerContainer) { // Update the displayed time for DynamicTimerContainers
-                drawString(timer.getName() + " (" + StringUtils.timeLeft(((DynamicTimerContainer) timer).getExpirationTime() - McIf.getSystemTime()) + ")",
+        for (TimerContainer timer : activeTimersCopy) {
+            if (timer instanceof DynamicTimerContainer) {
+                // §7 to make the timer grey
+                drawString("§7" + timer.getName() + " (" + StringUtils.timeLeft(((DynamicTimerContainer) timer).getExpirationTime() - McIf.getSystemTime()) + ")",
                         0, extraY, CommonColors.WHITE,
                         OverlayConfig.ConsumableTimer.INSTANCE.textAlignment,
                         OverlayConfig.ConsumableTimer.INSTANCE.textShadow);
             }
 
-            if (timer instanceof StaticTimerContainer) { // Update the displayed time for StaticTimerContainers
+            if (timer instanceof StaticTimerContainer) {
                 drawString(((StaticTimerContainer) timer).getPrefix() + " " + timer.getName() + " (" + ((StaticTimerContainer) timer).getDisplayedTime() + ")",
                         0, extraY, CommonColors.WHITE,
                         OverlayConfig.ConsumableTimer.INSTANCE.textAlignment,
@@ -139,6 +119,8 @@ public class ConsumableTimerOverlay extends Overlay {
 
             extraY += 10;
         }
+
+        activeTimers = activeTimersCopy;
     }
 
 }
