@@ -99,8 +99,8 @@ public class ClientEvents implements Listener {
                     message.getStyle().setHoverEvent(e.getMessage().getStyle().getHoverEvent());
                 e.setMessage(message);
             }
-        } else if((UtilitiesConfig.INSTANCE.hidePetsMessages) && (PET_MESSAGE.matcher(McIf.getFormattedText(e.getMessage())).matches())) {
-                e.setCanceled(true);
+        } else if (UtilitiesConfig.INSTANCE.hidePetsMessages && PET_MESSAGE.matcher(McIf.getFormattedText(e.getMessage())).matches()) {
+            e.setCanceled(true);
         }
     }
 
