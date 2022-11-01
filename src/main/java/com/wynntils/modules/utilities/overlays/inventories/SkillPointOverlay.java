@@ -92,7 +92,7 @@ public class SkillPointOverlay implements Listener {
 
     @SubscribeEvent
     public void onCharacterInfoOpened(GuiOverlapEvent.ChestOverlap.DrawScreen.Pre e) {
-        if (!Utils.isCharacterInfoPage(e.getGui()) || !e.getGui().getLowerInv().getStackInSlot(SKILL_CRYSTAL_SLOT).getDisplayName().equals("§2§lSkill Crystal")) return;
+        if (!Utils.isCharacterInfoPage(e.getGui())) return;
 
         // Set remaining skill points
         Matcher spMatcher = REMAINING_SKILLPOINT_PATTERN.matcher(ItemUtils.getStringLore(e.getGui().getLowerInv().getStackInSlot(SKILL_CRYSTAL_SLOT)));
