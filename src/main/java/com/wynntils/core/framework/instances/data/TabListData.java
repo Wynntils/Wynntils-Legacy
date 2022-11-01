@@ -24,7 +24,7 @@ public class TabListData extends PlayerData {
     Buffs like "17% Frenzy" will have the 17% be considered as part of the prefix.
     This is because the 17% in Frenzy (and certain other buffs) can change, but the static scroll buffs cannot.
      */
-    private static final Pattern TAB_EFFECT_PATTERN = Pattern.compile("(.+?§7 ?(?:\\d+(?:\\.\\d+)?%)?) ?([%-+\\da-zA-Z\\s]+?) §[84a]\\((.+?)\\).*");
+    private static final Pattern TAB_EFFECT_PATTERN = Pattern.compile("(.+?§7 ?(?:\\d+(?:\\.\\d+)?%)?) ([%-+\\da-zA-Z\\s]+?) §[84]\\((.+?)\\).*");
 
     /**
      * Updates the ConsumableTimerOverlay with the effects from the tab list

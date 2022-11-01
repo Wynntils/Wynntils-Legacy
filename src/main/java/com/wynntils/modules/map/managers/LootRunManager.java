@@ -19,6 +19,7 @@ import com.wynntils.modules.map.overlays.objects.MapIcon;
 import com.wynntils.modules.map.overlays.objects.MapPathWaypointIcon;
 import com.wynntils.modules.map.rendering.PointRenderer;
 
+import jdk.nashorn.internal.ir.Block;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import org.apache.commons.lang3.ArrayUtils;
@@ -43,10 +44,10 @@ public class LootRunManager {
     private static LootRunPath recordingPath = null;
     private static LootRunPath lastRecorded = null;
     private final static List<PathWaypointProfile> mapPath = new ArrayList<>();
-    private static int sessionLootruns = 0;
-    private static int sessionLootrunChests = 0;
+    private static int sessionLootrunsAmount = 0;
+    private static int sessionLootrunChestsAmount = 0;
     private static boolean isLootrunLoaded = false;
-    private static int latestLootrunOpenedChests = 0;
+
 
     private final static List<CustomColor> pathColors = Arrays.asList(
         CommonColors.BLUE,
@@ -164,7 +165,6 @@ public class LootRunManager {
         activePaths.clear();
         recordingPath = null;
         isLootrunLoaded = false;
-        latestLootrunOpenedChests = 0;
         updateMapPath();
     }
 
@@ -362,24 +362,23 @@ public class LootRunManager {
             latestLootrun = null;
         activePaths.remove(name);
         updateMapPath();
-        isLootrunLoaded = false;
         return true;
     }
 
     public static int getSessionLootruns() {
-        return sessionLootruns;
+        return sessionLootrunsAmount;
     }
 
     public static int getSessionLootrunChests() {
-        return sessionLootrunChests;
+        return sessionLootrunChestsAmount;
     }
 
     public static void addLootruntoSession() {
-        sessionLootruns += 1;
+        sessionLootrunsAmount += 1;
     }
 
     public static void addOpenedChestToSession() {
-        sessionLootrunChests += 1;
+        sessionLootrunChestsAmount += 1;
     }
 
     public static boolean isLootrunLoaded() {
@@ -388,6 +387,32 @@ public class LootRunManager {
 
     public static String getLatestLootrunName() {
         return latestLootrunName;
+    }
+
+    public static boolean isCheckALootrunChest(BlockPos pos) {
+        for (LootRunPath path : activePaths.values()) {
+            if (path.getChests().contains(pos)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String getLootrunNames() {
+        if (activePaths.size() > 0) {
+            String s = "";
+            for (String key : activePaths.keySet()) {
+                if (key != activePaths.keySet().toArray()[activePaths.keySet().toArray().length - 1]) {
+                    s = s + key + ", ";
+
+                }
+                else {
+                    s = s + key;
+                }
+            }
+            return s;
+        }
+        return "§c§l✖§r";
     }
 
     public static int getLootrunChests() {
@@ -402,21 +427,6 @@ public class LootRunManager {
             return latestLootrun.getPoints().size();
         }
         return 0;
-    }
-
-    public static boolean isCheckALootrunChest(BlockPos pos) {
-        if(latestLootrun.getChests().contains(pos)) {
-            return true;
-        }
-        return false;
-    }
-
-    public static int getLatestLootrunOpenedChests() {
-        return latestLootrunOpenedChests;
-    }
-
-    public static void addOpenedChestToLatestLootrun() {
-        latestLootrunOpenedChests += 1;
     }
 
     private static class LootRunPathIntermediary {

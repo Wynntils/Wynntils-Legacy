@@ -126,7 +126,6 @@ public class ClientEvents implements Listener {
         if(LootRunManager.isLootrunLoaded()){
             if(LootRunManager.isCheckALootrunChest(lastLocation)){
                 LootRunManager.addOpenedChestToSession();
-                LootRunManager.addOpenedChestToLatestLootrun();
             }
         }
 

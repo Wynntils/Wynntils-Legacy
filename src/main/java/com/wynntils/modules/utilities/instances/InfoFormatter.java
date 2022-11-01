@@ -511,7 +511,7 @@ public class InfoFormatter {
 
         // Lootrun name
         registerFormatter((input) ->
-                        LootRunManager.getLatestLootrunName(),
+                        LootRunManager.getLootrunNames(),
                 "lname", "lootrun_name");
 
         // Session Lootruns
@@ -533,11 +533,6 @@ public class InfoFormatter {
         registerFormatter((input) ->
                         String.valueOf(LootRunManager.getLootrunPoints()),
                 "lp", "lootrun_points");
-
-        // Current Lootrun Opened Chests
-        registerFormatter((input) ->
-                        String.valueOf(LootRunManager.getLatestLootrunOpenedChests()),
-                "loc", "lootrun_opened_chests");
     }
 
     private void registerFormatter(InfoModule formatter, String... vars) {
