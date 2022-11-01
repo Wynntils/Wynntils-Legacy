@@ -138,7 +138,7 @@ public class Utils {
     }
 
     /**
-     * Return true if the GuiScreen is the character information page (selected from the compass)
+     * @return true if the GuiScreen is the character information page (selected from the compass)
      */
     public static boolean isCharacterInfoPage(GuiScreen gui) {
         if (!(gui instanceof GuiContainer)) return false;
