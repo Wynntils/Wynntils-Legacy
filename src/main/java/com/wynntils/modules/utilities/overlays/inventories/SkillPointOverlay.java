@@ -55,7 +55,7 @@ public class SkillPointOverlay implements Listener {
             Pattern.compile("§[ac]([+-])(\\d+) §7Strength"),
             Pattern.compile("§[ac]([+-])(\\d+) §7Dexterity"),
             Pattern.compile("§[ac]([+-])(\\d+) §7Intelligence"),
-            Pattern.compile("§[ac]([+-])(\\d+) §7Defense"),
+            Pattern.compile("§[ac]([+-])(\\d+) §7Defence"),
             Pattern.compile("§[ac]([+-])(\\d+) §7Agility"),
     };
 
