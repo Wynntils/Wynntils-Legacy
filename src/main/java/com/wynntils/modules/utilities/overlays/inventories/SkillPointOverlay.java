@@ -104,6 +104,8 @@ public class SkillPointOverlay implements Listener {
             currentSPActual = getSkillPoints(e.getGui()).getAsArray();
             gearSP = new int[5];
             tomeAndSetBonusSP = new int[5];
+            // currentSPActual now has the skill points shown to the user
+            // gearSP and tomeAndSetBonusSP are now empty
 
             // Set gearSkillPoints to the number of skill points that our armour and accessories give us
             // We will do this by going through all our armour and accessory slots and adding the skill point modifiers to gearSkillPoints
