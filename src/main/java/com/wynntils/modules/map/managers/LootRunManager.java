@@ -404,6 +404,13 @@ public class LootRunManager {
         return 0;
     }
 
+    public static boolean isCheckALootrunChest(BlockPos pos) {
+        if(latestLootrun.getChests().contains(pos)) {
+            return true;
+        }
+        return false;
+    }
+
     public static int getLatestLootrunOpenedChests() {
         return latestLootrunOpenedChests;
     }
