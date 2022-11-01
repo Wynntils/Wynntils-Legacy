@@ -81,6 +81,8 @@ public class SkillPointOverlay implements Listener {
 
     // 36-39 inclusive is armour, 9-12 inclusive is accessories
     private static final int[] gearSlotsToCheck = {36, 37, 38, 39, 9, 10, 11, 12};
+    // 4 is guild tome slot, 11 and 19 are weapon tome slots
+    private static final int[] tomeSlotsToCheck = {4, 11, 19};
 
     @SubscribeEvent
     public void onChestClose(GuiOverlapEvent.ChestOverlap.GuiClosed e) {
@@ -88,6 +90,19 @@ public class SkillPointOverlay implements Listener {
         itemsLoaded = false;
 
         Keyboard.enableRepeatEvents(false);
+    }
+
+    @SubscribeEvent
+    public void onTomePageOpened(GuiOverlapEvent.ChestOverlap.DrawScreen.Pre e) {
+        if (!Utils.isTomePage(e.getGui())) return;
+
+        for (int i : tomeSlotsToCheck) {
+            ItemStack itemStack = e.getGui().getLowerInv().getStackInSlot(i);
+            if (itemStack.isEmpty()) continue;
+
+            // todo: remove
+            System.out.println(itemStack.getDisplayName() + ": " + Arrays.toString(getItemSPModifier(itemStack)));
+        }
     }
 
     @SubscribeEvent

@@ -41,6 +41,9 @@ public class OverlayConfig extends SettingsClass {
     @Setting(displayName = "Remove Guild War Timers", description = "Should guild war timers be removed from the scoreboard?")
     public boolean removeGuildWarTimers = false;
 
+    @Setting
+    public int[] tomeSkillPoints = new int[5];
+
     @SettingsInfo(name = "health_settings", displayPath = "Utilities/Overlays/Health")
     public static class Health extends SettingsClass {
         public static Health INSTANCE;

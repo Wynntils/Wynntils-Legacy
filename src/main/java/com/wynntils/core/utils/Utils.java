@@ -155,6 +155,14 @@ public class Utils {
     }
 
     /**
+     * @return true if the GuiScreen is the tome page
+     */
+    public static boolean isTomePage(GuiScreen gui) {
+        if (!(gui instanceof GuiContainer)) return false;
+        return (((GuiContainer) gui).inventorySlots.getSlot(0).inventory.getName().equals("Mastery Tomes"));
+    }
+
+    /**
      * @return true if the GuiScreen is the server selection, false otherwise
      */
     public static boolean isServerSelector(GuiScreen gui) {
