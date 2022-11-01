@@ -7,6 +7,7 @@ package com.wynntils.modules.utilities.overlays;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
+import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
@@ -20,8 +21,10 @@ import com.wynntils.modules.utilities.managers.MountHorseManager;
 import com.wynntils.modules.utilities.overlays.hud.*;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.enums.ItemTier;
+import net.minecraft.init.MobEffects;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.network.play.server.*;
+import net.minecraft.potion.Potion;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -767,6 +770,36 @@ public class OverlayEvents implements Listener {
     @SubscribeEvent
     public void onPlayerDeath(GameEvent.PlayerDeath e) {
         ConsumableTimerOverlay.clearTimers(false);
+    }
+
+    @SubscribeEvent
+    public void onEffectApplied(PacketEvent<SPacketEntityEffect> e) {
+        if (!Reference.onWorld || !OverlayConfig.ConsumableTimer.INSTANCE.showEffects) return;
+
+        SPacketEntityEffect packet = e.getPacket();
+        if (packet.getEntityId() != McIf.player().getEntityId()) return;
+
+        Potion potion = Potion.getPotionById(packet.getEffectId());
+
+        // normal weapons get the WITHER effect, Weathered (the mythic) gets INVISIBILITY instead
+        if ((potion == MobEffects.WITHER || potion == MobEffects.INVISIBILITY) && PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ASSASSIN) {
+            ConsumableTimerOverlay.addDynamicTimer("Vanish", 5, false);
+        }
+    }
+
+    @SubscribeEvent
+    public void onEffectRemoved(PacketEvent<SPacketRemoveEntityEffect> e) {
+        if (!Reference.onWorld || !OverlayConfig.ConsumableTimer.INSTANCE.showEffects) return;
+
+        SPacketRemoveEntityEffect packet = e.getPacket();
+        if (packet.getEntity(McIf.world()) != McIf.player()) return;
+
+        Potion potion = packet.getPotion();
+
+        // When removing Vanish from assassin
+        if ((potion == MobEffects.WITHER || potion == MobEffects.INVISIBILITY) && PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ASSASSIN) {
+            ConsumableTimerOverlay.removeTimer("Vanish");
+        }
     }
 
     @SubscribeEvent
