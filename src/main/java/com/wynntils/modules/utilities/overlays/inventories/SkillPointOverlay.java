@@ -74,10 +74,10 @@ public class SkillPointOverlay implements Listener {
     private float buildPercentage = 0.0f;
 
     private boolean shouldUpdateSkillPoints = true;
-    private int[] currentSPActual = new int[5];
-    private int[] currentSPWithoutGearTome = new int[5];
-    private int[] gearSP = new int[5];
-    private int[] tomeAndSetBonusSP = new int[5];
+    private int[] currentSPShown = new int[5]; // This should be the skill points that the user sees
+    private int[] currentSPWithoutGearTome = new int[5]; // This should be the skill points that the user assigns
+    private int[] gearSP = new int[5]; // This should be the skill points that come from armour and accessories
+    private int[] tomeAndSetBonusSP = new int[5]; // This should be the skill points that come from tomes and set bonuses
 
     // 36-39 inclusive is armour, 9-12 inclusive is accessories
     private static final int[] gearSlotsToCheck = {36, 37, 38, 39, 9, 10, 11, 12};
@@ -101,7 +101,7 @@ public class SkillPointOverlay implements Listener {
 
         if (shouldUpdateSkillPoints) {
             // Reset all skill point data
-            currentSPActual = getSkillPoints(e.getGui()).getAsArray();
+            currentSPShown = getSkillPoints(e.getGui()).getAsArray();
             gearSP = new int[5];
             tomeAndSetBonusSP = new int[5];
             // currentSPActual now has the skill points shown to the user
@@ -113,29 +113,30 @@ public class SkillPointOverlay implements Listener {
                 ItemStack item = McIf.player().inventory.getStackInSlot(i);
                 if (item.isEmpty()) continue;
 
-                for (int j = 0; j < MODIFIER_PATTERNS.length; j++) {
-                    Matcher matcher = MODIFIER_PATTERNS[j].matcher(ItemUtils.getStringLore(item).split("Set Bonus")[0]); // Make sure set bonus is not counted
-                    if (!matcher.find()) continue;
-                    if (matcher.group(1).equals("+")) {
-                        gearSP[j] += Integer.parseInt(matcher.group(2));
-                    } else {
-                        gearSP[j] -= Integer.parseInt(matcher.group(2));
-                    }
+                int[] itemSPModifier = getItemSPModifier(item);
+                for (int j = 0; j < 5; j++) {
+                    gearSP[j] += itemSPModifier[j];
                 }
             }
 
-            // Now that we have gearSkillPoints, we can calculate tomeSkillPoints
+            // Now that we have gearSP, we can go check for tomeSkillPoints
             // Get the current number of skill points we have as shown in the current compass menu
-            // Then subtract gearSkillPoints to get the number of skill points we have from our tomes
+            // Then subtract gearSP to get the number of skill points we have from our tomes
             for (int i = 0; i < 5; i++) {
-                tomeAndSetBonusSP[i] = currentSPActual[i] - gearSP[i];
+                tomeAndSetBonusSP[i] = currentSPShown[i] - gearSP[i];
             }
 
-            currentSPWithoutGearTome = Arrays.copyOf(currentSPActual, currentSPActual.length);
+            currentSPWithoutGearTome = Arrays.copyOf(currentSPShown, currentSPShown.length);
             for (int i = 0; i < 5; i++) {
                 currentSPWithoutGearTome[i] -= gearSP[i];
                 currentSPWithoutGearTome[i] -= tomeAndSetBonusSP[i];
             }
+
+            System.out.println("currentSPActual: " + Arrays.toString(currentSPShown));
+            System.out.println("gearSP: " + Arrays.toString(gearSP));
+            System.out.println("tomeAndSetBonusSP: " + Arrays.toString(tomeAndSetBonusSP));
+            System.out.println("currentSPWithoutGearTome: " + Arrays.toString(currentSPWithoutGearTome));
+
             shouldUpdateSkillPoints = false;
         }
 
@@ -189,6 +190,22 @@ public class SkillPointOverlay implements Listener {
             if (value == -1) continue;
             stack.setCount(value <= 0 ? 1 : value);
         }
+    }
+
+    private int[] getItemSPModifier(ItemStack itemStack) {
+        int[] sp = new int[5];
+        for (int i = 0; i < MODIFIER_PATTERNS.length; i++) {
+            Matcher matcher = MODIFIER_PATTERNS[i].matcher(ItemUtils.getStringLore(itemStack).split("Set Bonus")[0]); // Make sure set bonus is not counted
+            if (!matcher.find()) continue;
+
+            if (matcher.group(1).equals("+")) {
+                sp[i] += Integer.parseInt(matcher.group(2));
+            } else {
+                sp[i] -= Integer.parseInt(matcher.group(2));
+            }
+        }
+        System.out.println(itemStack.getDisplayName() + ": " + Arrays.toString(sp));
+        return sp;
     }
 
     @SubscribeEvent
