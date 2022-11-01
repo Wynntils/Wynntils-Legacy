@@ -146,6 +146,9 @@ public class Utils {
 
     }
 
+    /**
+     * @return true if the GuiScreen is the ability tree page
+     */
     public static boolean isAbilityTreePage(GuiScreen gui) {
         if (!(gui instanceof GuiContainer)) return false;
         return (((GuiContainer) gui).inventorySlots.getSlot(0).inventory.getName().endsWith(" Abilities"));
