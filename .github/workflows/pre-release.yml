@@ -99,68 +99,36 @@ jobs:
           name: build
           path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
 
-  release-to-gh:
-    name: Release to GitHub
+  release:
+    name: Release
     runs-on: ubuntu-latest
-    needs: [changelog, artifact]
+    needs: [artifact, changelog]
     steps:
       - uses: actions/download-artifact@v3
         with:
           name: build
 
-      - name: Create release
-        uses: softprops/action-gh-release@v1
+      - uses: Kir-Antipov/mc-publish@v3.2
         with:
-          files: Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
-          tag_name: ${{ needs.changelog.outputs.tag }}
-          prerelease: true
-          body: ${{ needs.changelog.outputs.clean_changelog }}
-          target_commitish: ${{ github.sha }}
+          modrinth-id: dU5Gb9Ab
+          modrinth-featured: true
+          modrinth-unfeature-mode: subset
+          modrinth-token: ${{ secrets.MODRINTH_API_TOKEN }}
 
-  release-to-cf:
-    name: Release to CurseForge
-    runs-on: ubuntu-latest
-    needs: [changelog, artifact]
-    steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: build
+          curseforge-id: 303451
+          curseforge-token: ${{ secrets.CF_API_TOKEN }}
 
-      - name: Upload to CurseForge
-        uses: itsmeow/curseforge-upload@v3
-        with:
-          file_path: Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
-          game_endpoint: minecraft
-          # Minecraft 1.12.2: 6756
-          # Forge: 7498
-          # Java 8: 4458
-          game_versions: "6756,7498,4458"
-          project_id: 303451
-          token: ${{ secrets.CF_API_TOKEN }}
-          release_type: beta
-          display_name: Wynntils ${{ needs.changelog.outputs.tag }}
-          changelog_type: markdown
-          changelog: "${{ needs.changelog.outputs.changelog }}"
+          github-tag: ${{ needs.changelog.outputs.tag }}
+          github-token: ${{ secrets.PRIVATE_TOKEN }}
 
-  release-to-modrinth:
-    name: Release to Modrinth
-    runs-on: ubuntu-latest
-    needs: [changelog, artifact]
-    steps:
-      - uses: actions/download-artifact@v3
-        with:
-          name: build
+          files-primary: Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
+          files-secondary: ""
 
-      - name: Upload to Modrinth
-        uses: RubixDev/modrinth-upload@v1.0.0
-        with:
-          token: ${{ secrets.MODRINTH_API_TOKEN }}
-          file_path: Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
           name: Wynntils ${{ needs.changelog.outputs.tag }}
           version: ${{ needs.changelog.outputs.tag }}
-          changelog: "${{ needs.changelog.outputs.changelog }}"
-          game_versions: 1.12.2
-          release_type: beta
+          version-type: beta
+          changelog: ${{ needs.changelog.outputs.changelog }}
+
           loaders: forge
-          featured: true
-          project_id: dU5Gb9Ab
+          game-versions: 1.12.2
+          java: 8
