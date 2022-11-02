@@ -335,7 +335,7 @@ public class OverlayEvents implements Listener {
         }
 
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectOther) {
-            if (messageText.matches("You have \\d+ unused Skill Points and \\d+ unused Ability Points! Right-Click while holding your compass to use them")) {
+            if (messageText.matches("You have \\d+ unused Skill Point(s\\b|\\b)( and \\d+ unused Ability Point(s\\b|\\b))?! Right-Click while holding your compass to use them")) {
                 String[] res = messageText.split(" ");
                 GameUpdateOverlay.queueMessage(YELLOW + res[2] + GOLD + " skill points and " + YELLOW + res[7] + GOLD + " ability points available.");
                 e.setCanceled(true);
