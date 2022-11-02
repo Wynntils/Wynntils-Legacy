@@ -42,7 +42,7 @@ jobs:
 
       - name: Extract build information
         id: extract
-        run: "echo ::set-output name=build_number::`echo ${{ steps.changelog.outputs.tag }} | cut -d'.' -f4`"
+        run: "echo build_number=`echo ${{ steps.changelog.outputs.tag }} | cut -d'.' -f4` >> $GITHUB_OUTPUT"
 
       - name: Upload version information
         uses: actions/upload-artifact@v3
