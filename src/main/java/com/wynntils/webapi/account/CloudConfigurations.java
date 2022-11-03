@@ -39,6 +39,7 @@ public class CloudConfigurations {
 
     public void queueConfig(File f) {
         synchronized (toUpload) {
+            Reference.LOGGER.info("Queued config " + f.getName() + " for upload");
             toUpload.put(f.getName(), f);
 
             startUploadQueue();
@@ -61,20 +62,25 @@ public class CloudConfigurations {
 
             formParts.add(new MultipartFormDataPart("authToken", token.getBytes(StandardCharsets.UTF_8)));
 
-            Iterator it = toUpload.values().iterator();
+            int count = 0;
+            Reference.LOGGER.info("Uploading " + toUpload.size() + " config files");
+            Iterator<File> it = toUpload.values().iterator();
             while (it.hasNext()) {
-                File f = (File) it.next();
+                File f = it.next();
+
+                Reference.LOGGER.info("Adding config " + f.getName() + " to upload queue");
 
                 formParts.add(new MultipartFormFilePart("config[]", f));
 
                 it.remove();
+                count++;
             }
 
             request.postMultipart(formParts);
             WebManager.getHandler().addAndDispatch(request);
 
-            Reference.LOGGER.info("Configuration upload complete!");
-        }, 0, 10, TimeUnit.SECONDS);
+            Reference.LOGGER.info("Finished uploading " + count + " config files");
+        }, 5, 10, TimeUnit.SECONDS);
     }
 
 }
