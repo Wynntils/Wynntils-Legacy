@@ -19,7 +19,6 @@ import com.wynntils.modules.map.overlays.objects.MapIcon;
 import com.wynntils.modules.map.overlays.objects.MapPathWaypointIcon;
 import com.wynntils.modules.map.rendering.PointRenderer;
 
-import jdk.nashorn.internal.ir.Block;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 import org.apache.commons.lang3.ArrayUtils;
