@@ -661,4 +661,5 @@ public class InfoFormatter {
         cache.put("horsetier", Integer.toString(horse.getTier()));
         cache.put("horselevelmax", Integer.toString(horse.getMaxLevel()));
     }
+    
 }
