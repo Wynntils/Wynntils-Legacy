@@ -125,7 +125,7 @@ public class IdentificationContainer {
             );
         }
 
-        if (!isValidValue(currentValue)) {
+        if (isInvalidValue(currentValue)) {
             return new ReidentificationChances(
                 currentValue > max ? Fraction.ONE : Fraction.ZERO,
                 Fraction.ZERO,
@@ -204,9 +204,9 @@ public class IdentificationContainer {
 
     /**
      * @param currentValue Current value of this identification
-     * @return true if this is a valid value (If false, the API is probably wrong)
+     * @return true if this is an invalid value (meaning the API is probably wrong)
      */
-    public boolean isValidValue(int currentValue) {
+    public boolean isInvalidValue(int currentValue) {
         return isInverted ? (currentValue > min || currentValue < max) : (currentValue > max || currentValue < min);
     }
 
