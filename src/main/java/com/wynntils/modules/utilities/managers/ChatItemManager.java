@@ -292,7 +292,7 @@ public class ChatItemManager {
 
             // value string
             String lore;
-            if (IdentificationOrderer.INSTANCE.isInverted(id))
+            if (status.isInverted())
                 lore = (value < 0 ? GREEN.toString() : value > 0 ? RED + "+" : GRAY.toString())
                         + value + status.getType().getInGame(id);
             else

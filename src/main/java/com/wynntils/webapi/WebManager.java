@@ -501,7 +501,7 @@ public class WebManager {
 
                     HashMap<String, ItemProfile> citems = new HashMap<>();
                     for (ItemProfile prof : gItems) {
-                        prof.getStatuses().values().forEach(IdentificationContainer::calculateMinMax);
+                        prof.getStatuses().forEach((n, p) -> p.calculateMinMax(n));
                         prof.addMajorIds(majorIds);
                         citems.put(prof.getDisplayName(), prof);
                     }

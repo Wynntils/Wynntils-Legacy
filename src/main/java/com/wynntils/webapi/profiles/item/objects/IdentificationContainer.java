@@ -7,6 +7,7 @@ package com.wynntils.webapi.profiles.item.objects;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.wynntils.webapi.profiles.item.IdentificationOrderer;
 import org.apache.commons.lang3.math.Fraction;
 
 import com.wynntils.core.utils.StringUtils;
@@ -20,23 +21,26 @@ public class IdentificationContainer {
     private int baseValue;
     protected boolean isFixed;
 
+    private transient boolean isInverted;
     private transient int min, max;
     private transient Fraction minChance;
     private transient Fraction maxChance;
 
     public IdentificationContainer(IdentificationModifier type, int baseValue, boolean isFixed) {
         this.type = type; this.baseValue = baseValue; this.isFixed = isFixed;
-        calculateMinMax();
     }
 
-    public void calculateMinMax() {
+    public void calculateMinMax(String shortId) {
         if (isFixed || (-1 <= baseValue && baseValue <= 1)) {
             min = max = baseValue;
             return;
         }
 
-        min = (int) Math.round(baseValue * (baseValue < 0 ? 1.3 : 0.3));
-        max = (int) Math.round(baseValue * (baseValue < 0 ? 0.7 : 1.3));
+        isInverted = IdentificationOrderer.INSTANCE.isInverted(shortId);
+
+        boolean positive = (baseValue > 0) ^ isInverted;
+        min = (int) Math.round(baseValue * (positive ? 0.3 : 1.3));
+        max = (int) Math.round(baseValue * (positive ? 1.3 : 0.7));
     }
 
     public void registerIdType(String name) {
@@ -46,6 +50,10 @@ public class IdentificationContainer {
 
     public IdentificationModifier getType() {
         return type;
+    }
+
+    public boolean isInverted() {
+        return isInverted;
     }
 
     public int getMax() {
@@ -106,14 +114,9 @@ public class IdentificationContainer {
      * Return the chances for this identification to decrease/remain the same/increase after reidentification
      *
      * @param currentValue The current value of this identification
-     * @param isInverted If true, `decrease` will be the chance to go up (become better) and vice versa with `increase`.
      * @return A {@link ReidentificationChances} of the result (All from 0 to 1)
      */
-    public strictfp ReidentificationChances getChances(int currentValue, boolean isInverted) {
-        if (isInverted) {
-            return getChances(currentValue, false).flip();
-        }
-
+    public strictfp ReidentificationChances getChances(int currentValue) {
         if (hasConstantValue()) {
             return new ReidentificationChances(
                 currentValue > baseValue ? Fraction.ONE : Fraction.ZERO,
@@ -122,7 +125,7 @@ public class IdentificationContainer {
             );
         }
 
-        if (currentValue > max || currentValue < min) {
+        if (!isValidValue(currentValue)) {
             return new ReidentificationChances(
                 currentValue > max ? Fraction.ONE : Fraction.ZERO,
                 Fraction.ZERO,
@@ -190,14 +193,13 @@ public class IdentificationContainer {
     }
 
     /**
-     * @param isInverted If true, return the chance to become the minimum value instead of the maximum value
      * @return The chance for this identification to become perfect (From 0 to 1)
      */
-    public Fraction getPerfectChance(boolean isInverted) {
+    public Fraction getPerfectChance() {
         if (isInverted) {
-            return minChance == null ? (minChance = getChances(min, false).remain) : minChance;
+            return minChance == null ? (minChance = getChances(min).remain) : minChance;
         }
-        return maxChance == null ? (minChance = getChances(max, false).remain) : minChance;
+        return maxChance == null ? (minChance = getChances(max).remain) : minChance;
     }
 
     /**
@@ -205,7 +207,7 @@ public class IdentificationContainer {
      * @return true if this is a valid value (If false, the API is probably wrong)
      */
     public boolean isValidValue(int currentValue) {
-        return getChances(currentValue, false).remain.getNumerator() != 0;  // Not a 0% chance to remain as this value after reid
+        return isInverted ? (currentValue > min || currentValue < max) : (currentValue > max || currentValue < min);
     }
 
     private static Fraction[] fraction61Cache = new Fraction[62];
