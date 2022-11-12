@@ -116,7 +116,8 @@ public class ChatItemManager {
             if (Math.abs(status.getBaseValue()) > 100) { // calculate percent
                 translatedValue = (int) Math.round((idValue * 100.0 / status.getBaseValue()) - 30);
             } else { // raw value
-                translatedValue = idValue - status.getMin();
+                // min/max must be flipped for inverted IDs to avoid negative values
+                translatedValue = status.isInverted() ? idValue - status.getMax() : idValue - status.getMin();
             }
 
             // stars
@@ -269,7 +270,8 @@ public class ChatItemManager {
                     // using bigdecimal here for precision when rounding
                     value = new BigDecimal(encodedValue + 30).movePointLeft(2).multiply(new BigDecimal(status.getBaseValue())).setScale(0, RoundingMode.HALF_UP).intValue();
                 } else {
-                    value = encodedValue + status.getMin();
+                    // min/max must be flipped for inverted IDs due to encoding
+                    value = status.isInverted() ? encodedValue + status.getMax() : encodedValue + status.getMin();
                 }
 
                 // stars
