@@ -90,7 +90,8 @@ public class SettingsUI extends UI {
         changedSettings.forEach(c -> { try { registeredSettings.get(c).tryToLoad(); } catch (Exception e) { e.printStackTrace(); } });
         onClose();
     }, 0, 0, 17, 45);
-    public UIEButton applyButton = new UIEButton("Save", Textures.UIs.button_a, 0.5f, 0.5f, -126, 85, -10, true, (ui, mouseButton) -> {
+    public UIEButton applyButton = new UIEButton("Save", Textures.UIs.button_a, 0.5f, 0.5f, -130, 85, -10, true, (ui, mouseButton) -> {
+        Reference.LOGGER.info("Queuing " + changedSettings.size() + " settings to be saved");
         changedSettings.forEach(c -> { try { registeredSettings.get(c).saveSettings(); } catch (Exception e) { e.printStackTrace(); } });
         onClose();
     }, 0, 0, 17, 45);

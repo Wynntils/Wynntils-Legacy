@@ -1,9 +1,21 @@
+## [1.13.2-beta.4](https://github.com/Wynntils/Wynntils/compare/v1.13.2-beta.3...v1.13.2-beta.4) (2022-11-03)
+
+
+### Miscellaneous Chores
+
+* add logging to configs ([#614](https://github.com/Wynntils/Wynntils/issues/614)) ([028f658](https://github.com/Wynntils/Wynntils/commit/028f6582ed2123bc030e332c1672fdc82dba1bef))
+
 ## [1.13.2-beta.3](https://github.com/Wynntils/Wynntils/compare/v1.13.2-beta.2...v1.13.2-beta.3) (2022-10-30)
 
 
 ### Bug Fixes
 
 * Vanish timer missing, regex not detecting cooldowns, DynamicTimerContainers not being rendered ([#622](https://github.com/Wynntils/Wynntils/issues/622)) ([4b18614](https://github.com/Wynntils/Wynntils/commit/4b18614aa1b17be9916554dc79599e79492c811b))
+
+
+### Miscellaneous Chores
+
+* **release:** v1.13.2-beta.3 [skip ci] ([a180cfb](https://github.com/Wynntils/Wynntils/commit/a180cfb31cd83ecec8aaf1975868ac0fa935bbb0))
 
 ## [1.13.2-beta.2](https://github.com/Wynntils/Wynntils/compare/v1.13.2-beta.1...v1.13.2-beta.2) (2022-10-29)
 
@@ -40,11 +52,4 @@
 ### Miscellaneous Chores
 
 * **release:** v1.13.2-beta.0 [skip ci] ([ce5e5e9](https://github.com/Wynntils/Wynntils/commit/ce5e5e9cf19cdd9b8c5ca855f8ce3310f609bb2d))
-
-## [1.13.1](https://github.com/Wynntils/Wynntils/compare/v1.13.1-beta.2...v1.13.1) (2022-10-26)
-
-
-### Miscellaneous Chores
-
-* **release:** v1.13.1 [skip ci] ([700608a](https://github.com/Wynntils/Wynntils/commit/700608ad54d8d3bd8b8594cb8ab586cee873884c))
 
