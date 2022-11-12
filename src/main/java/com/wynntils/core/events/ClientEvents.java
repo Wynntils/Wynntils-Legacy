@@ -44,7 +44,7 @@ public class ClientEvents {
 
     private static final UUID WORLD_UUID = UUID.fromString("16ff7452-714f-3752-b3cd-c3cb2068f6af");
     private static final Pattern PROF_LEVEL_UP = Pattern.compile("You are now level ([0-9]*) in (.*)");
-    private static final Pattern SPELL_CAST = Pattern.compile("^§7(.*) spell cast!§3 \\[§b-([0-9]+) ✺§3\\]$");
+    private static final Pattern SPELL_CAST = Pattern.compile("§7(.*) spell cast! §3\\[§b-([0-9]+) ✺§3]");
 
     private static String heldItem = "";
     private String lastWorld = "";
@@ -266,7 +266,7 @@ public class ClientEvents {
             if (!heldItem.equals(newHeldItem)) {
                 heldItem = newHeldItem;
                 Matcher m = SPELL_CAST.matcher(heldItem);
-                if (m.find()) {
+                if (m.matches()) {
                     String spellName = m.group(1);
                     int manaCost = Integer.parseInt(m.group(2));
 

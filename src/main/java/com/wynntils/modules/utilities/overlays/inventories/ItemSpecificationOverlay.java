@@ -16,6 +16,7 @@ import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.CorkianAmplifierManager;
 import com.wynntils.modules.utilities.managers.DungeonKeyManager;
@@ -24,6 +25,7 @@ import com.wynntils.webapi.profiles.item.enums.ItemType;
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.init.Items;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -37,6 +39,9 @@ import java.util.regex.Pattern;
 public class ItemSpecificationOverlay implements Listener {
 
     private final ScreenRenderer renderer = new ScreenRenderer();
+    private final Pattern ARCHETYPE_UNLOCKED_PATTERN = Pattern.compile("§7Unlocked Abilities: §f(\\d+)§7/\\d+");
+    private final Pattern SKILL_CRYSTAL_PATTERN = Pattern.compile("§7You have §a(\\d+)§7 skill points§7to be distributed§eShift-Click to reset");
+    private final Pattern ABILITY_POINT_PATTERN = Pattern.compile("✦ (?:Available|Unused) Points: §f(\\d+)§");
 
     private void renderOverlay(GuiContainer gui) {
         if (!Reference.onWorld) return;
@@ -59,6 +64,7 @@ public class ItemSpecificationOverlay implements Listener {
             String specificationChars = null;
             CustomColor color = null;
             int xOffset = 2;
+            int yOffset = 1;
             float scale = 1f;
 
             if (UtilitiesConfig.Items.INSTANCE.unidentifiedSpecification) {
@@ -175,6 +181,41 @@ public class ItemSpecificationOverlay implements Listener {
                 }
             }
 
+            // Specification numbers for skill points remaining
+            if (Utils.isCharacterInfoPage(gui) && stack.getDisplayName().equals("§2§lSkill Crystal")) {
+                Matcher skillPointMatcher = SKILL_CRYSTAL_PATTERN.matcher(ItemUtils.getStringLore(stack));
+                if (skillPointMatcher.find()) {
+                    specificationChars = skillPointMatcher.group(1);
+                    color = MinecraftChatColors.GREEN;
+                    xOffset = 1;
+                }
+            }
+
+            // Specification numbers for ability points remaining
+            // Works on both character info page and ability tree page
+            if ((Utils.isAbilityTreePage(gui) || Utils.isCharacterInfoPage(gui)) && stack.getDisplayName().contains("§lAbility ")) {
+                Matcher abilityPointMatcher = ABILITY_POINT_PATTERN.matcher(ItemUtils.getStringLore(stack));
+                if (abilityPointMatcher.find()) {
+                    specificationChars = abilityPointMatcher.group(1);
+                    color = MinecraftChatColors.AQUA;
+                    xOffset = 1;
+                }
+            }
+
+            // Specification numbers for archetypes; only draws when >0 on that archetype
+            if (stack.getDisplayName().contains("Archetype") && stack.getDisplayName().contains("§l") && stack.getItem() == Items.STONE_AXE) {
+                Matcher archetypeMatcher = ARCHETYPE_UNLOCKED_PATTERN.matcher(ItemUtils.getStringLore(stack));
+                if (archetypeMatcher.find()) {
+                    int archetypeAmount = Integer.parseInt(archetypeMatcher.group(1));
+                    if (archetypeAmount > 0) {
+                        specificationChars = archetypeMatcher.group(1);
+                        color = MinecraftChatColors.fromColorCode(stack.getDisplayName().charAt(1));
+                        xOffset = specificationChars.length() > 1 ? 2 : 5; // Alignment for 2-digit numbers
+                        yOffset = -10;
+                    }
+                }
+            }
+
             if (specificationChars != null) {
                 ScreenRenderer.beginGL((int) (gui.getGuiLeft() / scale), (int) (gui.getGuiTop() / scale));
                 GlStateManager.translate(0, 0, 260);
@@ -183,7 +224,7 @@ public class ItemSpecificationOverlay implements Listener {
                 // Make a modifiable copy
                 color = new CustomColor(color);
                 color.setA(0.8f);
-                renderer.drawString(specificationChars, (s.xPos + xOffset) / scale, (s.yPos + 1) / scale, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
+                renderer.drawString(specificationChars, (s.xPos + xOffset) / scale, (s.yPos + yOffset) / scale, color, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.OUTLINE);
                 ScreenRenderer.endGL();
             }
         }

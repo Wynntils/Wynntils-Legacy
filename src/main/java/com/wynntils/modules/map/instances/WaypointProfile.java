@@ -27,8 +27,20 @@ public class WaypointProfile {
     WaypointType type;
     WaypointType group = null;
 
+    boolean showBeaconBeam;
+
+    public WaypointProfile(String name, double x, double y, double z, CustomColor color, WaypointType type, int zoomNeeded, boolean showBeaconBeam) {
+        this.name = name;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.color = color;
+        this.type = type;
+        this.zoomNeeded = zoomNeeded;
+        this.showBeaconBeam = showBeaconBeam;
+    }
     public WaypointProfile(String name, double x, double y, double z, CustomColor color, WaypointType type, int zoomNeeded) {
-        this.name = name; this.x = x; this.y = y; this.z = z; this.color = color; this.type = type; this.zoomNeeded = zoomNeeded;
+        this(name, x, y, z, color, type, zoomNeeded, false);
     }
 
     public String getName() {
@@ -49,6 +61,10 @@ public class WaypointProfile {
 
     public double getZ() {
         return z;
+    }
+
+    public boolean shouldShowBeaconBeam() {
+        return showBeaconBeam;
     }
 
     public int getZoomNeeded() {
@@ -73,13 +89,13 @@ public class WaypointProfile {
         this.group = group;
     }
 
-    public static final byte currentFormat = 1;
+    public static final byte currentFormat = 2;
 
     /**
      * Returns an upper bound of the length (in bytes) encoding this waypoint will be (with the given format)
      */
     public int encodeLength(byte format) {
-        assert 0 <= format && format <= 1;
+        assert 0 <= format && format <= currentFormat;
 
         int sizeofInt = 4;
         // int sizeofLong = 8;
@@ -90,6 +106,7 @@ public class WaypointProfile {
         switch (format) {
             case 0: break;
             case 1:
+            case 2:
                 sizeofInt = 5;
                 // sizeofLong = 10;
         }
@@ -104,13 +121,14 @@ public class WaypointProfile {
     }
 
     public void encodeTo(byte format, ByteBuffer buf) {
-        assert 0 <= format && format <= 1;
+        assert 0 <= format && format <= currentFormat;
 
         byte[] name = this.name.getBytes(StandardCharsets.UTF_8);
 
         switch (format) {
             case 0: buf.putInt(name.length); break;
-            case 1: encodeInt(name.length, buf); break;
+            case 1:
+            case 2: encodeInt(name.length, buf); break;
         }
 
         buf.put(name);
@@ -122,6 +140,7 @@ public class WaypointProfile {
                 buf.putFloat(color.r); buf.putFloat(color.g); buf.putFloat(color.b); buf.putFloat(color.a);
                 break;
             case 1:
+            case 2:
                 encodeDouble(x, buf); encodeDouble(y, buf); encodeDouble(z, buf);
                 switch (zoomNeeded) {
                     case 0: buf.put((byte) 0); break;
@@ -139,10 +158,11 @@ public class WaypointProfile {
         } else {
             buf.put((byte) group.ordinal());
         }
+        buf.put(showBeaconBeam ? (byte) 1 : (byte) 0);
     }
 
     public String encode(byte format) {
-        assert 0 <= format && format <= 1;
+        assert 0 <= format && format <= currentFormat;
 
         ByteBuffer buf = ByteBuffer.allocateDirect(encodeLength(format));
         encodeTo(format, buf);
@@ -153,7 +173,7 @@ public class WaypointProfile {
     }
 
     public static void encodeTo(List<WaypointProfile> list, byte format, ByteBuffer buf) {
-        assert 0 <= format && format <= 1;
+        assert 0 <= format && format <= currentFormat;
 
         switch (format) {
             case 0:
@@ -161,6 +181,7 @@ public class WaypointProfile {
                 buf.putInt(list.size());
                 break;
             case 1:
+            case 2:
                 buf.put(format);
                 encodeInt(list.size(), buf);
                 break;
@@ -172,7 +193,7 @@ public class WaypointProfile {
     }
 
     public static String encode(List<WaypointProfile> list, byte format) {
-        assert 0 <= format && format <= 1;
+        assert 0 <= format && format <= currentFormat;
 
         int size = 4 + 4 + list.stream().mapToInt(wp -> wp.encodeLength(format)).sum();
         ByteBuffer buf = ByteBuffer.allocateDirect(size);
@@ -184,7 +205,7 @@ public class WaypointProfile {
     }
 
     public void decode(byte format, String base64) throws IllegalArgumentException {
-        assert 0 <= format && format <= 1;
+        assert 0 <= format && format <= currentFormat;
 
         decode(format, Base64.getDecoder().decode(base64));
     }
@@ -198,12 +219,13 @@ public class WaypointProfile {
     }
 
     public void decode(byte format, ByteBuffer buf) throws IllegalArgumentException, BufferUnderflowException {
-        assert 0 <= format && format <= 1;
+        assert 0 <= format && format <= currentFormat;
 
         int nameSize = 0;
         switch (format) {
             case 0: nameSize = buf.getInt(); break;
-            case 1: nameSize = decodeInt(buf); break;
+            case 1:
+            case 2: nameSize = decodeInt(buf); break;
         }
         if (nameSize < 0) {
             throw new IllegalArgumentException(String.format("Invalid waypoint (format %d)\\nName size is negative", format));
@@ -224,6 +246,7 @@ public class WaypointProfile {
                 r = buf.getFloat(); g = buf.getFloat(); b = buf.getFloat(); a = buf.getFloat();
                 break;
             case 1:
+            case 2:
                 this.x = decodeDouble(buf); this.y = decodeDouble(buf); this.z = decodeDouble(buf);
                 byte zoomNeeded = buf.get();
                 switch (zoomNeeded) {
@@ -256,6 +279,10 @@ public class WaypointProfile {
             throw new IllegalArgumentException(String.format("Invalid waypoint (format %s)\\nWaypoint group out of range", format));
         } else {
             this.group = WaypointType.values()[group];
+        }
+
+        if (format == 2) {
+            this.showBeaconBeam = buf.get() == 1;
         }
     }
 
@@ -295,14 +322,15 @@ public class WaypointProfile {
         int size = -1;
         switch (format) {
             case 0: size = buf.getInt(); break;
-            case 1: size = decodeInt(buf); break;
+            case 1:
+            case 2: size = decodeInt(buf); break;
         }
         if (size < 0 || size > 8192) {
             throw new IllegalArgumentException("Invalid waypoint list size");
         }
         List<WaypointProfile> result = new ArrayList<>(size);
         while (size-- > 0) {
-            WaypointProfile wp = new WaypointProfile(null, 0, 0, 0, null, null, 0);
+            WaypointProfile wp = new WaypointProfile(null, 0, 0, 0, null, null, 0, false);
             wp.decode(format, buf);
             result.add(wp);
         }

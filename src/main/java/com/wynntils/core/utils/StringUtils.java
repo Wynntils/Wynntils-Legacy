@@ -498,4 +498,16 @@ public class StringUtils {
         }
         return treemap.get(l) + integerToRoman(number - l);
     }
+
+    public static int parseIntOr(String string, int defaultValue) {
+        try {
+            return Integer.parseInt(string);
+        } catch (NumberFormatException e) {
+            return defaultValue;
+        }
+    }
+
+    public static Pattern compileCCRegex(String regex) {
+        return Pattern.compile(regex.replace("§", "(?:§[0-9a-fklmnor])*"));
+    }
 }

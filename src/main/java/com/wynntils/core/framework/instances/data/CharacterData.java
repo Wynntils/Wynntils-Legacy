@@ -10,6 +10,7 @@ import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.instances.containers.PlayerData;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
+import com.wynntils.modules.utilities.instances.ShamanMaskType;
 import net.minecraft.client.entity.EntityPlayerSP;
 
 import java.text.DecimalFormat;
@@ -25,8 +26,20 @@ public class CharacterData extends PlayerData {
 
     private int health = -1;
     private int maxHealth = -1;
+    private int mana = -1;
+    private int maxMana = -1;
+    private int bloodPool = -1;
+    private int maxBloodPool = -1;
+    private int manaBank = -1;
+    private int maxManaBank = -1;
+    private int awakenedProgress = -1;
+    private int corruptedProgressPercent = -1;
+    private int focus = -1;
+    private int maxFocus = -1;
     private int level = -1;
     private float experiencePercentage = -1;
+    private String elementalSpecialString = "";
+    private ShamanMaskType currentShamanMask = ShamanMaskType.NONE;
 
     int lastLevel = 0;
     int lastXp = 0;
@@ -92,11 +105,19 @@ public class CharacterData extends PlayerData {
     }
 
     public int getMaxMana() {
-        return currentClass == ClassType.NONE ? -1 : 20;
+        return currentClass == ClassType.NONE ? -1 : maxMana;
+    }
+
+    public int getMaxManaBank() {
+        return maxManaBank;
     }
 
     public int getMaxHealth() {
         return currentClass == ClassType.NONE ? -1 : maxHealth;
+    }
+
+    public int getMaxBloodPool() {
+        return currentClass == ClassType.NONE ? -1 : maxBloodPool;
     }
 
     public int getCurrentHealth() {
@@ -104,7 +125,37 @@ public class CharacterData extends PlayerData {
     }
 
     public int getCurrentMana() {
-        return currentClass == ClassType.NONE ? -1 : getPlayer().getFoodStats().getFoodLevel();
+        return currentClass == ClassType.NONE ? -1 : mana;
+    }
+
+    public int getManaBank() {
+        return manaBank;
+    }
+
+    public int getCurrentBloodPool() {
+        return currentClass == ClassType.NONE ? -1 : bloodPool;
+    }
+
+    public int getCurrentAwakenedProgress() {
+        return currentClass == ClassType.NONE ? -1 : awakenedProgress;
+    }
+
+    public int getMaxAwakenedProgress() {
+        return currentClass == ClassType.NONE ? -1 : 200;
+    }
+
+    public int getCorruptedProgressPercent() { return currentClass == ClassType.NONE ? -1 : corruptedProgressPercent; }
+
+    public int getFocus() {
+        return currentClass == ClassType.NONE ? -1 : focus;
+    }
+
+    public int getMaxFocus() {
+        return currentClass == ClassType.NONE ? -1 : maxFocus;
+    }
+
+    public String getElementalSpecialString() {
+        return elementalSpecialString;
     }
 
     public int getClassId() {
@@ -123,6 +174,8 @@ public class CharacterData extends PlayerData {
         return reskinned;
     }
 
+    public ShamanMaskType getCurrentShamanMask() { return currentShamanMask; }
+
     public void setClassId(int id) {
         this.classId = id;
 
@@ -138,6 +191,44 @@ public class CharacterData extends PlayerData {
         this.maxHealth = maxHealth;
     }
 
+    public void setMana(int mana) {
+        this.mana = mana;
+    }
+
+    public void setManaBank(int manaBank) {
+        this.manaBank = manaBank;
+    }
+
+    public void setMaxManaBank(int maxManaBank) {
+        this.maxManaBank = maxManaBank;
+    }
+
+    public void setMaxMana(int maxMana) {
+        this.maxMana = maxMana;
+    }
+
+    public void setBloodPool(int bloodPool) {
+        this.bloodPool = bloodPool;
+    }
+
+    public void setMaxBloodPool(int maxBloodPool) {
+        this.maxBloodPool = maxBloodPool;
+    }
+
+    public void setAwakenedProgress(int awakenedProgress) {
+        this.awakenedProgress = awakenedProgress;
+    }
+
+    public void setCorruptedProgressPercent(int corruptedProgressPercent) { this.corruptedProgressPercent = corruptedProgressPercent; }
+
+    public void setFocus(int focus) { this.focus = focus; }
+
+    public void setMaxFocus(int maxFocus) { this.maxFocus = maxFocus; }
+
+    public void setElementalSpecialString(String elementalSpecialString) {
+        this.elementalSpecialString = elementalSpecialString;
+    }
+
     public void setLevel(int level) {
         this.level = level;
     }
@@ -146,4 +237,7 @@ public class CharacterData extends PlayerData {
         this.experiencePercentage = experiencePercentage;
     }
 
+    public void setCurrentShamanMask(ShamanMaskType currentShamanMask) {
+        this.currentShamanMask = currentShamanMask;
+    }
 }

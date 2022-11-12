@@ -7,7 +7,6 @@ package com.wynntils.core.utils;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.wynntils.McIf;
 import com.wynntils.core.utils.reflections.ReflectionFields;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.gui.ScaledResolution;
@@ -50,11 +49,10 @@ public class Utils {
     private static final DataParameter<String> NAME_KEY = ReflectionFields.Entity_CUSTOM_NAME.getValue(Entity.class);
     private static final DataParameter<Boolean> NAME_VISIBLE_KEY = ReflectionFields.Entity_CUSTOM_NAME_VISIBLE.getValue(Entity.class);
     private static final DataParameter<Boolean> ITEM_KEY = ReflectionFields.EntityItemFrame_ITEM.getValue(Entity.class);
-    public static final Pattern CHAR_INFO_PAGE_TITLE = Pattern.compile("§c([0-9]+)§4 skill points? remaining");
     public static final Pattern SERVER_SELECTOR_TITLE = Pattern.compile("Wynncraft Servers(: Page \\d+)?");
 
     private static ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().setNameFormat("wynntils-utilities-%d").build());
-    private static Random random = new Random();
+    private static final Random random = new Random();
 
     private static String previousTeam = null;
 
@@ -144,8 +142,13 @@ public class Utils {
      */
     public static boolean isCharacterInfoPage(GuiScreen gui) {
         if (!(gui instanceof GuiContainer)) return false;
-        Matcher m = CHAR_INFO_PAGE_TITLE.matcher(((GuiContainer)gui).inventorySlots.getSlot(0).inventory.getName());
-        return m.find();
+        return (((GuiContainer) gui).inventorySlots.getSlot(0).inventory.getName().equals("Character Info"));
+
+    }
+
+    public static boolean isAbilityTreePage(GuiScreen gui) {
+        if (!(gui instanceof GuiContainer)) return false;
+        return (((GuiContainer) gui).inventorySlots.getSlot(0).inventory.getName().endsWith(" Abilities"));
     }
 
     /**

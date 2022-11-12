@@ -20,11 +20,13 @@ public class PlayerInfo {
     public static void setup() {
         register(CharacterData.class);
         register(ActionBarData.class);
+        register(BossBarData.class);
         register(LocationData.class);
         register(InventoryData.class);
         register(SocialData.class);
         register(SpellData.class);
         register(HorseData.class);
+        register(TabListData.class);
     }
 
     /**

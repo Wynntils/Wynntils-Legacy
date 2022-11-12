@@ -139,6 +139,10 @@ public class DownloaderManager {
 
                         File newFile = new File(pf.getLocation(), ze.getName());
 
+                        if (!newFile.toPath().normalize().startsWith(pf.getLocation().toPath().normalize())) {
+                            throw new IOException("Bad zip entry");
+                        }
+
                         if (ze.isDirectory()) {
                             newFile.mkdir();
                             continue;

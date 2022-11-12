@@ -16,12 +16,14 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.core.utils.reference.RequirementSymbols;
 import com.wynntils.modules.chat.overlays.ChatOverlay;
 import com.wynntils.modules.chat.overlays.gui.ChatGUI;
+import com.wynntils.modules.core.enums.ScrollDirection;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
@@ -35,7 +37,6 @@ import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.managers.*;
 import com.wynntils.modules.utilities.overlays.hud.ConsumableTimerOverlay;
 import com.wynntils.modules.utilities.overlays.hud.GameUpdateOverlay;
-import com.wynntils.modules.utilities.overlays.hud.ManaTimerOverlay;
 import com.wynntils.modules.utilities.overlays.ui.FakeGuiContainer;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
@@ -49,6 +50,7 @@ import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.init.SoundEvents;
+import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryBasic;
 import net.minecraft.inventory.Slot;
@@ -76,6 +78,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.InputEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.input.Mouse;
 
 import java.sql.Timestamp;
 import java.time.*;
@@ -84,6 +87,7 @@ import java.time.format.FormatStyle;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static com.wynntils.core.framework.instances.PlayerInfo.get;
 import static net.minecraft.util.text.TextFormatting.getTextWithoutFormattingCodes;
@@ -110,6 +114,7 @@ public class ClientEvents implements Listener {
     private static final Pattern PRICE_REPLACER = Pattern.compile("§6 - §a. §f([1-9]\\d*)§7" + EmeraldSymbols.E_STRING);
     private static final Pattern INGREDIENT_SPLIT_PATTERN = Pattern.compile("§f(\\d+) x (.+)");
     private static final Pattern WAR_CHAT_MESSAGE_PATTERN = Pattern.compile("§3\\[WAR§3\\] The war for (.+) will start in \\d+ minutes.");
+    private static final Pattern ABILITY_TREE_PATTERN = Pattern.compile("(?:Warrior|Shaman|Mage|Assassin|Archer) Abilities");
 
     public static boolean isAwaitingHorseMount = false;
     private static int lastHorseId = -1;
@@ -123,6 +128,9 @@ public class ClientEvents implements Listener {
     private int lastOpenedChestWindowId = -1;
     private int lastOpenedRewardWindowId = -1;
     private int timesClosed = 0;
+
+    private final int abilityTreePreviousSlot = 57;
+    private final int abilityTreeNextSlot = 59;
 
 
     @SubscribeEvent
@@ -154,7 +162,7 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void classDialog(GuiOverlapEvent.ChestOverlap.DrawGuiContainerBackgroundLayer e) {
-        if (!e.getGui().getLowerInv().getName().contains("Select a Class")) return;
+        if (!e.getGui().getLowerInv().getName().contains("Select a Character")) return;
         if (!afkProtectionActivated) return;
 
         InventoryBasic inv = (InventoryBasic) e.getGui().getLowerInv();
@@ -367,10 +375,6 @@ public class ClientEvents implements Listener {
         String msg = McIf.getUnformattedText(e.getMessage());
         if (msg.startsWith("[Daily Rewards:")) {
             DailyReminderManager.openedDaily();
-        }
-
-        if (msg.startsWith("[!] Darkness has been enabled.") || msg.startsWith("[!] Twilight has been enabled.")) {
-            ManaTimerOverlay.isTimeFrozen = true;
         }
     }
 
@@ -694,14 +698,15 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void clickOnInventory(GuiOverlapEvent.InventoryOverlap.HandleMouseClick e) {
         if (!Reference.onWorld) return;
+        if (e.getGui().getSlotUnderMouse() == null) return;
 
         // Dungeon key middle click functionality
-        if (e.getMouseButton() == 2 && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().getHasStack()) {
+        if (e.getMouseButton() == 2 && e.getGui().getSlotUnderMouse().getHasStack()) {
             ItemStack is = e.getGui().getSlotUnderMouse().getStack();
             handleDungeonKeyMClick(is);
         }
 
-        if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().inventory instanceof InventoryPlayer) {
+        if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse().inventory instanceof InventoryPlayer) {
             if ((!EmeraldPouchManager.isEmeraldPouch(e.getGui().getSlotUnderMouse().getStack()) || e.getMouseButton() == 0) && checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex())) {
                 e.setCanceled(true);
                 return;
@@ -741,8 +746,8 @@ public class ClientEvents implements Listener {
 
         // Queue messages into game update ticker when clicking on emeralds in loot chest
         if (getTextWithoutFormattingCodes(chestInv.getName()).startsWith("Loot Chest") && OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectEmeraldPouch) {
-            // Check if item is actually an emerald, if we're left clicking, and make sure we're not shift clicking
-            if (currentLootChest.getStackInSlot(e.getSlotId()).getDisplayName().equals("§aEmerald") && e.getMouseButton() == 0 && !GuiScreen.isShiftKeyDown()) {
+            // Check if item is actually an emerald, if we're left clicking, and if we're shift clicking
+            if (currentLootChest.getStackInSlot(e.getSlotId()).getDisplayName().equals("§aEmerald") && e.getMouseButton() == 0 && GuiScreen.isShiftKeyDown()) {
                 // Find all emerald pouches in inventory
                 NonNullList<Integer> availableCapacities = NonNullList.create();
                 for (int i = 0; i < e.getGui().getUpperInv().getSizeInventory(); i++) {
@@ -796,8 +801,21 @@ public class ClientEvents implements Listener {
             }
         }
 
-        if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null && e.getGui().getSlotUnderMouse().inventory instanceof InventoryPlayer) {
-            if ((!EmeraldPouchManager.isEmeraldPouch(e.getGui().getSlotUnderMouse().getStack()) || e.getMouseButton() == 0) && checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex())) {
+        // Prevent clicking on locked slot functionality
+        if (UtilitiesConfig.INSTANCE.preventSlotClicking && e.getGui().getSlotUnderMouse() != null &&
+                e.getGui().getSlotUnderMouse().inventory instanceof InventoryPlayer) {
+
+            // Allow left-clicks on locked emerald pouches to open them
+            if (EmeraldPouchManager.isEmeraldPouch(e.getGui().getSlotUnderMouse().getStack()) && e.getMouseButton() == 0) {
+                return;
+            }
+
+            // Do not block any clicks on the ability tree page
+            if (Utils.isAbilityTreePage(e.getGui())) {
+                return;
+            }
+
+            if (checkDropState(e.getGui().getSlotUnderMouse().getSlotIndex())) {
                 e.setCanceled(true);
             }
         }
@@ -823,48 +841,6 @@ public class ClientEvents implements Listener {
         lastWasDrop = true;
         if (UtilitiesConfig.INSTANCE.locked_slots.get(get(CharacterData.class).getClassId()).contains(McIf.player().inventory.currentItem))
             e.setCanceled(true);
-    }
-
-    @SubscribeEvent
-    public void onConsumable(PacketEvent<SPacketSetSlot> e) {
-        if (!Reference.onWorld || e.getPacket().getWindowId() != 0) return;
-
-        // the reason of the +36, is because in the client the hotbar is handled between 0-8
-        // the hotbar in the packet starts in 36, counting from up to down
-        if (e.getPacket().getSlot() != McIf.player().inventory.currentItem + 36) return;
-
-        InventoryPlayer inventory = McIf.player().inventory;
-        ItemStack oldStack = inventory.getStackInSlot(e.getPacket().getSlot() - 36);
-        ItemStack newStack = e.getPacket().getStack();
-
-        if (lastWasDrop) {
-            lastWasDrop = false;
-            return;
-        }
-
-        if (oldStack.isEmpty() || !newStack.isEmpty() && !oldStack.isItemEqual(newStack)) return; // invalid move
-        if (!oldStack.hasDisplayName()) return; // old item is not a valid item
-
-        String oldName = getTextWithoutFormattingCodes(oldStack.getDisplayName());
-        Matcher oldMatcher = CRAFTED_USES.matcher(oldName);
-        if (!oldMatcher.matches()) return;
-        int oldUses = Integer.parseInt(oldMatcher.group(1));
-
-        int newUses = 0;
-        if (!newStack.isEmpty()) {
-            String newName = getTextWithoutFormattingCodes(StringUtils.normalizeBadString(newStack.getDisplayName()));
-            Matcher newMatcher = CRAFTED_USES.matcher(newName);
-            if (newMatcher.matches()) {
-                newUses = Integer.parseInt(newMatcher.group(1));
-            } else {
-                return;
-            }
-        }
-
-        if (oldUses - 1 != newUses) {
-            return;
-        }
-        McIf.mc().addScheduledTask(() -> ConsumableTimerOverlay.addConsumable(oldStack));
     }
 
     @SubscribeEvent
@@ -981,13 +957,12 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
-        ConsumableTimerOverlay.clearConsumables(false); // clear consumable list
+        ConsumableTimerOverlay.clearTimers(false); // clear consumable list
     }
 
     @SubscribeEvent
     public void onWorldLeave(WynnWorldEvent.Leave e) {
-        ConsumableTimerOverlay.clearConsumables(true); // clear consumable list
-        ManaTimerOverlay.isTimeFrozen = false;
+        ConsumableTimerOverlay.clearTimers(true); // clear consumable list
     }
 
     // tooltip scroller
@@ -1129,6 +1104,11 @@ public class ClientEvents implements Listener {
         // Only run at first time we get items, don't care about updating
         if (e.getPacket().getWindowId() == lastProcessedOpenedChest) return;
 
+        // Wynncraft sends you two packets when opening the chest. The first is empty, the second one has the actual items.
+        // By returning here, we only process the second packet, whilst still only handling each chest once.
+        List<ItemStack> actualItems = e.getPacket().getItemStacks().subList(0, 27).stream().filter(item -> !item.isEmpty() && item.hasDisplayName() && item.getItem() != Items.AIR).collect(Collectors.toList());
+        if (actualItems.size() == 0) return;
+
         lastProcessedOpenedChest = e.getPacket().getWindowId();
 
         // Dry streak counter and sound sfx
@@ -1154,7 +1134,6 @@ public class ClientEvents implements Listener {
                     }
                 }
 
-
                 if (UtilitiesConfig.INSTANCE.enableDryStreak && UtilitiesConfig.INSTANCE.dryStreakEndedMessage) {
                     ITextComponent textComponent = new TextComponentString(UtilitiesConfig.INSTANCE.dryStreakCount + " long dry streak broken! Mythic found! Found boxes since last mythic: " + UtilitiesConfig.INSTANCE.dryStreakBoxes);
                     textComponent.getStyle()
@@ -1174,29 +1153,16 @@ public class ClientEvents implements Listener {
                 UtilitiesConfig.INSTANCE.dryStreakCount += 1;
 
             UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
-            return;
         }
+    }
 
-        // Mythic found sfx for daily rewards and objective rewards
-        if (!MusicConfig.SoundEffects.INSTANCE.mythicFound) return;
-
-        // Size should be at least 27, checked for it earlier
-        int size = 27;
-        for (int i = 0; i < size; i++) {
-            ItemStack stack = e.getPacket().getItemStacks().get(i);
-            if (stack.isEmpty() || !stack.hasDisplayName()) continue;
-            if (!stack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString())) continue;
-            if (!stack.getDisplayName().contains("Unidentified")) continue;
-
-            try {
-                SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("mythicFound"),
-                        true, false, false, false, true, false, true);
-            } catch (Exception exception) {
-                exception.printStackTrace();
-            }
-
-            break;
-        }
+    @SubscribeEvent
+    public void onAbilityTreePathHovered(ItemTooltipEvent e) {
+        if (!(Utils.isAbilityTreePage(McIf.mc().currentScreen))) return;
+        if (e.getItemStack().getItem() != Items.STONE_AXE) return;
+        if (!e.getItemStack().getDisplayName().equals("")) return;
+        // This event is not cancellable, this will do instead
+        e.getToolTip().clear();
     }
 
     @SubscribeEvent
@@ -1319,4 +1285,36 @@ public class ClientEvents implements Listener {
         nbt.setIntArray("originalItems", originalSlots);
         ItemUtils.replaceLore(itemStack, groupedItemLore);
     }
+
+    @SubscribeEvent
+    public void onHeldItemChange(PacketEvent<CPacketHeldItemChange> e) {
+        // scrolling off the weapon resets elemental special
+        CharacterData cd = get(CharacterData.class);
+        if (cd.getElementalSpecialString().isEmpty()) return;
+        // delay because ActionBar update may be late
+        new Delay(() -> cd.setElementalSpecialString(""), 4);
+    }
+
+    @SubscribeEvent
+    public void onAbilityTreeScroll(GuiOverlapEvent.ChestOverlap.HandleMouseInput e) {
+        if (!Reference.onWorld) return;
+        if (!UtilitiesConfig.INSTANCE.shouldAbilityScroll) return;
+
+        int scrollAmount = Mouse.getDWheel();
+        if (scrollAmount == 0) return;
+
+        IInventory lowerInv = e.getGui().getLowerInv();
+        if (!ABILITY_TREE_PATTERN.matcher(lowerInv.getName()).matches()) return;
+
+        boolean up = (scrollAmount > 0) ^ UtilitiesConfig.INSTANCE.abilityScrollDirection == ScrollDirection.UP;
+        int slot = up ? abilityTreePreviousSlot : abilityTreeNextSlot;
+
+        ItemStack itemStack = lowerInv.getStackInSlot(slot);
+
+        McIf.player().connection.sendPacket(new CPacketClickWindow(
+            McIf.player().openContainer.windowId,
+            slot, 2,  ClickType.PICKUP, itemStack,
+            McIf.player().openContainer.getNextTransactionID(McIf.player().inventory)));
+        }
+
 }

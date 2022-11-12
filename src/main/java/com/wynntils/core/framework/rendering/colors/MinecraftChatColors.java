@@ -88,4 +88,30 @@ public class MinecraftChatColors extends CustomColor.SetBase {
         return new String(b);
     }
 
+    /**
+     * @param code Single character code for chat color. Eg. '4' for '§4'.
+     * @return MinecraftChatColors object from the specified chat color.
+     */
+    public static MinecraftChatColors fromColorCode(char code) {
+        switch (code) {
+            case '0': return BLACK;
+            case '1': return DARK_BLUE;
+            case '2': return DARK_GREEN;
+            case '3': return DARK_AQUA;
+            case '4': return DARK_RED;
+            case '5': return DARK_PURPLE;
+            case '6': return GOLD;
+            case '7': return GRAY;
+            case '8': return DARK_GRAY;
+            case '9': return BLUE;
+            case 'a': return GREEN;
+            case 'b': return AQUA;
+            case 'c': return RED;
+            case 'd': return LIGHT_PURPLE;
+            case 'e': return YELLOW;
+            case 'f': return WHITE;
+            default: return null;
+        }
+    }
+
 }

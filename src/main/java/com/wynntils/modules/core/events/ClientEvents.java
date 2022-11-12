@@ -14,9 +14,7 @@ import com.wynntils.core.framework.enums.DamageType;
 import com.wynntils.core.framework.enums.professions.GatheringMaterial;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
 import com.wynntils.core.framework.instances.PlayerInfo;
-import com.wynntils.core.framework.instances.data.ActionBarData;
-import com.wynntils.core.framework.instances.data.CharacterData;
-import com.wynntils.core.framework.instances.data.SpellData;
+import com.wynntils.core.framework.instances.data.*;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
 import com.wynntils.core.utils.Utils;
@@ -33,9 +31,10 @@ import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
 import com.wynntils.modules.utilities.UtilitiesModule;
+import com.wynntils.modules.utilities.configs.OverlayConfig;
+import com.wynntils.modules.utilities.instances.ShamanMaskType;
 import com.wynntils.modules.utilities.managers.KillsManager;
 import com.wynntils.modules.utilities.managers.LevelingManager;
-import com.wynntils.modules.utilities.managers.QuickCastManager;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.gui.GuiIngameMenu;
@@ -69,7 +68,6 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -323,6 +321,57 @@ public class ClientEvents implements Listener {
         if (UtilitiesModule.getModule().getActionBarOverlay().active) e.setCanceled(true); // only disable when the wynntils action bar is enabled
     }
 
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void updateBossBar(PacketEvent<SPacketUpdateBossInfo> e) {
+        if (!Reference.onServer) return;
+
+        PlayerInfo.get(BossBarData.class).updateBossbarStats(e.getPacket());
+
+        if (e.getPacket() == null || e.getPacket().getName() == null) return;
+
+        if (OverlayConfig.BloodPool.INSTANCE.hideDefaultBar) {
+            // (!) Do not remove .getName() check, Intellij is wrong about it
+            Matcher bpBarMatcher = BossBarData.BLOOD_POOL_PATTERN.matcher(e.getPacket().getName().getFormattedText());
+            if (bpBarMatcher.matches()) {
+                e.setCanceled(true);
+                return;
+            }
+        }
+
+        if (OverlayConfig.ManaBank.INSTANCE.hideDefaultBar) {
+            Matcher barMatcher = BossBarData.MANA_BANK_PATTERN.matcher(e.getPacket().getName().getFormattedText());
+            if (barMatcher.matches()) {
+                e.setCanceled(true);
+                return;
+            }
+        }
+
+        if (OverlayConfig.AwakenedProgress.INSTANCE.hideDefaultBar) {
+            // (!) Do not remove .getName() check, Intellij is wrong about it
+            Matcher awakeningBarMatcher = BossBarData.AWAKENED_PROGRESS_PATTERN.matcher(e.getPacket().getName().getFormattedText());
+            if (awakeningBarMatcher.matches()) e.setCanceled(true);
+        }
+
+        if (OverlayConfig.CorruptedBar.INSTANCE.hideDefaultBar) {
+            // (!) Do not remove .getName() check, Intellij is wrong about it
+            Matcher corruptedMatcher = BossBarData.CORRUPTED_PROGRESS_PATTERN.matcher(e.getPacket().getName().getFormattedText());
+            if (corruptedMatcher.matches()) e.setCanceled(true);
+        }
+
+        if (OverlayConfig.Focus.INSTANCE.hideDefaultBar) {
+            // (!) Do not remove .getName() check, Intellij is wrong about it
+            Matcher focusMatcher = BossBarData.FOCUS_PATTERN.matcher(e.getPacket().getName().getFormattedText());
+            if (focusMatcher.matches()) e.setCanceled(true);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void updateTabListHeaderFooter(PacketEvent<SPacketPlayerListHeaderFooter> e) {
+        if (!Reference.onServer) return;
+
+        PlayerInfo.get(TabListData.class).updateTabListFooterEffects(e.getPacket());
+    }
+
     @SubscribeEvent
     public void updateChatVisibility(PacketEvent<CPacketClientSettings> e) {
         if (e.getPacket().getChatVisibility() != EntityPlayer.EnumChatVisibility.HIDDEN) return;
@@ -423,7 +472,7 @@ public class ClientEvents implements Listener {
      */
     @SubscribeEvent
     public void changeClass(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
-        if (!e.getGui().getLowerInv().getName().contains("Select a Class")) return;
+        if (!e.getGui().getLowerInv().getName().contains("Select a Character")) return;
 
         if (e.getMouseButton() != 0
             || e.getSlotIn() == null
@@ -554,11 +603,23 @@ public class ClientEvents implements Listener {
     public void onClassChange(WynnClassChangeEvent e) {
         if (!Reference.onWorld) return;
 
+        // Reset blood pools if class changes
+        get(CharacterData.class).setMaxBloodPool(-1);
+        get(CharacterData.class).setBloodPool(-1);
+        get(CharacterData.class).setCurrentShamanMask(ShamanMaskType.NONE);
+        get(CharacterData.class).setAwakenedProgress(-1);
+
+        // Reset mana bank
+        get(CharacterData.class).setManaBank(-1);
+        get(CharacterData.class).setMaxManaBank(-1);
+
+        get(CharacterData.class).setFocus(-1);
+        get(CharacterData.class).setMaxFocus(-1);
+
         SpellData spellData = PlayerInfo.get(SpellData.class);
 
         if (spellData == null) return;
 
         spellData.setLastSpell(SpellData.NO_SPELL, -1);
-        QuickCastManager.spellInProgress = QuickCastManager.NO_SPELL;
     }
 }

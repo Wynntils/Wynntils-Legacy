@@ -34,6 +34,8 @@ public class WaypointOverviewUI extends GuiScreen {
     private GuiButton exitBtn;
     private GuiButton exportBtn;
     private GuiButton importBtn;
+    private GuiButton clearBtn;
+    private GuiButton editGroupsBtn;
     private List<GuiButton> editButtons = new ArrayList<>();
 
     private List<String> exportText;
@@ -50,6 +52,8 @@ public class WaypointOverviewUI extends GuiScreen {
     private int pageHeight;
     private int group = ungroupedIndex;
     private int groupWidth;
+    private int clearCount = 0;
+    private final int clearCountMax = 3;
     private int groupScroll = 0;
     private int spacingMultiplier = MapConfig.Waypoints.INSTANCE.waypointSpacing.getSpacingMultiplier();
     private boolean decreasedSize = (spacingMultiplier == 14);
@@ -74,8 +78,13 @@ public class WaypointOverviewUI extends GuiScreen {
             this.buttonList.add(nextGroupBtn);
         }
 
+        String clearButtonText = "CLEAR (Press " + clearCountMax + " times)";
         this.buttonList.add(exportBtn = new GuiButton(8, this.width/2 + 26, this.height - 45, 50, 20, "EXPORT"));
         this.buttonList.add(importBtn = new GuiButton(9, this.width/2 - 76, this.height - 45, 50, 20, "IMPORT"));
+        this.buttonList.add(clearBtn = new GuiButton(10, 25, this.height - 45, fontRenderer.getStringWidth(clearButtonText) + 15, 20, clearButtonText));
+
+        String text = "EDIT BEACON GROUPS";
+        this.buttonList.add(editGroupsBtn = new GuiButton(10, 10, 10, fontRenderer.getStringWidth(text) + 25, 20, text));
 
         onWaypointChange();
     }
@@ -256,6 +265,18 @@ public class WaypointOverviewUI extends GuiScreen {
                 "Import  ==  SUCCESS",
                 String.format("Imported %d waypoints", newWaypoints)
             );
+        } else if (b == clearBtn) {
+            clearCount++;
+            if (clearCount == clearCountMax) {
+                waypoints.clear();
+                onWaypointChange();
+                clearCount = 0;
+                clearBtn.displayString = "CLEARED!";
+            } else {
+                clearBtn.displayString = "CLEAR (Press " + (clearCountMax - clearCount) + " times)";
+            }
+        } else if (b == editGroupsBtn) {
+            McIf.mc().displayGuiScreen(new WaypointBeaconGroupMenu(this));
         } else if (b.id < 0) {
             // A group button
             if (b == nextGroupBtn) {

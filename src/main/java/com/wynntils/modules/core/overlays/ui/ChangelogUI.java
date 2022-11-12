@@ -5,7 +5,6 @@
 package com.wynntils.modules.core.overlays.ui;
 
 import com.wynntils.McIf;
-import com.wynntils.Reference;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
@@ -13,17 +12,12 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.core.config.CoreDBConfig;
-import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.webapi.WebManager;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiScreen;
 import org.lwjgl.input.Mouse;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class ChangelogUI extends GuiScreen {
 
@@ -35,27 +29,26 @@ public class ChangelogUI extends GuiScreen {
     GuiScreen previousGui;
 
     List<String> changelogContent = new ArrayList<>();
+    String changelogVersion = "";
 
     int scrollbarPosition = 0;
     int scrollbarSize;
 
-    boolean major;
-
-    public ChangelogUI(List<String> changelogContent, boolean major) {
-        this(null, changelogContent, major);
+    public ChangelogUI(Map<String, String> changelogContent) {
+        this(null, changelogContent);
     }
 
-    public ChangelogUI(GuiScreen previousGui, List<String> changelogContent, boolean major) {
+    public ChangelogUI(GuiScreen previousGui, Map<String, String> changelogContent) {
         this.previousGui = previousGui;
 
-        this.major = major;
-
         if (changelogContent == null || changelogContent.isEmpty()) {
-            changelogContent = Collections.singletonList("<Error>");
+            this.changelogContent.add("<Error>");
+        } else {
+            for (String rawText : changelogContent.get("changelog").split("\n"))
+                this.changelogContent.addAll(Arrays.asList(StringUtils.wrapText(rawText, 40)));
         }
 
-        for (String rawText : changelogContent)
-            this.changelogContent.addAll(Arrays.asList(StringUtils.wrapText(rawText, 40)));
+        this.changelogVersion = changelogContent.get("version");
 
         if (this.changelogContent.size() <= 15) scrollbarSize = 118;
         else {
@@ -63,8 +56,8 @@ public class ChangelogUI extends GuiScreen {
         }
     }
 
-    public static void loadChangelogAndShow(boolean major, boolean forceLatest) {
-        loadChangelogAndShow(null, major, forceLatest);
+    public static void loadChangelogAndShow(boolean forceLatest) {
+        loadChangelogAndShow(null, forceLatest);
     }
 
     /**
@@ -72,12 +65,13 @@ public class ChangelogUI extends GuiScreen {
      * whilst a web request is made in a separate thread.
      *
      * @param previousGui The gui to return to when exiting both the loading GUI and the changelog when it opens
-     * @param major {@link WebManager#getChangelog(boolean, boolean)}'s first argument (Stable or CE?)
-     * @param forceLatest {@link WebManager#getChangelog(boolean, boolean)}'s second argument (Latest or current changelog?)
+     * @param forceLatest {@link WebManager#getChangelog(boolean)}'s second argument (Latest or current changelog?)
      */
-    public static void loadChangelogAndShow(GuiScreen previousGui, boolean major, boolean forceLatest) {
-
-        GuiScreen loadingScreen = new ChangelogUI(previousGui, Collections.singletonList("Loading..."), major);
+    public static void loadChangelogAndShow(GuiScreen previousGui, boolean forceLatest) {
+        GuiScreen loadingScreen = new ChangelogUI(previousGui, new HashMap<String, String>() {{
+            put("version", "Loading...");
+            put("changelog", "Loading...");
+        }});
         McIf.mc().displayGuiScreen(loadingScreen);
         if (McIf.mc().currentScreen != loadingScreen) {
             // Changed by an event handler
@@ -88,7 +82,7 @@ public class ChangelogUI extends GuiScreen {
             if (McIf.mc().currentScreen != loadingScreen) {
                 return;
             }
-            List<String> changelog = WebManager.getChangelog(major, forceLatest);
+            Map<String, String> changelog = WebManager.getChangelog(forceLatest);
             if (McIf.mc().currentScreen != loadingScreen) {
                 return;
             }
@@ -98,7 +92,7 @@ public class ChangelogUI extends GuiScreen {
                     return;
                 }
 
-                ChangelogUI gui = new ChangelogUI(previousGui, changelog, major);
+                ChangelogUI gui = new ChangelogUI(previousGui, changelog);
                 McIf.mc().displayGuiScreen(gui);
             });
 
@@ -114,7 +108,7 @@ public class ChangelogUI extends GuiScreen {
         float middleX = width/2f; float middleY = height/2f;
 
         renderer.drawRect(Textures.UIs.changelog, (int)middleX - 150, (int)middleY - 100, 0, 0, 300, 200);
-        renderer.drawString("Changelog " + (CoreDBConfig.INSTANCE.updateStream == UpdateStream.CUTTING_EDGE && !major ? "B" + Reference.BUILD_NUMBER : "v" + Reference.VERSION), middleX - 105, middleY - 83, CommonColors.RED, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
+        renderer.drawString("Changelog " + this.changelogVersion, middleX - 105, middleY - 83, CommonColors.RED, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE);
 
         // scrollbar
         renderer.drawRect(SCROLL_BACKGROUND, (int)middleX + 119, (int)middleY - 80, (int)middleX + 119 + 5, (int)middleY + 40);

@@ -21,7 +21,6 @@ import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
-import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.instances.packet.PacketIncomingFilter;
 import com.wynntils.modules.core.instances.packet.PacketOutgoingFilter;
 import com.wynntils.modules.core.managers.CompassManager;
@@ -61,14 +60,14 @@ public class ServerEvents implements Listener {
 
     /**
      * Does 5 different things and is triggered when the user joins Wynncraft:
-     *  - Register the pipeline that intercepts INCOMING Packets
-     *  @see PacketIncomingFilter
-     *  - Register the pipline that intercepts OUTGOING Packets
-     *  @see PacketOutgoingFilter
-     *  - Check if the mod has an update available
-     *  - Updates the overlayPlayerList to the Wynntils Version
+     * - Register the pipeline that intercepts INCOMING Packets
      *
      * @param e Represents the event
+     * @see PacketIncomingFilter
+     * - Register the pipline that intercepts OUTGOING Packets
+     * @see PacketOutgoingFilter
+     * - Check if the mod has an update available
+     * - Updates the overlayPlayerList to the Wynntils Version
      */
     @SubscribeEvent
     public void joinServer(FMLNetworkEvent.ClientConnectedToServerEvent e) {
@@ -89,24 +88,24 @@ public class ServerEvents implements Listener {
 
     /**
      * Called when the user joins a Wynncraft World, used to register some stuff:
-     *  - Make the player use the command /friend list in order to gatter the user friend list
-     *  - Check if the last user class was registered if not, make the player execute /class to register it
-     *  - Updates the last class
-     *  - Updates and check the Download Queue
+     * - Make the player use the command /friend list in order to gatter the user friend list
+     * - Check if the last user class was registered if not, make the player execute /class to register it
+     * - Updates the last class
+     * - Updates and check the Download Queue
      *
      * @param e Represents the event
      */
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void joinWorldEvent(WynnWorldEvent.Join e) {
-        if (PlayerInfo.get(CharacterData.class).getClassId() == -1 || CoreDBConfig.INSTANCE.lastClass == ClassType.NONE)
+        CharacterData characterData = PlayerInfo.get(CharacterData.class);
+        if ((characterData != null && characterData.getClassId() == -1) || CoreDBConfig.INSTANCE.lastClass == ClassType.NONE)
             McIf.player().sendChatMessage("/class");
 
         // This codeblock will only be executed if the Wynncraft AUTOJOIN setting is enabled
         // Reason: When you join a world with autojoin enabled, your current class is NONE,
         // while joining without autojoin will make your current class into the selected over the character selection.
-        CharacterData data = PlayerInfo.get(CharacterData.class);
-        if (data.getCurrentClass() == ClassType.NONE && CoreDBConfig.INSTANCE.lastClass != ClassType.NONE) {
-            data.updatePlayerClass(CoreDBConfig.INSTANCE.lastClass, CoreDBConfig.INSTANCE.lastClassIsReskinned);
+        if (characterData != null && characterData.getCurrentClass() == ClassType.NONE && CoreDBConfig.INSTANCE.lastClass != ClassType.NONE) {
+            characterData.updatePlayerClass(CoreDBConfig.INSTANCE.lastClass, CoreDBConfig.INSTANCE.lastClassIsReskinned);
         }
 
         if (Reference.onWars) return; // avoid dispatching commands while in wars/nether
@@ -130,7 +129,7 @@ public class ServerEvents implements Listener {
     /**
      * Detects and register the current friend list of the user
      * Called when the client receives a chat message
-     *
+     * <p>
      * Also detects the guild list messages to register the guild members
      *
      * @param e Represents the Event
@@ -142,15 +141,20 @@ public class ServerEvents implements Listener {
         }
         PartyManager.handleMessages(e.getMessage());  // party messages here
 
+        SocialData socialData = PlayerInfo.get(SocialData.class);
+        if (socialData == null) {
+            return;
+        }
+
         String messageText = McIf.getUnformattedText(e.getMessage());
         String formatted = McIf.getFormattedText(e.getMessage());
         Matcher m = FRIENDS_LIST.matcher(formatted);
         if (m.find() && m.group(1).equals(McIf.player().getName())) {
             String[] friends = m.group(2).split(", ");
 
-            Set<String> friendsList = PlayerInfo.get(SocialData.class).getFriendList();
+            Set<String> friendsList = socialData.getFriendList();
             Set<String> newFriendsList = new HashSet<>(Arrays.asList(friends));
-            PlayerInfo.get(SocialData.class).setFriendList(newFriendsList);
+            socialData.setFriendList(newFriendsList);
 
             FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Remove(Sets.difference(friendsList, newFriendsList), false));
             FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Add(Sets.difference(newFriendsList, friendsList), false));
@@ -172,11 +176,11 @@ public class ServerEvents implements Listener {
             waitingForGuildList = false;
             e.setCanceled(true);
         }
-        if (messageText.startsWith("#") && messageText.contains(" XP -")) {
+        if (messageText.startsWith("#") && messageText.contains(" XP")) {
             if (waitingForGuildList) e.setCanceled(true);
 
             String[] splitMessage = messageText.split(" ");
-            if (PlayerInfo.get(SocialData.class).addGuildMember(splitMessage[1])) {
+            if (socialData.addGuildMember(splitMessage[1])) {
                 FrameworkManager.getEventBus().post(new WynnSocialEvent.Guild.Join(splitMessage[1]));
             }
             return;
@@ -186,14 +190,14 @@ public class ServerEvents implements Listener {
             if (!splittedText[1].equalsIgnoreCase("has")) return;
 
             if (splittedText[2].equalsIgnoreCase("joined")) {
-                if (PlayerInfo.get(SocialData.class).addGuildMember(splittedText[0])) {
+                if (socialData.addGuildMember(splittedText[0])) {
                     FrameworkManager.getEventBus().post(new WynnSocialEvent.Guild.Join(splittedText[0]));
                 }
                 return;
             }
 
             if (splittedText[2].equalsIgnoreCase("kicked")) {
-                if (PlayerInfo.get(SocialData.class).removeGuildMember(splittedText[3])) {
+                if (socialData.removeGuildMember(splittedText[3])) {
                     FrameworkManager.getEventBus().post(new WynnSocialEvent.Guild.Leave(splittedText[3]));
                 }
             }
@@ -203,21 +207,26 @@ public class ServerEvents implements Listener {
     /**
      * Detects if the user added or removed a user from their friend list
      * Called when the user execute /friend add or /friend remove
-     *
+     * <p>
      * Also detects the guild list command used to parse the entire guild list
      *
      * @param e Represents the Event
      */
     @SubscribeEvent
     public void addFriend(ClientChatEvent e) {
+        SocialData socialData = PlayerInfo.get(SocialData.class);
+        if (socialData == null) {
+            return;
+        }
+
         if (e.getMessage().startsWith("/friend add ")) {
             String addedFriend = e.getMessage().replace("/friend add ", "");
-            if (PlayerInfo.get(SocialData.class).addFriend(addedFriend)) {
+            if (socialData.addFriend(addedFriend)) {
                 FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Add(Collections.singleton(addedFriend), true));
             }
         } else if (e.getMessage().startsWith("/friend remove ")) {
             String removedFriend = e.getMessage().replace("/friend remove ", "");
-            if (PlayerInfo.get(SocialData.class).removeFriend(removedFriend)) {
+            if (socialData.removeFriend(removedFriend)) {
                 FrameworkManager.getEventBus().post(new WynnSocialEvent.FriendList.Remove(Collections.singleton(removedFriend), true));
             }
         } else if (e.getMessage().startsWith("/guild list") || e.getMessage().startsWith("/gu list")) {
@@ -257,7 +266,8 @@ public class ServerEvents implements Listener {
      */
     @SubscribeEvent
     public void onJoinLobby(WynnClassChangeEvent e) {
-        if (!Reference.onServer || !CoreDBConfig.INSTANCE.enableChangelogOnUpdate || !CoreDBConfig.INSTANCE.showChangelogs) return;
+        if (!Reference.onServer || !CoreDBConfig.INSTANCE.enableChangelogOnUpdate || !CoreDBConfig.INSTANCE.showChangelogs)
+            return;
         if (UpdateOverlay.isDownloading() || DownloaderManager.isRestartOnQueueFinish() || McIf.world() == null) return;
         if (e.getNewClass() == ClassType.NONE) return;
 
@@ -266,13 +276,12 @@ public class ServerEvents implements Listener {
             triedToShowChangelog = true;
         }
 
-        boolean major = !CoreDBConfig.INSTANCE.lastVersion.equals(Reference.VERSION) || CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
         new Thread(() -> {
-            List<String> changelog = WebManager.getChangelog(major, false);
+            Map<String, String> changelog = WebManager.getChangelog(false);
             if (changelog == null) return;
 
             McIf.mc().addScheduledTask(() -> {
-                McIf.mc().displayGuiScreen(new ChangelogUI(changelog, major));
+                McIf.mc().displayGuiScreen(new ChangelogUI(changelog));
 
                 // Showed changelog; Don't show next time.
                 CoreDBConfig.INSTANCE.showChangelogs = false;
@@ -284,7 +293,7 @@ public class ServerEvents implements Listener {
     static BlockPos currentSpawn = null;
 
     /**
-     *  Block compass changing locations if a forced location is set
+     * Block compass changing locations if a forced location is set
      */
     @SubscribeEvent
     public void onCompassChange(PacketEvent<SPacketSpawnPosition> e) {
@@ -332,9 +341,13 @@ public class ServerEvents implements Listener {
 
             FrameworkManager.getEventBus().post(new SchedulerEvent.RegionUpdate());
 
-            LocationData data = PlayerInfo.get(LocationData.class);
-            if (!data.inUnknownLocation()) {
-                String location = data.getLocation();
+            LocationData locationData = PlayerInfo.get(LocationData.class);
+            if (locationData == null) {
+                return;
+            }
+
+            if (!locationData.inUnknownLocation()) {
+                String location = locationData.getLocation();
                 if (!WebManager.getTerritories().containsKey(location)) {
                     location = location.replace('\'', '’');
                 }
@@ -348,7 +361,7 @@ public class ServerEvents implements Listener {
 
             for (TerritoryProfile pf : WebManager.getTerritories().values()) {
                 if (pf.insideArea((int) pl.posX, (int) pl.posZ)) {
-                    data.setLocation(pf.getFriendlyName());
+                    locationData.setLocation(pf.getFriendlyName());
                     return;
                 }
             }
@@ -358,23 +371,23 @@ public class ServerEvents implements Listener {
 
             // housing instances are over these chunk coordinates
             if (chunkX >= 4096 && chunkZ >= 4096) {
-                if (data.inHousing()) return;
+                if (locationData.inHousing()) return;
 
-                data.setLocation("Housing");
+                locationData.setLocation("Housing");
                 return;
             }
 
             // war arenas are below these chunk coordinates
             if (chunkX <= -4096 && chunkZ <= -4096) {
-                if (data.inWars()) return;
+                if (locationData.inWars()) return;
 
-                data.setLocation("Wars");
+                locationData.setLocation("Wars");
                 return;
             }
 
             // none match, set to unknow
-            if (!data.inUnknownLocation()) {
-                data.setLocation("");
+            if (!locationData.inUnknownLocation()) {
+                locationData.setLocation("");
             }
 
         }, 0, 3, TimeUnit.SECONDS);

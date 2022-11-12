@@ -11,6 +11,7 @@ import com.wynntils.core.events.custom.WynnClassChangeEvent;
 import com.wynntils.core.events.custom.WynnWorldEvent;
 import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.utils.helpers.TextAction;
 import com.wynntils.core.utils.objects.Pair;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.chat.configs.ChatConfig;
@@ -22,21 +23,28 @@ import com.wynntils.modules.questbook.enums.AnalysePosition;
 import com.wynntils.modules.questbook.events.custom.QuestBookUpdateEvent;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
 import com.wynntils.webapi.services.TranslationManager;
+import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.network.play.client.CPacketUseEntity;
 import net.minecraft.util.StringUtils;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextFormatting;
+import net.minecraft.util.text.event.HoverEvent;
 import net.minecraftforge.client.event.ClientChatEvent;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.client.event.GuiOpenEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
+import org.lwjgl.input.Keyboard;
+import org.w3c.dom.Text;
 
+import java.awt.*;
+import java.awt.datatransfer.StringSelection;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -181,6 +189,30 @@ public class ClientEvents implements Listener {
         if (!name.contains("NPC") && !name.contains("\u0001")) return; // (probably) not an NPC
 
         ChatManager.progressDialogue();
+    }
+
+    @SubscribeEvent
+    public void onMessageReceived(ClientChatReceivedEvent e) {
+        if(!ChatConfig.INSTANCE.clickToCopyMessage) return;
+
+        ITextComponent component = e.getMessage();
+        if (component.getUnformattedText().isEmpty()) return;
+
+        TextComponentString copyComponent = new TextComponentString(TextFormatting.GRAY + "  [" + TextFormatting.DARK_GRAY + "C" + TextFormatting.GRAY + "]");
+        copyComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(TextFormatting.GRAY + "Click to copy message")));
+
+        TextAction.withDynamicEvent(copyComponent, () -> {
+            ITextComponent copy = component.createCopy();
+            copy.getSiblings().remove(copy.getSiblings().size() - 1);
+
+            String message = copy.getFormattedText();
+            if (!Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) message = (TextFormatting.getTextWithoutFormattingCodes(message));
+
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(message.replace("§", "&")), null);
+            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1f));
+        });
+
+        e.getMessage().appendSibling(copyComponent);
     }
 
 }

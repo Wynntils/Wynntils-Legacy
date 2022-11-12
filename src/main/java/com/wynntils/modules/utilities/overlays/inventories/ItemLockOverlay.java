@@ -11,6 +11,7 @@ import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.textures.Textures;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
@@ -36,6 +37,9 @@ public class ItemLockOverlay implements Listener {
     @SubscribeEvent(priority = EventPriority.LOW)
     public void onChestGui(GuiOverlapEvent.ChestOverlap.HoveredToolTip.Pre e) {
         if (!Reference.onWorld) return;
+
+        // Do not draw locks on ability tree pages
+        if (Utils.isAbilityTreePage(e.getGui())) return;
 
         for (Slot s : e.getGui().inventorySlots.inventorySlots) {
             if (s.slotNumber < e.getGui().getLowerInv().getSizeInventory()) continue;

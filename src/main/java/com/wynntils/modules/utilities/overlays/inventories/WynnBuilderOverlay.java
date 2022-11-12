@@ -43,7 +43,7 @@ public class WynnBuilderOverlay implements Listener {
         e.getButtonList().add(
                 new GuiButton(12,
                         (e.getGui().width - e.getGui().getXSize()) / 2 - 20,
-                        (e.getGui().height - e.getGui().getYSize()) / 2 + 40,
+                        (e.getGui().height - e.getGui().getYSize()) / 2 + 100,
                         18, 18,
                         "➦"
                 )
@@ -54,16 +54,14 @@ public class WynnBuilderOverlay implements Listener {
     public void drawScreen(GuiOverlapEvent.ChestOverlap.DrawScreen.Post e) {
         e.getButtonList().forEach(gb -> {
             if (gb.id == 12 && gb.isMouseOver()) {
-                e.getGui().drawHoveringText(Arrays.asList("Left click: Open Build on WynnBuilder", "Shift + Right click on item: Open Item on WynnBuilder"), e.getMouseX(), e.getMouseY());
+                e.getGui().drawHoveringText(Arrays.asList("Left click: Open Build on WynnBuilder", "Middle-click on item: Open Item on WynnBuilder"), e.getMouseX(), e.getMouseY());
             }
         });
     }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void clickOnChest(GuiOverlapEvent.ChestOverlap.HandleMouseClick e) {
-        if (!Utils.isCharacterInfoPage(e.getGui()) || e.getMouseButton() != 1) return;
-
-        if (!(Keyboard.isKeyDown(Keyboard.KEY_LSHIFT) || Keyboard.isKeyDown(Keyboard.KEY_RSHIFT))) return;
+        if (!Utils.isCharacterInfoPage(e.getGui()) || e.getMouseButton() != 2) return;
 
         Slot slot = e.getGui().getSlotUnderMouse();
         if (slot == null || slot.inventory == null || !slot.getHasStack()) return;

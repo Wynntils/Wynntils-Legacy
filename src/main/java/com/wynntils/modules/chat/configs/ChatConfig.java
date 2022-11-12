@@ -22,6 +22,9 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Chat Timestamps", description = "Should chat messages have timestamps attached before the beginning of them?", order = 5)
     public boolean addTimestampsToChat = false;
 
+    @Setting(displayName = "Click to Copy", description = "Should chat messages be copied to your clipboard when right clicked?", order = 5)
+    public boolean clickToCopyMessage = false;
+
     @Setting(displayName = "Transparent Chat", description = "Should the chat window be transparent?", order = 2)
     public boolean transparent = false;
 

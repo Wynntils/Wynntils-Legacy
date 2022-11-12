@@ -8,6 +8,7 @@ import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.GuiOverlapEvent;
 import com.wynntils.core.framework.interfaces.Listener;
+import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -24,10 +25,18 @@ public class IngredientFilterOverlay implements Listener {
     public void initGui(GuiOverlapEvent.ChestOverlap.InitGui e) {
         if (!Reference.onWorld || !UtilitiesConfig.Items.INSTANCE.filterEnabled) return;
 
+        int buttonXOffset = -20;
+        int buttonYOffset = 15;
+
+        // Character info page extends beyond normal inventory bounds; move it down
+        if (Utils.isCharacterInfoPage(e.getGui())) {
+            buttonYOffset += 105;
+        }
+
         e.getButtonList().add(
                 new GuiButton(11,
-                        (e.getGui().width - e.getGui().getXSize()) / 2 - 20,
-                        (e.getGui().height - e.getGui().getYSize()) / 2 + 15,
+                        (e.getGui().width - e.getGui().getXSize()) / 2 + buttonXOffset,
+                        (e.getGui().height - e.getGui().getYSize()) / 2 + buttonYOffset,
                         18, 18,
                         RarityColorOverlay.getProfessionFilter()
                 )

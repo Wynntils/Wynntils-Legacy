@@ -157,7 +157,7 @@ public class ItemIdentificationOverlay implements Listener {
                     if (requiredClass != null) {
                         longName = spell.forOtherClass(requiredClass).getName() + " Spell Cost";
                     } else {
-                        longName = spell.forOtherClass(PlayerInfo.get(CharacterData.class).getCurrentClass()).getGenericAndSpecificName() + " Cost";
+                        longName = spell.forOtherClass(PlayerInfo.get(CharacterData.class).getCurrentClass()).getName() + " Cost";
                     }
                 }
 
@@ -439,6 +439,7 @@ public class ItemIdentificationOverlay implements Listener {
                         }
 
                         String shortIdName = toShortIdName(idName, isRaw);
+
                         if (stars != 0) {
                             idTag.setInteger(shortIdName + "*", stars);
                         }

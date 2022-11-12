@@ -19,6 +19,7 @@ public class CommonColors extends CustomColor.SetBase {
 
     public static final CommonColors BLACK = new CommonColors(0x000000);
     public static final CommonColors RED = new CommonColors(0xff0000);
+    public static final CommonColors DARK_RED = new CommonColors(0xaa0000);
     public static final CommonColors GREEN = new CommonColors(0x00ff00);
     public static final CommonColors BLUE = new CommonColors(0x0000ff);
     public static final CommonColors YELLOW = new CommonColors(0xffff00);
@@ -39,14 +40,16 @@ public class CommonColors extends CustomColor.SetBase {
         BLACK,      RED,     GREEN,  BLUE,
         YELLOW,     BROWN,   PURPLE, CYAN,
         LIGHT_GRAY, GRAY,    PINK,   LIGHT_GREEN,
-        LIGHT_BLUE, MAGENTA, ORANGE, WHITE
+        LIGHT_BLUE, MAGENTA, ORANGE, WHITE,
+        DARK_RED
     };
 
     private static final String[] names = {
         "BLACK",      "RED",     "GREEN",  "BLUE",
         "YELLOW",     "BROWN",   "PURPLE", "CYAN",
         "LIGHT_GRAY", "GRAY",    "PINK",   "LIGHT_GREEN",
-        "LIGHT_BLUE", "MAGENTA", "ORANGE", "WHITE"
+        "LIGHT_BLUE", "MAGENTA", "ORANGE", "WHITE",
+        "DARK_RED"
     };
 
     private static final Map<String, CommonColors> aliases = new HashMap<>();

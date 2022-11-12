@@ -115,7 +115,6 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
-
         public enum ManaTextures {
             Wynn,
             Brune,
@@ -133,41 +132,31 @@ public class OverlayConfig extends SettingsClass {
 
     }
 
-    @SettingsInfo(name = "mana_timer_settings", displayPath = "Utilities/Overlays/Mana Timer")
-    public static class ManaTimer extends SettingsClass {
-        public static ManaTimer INSTANCE;
+    @SettingsInfo(name = "blood_pool_settings", displayPath = "Utilities/Overlays/Blood Pool")
+    public static class BloodPool extends SettingsClass {
+        public static BloodPool INSTANCE;
 
-        @Setting(displayName = "Show Mana Timer", description = "Disabling this will hide the mana timer regardless of overlay config status.")
-        public boolean showManaTimer = false;
+        @Setting(displayName = "Hide Default Blood Pool Bar", description = "Should the blood pool boss bar be hidden?")
+        public boolean hideDefaultBar = true;
 
-        @Setting(displayName = "Mana Timer Percentage", description = "Should the mana timer use percentages instead of seconds?")
-        public boolean manaTimerUsePercentage = false;
-
-        @Setting(displayName = "Mana Timer Second Decimal", description = "How many decimals should the mana timer have when displaying seconds?")
-        public ManaTimerDecimalFormats manaTimerDecimal = ManaTimerDecimalFormats.One;
-
-        @Setting(displayName = "Mana Timer Seconds Count Down", description = "Should the mana timer count down instead of up when displaying seconds?")
-        public boolean manaTimerCountDown = true;
-
-        @Setting(displayName = "Mana Timer Bar Width", description = "How wide should the mana bar be in pixels?\n\n§8This will be adjusted using Minecraft's scaling.")
+        @Setting(displayName = "Blood Pool Width", description = "How wide should the blood pool be in pixels?\n\n§8This will be adjusted using Minecraft's scaling.")
         @Setting.Limitations.IntLimit(min = 0, max = 81)
         public int width = 81;
 
-        @Setting(displayName = "Mana Timer Bar Orientation", description = "How orientated in degrees should the mana bar be?\n\n§8Accompanied text will be removed.")
+        @Setting(displayName = "Blood Pool Orientation", description = "How orientated in degrees should the blood pool bar be?\n\n§8Accompanied text will be removed.")
         public OverlayRotation overlayRotation = OverlayRotation.NORMAL;
 
-        @Setting(displayName = "Mana Timer Texture", description = "What texture should be used for the mana bar?")
-        public ManaTimerTextures manaTexture = ManaTimerTextures.a;
+        @Setting(displayName = "Blood Pool Texture", description = "What texture should be used for the blood pool bar?")
+        public BloodPoolTextures bloodPoolTexture = BloodPoolTextures.a;
 
-        @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
         @Setting(displayName = "Animation Speed", description = "How fast should the animation be played?\n\n§8Set this to 0 for it to display instantly.")
-        public float animated = 5f;
+        @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
+        public float animated = 2f;
 
         @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
         public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
 
-
-        public enum ManaTimerTextures {
+        public enum BloodPoolTextures {
             Wynn,
             Brune,
             Aether,
@@ -181,22 +170,194 @@ public class OverlayConfig extends SettingsClass {
             d
             // following the format, to add more textures, register them here with a name and create a special case in the render method
         }
+    }
 
-        public enum ManaTimerDecimalFormats {
-            Zero("%.0f"),
-            One("%.1f"),
-            Two("%.2f");
+    @SettingsInfo(name = "mana_bank_settings", displayPath = "Utilities/Overlays/Mana Bank")
+    public static class ManaBank extends SettingsClass {
+        public static ManaBank INSTANCE;
 
-            final String decimalFormat;
+        @Setting(displayName = "Hide Default Mana Bank Bar", description = "Should the mana bank boss bar be hidden?")
+        public boolean hideDefaultBar = true;
 
-            ManaTimerDecimalFormats(String decimalFormat) {
-                this.decimalFormat = decimalFormat;
-            }
+        @Setting(displayName = "Mana Bank Bar Width", description = "How wide should the mana bank bar be in pixels?\n\n§8This will be adjusted using Minecraft's scaling.")
+        @Setting.Limitations.IntLimit(min = 0, max = 81)
+        public int width = 81;
 
-            public String getDecimalFormat() {
-                return this.decimalFormat;
-            }
+        @Setting(displayName = "Mana Bank Bar Orientation", description = "How orientated in degrees should the mana bank bar be?\n\n§8Accompanied text will be removed.")
+        public OverlayRotation overlayRotation = OverlayRotation.NORMAL;
 
+        @Setting(displayName = "Mana Bank Texture", description = "What texture should be used for the mana bank bar?")
+        public ManaBankTextures manaBankTexture = ManaBankTextures.b;
+
+        @Setting(displayName = "Animation Speed", description = "How fast should the animation be played?\n\n§8Set this to 0 for it to display instantly.")
+        @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
+        public float animated = 2f;
+
+        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
+        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+
+        @Setting(displayName = "Play Sound at 120 Mana Bank", description = "Should reaching 120 Mana Bank play a sound (for Chaos Explosion)?")
+        public boolean playSound = true;
+
+        public enum ManaBankTextures {
+            Wynn,
+            Brune,
+            Aether,
+            Skull,
+            Inverse,
+            Skyrim,
+            Rune,
+            a,
+            b,
+            c,
+            d
+            // following the format, to add more textures, register them here with a name and create a special case in the render method
+        }
+    }
+
+    @SettingsInfo(name = "mask_of_awakened_progress", displayPath = "Utilities/Overlays/Mask of the Awakened Progress")
+    public static class AwakenedProgress extends SettingsClass {
+        public static AwakenedProgress INSTANCE;
+
+        @Setting(displayName = "Hide Default Awakening Progress Bar", description = "Should the awakening progress boss bar be hidden?")
+        public boolean hideDefaultBar = true;
+
+        @Setting(displayName = "Awakening Progress Width", description = "How wide should the awakening progress be in pixels?\n\n§8This will be adjusted using Minecraft's scaling.")
+        @Setting.Limitations.IntLimit(min = 0, max = 81)
+        public int width = 81;
+
+        @Setting(displayName = "Awakening Progress Orientation", description = "How orientated in degrees should the awakening progress bar be?\n\n§8Accompanied text will be removed.")
+        public OverlayRotation overlayRotation = OverlayRotation.NORMAL;
+
+        @Setting(displayName = "Awakening Progress Texture", description = "What texture should be used for the awakening progress bar?")
+        public AwakenedProgressTexture awakenedProgressTexture = AwakenedProgressTexture.a;
+
+        @Setting(displayName = "Animation Speed", description = "How fast should the animation be played?\n\n§8Set this to 0 for it to display instantly.")
+        @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
+        public float animated = 2f;
+
+        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
+        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+
+        public enum AwakenedProgressTexture {
+            Wynn,
+            Brune,
+            Aether,
+            Skull,
+            Inverse,
+            Skyrim,
+            Rune,
+            a,
+            b,
+            c,
+            d
+            // following the format, to add more textures, register them here with a name and create a special case in the render method
+        }
+    }
+
+    @SettingsInfo(name = "corrupted_bar", displayPath = "Utilities/Overlays/Corrupted Bar")
+    public static class CorruptedBar extends SettingsClass {
+        public static CorruptedBar INSTANCE;
+
+        @Setting(displayName = "Hide Default Corrupted Progress Bar", description = "Should the corrupted progress boss bar be hidden?")
+        public boolean hideDefaultBar = true;
+
+        @Setting(displayName = "Corrupted Progress Width", description = "How wide should the corrupted progress be in pixels?\n\n§8This will be adjusted using Minecraft's scaling.")
+        @Setting.Limitations.IntLimit(min = 0, max = 81)
+        public int width = 81;
+
+        @Setting(displayName = "Corrupted Progress Orientation", description = "How orientated in degrees should the corrupted progress bar be?\n\n§8Accompanied text will be removed.")
+        public OverlayRotation overlayRotation = OverlayRotation.NORMAL;
+
+        @Setting(displayName = "Corrupted Progress Texture", description = "What texture should be used for the corrupted progress bar?")
+        public CorruptedProgressTexture corruptedProgressTexture = CorruptedProgressTexture.a;
+
+        @Setting(displayName = "Animation Speed", description = "How fast should the animation be played?\n\n§8Set this to 0 for it to display instantly.")
+        @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
+        public float animated = 2f;
+
+        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
+        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+
+        public enum CorruptedProgressTexture {
+            Wynn,
+            Brune,
+            Aether,
+            Skull,
+            Inverse,
+            Skyrim,
+            Rune,
+            a,
+            b,
+            c,
+            d
+            // following the format, to add more textures, register them here with a name and create a special case in the render method
+        }
+    }
+
+    @SettingsInfo(name = "current_mask_overlay", displayPath = "Utilities/Overlays/Mask")
+    public static class MaskOverlay extends SettingsClass {
+        public static MaskOverlay INSTANCE;
+
+        @Setting(displayName = "No mask display string", description = "What text should be displayed if no mask is applied? Color will be automatically applied. Use %mask% to display the mask name.")
+        public String displayStringNone = "No mask equipped";
+
+        @Setting(displayName = "Lunatic display string", description = "What text should be displayed if the Lunatic mask is applied? Color will be automatically applied. Use %mask% to display the mask name.")
+        public String displayStringLunatic = "%mask% mask equipped";
+
+        @Setting(displayName = "Fanatic display string", description = "What text should be displayed if the Fanatic mask is applied? Color will be automatically applied. Use %mask% to display the mask name.")
+        public String displayStringFanatic = "%mask% mask equipped";
+
+        @Setting(displayName = "Coward display string", description = "What text should be displayed if the Coward mask is applied? Color will be automatically applied. Use %mask% to display the mask name.")
+        public String displayStringCoward = "%mask% mask equipped";
+
+        @Setting(displayName = "Awakened display string", description = "What text should be displayed if the Awakened mask is applied? Color will be automatically applied. Use %mask% to display the mask name.")
+        public String displayStringAwakened = "%mask% mask equipped";
+
+        @Setting(displayName = "Hide Default Mask Title", description = "Should the mask switching title be hidden?")
+        public boolean hideSwitchingTitle = true;
+
+        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
+        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+    }
+
+    @SettingsInfo(name = "focus_bar", displayPath = "Utilities/Overlays/Focus")
+    public static class Focus extends SettingsClass {
+        public static Focus INSTANCE;
+
+        @Setting(displayName = "Hide Default Focus Bar", description = "Should the default focus boss bar be hidden?")
+        public boolean hideDefaultBar = true;
+
+        @Setting(displayName = "Focus Bar Width", description = "How wide should the focus bar be in pixels?\n\n§8This will be adjusted using Minecraft's scaling.")
+        @Setting.Limitations.IntLimit(min = 0, max = 81)
+        public int width = 81;
+
+        @Setting(displayName = "Focus Bar Orientation", description = "How orientated in degrees should the focus bar be?\n\n§8Accompanied text will be removed.")
+        public OverlayRotation overlayRotation = OverlayRotation.NORMAL;
+
+        @Setting(displayName = "Focus Bar Texture", description = "What texture should be used for the focus bar?")
+        public FocusBarTexture focusBarTexture = FocusBarTexture.a;
+
+        @Setting(displayName = "Animation Speed", description = "How fast should the animation be played?\n\n§8Set this to 0 for it to display instantly.")
+        @Setting.Limitations.FloatLimit(min = 0f, max = 10f)
+        public float animated = 2f;
+
+        @Setting(displayName = "Text Shadow", description = "What should the text shadow look like?")
+        public SmartFontRenderer.TextShadow textShadow = SmartFontRenderer.TextShadow.OUTLINE;
+
+        public enum FocusBarTexture {
+            Wynn,
+            Brune,
+            Aether,
+            Skull,
+            Inverse,
+            Skyrim,
+            Rune,
+            a,
+            b,
+            c,
+            d
+            // following the format, to add more textures, register them here with a name and create a special case in the render method
         }
     }
 
@@ -385,6 +546,9 @@ public class OverlayConfig extends SettingsClass {
 
             @Setting(displayName = "Combat Messages", description = "Should combat chat messages be redirected to the update ticker?")
             public boolean redirectCombat = true;
+
+            @Setting(displayName = "Refresh Messages", description = "Should ability refresh chat messages be redirected to the update ticker?")
+            public boolean redirectRefresh = true;
 
             @Setting(displayName = "Horse Messages", description = "Should messages related to your horse be redirected to the update ticker?")
             public boolean redirectHorse = true;
@@ -670,6 +834,7 @@ public class OverlayConfig extends SettingsClass {
             HEALTH("Current health"),
             HEALTH_MAX("Max health"),
             HEALTH_PCT("Current health percentage"),
+            ELEMENTAL_SPECIAL("Current elemental special %"),
             XP("Current XP (Formatted)"),
             XP_RAW("Current XP (Raw)"),
             XP_REQ("Required XP to level up (Formatted)"),
@@ -748,21 +913,17 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Player List Opening Duration", description = "How long should the opening animation of the custom player list last?", order = 3)
         @Setting.Limitations.DoubleLimit(min = 0D, max = 500D, precision = 5D)
         public double openingDuration = 125D;
-
     }
 
     @SettingsInfo(name = "consumable_timer_settings", displayPath = "Utilities/Overlays/Consumable Timer")
     public static class ConsumableTimer extends SettingsClass {
         public static ConsumableTimer INSTANCE;
 
-        @Setting(displayName = "Active Effects", description = "Should active effects be displayed as a timer?")
+        @Setting(displayName = "Active Effects", description = "Should active effects be displayed as a timer?\n\n§8These are the effects in the tab list.")
         public boolean showEffects = true;
 
         @Setting(displayName = "Loot Chest Cooldown", description = "Should the cooldown of loot chests be displayed as a timer?")
         public boolean showCooldown = true;
-
-        @Setting(displayName = "Spell Effects", description = "Should spell effects be displayed as a timer?")
-        public boolean showSpellEffects = true;
 
         @Setting(displayName = "Track Totem", description = "Should shamans' totem be displayed as a timer?\n\n§8This setting is currently experimental.")
         public boolean trackTotem = false;

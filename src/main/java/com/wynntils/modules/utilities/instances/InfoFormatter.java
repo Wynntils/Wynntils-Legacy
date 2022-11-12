@@ -17,7 +17,6 @@ import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.managers.PingManager;
-import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.interfaces.InfoModule;
 import com.wynntils.modules.utilities.managers.*;
@@ -142,6 +141,12 @@ public class InfoFormatter {
             return Integer.toString((int)Math.round(currentHealth / maxHealth * 100));
         }, "health_pct");
 
+        // Elemental special
+        registerFormatter((input) -> {
+            if (PlayerInfo.get(CharacterData.class).getElementalSpecialString().equals("")) return "N/A";
+            return PlayerInfo.get(CharacterData.class).getElementalSpecialString();
+        }, "elemental_special", "es");
+
         // Current XP (formatted)
         registerFormatter((input) ->
                 StringUtils.integerToShortString(PlayerInfo.get(CharacterData.class).getCurrentXP()),
@@ -247,36 +252,40 @@ public class InfoFormatter {
 
         // Current guild that owns current territory
         registerFormatter((input) -> {
-                    String territory = PlayerInfo.get(LocationData.class).getLocation();
-                    if (territory.isEmpty()) return "";
+                LocationData data = PlayerInfo.get(LocationData.class);
+                if (data.inUnknownLocation() || data.inHousing() || data.inWars()) return "";
+                String territory = data.getLocation();
 
-                    TerritoryProfile profile = WebManager.getTerritories().get(territory);
+                if (!WebManager.getTerritories().containsKey(territory)) {
+                    territory = territory.replace('\'', '’');
+                }
 
-                    if (profile == null) {
-                        Reference.LOGGER.warn(String.format("Invalid territory for %%territory_owner%% %s", territory));
-                        return "?";
-                    }
+                TerritoryProfile profile = WebManager.getTerritories().get(territory);
 
-                    return profile.getGuild();
-                },
-                "territory_owner", "terguild");
+                if (profile == null) return "Unknown";
+
+                return profile.getGuild();
+            },
+            "territory_owner", "terguild");
 
 
         // Current guild that owns current territory (prefix)
         registerFormatter((input) -> {
-                    String territory = PlayerInfo.get(LocationData.class).getLocation();
-                    if (territory.isEmpty()) return "";
+                LocationData data = PlayerInfo.get(LocationData.class);
+                if (data.inUnknownLocation() || data.inHousing() || data.inWars()) return "";
+                String territory = data.getLocation();
 
-                    TerritoryProfile profile = WebManager.getTerritories().get(territory);
+                if (!WebManager.getTerritories().containsKey(territory)) {
+                    territory = territory.replace('\'', '’');
+                }
 
-                    if (profile == null) {
-                        Reference.LOGGER.warn(String.format("Invalid territory for %%territory_owner_prefix%% %s", territory));
-                        return "?";
-                    }
+                TerritoryProfile profile = WebManager.getTerritories().get(territory);
 
-                    return profile.getGuildPrefix();
-                    },
-                "territory_owner_prefix", "terguild_pref");
+                if (profile == null) return "UNK";
+
+                return profile.getGuildPrefix();
+            },
+            "territory_owner_prefix", "terguild_pref");
 
         // Distance from compass beacon
         registerFormatter((input) ->{
@@ -319,15 +328,6 @@ public class InfoFormatter {
 
             return cache.get("soulpointseconds");
         }, "soulpointtimer_s", "sptimer_s");
-
-        // Mana regen timer, dependent on the timer overlay config
-        registerFormatter((input) -> {
-            if (!cache.containsKey("manaregenformatted")) {
-                cacheManaRegenTimer();
-            }
-
-            return cache.get("manaregenformatted");
-        },"manaregen_timer", "mr_timer");
 
         // Current soul points
         registerFormatter((input) ->
@@ -616,21 +616,6 @@ public class InfoFormatter {
         cache.put("soulpointtimer", timer);
         cache.put("soulpointminutes", Integer.toString(minutes));
         cache.put("soulpointseconds", Integer.toString(seconds));
-    }
-
-    private void cacheManaRegenTimer() {
-        int ticks = PlayerInfo.get(InventoryData.class).getTicksToNextManaRegen();
-        float displayedValue = (OverlayConfig.ManaTimer.INSTANCE.manaTimerUsePercentage) ? ticks : ticks / 20.0f;
-
-        String decimalFormat = (OverlayConfig.ManaTimer.INSTANCE.manaTimerUsePercentage) ?
-                OverlayConfig.ManaTimer.ManaTimerDecimalFormats.Zero.getDecimalFormat() :
-                OverlayConfig.ManaTimer.INSTANCE.manaTimerDecimal.getDecimalFormat();
-
-        String displayedProgress = (!OverlayConfig.ManaTimer.INSTANCE.manaTimerUsePercentage && OverlayConfig.ManaTimer.INSTANCE.manaTimerCountDown) ?
-                String.format(decimalFormat, 5.0f - displayedValue) :
-                String.format(decimalFormat, displayedValue);
-
-        cache.put("manaregenformatted", displayedProgress);
     }
 
     private void cacheHorseData() {

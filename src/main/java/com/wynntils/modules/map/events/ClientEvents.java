@@ -19,6 +19,8 @@ import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.map.managers.BeaconManager;
 import com.wynntils.modules.map.managers.GuildResourceManager;
 import com.wynntils.modules.map.managers.LootRunManager;
+import com.wynntils.modules.map.managers.NametagManager;
+import com.wynntils.modules.map.overlays.objects.MapWaypointIcon;
 import com.wynntils.modules.utilities.instances.Toast;
 import com.wynntils.modules.utilities.overlays.hud.ToastOverlay;
 import com.wynntils.webapi.WebManager;
@@ -81,6 +83,19 @@ public class ClientEvents implements Listener {
     @SubscribeEvent
     public void renderWorld(RenderWorldLastEvent e) {
         LootRunManager.renderActivePaths();
+
+        if (MapConfig.BeaconBeams.INSTANCE.showBeaconBeams) {
+            Location playerLoc = new Location(McIf.player().posX, McIf.player().posY, McIf.player().posZ);
+            for (WaypointProfile waypoint : MapConfig.Waypoints.INSTANCE.waypoints) {
+                boolean groupValue = MapConfig.BeaconBeams.INSTANCE.groupSettings.getOrDefault(waypoint.getType(), false);
+                if (!waypoint.shouldShowBeaconBeam() && !groupValue) continue;
+                Location location = new Location(waypoint.getX(), waypoint.getY(), waypoint.getZ());
+                boolean inRange = waypoint.getZoomNeeded() == MapWaypointIcon.ANY_ZOOM || location.distance(playerLoc) <= 60;
+                if (!inRange) continue;
+                BeaconManager.drawBeam(location, waypoint.getColor(), e.getPartialTicks());
+                NametagManager.renderWaypointName(waypoint.getName(), location.x, location.y, location.z);
+            }
+        }
 
         if (!MapConfig.INSTANCE.showCompassBeam || CompassManager.getCompassLocation() == null) return;
 

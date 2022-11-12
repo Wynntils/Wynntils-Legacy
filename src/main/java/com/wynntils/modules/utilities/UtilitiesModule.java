@@ -15,6 +15,7 @@ import com.wynntils.modules.utilities.events.ClientEvents;
 import com.wynntils.modules.utilities.events.ServerEvents;
 import com.wynntils.modules.utilities.instances.InfoFormatter;
 import com.wynntils.modules.utilities.managers.KeyManager;
+import com.wynntils.modules.utilities.managers.QuickCastManager;
 import com.wynntils.modules.utilities.overlays.OverlayEvents;
 import com.wynntils.modules.utilities.overlays.hud.*;
 import com.wynntils.modules.utilities.overlays.inventories.*;
@@ -26,6 +27,7 @@ public class UtilitiesModule extends Module {
     private GameUpdateOverlay gameUpdateOverlay;
     private ActionBarOverlay actionBarOverlay;
     private InfoFormatter infoFormatter;
+    private CurrentMaskOverlay currentMaskOverlay;
 
     public void onEnable() {
         module = this;
@@ -36,12 +38,15 @@ public class UtilitiesModule extends Module {
         registerEvents(new OverlayEvents());
         registerEvents(new ClientEvents());
 
+        registerEvents(new QuickCastManager());
+
         // Inventory Overlays
         registerEvents(new ItemIdentificationOverlay());
         registerEvents(new RarityColorOverlay());
         registerEvents(new ItemLevelOverlay());
         registerEvents(new HotbarChargeOverlay());
         registerEvents(new SkillPointOverlay());
+        registerEvents(new TradeMarketOverlay());
         registerEvents(new ItemLockOverlay());
         registerEvents(new FavoriteTradesOverlay());
         registerEvents(new MenuButtonsOverlay());
@@ -62,8 +67,13 @@ public class UtilitiesModule extends Module {
         registerOverlay(new HealthBarOverlay(), Priority.NORMAL);
         registerOverlay(new HotbarOverlay(), Priority.NORMAL);
         registerOverlay(new ManaBarOverlay(), Priority.NORMAL);
-        registerOverlay(new ManaTimerOverlay(), Priority.LOW);
+        registerOverlay(new BloodPoolBarOverlay(), Priority.NORMAL);
+        registerOverlay(new ManaBankBarOverlay(), Priority.NORMAL);
+        registerOverlay(new AwakenedProgressBarOverlay(), Priority.NORMAL);
+        registerOverlay(new CorruptedBarOverlay(), Priority.NORMAL);
+        registerOverlay(new FocusBarOverlay(), Priority.NORMAL);
         registerOverlay(new ExpBarOverlay(), Priority.NORMAL);
+        registerOverlay(currentMaskOverlay = new CurrentMaskOverlay(), Priority.NORMAL);
         registerOverlay(new LevelingOverlay(), Priority.LOW);
         registerOverlay(new BubblesOverlay(), Priority.HIGHEST);
         registerOverlay(new DrowningVignetteOverlay(), Priority.HIGHEST);
@@ -105,7 +115,12 @@ public class UtilitiesModule extends Module {
         registerSettings(OverlayConfig.Leveling.class);
         registerSettings(OverlayConfig.Exp.class);
         registerSettings(OverlayConfig.Mana.class);
-        registerSettings(OverlayConfig.ManaTimer.class);
+        registerSettings(OverlayConfig.BloodPool.class);
+        registerSettings(OverlayConfig.ManaBank.class);
+        registerSettings(OverlayConfig.CorruptedBar.class);
+        registerSettings(OverlayConfig.AwakenedProgress.class);
+        registerSettings(OverlayConfig.MaskOverlay.class);
+        registerSettings(OverlayConfig.Focus.class);
         registerSettings(OverlayConfig.Hotbar.class);
         registerSettings(OverlayConfig.ToastsSettings.class);
         registerSettings(OverlayConfig.WarTimer.class);

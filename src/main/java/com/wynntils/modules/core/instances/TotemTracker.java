@@ -10,6 +10,7 @@ import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.SpellEvent;
 import com.wynntils.core.events.custom.WynnClassChangeEvent;
 import com.wynntils.core.framework.FrameworkManager;
+import com.wynntils.core.framework.enums.SpellType;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
 import net.minecraft.entity.Entity;
@@ -29,11 +30,11 @@ import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 public class TotemTracker {
-    private static final Pattern SHAMAN_TOTEM_TIMER = Pattern.compile("^§c([0-9][0-9]?)s$");
+    private static final Pattern SHAMAN_TOTEM_TIMER = Pattern.compile("§c(\\d+)s");
     private static final Pattern MOB_TOTEM_NAME = Pattern.compile("^§f§l(.*)'s§6§l Mob Totem$");
     private static final Pattern MOB_TOTEM_TIMER = Pattern.compile("^§c§l([0-9]+):([0-9]+)$");
 
-    public enum TotemState { NONE, SUMMONED, LANDING, PREPARING, ACTIVE}
+    public enum TotemState { NONE, SUMMONED, LANDING, PREPARING, ACTIVE }
     private TotemState totemState = TotemState.NONE;
 
     private int totemId = -1;
@@ -60,7 +61,7 @@ public class TotemTracker {
     private static boolean isClose(double a, double b)
     {
         double diff = Math.abs(a - b);
-        return  (diff < 3);
+        return (diff < 3);
     }
 
     private void postEvent(Event event) {
@@ -151,11 +152,11 @@ public class TotemTracker {
     }
 
     public void onTotemSpellCast(SpellEvent.Cast e) {
-        if (e.getSpell().equals("Totem") || e.getSpell().equals("Sky Emblem")) {
+        if (SpellType.TOTEM.getName().equals(e.getSpell())) {
             totemCastTimestamp = System.currentTimeMillis();
-            heldWeaponSlot =  McIf.player().inventory.currentItem;
+            heldWeaponSlot = McIf.player().inventory.currentItem;
             checkTotemSummoned();
-        } else if (e.getSpell().equals("Uproot") || e.getSpell().equals("Gale Funnel")) {
+        } else if (SpellType.UPROOT.getName().equals(e.getSpell())) {
             totemCastTimestamp = System.currentTimeMillis();
         }
     }
@@ -189,36 +190,25 @@ public class TotemTracker {
 
         if (totemState == TotemState.PREPARING || totemState == TotemState.SUMMONED || totemState == TotemState.ACTIVE) {
             Matcher m = SHAMAN_TOTEM_TIMER.matcher(name);
-            if (m.find()) {
+            if (m.matches()) {
                 // We got a armor stand with a timer nametag
-                if (totemState == TotemState.PREPARING ) {
-                    // Widen search range until found
-                    double acceptableDistance = 3.0 + (System.currentTimeMillis() - totemPreparedTimestamp)/1000d;
-                    double distanceXZ = Math.abs(entity.posX - totemX) + Math.abs(entity.posZ - totemZ);
-                    if (distanceXZ < acceptableDistance && entity.posY <= (totemY + 2.0 + (acceptableDistance/3.0)) && entity.posY >= ((totemY + 2.0))) {
-                        // Update totem location if it was too far away
-                        totemX = entity.posX;
-                        totemY = entity.posY - 2.0;
-                        totemZ = entity.posZ;
-                    }
+                if (totemState == TotemState.PREPARING) {
+                    totemX = entity.posX;
+                    totemY = entity.posY - 2.8;
+                    totemZ = entity.posZ;
                 }
 
-                double distanceXZ = Math.abs(entity.posX - totemX) + Math.abs(entity.posZ - totemZ);
-                if (distanceXZ < 1.0 && entity.posY <= (totemY + 3.0) && entity.posY >= ((totemY + 2.0))) {
-                    // ... and it's close to our totem; regard this as our timer
-                    int time = Integer.parseInt(m.group(1));
-
-                    if (totemTime == -1) {
-                        totemTime = time;
-                        totemState = TotemState.ACTIVE;
-                        postEvent(new SpellEvent.TotemActivated(totemTime, new Location(totemX, totemY, totemZ)));
-                    } else if (time != totemTime) {
-                        if (time > totemTime) {
-                            // Timer restarted using uproot
-                            postEvent(new SpellEvent.TotemRenewed(time, new Location(totemX, totemY, totemZ)));
-                        }
-                        totemTime = time;
+                int time = Integer.parseInt(m.group(1));
+                if (totemTime == -1) {
+                    totemTime = time;
+                    totemState = TotemState.ACTIVE;
+                    postEvent(new SpellEvent.TotemActivated(totemTime, new Location(totemX, totemY, totemZ)));
+                } else if (time != totemTime) {
+                    if (time > totemTime) {
+                        // Timer restarted using uproot
+                        postEvent(new SpellEvent.TotemRenewed(time, new Location(totemX, totemY, totemZ)));
                     }
+                    totemTime = time;
                 }
                 return;
             }

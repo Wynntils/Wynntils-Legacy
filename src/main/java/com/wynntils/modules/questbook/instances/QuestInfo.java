@@ -78,7 +78,7 @@ public class QuestInfo {
         StringBuilder descriptionBuilder = new StringBuilder();
         while (loreIterator.hasNext()) {
             String description = loreIterator.next();
-            if (description.equalsIgnoreCase(DARK_RED + "Right click to stop tracking") || description.equalsIgnoreCase(LIGHT_PURPLE + "" + BOLD + "RIGHT-CLICK TO TRACK")) {
+            if (description.equalsIgnoreCase(DARK_RED + "Click to stop tracking") || description.equalsIgnoreCase(LIGHT_PURPLE + "" + BOLD + "CLICK TO TRACK")) {
                 break;
             }
 

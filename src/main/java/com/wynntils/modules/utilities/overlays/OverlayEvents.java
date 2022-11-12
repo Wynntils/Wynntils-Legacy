@@ -7,14 +7,15 @@ package com.wynntils.modules.utilities.overlays;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
+import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.interfaces.Listener;
-import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+import com.wynntils.modules.utilities.instances.ShamanMaskType;
 import com.wynntils.modules.utilities.instances.Toast;
 import com.wynntils.modules.utilities.managers.MountHorseManager;
 import com.wynntils.modules.utilities.overlays.hud.*;
@@ -44,13 +45,11 @@ public class OverlayEvents implements Listener {
     private static final Pattern CHEST_COOLDOWN_PATTERN = Pattern.compile("§7Please wait an additional ([0-9]+) minutes? before opening this chest.");
     private static final Pattern GATHERING_COOLDOWN_PATTERN = Pattern.compile("^You need to wait ([0-9]+) seconds after logging in to gather from this resource!");
     private static final Pattern SERVER_RESTART_PATTERN = Pattern.compile("§cThis world will restart in ([0-9]+) (minutes?|seconds?)\\.");
+    private static final Pattern MASK_PATTERN = Pattern.compile("§cMask of the (Coward|Lunatic|Fanatic)§r");
 
-    //private static boolean wynnExpTimestampNotified = false;
     private long loginTime;
 
     private static String totemName;
-
-    private boolean isVanished = false; // used in onEffectApplied
 
     @SubscribeEvent
     public void onChatMessageReceived(ClientChatReceivedEvent e) {
@@ -65,7 +64,29 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void onTitle(PacketEvent<SPacketTitle> e) {
+        if (e.getPacket() == null || e.getPacket().getMessage() == null) return;
+
         WarTimerOverlay.onTitle(e);
+
+        String title = e.getPacket().getMessage().getFormattedText();
+        if (title.contains("Mask of the ") || title.contains("➤")) {
+            parseMask(title);
+            if (OverlayConfig.MaskOverlay.INSTANCE.hideSwitchingTitle) e.setCanceled(true);
+        }
+    }
+
+    private void parseMask(String title) {
+        Matcher matcher = MASK_PATTERN.matcher(title);
+
+        ShamanMaskType currentMask = ShamanMaskType.NONE;
+        if(title.contains("Awakened")) currentMask = ShamanMaskType.AWAKENED;
+        else if (title.contains("§cL")) currentMask = ShamanMaskType.LUNATIC;
+        else if (title.contains("§6F")) currentMask = ShamanMaskType.FANATIC;
+        else if (title.contains("§bC")) currentMask = ShamanMaskType.COWARD;
+        else if (title.startsWith("§8")) currentMask = ShamanMaskType.NONE;
+        else if (matcher.matches()) currentMask = ShamanMaskType.find(matcher.group(1));
+
+        PlayerInfo.get(CharacterData.class).setCurrentShamanMask(currentMask);
     }
 
     @SubscribeEvent
@@ -147,15 +168,6 @@ public class OverlayEvents implements Listener {
             }
         } else {
             ToastOverlay.addToast(new Toast(Toast.ToastType.LEVEL_UP, "Level Up!", "You are now level " + e.getNewLevel()));
-        }
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST)
-    public void onScrollUsed(ChatEvent.Post e) {
-        String messageText = McIf.getUnformattedText(e.getMessage());
-        if (messageText.matches(".*? for [0-9]* seconds\\]")) { //consumable message
-            //10 tick delay, since chat event occurs before default consumable event
-            new Delay(() -> ConsumableTimerOverlay.addExternalScroll(messageText), 10);
         }
     }
 
@@ -294,49 +306,38 @@ public class OverlayEvents implements Listener {
                 e.setCanceled(true);
                 return;
             // ARCHER
-            } else if (messageText.equals("+3 minutes speed boost.")) {
-                GameUpdateOverlay.queueMessage(AQUA + "+3 minutes " + GRAY + "speed boost");
-                if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
-                    ConsumableTimerOverlay.addBasicTimer("Speed boost", 3 * 60);
-                }
+            } else if (messageText.equals("+2 minutes speed boost.")) {
+                GameUpdateOverlay.queueMessage(AQUA + "+2 minutes " + GRAY + "speed boost");
                 e.setCanceled(true);
                 return;
             } else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} gave you \\+3 minutes speed boost\\.")) {
                 GameUpdateOverlay.queueMessage(AQUA + "+3 minutes " + GRAY + "speed boost (" + formattedText.split(" ")[0].replace(RESET.toString(), "") + GRAY + ")");
-                if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
-                    ConsumableTimerOverlay.addBasicTimer("Speed boost", 3 * 60);
-                }
                 e.setCanceled(true);
                 return;
             }
             // WARRIOR
-            else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has given you 10% resistance\\.")) {
-                GameUpdateOverlay.queueMessage(AQUA + "+10% resistance " + GRAY + "(" + formattedText.split(" ")[0].replace(RESET.toString(), "") + GRAY + ")");
-                if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
-                    ConsumableTimerOverlay.addBasicTimer("War Scream I", 2 * 60);
-                }
+            else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has given you 20% resistance\\.")) {
+                GameUpdateOverlay.queueMessage(AQUA + "+20% resistance " + GRAY + "(" + formattedText.split(" ")[0].replace(RESET.toString(), "") + GRAY + ")");
                 e.setCanceled(true);
                 return;
-            } else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has given you 15% resistance\\.")) {
-                GameUpdateOverlay.queueMessage(AQUA + "+15% resistance " + GRAY + "(" + formattedText.split(" ")[0].replace(RESET.toString(), "") + GRAY + ")");
-                if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
-                    ConsumableTimerOverlay.addBasicTimer("War Scream II", 3 * 60);
-                }
-                e.setCanceled(true);
-                return;
-            } else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has given you 20% resistance and 10% strength\\.")) {
-                GameUpdateOverlay.queueMessage(AQUA + "+20% resistance " + GRAY + "& " + AQUA + "+10% strength " + GRAY + "(" + formattedText.split(" ")[0].replace(RESET.toString(), "") + GRAY + ")");
-                if (OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) {
-                    ConsumableTimerOverlay.addBasicTimer("War Scream III", 4 * 60);
-                }
+            } else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} has given you 20% resistance and 30% strength\\.")) {
+                GameUpdateOverlay.queueMessage(AQUA + "+20% resistance " + GRAY + "& " + AQUA + "+30% strength " + GRAY + "(" + formattedText.split(" ")[0].replace(RESET.toString(), "") + GRAY + ")");
                 e.setCanceled(true);
                 return;
             }
         }
+
+        if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectRefresh) {
+            if (formattedText.matches("§8\\[§r§7⬤§r§8\\] §r§7(.+)§r§8 has been refreshed!§r")) {
+                GameUpdateOverlay.queueMessage(formattedText);
+                e.setCanceled(true);
+            }
+        }
+
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectOther) {
-            if (messageText.matches("You have \\d+ unused Skill Points! Right-Click while holding your compass to use them!")) {
+            if (messageText.matches("You have \\d+ unused Skill Points and \\d+ unused Ability Points! Right-Click while holding your compass to use them")) {
                 String[] res = messageText.split(" ");
-                GameUpdateOverlay.queueMessage(YELLOW + res[2] + GOLD + " skill points available.");
+                GameUpdateOverlay.queueMessage(YELLOW + res[2] + GOLD + " skill points and " + YELLOW + res[7] + GOLD + " ability points available.");
                 e.setCanceled(true);
                 return;
             } else if (messageText.matches("[a-zA-Z0-9_ ]{1,19} is now level \\d+")) {
@@ -402,7 +403,7 @@ public class OverlayEvents implements Listener {
             }
         }
         if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectClass) {
-            if (messageText.equals("Select a class! Each class is saved individually across all servers, you can come back at any time with /class and select another class!")) {
+            if (messageText.equals("Select a character! Each character is saved individually across all servers, you can come back at any time with /class and select another character!")) {
                 GameUpdateOverlay.queueMessage(GOLD + "Select a character!");
                 e.setCanceled(true);
                 return;
@@ -587,7 +588,7 @@ public class OverlayEvents implements Listener {
                 long timeNow = McIf.getSystemTime();
                 int timeLeft = seconds - (int) (timeNow - loginTime) / 1000;
                 if (timeLeft > 0) {
-                    ConsumableTimerOverlay.addBasicTimer("Gather cooldown", timeLeft, false);
+                    ConsumableTimerOverlay.addDynamicTimer("Gather cooldown", timeLeft, false);
                 }
             }
             return;
@@ -602,7 +603,7 @@ public class OverlayEvents implements Listener {
             }
 
             if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
-                ConsumableTimerOverlay.addBasicTimer("Loot cooldown", minutes * 60, true);
+                ConsumableTimerOverlay.addDynamicTimer("Loot cooldown", minutes * 60, true);
             }
             return;
         }
@@ -616,7 +617,7 @@ public class OverlayEvents implements Listener {
                 if (restartMatcher.group(2).equals("minutes") || restartMatcher.group(2).equals("minute")) { // if it is in minutes
                     seconds *= 60;
                 }
-                ConsumableTimerOverlay.addBasicTimer("Server restart", seconds);
+                ConsumableTimerOverlay.addDynamicTimer("Server restart", seconds, true);
             }
             if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectServer) { // if you want to redirect it
                 GameUpdateOverlay.queueMessage(DARK_RED + "The server is restarting in " + restartMatcher.group(1) + " " + restartMatcher.group(2));
@@ -768,109 +769,72 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void onPlayerDeath(GameEvent.PlayerDeath e) {
-        ConsumableTimerOverlay.clearConsumables(false);
+        ConsumableTimerOverlay.clearTimers(false);
     }
 
     @SubscribeEvent
     public void onEffectApplied(PacketEvent<SPacketEntityEffect> e) {
-        if (!Reference.onWorld || !OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) return;
+        if (!Reference.onWorld || !OverlayConfig.ConsumableTimer.INSTANCE.showEffects) return;
 
-        SPacketEntityEffect effect = e.getPacket();
-        if (effect.getEntityId() != McIf.player().getEntityId()) return;
+        SPacketEntityEffect packet = e.getPacket();
+        if (packet.getEntityId() != McIf.player().getEntityId()) return;
 
-        Potion potion = Potion.getPotionById(effect.getEffectId());
+        Potion potion = Potion.getPotionById(packet.getEffectId());
 
-        String timerName;
-
-        // if the effect is speed timer is "Speed boost"
-        if (potion == MobEffects.SPEED && effect.getAmplifier() == 2) {
-            timerName = "Speed boost";
+        // normal weapons get the WITHER effect, Weathered (the mythic) gets INVISIBILITY instead
+        if ((potion == MobEffects.WITHER || potion == MobEffects.INVISIBILITY) && PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ASSASSIN) {
+            ConsumableTimerOverlay.addDynamicTimer("Vanish", 5, false);
         }
-        // if the effect is invisibility timer is "Vanish"
-        else if (potion == MobEffects.INVISIBILITY && effect.getDuration() < 200) {
-            timerName = "Vanish";
-            isVanished = true;
-        }
-        // if the player isn't invisible (didn't use vanish)
-        else if (potion == MobEffects.RESISTANCE) { // War Scream effect
-            if (isVanished) { // remove the vanish indicator
-                isVanished = false;
-                return;
-            }
-
-            if (effect.getAmplifier() == 0) {
-                timerName = "War Scream I";
-            } else if (effect.getAmplifier() == 1) {
-                timerName = "War Scream II";
-            } else if (effect.getAmplifier() == 2) {
-                timerName = "War Scream III";
-            } else {
-                return;
-            }
-        } else {
-            return;
-        }
-
-        // create timer with name and duration (duration in ticks)/20 -> seconds
-        McIf.mc().addScheduledTask(() ->
-                ConsumableTimerOverlay.addBasicTimer(timerName, effect.getDuration() / 20));
     }
 
     @SubscribeEvent
     public void onEffectRemoved(PacketEvent<SPacketRemoveEntityEffect> e) {
-        if (!Reference.onWorld || !OverlayConfig.ConsumableTimer.INSTANCE.showSpellEffects) return;
+        if (!Reference.onWorld || !OverlayConfig.ConsumableTimer.INSTANCE.showEffects) return;
 
-        SPacketRemoveEntityEffect effect = e.getPacket();
-        if (effect.getEntity(McIf.world()) != McIf.player()) return;
+        SPacketRemoveEntityEffect packet = e.getPacket();
+        if (packet.getEntity(McIf.world()) != McIf.player()) return;
 
-        McIf.mc().addScheduledTask(() -> {
-            Potion potion = effect.getPotion();
+        Potion potion = packet.getPotion();
 
-            // When removing speed boost from (archer)
-            if (potion == MobEffects.SPEED) {
-                ConsumableTimerOverlay.removeBasicTimer("Speed boost");
-            }
-            // When removing invisibility from assassin
-            else if (potion == MobEffects.INVISIBILITY) {
-                isVanished = false; // So it won't skip
-                ConsumableTimerOverlay.removeBasicTimer("Vanish");
-            }
-        });
+        // When removing Vanish from assassin
+        if ((potion == MobEffects.WITHER || potion == MobEffects.INVISIBILITY) && PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ASSASSIN) {
+            ConsumableTimerOverlay.removeTimer("Vanish");
+        }
     }
 
     @SubscribeEvent
     public void onTotemEvent(SpellEvent.TotemSummoned e) {
         if (!OverlayConfig.ConsumableTimer.INSTANCE.trackTotem) return;
 
-        ConsumableTimerOverlay.addBasicTimer("Totem Summoned", 59);
+        ConsumableTimerOverlay.addDynamicTimer("Totem Summoned", 59, false);
     }
 
     @SubscribeEvent
     public void onTotemEvent(SpellEvent.TotemActivated e) {
         if (!OverlayConfig.ConsumableTimer.INSTANCE.trackTotem) return;
 
-        ConsumableTimerOverlay.removeBasicTimer("Totem Summoned");
-        ConsumableTimerOverlay.removeBasicTimer(totemName);
+        ConsumableTimerOverlay.removeTimer("Totem Summoned");
+        ConsumableTimerOverlay.removeTimer(totemName);
         totemName = "Totem " + e.getLocation();
-        ConsumableTimerOverlay.addBasicTimer(totemName, e.getTime());
+        ConsumableTimerOverlay.addDynamicTimer(totemName, e.getTime(), false);
     }
 
     @SubscribeEvent
     public void onTotemEvent(SpellEvent.TotemRemoved e) {
         if (!OverlayConfig.ConsumableTimer.INSTANCE.trackTotem) return;
 
-        ConsumableTimerOverlay.removeBasicTimer("Totem Summoned");
-        ConsumableTimerOverlay.removeBasicTimer(totemName);
+        ConsumableTimerOverlay.removeTimer("Totem Summoned");
+        ConsumableTimerOverlay.removeTimer(totemName);
     }
 
     @SubscribeEvent
     public void onMobTotemEvent(SpellEvent.MobTotemActivated e) {
-        ConsumableTimerOverlay.addBasicTimer(e.getMobTotem().toString(), e.getTime());
+        ConsumableTimerOverlay.addDynamicTimer(e.getMobTotem().toString(), e.getTime(), false);
     }
 
     @SubscribeEvent
     public void onMobTotemEvent(SpellEvent.MobTotemRemoved e) {
-        ConsumableTimerOverlay.removeBasicTimer(e.getMobTotem().toString());
+        ConsumableTimerOverlay.removeTimer(e.getMobTotem().toString());
     }
 
 }

@@ -4,7 +4,6 @@
 
 package com.wynntils.modules.map.overlays.objects;
 
-import com.mojang.realmsclient.gui.ChatFormatting;
 import com.wynntils.core.framework.enums.GuildResource;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;

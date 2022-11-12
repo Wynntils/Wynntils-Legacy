@@ -11,6 +11,7 @@ import com.wynntils.core.framework.settings.annotations.SettingsInfo;
 import com.wynntils.core.framework.settings.instances.SettingsClass;
 import com.wynntils.core.framework.settings.ui.SettingsUI;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.modules.core.enums.ScrollDirection;
 import com.wynntils.modules.utilities.events.ServerEvents;
 import com.wynntils.modules.utilities.instances.SkillPointAllocation;
 import com.wynntils.modules.utilities.managers.WindowIconManager;
@@ -78,6 +79,12 @@ public class UtilitiesConfig extends SettingsClass {
 
     @Setting(displayName = "Clicking on Locked Items", description = "Should moving items to and from locked inventory slots be prevented?", order = 5)
     public boolean preventSlotClicking = false;
+
+    @Setting(displayName = "Scrolling in Ability Tree", description = "Should using the scroll wheel in the ability tree move a page down/up?", order = 6)
+    public boolean shouldAbilityScroll = true;
+
+    @Setting(displayName = "Scroll Direction", description = "Which direction should your mouse scroll for the page to scroll down?", order = 7)
+    public ScrollDirection abilityScrollDirection = ScrollDirection.DOWN;
 
     @Setting(displayName = "Bank Dump Behaviour", description = "What should happen when the bank inventory dump button is clicked?", order = 18)
     public BankButtonSetting bankDumpButton = BankButtonSetting.Confirm;
@@ -428,7 +435,7 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting.Limitations.IntLimit(min = 1, max = 3)
         public int minCraftingIngredientHighlightTier = 1;
 
-        @Setting(displayName = "Highlight Duplicate Cosmetics", description = "Should duplicate cosmetics be highlighted in the scrap menu?", order = 41)
+        @Setting(displayName = "Highlight Duplicate Cosmetics", description = "Should duplicate cosmetic items be highlighted in the scrap menu?", order = 41)
         public boolean highlightCosmeticDuplicates = true;
 
         @Setting(displayName = "Minimum Powder Tier Highlight", description = "What should the minimum tier of powders be for it to be highlighted?\n\n§8Set the value to 0 to disable this setting.", order = 42)
@@ -492,6 +499,19 @@ public class UtilitiesConfig extends SettingsClass {
 
         @Setting(displayName = "Automatically Open Chat", description = "Should the chat open when the trade market asks you to type a response?")
         public boolean openChatMarket = true;
+
+        @Setting(displayName = "Add Sell all button", description = "Should a sell all button be added to the market gui?")
+        public boolean showSellAllButton = true;
+
+        @Setting(displayName = "Custom Sell button 1 amount", description = "What amount should be selected when the custom sell button 1 is clicked?\n\n§8Set the value to 0 to disable this")
+        public String customSellButton1 = "64";
+
+        @Setting(displayName = "Custom Sell button 2 amount", description = "What amount should be selected when the custom sell button 2 is clicked?\n\n§8Set the value to 0 to disable this")
+        public String customSellButton2 = "1728";
+
+        @Setting(displayName = "Custom Sell button 3 amount", description = "What amount should be selected when the custom sell button 3 is clicked?\n\n§8Set the value to 0 to disable this")
+        public String customSellButton3 = "6399";
+
     }
 
     @SettingsInfo(name = "bank", displayPath = "Utilities/Bank")

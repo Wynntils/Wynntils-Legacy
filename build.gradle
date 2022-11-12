@@ -10,7 +10,7 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 
-def versionObj = new Version(major: 1, minor: 11, revision: 4)
+def versionObj = new Version(major: 1, minor: 13, revision: 2)
 
 version = versionObj.toString()
 group = mod_base_package
@@ -25,6 +25,8 @@ minecraft {
     runs {
         client {
             workingDirectory project.file('run')
+
+            property("devauth.configDir", project.file(".devauth").absolutePath)
 
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
@@ -48,6 +50,12 @@ minecraft {
 // allow local forge version override
 if (!project.hasProperty("wynntilsForgeVersion")) {
     ext.wynntilsForgeVersion=forge_version
+}
+
+sourceSets {
+    main {
+        output.resourcesDir = output.classesDirs.singleFile
+    }
 }
 
 configurations {
@@ -103,3 +111,12 @@ class Version {
 }
 
 jar.dependsOn("shadowJar")
+
+task installLocalGitHook(type: Copy) {
+    from new File(rootProject.rootDir, '.github/hooks/commit-msg')
+    into { new File(rootProject.rootDir, '.git/hooks') }
+    fileMode 0775
+}
+
+prepareKotlinBuildScriptModel.dependsOn installLocalGitHook
+build.dependsOn installLocalGitHook

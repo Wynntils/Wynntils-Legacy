@@ -67,11 +67,7 @@ public class UpdateOverlay extends Overlay {
         drawRect(box, -170, 0 - size, 0, 60 - size);
 
         drawString("Wynntils " + TextFormatting.GREEN + "v" + Reference.VERSION + " - " + TextFormatting.WHITE + (((timeout + 35000) - System.currentTimeMillis()) / 1000) + "s left", -165, 5 - size, CommonColors.ORANGE);
-        if (WebManager.getUpdate().getLatestUpdate().startsWith("B")) {
-            drawString(TextFormatting.YELLOW + "Build " + WebManager.getUpdate().getLatestUpdate().replace("B", "") + TextFormatting.WHITE + " is available.", -165, 15 - size, CommonColors.WHITE);
-        } else {
-            drawString("A new update is available " + TextFormatting.YELLOW + "v" + WebManager.getUpdate().getLatestUpdate(), -165, 15 - size, CommonColors.WHITE);
-        }
+        drawString("Update " + TextFormatting.YELLOW + WebManager.getUpdate().getLatestUpdate() + TextFormatting.WHITE + " found.", -165, 15 - size, CommonColors.WHITE);
 
         drawString("Download automagically? " + TextFormatting.GREEN + "(y/n)", -165, 25 - size, CommonColors.LIGHT_GRAY);
 
@@ -122,7 +118,7 @@ public class UpdateOverlay extends Overlay {
 
             try {
                 File directory = new File(Reference.MOD_STORAGE_ROOT, "updates");
-                String url = getUpdateDownloadUrl();
+                String url = WebManager.getUpdate().getDownloadUrl();
                 String jarName = getJarNameFromUrl(url);
 
                 DownloadOverlay.size = 0;
@@ -130,9 +126,7 @@ public class UpdateOverlay extends Overlay {
                 DownloaderManager.queueDownload("Updating to " + WebManager.getUpdate().getLatestUpdate(), url, directory, DownloadAction.SAVE, (x) -> {
                     if (x) {
                         try {
-                            String message = TextFormatting.DARK_AQUA + "An update to Wynntils (";
-                            message += CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE ? "Version " + jarName.split("_")[0].split("-")[1] : "Build " + jarName.split("_")[1].replace(".jar", "");
-                            message += ") has been downloaded and will be applied when the game is restarted.";
+                            String message = TextFormatting.DARK_AQUA + "An update to Wynntils (" + WebManager.getUpdate().getLatestUpdate() + ") has been downloaded and will be applied when the game is restarted.";
                             McIf.player().sendMessage(new TextComponentString(message));
                             scheduleCopyUpdateAtShutdown(jarName);
                         } catch (Exception ex) {
@@ -168,11 +162,7 @@ public class UpdateOverlay extends Overlay {
     }
 
     public static String getUpdateDownloadUrl() throws IOException {
-        if (CoreDBConfig.INSTANCE.updateStream == UpdateStream.CUTTING_EDGE) {
-            return WebManager.getCuttingEdgeJarFileUrl();
-        } else {
-            return WebManager.getStableJarFileUrl();
-        }
+        return WebManager.getUpdateData(CoreDBConfig.INSTANCE.updateStream).get("url");
     }
 
     public static void scheduleCopyUpdateAtShutdown(String jarName) {

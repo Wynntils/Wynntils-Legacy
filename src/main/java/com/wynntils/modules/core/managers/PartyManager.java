@@ -9,8 +9,10 @@ import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.containers.PartyContainer;
 import com.wynntils.core.framework.instances.data.SocialData;
 import com.wynntils.core.utils.helpers.CommandResponse;
+import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.util.text.ITextComponent;
 
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,13 +22,20 @@ public class PartyManager {
     private static final Pattern PROMOTE_PATTERN = Pattern.compile("Successfully promoted (.+) to party leader!");
 
     private static final CommandResponse listExecutor = new CommandResponse("/party list", (matcher, text) -> {
+
+        SocialData socialData = PlayerInfo.get(SocialData.class);
+        if (socialData == null) {
+            return;
+        }
+        socialData.resetPlayerParty();
+
         String entire = matcher.group(0);
         if (entire.contains("You must be in")) {  // clears the party
-            PlayerInfo.get(SocialData.class).getPlayerParty().removeMember(McIf.player().getName());
+            socialData.getPlayerParty().removeMember(McIf.player().getName());
             return;
         }
 
-        PartyContainer partyContainer = PlayerInfo.get(SocialData.class).getPlayerParty();
+        PartyContainer partyContainer = socialData.getPlayerParty();
         for (ITextComponent components : text.getSiblings()) {
             if (McIf.getFormattedText(components).startsWith("§e")) continue;
 
@@ -45,36 +54,46 @@ public class PartyManager {
 
     public static void handleMessages(ITextComponent component) {
         String unformattedText = McIf.getUnformattedText(component);
+        String formattedText = McIf.getFormattedText(component);
+
         if (unformattedText.startsWith("You have successfully joined the party.")) {
             handlePartyList();
             return;
         }
-        PartyContainer partyContainer = PlayerInfo.get(SocialData.class).getPlayerParty();
+
+        SocialData socialData = PlayerInfo.get(SocialData.class);
+        if (socialData == null) {
+            return;
+        }
+
+        EntityPlayerSP player = McIf.player();
+        PartyContainer partyContainer = socialData.getPlayerParty();
+
         if (unformattedText.startsWith("You have been removed from the party.")
-                || McIf.getUnformattedText(component).startsWith("Your party has been disbanded since you were the only member remaining.")
-                || McIf.getUnformattedText(component).startsWith("Your party has been disbanded.")) {
-            PlayerInfo.get(SocialData.class).resetPlayerParty();
+                || unformattedText.startsWith("Your party has been disbanded since you were the only member remaining.")
+                || unformattedText.startsWith("Your party has been disbanded.")) {
+            socialData.resetPlayerParty();
             return;
         }
         if (unformattedText.startsWith("You have successfully created a party.")) {
-            partyContainer.setOwner(McIf.player().getName());
-            partyContainer.addMember(McIf.player().getName());
+            partyContainer.setOwner(player.getName());
+            partyContainer.addMember(player.getName());
             return;
         }
-        if (McIf.getFormattedText(component).startsWith("§e") && McIf.getUnformattedText(component).contains("has joined the party.")) {
-            String member = McIf.getUnformattedText(component).split(" has joined the party.")[0];
+        if (formattedText.startsWith("§e") && unformattedText.contains("has joined the party.")) {
+            String member = unformattedText.split(" has joined the party.")[0];
             partyContainer.addMember(member);
             return;
         }
-        if (McIf.getFormattedText(component).startsWith("§e") && McIf.getUnformattedText(component).contains("has left the party.")) {
+        if (formattedText.startsWith("§e") && unformattedText.contains("has left the party.")) {
             handlePartyList();
 
-            String member = McIf.getUnformattedText(component).split(" has left the party.")[0];
+            String member = unformattedText.split(" has left the party.")[0];
             partyContainer.removeMember(member);
             return;
         }
         if (unformattedText.startsWith("You are now the leader of this party! Type /party for a list of commands.")) {
-            partyContainer.setOwner(McIf.player().getName());
+            partyContainer.setOwner(player.getName());
             return;
         }
         Matcher promoteMatcher = PROMOTE_PATTERN.matcher(unformattedText);
