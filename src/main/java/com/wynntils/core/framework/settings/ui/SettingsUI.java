@@ -22,7 +22,6 @@ import com.wynntils.core.framework.ui.UIElement;
 import com.wynntils.core.framework.ui.elements.*;
 import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.modules.core.config.CoreDBConfig;
-import com.wynntils.webapi.WebManager;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.util.math.MathHelper;
