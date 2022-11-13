@@ -49,7 +49,7 @@ public class TabListData extends PlayerData {
             Matcher m = TAB_EFFECT_PATTERN.matcher(effect);
             if (!m.find()) continue;
 
-            // See comment at TAB_EFFECT_PATTERN definition for the what the group numbers are
+            // See comment at TAB_EFFECT_PATTERN definition for what the group numbers are
             ConsumableTimerOverlay.addStaticTimer(m.group(1), m.group(2), m.group(3), false);
         }
     }
