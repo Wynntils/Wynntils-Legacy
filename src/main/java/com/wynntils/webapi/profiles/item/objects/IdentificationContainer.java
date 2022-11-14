@@ -7,6 +7,7 @@ package com.wynntils.webapi.profiles.item.objects;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.wynntils.webapi.profiles.item.IdentificationOrderer;
 import org.apache.commons.lang3.math.Fraction;
 
 import com.wynntils.core.utils.StringUtils;
@@ -20,23 +21,26 @@ public class IdentificationContainer {
     private int baseValue;
     protected boolean isFixed;
 
+    private transient boolean isInverted;
     private transient int min, max;
     private transient Fraction minChance;
     private transient Fraction maxChance;
 
     public IdentificationContainer(IdentificationModifier type, int baseValue, boolean isFixed) {
         this.type = type; this.baseValue = baseValue; this.isFixed = isFixed;
-        calculateMinMax();
     }
 
-    public void calculateMinMax() {
+    public void calculateMinMax(String shortId) {
+        isInverted = IdentificationOrderer.INSTANCE.isInverted(shortId);
+
         if (isFixed || (-1 <= baseValue && baseValue <= 1)) {
             min = max = baseValue;
             return;
         }
 
-        min = (int) Math.round(baseValue * (baseValue < 0 ? 1.3 : 0.3));
-        max = (int) Math.round(baseValue * (baseValue < 0 ? 0.7 : 1.3));
+        boolean positive = (baseValue > 0) ^ isInverted;
+        min = (int) Math.round(baseValue * (positive ? 0.3 : 1.3));
+        max = (int) Math.round(baseValue * (positive ? 1.3 : 0.7));
     }
 
     public void registerIdType(String name) {
@@ -46,6 +50,10 @@ public class IdentificationContainer {
 
     public IdentificationModifier getType() {
         return type;
+    }
+
+    public boolean isInverted() {
+        return isInverted;
     }
 
     public int getMax() {
@@ -106,14 +114,9 @@ public class IdentificationContainer {
      * Return the chances for this identification to decrease/remain the same/increase after reidentification
      *
      * @param currentValue The current value of this identification
-     * @param isInverted If true, `decrease` will be the chance to go up (become better) and vice versa with `increase`.
      * @return A {@link ReidentificationChances} of the result (All from 0 to 1)
      */
-    public strictfp ReidentificationChances getChances(int currentValue, boolean isInverted) {
-        if (isInverted) {
-            return getChances(currentValue, false).flip();
-        }
-
+    public strictfp ReidentificationChances getChances(int currentValue) {
         if (hasConstantValue()) {
             return new ReidentificationChances(
                 currentValue > baseValue ? Fraction.ONE : Fraction.ZERO,
@@ -122,7 +125,7 @@ public class IdentificationContainer {
             );
         }
 
-        if (currentValue > max || currentValue < min) {
+        if (isInvalidValue(currentValue)) {
             return new ReidentificationChances(
                 currentValue > max ? Fraction.ONE : Fraction.ZERO,
                 Fraction.ZERO,
@@ -130,11 +133,12 @@ public class IdentificationContainer {
             );
         }
 
-        int increaseDirection = baseValue > 0 ? +1 : -1;
+        int minRoll = baseValue > 0 ^ isInverted ? 29 : 69;
+        int maxRoll = 131;
 
         int lowerRawRoll;
 
-        if (currentValue != min) {
+        if (currentValue != (isInverted ? max : min)) {
             double lowerRawRollUnrounded = (currentValue * 100D - 50) / baseValue;
             if (baseValue > 0) {
                 lowerRawRoll = (int) Math.floor(lowerRawRollUnrounded);
@@ -143,69 +147,59 @@ public class IdentificationContainer {
                 lowerRawRoll = (int) Math.ceil(lowerRawRollUnrounded);
                 if (lowerRawRollUnrounded == lowerRawRoll) ++lowerRawRoll;
             }
-
-            if (Math.round(baseValue * (lowerRawRoll / 100D)) >= currentValue) {
-                lowerRawRoll -= increaseDirection;
-            } else if (Math.round(baseValue * ((lowerRawRoll + increaseDirection) / 100D)) < currentValue) {
-                lowerRawRoll += increaseDirection;
-            }
         } else {
-            lowerRawRoll = baseValue > 0 ? 29 : 131;
+            lowerRawRoll = baseValue > 0 ? minRoll : maxRoll;
         }
 
         int higherRawRoll;
 
-        if (currentValue != max) {
+        if (currentValue != (isInverted ? min : max)) {
             double higherRawRollUnrounded = (currentValue * 100D + 50) / baseValue;
-             higherRawRoll = baseValue > 0 ? (int) Math.ceil(higherRawRollUnrounded) : (int) Math.floor(higherRawRollUnrounded);
-
-            if (Math.round(baseValue * (higherRawRoll / 100D)) < max) {
-                higherRawRoll += increaseDirection;
-            } else if (Math.round(baseValue * ((higherRawRoll - increaseDirection) / 100D)) >= max) {
-                higherRawRoll -= increaseDirection;
+            if (baseValue > 0) {
+                higherRawRoll = (int) Math.ceil(higherRawRollUnrounded);
+                if (higherRawRollUnrounded == higherRawRoll) ++higherRawRoll;
+            } else {
+                higherRawRoll = (int) Math.floor(higherRawRollUnrounded);
+                if (higherRawRollUnrounded == higherRawRoll) --higherRawRoll;
             }
         } else {
-            higherRawRoll = baseValue > 0 ? 131 : 69;
+            higherRawRoll = baseValue > 0 ? maxRoll : minRoll;
         }
 
         Fraction decrease, increase;
+        int denom = baseValue > 0 ^ isInverted ? 101 : 61;
 
         if (baseValue > 0) {
             // chance to be (<= lowerRawRoll) and (>= higherRawRoll)
-            decrease = getFraction(lowerRawRoll - 29, 101);
-            increase = getFraction(131 - higherRawRoll, 101);
+            decrease = getFraction(lowerRawRoll - minRoll, denom);
+            increase = getFraction(maxRoll - higherRawRoll, denom);
         } else {
-            decrease = getFraction(131 - lowerRawRoll, 61);
-            increase = getFraction(higherRawRoll - 69, 61);
+            decrease = getFraction(maxRoll - lowerRawRoll, denom);
+            increase = getFraction(higherRawRoll - minRoll, denom);
         }
 
         int remainNumerator = Math.abs(higherRawRoll - lowerRawRoll) - 1;
-        // assert remainNumerator >= 0 : "Reid math is wrong";
 
         return new ReidentificationChances(
-            decrease,
-            getFraction(remainNumerator, baseValue > 0 ? 101 : 61),
-            increase
+            isInverted ? increase : decrease,
+            getFraction(remainNumerator, denom),
+            isInverted ? decrease : increase
         );
     }
 
     /**
-     * @param isInverted If true, return the chance to become the minimum value instead of the maximum value
      * @return The chance for this identification to become perfect (From 0 to 1)
      */
-    public Fraction getPerfectChance(boolean isInverted) {
-        if (isInverted) {
-            return minChance == null ? (minChance = getChances(min, false).remain) : minChance;
-        }
-        return maxChance == null ? (minChance = getChances(max, false).remain) : minChance;
+    public Fraction getPerfectChance() {
+        return maxChance == null ? (minChance = getChances(max).remain) : minChance;
     }
 
     /**
      * @param currentValue Current value of this identification
-     * @return true if this is a valid value (If false, the API is probably wrong)
+     * @return true if this is an invalid value (meaning the API is probably wrong)
      */
-    public boolean isValidValue(int currentValue) {
-        return getChances(currentValue, false).remain.getNumerator() != 0;  // Not a 0% chance to remain as this value after reid
+    public boolean isInvalidValue(int currentValue) {
+        return isInverted ? (currentValue > min || currentValue < max) : (currentValue > max || currentValue < min);
     }
 
     private static Fraction[] fraction61Cache = new Fraction[62];
