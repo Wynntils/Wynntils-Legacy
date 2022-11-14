@@ -1,9 +1,17 @@
+## [1.13.2-beta.5](https://github.com/Wynntils/Wynntils/compare/v1.13.2-beta.4...v1.13.2-beta.5) (2022-11-14)
+
+
+### Bug Fixes
+
+* regex for life/mana steal ([#637](https://github.com/Wynntils/Wynntils/issues/637)) ([1f771b9](https://github.com/Wynntils/Wynntils/commit/1f771b9d1c43c4f4872b989a535bd9b0c3753970))
+
 ## [1.13.2-beta.4](https://github.com/Wynntils/Wynntils/compare/v1.13.2-beta.3...v1.13.2-beta.4) (2022-11-03)
 
 
 ### Miscellaneous Chores
 
 * add logging to configs ([#614](https://github.com/Wynntils/Wynntils/issues/614)) ([028f658](https://github.com/Wynntils/Wynntils/commit/028f6582ed2123bc030e332c1672fdc82dba1bef))
+* **release:** v1.13.2-beta.4 [skip ci] ([037207a](https://github.com/Wynntils/Wynntils/commit/037207a54bac7fa70921f54291eda8d7a3b6c7b5))
 
 ## [1.13.2-beta.3](https://github.com/Wynntils/Wynntils/compare/v1.13.2-beta.2...v1.13.2-beta.3) (2022-10-30)
 
@@ -40,16 +48,4 @@
 ### Miscellaneous Chores
 
 * **release:** v1.13.2-beta.1 [skip ci] ([b5ef00e](https://github.com/Wynntils/Wynntils/commit/b5ef00e94b614509dfe06ebc85b77e6fa2dc984d))
-
-## [1.13.2-beta.0](https://github.com/Wynntils/Wynntils/compare/v1.13.1...v1.13.2-beta.0) (2022-10-28)
-
-
-### New Features
-
-* Tab list effect parsing ([#615](https://github.com/Wynntils/Wynntils/issues/615)) ([76e5bdb](https://github.com/Wynntils/Wynntils/commit/76e5bdbecded9d71ee6848da60bd8893f7eac426))
-
-
-### Miscellaneous Chores
-
-* **release:** v1.13.2-beta.0 [skip ci] ([ce5e5e9](https://github.com/Wynntils/Wynntils/commit/ce5e5e9cf19cdd9b8c5ca855f8ce3310f609bb2d))
 
