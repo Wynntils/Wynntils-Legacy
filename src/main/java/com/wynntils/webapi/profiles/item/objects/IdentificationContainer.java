@@ -31,12 +31,12 @@ public class IdentificationContainer {
     }
 
     public void calculateMinMax(String shortId) {
+        isInverted = IdentificationOrderer.INSTANCE.isInverted(shortId);
+
         if (isFixed || (-1 <= baseValue && baseValue <= 1)) {
             min = max = baseValue;
             return;
         }
-
-        isInverted = IdentificationOrderer.INSTANCE.isInverted(shortId);
 
         boolean positive = (baseValue > 0) ^ isInverted;
         min = (int) Math.round(baseValue * (positive ? 0.3 : 1.3));
@@ -133,11 +133,12 @@ public class IdentificationContainer {
             );
         }
 
-        int increaseDirection = baseValue > 0 ? +1 : -1;
+        int minRoll = baseValue > 0 ^ isInverted ? 29 : 69;
+        int maxRoll = 131;
 
         int lowerRawRoll;
 
-        if (currentValue != min) {
+        if (currentValue != (isInverted ? max : min)) {
             double lowerRawRollUnrounded = (currentValue * 100D - 50) / baseValue;
             if (baseValue > 0) {
                 lowerRawRoll = (int) Math.floor(lowerRawRollUnrounded);
@@ -146,49 +147,43 @@ public class IdentificationContainer {
                 lowerRawRoll = (int) Math.ceil(lowerRawRollUnrounded);
                 if (lowerRawRollUnrounded == lowerRawRoll) ++lowerRawRoll;
             }
-
-            if (Math.round(baseValue * (lowerRawRoll / 100D)) >= currentValue) {
-                lowerRawRoll -= increaseDirection;
-            } else if (Math.round(baseValue * ((lowerRawRoll + increaseDirection) / 100D)) < currentValue) {
-                lowerRawRoll += increaseDirection;
-            }
         } else {
-            lowerRawRoll = baseValue > 0 ? 29 : 131;
+            lowerRawRoll = baseValue > 0 ? minRoll : maxRoll;
         }
 
         int higherRawRoll;
 
-        if (currentValue != max) {
+        if (currentValue != (isInverted ? min : max)) {
             double higherRawRollUnrounded = (currentValue * 100D + 50) / baseValue;
-             higherRawRoll = baseValue > 0 ? (int) Math.ceil(higherRawRollUnrounded) : (int) Math.floor(higherRawRollUnrounded);
-
-            if (Math.round(baseValue * (higherRawRoll / 100D)) < max) {
-                higherRawRoll += increaseDirection;
-            } else if (Math.round(baseValue * ((higherRawRoll - increaseDirection) / 100D)) >= max) {
-                higherRawRoll -= increaseDirection;
+            if (baseValue > 0) {
+                higherRawRoll = (int) Math.ceil(higherRawRollUnrounded);
+                if (higherRawRollUnrounded == higherRawRoll) ++higherRawRoll;
+            } else {
+                higherRawRoll = (int) Math.floor(higherRawRollUnrounded);
+                if (higherRawRollUnrounded == higherRawRoll) --higherRawRoll;
             }
         } else {
-            higherRawRoll = baseValue > 0 ? 131 : 69;
+            higherRawRoll = baseValue > 0 ? maxRoll : minRoll;
         }
 
         Fraction decrease, increase;
+        int denom = baseValue > 0 ^ isInverted ? 101 : 61;
 
         if (baseValue > 0) {
             // chance to be (<= lowerRawRoll) and (>= higherRawRoll)
-            decrease = getFraction(lowerRawRoll - 29, 101);
-            increase = getFraction(131 - higherRawRoll, 101);
+            decrease = getFraction(lowerRawRoll - minRoll, denom);
+            increase = getFraction(maxRoll - higherRawRoll, denom);
         } else {
-            decrease = getFraction(131 - lowerRawRoll, 61);
-            increase = getFraction(higherRawRoll - 69, 61);
+            decrease = getFraction(maxRoll - lowerRawRoll, denom);
+            increase = getFraction(higherRawRoll - minRoll, denom);
         }
 
         int remainNumerator = Math.abs(higherRawRoll - lowerRawRoll) - 1;
-        // assert remainNumerator >= 0 : "Reid math is wrong";
 
         return new ReidentificationChances(
-            decrease,
-            getFraction(remainNumerator, baseValue > 0 ? 101 : 61),
-            increase
+            isInverted ? increase : decrease,
+            getFraction(remainNumerator, denom),
+            isInverted ? decrease : increase
         );
     }
 
@@ -196,9 +191,6 @@ public class IdentificationContainer {
      * @return The chance for this identification to become perfect (From 0 to 1)
      */
     public Fraction getPerfectChance() {
-        if (isInverted) {
-            return minChance == null ? (minChance = getChances(min).remain) : minChance;
-        }
         return maxChance == null ? (minChance = getChances(max).remain) : minChance;
     }
 
