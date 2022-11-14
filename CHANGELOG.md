@@ -1,9 +1,26 @@
+## [1.13.2-beta.6](https://github.com/Wynntils/Wynntils/compare/v1.13.2-beta.5...v1.13.2-beta.6) (2022-11-14)
+
+
+### Bug Fixes
+
+* Update spell cost ID ranges ([#636](https://github.com/Wynntils/Wynntils/issues/636)) ([e5992f3](https://github.com/Wynntils/Wynntils/commit/e5992f385579ff6aeaac85fc42f7b02e2b204120))
+
+
+### Documentation
+
+* update authenticating section ([#623](https://github.com/Wynntils/Wynntils/issues/623)) [skip ci] ([edac71b](https://github.com/Wynntils/Wynntils/commit/edac71b1fbea378ae50cfa0c8b994c9acf6e98e7))
+
 ## [1.13.2-beta.5](https://github.com/Wynntils/Wynntils/compare/v1.13.2-beta.4...v1.13.2-beta.5) (2022-11-14)
 
 
 ### Bug Fixes
 
 * regex for life/mana steal ([#637](https://github.com/Wynntils/Wynntils/issues/637)) ([1f771b9](https://github.com/Wynntils/Wynntils/commit/1f771b9d1c43c4f4872b989a535bd9b0c3753970))
+
+
+### Miscellaneous Chores
+
+* **release:** v1.13.2-beta.5 [skip ci] ([967b45d](https://github.com/Wynntils/Wynntils/commit/967b45d46116f7be7ae66660eb3227495118163f))
 
 ## [1.13.2-beta.4](https://github.com/Wynntils/Wynntils/compare/v1.13.2-beta.3...v1.13.2-beta.4) (2022-11-03)
 
@@ -36,16 +53,4 @@
 ### Miscellaneous Chores
 
 * **release:** v1.13.2-beta.2 [skip ci] ([87056c6](https://github.com/Wynntils/Wynntils/commit/87056c62ace15a7b58b38880c8152d3802271f38))
-
-## [1.13.2-beta.1](https://github.com/Wynntils/Wynntils/compare/v1.13.2-beta.0...v1.13.2-beta.1) (2022-10-28)
-
-
-### Bug Fixes
-
-* improve skill point loadouts ([#597](https://github.com/Wynntils/Wynntils/issues/597)) ([312aa90](https://github.com/Wynntils/Wynntils/commit/312aa90e4172caf36fa8b21e95b24ed5e1f4ff77))
-
-
-### Miscellaneous Chores
-
-* **release:** v1.13.2-beta.1 [skip ci] ([b5ef00e](https://github.com/Wynntils/Wynntils/commit/b5ef00e94b614509dfe06ebc85b77e6fa2dc984d))
 
