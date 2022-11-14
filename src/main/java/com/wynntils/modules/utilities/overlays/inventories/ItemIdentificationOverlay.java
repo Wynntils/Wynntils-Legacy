@@ -147,7 +147,7 @@ public class ItemIdentificationOverlay implements Listener {
                 if (type == null) continue; // not a valid id
 
                 int currentValue = ids.getInteger(idName);
-                boolean isInverted = IdentificationOrderer.INSTANCE.isInverted(idName);
+                boolean isInverted = id != null ? id.isInverted() : IdentificationOrderer.INSTANCE.isInverted(idName);
 
                 // id color
                 String longName = IdentificationContainer.getAsLongName(idName);

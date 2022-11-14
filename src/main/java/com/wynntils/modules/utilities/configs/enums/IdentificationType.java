@@ -27,21 +27,21 @@ public enum IdentificationType implements IIdentificationAnalyser {
 
         @Override
         public IdentificationResult identify(IdentificationContainer container, int current, boolean isInverted) {
-            double relative = getRelativeValue(container, current, isInverted);
+            double relative = getRelativeValue(container, current);
 
             return new IdentificationResult(getTitle(relative), relative);
         }
 
-        public double getRelativeValue(IdentificationContainer container, int current, boolean isInverted) {
+        public double getRelativeValue(IdentificationContainer container, int current) {
             if (container.isFixed() || container.getBaseValue() == 0) return current == container.getBaseValue() ? 1 : 0;
-            if (current == container.getMax()) return isInverted ? 0 : 1;
-            if (container.getMax() == container.getMin()) return isInverted ? 1 : 0 ;
+            if (current == container.getMax()) return 1;
+            if (container.getMax() == container.getMin()) return 0;
 
             int min = container.getMin();
             int max = container.getMax();
 
             double value = (current - min) / (double) (max - min);
-            return isInverted ? 1 - value : value;
+            return value;
         }
 
         String getColor(double amount) {
@@ -87,10 +87,10 @@ public enum IdentificationType implements IIdentificationAnalyser {
 
         @Override
         public IdentificationResult identify(IdentificationContainer container, int currentValue, boolean isInverted) {
-            IdentificationContainer.ReidentificationChances chances = container.getChances(currentValue, isInverted);
+            IdentificationContainer.ReidentificationChances chances = container.getChances(currentValue);
             double increasePct = chances.increase.getNumerator() * 100D / chances.increase.getDenominator();
             double decreasePct = chances.decrease.getNumerator() * 100D / chances.decrease.getDenominator();
-            double perfectPct = container.getPerfectChance(isInverted).multiplyBy(Fraction.getFraction(100, 1)).doubleValue();
+            double perfectPct = container.getPerfectChance().multiplyBy(Fraction.getFraction(100, 1)).doubleValue();
 
             String suffix = String.format(
                     AQUA + "\u21E7%.0f%% " + RED + "\u21E9%.0f%% " + GOLD + "\u2605%.1f%%",
