@@ -343,12 +343,12 @@ public class ItemProfile {
         String lore;
 
         if (id.hasConstantValue())
-            if (IdentificationOrderer.INSTANCE.isInverted(idName))
+            if (id.isInverted())
                 lore = (baseValue < 0 ? GREEN.toString() : baseValue > 0 ? RED + "+" : GRAY.toString()) + baseValue;
             else
                 lore = (baseValue < 0 ? RED.toString() : baseValue > 0 ? GREEN + "+" : GRAY.toString()) + baseValue;
         else
-            if (IdentificationOrderer.INSTANCE.isInverted(idName))
+            if (id.isInverted())
                 lore = ((id.getMin() < 0 ? GREEN.toString() : RED + "+") + id.getMin()) +
                         ((id.getMax() < 0 ? DARK_GREEN + " to " + GREEN : DARK_RED + " to " + RED + "+") + id.getMax());
             else

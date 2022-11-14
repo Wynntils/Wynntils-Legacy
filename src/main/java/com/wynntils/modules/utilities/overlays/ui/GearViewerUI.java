@@ -280,7 +280,7 @@ public class GearViewerUI extends FakeGuiContainer {
                 IdentificationContainer idContainer = item.getStatuses().get(translatedId);
                 int value = (int) ((idContainer.isFixed()) ? idContainer.getBaseValue() : Math.round(idContainer.getBaseValue() * pct));
                 if (value == 0) value = 1; // account for mistaken rounding
-                boolean isInverted = IdentificationOrderer.INSTANCE.isInverted(translatedId);
+                boolean isInverted = idContainer.isInverted();
 
                 // determine lore name
                 String longName = IdentificationContainer.getAsLongName(translatedId);
