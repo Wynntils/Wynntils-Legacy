@@ -1,3 +1,10 @@
+## [1.13.2-beta.7](https://github.com/Wynntils/Wynntils/compare/v1.13.2-beta.6...v1.13.2-beta.7) (2022-11-15)
+
+
+### Bug Fixes
+
+* remove click to copy chat ([#640](https://github.com/Wynntils/Wynntils/issues/640)) ([661a15f](https://github.com/Wynntils/Wynntils/commit/661a15fb440cb07d025dc3f2ba7137fa8d1a9238))
+
 ## [1.13.2-beta.6](https://github.com/Wynntils/Wynntils/compare/v1.13.2-beta.5...v1.13.2-beta.6) (2022-11-14)
 
 
@@ -9,6 +16,11 @@
 ### Documentation
 
 * update authenticating section ([#623](https://github.com/Wynntils/Wynntils/issues/623)) [skip ci] ([edac71b](https://github.com/Wynntils/Wynntils/commit/edac71b1fbea378ae50cfa0c8b994c9acf6e98e7))
+
+
+### Miscellaneous Chores
+
+* **release:** v1.13.2-beta.6 [skip ci] ([64fd918](https://github.com/Wynntils/Wynntils/commit/64fd918574b5d2b3f176b9ac1b3648f30bd75287))
 
 ## [1.13.2-beta.5](https://github.com/Wynntils/Wynntils/compare/v1.13.2-beta.4...v1.13.2-beta.5) (2022-11-14)
 
@@ -41,16 +53,4 @@
 ### Miscellaneous Chores
 
 * **release:** v1.13.2-beta.3 [skip ci] ([a180cfb](https://github.com/Wynntils/Wynntils/commit/a180cfb31cd83ecec8aaf1975868ac0fa935bbb0))
-
-## [1.13.2-beta.2](https://github.com/Wynntils/Wynntils/compare/v1.13.2-beta.1...v1.13.2-beta.2) (2022-10-29)
-
-
-### New Features
-
-* add redirect for ability cooldowns ([#624](https://github.com/Wynntils/Wynntils/issues/624)) ([144a62a](https://github.com/Wynntils/Wynntils/commit/144a62a13cf5efad5ab0a37ba482fc73384fe93e))
-
-
-### Miscellaneous Chores
-
-* **release:** v1.13.2-beta.2 [skip ci] ([87056c6](https://github.com/Wynntils/Wynntils/commit/87056c62ace15a7b58b38880c8152d3802271f38))
 
