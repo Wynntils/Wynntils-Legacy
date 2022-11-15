@@ -15,6 +15,7 @@ jobs:
       clean_changelog: ${{ steps.changelog.outputs.clean_changelog }}
       changelog: ${{ steps.changelog.outputs.changelog }}
       build_number: ${{ steps.extract.outputs.build_number }}
+      release_id: ${{ steps.release.outputs.id }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -39,6 +40,16 @@ jobs:
           skip-git-pull: true
           pre-release: true
           pre-release-identifier: beta
+
+      - name: Create release
+        if: ${{ steps.changelog.outputs.skipped != 'true' }}
+        id: release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ steps.changelog.outputs.tag }}
+          body: ${{ steps.changelog.outputs.changelog }}
+          draft: true
+          prerelease: true
 
       - name: Extract build information
         id: extract
@@ -93,6 +104,15 @@ jobs:
       - name: Rename artifact
         run: mv build/libs/wynntils-*.jar build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
 
+      - name: Upload files to release
+        uses: softprops/action-gh-release@v1
+        if: ${{ needs.changelog.outputs.skipped != 'true' }}
+        with:
+          tag_name: ${{ needs.changelog.outputs.tag }}
+          draft: true
+          prerelease: true
+          files: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
+
       - name: Upload renamed artifact
         uses: actions/upload-artifact@v3
         with:
@@ -133,18 +153,13 @@ jobs:
 
   release-gh:
     name: Release Github
+    if: ${{ needs.changelog.outputs.skipped != 'true' }}
     runs-on: ubuntu-latest
     needs: [build, changelog]
     steps:
-      - uses: actions/download-artifact@v3
+      - name: Publish Release
+        uses: eregon/publish-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: build
-
-      - name: Create release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
-          tag_name: ${{ needs.changelog.outputs.tag }}
-          prerelease: true
-          body: ${{ needs.changelog.outputs.clean_changelog }}
-          target_commitish: ${{ github.sha }}
+          release_id: ${{ needs.changelog.outputs.release_id }}
