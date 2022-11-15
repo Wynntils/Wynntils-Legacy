@@ -190,29 +190,4 @@ public class ClientEvents implements Listener {
 
         ChatManager.progressDialogue();
     }
-
-    @SubscribeEvent
-    public void onMessageReceived(ClientChatReceivedEvent e) {
-        if(!ChatConfig.INSTANCE.clickToCopyMessage) return;
-
-        ITextComponent component = e.getMessage();
-        if (component.getUnformattedText().isEmpty()) return;
-
-        TextComponentString copyComponent = new TextComponentString(TextFormatting.GRAY + "  [" + TextFormatting.DARK_GRAY + "C" + TextFormatting.GRAY + "]");
-        copyComponent.getStyle().setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString(TextFormatting.GRAY + "Click to copy message")));
-
-        TextAction.withDynamicEvent(copyComponent, () -> {
-            ITextComponent copy = component.createCopy();
-            copy.getSiblings().remove(copy.getSiblings().size() - 1);
-
-            String message = copy.getFormattedText();
-            if (!Keyboard.isKeyDown(Keyboard.KEY_LCONTROL)) message = (TextFormatting.getTextWithoutFormattingCodes(message));
-
-            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(message.replace("§", "&")), null);
-            McIf.mc().getSoundHandler().playSound(PositionedSoundRecord.getMasterRecord(SoundEvents.BLOCK_NOTE_PLING, 1f));
-        });
-
-        e.getMessage().appendSibling(copyComponent);
-    }
-
 }
