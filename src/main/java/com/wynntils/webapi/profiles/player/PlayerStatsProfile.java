@@ -418,7 +418,7 @@ public class PlayerStatsProfile {
             boolean veteran = playerMeta.get("veteran").getAsBoolean();
 
             ArrayList<PlayerClassProfile> classes = new ArrayList<>();
-            JsonArray playerClasses = playerProfile.get("classes").getAsJsonArray();
+            JsonArray playerClasses = playerProfile.get("characters").getAsJsonArray();
             Type playerClassType = new TypeToken<PlayerClassProfile>() {
             }.getType();
 

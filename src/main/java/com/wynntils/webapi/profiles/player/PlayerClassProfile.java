@@ -14,7 +14,7 @@ import java.util.Map;
 
 public class PlayerClassProfile {
 
-    private String name;
+    private String uuid;
     private int level;
     private Map<String, Integer> dungeonsCompleted;
     private List<String> questsCompleted;
@@ -62,8 +62,8 @@ public class PlayerClassProfile {
     private int eventsWon;
     private boolean preEconomyUpdate;
 
-    public PlayerClassProfile(String name, int level, Map<String, Integer> dungeonsCompleted, List<String> questsCompleted, int itemsIdentified, int mobsKilled, int pvpKills, int pvpDeaths, int chestsFound, long blocksWalked, int logins, int deaths, int playtime, int skillStrength, int skillDexterity, int skillIntelligence, int skillDefence, int skillAgility, int alchemismLevel, float alchemismXp, int armouringLevel, float armouringXp, int combatLevel, float combatXp, int cookingLevel, float cookingXp, int farmingLevel, float farmingXp, int fishingLevel, float fishingXp, int jewelingLevel, float jewelingXp, int miningLevel, float miningXp, int scribingLevel, float scribingXp, int tailoringLevel, float tailoringXp, int weaponsmithingLevel, float weaponsmithingXp, int woodcuttingLevel, float woodcuttingXp, int woodworkingLevel, float woodworkingXp, int discoveries, int eventsWon, boolean preEconomyUpdate) {
-        this.name = name;
+    public PlayerClassProfile(String uuid, int level, Map<String, Integer> dungeonsCompleted, List<String> questsCompleted, int itemsIdentified, int mobsKilled, int pvpKills, int pvpDeaths, int chestsFound, long blocksWalked, int logins, int deaths, int playtime, int skillStrength, int skillDexterity, int skillIntelligence, int skillDefence, int skillAgility, int alchemismLevel, float alchemismXp, int armouringLevel, float armouringXp, int combatLevel, float combatXp, int cookingLevel, float cookingXp, int farmingLevel, float farmingXp, int fishingLevel, float fishingXp, int jewelingLevel, float jewelingXp, int miningLevel, float miningXp, int scribingLevel, float scribingXp, int tailoringLevel, float tailoringXp, int weaponsmithingLevel, float weaponsmithingXp, int woodcuttingLevel, float woodcuttingXp, int woodworkingLevel, float woodworkingXp, int discoveries, int eventsWon, boolean preEconomyUpdate) {
+        this.uuid = uuid;
         this.level = level;
         this.dungeonsCompleted = dungeonsCompleted;
         this.questsCompleted = questsCompleted;
@@ -112,8 +112,8 @@ public class PlayerClassProfile {
         this.preEconomyUpdate = preEconomyUpdate;
     }
 
-    public String getName() {
-        return name;
+    public String getUuid() {
+        return uuid;
     }
 
     public int getLevel() {
@@ -305,7 +305,7 @@ public class PlayerClassProfile {
         @Override
         public PlayerClassProfile deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
             JsonObject playerClass = json.getAsJsonObject();
-            String name = playerClass.get("name").getAsString();
+            String uuid = playerClass.get("uuid").getAsString();
             int level = playerClass.get("level").getAsInt();
 
             Map<String, Integer> dungeonsCompleted = new HashMap<>();
@@ -391,7 +391,7 @@ public class PlayerClassProfile {
 
             int discoveries = playerClass.get("discoveries").getAsInt();
             int eventsWon = playerClass.get("eventsWon").getAsInt();
-            return new PlayerClassProfile(name, level, dungeonsCompleted, questsCompleted, itemsIdentified, mobsKilled, pvpKills, pvpDeaths, chestsFound, blocksWalked, logins, deaths, playtime, skillStrength, skillDexterity, skillIntelligence, skillDefence, skillAgility, alchemismLevel, alchemismXp, armouringLevel, armouringXp, combatLevel, combatXp, cookingLevel, cookingXp, farmingLevel, farmingXp, fishingLevel, fishingXp, jewelingLevel, jewelingXp, miningLevel, miningXp, scribingLevel, scribingXp, tailoringLevel, tailoringXp, weaponsmithingLevel, weaponsmithingXp, woodcuttingLevel, woodcuttingXp, woodworkingLevel, woodworkingXp, discoveries, eventsWon, preEconomyUpdate);
+            return new PlayerClassProfile(uuid, level, dungeonsCompleted, questsCompleted, itemsIdentified, mobsKilled, pvpKills, pvpDeaths, chestsFound, blocksWalked, logins, deaths, playtime, skillStrength, skillDexterity, skillIntelligence, skillDefence, skillAgility, alchemismLevel, alchemismXp, armouringLevel, armouringXp, combatLevel, combatXp, cookingLevel, cookingXp, farmingLevel, farmingXp, fishingLevel, fishingXp, jewelingLevel, jewelingXp, miningLevel, miningXp, scribingLevel, scribingXp, tailoringLevel, tailoringXp, weaponsmithingLevel, weaponsmithingXp, woodcuttingLevel, woodcuttingXp, woodworkingLevel, woodworkingXp, discoveries, eventsWon, preEconomyUpdate);
         }
     }
 }
