@@ -15,6 +15,7 @@ jobs:
       skipped: ${{ steps.changelog.outputs.skipped }}
       clean_changelog: ${{ steps.changelog.outputs.clean_changelog }}
       changelog: ${{ steps.changelog.outputs.changelog }}
+      release_id: ${{ steps.release.outputs.id }}
     steps:
       - uses: actions/checkout@v3
         with:
@@ -107,7 +108,7 @@ jobs:
       - name: Upload renamed artifact
         uses: actions/upload-artifact@v3
         with:
-          name: Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}
+          name: build
           path: build/Wynntils-MC1.12.2-${{ needs.changelog.outputs.tag }}.jar
 
 
