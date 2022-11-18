@@ -85,10 +85,7 @@ public class EmeraldPouch {
         itemLore.forEach(c -> loreList.appendTag(new NBTTagString(c)));
 
         display.setTag("Lore", loreList);
-        if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier)
-            display.setString("Name", TextFormatting.GREEN + "Emerald Pouch " + TextFormatting.DARK_GREEN + "[Tier " + Utils.StringUtils.integerToRoman(tier) + "]");  // item display name
-        else
-            display.setString("Name", TextFormatting.GREEN + "Emerald Pouch " + TextFormatting.DARK_GREEN + "[Tier " + tier + "]");
+        display.setString("Name", TextFormatting.GREEN + "Emerald Pouch " + TextFormatting.DARK_GREEN + "[Tier " + tier + "]");
 
         tag.setTag("display", display);
         tag.setBoolean("Unbreakable", true);  // this allow items like reliks to have damage
