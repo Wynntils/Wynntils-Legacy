@@ -1,5 +1,10 @@
 ## [1.14.0](https://github.com/Wynntils/Wynntils/compare/v1.13.2-beta.7...v1.14.0) (2022-11-18)
 
+
+### Miscellaneous Chores
+
+* **release:** v1.14.0 [skip ci] ([1b3ff87](https://github.com/Wynntils/Wynntils/commit/1b3ff87ec9b295e90f68ad74d1963874d6b94902))
+
 ## [1.13.2-beta.7](https://github.com/Wynntils/Wynntils/compare/v1.13.2-beta.6...v1.13.2-beta.7) (2022-11-15)
 
 
