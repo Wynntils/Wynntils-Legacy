@@ -19,7 +19,7 @@ public class EmeraldPouch {
     public static List<ItemStack> generateAllItemPouchStacks() {
         List<ItemStack> pouches = new ArrayList<>();
 
-        for (int i = 1; i <= 9; i++) {
+        for (int i = 1; i <= 10; i++) {
             ItemStack pouchStack = generatePouchItemStack(i);
             pouches.add(pouchStack);
         }
