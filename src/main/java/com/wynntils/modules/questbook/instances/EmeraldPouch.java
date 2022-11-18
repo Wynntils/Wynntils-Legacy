@@ -38,7 +38,7 @@ public class EmeraldPouch {
                 totalString = "54";
                 break;
             case 1:
-                rows = 1;
+                rows = (tier == 10) ? 6 : 1;
                 totalString = "9";
                 break;
             case 2:
