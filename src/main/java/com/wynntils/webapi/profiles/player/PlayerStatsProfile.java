@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class PlayerStatsProfile {
 
@@ -418,7 +419,7 @@ public class PlayerStatsProfile {
             boolean veteran = playerMeta.get("veteran").getAsBoolean();
 
             ArrayList<PlayerClassProfile> classes = new ArrayList<>();
-            JsonArray playerClasses = playerProfile.get("characters").getAsJsonArray();
+            JsonObject playerClasses = playerProfile.get("characters").getAsJsonObject();
             Type playerClassType = new TypeToken<PlayerClassProfile>() {
             }.getType();
 
@@ -426,8 +427,10 @@ public class PlayerStatsProfile {
             gsonBuilder.registerTypeAdapter(playerClassType, new PlayerClassProfile.PlayerClassProfileDeserializer());
             Gson gson = gsonBuilder.create();
 
-            for (JsonElement playerClass : playerClasses)
+            for (Map.Entry<String, JsonElement> entry : playerClasses.entrySet()) {
+                JsonObject playerClass = entry.getValue().getAsJsonObject();
                 classes.add(gson.fromJson(playerClass, playerClassType));
+            }
 
             JsonObject playerGuild = playerProfile.get("guild").getAsJsonObject();
             String guildName = "";
