@@ -14,10 +14,9 @@ import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.overlays.ui.ChangelogUI;
 import com.wynntils.modules.richpresence.RichPresenceModule;
-import com.wynntils.modules.richpresence.profiles.RichProfile;
 import com.wynntils.modules.utilities.managers.KeyManager;
 import com.wynntils.webapi.WebManager;
-import net.minecraft.client.Minecraft;
+import de.jcm.discordgamesdk.OverlayManager;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -106,7 +105,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                                 .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Go to the next page")))));
                 sender.sendMessage(text);
                 break;
-                /*Since we combine all arguments, to get the second page of help the case could be "help2" for "/wynntils help 2".*/
+            /*Since we combine all arguments, to get the second page of help the case could be "help2" for "/wynntils help 2".*/
             case "help2":
                 TextComponentString text1 = new TextComponentString("");
                 text1.getStyle().setColor(TextFormatting.GOLD);
@@ -134,10 +133,10 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                 link.getStyle().setColor(TextFormatting.DARK_AQUA);
                 if (discordInvite != null) {
                     link.getStyle()
-                        .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, discordInvite))
-                        .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click here to join our Discord server.")));
+                            .setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, discordInvite))
+                            .setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new TextComponentString("Click here to join our Discord server.")));
 
-                    RichProfile.OverlayManager o = RichPresenceModule.getModule().getRichPresence().getOverlayManager();
+                    OverlayManager o = RichPresenceModule.getModule().getCoreWrapper().getOverlayManager();
                     if (o != null) {
                         o.openGuildInvite(discordInvite.replace("https://discord.gg/", ""));
                     }
@@ -169,7 +168,7 @@ public class CommandWynntils extends CommandBase implements IClientCommand {
                 Textures.loadTextures();
                 break;
             default:
-                execute(server, sender, new String[] {"help"});
+                execute(server, sender, new String[]{"help"});
         }
     }
 
