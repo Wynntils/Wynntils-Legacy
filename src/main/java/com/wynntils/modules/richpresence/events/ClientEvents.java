@@ -17,24 +17,24 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onJoinParty(WynnSocialEvent.Party.Join e) {
-        RichPresenceModule.getModule().getRichPresence().setJoinSecret(new SecretContainer(e.getParty().getOwner(), Reference.getUserWorld().replaceAll("\\d+", ""), Integer.parseInt(Reference.getUserWorld().replace("WC", "").replace("HB", ""))));
+        RichPresenceModule.getModule().getCoreWrapper().setJoinSecret(new SecretContainer(e.getParty().getOwner(), Reference.getUserWorld().replaceAll("\\d+", ""), Integer.parseInt(Reference.getUserWorld().replace("WC", "").replace("HB", ""))));
     }
 
     @SubscribeEvent
     public void onLeaveParty(WynnSocialEvent.Party.Leave e) {
-        RichPresenceModule.getModule().getRichPresence().setJoinSecret(null);
+        RichPresenceModule.getModule().getCoreWrapper().setJoinSecret(null);
     }
 
     @SubscribeEvent
     public void onLeaveWorld(WynnWorldEvent.Leave e) {
-        RichPresenceModule.getModule().getRichPresence().setJoinSecret(null);
+        RichPresenceModule.getModule().getCoreWrapper().setJoinSecret(null);
     }
 
     @SubscribeEvent
     public void onTick(TickEvent.RenderTickEvent e) {
         if (e.phase != TickEvent.Phase.START) return;
 
-        RichPresenceModule.getModule().getRichPresence().runCallbacks();
+        RichPresenceModule.getModule().getCoreWrapper().runCallbacks();
     }
 
 }
