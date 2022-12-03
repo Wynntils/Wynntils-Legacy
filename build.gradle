@@ -6,10 +6,6 @@ plugins {
 	id "com.github.johnrengelman.shadow" version "7.1.0"
 }
 
-repositories {
-    maven { url 'https://jitpack.io' }
-}
-
 def versionObj = new Version(major: 1, minor: 14, revision: 1)
 
 version = versionObj.toString()
@@ -65,8 +61,6 @@ configurations {
 
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${wynntilsForgeVersion}"
-
-    include 'com.github.JnCrMx:discord-game-sdk4j:0.5.5'
 
     include "javazoom:jlayer:1.0.1"
 }
