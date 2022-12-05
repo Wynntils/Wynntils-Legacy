@@ -1,5 +1,10 @@
+/*
+ *  * Copyright © Wynntils - 2022.
+ */
+
 package com.wynntils.modules.richpresence.events;
 
+import com.sun.jna.Pointer;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynnWorldEvent;
@@ -13,9 +18,10 @@ import com.wynntils.modules.core.enums.InventoryResult;
 import com.wynntils.modules.core.instances.inventory.FakeInventory;
 import com.wynntils.modules.core.instances.inventory.InventoryOpenByItem;
 import com.wynntils.modules.richpresence.RichPresenceModule;
+import com.wynntils.modules.richpresence.discordgamesdk.IDiscordActivityEvents;
 import com.wynntils.modules.richpresence.profiles.SecretContainer;
 import com.wynntils.webapi.WebManager;
-import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
+import com.wynntils.webapi.profiles.player.PlayerStatsProfile.PlayerTag;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ServerData;
 import net.minecraft.inventory.ClickType;
@@ -29,7 +35,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class JoinHandler {
+public class RPCJoinHandler implements IDiscordActivityEvents.on_activity_join_callback {
 
     private static final Pattern dmRegex = Pattern.compile("§7(\\[(.*) ➤ (.*)\\])(.*)");
 
@@ -42,16 +48,16 @@ public class JoinHandler {
 
     long delayTime = 0;
 
-    public JoinHandler() {
+    public RPCJoinHandler() {
         FrameworkManager.getEventBus().register(this);
     }
 
-    public void apply(String joinSecret) {
+    public void apply(Pointer eventData, String joinSecret) {
         lastSecret = new SecretContainer(joinSecret);
-        if (lastSecret.getOwner().isEmpty() || lastSecret.getRandomHash().isEmpty() || lastSecret.getWorldType().equals("HB") && WebManager.getPlayerProfile() != null && WebManager.getPlayerProfile().getTag() != PlayerStatsProfile.PlayerTag.HERO)
+        if (lastSecret.getOwner().isEmpty() || lastSecret.getRandomHash().isEmpty() || lastSecret.getWorldType().equals("HB") && WebManager.getPlayerProfile() != null && WebManager.getPlayerProfile().getTag() != PlayerTag.HERO)
             return;
 
-        RichPresenceModule.getModule().getCoreWrapper().setJoinSecret(lastSecret);
+        RichPresenceModule.getModule().getRichPresence().setJoinSecret(lastSecret);
 
         if (!Reference.onServer) {
             ServerData serverData = ServerUtils.getWynncraftServerData(true);
@@ -87,13 +93,6 @@ public class JoinHandler {
     @SubscribeEvent
     public void onWorldJoin(WynnWorldEvent.Join e) {
         if (!waitingInvite) return;
-        if (!e.getWorld().equals(lastSecret.getWorldType() + lastSecret.getWorld())) {
-            //Wynncraft's autojoin joined the wrong world
-            //TODO: detect on Class selection opening
-            McIf.player().sendChatMessage("/hub");
-            waitingLobby = true;
-            return;
-        }
         sentInvite = true;
         waitingInvite = false;
         McIf.player().sendChatMessage("/msg " + lastSecret.getOwner() + " " + lastSecret.getRandomHash());
@@ -128,7 +127,7 @@ public class JoinHandler {
             String content = TextFormatting.getTextWithoutFormattingCodes(m.group(4).substring(1));
             String user = TextFormatting.getTextWithoutFormattingCodes(m.group(2));
 
-            if (!RichPresenceModule.getModule().getCoreWrapper().validSecret(content.substring(0, content.length() - 1)))
+            if (!RichPresenceModule.getModule().getRichPresence().validSecret(content.substring(0, content.length() - 1)))
                 return;
 
             e.setCanceled(true);
@@ -146,7 +145,7 @@ public class JoinHandler {
         }
     }
 
-    private static Pattern WYNNCRAFT_SERVERS_WINDOW_TITLE_PATTERN = Pattern.compile("Wynncraft Servers");
+    private static Pattern WYNNCRAFT_SERVERS_WINDOW_TITLE_PATTERN = Pattern.compile("Wynncraft Servers: Page \\d+");
 
     /**
      * Search for a Wynncraft World.
@@ -202,9 +201,11 @@ public class JoinHandler {
 
             inventory.close();
         }).onClose((inv, result) -> {
-            if (result != InventoryResult.CLOSED_SUCCESSFULLY) joinWorld(worldType, worldNumber);
+            if (result != InventoryResult.CLOSED_SUCCESSFULLY) return;
+            joinWorld(worldType, worldNumber);
         });
 
         serverSelector.open();
     }
+
 }
