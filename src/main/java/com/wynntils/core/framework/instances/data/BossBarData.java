@@ -142,7 +142,12 @@ public class BossBarData extends PlayerData {
         if (packet.getOperation() != SPacketUpdateBossInfo.Operation.UPDATE_PCT) return;
 
         int bloodPool = get(CharacterData.class).getCurrentBloodPool();
-        if (packet.getPercent() != 0) { // This is only sent initially, don't attempt to div by zero
+        // Only update the max blood pool if the blood pool is 1
+        // The max blood pool being 1 means the ADD packet was just received
+        // This max should only be set one time
+        // If done multiple times, the bar's maximum fluctuates between for example, 28-32, where it should be 30
+
+        if (packet.getPercent() != 0 && get(CharacterData.class).getMaxBloodPool() == 1) {
             int maxBloodPool = Integer.parseInt(maxBloodPoolFormat.format(bloodPool / packet.getPercent()));
             get(CharacterData.class).setMaxBloodPool(maxBloodPool);
         }
