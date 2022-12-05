@@ -1,4 +1,34 @@
+## [1.14.1-beta.1](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.0...v1.14.1-beta.1) (2022-11-28)
+
+
+### Bug Fixes
+
+* Revert feat: Switch to discord-game-sdk4j" ([#647](https://github.com/Wynntils/Wynntils/issues/647)) ([e52246f](https://github.com/Wynntils/Wynntils/commit/e52246f6bcfe42eaf19cefd10b4815de06fd0dd7))
+
+## [1.14.1-beta.0](https://github.com/Wynntils/Wynntils/compare/v1.14.0...v1.14.1-beta.0) (2022-11-25)
+
+
+### Documentation
+
+* Fix codeblocks not working ([#638](https://github.com/Wynntils/Wynntils/issues/638)) [skip ci] ([7bac3cd](https://github.com/Wynntils/Wynntils/commit/7bac3cd0ddab0118beebf4212ae0e7a9639938bc))
+
+
+### New Features
+
+* Switch to discord-game-sdk4j and Activity Party bug fixes. ([#555](https://github.com/Wynntils/Wynntils/issues/555)) ([f790f30](https://github.com/Wynntils/Wynntils/commit/f790f3016c566262c12b50f79b9c32d756f95be1))
+
+
+### Miscellaneous Chores
+
+* **release:** v1.14.1-beta.0 [skip ci] ([03c9d08](https://github.com/Wynntils/Wynntils/commit/03c9d083ae0e4ce749f48c3a5106df49ec7b929f))
+
 ## [1.14.0](https://github.com/Wynntils/Wynntils/compare/v1.13.2-beta.7...v1.14.0) (2022-11-18)
+
+
+### Miscellaneous Chores
+
+* **release:** v1.14.0 [skip ci] ([174a40a](https://github.com/Wynntils/Wynntils/commit/174a40a71fe1922d9975b2f248a3dbf4703d91c3))
+* **release:** v1.14.0 [skip ci] ([1b3ff87](https://github.com/Wynntils/Wynntils/commit/1b3ff87ec9b295e90f68ad74d1963874d6b94902))
 
 ## [1.13.2-beta.7](https://github.com/Wynntils/Wynntils/compare/v1.13.2-beta.6...v1.13.2-beta.7) (2022-11-15)
 
@@ -28,24 +58,4 @@
 ### Miscellaneous Chores
 
 * **release:** v1.13.2-beta.6 [skip ci] ([64fd918](https://github.com/Wynntils/Wynntils/commit/64fd918574b5d2b3f176b9ac1b3648f30bd75287))
-
-## [1.13.2-beta.5](https://github.com/Wynntils/Wynntils/compare/v1.13.2-beta.4...v1.13.2-beta.5) (2022-11-14)
-
-
-### Bug Fixes
-
-* regex for life/mana steal ([#637](https://github.com/Wynntils/Wynntils/issues/637)) ([1f771b9](https://github.com/Wynntils/Wynntils/commit/1f771b9d1c43c4f4872b989a535bd9b0c3753970))
-
-
-### Miscellaneous Chores
-
-* **release:** v1.13.2-beta.5 [skip ci] ([967b45d](https://github.com/Wynntils/Wynntils/commit/967b45d46116f7be7ae66660eb3227495118163f))
-
-## [1.13.2-beta.4](https://github.com/Wynntils/Wynntils/compare/v1.13.2-beta.3...v1.13.2-beta.4) (2022-11-03)
-
-
-### Miscellaneous Chores
-
-* add logging to configs ([#614](https://github.com/Wynntils/Wynntils/issues/614)) ([028f658](https://github.com/Wynntils/Wynntils/commit/028f6582ed2123bc030e332c1672fdc82dba1bef))
-* **release:** v1.13.2-beta.4 [skip ci] ([037207a](https://github.com/Wynntils/Wynntils/commit/037207a54bac7fa70921f54291eda8d7a3b6c7b5))
 
