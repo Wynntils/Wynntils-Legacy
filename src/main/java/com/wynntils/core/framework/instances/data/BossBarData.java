@@ -34,28 +34,42 @@ public class BossBarData extends PlayerData {
     }
 
     public void processAddPacket(SPacketUpdateBossInfo packet) {
-        String title = packet.getName().getFormattedText();
         // This is a new bar being added, set the UUID field
-        // .contains checks are okay since the title is not a user input
+        String title = packet.getName().getFormattedText();
 
-        if (title.contains("Blood Pool")) {
+        // Using regex because it is possible a guild name could contain the same text as the boss bar
+        Matcher bloodPoolMatcher = BLOOD_POOL_PATTERN.matcher(title);
+        if (bloodPoolMatcher.matches()) {
             BLOOD_POOL_UUID = packet.getUniqueId();
             // ADD packets do not contain percent data, leave it as 1 for now to show the bar
             // The percent packet will update it later
             // This is a problem exclusive to the Blood Pool bar
             get(CharacterData.class).setMaxBloodPool(1);
+            return;
+        }
 
-        } else if (title.contains("Mana Bank")) {
+        Matcher manaBankMatcher = MANA_BANK_PATTERN.matcher(title);
+        if (manaBankMatcher.matches()) {
             MANA_BANK_UUID = packet.getUniqueId();
+            return;
+        }
 
-        } else if (title.contains("Awakening")) {
+        Matcher awakeningMatcher = AWAKENING_PATTERN.matcher(title);
+        if (awakeningMatcher.matches()) {
             AWAKENING_UUID = packet.getUniqueId();
+            return;
+        }
 
-        } else if (title.contains("Corrupted")) {
+        Matcher corruptedMatcher = CORRUPTED_PATTERN.matcher(title);
+        if (corruptedMatcher.matches()) {
             CORRUPTED_UUID = packet.getUniqueId();
+            return;
+        }
 
-        } else if (title.contains("Focus")) {
+        Matcher focusMatcher = FOCUS_PATTERN.matcher(title);
+        if (focusMatcher.matches()) {
             FOCUS_UUID = packet.getUniqueId();
+            return;
         }
     }
 
