@@ -323,14 +323,36 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void updateBossBar(PacketEvent<SPacketUpdateBossInfo> e) {
-        if (!Reference.onServer) return;
+        if (!Reference.onServer || e.getPacket() == null) return;
 
-        PlayerInfo.get(BossBarData.class).updateBossbarStats(e.getPacket());
+        /*
+        So for the boss bars, the UUID is the same for ADD, REMOVE, UPDATE_NAME, UPDATE_PCT
+        ADD is pretty much the same as UPDATE_NAME, both contain name data but not percent data
+        ADD is only sent once at bar initialization, UPDATE_NAME is sent every time the name changes
+        UPDATE_PCT contains percent data but not name data
+        REMOVE contains no data
 
-        if (e.getPacket() == null || e.getPacket().getName() == null) return;
+        The bars themselves:
+        - Awakened and corrupted both max at 100%, so no need to check the UPDATE_PCT packet
+        - Focus and mana bank both contain their maxes in the name, so no need to check the UPDATE_PCT packet
+        - Blood pool bar has a variable max and does not contain its max in the name, so we need to check the UPDATE_PCT packet
+         */
+
+        if (e.getPacket().getOperation().equals(SPacketUpdateBossInfo.Operation.ADD)) {
+            PlayerInfo.get(BossBarData.class).processAddPacket(e.getPacket());
+            PlayerInfo.get(BossBarData.class).processNamePacket(e.getPacket()); // ADD packets contain valid names
+        } else if (e.getPacket().getOperation().equals(SPacketUpdateBossInfo.Operation.UPDATE_NAME)) {
+            PlayerInfo.get(BossBarData.class).processNamePacket(e.getPacket());
+        } else if (e.getPacket().getOperation().equals(SPacketUpdateBossInfo.Operation.UPDATE_PCT)) {
+            PlayerInfo.get(BossBarData.class).processPctPacket(e.getPacket());
+        } else if (e.getPacket().getOperation().equals(SPacketUpdateBossInfo.Operation.REMOVE)) {
+            PlayerInfo.get(BossBarData.class).processRemovePacket(e.getPacket());
+        }
+
+        // (!) Do not remove .getName() check, Intellij is wrong about it
+        if (e.getPacket().getName() == null) return;
 
         if (OverlayConfig.BloodPool.INSTANCE.hideDefaultBar) {
-            // (!) Do not remove .getName() check, Intellij is wrong about it
             Matcher bpBarMatcher = BossBarData.BLOOD_POOL_PATTERN.matcher(e.getPacket().getName().getFormattedText());
             if (bpBarMatcher.matches()) {
                 e.setCanceled(true);
@@ -347,19 +369,16 @@ public class ClientEvents implements Listener {
         }
 
         if (OverlayConfig.AwakenedProgress.INSTANCE.hideDefaultBar) {
-            // (!) Do not remove .getName() check, Intellij is wrong about it
-            Matcher awakeningBarMatcher = BossBarData.AWAKENED_PROGRESS_PATTERN.matcher(e.getPacket().getName().getFormattedText());
+            Matcher awakeningBarMatcher = BossBarData.AWAKENING_PATTERN.matcher(e.getPacket().getName().getFormattedText());
             if (awakeningBarMatcher.matches()) e.setCanceled(true);
         }
 
         if (OverlayConfig.CorruptedBar.INSTANCE.hideDefaultBar) {
-            // (!) Do not remove .getName() check, Intellij is wrong about it
-            Matcher corruptedMatcher = BossBarData.CORRUPTED_PROGRESS_PATTERN.matcher(e.getPacket().getName().getFormattedText());
+            Matcher corruptedMatcher = BossBarData.CORRUPTED_PATTERN.matcher(e.getPacket().getName().getFormattedText());
             if (corruptedMatcher.matches()) e.setCanceled(true);
         }
 
         if (OverlayConfig.Focus.INSTANCE.hideDefaultBar) {
-            // (!) Do not remove .getName() check, Intellij is wrong about it
             Matcher focusMatcher = BossBarData.FOCUS_PATTERN.matcher(e.getPacket().getName().getFormattedText());
             if (focusMatcher.matches()) e.setCanceled(true);
         }
