@@ -337,7 +337,8 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Shows Item Tiers", description = "Should the tier of powders, amplifiers, and pouches be shown when pressing the show item level key?", order = 5)
         public boolean levelKeyShowsItemTiers = false;
 
-        @Setting(displayName = "Roman Numeral Item Tiers", description = "Should the tier of powders, amplifiers, and pouches be displayed using Roman numerals?", order = 6)
+        // This is only for the item specification overlays, do not use anywhere else
+        @Setting(displayName = "Roman Numeral Item Tiers", description = "Should the tier of powders, amplifiers, and pouches in specifications be displayed using Roman numerals?", order = 6)
         public boolean romanNumeralItemTier = true;
 
         @Setting(displayName = "Item Levels Outside GUIs", description = "Should the item level overlay key be enabled even when no GUI is open?", order = 7)
