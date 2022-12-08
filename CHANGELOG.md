@@ -1,9 +1,21 @@
+## [1.14.1-beta.6](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.5...v1.14.1-beta.6) (2022-12-08)
+
+
+### New Features
+
+* add config reset button ([#607](https://github.com/Wynntils/Wynntils/issues/607)) ([73bda2e](https://github.com/Wynntils/Wynntils/commit/73bda2e73338bdb9ddf420503e41ce79e3aa4964))
+
 ## [1.14.1-beta.5](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.4...v1.14.1-beta.5) (2022-12-08)
 
 
 ### Bug Fixes
 
 * Powders & pouches not favouriting with Arabic numerals, missing T10 pouch ([#642](https://github.com/Wynntils/Wynntils/issues/642)) ([c9565e1](https://github.com/Wynntils/Wynntils/commit/c9565e14dc9da8ef361103c588b8579453638054))
+
+
+### Miscellaneous Chores
+
+* **release:** v1.14.1-beta.5 [skip ci] ([4a1180d](https://github.com/Wynntils/Wynntils/commit/4a1180d9720ff098dffc4d6a0043888f097d757d))
 
 ## [1.14.1-beta.4](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.3...v1.14.1-beta.4) (2022-12-08)
 
@@ -40,16 +52,4 @@
 ### Miscellaneous Chores
 
 * **release:** v1.14.1-beta.2 [skip ci] ([36b2540](https://github.com/Wynntils/Wynntils/commit/36b2540834c9a972499c9ac33dc05f17de898a57))
-
-## [1.14.1-beta.1](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.0...v1.14.1-beta.1) (2022-11-28)
-
-
-### Bug Fixes
-
-* Revert feat: Switch to discord-game-sdk4j" ([#647](https://github.com/Wynntils/Wynntils/issues/647)) ([e52246f](https://github.com/Wynntils/Wynntils/commit/e52246f6bcfe42eaf19cefd10b4815de06fd0dd7))
-
-
-### Miscellaneous Chores
-
-* **release:** v1.14.1-beta.1 [skip ci] ([99a859c](https://github.com/Wynntils/Wynntils/commit/99a859cb03cb27b2d0bed4ae25f7cac24680929f))
 
