@@ -20,6 +20,7 @@ import com.wynntils.core.framework.settings.annotations.Setting;
 import com.wynntils.core.framework.ui.UI;
 import com.wynntils.core.framework.ui.UIElement;
 import com.wynntils.core.framework.ui.elements.*;
+import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.gui.GuiScreen;
@@ -54,7 +55,37 @@ public class SettingsUI extends UI {
     public UIESlider holdersScrollbar = new UIESlider.Vertical(null, Textures.UIs.button_scrollbar, 0.5f, 0.5f, -178, -88, 161, false, -85, 1, 1f, 0, null, 0, 0, 5, 27);
     public UIESlider settingsScrollbar = new UIESlider.Vertical(CommonColors.LIGHT_GRAY, Textures.UIs.button_scrollbar, 0.5f, 0.5f, 185, -100, 200, true, -95, -150, 1f, 0, null, 0, 0, 5, 27);
 
-    public UIEButton cancelButton = new UIEButton("Cancel", Textures.UIs.button_a, 0.5f, 0.5f, -180, 85, -10, true, (ui, mouseButton) -> {
+    private int resetButtonCount = 4;
+    private final int gameRestartCD = 7;
+    private String resetCountText = "Click " + resetButtonCount + " more times to reset and save.\n§8Your game will be closed on reset.";
+    public UIEButton resetButton = new UIEButton("R", Textures.UIs.button_a, 0.5f, 0.5f, -187, 85, -10, true, (ui, mouseButton) -> {
+        if (resetButtonCount == 0) {
+            // button has already been zero'ed, do nothing
+            return;
+        } else {
+            resetButtonCount--;
+        }
+        if (resetButtonCount == 0) {
+            registeredSettings.forEach((k, v) -> {
+                try {
+                    v.resetValues();
+                    v.saveSettings();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
+            // make timer counting down from gameRestartCD seconds
+            for (int i = gameRestartCD; i > 0; i--) {
+                int finalI = i;
+                String seconds = (finalI == 1) ? " second" : " seconds";
+                new Delay(() -> resetCountText = "All settings reset, game will be closed in " + finalI + seconds, (gameRestartCD - finalI) * 20);
+            }
+            new Delay(() -> McIf.mc().shutdown(), gameRestartCD * 20);
+        } else {
+            resetCountText = "Click " + resetButtonCount + " more times to reset and save.\n§8Your game will be closed on reset.";
+        }
+    }, 0, 0, 17, 45);
+    public UIEButton cancelButton = new UIEButton("Cancel", Textures.UIs.button_a, 0.5f, 0.5f, -170, 85, -10, true, (ui, mouseButton) -> {
         changedSettings.forEach(c -> { try { registeredSettings.get(c).tryToLoad(); } catch (Exception e) { e.printStackTrace(); } });
         onClose();
     }, 0, 0, 17, 45);
@@ -228,6 +259,12 @@ public class SettingsUI extends UI {
                 GuiUtils.drawHoveringText(lines, mouseX, mouseY, 0, screenHeight, 170, ScreenRenderer.fontRenderer);
             }
         });
+
+        // hover text for reset button
+        if (resetButton.isHovering()) {
+            GuiUtils.drawHoveringText(Arrays.asList("Reset all settings to default", resetCountText),
+                    mouseX, mouseY, 0, screenHeight, 170, ScreenRenderer.fontRenderer);
+        }
     }
 
     @Override
