@@ -1,9 +1,21 @@
+## [1.14.1-beta.4](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.3...v1.14.1-beta.4) (2022-12-08)
+
+
+### Bug Fixes
+
+* aioob in ChatManager ([#643](https://github.com/Wynntils/Wynntils/issues/643)) ([d98fd1d](https://github.com/Wynntils/Wynntils/commit/d98fd1db0d7f1a2b8918381d770237e1ed39c51e))
+
 ## [1.14.1-beta.3](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.2...v1.14.1-beta.3) (2022-12-08)
 
 
 ### Bug Fixes
 
 * update to match Wynn api ([#644](https://github.com/Wynntils/Wynntils/issues/644)) ([26555fc](https://github.com/Wynntils/Wynntils/commit/26555fc258cb4c4ddcbd831844c46e29a0093f4c))
+
+
+### Miscellaneous Chores
+
+* **release:** v1.14.1-beta.3 [skip ci] ([5739df9](https://github.com/Wynntils/Wynntils/commit/5739df9784ce68a178fc5db89b5862185f3fa592))
 
 ## [1.14.1-beta.2](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.1...v1.14.1-beta.2) (2022-12-08)
 
@@ -45,12 +57,4 @@
 ### Miscellaneous Chores
 
 * **release:** v1.14.1-beta.0 [skip ci] ([03c9d08](https://github.com/Wynntils/Wynntils/commit/03c9d083ae0e4ce749f48c3a5106df49ec7b929f))
-
-## [1.14.0](https://github.com/Wynntils/Wynntils/compare/v1.13.2-beta.7...v1.14.0) (2022-11-18)
-
-
-### Miscellaneous Chores
-
-* **release:** v1.14.0 [skip ci] ([174a40a](https://github.com/Wynntils/Wynntils/commit/174a40a71fe1922d9975b2f248a3dbf4703d91c3))
-* **release:** v1.14.0 [skip ci] ([1b3ff87](https://github.com/Wynntils/Wynntils/commit/1b3ff87ec9b295e90f68ad74d1963874d6b94902))
 
