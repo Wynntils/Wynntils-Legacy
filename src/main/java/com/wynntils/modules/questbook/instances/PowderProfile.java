@@ -92,10 +92,7 @@ public class PowderProfile {
 
 
         display.setTag("Lore", loreList);
-        if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier)
-            display.setString("Name", element.getLightColor() + String.valueOf(element.getSymbol()) + " " + name + " Powder " + StringUtils.integerToRoman(tier));  // item display name
-        else
-            display.setString("Name", element.getLightColor() + String.valueOf(element.getSymbol()) + " " + name + " Powder " + tier);  // item display name
+        display.setString("Name", element.getLightColor() + String.valueOf(element.getSymbol()) + " " + name + " Powder " + StringUtils.integerToRoman(tier));  // item display name
 
         tag.setTag("display", display);
         tag.setBoolean("Unbreakable", true);  // this allow items like reliks to have damage

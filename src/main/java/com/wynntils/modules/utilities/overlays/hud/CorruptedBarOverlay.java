@@ -82,7 +82,7 @@ public class CorruptedBarOverlay extends Overlay {
         }
 
         rotate(OverlayConfig.CorruptedBar.INSTANCE.overlayRotation.getDegrees());
-        drawProgressBar(Textures.Overlays.bars_health, -OverlayConfig.CorruptedBar.INSTANCE.width, y1, 0, y2, 0, ty1, 81, ty2, (flip ? -corruptedPercent : corruptedPercent) / (float) get(CharacterData.class).getCorruptedProgressPercent());
+        drawProgressBar(Textures.Overlays.bars_health, -OverlayConfig.CorruptedBar.INSTANCE.width, y1, 0, y2, 0, ty1, 81, ty2, (flip ? -corruptedPercent : corruptedPercent) / (float) maxCorruptedPercent);
     }
 
 }
