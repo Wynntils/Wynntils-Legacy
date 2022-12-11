@@ -1149,7 +1149,8 @@ public class ClientEvents implements Listener {
 
     private boolean isMythic(ItemStack itemStack) {
         if (itemStack.isEmpty() || !itemStack.hasDisplayName() || itemStack.getItem() == Items.AIR) return false;
-        return itemStack.getDisplayName().contains(TextFormatting.GREEN.toString());
+        return itemStack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString()) &&
+                itemStack.getDisplayName().contains("Unidentified");
     }
 
     @SubscribeEvent
