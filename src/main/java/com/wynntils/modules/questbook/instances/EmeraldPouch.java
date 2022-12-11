@@ -19,7 +19,7 @@ public class EmeraldPouch {
     public static List<ItemStack> generateAllItemPouchStacks() {
         List<ItemStack> pouches = new ArrayList<>();
 
-        for (int i = 1; i <= 9; i++) {
+        for (int i = 1; i <= 10; i++) {
             ItemStack pouchStack = generatePouchItemStack(i);
             pouches.add(pouchStack);
         }
@@ -38,7 +38,7 @@ public class EmeraldPouch {
                 totalString = "54";
                 break;
             case 1:
-                rows = 1;
+                rows = (tier == 10) ? 6 : 1;
                 totalString = "9";
                 break;
             case 2:
@@ -85,10 +85,7 @@ public class EmeraldPouch {
         itemLore.forEach(c -> loreList.appendTag(new NBTTagString(c)));
 
         display.setTag("Lore", loreList);
-        if (UtilitiesConfig.Items.INSTANCE.romanNumeralItemTier)
-            display.setString("Name", TextFormatting.GREEN + "Emerald Pouch " + TextFormatting.DARK_GREEN + "[Tier " + Utils.StringUtils.integerToRoman(tier) + "]");  // item display name
-        else
-            display.setString("Name", TextFormatting.GREEN + "Emerald Pouch " + TextFormatting.DARK_GREEN + "[Tier " + tier + "]");
+        display.setString("Name", TextFormatting.GREEN + "Emerald Pouch " + TextFormatting.DARK_GREEN + "[Tier " + Utils.StringUtils.integerToRoman(tier) + "]");  // item display name
 
         tag.setTag("display", display);
         tag.setBoolean("Unbreakable", true);  // this allow items like reliks to have damage

@@ -960,7 +960,8 @@ public class ChatManager {
             // Detect new messages
             // If dialogue is the exact same as previously then most likely a message was received
             // The second check is for the colors changing on the shift prompt
-            if (dialogue.equals(last) && dialogue.get(dialogue.size() - 1).getSiblings().equals(last.get(last.size() - 1).getSiblings())) {
+            List<ITextComponent> lastCopy = last; // Copy last to avoid race condition
+            if (dialogue.equals(lastCopy) && dialogue.get(dialogue.size() - 1).getSiblings().equals(lastCopy.get(lastCopy.size() - 1).getSiblings())) {
                 newMessageCount += 2; // 2 because this needs to account for the new lines
                 // new lines are ignored later in the processing logic but they are still present here and need to be fed to the processor
 

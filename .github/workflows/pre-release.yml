@@ -155,7 +155,7 @@ jobs:
     name: Release Github
     if: ${{ needs.changelog.outputs.skipped != 'true' }}
     runs-on: ubuntu-latest
-    needs: [build, changelog]
+    needs: [build, changelog, artifact]
     steps:
       - name: Publish Release
         uses: eregon/publish-release@v1
