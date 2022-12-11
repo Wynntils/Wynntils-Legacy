@@ -597,7 +597,6 @@ public class ClientEvents implements Listener {
         if (!Reference.onWorld) return;
 
         if (UtilitiesConfig.INSTANCE.preventMythicChestClose || UtilitiesConfig.INSTANCE.preventFavoritedChestClose) {
-            boolean preventedClose = false;
             if (e.getKeyCode() == 1 || e.getKeyCode() == McIf.mc().gameSettings.keyBindInventory.getKeyCode()) {
                 if (UtilitiesConfig.INSTANCE.preventFavoritedChestClosingAmount != 0 && timesClosed + 1 >= UtilitiesConfig.INSTANCE.preventFavoritedChestClosingAmount) {
                     timesClosed = 0;
@@ -612,10 +611,10 @@ public class ClientEvents implements Listener {
                         ItemStack stack = inv.getStackInSlot(i);
 
                         TextComponentString text;
-                        if (UtilitiesConfig.INSTANCE.preventMythicChestClose && stack.hasDisplayName() &&
-                                stack.getDisplayName().startsWith(TextFormatting.DARK_PURPLE.toString()) &&
-                                ItemUtils.getStringLore(stack).toLowerCase().contains("mythic")) {
-                            text = new TextComponentString("You cannot close this loot chest while there is a mythic in it!");
+                        if (UtilitiesConfig.INSTANCE.preventMythicChestClose && isMythic(stack)) {
+                            text = new TextComponentString("You cannot close this loot chest while there is a mythic in it!"
+                                    + (UtilitiesConfig.INSTANCE.preventFavoritedChestClosingAmount != 0 ? " Try closing this chest " +
+                                    (UtilitiesConfig.INSTANCE.preventFavoritedChestClosingAmount - timesClosed - 1) + " more times to forcefully close!" : ""));
                         } else if (UtilitiesConfig.INSTANCE.preventFavoritedChestClose && stack.hasTagCompound() &&
                                 stack.getTagCompound().getBoolean("wynntilsFavorite")) {
                             text = new TextComponentString("You cannot close this loot chest while there is a favorited item, ingredient, emerald pouch, emerald or powder in it!"
@@ -1102,8 +1101,6 @@ public class ClientEvents implements Listener {
      * This method should be called after the inventory is opened with some sort of a delay, at least 2 ticks
      */
     public void processCurrentChestContents() {
-        System.out.println("Processing chest contents"); // todo remove
-
         if (!(McIf.mc().currentScreen instanceof ChestReplacer)) return;
 
         ChestReplacer chest = (ChestReplacer) McIf.mc().currentScreen;
@@ -1112,10 +1109,9 @@ public class ClientEvents implements Listener {
         List<ItemStack> mythicsInChest = new ArrayList<>();
         for (int i = 0; i < 27; i++) {
             ItemStack stack = chest.getLowerInv().getStackInSlot(i);
-            System.out.println("Processing " + stack.getDisplayName()); // todo remove
             if (stack.isEmpty() || !stack.hasDisplayName() || stack.getItem() == Items.AIR) continue;
 
-            if (stack.getDisplayName().contains(TextFormatting.GREEN.toString())) { // Is a mythic
+            if (isMythic(stack)) { // Is a mythic
                 mythicsInChest.add(stack);
             } else if (stack.getDisplayName().contains("Unidentified")) { // Not a mythic, but is a box
                 if (UtilitiesConfig.INSTANCE.enableDryStreak) UtilitiesConfig.INSTANCE.dryStreakBoxes += 1;
@@ -1149,6 +1145,11 @@ public class ClientEvents implements Listener {
         UtilitiesConfig.INSTANCE.dryStreakCount = 0;
         UtilitiesConfig.INSTANCE.dryStreakBoxes = 0;
         UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
+    }
+
+    private boolean isMythic(ItemStack itemStack) {
+        if (itemStack.isEmpty() || !itemStack.hasDisplayName() || itemStack.getItem() == Items.AIR) return false;
+        return itemStack.getDisplayName().contains(TextFormatting.GREEN.toString());
     }
 
     @SubscribeEvent
