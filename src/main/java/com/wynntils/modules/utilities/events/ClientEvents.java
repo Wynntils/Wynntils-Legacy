@@ -1098,7 +1098,7 @@ public class ClientEvents implements Listener {
      * Since Wynncraft sometimes sends items for a chest after the chest is opened using a different type of packet and
      * sometimes sends them immediately, we can't rely on either method to check if a chest has a Mythic in it
      * Here, we will just check if the current opened inventory is a chest and has a Mythic in it
-     * This method should be called after the inventory is opened with some sort of a delay, at least 2 ticks
+     * This method should be called after the inventory is opened with some sort of a delay, at least 1 tick
      */
     public void processCurrentChestContents() {
         if (!(McIf.mc().currentScreen instanceof ChestReplacer)) return;
