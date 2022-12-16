@@ -14,12 +14,12 @@ import com.wynntils.modules.utilities.instances.StaticTimerContainer;
 import com.wynntils.modules.utilities.instances.TimerContainer;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
-import java.util.ArrayList;
 import java.util.TreeSet;
 import java.util.function.Predicate;
 
 public class ConsumableTimerOverlay extends Overlay {
 
+    // TreeSet for automatic sorting
     private static TreeSet<TimerContainer> activeTimers = new TreeSet<>();
 
     public ConsumableTimerOverlay() {
