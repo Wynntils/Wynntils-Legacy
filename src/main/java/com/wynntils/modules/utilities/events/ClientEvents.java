@@ -44,6 +44,7 @@ import net.minecraft.client.audio.PositionedSoundRecord;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -61,8 +62,11 @@ import net.minecraft.nbt.NBTTagString;
 import net.minecraft.network.play.client.*;
 import net.minecraft.network.play.client.CPacketPlayerDigging.Action;
 import net.minecraft.network.play.server.*;
+import net.minecraft.scoreboard.ScorePlayerTeam;
+import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
@@ -132,6 +136,8 @@ public class ClientEvents implements Listener {
     private final int abilityTreePreviousSlot = 57;
     private final int abilityTreeNextSlot = 59;
 
+    private final double totemHighlightMaxOffset = 0.8; // Ensures totem highlights work even on slabs
+    private final String totemHighlightTeamBase = "wynntilsTH";
 
     @SubscribeEvent
     public void onMoveEvent(InputEvent.MouseInputEvent e) {
@@ -1315,6 +1321,48 @@ public class ClientEvents implements Listener {
             McIf.player().openContainer.windowId,
             slot, 2,  ClickType.PICKUP, itemStack,
             McIf.player().openContainer.getNextTransactionID(McIf.player().inventory)));
-        }
+    }
 
+    @SubscribeEvent
+    public void onTotemActivated(SpellEvent.TotemActivated e) {
+        if (!UtilitiesConfig.INSTANCE.highlightShamanTotems) return;
+
+        TextFormatting color = e.getTotemNumber() == 1 ? UtilitiesConfig.INSTANCE.totem1Color : UtilitiesConfig.INSTANCE.totem2Color;
+        double x = e.getLocation().x;
+        double y = e.getLocation().y;
+        double z = e.getLocation().z;
+
+        // Create or get a colored team to set highlight color
+        Scoreboard scoreboard = McIf.world().getScoreboard();
+        if (!scoreboard.getTeamNames().contains(totemHighlightTeamBase + e.getTotemNumber())) {
+            scoreboard.createTeam(totemHighlightTeamBase + e.getTotemNumber());
+        }
+        ScorePlayerTeam team = scoreboard.getTeam(totemHighlightTeamBase + e.getTotemNumber());
+        team.setPrefix(color.toString()); // set color of team
+
+        List<EntityArmorStand> possibleTotems = McIf.mc().world.getEntitiesWithinAABB(EntityArmorStand.class, new AxisAlignedBB(
+                x-totemHighlightMaxOffset, y-totemHighlightMaxOffset, z-totemHighlightMaxOffset,
+                x+totemHighlightMaxOffset, y+totemHighlightMaxOffset, z+totemHighlightMaxOffset));
+
+        possibleTotems.forEach(entityArmorStand -> {
+            // If (entityArmorStand is not on ground or slab) &&
+            // (entityArmorStand is not slightly (max 0.01 blocks) above ground (moving)) &&
+            // (entityArmorStand is not on a carpet (0.0625), it is not a totem
+            if (entityArmorStand.posY % 0.5 != 0 &&
+                    entityArmorStand.posY % 1 > 0.01 &&
+                    entityArmorStand.posY % 1 != 0.0625) return;
+            scoreboard.addPlayerToTeam(entityArmorStand.getCachedUniqueIdString(), totemHighlightTeamBase + e.getTotemNumber());
+            entityArmorStand.setGlowing(true);
+        });
+    }
+
+    @SubscribeEvent
+    public void onTotemDestroyed(SpellEvent.TotemRemoved e) {
+        if (!UtilitiesConfig.INSTANCE.highlightShamanTotems) return;
+
+        Scoreboard scoreboard = McIf.world().getScoreboard();
+        if (scoreboard.getTeamNames().contains(totemHighlightTeamBase + e.getTotemNumber())) {
+            scoreboard.removeTeam(scoreboard.getTeam(totemHighlightTeamBase + e.getTotemNumber()));
+        }
+    }
 }

@@ -23,6 +23,7 @@ import com.wynntils.core.utils.objects.TimedSet;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.instances.GatheringBake;
 import com.wynntils.modules.core.instances.MainMenuButtons;
+import com.wynntils.modules.core.instances.ShamanTotemTracker;
 import com.wynntils.modules.core.instances.TotemTracker;
 import com.wynntils.modules.core.managers.*;
 import com.wynntils.modules.core.managers.GuildAndFriendManager.As;
@@ -81,6 +82,7 @@ public class ClientEvents implements Listener {
     private static final Pattern MOB_DAMAGE = DamageType.compileDamagePattern();
 
     private final TotemTracker totemTracker = new TotemTracker();
+    private final ShamanTotemTracker shamanTotemTracker = new ShamanTotemTracker();
     private GatheringBake bakeStatus = null;
 
     /**
@@ -572,38 +574,31 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void onTotemSpawn(PacketEvent<SPacketSpawnObject> e) {
-        totemTracker.onTotemSpawn(e);
-    }
-
-    @SubscribeEvent
     public void onTotemSpellCast(SpellEvent.Cast e) {
-        totemTracker.onTotemSpellCast(e);
-    }
-
-    @SubscribeEvent
-    public void onTotemTeleport(PacketEvent<SPacketEntityTeleport> e) {
-        totemTracker.onTotemTeleport(e);
+        shamanTotemTracker.onTotemSpellCast(e);
     }
 
     @SubscribeEvent
     public void onTotemRename(PacketEvent<SPacketEntityMetadata> e) {
         totemTracker.onTotemRename(e);
+        shamanTotemTracker.onTotemRename(e);
     }
 
     @SubscribeEvent
     public void onTotemDestroy(PacketEvent<SPacketDestroyEntities> e) {
         totemTracker.onTotemDestroy(e);
+        shamanTotemTracker.onTotemDestroy(e);
     }
 
     @SubscribeEvent
     public void onTotemClassChange(WynnClassChangeEvent e) {
-        totemTracker.onTotemClassChange(e);
+        totemTracker.onClassChange(e);
+        shamanTotemTracker.onClassChange(e);
     }
 
     @SubscribeEvent
     public void onWeaponChange(PacketEvent<CPacketHeldItemChange> e) {
-        totemTracker.onWeaponChange(e);
+        shamanTotemTracker.onWeaponChange(e);
 
         //Make sure we don't get into a stuck phase where spells can't be cast until the player casts one manually
         if (!Reference.onWorld) return;

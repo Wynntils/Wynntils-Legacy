@@ -5,6 +5,7 @@
 package com.wynntils.core.events.custom;
 
 import com.wynntils.core.utils.objects.Location;
+import com.wynntils.modules.core.instances.ShamanTotemTracker;
 import com.wynntils.modules.core.instances.TotemTracker;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
@@ -34,15 +35,30 @@ public class SpellEvent extends Event {
     }
 
     public static class TotemSummoned extends Totem {
+        private final int totemNumber;
+
+        public TotemSummoned(int totemNumber) {
+            this.totemNumber = totemNumber;
+        }
+
+        public int getTotemNumber() {
+            return totemNumber;
+        }
     }
 
     public static class TotemActivated extends Totem {
+        private final int totemNumber;
         private final int time;
         private final Location location;
 
-        public TotemActivated(int time, Location location) {
+        public TotemActivated(int totemNumber, int time, Location location) {
+            this.totemNumber = totemNumber;
             this.time = time;
             this.location = location;
+        }
+
+        public int getTotemNumber() {
+            return totemNumber;
         }
 
         public int getTime() {
@@ -54,21 +70,27 @@ public class SpellEvent extends Event {
         }
     }
 
-    public static class TotemRenewed extends TotemActivated {
-        public TotemRenewed(int time, Location location) {
-            super(time, location);
-        }
-    }
-
     public static class TotemRemoved extends Totem {
-        private final boolean forcefullyRemoved;
+        private final int totemNumber;
+        private final ShamanTotemTracker.ShamanTotem totem;
 
-        public TotemRemoved(boolean forcefullyRemoved) {
-            this.forcefullyRemoved = forcefullyRemoved;
+        public TotemRemoved(int totemNumber, ShamanTotemTracker.ShamanTotem totem) {
+            this.totemNumber = totemNumber;
+            this.totem = totem;
         }
 
-        public boolean isForcefullyRemoved() {
-            return forcefullyRemoved;
+        /**
+         * @return the totem that was removed
+         */
+        public ShamanTotemTracker.ShamanTotem getTotem() {
+            return totem;
+        }
+
+        /**
+         * @return the index of the totem just before it was removed
+         */
+        public int getTotemNumber() {
+            return totemNumber;
         }
     }
 

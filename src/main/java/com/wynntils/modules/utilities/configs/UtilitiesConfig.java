@@ -18,6 +18,7 @@ import com.wynntils.modules.utilities.managers.WindowIconManager;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 import com.wynntils.webapi.profiles.item.enums.ItemTier;
+import net.minecraft.util.text.TextFormatting;
 
 import java.math.RoundingMode;
 import java.text.DecimalFormat;
@@ -168,6 +169,15 @@ public class UtilitiesConfig extends SettingsClass {
 
     @Setting(displayName = "Reverse Ingredient Pouch Order", description = "Should the ingredient pouch sort order be reversed?\n\n§8Click on the ingredient pouch to refresh.", order = 34)
     public boolean sortIngredientPouchReverse = false;
+
+    @Setting(displayName = "Highlight Shaman Totems", description = "Should shaman totems be highlighted?\n\n§8Only your own totems will be highlighted. Set the colors below.", order = 40)
+    public boolean highlightShamanTotems = true;
+
+    @Setting(displayName = "Shaman Totem 1 Color", description = "What color should the totem 1 highlight be?", order = 41)
+    public TextFormatting totem1Color = TextFormatting.WHITE;
+
+    @Setting(displayName = "Shaman Totem 2 Color", description = "What color should the totem 2 highlight be?", order = 42)
+    public TextFormatting totem2Color = TextFormatting.AQUA;
 
     @Setting(upload = false)
     public String lastServerResourcePack = "";

@@ -8,8 +8,8 @@ public class DynamicTimerContainer extends TimerContainer {
 
     private long expirationTime; // The timestamp when the timer expires
 
-    public DynamicTimerContainer(String name, long expirationTime, boolean persistent) {
-        super(name, persistent);
+    public DynamicTimerContainer(String prefix, String name, String suffix, long expirationTime, boolean persistent) {
+        super(prefix, name, suffix, persistent);
         this.expirationTime = expirationTime;
     }
 

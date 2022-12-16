@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.utilities.overlays;
 
+import com.mojang.realmsclient.gui.ChatFormatting;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.*;
@@ -15,6 +16,7 @@ import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.instances.ShamanMaskType;
 import com.wynntils.modules.utilities.instances.Toast;
 import com.wynntils.modules.utilities.managers.MountHorseManager;
@@ -49,7 +51,8 @@ public class OverlayEvents implements Listener {
 
     private long loginTime;
 
-    private static String totemName;
+    private static Boolean totem1Active = false;
+    private static Boolean totem2Active = false;
 
     @SubscribeEvent
     public void onChatMessageReceived(ClientChatReceivedEvent e) {
@@ -588,7 +591,7 @@ public class OverlayEvents implements Listener {
                 long timeNow = McIf.getSystemTime();
                 int timeLeft = seconds - (int) (timeNow - loginTime) / 1000;
                 if (timeLeft > 0) {
-                    ConsumableTimerOverlay.addDynamicTimer("Gather cooldown", timeLeft, false);
+                    ConsumableTimerOverlay.addDynamicTimer(ChatFormatting.GRAY.toString(), "Gather cooldown", "", timeLeft, false);
                 }
             }
             return;
@@ -603,7 +606,7 @@ public class OverlayEvents implements Listener {
             }
 
             if (OverlayConfig.ConsumableTimer.INSTANCE.showCooldown) {
-                ConsumableTimerOverlay.addDynamicTimer("Loot cooldown", minutes * 60, true);
+                ConsumableTimerOverlay.addDynamicTimer(ChatFormatting.GRAY.toString(), "Loot cooldown", "", minutes * 60, true);
             }
             return;
         }
@@ -617,7 +620,7 @@ public class OverlayEvents implements Listener {
                 if (restartMatcher.group(2).equals("minutes") || restartMatcher.group(2).equals("minute")) { // if it is in minutes
                     seconds *= 60;
                 }
-                ConsumableTimerOverlay.addDynamicTimer("Server restart", seconds, true);
+                ConsumableTimerOverlay.addDynamicTimer(ChatFormatting.GRAY.toString(), "Server restart", "", seconds, true);
             }
             if (OverlayConfig.GameUpdate.RedirectSystemMessages.INSTANCE.redirectServer) { // if you want to redirect it
                 GameUpdateOverlay.queueMessage(DARK_RED + "The server is restarting in " + restartMatcher.group(1) + " " + restartMatcher.group(2));
@@ -783,7 +786,7 @@ public class OverlayEvents implements Listener {
 
         // normal weapons get the WITHER effect, Weathered (the mythic) gets INVISIBILITY instead
         if ((potion == MobEffects.WITHER || potion == MobEffects.INVISIBILITY) && PlayerInfo.get(CharacterData.class).getCurrentClass() == ClassType.ASSASSIN) {
-            ConsumableTimerOverlay.addDynamicTimer("Vanish", 5, false);
+            ConsumableTimerOverlay.addDynamicTimer(ChatFormatting.GRAY.toString(), "Vanish", "", 5, false);
         }
     }
 
@@ -803,37 +806,45 @@ public class OverlayEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void onTotemEvent(SpellEvent.TotemSummoned e) {
+    public void onTotemActivated(SpellEvent.TotemActivated e) {
         if (!OverlayConfig.ConsumableTimer.INSTANCE.trackTotem) return;
 
-        ConsumableTimerOverlay.addDynamicTimer("Totem Summoned", 59, false);
+        String colorString = null;
+        String timerName = "Totem " + e.getTotemNumber();
+        String locationString = e.getLocation().toString();
+
+        if (e.getTotemNumber() == 1) {
+            colorString = UtilitiesConfig.INSTANCE.totem1Color.toString();
+            totem1Active = true;
+        } else if (e.getTotemNumber() == 2) {
+            colorString = UtilitiesConfig.INSTANCE.totem2Color.toString();
+            totem2Active = true;
+        }
+
+        // Handles both add and edit cases
+        ConsumableTimerOverlay.addDynamicTimer(colorString, timerName, locationString, e.getTime(), false);
     }
 
     @SubscribeEvent
-    public void onTotemEvent(SpellEvent.TotemActivated e) {
+    public void onTotemRemoved(SpellEvent.TotemRemoved e) {
         if (!OverlayConfig.ConsumableTimer.INSTANCE.trackTotem) return;
 
-        ConsumableTimerOverlay.removeTimer("Totem Summoned");
-        ConsumableTimerOverlay.removeTimer(totemName);
-        totemName = "Totem " + e.getLocation();
-        ConsumableTimerOverlay.addDynamicTimer(totemName, e.getTime(), false);
+        if (e.getTotemNumber() == 1) {
+            ConsumableTimerOverlay.removeTimer("Totem 1");
+            totem1Active = false;
+        } else if (e.getTotemNumber() == 2) {
+            ConsumableTimerOverlay.removeTimer("Totem 2");
+            totem2Active = false;
+        }
     }
 
     @SubscribeEvent
-    public void onTotemEvent(SpellEvent.TotemRemoved e) {
-        if (!OverlayConfig.ConsumableTimer.INSTANCE.trackTotem) return;
-
-        ConsumableTimerOverlay.removeTimer("Totem Summoned");
-        ConsumableTimerOverlay.removeTimer(totemName);
+    public void onMobTotemActivated(SpellEvent.MobTotemActivated e) {
+        ConsumableTimerOverlay.addDynamicTimer(ChatFormatting.GRAY.toString(), e.getMobTotem().toString(), "", e.getTime(), false);
     }
 
     @SubscribeEvent
-    public void onMobTotemEvent(SpellEvent.MobTotemActivated e) {
-        ConsumableTimerOverlay.addDynamicTimer(e.getMobTotem().toString(), e.getTime(), false);
-    }
-
-    @SubscribeEvent
-    public void onMobTotemEvent(SpellEvent.MobTotemRemoved e) {
+    public void onMobTotemRemoved(SpellEvent.MobTotemRemoved e) {
         ConsumableTimerOverlay.removeTimer(e.getMobTotem().toString());
     }
 
