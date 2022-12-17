@@ -17,6 +17,7 @@ import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.network.play.client.CPacketHeldItemChange;
 import net.minecraft.network.play.server.SPacketDestroyEntities;
 import net.minecraft.network.play.server.SPacketEntityMetadata;
+import net.minecraft.network.play.server.SPacketSpawnObject;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 import java.util.Arrays;
@@ -80,10 +81,13 @@ public class ShamanTotemTracker {
     }
 
     public void onTotemSpellCast(SpellEvent.Cast e) {
-        if (!SpellType.TOTEM.getName().equals(e.getSpell())) return;
+        if (SpellType.TOTEM != e.getSpell()) return;
 
         totemCastTimestamp = System.currentTimeMillis();
         summonWeaponSlot = McIf.player().inventory.currentItem;
+    }
+
+    public void onTotemSpawn(PacketEvent<SPacketSpawnObject> e) {
     }
 
     public void onTotemRename(PacketEvent<SPacketEntityMetadata> e) {

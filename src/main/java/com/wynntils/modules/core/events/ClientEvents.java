@@ -574,6 +574,11 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
+    public void onTotemSpawn(PacketEvent<SPacketSpawnObject> e) {
+        shamanTotemTracker.onTotemSpawn(e);
+    }
+
+    @SubscribeEvent
     public void onTotemSpellCast(SpellEvent.Cast e) {
         shamanTotemTracker.onTotemSpellCast(e);
     }

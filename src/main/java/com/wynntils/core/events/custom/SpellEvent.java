@@ -4,6 +4,7 @@
 
 package com.wynntils.core.events.custom;
 
+import com.wynntils.core.framework.enums.SpellType;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.modules.core.instances.ShamanTotemTracker;
 import com.wynntils.modules.core.instances.TotemTracker;
@@ -14,51 +15,43 @@ public class SpellEvent extends Event {
 
     public static class Cast extends SpellEvent {
 
-        private final String spell;
-        private final int manaCost;
+        private final SpellType spell;
 
-        public Cast(String spell, int manaCost) {
+        public Cast(SpellType spell) {
             this.spell = spell;
-            this.manaCost = manaCost;
         }
 
-        public String getSpell() {
+        public SpellType getSpell() {
             return spell;
-        }
-
-        public int getManaCost() {
-            return manaCost;
         }
     }
 
     public static class Totem extends SpellEvent {
-    }
-
-    public static class TotemSummoned extends Totem {
         private final int totemNumber;
 
-        public TotemSummoned(int totemNumber) {
+        public Totem(int totemNumber) {
             this.totemNumber = totemNumber;
         }
 
         public int getTotemNumber() {
             return totemNumber;
+        }
+    }
+
+    public static class TotemSummoned extends Totem {
+        public TotemSummoned(int totemNumber) {
+            super(totemNumber);
         }
     }
 
     public static class TotemActivated extends Totem {
-        private final int totemNumber;
         private final int time;
         private final Location location;
 
         public TotemActivated(int totemNumber, int time, Location location) {
-            this.totemNumber = totemNumber;
+            super(totemNumber);
             this.time = time;
             this.location = location;
-        }
-
-        public int getTotemNumber() {
-            return totemNumber;
         }
 
         public int getTime() {
@@ -71,11 +64,10 @@ public class SpellEvent extends Event {
     }
 
     public static class TotemRemoved extends Totem {
-        private final int totemNumber;
         private final ShamanTotemTracker.ShamanTotem totem;
 
         public TotemRemoved(int totemNumber, ShamanTotemTracker.ShamanTotem totem) {
-            this.totemNumber = totemNumber;
+            super(totemNumber);
             this.totem = totem;
         }
 
@@ -84,13 +76,6 @@ public class SpellEvent extends Event {
          */
         public ShamanTotemTracker.ShamanTotem getTotem() {
             return totem;
-        }
-
-        /**
-         * @return the index of the totem just before it was removed
-         */
-        public int getTotemNumber() {
-            return totemNumber;
         }
     }
 

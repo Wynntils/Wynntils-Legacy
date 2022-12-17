@@ -7,7 +7,10 @@ package com.wynntils.core.events;
 import com.mojang.authlib.GameProfile;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
-import com.wynntils.core.events.custom.*;
+import com.wynntils.core.events.custom.GameEvent;
+import com.wynntils.core.events.custom.PacketEvent;
+import com.wynntils.core.events.custom.WynnWorldEvent;
+import com.wynntils.core.events.custom.WynncraftServerEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.ClassType;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
@@ -15,13 +18,11 @@ import com.wynntils.core.framework.instances.GuiTickableScreen;
 import com.wynntils.core.framework.instances.PlayerInfo;
 import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
-import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.core.utils.reflections.ReflectionMethods;
 import com.wynntils.modules.core.managers.GuildAndFriendManager;
 import net.minecraft.client.gui.GuiDisconnected;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.multiplayer.GuiConnecting;
-import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketPlayerListItem;
 import net.minecraft.network.play.server.SPacketPlayerListItem.Action;
 import net.minecraft.util.text.ChatType;
@@ -44,9 +45,7 @@ public class ClientEvents {
 
     private static final UUID WORLD_UUID = UUID.fromString("16ff7452-714f-3752-b3cd-c3cb2068f6af");
     private static final Pattern PROF_LEVEL_UP = Pattern.compile("You are now level ([0-9]*) in (.*)");
-    private static final Pattern SPELL_CAST = Pattern.compile("§7(.*) spell cast! §3\\[§b-([0-9]+) ✺§3]");
 
-    private static String heldItem = "";
     private String lastWorld = "";
     private boolean acceptLeft = false;
     public static String statusMsg;
@@ -251,29 +250,4 @@ public class ClientEvents {
             MinecraftForge.EVENT_BUS.post(new WynncraftServerEvent.Leave());
         }
     }
-
-    @SubscribeEvent
-    public void checkSpellCast(TickEvent.ClientTickEvent e) {
-        if (!Reference.onWorld) return;
-
-        int remainingHighlightTicks = ReflectionFields.GuiIngame_remainingHighlightTicks.getValue(McIf.mc().ingameGUI);
-        ItemStack highlightingItemStack = ReflectionFields.GuiIngame_highlightingItemStack.getValue(McIf.mc().ingameGUI);
-
-        if (remainingHighlightTicks == 0 || highlightingItemStack.isEmpty()) {
-            heldItem = "";
-        } else {
-            String newHeldItem = highlightingItemStack.getDisplayName();
-            if (!heldItem.equals(newHeldItem)) {
-                heldItem = newHeldItem;
-                Matcher m = SPELL_CAST.matcher(heldItem);
-                if (m.matches()) {
-                    String spellName = m.group(1);
-                    int manaCost = Integer.parseInt(m.group(2));
-
-                    FrameworkManager.getEventBus().post(new SpellEvent.Cast(spellName, manaCost));
-                }
-            }
-        }
-    }
-
 }
