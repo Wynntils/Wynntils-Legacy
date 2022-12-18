@@ -110,6 +110,7 @@ public class UtilitiesModule extends Module {
         registerSettings(UtilitiesConfig.Bank.class);
         registerSettings(UtilitiesConfig.Identifications.class);
         registerSettings(UtilitiesConfig.CommandKeybinds.class);
+        registerSettings(UtilitiesConfig.ShamanTotemTracking.class);
 
         registerSettings(TranslationConfig.class);
 

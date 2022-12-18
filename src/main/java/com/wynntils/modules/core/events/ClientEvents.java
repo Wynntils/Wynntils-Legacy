@@ -14,6 +14,7 @@ import com.wynntils.core.framework.enums.DamageType;
 import com.wynntils.core.framework.enums.professions.GatheringMaterial;
 import com.wynntils.core.framework.enums.professions.ProfessionType;
 import com.wynntils.core.framework.instances.PlayerInfo;
+import com.wynntils.core.framework.instances.data.CharacterData;
 import com.wynntils.core.framework.instances.data.*;
 import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.ItemUtils;
@@ -23,8 +24,8 @@ import com.wynntils.core.utils.objects.TimedSet;
 import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.instances.GatheringBake;
 import com.wynntils.modules.core.instances.MainMenuButtons;
-import com.wynntils.modules.core.instances.ShamanTotemTracker;
 import com.wynntils.modules.core.instances.MobTotemTracker;
+import com.wynntils.modules.core.instances.ShamanTotemTracker;
 import com.wynntils.modules.core.managers.*;
 import com.wynntils.modules.core.managers.GuildAndFriendManager.As;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
@@ -69,7 +70,10 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -324,6 +328,13 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
+    public void updateSubtitleData(PacketEvent<SPacketTitle> e) {
+        if (!Reference.onServer || e.getPacket().getType() != SPacketTitle.Type.SUBTITLE) return;
+
+        PlayerInfo.get(SubtitleData.class).updateSubtitle(McIf.getUnformattedText(e.getPacket().getMessage()));
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void updateBossBar(PacketEvent<SPacketUpdateBossInfo> e) {
         if (!Reference.onServer || e.getPacket() == null) return;
 
@@ -575,8 +586,6 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onWeaponChange(PacketEvent<CPacketHeldItemChange> e) {
-        shamanTotemTracker.onWeaponChange(e);
-
         //Make sure we don't get into a stuck phase where spells can't be cast until the player casts one manually
         if (!Reference.onWorld) return;
 
