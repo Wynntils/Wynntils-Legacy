@@ -1,3 +1,6 @@
+/*
+ *  * Copyright © Wynntils - 2022.
+ */
 package com.wynntils.modules.core.instances;
 
 import com.wynntils.core.utils.objects.Location;
