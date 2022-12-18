@@ -24,7 +24,7 @@ import com.wynntils.core.utils.reflections.ReflectionFields;
 import com.wynntils.modules.core.instances.GatheringBake;
 import com.wynntils.modules.core.instances.MainMenuButtons;
 import com.wynntils.modules.core.instances.ShamanTotemTracker;
-import com.wynntils.modules.core.instances.TotemTracker;
+import com.wynntils.modules.core.instances.MobTotemTracker;
 import com.wynntils.modules.core.managers.*;
 import com.wynntils.modules.core.managers.GuildAndFriendManager.As;
 import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
@@ -81,7 +81,7 @@ public class ClientEvents implements Listener {
     private static final Pattern GATHERING_RESOURCE = Pattern.compile("\\[\\+([0-9]+) (.+)\\]");
     private static final Pattern MOB_DAMAGE = DamageType.compileDamagePattern();
 
-    private final TotemTracker totemTracker = new TotemTracker();
+    private final MobTotemTracker totemTracker = new MobTotemTracker();
     private final ShamanTotemTracker shamanTotemTracker = new ShamanTotemTracker();
     private GatheringBake bakeStatus = null;
 
@@ -571,34 +571,6 @@ public class ClientEvents implements Listener {
         if (name.contains("\u0001") || name.contains("§")) return; // avoid player npcs
 
         UserManager.loadUser(e.getEntity().getUniqueID());
-    }
-
-    @SubscribeEvent
-    public void onTotemSpawn(PacketEvent<SPacketSpawnObject> e) {
-        shamanTotemTracker.onTotemSpawn(e);
-    }
-
-    @SubscribeEvent
-    public void onTotemSpellCast(SpellEvent.Cast e) {
-        shamanTotemTracker.onTotemSpellCast(e);
-    }
-
-    @SubscribeEvent
-    public void onTotemRename(PacketEvent<SPacketEntityMetadata> e) {
-        totemTracker.onTotemRename(e);
-        shamanTotemTracker.onTotemRename(e);
-    }
-
-    @SubscribeEvent
-    public void onTotemDestroy(PacketEvent<SPacketDestroyEntities> e) {
-        totemTracker.onTotemDestroy(e);
-        shamanTotemTracker.onTotemDestroy(e);
-    }
-
-    @SubscribeEvent
-    public void onTotemClassChange(WynnClassChangeEvent e) {
-        totemTracker.onClassChange(e);
-        shamanTotemTracker.onClassChange(e);
     }
 
     @SubscribeEvent

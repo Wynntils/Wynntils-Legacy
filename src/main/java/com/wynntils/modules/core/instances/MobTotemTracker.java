@@ -10,6 +10,7 @@ import com.wynntils.core.events.custom.PacketEvent;
 import com.wynntils.core.events.custom.SpellEvent;
 import com.wynntils.core.events.custom.WynnClassChangeEvent;
 import com.wynntils.core.framework.FrameworkManager;
+import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
 import net.minecraft.entity.Entity;
@@ -17,13 +18,14 @@ import net.minecraft.entity.item.EntityArmorStand;
 import net.minecraft.network.play.server.SPacketDestroyEntities;
 import net.minecraft.network.play.server.SPacketEntityMetadata;
 import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class TotemTracker {
+public class MobTotemTracker implements Listener {
     private static final Pattern MOB_TOTEM_NAME = Pattern.compile("^§f§l(.*)'s§6§l Mob Totem$");
     private static final Pattern MOB_TOTEM_TIMER = Pattern.compile("^§c§l([0-9]+):([0-9]+)$");
 
@@ -58,6 +60,7 @@ public class TotemTracker {
         mobTotemStarted.clear();
     }
 
+    @SubscribeEvent
     public void onTotemRename(PacketEvent<SPacketEntityMetadata> e) {
         if (!Reference.onWorld) return;
 
@@ -86,8 +89,8 @@ public class TotemTracker {
                     int minutes = Integer.parseInt(m3.group(1));
                     int seconds = Integer.parseInt(m3.group(2));
 
-                    mobTotemStarted.put(mobTotem.totemId, mobTotem);
-                    mobTotemUnstarted.remove(mobTotem.totemId);
+                    mobTotemStarted.put(mobTotem.getTotemId(), mobTotem);
+                    mobTotemUnstarted.remove(mobTotem.getTotemId());
 
                     postEvent(new SpellEvent.MobTotemActivated(mobTotem, minutes * 60 + seconds + 1));
                     return;
@@ -97,6 +100,7 @@ public class TotemTracker {
 
     }
 
+    @SubscribeEvent
     public void onTotemDestroy(PacketEvent<SPacketDestroyEntities> e) {
         if (!Reference.onWorld) return;
 
@@ -110,6 +114,7 @@ public class TotemTracker {
         }
     }
 
+    @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
         removeAllMobTotems();
     }
@@ -142,5 +147,4 @@ public class TotemTracker {
             return "Mob Totem (" + owner + ") at " + location;
         }
     }
-
 }

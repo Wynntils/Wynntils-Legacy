@@ -6,8 +6,8 @@ package com.wynntils.core.events.custom;
 
 import com.wynntils.core.framework.enums.SpellType;
 import com.wynntils.core.utils.objects.Location;
-import com.wynntils.modules.core.instances.ShamanTotemTracker;
-import com.wynntils.modules.core.instances.TotemTracker;
+import com.wynntils.modules.core.instances.ShamanTotem;
+import com.wynntils.modules.core.instances.MobTotemTracker;
 import net.minecraftforge.fml.common.eventhandler.Event;
 
 
@@ -64,9 +64,9 @@ public class SpellEvent extends Event {
     }
 
     public static class TotemRemoved extends Totem {
-        private final ShamanTotemTracker.ShamanTotem totem;
+        private final ShamanTotem totem;
 
-        public TotemRemoved(int totemNumber, ShamanTotemTracker.ShamanTotem totem) {
+        public TotemRemoved(int totemNumber, ShamanTotem totem) {
             super(totemNumber);
             this.totem = totem;
         }
@@ -74,19 +74,19 @@ public class SpellEvent extends Event {
         /**
          * @return the totem that was removed
          */
-        public ShamanTotemTracker.ShamanTotem getTotem() {
+        public ShamanTotem getTotem() {
             return totem;
         }
     }
 
     public static class MobTotem extends SpellEvent {
-        private final TotemTracker.MobTotem mobTotem;
+        private final MobTotemTracker.MobTotem mobTotem;
 
-        public MobTotem(TotemTracker.MobTotem mobTotem) {
+        public MobTotem(MobTotemTracker.MobTotem mobTotem) {
             this.mobTotem = mobTotem;
         }
 
-        public TotemTracker.MobTotem getMobTotem() {
+        public MobTotemTracker.MobTotem getMobTotem() {
             return mobTotem;
         }
     }
@@ -94,7 +94,7 @@ public class SpellEvent extends Event {
     public static class MobTotemActivated extends MobTotem {
         private final int time;
 
-        public MobTotemActivated(TotemTracker.MobTotem mobTotem, int time) {
+        public MobTotemActivated(MobTotemTracker.MobTotem mobTotem, int time) {
             super(mobTotem);
             this.time = time;
         }
@@ -105,7 +105,7 @@ public class SpellEvent extends Event {
     }
 
     public static class MobTotemRemoved extends MobTotem {
-        public MobTotemRemoved(TotemTracker.MobTotem mobTotem) {
+        public MobTotemRemoved(MobTotemTracker.MobTotem mobTotem) {
             super(mobTotem);
         }
     }

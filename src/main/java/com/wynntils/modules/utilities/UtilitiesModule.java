@@ -7,6 +7,8 @@ package com.wynntils.modules.utilities;
 import com.wynntils.core.framework.enums.Priority;
 import com.wynntils.core.framework.instances.Module;
 import com.wynntils.core.framework.interfaces.annotations.ModuleInfo;
+import com.wynntils.modules.core.instances.ShamanTotemTracker;
+import com.wynntils.modules.core.instances.MobTotemTracker;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.configs.SoundEffectsConfig;
 import com.wynntils.modules.utilities.configs.TranslationConfig;
@@ -39,6 +41,9 @@ public class UtilitiesModule extends Module {
         registerEvents(new ClientEvents());
 
         registerEvents(new QuickCastManager());
+
+        registerEvents(new ShamanTotemTracker());
+        registerEvents(new MobTotemTracker());
 
         // Inventory Overlays
         registerEvents(new ItemIdentificationOverlay());

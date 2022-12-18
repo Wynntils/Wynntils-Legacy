@@ -10,35 +10,45 @@ import com.wynntils.core.events.custom.SpellEvent;
 import com.wynntils.core.events.custom.WynnClassChangeEvent;
 import com.wynntils.core.framework.FrameworkManager;
 import com.wynntils.core.framework.enums.SpellType;
+import com.wynntils.core.framework.interfaces.Listener;
 import com.wynntils.core.utils.Utils;
+import com.wynntils.core.utils.helpers.Delay;
 import com.wynntils.core.utils.objects.Location;
+import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityArmorStand;
+import net.minecraft.init.Items;
+import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.client.CPacketHeldItemChange;
 import net.minecraft.network.play.server.SPacketDestroyEntities;
 import net.minecraft.network.play.server.SPacketEntityMetadata;
 import net.minecraft.network.play.server.SPacketSpawnObject;
+import net.minecraft.scoreboard.ScorePlayerTeam;
+import net.minecraft.scoreboard.Scoreboard;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.fml.common.eventhandler.Event;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-public class ShamanTotemTracker {
+public class ShamanTotemTracker implements Listener {
     private static final Pattern SHAMAN_TOTEM_TIMER = Pattern.compile("§c(\\d+)s");
-
-    public enum TotemState {
-        SUMMONED,
-        ACTIVE
-    }
 
     private ShamanTotem totem1 = null;
     private ShamanTotem totem2 = null;
 
     private long totemCastTimestamp = 0;
     private int summonWeaponSlot = -1; // Weapon used to summon totem(s)
+
+    private Integer pendingTotem1Id = null;
+    private Integer pendingTotem2Id = null;
+    private final String totemHighlightTeamBase = "wynntilsTH";
 
     private void postEvent(Event event) {
         McIf.mc().addScheduledTask(() -> FrameworkManager.getEventBus().post(event));
@@ -66,8 +76,10 @@ public class ShamanTotemTracker {
         postEvent(new SpellEvent.TotemRemoved(totem, totem == 1 ? totem1 : totem2));
         if (totem == 1) {
             totem1 = null;
+            pendingTotem1Id = null;
         } else {
             totem2 = null;
+            pendingTotem2Id = null;
         }
     }
 
@@ -80,6 +92,7 @@ public class ShamanTotemTracker {
         removeTotem(2);
     }
 
+    @SubscribeEvent
     public void onTotemSpellCast(SpellEvent.Cast e) {
         if (SpellType.TOTEM != e.getSpell()) return;
 
@@ -87,9 +100,46 @@ public class ShamanTotemTracker {
         summonWeaponSlot = McIf.player().inventory.currentItem;
     }
 
+    @SubscribeEvent
     public void onTotemSpawn(PacketEvent<SPacketSpawnObject> e) {
+        new Delay(() -> { // Delay because totem doesn't spawn instantly; server needs time
+            if (Math.abs(totemCastTimestamp - System.currentTimeMillis()) > 450) return; // Not ours, ignore
+            Entity entity = getBufferedEntity(e.getPacket().getEntityID());
+            if (!(entity instanceof EntityArmorStand)) return;
+            EntityArmorStand eas = (EntityArmorStand) entity;
+
+            if (Math.abs(eas.getEyeHeight() - 1.7775f) > 0.00001f) return;
+            if (Math.abs(eas.getHealth() - 1.0f) > 0.0001f) return;
+            if (Math.abs(eas.getYOffset() - 0.10000000149011612f) > 0.00000000000000012f) return;
+
+            List<ItemStack> inv = new ArrayList<>();
+            eas.getArmorInventoryList().forEach(inv::add);
+            if (inv.size() < 4 || inv.get(3).getItem() != Items.STONE_SHOVEL) return;
+
+            int totemNumber = (totem1 != null && totem2 == null) ? 2 : 1;
+            TextFormatting color = totemNumber == 1 ? UtilitiesConfig.INSTANCE.totem1Color : UtilitiesConfig.INSTANCE.totem2Color;
+
+            // Create or get a colored team to set highlight color
+            Scoreboard scoreboard = McIf.world().getScoreboard();
+            if (!scoreboard.getTeamNames().contains(totemHighlightTeamBase + totemNumber)) {
+                scoreboard.createTeam(totemHighlightTeamBase + totemNumber);
+            }
+            ScorePlayerTeam team = scoreboard.getTeam(totemHighlightTeamBase + totemNumber);
+            team.setPrefix(color.toString()); // set color of team
+
+            scoreboard.addPlayerToTeam(eas.getCachedUniqueIdString(), totemHighlightTeamBase + totemNumber);
+            eas.setGlowing(true);
+            if (totem1 != null && totem2 == null) {
+                totem2 = new ShamanTotem(-1, -1, ShamanTotem.TotemState.SUMMONED, new Location(eas.posX, eas.posY, eas.posZ));
+                pendingTotem2Id = eas.getEntityId();
+            } else {
+                totem1 = new ShamanTotem(-1, -1, ShamanTotem.TotemState.SUMMONED, new Location(eas.posX, eas.posY, eas.posZ));
+                pendingTotem1Id = eas.getEntityId();
+            }
+        }, 1);
     }
 
+    @SubscribeEvent
     public void onTotemRename(PacketEvent<SPacketEntityMetadata> e) {
         if (!Reference.onWorld) return;
 
@@ -116,16 +166,23 @@ public class ShamanTotemTracker {
 
         if (getBoundTotem(entityId) == null && Math.abs(totemCastTimestamp - System.currentTimeMillis()) < 15000) {
             // Given timerId is not a totem, make a new totem (assuming regex matches and we are within 15s of casting)
-            ShamanTotem newTotem = new ShamanTotem(entityId, parsedTime, TotemState.ACTIVE, parsedLocation);
-            if (totem1 == null) {
-                totem1 = newTotem;
-                postEvent(new SpellEvent.TotemActivated(1, parsedTime, parsedLocation));
-            } else if (totem2 == null) {
-                totem2 = newTotem;
-                postEvent(new SpellEvent.TotemActivated(2, parsedTime, parsedLocation));
-            } else {
-                // No totem slots available?
-                Reference.LOGGER.warn("Received a new totem " + entityId + ", but no totem slots are available");
+            // First check if this is actually one casted by us
+            List<EntityArmorStand> toCheck = McIf.mc().world.getEntitiesWithinAABB(EntityArmorStand.class, new AxisAlignedBB(
+                    entity.posX - 0.5, entity.posY - 0.1, entity.posZ - 0.5,
+                    entity.posX + 0.5, entity.posY + 0.1, entity.posZ + 0.5));
+            for (EntityArmorStand eas : toCheck) {
+                if (pendingTotem1Id != null && eas.getEntityId() == pendingTotem1Id) {
+                    totem1 = new ShamanTotem(entityId, parsedTime, ShamanTotem.TotemState.ACTIVE, parsedLocation);
+                    postEvent(new SpellEvent.TotemActivated(1, parsedTime, parsedLocation));
+                    pendingTotem1Id = null;
+                } else if (pendingTotem2Id != null && eas.getEntityId() == pendingTotem2Id) {
+                    totem2 = new ShamanTotem(entityId, parsedTime, ShamanTotem.TotemState.ACTIVE, parsedLocation);
+                    postEvent(new SpellEvent.TotemActivated(2, parsedTime, parsedLocation));
+                    pendingTotem2Id = null;
+                } else {
+                    // No totem slots available?
+                    Reference.LOGGER.warn("Received a new totem " + entityId + ", but no totem slots are available");
+                }
             }
         } else if (getBoundTotem(entityId) == totem1 && totem1 != null) {
             totem1.setTime(parsedTime);
@@ -138,6 +195,7 @@ public class ShamanTotemTracker {
         }
     }
 
+    @SubscribeEvent
     public void onTotemDestroy(PacketEvent<SPacketDestroyEntities> e) {
         if (!Reference.onWorld) return;
 
@@ -151,6 +209,17 @@ public class ShamanTotemTracker {
         }
     }
 
+    @SubscribeEvent
+    public void onTotemDestroy(SpellEvent.TotemRemoved e) {
+        if (!UtilitiesConfig.INSTANCE.highlightShamanTotems) return;
+
+        Scoreboard scoreboard = McIf.world().getScoreboard();
+        if (scoreboard.getTeamNames().contains(totemHighlightTeamBase + e.getTotemNumber())) {
+            scoreboard.removeTeam(scoreboard.getTeam(totemHighlightTeamBase + e.getTotemNumber()));
+        }
+    }
+
+    @SubscribeEvent
     public void onClassChange(WynnClassChangeEvent e) {
         removeAllTotems();
     }
@@ -172,51 +241,5 @@ public class ShamanTotemTracker {
         if (totem1 != null && totem1.getTimerId() == timerId) return totem1;
         if (totem2 != null && totem2.getTimerId() == timerId) return totem2;
         return null;
-    }
-
-    public static class ShamanTotem {
-        private int timerId;
-        private int time;
-        private TotemState state;
-        private Location location;
-
-        public ShamanTotem(int timerId, int time, TotemState totemState, Location location) {
-            this.timerId = timerId;
-            this.time = time;
-            this.state = totemState;
-            this.location = location;
-        }
-
-        public int getTimerId() {
-            return timerId;
-        }
-
-        public void setTimerId(int timerId) {
-            this.timerId = timerId;
-        }
-
-        public int getTime() {
-            return time;
-        }
-
-        public void setTime(int time) {
-            this.time = time;
-        }
-
-        public TotemState getState() {
-            return state;
-        }
-
-        public void setState(TotemState state) {
-            this.state = state;
-        }
-
-        public Location getLocation() {
-            return location;
-        }
-
-        public void setLocation(Location location) {
-            this.location = location;
-        }
     }
 }

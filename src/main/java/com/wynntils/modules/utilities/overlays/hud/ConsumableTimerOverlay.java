@@ -104,7 +104,8 @@ public class ConsumableTimerOverlay extends Overlay {
         event.setCanceled(false);
         if (activeTimers.isEmpty()) return;
 
-        TreeSet<TimerContainer> activeTimersCopy = new TreeSet<>(activeTimers); // copy to avoid CME
+        TreeSet<TimerContainer> activeTimersCopy = new TreeSet<>();
+        activeTimersCopy.addAll(activeTimers); // Copy to avoid CME and NSEE
         // Remove any expired timers, +1000 so we expire on 00:01 instead of 00:00 (consistent with game)
         activeTimersCopy.removeIf(c -> c instanceof DynamicTimerContainer && ((DynamicTimerContainer) c).getExpirationTime() < McIf.getSystemTime());
 
