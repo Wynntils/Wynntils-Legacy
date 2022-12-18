@@ -117,7 +117,7 @@ public class ShamanTotemTracker implements Listener {
             if (inv.size() < 4 || inv.get(3).getItem() != Items.STONE_SHOVEL) return;
 
             int totemNumber = (totem1 != null && totem2 == null) ? 2 : 1;
-            TextFormatting color = totemNumber == 1 ? UtilitiesConfig.INSTANCE.totem1Color : UtilitiesConfig.INSTANCE.totem2Color;
+            TextFormatting color = totemNumber == 1 ? UtilitiesConfig.ShamanTotemTracking.INSTANCE.totem1Color: UtilitiesConfig.ShamanTotemTracking.INSTANCE.totem2Color;
 
             // Create or get a colored team to set highlight color
             Scoreboard scoreboard = McIf.world().getScoreboard();
@@ -211,7 +211,7 @@ public class ShamanTotemTracker implements Listener {
 
     @SubscribeEvent
     public void onTotemDestroy(SpellEvent.TotemRemoved e) {
-        if (!UtilitiesConfig.INSTANCE.highlightShamanTotems) return;
+        if (!UtilitiesConfig.ShamanTotemTracking.INSTANCE.highlightShamanTotems) return;
 
         Scoreboard scoreboard = McIf.world().getScoreboard();
         if (scoreboard.getTeamNames().contains(totemHighlightTeamBase + e.getTotemNumber())) {

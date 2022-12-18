@@ -925,9 +925,6 @@ public class OverlayConfig extends SettingsClass {
         @Setting(displayName = "Loot Chest Cooldown", description = "Should the cooldown of loot chests be displayed as a timer?")
         public boolean showCooldown = true;
 
-        @Setting(displayName = "Track Totem", description = "Should shamans' totem be displayed as a timer?\n\n§8This setting is currently experimental.")
-        public boolean trackTotem = false;
-
         @Setting(displayName = "Server Restart", description = "Should server restart countdown be displayed as a timer?")
         public boolean showServerRestart = false;
 

@@ -807,17 +807,17 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void onTotemActivated(SpellEvent.TotemActivated e) {
-        if (!OverlayConfig.ConsumableTimer.INSTANCE.trackTotem) return;
+        if (!UtilitiesConfig.ShamanTotemTracking.INSTANCE.trackTotem) return;
 
         String colorString = null;
         String timerName = "Totem " + e.getTotemNumber();
         String locationString = e.getLocation().toString();
 
         if (e.getTotemNumber() == 1) {
-            colorString = UtilitiesConfig.INSTANCE.totem1Color.toString();
+            colorString = UtilitiesConfig.ShamanTotemTracking.INSTANCE.totem1Color.toString();
             totem1Active = true;
         } else if (e.getTotemNumber() == 2) {
-            colorString = UtilitiesConfig.INSTANCE.totem2Color.toString();
+            colorString = UtilitiesConfig.ShamanTotemTracking.INSTANCE.totem2Color.toString();
             totem2Active = true;
         }
 
@@ -827,7 +827,7 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void onTotemRemoved(SpellEvent.TotemRemoved e) {
-        if (!OverlayConfig.ConsumableTimer.INSTANCE.trackTotem) return;
+        if (!UtilitiesConfig.ShamanTotemTracking.INSTANCE.trackTotem) return;
 
         if (e.getTotemNumber() == 1) {
             ConsumableTimerOverlay.removeTimer("Totem 1");
