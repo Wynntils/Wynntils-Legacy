@@ -635,16 +635,16 @@ public class UtilitiesConfig extends SettingsClass {
     public static class ShamanTotemTracking extends SettingsClass {
         public static ShamanTotemTracking INSTANCE;
 
-        @Setting(displayName = "Track Totem", description = "Should shamans' totem be displayed as a timer?")
+        @Setting(displayName = "Track Totem", description = "Should the Shaman/Skyseer totem(s) be displayed as a timer?", order = 1)
         public boolean trackTotem = true;
 
-        @Setting(displayName = "Highlight Shaman Totems", description = "Should shaman totems be highlighted?\n\n§8Only your own totems will be highlighted. Set the colors below.", order = 40)
+        @Setting(displayName = "Highlight Shaman Totems", description = "Should the Shaman/Skyseer totem(s) be highlighted?\n\n§8Only your own totems will be highlighted. Set the colors below.", order = 2)
         public boolean highlightShamanTotems = true;
 
-        @Setting(displayName = "Shaman Totem 1 Color", description = "What color should the totem 1 highlight be?", order = 41)
+        @Setting(displayName = "Shaman Totem 1 Color", description = "What color should the totem 1 highlight be?", order = 3)
         public TextFormatting totem1Color = TextFormatting.WHITE;
 
-        @Setting(displayName = "Shaman Totem 2 Color", description = "What color should the totem 2 highlight be?", order = 42)
+        @Setting(displayName = "Shaman Totem 2 Color", description = "What color should the totem 2 highlight be?", order = 4)
         public TextFormatting totem2Color = TextFormatting.AQUA;
 
     }
