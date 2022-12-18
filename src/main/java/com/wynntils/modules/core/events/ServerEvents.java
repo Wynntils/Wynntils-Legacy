@@ -172,7 +172,7 @@ public class ServerEvents implements Listener {
             waitingForFriendList = false;
             e.setCanceled(true);
         }
-        if (waitingForGuildList && formatted.equals("§cYou are not in a guild.§r")) {
+        if (waitingForGuildList && formatted.equals("§bYou must be in a guild to use this.§r")) {
             waitingForGuildList = false;
             e.setCanceled(true);
         }
