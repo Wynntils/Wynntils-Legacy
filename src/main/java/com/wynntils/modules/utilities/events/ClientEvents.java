@@ -1351,6 +1351,15 @@ public class ClientEvents implements Listener {
             if (entityArmorStand.posY % 0.5 != 0 &&
                     entityArmorStand.posY % 1 > 0.01 &&
                     entityArmorStand.posY % 1 != 0.0625) return;
+
+            if (Math.abs(entityArmorStand.getEyeHeight() - 1.7775f) > 0.00001f) return;
+            if (Math.abs(entityArmorStand.getHealth() - 1.0f) > 0.0001f) return;
+            if (Math.abs(entityArmorStand.getYOffset() - 0.10000000149011612f) > 0.00000000000000012f) return;
+            List<ItemStack> inv = new ArrayList<>();
+            entityArmorStand.getArmorInventoryList().forEach(inv::add);
+            if (inv.size() < 4 || inv.get(3).getItem() != Items.STONE_SHOVEL) return;
+            // ^^ ok for moving totems on both shaman/skyseer
+
             scoreboard.addPlayerToTeam(entityArmorStand.getCachedUniqueIdString(), totemHighlightTeamBase + e.getTotemNumber());
             entityArmorStand.setGlowing(true);
         });
