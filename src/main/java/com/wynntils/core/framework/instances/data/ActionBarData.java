@@ -39,7 +39,7 @@ public class ActionBarData extends PlayerData {
         SpellData spellData = get(SpellData.class);
         EntityPlayerSP player = getPlayer();
 
-        if (characterData.getCurrentClass() == ClassType.NONE) return;
+        if (characterData == null || characterData.getCurrentClass() == ClassType.NONE) return;
 
         // Avoid useless processing
         if (this.lastActionBar == null || !this.lastActionBar.equals(actionBar)) {
