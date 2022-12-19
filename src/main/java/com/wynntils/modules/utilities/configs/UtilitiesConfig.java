@@ -647,6 +647,8 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Shaman Totem 2 Color", description = "What color should the totem 2 highlight be?", order = 4)
         public TextFormatting totem2Color = TextFormatting.AQUA;
 
+        @Setting(displayName = "Shaman Totem 3 Color", description = "What color should the totem 3 highlight be?", order = 5)
+        public TextFormatting totem3Color = TextFormatting.RED;
     }
 
     @Override

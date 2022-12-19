@@ -51,9 +51,6 @@ public class OverlayEvents implements Listener {
 
     private long loginTime;
 
-    private static Boolean totem1Active = false;
-    private static Boolean totem2Active = false;
-
     @SubscribeEvent
     public void onChatMessageReceived(ClientChatReceivedEvent e) {
         WarTimerOverlay.warMessage(e);
@@ -815,10 +812,10 @@ public class OverlayEvents implements Listener {
 
         if (e.getTotemNumber() == 1) {
             colorString = UtilitiesConfig.ShamanTotemTracking.INSTANCE.totem1Color.toString();
-            totem1Active = true;
         } else if (e.getTotemNumber() == 2) {
             colorString = UtilitiesConfig.ShamanTotemTracking.INSTANCE.totem2Color.toString();
-            totem2Active = true;
+        } else if (e.getTotemNumber() == 3) {
+            colorString = UtilitiesConfig.ShamanTotemTracking.INSTANCE.totem3Color.toString();
         }
 
         // Handles both add and edit cases
@@ -831,10 +828,10 @@ public class OverlayEvents implements Listener {
 
         if (e.getTotemNumber() == 1) {
             ConsumableTimerOverlay.removeTimer("Totem 1");
-            totem1Active = false;
         } else if (e.getTotemNumber() == 2) {
             ConsumableTimerOverlay.removeTimer("Totem 2");
-            totem2Active = false;
+        } else if (e.getTotemNumber() == 3) {
+            ConsumableTimerOverlay.removeTimer("Totem 3");
         }
     }
 
