@@ -641,13 +641,13 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Highlight Shaman Totems", description = "Should the Shaman/Skyseer totem(s) be highlighted?\n\n§8Only your own totems will be highlighted. Set the colors below.", order = 2)
         public boolean highlightShamanTotems = true;
 
-        @Setting(displayName = "Shaman Totem 1 Color", description = "What color should the totem 1 highlight be?", order = 3)
+        @Setting(displayName = "Shaman Totem 1 Color", description = "What color should the totem 1 highlight and tracking text be?", order = 3)
         public TextFormatting totem1Color = TextFormatting.WHITE;
 
-        @Setting(displayName = "Shaman Totem 2 Color", description = "What color should the totem 2 highlight be?", order = 4)
+        @Setting(displayName = "Shaman Totem 2 Color", description = "What color should the totem 2 highlight and tracking text be?", order = 4)
         public TextFormatting totem2Color = TextFormatting.AQUA;
 
-        @Setting(displayName = "Shaman Totem 3 Color", description = "What color should the totem 3 highlight be?", order = 5)
+        @Setting(displayName = "Shaman Totem 3 Color", description = "What color should the totem 3 highlight and tracking text be?", order = 5)
         public TextFormatting totem3Color = TextFormatting.RED;
     }
 
