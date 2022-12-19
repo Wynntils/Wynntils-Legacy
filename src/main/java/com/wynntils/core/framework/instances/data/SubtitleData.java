@@ -29,7 +29,10 @@ public class SubtitleData extends PlayerData {
         CharacterData data = get(CharacterData.class);
         String right = data.getLevel() == 1 ? "Right" : "R";
         Matcher m = (data.getLevel() == 1 ? LEVEL_1_SPELL_PATTERN : LOW_LEVEL_SPELL_PATTERN).matcher(TextFormatting.getTextWithoutFormattingCodes(subtitle));
-        if (!m.matches() || m.group(1).equals("?")) spellData.setLastSpell(SpellData.NO_SPELL, -1);
+        if (!m.matches() || m.group(1).equals("?")) {
+            spellData.setLastSpell(SpellData.NO_SPELL, -1);
+            return;
+        }
 
         int lastSpellWeaponSlot = McIf.player().inventory.currentItem;
 
