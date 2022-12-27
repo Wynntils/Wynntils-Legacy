@@ -50,6 +50,7 @@ public class ShamanTotemTracker implements Listener {
     private Integer pendingTotem3Id = null;
 
     private long totemCastTimestamp = 0;
+    private int nextTotemSlot = 1;
     private int summonWeaponSlot = -1; // Weapon used to summon totem(s)
     private final String totemHighlightTeamBase = "wynntilsTH";
 
@@ -102,6 +103,7 @@ public class ShamanTotemTracker implements Listener {
         removeTotem(1);
         removeTotem(2);
         removeTotem(3);
+        nextTotemSlot = 1;
     }
 
     @SubscribeEvent
@@ -128,17 +130,21 @@ public class ShamanTotemTracker implements Listener {
             eas.getArmorInventoryList().forEach(inv::add);
             if (inv.size() < 4 || inv.get(3).getItem() != Items.STONE_SHOVEL) return;
 
-            int totemNumber;
+            int totemNumber = nextTotemSlot;
+            nextTotemSlot = updateNextTotemSlot();
             TextFormatting color;
-            if (totem1 != null && totem2 != null && totem3 == null) {
-                totemNumber = 3;
-                color = UtilitiesConfig.ShamanTotemTracking.INSTANCE.totem3Color;
-            } else if (totem1 != null && totem2 == null) {
-                totemNumber = 2;
-                color = UtilitiesConfig.ShamanTotemTracking.INSTANCE.totem2Color;
-            } else {
-                totemNumber = 1;
-                color = UtilitiesConfig.ShamanTotemTracking.INSTANCE.totem1Color;
+            switch (totemNumber) {
+                case 1:
+                    color = UtilitiesConfig.ShamanTotemTracking.INSTANCE.totem1Color;
+                    break;
+                case 2:
+                    color = UtilitiesConfig.ShamanTotemTracking.INSTANCE.totem2Color;
+                    break;
+                case 3:
+                    color = UtilitiesConfig.ShamanTotemTracking.INSTANCE.totem3Color;
+                    break;
+                default:
+                    throw new IllegalArgumentException("totemNumber should be 1, 2, or 3! (color switch in #onTotemSpawn in ShamanTotemTracker.java");
             }
 
             // Create or get a colored team to set highlight color
@@ -151,15 +157,22 @@ public class ShamanTotemTracker implements Listener {
 
             scoreboard.addPlayerToTeam(eas.getCachedUniqueIdString(), totemHighlightTeamBase + totemNumber);
             eas.setGlowing(true);
-            if (totem1 != null && totem2 != null && totem3 == null) {
-                totem3 = new ShamanTotem(-1, -1, ShamanTotem.TotemState.SUMMONED, new Location(eas.posX, eas.posY, eas.posZ));
-                pendingTotem3Id = eas.getEntityId();
-            } else if (totem1 != null && totem2 == null) {
-                totem2 = new ShamanTotem(-1, -1, ShamanTotem.TotemState.SUMMONED, new Location(eas.posX, eas.posY, eas.posZ));
-                pendingTotem2Id = eas.getEntityId();
-            } else {
-                totem1 = new ShamanTotem(-1, -1, ShamanTotem.TotemState.SUMMONED, new Location(eas.posX, eas.posY, eas.posZ));
-                pendingTotem1Id = eas.getEntityId();
+            ShamanTotem newTotem = new ShamanTotem(-1, -1, ShamanTotem.TotemState.SUMMONED, new Location(eas.posX, eas.posY, eas.posZ));
+            switch (totemNumber) {
+                case 1:
+                    totem1 = newTotem;
+                    pendingTotem1Id = eas.getEntityId();
+                    break;
+                case 2:
+                    totem2 = newTotem;
+                    pendingTotem2Id = eas.getEntityId();
+                    break;
+                case 3:
+                    totem3 = newTotem;
+                    pendingTotem3Id = eas.getEntityId();
+                    break;
+                default:
+                    throw new IllegalArgumentException("totemNumber should be 1, 2, or 3! (totem variable switch in #onTotemSpawn in ShamanTotemTracker.java");
             }
         }, 1);
     }
@@ -279,5 +292,10 @@ public class ShamanTotemTracker implements Listener {
         if (totem2 != null && totem2.getTimerId() == timerId) return totem2;
         if (totem3 != null && totem3.getTimerId() == timerId) return totem3;
         return null;
+    }
+
+    private int updateNextTotemSlot() {
+        if (nextTotemSlot == 3) return 1;
+        return nextTotemSlot += 1;
     }
 }
