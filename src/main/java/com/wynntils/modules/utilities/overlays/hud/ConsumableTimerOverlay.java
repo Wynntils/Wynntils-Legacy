@@ -21,6 +21,7 @@ public class ConsumableTimerOverlay extends Overlay {
 
     // TreeSet for automatic sorting
     private static TreeSet<TimerContainer> activeTimers = new TreeSet<>();
+    private static boolean timerReadLock = false;
 
     public ConsumableTimerOverlay() {
         super("Consumable Timer", 125, 60, true, 1, 0.2f, 0, 0, OverlayGrowFrom.TOP_RIGHT, RenderGameOverlayEvent.ElementType.ALL);
@@ -95,6 +96,7 @@ public class ConsumableTimerOverlay extends Overlay {
     }
 
     public static void removeTimer(String name) {
+        if (timerReadLock) return;
         TimerContainer toRemove = findTimerContainer(name);
         if (toRemove != null) activeTimers.remove(toRemove);
     }
@@ -105,7 +107,9 @@ public class ConsumableTimerOverlay extends Overlay {
         if (activeTimers.isEmpty()) return;
 
         TreeSet<TimerContainer> activeTimersCopy = new TreeSet<>();
+        timerReadLock = true; // I don't know why this is required but without it the #removeTimer() sometimes decides to cause CME anyway
         activeTimersCopy.addAll(activeTimers); // Copy to avoid CME and NSEE
+        timerReadLock = false;
         // Remove any expired timers, +1000 so we expire on 00:01 instead of 00:00 (consistent with game)
         activeTimersCopy.removeIf(c -> c instanceof DynamicTimerContainer && ((DynamicTimerContainer) c).getExpirationTime() < McIf.getSystemTime());
 
