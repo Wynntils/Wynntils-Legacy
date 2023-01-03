@@ -8,7 +8,8 @@ import com.wynntils.McIf;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.LocationProfile;
-import net.minecraft.client.Minecraft;
+import com.wynntils.webapi.profiles.MapLabelProfile;
+import com.wynntils.webapi.profiles.MapMarkerProfile;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -27,13 +28,13 @@ public class CommandLocate extends CommandBase implements IClientCommand {
     Map<String, List<LocationProfile>> mapFeatures = new HashMap<>();
 
     public CommandLocate() {
-        for (LocationProfile location : WebManager.getNonIgnoredApiMarkers()) {
+        for (MapMarkerProfile location : WebManager.getNonIgnoredApiMarkers()) {
             mapFeatures.put(getFeatureKey(location), getProfileList(location));
         }
         for (LocationProfile location : WebManager.getNpcLocations()) {
             mapFeatures.put(getFeatureKey(location), Collections.singletonList(location));
         }
-        for (LocationProfile location : WebManager.getMapLabels()) {
+        for (MapLabelProfile location : WebManager.getMapLabels()) {
             mapFeatures.put(getFeatureKey(location), Collections.singletonList(location));
         }
     }
@@ -48,7 +49,7 @@ public class CommandLocate extends CommandBase implements IClientCommand {
     }
 
     private String getFeatureKey(LocationProfile location) {
-        return (location == null || location.getTranslatedName() == null) ? "feature_unavailable" : location.getTranslatedName().replace(" ", "_");
+        return (location.getTranslatedName() == null) ? "feature_unavailable" : location.getTranslatedName().replace(" ", "_");
     }
 
     @Override
