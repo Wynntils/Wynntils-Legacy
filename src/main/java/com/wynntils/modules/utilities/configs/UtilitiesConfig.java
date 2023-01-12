@@ -531,9 +531,6 @@ public class UtilitiesConfig extends SettingsClass {
         @Setting(displayName = "Automatic Page Searching", description = "Should pressing a bank page button automatically cycle through pages until the searched item is found?", order = 4)
         public boolean autoPageSearch = false;
 
-        @Setting(displayName = "Confirmation for Bank Pages", description = "Should Wynntils display a confirmation when buying bank pages?", order = 6)
-        public boolean addBankConfirmation = true;
-
         @Setting(displayName = "Open Chat Bank Search", description = "Should the chat open when the bank search asks you to type a response?", order = 7)
         public boolean openChatBankSearch = true;
 
