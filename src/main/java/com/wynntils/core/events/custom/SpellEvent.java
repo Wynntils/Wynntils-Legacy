@@ -45,10 +45,23 @@ public class SpellEvent extends Event {
     }
 
     public static class TotemActivated extends Totem {
+        private final Location location;
+
+        public TotemActivated(int totemNumber, Location location) {
+            super(totemNumber);
+            this.location = location;
+        }
+
+        public Location getLocation() {
+            return location;
+        }
+    }
+
+    public static class TotemUpdated extends Totem {
         private final int time;
         private final Location location;
 
-        public TotemActivated(int totemNumber, int time, Location location) {
+        public TotemUpdated(int totemNumber, int time, Location location) {
             super(totemNumber);
             this.time = time;
             this.location = location;

@@ -803,7 +803,7 @@ public class OverlayEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void onTotemActivated(SpellEvent.TotemActivated e) {
+    public void onTotemUpdate(SpellEvent.TotemUpdated e) {
         if (!UtilitiesConfig.ShamanTotemTracking.INSTANCE.trackTotem) return;
 
         String colorString = null;
@@ -820,6 +820,23 @@ public class OverlayEvents implements Listener {
 
         // Handles both add and edit cases
         ConsumableTimerOverlay.addDynamicTimer(colorString, timerName, locationString, e.getTime(), false);
+    }
+
+    @SubscribeEvent
+    public void onTotemSummoned(SpellEvent.TotemSummoned e) {
+        if (!UtilitiesConfig.ShamanTotemTracking.INSTANCE.trackTotem) return;
+
+        String colorString = null;
+        String timerName = "Totem " + e.getTotemNumber();
+
+        if (e.getTotemNumber() == 1) {
+            colorString = UtilitiesConfig.ShamanTotemTracking.INSTANCE.totem1Color.toString();
+        } else if (e.getTotemNumber() == 2) {
+            colorString = UtilitiesConfig.ShamanTotemTracking.INSTANCE.totem2Color.toString();
+        } else if (e.getTotemNumber() == 3) {
+            colorString = UtilitiesConfig.ShamanTotemTracking.INSTANCE.totem3Color.toString();
+        }
+        ConsumableTimerOverlay.addDynamicTimer(colorString, timerName, " Summoned", 59, false);
     }
 
     @SubscribeEvent

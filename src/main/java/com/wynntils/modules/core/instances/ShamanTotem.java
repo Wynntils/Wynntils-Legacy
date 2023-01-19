@@ -6,24 +6,36 @@ package com.wynntils.modules.core.instances;
 import com.wynntils.core.utils.objects.Location;
 
 public class ShamanTotem {
-    private int timerId;
+    private final int totemNumber;
+    private final int visibleEntityId;
+    private int timerEntityId;
     private int time;
     private TotemState state;
     private Location location;
 
-    public ShamanTotem(int timerId, int time, TotemState totemState, Location location) {
-        this.timerId = timerId;
+    public ShamanTotem(int totemNumber, int visibleEntityId, int timerEntityId, int time, TotemState totemState, Location location) {
+        this.totemNumber = totemNumber;
+        this.visibleEntityId = visibleEntityId;
+        this.timerEntityId = timerEntityId;
         this.time = time;
         this.state = totemState;
         this.location = location;
     }
 
-    public int getTimerId() {
-        return timerId;
+    public int getTotemNumber() {
+        return totemNumber;
     }
 
-    public void setTimerId(int timerId) {
-        this.timerId = timerId;
+    public int getVisibleEntityId() {
+        return visibleEntityId;
+    }
+
+    public int getTimerEntityId() {
+        return timerEntityId;
+    }
+
+    public void setTimerEntityId(int timerEntityId) {
+        this.timerEntityId = timerEntityId;
     }
 
     public int getTime() {
