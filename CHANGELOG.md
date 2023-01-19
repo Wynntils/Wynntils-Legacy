@@ -1,9 +1,21 @@
+## [1.14.1-beta.8](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.7...v1.14.1-beta.8) (2023-01-19)
+
+
+### Bug Fixes
+
+* Initial guild info message not being detected ([#652](https://github.com/Wynntils/Wynntils/issues/652)) ([37ef9db](https://github.com/Wynntils/Wynntils/commit/37ef9db2a801845f54a8f8c0778059c066bb8f3b))
+
 ## [1.14.1-beta.7](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.6...v1.14.1-beta.7) (2023-01-03)
 
 
 ### Bug Fixes
 
 * Startup crash ([#653](https://github.com/Wynntils/Wynntils/issues/653)) ([df999ea](https://github.com/Wynntils/Wynntils/commit/df999ea1d827770f8d223ea4b8631a17a551cc51))
+
+
+### Miscellaneous Chores
+
+* **release:** v1.14.1-beta.7 [skip ci] ([550a9e5](https://github.com/Wynntils/Wynntils/commit/550a9e5556553a1bf78f0ca3667e50034df64617))
 
 ## [1.14.1-beta.6](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.5...v1.14.1-beta.6) (2022-12-08)
 
@@ -40,16 +52,4 @@
 ### Miscellaneous Chores
 
 * **release:** v1.14.1-beta.4 [skip ci] ([9029c6a](https://github.com/Wynntils/Wynntils/commit/9029c6ad7d2fef629ac6ff4bb4ac4b3ef380e09b))
-
-## [1.14.1-beta.3](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.2...v1.14.1-beta.3) (2022-12-08)
-
-
-### Bug Fixes
-
-* update to match Wynn api ([#644](https://github.com/Wynntils/Wynntils/issues/644)) ([26555fc](https://github.com/Wynntils/Wynntils/commit/26555fc258cb4c4ddcbd831844c46e29a0093f4c))
-
-
-### Miscellaneous Chores
-
-* **release:** v1.14.1-beta.3 [skip ci] ([5739df9](https://github.com/Wynntils/Wynntils/commit/5739df9784ce68a178fc5db89b5862185f3fa592))
 
