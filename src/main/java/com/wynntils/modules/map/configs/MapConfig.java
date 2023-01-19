@@ -359,7 +359,7 @@ public class MapConfig extends SettingsClass {
             "Potion Merchant", "Powder Merchant", "Scroll Merchant", "Seasail Merchant", "Weapon Merchant",
             "Blacksmith", "Guild Master", "Item Identifier", "Powder Master", "Fast Travel",
             "Fish Refinery", "Wood Refinery", "Crop Refinery", "Marketplace", "Nether Portal",
-            "Light's Secret", "Quests", "Boss Altar", "Corrupted Dungeons"
+            "Light's Secret", "Quests", "Boss Altar", "Corrupted Dungeons", "Seaskipper Fast Travel", "Housing Air Balloon"
         }) {
             enabledIcons.put(icon, true);
         }

@@ -360,6 +360,22 @@
       "texSizeZ": 51,
       "zoomNeeded": 0,
       "size": 2
+    },
+    "Special_SeaskipperFastTravel": {
+      "texPosX": 18,
+      "texPosZ": 72,
+      "texSizeX": 36,
+      "texSizeZ": 89,
+      "zoomNeeded": 0,
+      "size": 2
+    },
+    "Special_HousingAirBalloon": {
+      "texPosX": 37,
+      "texPosZ": 72,
+      "texSizeX": 50,
+      "texSizeZ": 94,
+      "zoomNeeded": 0,
+      "size": 2
     }
   },
   "MODERN": {
