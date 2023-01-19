@@ -45,7 +45,7 @@ public class CommandDetection extends CommandBase implements IClientCommand {
     }
 
     private String getFeatureKey(LocationProfile location) {
-        return location.getTranslatedName().replace(" ", "_");
+        return (location == null || location.getTranslatedName() == null) ? "feature_unavailable" : location.getTranslatedName().replace(" ", "_");
     }
 
     @Override
