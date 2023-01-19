@@ -60,6 +60,8 @@ public class MapMarkerProfile extends LocationProfile {
         mmn_t.put("Profession_Cooking", "Cooking Station");
         mmn_t.put("Profession_Woodworking", "Woodworking Station");
         mmn_t.put("Merchant_Tool", "Tool Merchant");
+        mmn_t.put("Special_SeaskipperFastTravel", "Seaskipper Fast Travel");
+        mmn_t.put("Special_HousingAirBalloon", "Housing Air Balloon");
 
         MAPMARKERNAME_TRANSLATION = Collections.unmodifiableMap(mmn_t);
     }
