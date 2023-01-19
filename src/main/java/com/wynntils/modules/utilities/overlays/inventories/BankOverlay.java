@@ -65,8 +65,6 @@ public class BankOverlay implements Listener {
     private int destinationPage = 0;
     private int searching = 0;
 
-    private boolean bankPageConfirmed = false;
-
     private boolean textureLoaded = false;
 
     private boolean editButtonHover = false;
@@ -83,7 +81,6 @@ public class BankOverlay implements Listener {
         inBank = false;
         itemsLoaded = false;
         nameField = null;
-        bankPageConfirmed = false;
         searchedItems.clear();
         Keyboard.enableRepeatEvents(false);
     }
@@ -301,30 +298,6 @@ public class BankOverlay implements Listener {
             }
         }
 
-        if (UtilitiesConfig.Bank.INSTANCE.addBankConfirmation) {
-            if (McIf.getUnformattedText(e.getSlotIn().inventory.getDisplayName()).contains("[Pg. ") && e.getSlotIn().getHasStack()) {
-                ItemStack item = e.getSlotIn().getStack();
-                if (item.getDisplayName().contains(">" + TextFormatting.DARK_RED + ">" + TextFormatting.RED + ">" + TextFormatting.DARK_RED + ">" + TextFormatting.RED + ">")) {
-                    String lore = TextFormatting.getTextWithoutFormattingCodes(ItemUtils.getStringLore(item));
-                    String price = lore.substring(lore.indexOf(" Price: ") + 8);
-                    String itemName = item.getDisplayName();
-                    String pageNumber = itemName.substring(9, itemName.indexOf(TextFormatting.RED + " >"));
-                    ChestReplacer gui = e.getGui();
-                    McIf.mc().displayGuiScreen(new GuiParentedYesNo((result, parentButtonId) -> gui, (result, parentButtonID) -> {
-                        if (result) {
-                            bankPageConfirmed = true;
-                            CPacketClickWindow packet = new CPacketClickWindow(gui.inventorySlots.windowId, e.getSlotId(), e.getMouseButton(), e.getType(), item, gui.inventorySlots.getNextTransactionID(McIf.player().inventory));
-                            tryForceBankInit();
-                            PacketQueue.queueSimplePacket(packet);
-                        } else {
-                            tryForceBankInit();
-                        }
-                    }, "Are you sure you want to purchase another bank page?", "Page number: " + pageNumber + "\nCost: " + price, 0));
-                    e.setCanceled(true);
-                }
-            }
-        }
-
         // auto page searching
         if (!isSearching() || !UtilitiesConfig.Bank.INSTANCE.autoPageSearch
                 || !(s.slotNumber == PAGE_FORWARD || s.slotNumber == PAGE_BACK)) return;
@@ -334,15 +307,6 @@ public class BankOverlay implements Listener {
         gotoPage(e.getGui());
 
         e.setCanceled(true);
-    }
-
-    @SubscribeEvent
-    public void onSetSlot(PacketEvent<SPacketSetSlot> event) {
-        if (bankPageConfirmed && event.getPacket().getSlot() == 8) {
-            bankPageConfirmed = false;
-            CPacketClickWindow packet = new CPacketClickWindow(McIf.player().openContainer.windowId, 8, 0, ClickType.PICKUP, event.getPacket().getStack(), McIf.player().openContainer.getNextTransactionID(McIf.player().inventory));
-            PacketQueue.queueSimplePacket(packet);
-        }
     }
 
     @SubscribeEvent
@@ -466,7 +430,7 @@ public class BankOverlay implements Listener {
         // don't assume we can hop to a page that's greater than the destination
         if (hop > UtilitiesConfig.Bank.INSTANCE.maxPages && hop > destinationPage) hop -= 4;
 
-        CPacketClickWindow packet = null;
+        CPacketClickWindow packet;
         if (Math.abs(destinationPage - hop) >= Math.abs(destinationPage - page)) { // we already hopped, or started from a better/equivalent spot
             if (page < destinationPage) { // destination is in front of us
                 ItemStack is = bankGui.inventorySlots.getSlot(PAGE_FORWARD).getStack();
