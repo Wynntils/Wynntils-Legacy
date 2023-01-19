@@ -1,9 +1,21 @@
+## [1.14.1-beta.7](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.6...v1.14.1-beta.7) (2023-01-03)
+
+
+### Bug Fixes
+
+* Startup crash ([#653](https://github.com/Wynntils/Wynntils/issues/653)) ([df999ea](https://github.com/Wynntils/Wynntils/commit/df999ea1d827770f8d223ea4b8631a17a551cc51))
+
 ## [1.14.1-beta.6](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.5...v1.14.1-beta.6) (2022-12-08)
 
 
 ### New Features
 
 * add config reset button ([#607](https://github.com/Wynntils/Wynntils/issues/607)) ([73bda2e](https://github.com/Wynntils/Wynntils/commit/73bda2e73338bdb9ddf420503e41ce79e3aa4964))
+
+
+### Miscellaneous Chores
+
+* **release:** v1.14.1-beta.6 [skip ci] ([10508ad](https://github.com/Wynntils/Wynntils/commit/10508ade507075b592d43a883f97b5ab59db6d29))
 
 ## [1.14.1-beta.5](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.4...v1.14.1-beta.5) (2022-12-08)
 
@@ -40,16 +52,4 @@
 ### Miscellaneous Chores
 
 * **release:** v1.14.1-beta.3 [skip ci] ([5739df9](https://github.com/Wynntils/Wynntils/commit/5739df9784ce68a178fc5db89b5862185f3fa592))
-
-## [1.14.1-beta.2](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.1...v1.14.1-beta.2) (2022-12-08)
-
-
-### Bug Fixes
-
-* Fix various ability bar bugs ([#649](https://github.com/Wynntils/Wynntils/issues/649)) ([6aa0823](https://github.com/Wynntils/Wynntils/commit/6aa0823bb1c83bc8f2113f159226d346f359f6ea))
-
-
-### Miscellaneous Chores
-
-* **release:** v1.14.1-beta.2 [skip ci] ([36b2540](https://github.com/Wynntils/Wynntils/commit/36b2540834c9a972499c9ac33dc05f17de898a57))
 
