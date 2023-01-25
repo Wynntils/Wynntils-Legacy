@@ -1,9 +1,21 @@
+## [1.14.1-beta.11](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.10...v1.14.1-beta.11) (2023-01-25)
+
+
+### Bug Fixes
+
+* Mythic detection fix ([#650](https://github.com/Wynntils/Wynntils/issues/650)) ([b212e7d](https://github.com/Wynntils/Wynntils/commit/b212e7da767a72aadad842d4385893d96231ec04))
+
 ## [1.14.1-beta.10](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.9...v1.14.1-beta.10) (2023-01-19)
 
 
 ### Bug Fixes
 
 * proper icon fix ([#655](https://github.com/Wynntils/Wynntils/issues/655)) ([4bc8bbd](https://github.com/Wynntils/Wynntils/commit/4bc8bbd1ab79b0a053520351a9b346aa5613789f))
+
+
+### Miscellaneous Chores
+
+* **release:** v1.14.1-beta.10 [skip ci] ([6829365](https://github.com/Wynntils/Wynntils/commit/6829365f6b77a17fdf86a320c4dead7b04067b3a))
 
 ## [1.14.1-beta.9](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.8...v1.14.1-beta.9) (2023-01-19)
 
@@ -40,16 +52,4 @@
 ### Miscellaneous Chores
 
 * **release:** v1.14.1-beta.7 [skip ci] ([550a9e5](https://github.com/Wynntils/Wynntils/commit/550a9e5556553a1bf78f0ca3667e50034df64617))
-
-## [1.14.1-beta.6](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.5...v1.14.1-beta.6) (2022-12-08)
-
-
-### New Features
-
-* add config reset button ([#607](https://github.com/Wynntils/Wynntils/issues/607)) ([73bda2e](https://github.com/Wynntils/Wynntils/commit/73bda2e73338bdb9ddf420503e41ce79e3aa4964))
-
-
-### Miscellaneous Chores
-
-* **release:** v1.14.1-beta.6 [skip ci] ([10508ad](https://github.com/Wynntils/Wynntils/commit/10508ade507075b592d43a883f97b5ab59db6d29))
 

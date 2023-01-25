@@ -603,7 +603,6 @@ public class ClientEvents implements Listener {
         if (!Reference.onWorld) return;
 
         if (UtilitiesConfig.INSTANCE.preventMythicChestClose || UtilitiesConfig.INSTANCE.preventFavoritedChestClose) {
-            boolean preventedClose = false;
             if (e.getKeyCode() == 1 || e.getKeyCode() == McIf.mc().gameSettings.keyBindInventory.getKeyCode()) {
                 if (UtilitiesConfig.INSTANCE.preventFavoritedChestClosingAmount != 0 && timesClosed + 1 >= UtilitiesConfig.INSTANCE.preventFavoritedChestClosingAmount) {
                     timesClosed = 0;
@@ -618,10 +617,10 @@ public class ClientEvents implements Listener {
                         ItemStack stack = inv.getStackInSlot(i);
 
                         TextComponentString text;
-                        if (UtilitiesConfig.INSTANCE.preventMythicChestClose && stack.hasDisplayName() &&
-                                stack.getDisplayName().startsWith(TextFormatting.DARK_PURPLE.toString()) &&
-                                ItemUtils.getStringLore(stack).toLowerCase().contains("mythic")) {
-                            text = new TextComponentString("You cannot close this loot chest while there is a mythic in it!");
+                        if (UtilitiesConfig.INSTANCE.preventMythicChestClose && isMythic(stack)) {
+                            text = new TextComponentString("You cannot close this loot chest while there is a mythic in it!"
+                                    + (UtilitiesConfig.INSTANCE.preventFavoritedChestClosingAmount != 0 ? " Try closing this chest " +
+                                    (UtilitiesConfig.INSTANCE.preventFavoritedChestClosingAmount - timesClosed - 1) + " more times to forcefully close!" : ""));
                         } else if (UtilitiesConfig.INSTANCE.preventFavoritedChestClose && stack.hasTagCompound() &&
                                 stack.getTagCompound().getBoolean("wynntilsFavorite")) {
                             text = new TextComponentString("You cannot close this loot chest while there is a favorited item, ingredient, emerald pouch, emerald or powder in it!"
@@ -1090,76 +1089,74 @@ public class ClientEvents implements Listener {
     }
 
     @SubscribeEvent
-    public void onWindowOpen(PacketEvent<SPacketOpenWindow> e){
-        if (getTextWithoutFormattingCodes(e.getPacket().getWindowTitle().getUnformattedText()).startsWith("Loot Chest"))
+    public void onWindowOpen(PacketEvent<SPacketOpenWindow> e) {
+        if (getTextWithoutFormattingCodes(e.getPacket().getWindowTitle().getUnformattedText()).startsWith("Loot Chest")) {
+            new Delay(this::processCurrentChestContents, 1);
             lastOpenedChestWindowId = e.getPacket().getWindowId();
-        if (e.getPacket().getWindowTitle().toString().contains("Daily Rewards") || e.getPacket().getWindowTitle().toString().contains("Objective Rewards"))
+        }
+        if (e.getPacket().getWindowTitle().toString().contains("Daily Rewards") || e.getPacket().getWindowTitle().toString().contains("Objective Rewards")) {
+            new Delay(this::processCurrentChestContents, 1);
             lastOpenedRewardWindowId = e.getPacket().getWindowId();
+        }
     }
 
-    // Dry streak counter, mythic music event
-    @SubscribeEvent
-    public void onMythicFound(PacketEvent<SPacketWindowItems> e) {
-        if (lastOpenedChestWindowId != e.getPacket().getWindowId() && lastOpenedRewardWindowId != e.getPacket().getWindowId()) return;
+    /**
+     * Since Wynncraft sometimes sends items for a chest after the chest is opened using a different type of packet and
+     * sometimes sends them immediately, we can't rely on either method to check if a chest has a Mythic in it
+     * Here, we will just check if the current opened inventory is a chest and has a Mythic in it
+     * This method should be called after the inventory is opened with some sort of a delay, at least 1 tick
+     */
+    public void processCurrentChestContents() {
+        if (!(McIf.mc().currentScreen instanceof ChestReplacer)) return;
 
-        // Get items in chest, return if there is not enough or too many items
-        // 63 is the size of a chest (27) + player inventory
-        if (e.getPacket().getItemStacks().size() != 63)
-            return;
+        ChestReplacer chest = (ChestReplacer) McIf.mc().currentScreen;
+        if (chest.getLowerInv().getSizeInventory() != 27) return;
 
-        // Only run at first time we get items, don't care about updating
-        if (e.getPacket().getWindowId() == lastProcessedOpenedChest) return;
+        List<ItemStack> mythicsInChest = new ArrayList<>();
+        for (int i = 0; i < 27; i++) {
+            ItemStack stack = chest.getLowerInv().getStackInSlot(i);
+            if (stack.isEmpty() || !stack.hasDisplayName() || stack.getItem() == Items.AIR) continue;
 
-        // Wynncraft sends you two packets when opening the chest. The first is empty, the second one has the actual items.
-        // By returning here, we only process the second packet, whilst still only handling each chest once.
-        List<ItemStack> actualItems = e.getPacket().getItemStacks().subList(0, 27).stream().filter(item -> !item.isEmpty() && item.hasDisplayName() && item.getItem() != Items.AIR).collect(Collectors.toList());
-        if (actualItems.size() == 0) return;
-
-        lastProcessedOpenedChest = e.getPacket().getWindowId();
-
-        // Dry streak counter and sound sfx
-        if (UtilitiesConfig.INSTANCE.enableDryStreak && lastOpenedChestWindowId == e.getPacket().getWindowId()) {
-            boolean foundMythic = false;
-            // Size should be at least 27, checked for it earlier
-            int size = 27;
-            for (int i = 0; i < size; i++) {
-                ItemStack stack = e.getPacket().getItemStacks().get(i);
-                if (stack.isEmpty() || !stack.hasDisplayName()) continue;
-                if (!stack.getDisplayName().contains("Unidentified")) continue;
-
-                UtilitiesConfig.INSTANCE.dryStreakBoxes += 1;
-
-                if (!stack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString())) continue;
-
-                if (MusicConfig.SoundEffects.INSTANCE.mythicFound) {
-                    try {
-                        SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("mythicFound"),
-                                true, false, false, false, true, false, true);
-                    } catch (Exception exception) {
-                        exception.printStackTrace();
-                    }
-                }
-
-                if (UtilitiesConfig.INSTANCE.enableDryStreak && UtilitiesConfig.INSTANCE.dryStreakEndedMessage) {
-                    ITextComponent textComponent = new TextComponentString(UtilitiesConfig.INSTANCE.dryStreakCount + " long dry streak broken! Mythic found! Found boxes since last mythic: " + UtilitiesConfig.INSTANCE.dryStreakBoxes);
-                    textComponent.getStyle()
-                            .setColor(TextFormatting.DARK_PURPLE)
-                            .setBold(true);
-                    McIf.player().sendMessage(textComponent);
-                }
-
-                foundMythic = true;
-                UtilitiesConfig.INSTANCE.dryStreakCount = 0;
-                UtilitiesConfig.INSTANCE.dryStreakBoxes = 0;
-
-                break;
+            if (isMythic(stack)) { // Is a mythic
+                mythicsInChest.add(stack);
+            } else if (stack.getDisplayName().contains("Unidentified")) { // Not a mythic, but is a box
+                if (UtilitiesConfig.INSTANCE.enableDryStreak) UtilitiesConfig.INSTANCE.dryStreakBoxes += 1;
             }
-
-            if (!foundMythic)
-                UtilitiesConfig.INSTANCE.dryStreakCount += 1;
-
-            UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
         }
+
+        if (mythicsInChest.isEmpty()) { // No mythics in chest, add 1 to dry streak
+            if (UtilitiesConfig.INSTANCE.enableDryStreak) UtilitiesConfig.INSTANCE.dryStreakCount += 1;
+            UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
+            return;
+        }
+
+        // At this point, we have at least one mythic
+        if (MusicConfig.SoundEffects.INSTANCE.mythicFound) {
+            try {
+                SoundTrackManager.findTrack(WebManager.getMusicLocations().getEntryTrack("mythicFound"),
+                        true, false, false, false, true, false, true);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        }
+
+        if (UtilitiesConfig.INSTANCE.enableDryStreak && UtilitiesConfig.INSTANCE.dryStreakEndedMessage) {
+            ITextComponent textComponent = new TextComponentString(UtilitiesConfig.INSTANCE.dryStreakCount + " long dry streak broken! Mythic found! Found boxes since last mythic: " + UtilitiesConfig.INSTANCE.dryStreakBoxes);
+            textComponent.getStyle()
+                    .setColor(TextFormatting.DARK_PURPLE)
+                    .setBold(true);
+            McIf.player().sendMessage(textComponent);
+        }
+
+        UtilitiesConfig.INSTANCE.dryStreakCount = 0;
+        UtilitiesConfig.INSTANCE.dryStreakBoxes = 0;
+        UtilitiesConfig.INSTANCE.saveSettings(UtilitiesModule.getModule());
+    }
+
+    private boolean isMythic(ItemStack itemStack) {
+        if (itemStack.isEmpty() || !itemStack.hasDisplayName() || itemStack.getItem() == Items.AIR) return false;
+        return itemStack.getDisplayName().contains(TextFormatting.DARK_PURPLE.toString()) &&
+                itemStack.getDisplayName().contains("Unidentified");
     }
 
     @SubscribeEvent
