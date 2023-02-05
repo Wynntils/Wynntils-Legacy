@@ -26,6 +26,8 @@ public class StringUtils {
     private static final Pattern STX_PATTERN = Pattern.compile("(\\.?\\d+\\.?\\d*)\\s*(s|stx|stacks)");
     private static final Pattern LE_PATTERN = Pattern.compile("(\\.?\\d+\\.?\\d*)\\s*(l|le)");
     private static final Pattern EB_PATTERN = Pattern.compile("(\\.?\\d+\\.?\\d*)\\s*(b|eb)");
+    private static final Pattern K_PATTERN = Pattern.compile("(\\.?\\d+\\.?\\d*)\\s*(k|thousand)");
+    private static final Pattern M_PATTERN = Pattern.compile("(\\.?\\d+\\.?\\d*)\\s*(m|million)");
     private static final Pattern E_PATTERN = Pattern.compile("(\\d+)($|\\s|\\s*e|\\s*em)(?![^\\d\\s-])");
     private static final Pattern RAW_PRICE_PATTERN = Pattern.compile("\\d+");
 
