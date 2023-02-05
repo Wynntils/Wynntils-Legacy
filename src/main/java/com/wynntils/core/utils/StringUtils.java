@@ -423,6 +423,18 @@ public class StringUtils {
             while (ebMatcher.find()) {
                 emeralds += (long) (Double.parseDouble(ebMatcher.group(1)) * 64);
             }
+            
+            // k
+            Matcher kMatcher = K_PATTERN.matcher(input);
+            while (kMatcher.find()) {
+                emeralds += (long) (Double.parseDouble(kMatcher.group(1)) * 1000);
+            }
+            
+            // m
+            Matcher mMatcher = M_PATTERN.matcher(input);
+            while (mMatcher.find()) {
+                emeralds += (long) (Double.parseDouble(mMatcher.group(1)) * 1000000);
+            }
 
             // standard numbers/emeralds
             Matcher eMatcher = E_PATTERN.matcher(input);
