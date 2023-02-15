@@ -24,6 +24,7 @@ import net.minecraft.client.multiplayer.GuiConnecting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.play.server.SPacketPlayerListItem;
 import net.minecraft.network.play.server.SPacketPlayerListItem.Action;
+import net.minecraft.util.StringUtils;
 import net.minecraft.util.text.ChatType;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -183,7 +184,13 @@ public class ClientEvents {
                     ITextComponent nameComponent = (ITextComponent) ReflectionMethods.SPacketPlayerListItem$AddPlayerData_getDisplayName.invoke(player);
                     if (nameComponent == null) continue;
                     String name = McIf.getUnformattedText(nameComponent);
-                    String world = name.substring(name.indexOf("[") + 1, name.indexOf("]"));
+
+                    String world;
+                    if (!name.contains("[")) {
+                        world = StringUtils.stripControlCodes(name);
+                    } else {
+                        world = name.substring(name.indexOf("[") + 1, name.indexOf("]"));
+                    }
 
                     if (world.equalsIgnoreCase(lastWorld)) {
                         continue;
