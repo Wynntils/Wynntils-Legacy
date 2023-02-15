@@ -1,9 +1,21 @@
+## [1.14.1-beta.12](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.11...v1.14.1-beta.12) (2023-02-15)
+
+
+### Bug Fixes
+
+* Fix crash on housing island ([#663](https://github.com/Wynntils/Wynntils/issues/663)) ([9a6c76b](https://github.com/Wynntils/Wynntils/commit/9a6c76b95401f7f0dd93eab6370d63aab5149a2d))
+
 ## [1.14.1-beta.11](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.10...v1.14.1-beta.11) (2023-01-25)
 
 
 ### Bug Fixes
 
 * Mythic detection fix ([#650](https://github.com/Wynntils/Wynntils/issues/650)) ([b212e7d](https://github.com/Wynntils/Wynntils/commit/b212e7da767a72aadad842d4385893d96231ec04))
+
+
+### Miscellaneous Chores
+
+* **release:** v1.14.1-beta.11 [skip ci] ([b5f2491](https://github.com/Wynntils/Wynntils/commit/b5f249124c331ae5d4b98629563a74c784c61478))
 
 ## [1.14.1-beta.10](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.9...v1.14.1-beta.10) (2023-01-19)
 
@@ -40,16 +52,4 @@
 ### Miscellaneous Chores
 
 * **release:** v1.14.1-beta.8 [skip ci] ([ad73608](https://github.com/Wynntils/Wynntils/commit/ad73608b4ac20078fd5f095cef67c46d09c14de6))
-
-## [1.14.1-beta.7](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.6...v1.14.1-beta.7) (2023-01-03)
-
-
-### Bug Fixes
-
-* Startup crash ([#653](https://github.com/Wynntils/Wynntils/issues/653)) ([df999ea](https://github.com/Wynntils/Wynntils/commit/df999ea1d827770f8d223ea4b8631a17a551cc51))
-
-
-### Miscellaneous Chores
-
-* **release:** v1.14.1-beta.7 [skip ci] ([550a9e5](https://github.com/Wynntils/Wynntils/commit/550a9e5556553a1bf78f0ca3667e50034df64617))
 
