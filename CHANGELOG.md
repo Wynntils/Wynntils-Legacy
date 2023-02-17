@@ -1,9 +1,21 @@
+## [1.14.1-beta.13](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.12...v1.14.1-beta.13) (2023-02-17)
+
+
+### Bug Fixes
+
+* Prevent custom seaskipper menu crash ([#664](https://github.com/Wynntils/Wynntils/issues/664)) ([374e255](https://github.com/Wynntils/Wynntils/commit/374e255757ef95f113dde681f7552aadb0ed09b8))
+
 ## [1.14.1-beta.12](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.11...v1.14.1-beta.12) (2023-02-15)
 
 
 ### Bug Fixes
 
 * Fix crash on housing island ([#663](https://github.com/Wynntils/Wynntils/issues/663)) ([9a6c76b](https://github.com/Wynntils/Wynntils/commit/9a6c76b95401f7f0dd93eab6370d63aab5149a2d))
+
+
+### Miscellaneous Chores
+
+* **release:** v1.14.1-beta.12 [skip ci] ([e01d953](https://github.com/Wynntils/Wynntils/commit/e01d9534b54aa4b31522969e654229f993da1d85))
 
 ## [1.14.1-beta.11](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.10...v1.14.1-beta.11) (2023-01-25)
 
@@ -40,16 +52,4 @@
 ### Miscellaneous Chores
 
 * **release:** v1.14.1-beta.9 [skip ci] ([fa3d93b](https://github.com/Wynntils/Wynntils/commit/fa3d93b15e8523292205ea89e5a85a986a950d59))
-
-## [1.14.1-beta.8](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.7...v1.14.1-beta.8) (2023-01-19)
-
-
-### Bug Fixes
-
-* Initial guild info message not being detected ([#652](https://github.com/Wynntils/Wynntils/issues/652)) ([37ef9db](https://github.com/Wynntils/Wynntils/commit/37ef9db2a801845f54a8f8c0778059c066bb8f3b))
-
-
-### Miscellaneous Chores
-
-* **release:** v1.14.1-beta.8 [skip ci] ([ad73608](https://github.com/Wynntils/Wynntils/commit/ad73608b4ac20078fd5f095cef67c46d09c14de6))
 
