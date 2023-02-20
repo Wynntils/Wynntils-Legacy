@@ -40,7 +40,7 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void replaceSeaskipperMenuDraw(GuiOverlapEvent.ChestOverlap.DrawScreen.Pre e) {
-        if (seaskipperWorldMapUI == null) return;
+        if (seaskipperWorldMapUI == null || seaskipperWorldMapUI.shouldFallback()) return;
         //close screen if 10 seconds has passed and no items/item parsing failed
 
         seaskipperWorldMapUI.drawScreen(e.getMouseX(), e.getMouseY(), e.getPartialTicks());
@@ -49,7 +49,7 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void replaceSeaskipperMouseInput(GuiOverlapEvent.ChestOverlap.HandleMouseInput e) throws IOException {
-        if (seaskipperWorldMapUI == null) return;
+        if (seaskipperWorldMapUI == null || seaskipperWorldMapUI.shouldFallback()) return;
 
         seaskipperWorldMapUI.handleMouseInput();
         e.setCanceled(true);
@@ -57,7 +57,7 @@ public class OverlayEvents implements Listener {
 
     @SubscribeEvent
     public void replaceKeyTyped(GuiOverlapEvent.ChestOverlap.KeyTyped e) throws IOException {
-        if (seaskipperWorldMapUI == null) return;
+        if (seaskipperWorldMapUI == null || seaskipperWorldMapUI.shouldFallback()) return;
 
         //1 is the keycode escape, meaning that if seaskipperWorldMapUI runs it, it closes the screen,
         // but the chestreplacer can remain open, leading to a blank screen client side but the chest
