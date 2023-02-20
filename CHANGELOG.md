@@ -1,9 +1,21 @@
+## [1.14.1-beta.14](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.13...v1.14.1-beta.14) (2023-02-20)
+
+
+### New Features
+
+* Remove support for stable update stream ([#667](https://github.com/Wynntils/Wynntils/issues/667)) ([c5b509d](https://github.com/Wynntils/Wynntils/commit/c5b509dd720560ff268bfb652a49a9fa8f27509e))
+
 ## [1.14.1-beta.13](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.12...v1.14.1-beta.13) (2023-02-17)
 
 
 ### Bug Fixes
 
 * Prevent custom seaskipper menu crash ([#664](https://github.com/Wynntils/Wynntils/issues/664)) ([374e255](https://github.com/Wynntils/Wynntils/commit/374e255757ef95f113dde681f7552aadb0ed09b8))
+
+
+### Miscellaneous Chores
+
+* **release:** v1.14.1-beta.13 [skip ci] ([a4520df](https://github.com/Wynntils/Wynntils/commit/a4520dfdada512aeebea116d8cd25eb71ad8692c))
 
 ## [1.14.1-beta.12](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.11...v1.14.1-beta.12) (2023-02-15)
 
@@ -40,16 +52,4 @@
 ### Miscellaneous Chores
 
 * **release:** v1.14.1-beta.10 [skip ci] ([6829365](https://github.com/Wynntils/Wynntils/commit/6829365f6b77a17fdf86a320c4dead7b04067b3a))
-
-## [1.14.1-beta.9](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.8...v1.14.1-beta.9) (2023-01-19)
-
-
-### Bug Fixes
-
-* remove bank page confirms ([#656](https://github.com/Wynntils/Wynntils/issues/656)) ([57384b5](https://github.com/Wynntils/Wynntils/commit/57384b56d93c5cbfb89f045e8ea1dff8920cf0c5))
-
-
-### Miscellaneous Chores
-
-* **release:** v1.14.1-beta.9 [skip ci] ([fa3d93b](https://github.com/Wynntils/Wynntils/commit/fa3d93b15e8523292205ea89e5a85a986a950d59))
 
