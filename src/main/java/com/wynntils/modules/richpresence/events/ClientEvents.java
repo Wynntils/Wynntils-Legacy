@@ -17,7 +17,14 @@ public class ClientEvents implements Listener {
 
     @SubscribeEvent
     public void onJoinParty(WynnSocialEvent.Party.Join e) {
-        RichPresenceModule.getModule().getRichPresence().setJoinSecret(new SecretContainer(e.getParty().getOwner(), Reference.getUserWorld().replaceAll("\\d+", ""), Integer.parseInt(Reference.getUserWorld().replace("WC", "").replace("HB", ""))));
+        int world;
+        try {
+            world = Integer.parseInt(Reference.getUserWorld().replace("WC", "").replace("HB", ""));
+        } catch (NumberFormatException e) {
+            world = 0;
+            e.printStackTrace()
+        }
+        RichPresenceModule.getModule().getRichPresence().setJoinSecret(new SecretContainer(e.getParty().getOwner(), Reference.getUserWorld().replaceAll("\\d+", ""), world));
     }
 
     @SubscribeEvent
