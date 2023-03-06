@@ -20,9 +20,9 @@ public class ClientEvents implements Listener {
         int world;
         try {
             world = Integer.parseInt(Reference.getUserWorld().replace("WC", "").replace("HB", ""));
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException npe) {
             world = 0;
-            e.printStackTrace();
+            npe.printStackTrace();
         }
         RichPresenceModule.getModule().getRichPresence().setJoinSecret(new SecretContainer(e.getParty().getOwner(), Reference.getUserWorld().replaceAll("\\d+", ""), world));
     }
