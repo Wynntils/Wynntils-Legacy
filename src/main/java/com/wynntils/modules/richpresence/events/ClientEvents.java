@@ -22,7 +22,7 @@ public class ClientEvents implements Listener {
             world = Integer.parseInt(Reference.getUserWorld().replace("WC", "").replace("HB", ""));
         } catch (NumberFormatException e) {
             world = 0;
-            e.printStackTrace()
+            e.printStackTrace();
         }
         RichPresenceModule.getModule().getRichPresence().setJoinSecret(new SecretContainer(e.getParty().getOwner(), Reference.getUserWorld().replaceAll("\\d+", ""), world));
     }
