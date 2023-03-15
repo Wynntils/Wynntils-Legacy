@@ -453,6 +453,18 @@ public class StringUtils {
         return String.format("%s%c", value, "kMBTPE".charAt(exp - 1));
     }
 
+    public static String durationIntegerToShortString(int count) {
+        if (count < 60) {
+            return count + "s";
+        } else if (count > 86400) {
+            return count / 86400 + "d";
+        } else if (count > 3600) {
+            return count / 3600 + "h";
+        } else {
+            return count / 60 + "m";
+        }
+    }
+
     public static boolean fuzzyMatch(String toCheck, String searchText) {
         int i = 0, j = 0;
         char[] toCheckArray = toCheck.toCharArray();

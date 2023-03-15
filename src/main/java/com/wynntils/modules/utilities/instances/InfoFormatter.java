@@ -64,6 +64,16 @@ public class InfoFormatter {
                 CharacterData.PER_FORMAT.format(SpeedometerManager.getCurrentSpeed() * 3.6),
                 "kmph");
 
+        // Time in seconds to get to the beacon (raw)
+        registerFormatter((input ->
+                Integer.toString(SpeedometerManager.getTravelingTime())
+        ), "travel_raw");
+
+        // Time in seconds to get to the beacon
+        registerFormatter((input ->
+                StringUtils.durationIntegerToShortString(SpeedometerManager.getTravelingTime())
+        ), "travel");
+
         // X coordinate
         registerFormatter((input) ->
                 Integer.toString((int) McIf.player().posX),

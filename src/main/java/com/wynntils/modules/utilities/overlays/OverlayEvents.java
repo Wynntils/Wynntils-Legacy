@@ -38,6 +38,8 @@ import java.util.EnumMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+import static com.wynntils.core.utils.StringUtils.integerToShortString;
 import static net.minecraft.util.text.TextFormatting.*;
 
 public class OverlayEvents implements Listener {
@@ -126,6 +128,7 @@ public class OverlayEvents implements Listener {
                                         .replace("%xc%", Integer.toString(data.getCurrentXP() - oldxp))
                                         .replace("%po%", oldxppercent)
                                         .replace("%pn%", data.getCurrentXPAsPercentage())
+                                        .replace("%pc_formatted%", integerToShortString((int) xpchange))
                                         .replace("%pc%", df.format(xpchange)));
                             }
                             oldxp = data.getCurrentXP();

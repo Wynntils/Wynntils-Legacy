@@ -10,7 +10,9 @@ import com.wynntils.core.framework.overlays.Overlay;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.settings.annotations.Setting;
+import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
+import com.wynntils.modules.utilities.managers.LevelingManager;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
@@ -43,13 +45,17 @@ public class LevelingOverlay extends Overlay {
         if (((event.getType() == RenderGameOverlayEvent.ElementType.EXPERIENCE) || (event.getType() == RenderGameOverlayEvent.ElementType.JUMPBAR)) && Reference.onWorld && data.isLoaded()) {
             String text = OverlayConfig.Leveling.INSTANCE.levelingText.replace("%actual%", "" + data.getCurrentXP())
                     .replace("%max%", "" + data.getXpNeededToLevelUp())
+                    .replace("%actual_formatted%", StringUtils.integerToShortString(data.getCurrentXP()))
                     .replace("%percent%", data.getCurrentXPAsPercentage())
                     .replace("%needed%", "" + (data.getXpNeededToLevelUp() - data.getCurrentXP()))
                     .replace("%actualg%", GROUPED_FORMAT.format(data.getCurrentXP()))
                     .replace("%maxg%", GROUPED_FORMAT.format(data.getXpNeededToLevelUp()))
                     .replace("%neededg%", GROUPED_FORMAT.format(data.getXpNeededToLevelUp() - data.getCurrentXP()))
+                    .replace("%needed_formatted%", StringUtils.integerToShortString(data.getXpNeededToLevelUp() - data.getCurrentXP()))
+                    .replace("%max_formatted%", StringUtils.integerToShortString(data.getXpNeededToLevelUp()))
                     .replace("%curlvl%", "" + data.getLevel())
-                    .replace("%nextlvl%", data.getLevel() == 104 ? "" : "" + (data.getLevel() + 1));
+                    .replace("%nextlvl%", data.getLevel() == 106 ? "" : "" + (data.getLevel() + 1))
+                    .replace("%grindtime%","" + StringUtils.durationIntegerToShortString(LevelingManager.getLevelingGrindTime()));
             drawString(text, 0, 0, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Leveling.INSTANCE.textShadow);
             staticSize.x = (int) getStringWidth(text);
         }

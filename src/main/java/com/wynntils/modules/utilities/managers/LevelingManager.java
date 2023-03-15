@@ -7,9 +7,6 @@ import com.wynntils.core.utils.objects.TimedSet;
 import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Idea: Maybe add a "Time Left" option to see how long leveling up takes at the current XP rate?
- */
 
 @SuppressWarnings("ConstantConditions")
 public class LevelingManager {
@@ -39,6 +36,21 @@ public class LevelingManager {
         }
 
         XP_SET.releaseEntries();
+    }
+
+    /**
+     * Get expected grind time for leveling up
+     * @return The Grind Time for Leveling Up in Minutes
+     */
+    public static int getLevelingGrindTime() {
+        CharacterData p = PlayerInfo.get(CharacterData.class);
+        int perminute = getXpPerMinute();
+        int required = p.getXpNeededToLevelUp() - p.getCurrentXP();
+        if (perminute != 0) {
+            return required / perminute * 60;
+        } else {
+            return 0;
+        }
     }
 
     /**
