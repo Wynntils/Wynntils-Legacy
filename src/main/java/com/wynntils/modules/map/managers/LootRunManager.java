@@ -43,6 +43,10 @@ public class LootRunManager {
     private static LootRunPath recordingPath = null;
     private static LootRunPath lastRecorded = null;
     private final static List<PathWaypointProfile> mapPath = new ArrayList<>();
+    private static int sessionLootrunsAmount = 0;
+    private static int sessionLootrunChestsAmount = 0;
+    private static boolean isLootrunLoaded = false;
+
 
     private final static List<CustomColor> pathColors = Arrays.asList(
         CommonColors.BLUE,
@@ -102,7 +106,8 @@ public class LootRunManager {
             reader.close();
             latestLootrun = path;
             latestLootrunName = lootRunName;
-
+            addLootruntoSession();
+            isLootrunLoaded = true;
             return Optional.of(path);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -158,6 +163,7 @@ public class LootRunManager {
     public static void clear() {
         activePaths.clear();
         recordingPath = null;
+        isLootrunLoaded = false;
         updateMapPath();
     }
 
@@ -358,6 +364,70 @@ public class LootRunManager {
         return true;
     }
 
+    public static int getSessionLootruns() {
+        return sessionLootrunsAmount;
+    }
+
+    public static int getSessionLootrunChests() {
+        return sessionLootrunChestsAmount;
+    }
+
+    public static void addLootruntoSession() {
+        sessionLootrunsAmount += 1;
+    }
+
+    public static void addOpenedChestToSession() {
+        sessionLootrunChestsAmount += 1;
+    }
+
+    public static boolean isLootrunLoaded() {
+        return isLootrunLoaded;
+    }
+
+    public static String getLatestLootrunName() {
+        return latestLootrunName;
+    }
+
+    public static boolean isCheckALootrunChest(BlockPos pos) {
+        for (LootRunPath path : activePaths.values()) {
+            if (path.getChests().contains(pos)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public static String getLootrunNames() {
+        if (activePaths.size() > 0) {
+            String s = "";
+            for (String key : activePaths.keySet()) {
+                if (key != activePaths.keySet().toArray()[activePaths.keySet().toArray().length - 1]) {
+                    s = s + key + ", ";
+
+                }
+                else {
+                    s = s + key;
+                }
+            }
+            return s;
+        }
+        return "§c§l✖§r";
+    }
+
+    public static int getLootrunChests() {
+       if(latestLootrun != null) {
+           return latestLootrun.getChests().size();
+       }
+       return 0;
+    }
+
+    public static int getLootrunPoints() {
+        if(latestLootrun != null) {
+            return latestLootrun.getPoints().size();
+        }
+        return 0;
+    }
+
     private static class LootRunPathIntermediary {
         public List<Location> points;
         public List<BlockPos> chests;
@@ -399,5 +469,4 @@ public class LootRunManager {
             return o;
         }
     }
-
 }
