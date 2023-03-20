@@ -22,6 +22,9 @@ import net.minecraft.init.Items;
 import net.minecraft.inventory.ClickType;
 import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextFormatting;
 import org.lwjgl.input.Mouse;
 import org.lwjgl.opengl.GL11;
 
@@ -42,6 +45,7 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
     private int boatSlot = -1;
 
     private boolean receivedItems = false;
+    private boolean chestFallback = false;
     ChestReplacer chest;
 
     // Properties
@@ -113,6 +117,8 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
         }
 
         updateItems();
+        // don't start drawing until items have arrived
+        if (!receivedItems || chestFallback) return;
 
         // start rendering
         ScreenRenderer.beginGL(0, 0);
@@ -150,6 +156,16 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
                 }
 
                 SeaskipperLocation location = locations.get(result.group(1));
+
+                if (location == null) {
+                    Reference.LOGGER.info("Seaskipper location \"" + result.group(1) + "\" has missing profile");
+                    chestFallback = true; // show vanilla menu instead
+
+                    ITextComponent text = new TextComponentString("Failed to load Seaskipper passes! Using default menu instead.");
+                    text.getStyle().setColor(TextFormatting.GOLD);
+                    McIf.player().sendMessage(text);
+                    return;
+                }
                 int cost = Integer.parseInt(result.group(2));
                 location.setCost(cost);
                 location.setActiveType(SeaskipperLocation.Accessibility.ACCESSIBLE);
@@ -280,5 +296,9 @@ public class SeaskipperWorldMapUI extends WorldMapUI {
     @Override
     public void keyTyped(char typedChar, int keyCode) throws IOException {
         super.keyTyped(typedChar, keyCode);
+    }
+
+    public boolean shouldFallback() {
+        return chestFallback;
     }
 }

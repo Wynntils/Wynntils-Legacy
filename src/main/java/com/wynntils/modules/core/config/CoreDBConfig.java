@@ -28,10 +28,12 @@ public class CoreDBConfig extends SettingsClass {
     @Setting(upload = false)
     public boolean lastClassIsReskinned = false;
 
-    @Setting(displayName = "Update Stream", description = "Which update stream should the mod be on?\n\n" +
-            "§2Stable: §rThe mod will only update when a new version is released. Stable versions are generally more stable than Cutting Edge builds.\n\n" +
-            "§4Cutting Edge: §rThe mod will update whenever a new build is released. Cutting Edge builds will include features that are not yet in Stable versions and are currently in development but may also be less stable than Stable versions.", upload = false)
-    public UpdateStream updateStream = UpdateStream.STABLE;
+    //@Setting(displayName = "Update Stream", description = "Which update stream should the mod be on?\n\n" +
+    //        "§2Stable: §rThe mod will only update when a new version is released. Stable versions are generally more stable than Cutting Edge builds.\n\n" +
+    //        "§4Cutting Edge: §rThe mod will update whenever a new build is released. Cutting Edge builds will include features that are not yet in Stable versions and are currently in development but may also be less stable than Stable versions.", upload = false)
+    //public UpdateStream updateStream = UpdateStream.STABLE;
+
+    public UpdateStream updateStream = UpdateStream.CUTTING_EDGE;
 
     @Setting(displayName = "Scroll Direction", description = "Which direction should your mouse scroll for the page to scroll down?")
     public ScrollDirection scrollDirection = ScrollDirection.DOWN;
