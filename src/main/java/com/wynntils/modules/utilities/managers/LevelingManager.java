@@ -67,4 +67,19 @@ public class LevelingManager {
         DecimalFormat df = new DecimalFormat("0.00");
         return df.format(PPM);
     }
+
+    /**
+     * Get expected grind time for leveling up
+     * @return The Grind Time for Leveling Up in Minutes
+     */
+    public static int getLevelingGrindTime() {
+        CharacterData p = PlayerInfo.get(CharacterData.class);
+        int perminute = getXpPerMinute();
+        int required = p.getXpNeededToLevelUp() - p.getCurrentXP();
+        if (perminute != 0) {
+            return required / perminute * 60;
+        } else {
+            return 0;
+        }
+    }
 }

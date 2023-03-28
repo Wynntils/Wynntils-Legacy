@@ -45,6 +45,18 @@ public class StringUtils {
                 .trim();
     }
 
+    public static String durationIntegerToShortString(int count) {
+        if (count < 60) {
+            return count + "s";
+        } else if (count > 86400) {
+            return count / 86400 + "d";
+        } else if (count > 3600) {
+            return count / 3600 + "h";
+        } else {
+            return count / 60 + "m";
+        }
+    }
+
     public static String firstCharToUpper(String[] array) {
         StringBuilder result = new StringBuilder();
 

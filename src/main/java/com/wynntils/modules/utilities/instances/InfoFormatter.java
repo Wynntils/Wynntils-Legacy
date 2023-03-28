@@ -134,6 +134,7 @@ public class InfoFormatter {
                 Integer.toString(PlayerInfo.get(CharacterData.class).getMaxHealth()),
                 "health_max");
 
+
         // Health percentage
         registerFormatter((input) -> {
             double currentHealth = PlayerInfo.get(CharacterData.class).getCurrentHealth();
