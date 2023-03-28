@@ -15,6 +15,7 @@ import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.map.MapModule;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.LabelDetector;
+import com.wynntils.modules.map.instances.LootRunPath;
 import com.wynntils.modules.map.instances.WaypointProfile;
 import com.wynntils.modules.map.managers.BeaconManager;
 import com.wynntils.modules.map.managers.GuildResourceManager;
@@ -122,6 +123,11 @@ public class ClientEvents implements Listener {
 
         if (LootRunManager.isRecording())
             LootRunManager.addChest(lastLocation); // add chest to the current lootrun recording
+
+        if(LootRunManager.isLootrunLoaded())
+            if(LootRunManager.isAnLootrunChest(lastLocation))
+                LootRunManager.addCurrentLootrunChest();
+                LootRunManager.addChestToSession();
 
         String tier = e.getGui().getLowerInv().getName().replace("Loot Chest ", "");
         if (!MapConfig.Waypoints.INSTANCE.chestTiers.isTierAboveThis(tier)) return;

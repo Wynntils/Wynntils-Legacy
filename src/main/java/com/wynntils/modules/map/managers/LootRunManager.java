@@ -44,6 +44,12 @@ public class LootRunManager {
     private static LootRunPath lastRecorded = null;
     private final static List<PathWaypointProfile> mapPath = new ArrayList<>();
 
+    private static int sessionLootruns = 0;
+    private static int sessionLootrunsChests = 0;
+    private static boolean isLootrunLoaded = false;
+
+    private static int currentLootrunChests = 0;
+
     private final static List<CustomColor> pathColors = Arrays.asList(
         CommonColors.BLUE,
         CommonColors.GREEN,
@@ -103,6 +109,8 @@ public class LootRunManager {
             latestLootrun = path;
             latestLootrunName = lootRunName;
 
+            enableLootrun();
+
             return Optional.of(path);
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -159,6 +167,7 @@ public class LootRunManager {
         activePaths.clear();
         recordingPath = null;
         updateMapPath();
+        disableLootrun();
     }
 
     public static Map<String, LootRunPath> getActivePaths() {
@@ -376,6 +385,85 @@ public class LootRunManager {
         }
     }
 
+    public static int getSessionLootruns() {
+        return sessionLootruns;
+    }
+
+    public static int getSessionLootrunsChests() {
+        return sessionLootrunsChests;
+    }
+
+    public static void setSessionLootruns(int i) {
+        sessionLootruns = i;
+    }
+
+    public static void setSessionLootrunsChests(int i) {
+        sessionLootrunsChests = i;
+    }
+
+    public static void addLootrunToSession() {
+        setSessionLootruns(getSessionLootruns() + 1);
+    }
+
+    public static void addChestToSession() {
+        setSessionLootrunsChests(getSessionLootrunsChests() + 1);
+    }
+
+    public static boolean isLootrunLoaded() {return isLootrunLoaded;}
+
+    public static boolean isAnLootrunChest(BlockPos pos) {
+        for(LootRunPath path : activePaths.values()) {
+            if(path.getChests().contains(pos)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public static String getLootrunNames() {
+        if (activePaths.size() > 0) {
+            String s = "";
+            for (String key : activePaths.keySet()) {
+                if (key != activePaths.keySet().toArray()[activePaths.keySet().toArray().length - 1]) {
+                    s = s + key + ", ";
+
+                }
+                else {
+                    s = s + key;
+                }
+            }
+            return s;
+        }
+        return "§c§l✖§r";
+    }
+
+    public static int getTotalLootrunChests() {
+        return latestLootrun.getChests().size();
+    }
+
+    public static int getCurrentLootrunChests() {
+        return currentLootrunChests;
+    }
+
+    public static void setCurrentLootrunChests(int i) {
+        currentLootrunChests = i;
+    }
+
+    public static void addCurrentLootrunChest() {
+        setCurrentLootrunChests(getCurrentLootrunChests() + 1);
+    }
+
+    public static void disableLootrun() {
+        isLootrunLoaded = false;
+        currentLootrunChests = 0;
+    }
+
+    public static void enableLootrun() {
+        isLootrunLoaded = true;
+
+    }
+
     private static class BlockPosSerializer implements JsonSerializer<Vec3i>, JsonDeserializer<Vec3i> {
         private static final String srg_x = "field_177962_a";
         private static final String srg_y = "field_177960_b";
@@ -399,5 +487,6 @@ public class LootRunManager {
             return o;
         }
     }
+
 
 }

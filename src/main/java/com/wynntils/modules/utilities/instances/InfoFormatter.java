@@ -17,6 +17,7 @@ import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.reference.EmeraldSymbols;
 import com.wynntils.modules.core.managers.CompassManager;
 import com.wynntils.modules.core.managers.PingManager;
+import com.wynntils.modules.map.managers.LootRunManager;
 import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.modules.utilities.interfaces.InfoModule;
 import com.wynntils.modules.utilities.managers.*;
@@ -508,6 +509,29 @@ public class InfoFormatter {
         registerFormatter((input) ->
                         !UtilitiesConfig.INSTANCE.enableDryStreak ? "-" : String.valueOf(UtilitiesConfig.INSTANCE.dryStreakBoxes),
                 "dry_boxes", "dry_streak_boxes");
+
+        // Lootruns
+        registerFormatter((input ->
+                "" + LootRunManager.getSessionLootruns()),
+                "session_lootruns");
+
+        registerFormatter((input ->
+                "" + LootRunManager.getSessionLootrunsChests()),
+                "session_lootruns_chests");
+
+        registerFormatter((input ->
+                LootRunManager.getLootrunNames()),
+                "lootruns");
+
+        registerFormatter((input ->
+                "" + LootRunManager.getCurrentLootrunChests()),
+                "lootrun_opened_chests");
+
+        registerFormatter((input ->
+                "" + LootRunManager.getTotalLootrunChests()),
+                "lootrun_chests");
+
+        
     }
 
     private void registerFormatter(InfoModule formatter, String... vars) {
