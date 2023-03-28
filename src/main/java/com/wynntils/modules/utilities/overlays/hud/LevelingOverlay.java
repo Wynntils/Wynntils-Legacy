@@ -53,7 +53,7 @@ public class LevelingOverlay extends Overlay {
                     .replace("%neededg%", GROUPED_FORMAT.format(data.getXpNeededToLevelUp() - data.getCurrentXP()))
                     .replace("%curlvl%", "" + data.getLevel())
                     .replace("%nextlvl%", data.getLevel() == 104 ? "" : "" + (data.getLevel() + 1))
-                    .replace("%grindtime%", StringUtils.durationIntegerToShortString(LevelingManager.getLevelingGrindTime()));
+                    .replace("%grindtime%", StringUtils.parseGrindTime(LevelingManager.getLevelingGrindTime()));
 
             drawString(text, 0, 0, CommonColors.LIGHT_BLUE, SmartFontRenderer.TextAlignment.MIDDLE, OverlayConfig.Leveling.INSTANCE.textShadow);
             staticSize.x = (int) getStringWidth(text);

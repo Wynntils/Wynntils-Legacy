@@ -10,6 +10,7 @@ import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.utils.helpers.MD5Verification;
+import com.wynntils.modules.utilities.managers.LevelingManager;
 
 import java.nio.charset.StandardCharsets;
 import java.text.DecimalFormat;
@@ -45,7 +46,15 @@ public class StringUtils {
                 .trim();
     }
 
-    public static String durationIntegerToShortString(int count) {
+    public static String parseGrindTime(int count) {
+        if(count == 0) {
+            if(LevelingManager.getXpPerMinute() == 0) {
+                return "∞";
+            }
+            else {
+                return "Less than a minute";
+            }
+        }
         if (count < 60) {
             return count + "s";
         } else if (count > 86400) {

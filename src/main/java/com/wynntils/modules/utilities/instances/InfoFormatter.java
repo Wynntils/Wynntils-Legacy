@@ -531,7 +531,7 @@ public class InfoFormatter {
                 "" + LootRunManager.getTotalLootrunChests()),
                 "lootrun_chests");
 
-        
+
     }
 
     private void registerFormatter(InfoModule formatter, String... vars) {
