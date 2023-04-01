@@ -1,9 +1,21 @@
+## [1.15.1-beta.1](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.0...v1.15.1-beta.1) (2023-04-01)
+
+
+### New Features
+
+* Add Artemis export button for waypoint manager GUI ([#673](https://github.com/Wynntils/Wynntils/issues/673)) ([1ea89ce](https://github.com/Wynntils/Wynntils/commit/1ea89ce88cb334233387bc971c9218cd5c1d5ee1))
+
 ## [1.15.1-beta.0](https://github.com/Wynntils/Wynntils/compare/v1.15.0...v1.15.1-beta.0) (2023-04-01)
 
 
 ### Bug Fixes
 
 * Fix party finder crash on housing island ([#669](https://github.com/Wynntils/Wynntils/issues/669)) ([f97f5ad](https://github.com/Wynntils/Wynntils/commit/f97f5ad803fba62e3a38c31b74e027c0214ed41d))
+
+
+### Miscellaneous Chores
+
+* **release:** v1.15.1-beta.0 [skip ci] ([d60803c](https://github.com/Wynntils/Wynntils/commit/d60803cf7ac832394fc9c981217b2331ccf51821))
 
 ## [1.15.0](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.14...v1.15.0) (2023-02-21)
 
@@ -35,16 +47,4 @@
 ### Miscellaneous Chores
 
 * **release:** v1.14.1-beta.13 [skip ci] ([a4520df](https://github.com/Wynntils/Wynntils/commit/a4520dfdada512aeebea116d8cd25eb71ad8692c))
-
-## [1.14.1-beta.12](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.11...v1.14.1-beta.12) (2023-02-15)
-
-
-### Bug Fixes
-
-* Fix crash on housing island ([#663](https://github.com/Wynntils/Wynntils/issues/663)) ([9a6c76b](https://github.com/Wynntils/Wynntils/commit/9a6c76b95401f7f0dd93eab6370d63aab5149a2d))
-
-
-### Miscellaneous Chores
-
-* **release:** v1.14.1-beta.12 [skip ci] ([e01d953](https://github.com/Wynntils/Wynntils/commit/e01d9534b54aa4b31522969e654229f993da1d85))
 
