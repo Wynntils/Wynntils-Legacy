@@ -229,6 +229,15 @@ public class CustomColor {
         return "rgba(" + r + "," + g + "," + b + "," + a +")";
     }
 
+    public String toHexString() {
+        String hex = Integer.toHexString(this.toInt());
+        // whether alpha portion is 1 digit or 2
+        hex = (hex.length() > 7) ? hex.substring(2) : hex.substring(1);
+        hex = "#" + hex;
+
+        return hex;
+    }
+
     @Override
     public boolean equals(Object other) {
         if (this == other) return true;
