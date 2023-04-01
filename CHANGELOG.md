@@ -1,4 +1,16 @@
+## [1.15.1-beta.0](https://github.com/Wynntils/Wynntils/compare/v1.15.0...v1.15.1-beta.0) (2023-04-01)
+
+
+### Bug Fixes
+
+* Fix party finder crash on housing island ([#669](https://github.com/Wynntils/Wynntils/issues/669)) ([f97f5ad](https://github.com/Wynntils/Wynntils/commit/f97f5ad803fba62e3a38c31b74e027c0214ed41d))
+
 ## [1.15.0](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.14...v1.15.0) (2023-02-21)
+
+
+### Miscellaneous Chores
+
+* **release:** v1.15.0 [skip ci] ([1a93a1e](https://github.com/Wynntils/Wynntils/commit/1a93a1eb9decc0acf497c7f923a3032c00c5e65b))
 
 ## [1.14.1-beta.14](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.13...v1.14.1-beta.14) (2023-02-20)
 
@@ -35,16 +47,4 @@
 ### Miscellaneous Chores
 
 * **release:** v1.14.1-beta.12 [skip ci] ([e01d953](https://github.com/Wynntils/Wynntils/commit/e01d9534b54aa4b31522969e654229f993da1d85))
-
-## [1.14.1-beta.11](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.10...v1.14.1-beta.11) (2023-01-25)
-
-
-### Bug Fixes
-
-* Mythic detection fix ([#650](https://github.com/Wynntils/Wynntils/issues/650)) ([b212e7d](https://github.com/Wynntils/Wynntils/commit/b212e7da767a72aadad842d4385893d96231ec04))
-
-
-### Miscellaneous Chores
-
-* **release:** v1.14.1-beta.11 [skip ci] ([b5f2491](https://github.com/Wynntils/Wynntils/commit/b5f249124c331ae5d4b98629563a74c784c61478))
 
