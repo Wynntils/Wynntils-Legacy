@@ -34,6 +34,7 @@ public class LootRunManager {
     private static final Gson GSON = new GsonBuilder()
         .setPrettyPrinting()
         .registerTypeHierarchyAdapter(Vec3i.class, new BlockPosSerializer())
+        .registerTypeAdapter(LootRunNote.class, new LootRunNote.LootrunNoteSerializer())
         .create();
     public static final File STORAGE_FOLDER = new File(Reference.MOD_STORAGE_ROOT, "lootruns");
 
@@ -362,13 +363,11 @@ public class LootRunManager {
         public List<Location> points;
         public List<BlockPos> chests;
         public List<LootRunNote> notes;
-        public Date date;
 
         LootRunPathIntermediary(LootRunPath fromPath) {
             this.points = fromPath.getPoints();
             this.chests = new ArrayList<>(fromPath.getChests());
             this.notes = new ArrayList<>(fromPath.getNotes());
-            date = new Date();
         }
 
         LootRunPath toPath() {
