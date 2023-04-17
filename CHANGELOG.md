@@ -1,9 +1,21 @@
+## [1.15.1-beta.2](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.1...v1.15.1-beta.2) (2023-04-17)
+
+
+### Bug Fixes
+
+* The mod can now load Artemis (1.19.3) lootruns ([#675](https://github.com/Wynntils/Wynntils/issues/675)) ([cc98eb1](https://github.com/Wynntils/Wynntils/commit/cc98eb12022bf752acdd359883a9254ae35d192c))
+
 ## [1.15.1-beta.1](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.0...v1.15.1-beta.1) (2023-04-01)
 
 
 ### New Features
 
 * Add Artemis export button for waypoint manager GUI ([#673](https://github.com/Wynntils/Wynntils/issues/673)) ([1ea89ce](https://github.com/Wynntils/Wynntils/commit/1ea89ce88cb334233387bc971c9218cd5c1d5ee1))
+
+
+### Miscellaneous Chores
+
+* **release:** v1.15.1-beta.1 [skip ci] ([bf060a2](https://github.com/Wynntils/Wynntils/commit/bf060a250ebddac1a4139d5ae312a96316bafe0a))
 
 ## [1.15.1-beta.0](https://github.com/Wynntils/Wynntils/compare/v1.15.0...v1.15.1-beta.0) (2023-04-01)
 
@@ -35,16 +47,4 @@
 ### Miscellaneous Chores
 
 * **release:** v1.14.1-beta.14 [skip ci] ([24703b1](https://github.com/Wynntils/Wynntils/commit/24703b14edd1cb010578522367cc590bcbf64d2c))
-
-## [1.14.1-beta.13](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.12...v1.14.1-beta.13) (2023-02-17)
-
-
-### Bug Fixes
-
-* Prevent custom seaskipper menu crash ([#664](https://github.com/Wynntils/Wynntils/issues/664)) ([374e255](https://github.com/Wynntils/Wynntils/commit/374e255757ef95f113dde681f7552aadb0ed09b8))
-
-
-### Miscellaneous Chores
-
-* **release:** v1.14.1-beta.13 [skip ci] ([a4520df](https://github.com/Wynntils/Wynntils/commit/a4520dfdada512aeebea116d8cd25eb71ad8692c))
 
