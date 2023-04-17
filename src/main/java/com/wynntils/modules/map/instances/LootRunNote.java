@@ -1,5 +1,6 @@
 package com.wynntils.modules.map.instances;
 
+import com.google.gson.*;
 import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
@@ -7,6 +8,8 @@ import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.colors.MinecraftChatColors;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Location;
+
+import java.lang.reflect.Type;
 
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.entity.RenderManager;
@@ -94,4 +97,21 @@ public class LootRunNote {
         popAttrib();
     }
 
+    // Compatibility with Artemis
+    public static class LootrunNoteSerializer implements JsonDeserializer<LootRunNote> {
+        @Override
+        public LootRunNote deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+            JsonObject object = json.getAsJsonObject();
+
+            // Artemis used to store the location in a "position" field, but now it's in "location", like legacy. Support both.
+            JsonObject location = object.has("location") ? object.get("location").getAsJsonObject() : object.get("position").getAsJsonObject();
+
+            Location locationParsed = new Location(location.get("x").getAsDouble(), location.get("y").getAsDouble(), location.get("z").getAsDouble());
+
+            // Artemis stores components, Wynntils stores strings. Drop styling and just use the text.
+            String text = object.get("note").isJsonPrimitive() ? object.get("note").getAsString() : object.get("note").getAsJsonObject().get("text").getAsString();
+
+            return new LootRunNote(locationParsed, text);
+        }
+    }
 }

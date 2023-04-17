@@ -6,7 +6,7 @@ plugins {
 	id "com.github.johnrengelman.shadow" version "7.1.0"
 }
 
-def versionObj = new Version(major: 1, minor: 15, revision: 0)
+def versionObj = new Version(major: 1, minor: 15, revision: 1)
 
 version = versionObj.toString()
 group = mod_base_package

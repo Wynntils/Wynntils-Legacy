@@ -4,6 +4,10 @@
 
 package com.wynntils.modules.map.overlays.ui;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.ui.elements.GuiButtonImageBetter;
@@ -33,15 +37,19 @@ public class WaypointOverviewUI extends GuiScreen {
     private List<GuiButton> groupBtns = new ArrayList<>();
     private GuiButton exitBtn;
     private GuiButton exportBtn;
+    private GuiButton exportArtemisBtn;
     private GuiButton importBtn;
     private GuiButton clearBtn;
     private GuiButton editGroupsBtn;
     private List<GuiButton> editButtons = new ArrayList<>();
 
     private List<String> exportText;
+    private List<String> exportArtemisText;
     private List<String> importText;
 
     private static final int ungroupedIndex = WaypointProfile.WaypointType.values().length;
+
+    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
 
     private ScreenRenderer renderer = new ScreenRenderer();
     private List<WaypointProfile> waypoints;
@@ -80,6 +88,7 @@ public class WaypointOverviewUI extends GuiScreen {
 
         String clearButtonText = "CLEAR (Press " + clearCountMax + " times)";
         this.buttonList.add(exportBtn = new GuiButton(8, this.width/2 + 26, this.height - 45, 50, 20, "EXPORT"));
+        this.buttonList.add(exportArtemisBtn = new GuiButton(8, this.width/2 + 26, this.height - 25, 50, 20, "EXPORT TO ARTEMIS"));
         this.buttonList.add(importBtn = new GuiButton(9, this.width/2 - 76, this.height - 45, 50, 20, "IMPORT"));
         this.buttonList.add(clearBtn = new GuiButton(10, 25, this.height - 45, fontRenderer.getStringWidth(clearButtonText) + 15, 20, clearButtonText));
 
@@ -149,6 +158,8 @@ public class WaypointOverviewUI extends GuiScreen {
 
         if (exportBtn.isMouseOver()) {
             drawHoveringText(exportText, mouseX, mouseY, fontRenderer);
+        } else if (exportArtemisBtn.isMouseOver()) {
+            drawHoveringText(exportArtemisText, mouseX, mouseY, fontRenderer);
         } else if (importBtn.isMouseOver()) {
             drawHoveringText(importText, mouseX, mouseY, fontRenderer);
         }
@@ -225,6 +236,15 @@ public class WaypointOverviewUI extends GuiScreen {
             exportText = Arrays.asList(
                 "Export  ==  SUCCESS",
                 "Copied to clipboard!"
+            );
+        } else if (b == exportArtemisBtn) {
+            JsonArray array = new JsonArray();
+            getWaypoints().stream().map(WaypointProfile::toArtemisObject).forEach(array::add);
+            Utils.copyToClipboard(GSON.toJson(array));
+
+            exportArtemisText = Arrays.asList(
+                    "Export Artemis ==  SUCCESS",
+                    "Copied to clipboard!"
             );
         } else if (b == importBtn) {
             String data = Utils.pasteFromClipboard();
@@ -347,6 +367,11 @@ public class WaypointOverviewUI extends GuiScreen {
             "Export",
             "Copy importable text to the clipboard",
             "Will export current group only"
+        );
+        exportArtemisText = Arrays.asList(
+                "Export Artemis",
+                "Copy importable text to the clipboard",
+                "Will export current group only"
         );
         importText = Arrays.asList(
             "Import",

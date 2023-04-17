@@ -4,6 +4,7 @@
 
 package com.wynntils.modules.map.instances;
 
+import com.google.gson.JsonObject;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.utils.StringUtils;
 import com.wynntils.modules.map.overlays.objects.MapWaypointIcon;
@@ -337,31 +338,61 @@ public class WaypointProfile {
         return result;
     }
 
+    public JsonObject toArtemisObject() {
+        JsonObject json = new JsonObject();
+
+        json.addProperty("name", name);
+        json.addProperty("color", color.toHexString());
+
+        String zoomNeededString = "default";
+        int zoomNeeded = getZoomNeeded();
+        if (zoomNeeded == -1000) {
+            zoomNeededString = "always";
+        } else if (zoomNeeded == -1) {
+            zoomNeededString = "hidden";
+        }
+
+        json.addProperty("visibility", zoomNeededString);
+
+        JsonObject location = new JsonObject();
+        location.addProperty("x", (int)x);
+        location.addProperty("y", (int)y);
+        location.addProperty("z", (int)z);
+
+        json.add("location", location);
+
+        json.addProperty("icon", type.artemisName);
+
+        return json;
+    }
+
     public enum WaypointType {
 
-        FLAG("Flag"),
-        DIAMOND("Diamond"),
-        SIGN("Sign"),
-        STAR("Star"),
-        TURRET("Turret"),
-        LOOTCHEST_T4("Chest (T4)"),
-        LOOTCHEST_T3("Chest (T3)"),
-        LOOTCHEST_T2("Chest (T2)"),
-        LOOTCHEST_T1("Chest (T1)"),
-        FARMING("Farming"),
-        FISHING("Fishing"),
-        MINING("Mining"),
-        WOODCUTTING("Woodcutting");
+        FLAG("Flag", "flag"),
+        DIAMOND("Diamond", "diamond"),
+        SIGN("Sign", "sign"),
+        STAR("Star", "star"),
+        // Artemis doesn't have a waypoint type for this, but has wall :)
+        TURRET("Turret", "wall"),
+        LOOTCHEST_T4("Chest (T4)", "chestT4"),
+        LOOTCHEST_T3("Chest (T3)", "chestT3"),
+        LOOTCHEST_T2("Chest (T2)", "chestT2"),
+        LOOTCHEST_T1("Chest (T1)", "chestT1"),
+        FARMING("Farming", "farming"),
+        FISHING("Fishing", "fishing"),
+        MINING("Mining", "mining"),
+        WOODCUTTING("Woodcutting", "woodcutting");
 
         private String displayName;
+        private String artemisName;
 
-        WaypointType(String displayName) {
+        WaypointType(String displayName, String artemisName) {
             this.displayName = displayName;
+            this.artemisName = artemisName;
         }
 
         public String getDisplayName() {
             return displayName;
         }
-
     }
 }
