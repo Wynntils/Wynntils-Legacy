@@ -43,6 +43,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 import java.util.stream.Collectors;
 
 public class ChatManager {
@@ -87,6 +88,8 @@ public class ChatManager {
     private static final Pattern coordinateReg = Pattern.compile("(-?\\d{1,5}[ ,]{1,2})(\\d{1,3}[ ,]{1,2})?(-?\\d{1,5})");
 
     private static boolean discoveriesLoaded = false;
+
+    private static String failedRegex = "";
 
     public static Pair<ITextComponent, Pair<Supplier<Boolean>, Function<ITextComponent, ITextComponent>>> processRealMessage(ITextComponent in) {
         if (in == null) return new Pair<>(in, null);
@@ -625,7 +628,23 @@ public class ChatManager {
     public static boolean processUserMention(ITextComponent in, ITextComponent original) {
         if (ChatConfig.INSTANCE.allowChatMentions && in != null && McIf.player() != null) {
             String match = "\\b(" + McIf.player().getName() + (ChatConfig.INSTANCE.mentionNames.length() > 0 ? "|" + ChatConfig.INSTANCE.mentionNames.replace(",", "|") : "") + ")\\b";
-            Pattern pattern = Pattern.compile(match, Pattern.CASE_INSENSITIVE);
+            Pattern pattern;
+            try {
+                pattern = Pattern.compile(match, Pattern.CASE_INSENSITIVE);
+                if (!failedRegex.equals("")) {
+                    failedRegex = "";
+                }
+            } catch (PatternSyntaxException e) {
+                if (failedRegex.equals("") || !ChatConfig.INSTANCE.mentionNames.equals(failedRegex)) {
+                    // only run these once per config change
+                    failedRegex = ChatConfig.INSTANCE.mentionNames;
+                    // Also maybe notify the player
+                    McIf.player().sendMessage(new TextComponentString("Wynntils custom mention regex failed, check your config! Reverting to default username mentions."));
+                    McIf.player().sendMessage(new TextComponentString(e.getMessage()));
+                }
+                // Failed manual regexes will be ignored, only check the playername
+                pattern = Pattern.compile("\\b(" + McIf.player().getName() + ")\\b", Pattern.CASE_INSENSITIVE);
+            }
 
             Matcher looseMatcher = pattern.matcher(McIf.getUnformattedText(in));
 
