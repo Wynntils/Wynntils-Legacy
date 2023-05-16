@@ -89,8 +89,9 @@ public class ConsumableTimerOverlay extends Overlay {
     }
 
     public static void removeTimer(String name) {
-        if (findTimerContainer(name) != null) {
-            activeTimers.remove(findTimerContainer(name));
+        TimerContainer timerContainer = findTimerContainer(name);
+        if (timerContainer != null) {
+            activeTimers.remove(timerContainer);
         }
     }
 
