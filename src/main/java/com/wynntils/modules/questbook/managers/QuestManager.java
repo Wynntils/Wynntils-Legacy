@@ -68,7 +68,7 @@ public class QuestManager {
         }
 
         if (immediate) {
-            readQuestBook();
+            //readQuestBook();
         }
     }
 

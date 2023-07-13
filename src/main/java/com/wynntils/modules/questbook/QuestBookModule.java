@@ -39,7 +39,7 @@ public class QuestBookModule extends Module {
         registerKeyBinding("Open HUD configuration", Keyboard.KEY_NONE, "Wynntils", KeyConflictContext.IN_GAME, true, () -> QuestBookPages.HUDCONFIG.getPage().open(true));
         registerKeyBinding("Open Menu", Keyboard.KEY_I, "Wynntils", KeyConflictContext.IN_GAME, true, () -> {
             QuestBookPages.MAIN.getPage().open(true);
-            QuestManager.readQuestBook();
+            //QuestManager.readQuestBook();
         });
     }
 
