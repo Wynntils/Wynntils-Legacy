@@ -1,9 +1,21 @@
+## [1.15.1-beta.3](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.2...v1.15.1-beta.3) (2023-05-16)
+
+
+### New Features
+
+* Add K and M to convertEmeraldPrice ([#661](https://github.com/Wynntils/Wynntils/issues/661)) ([8a295f0](https://github.com/Wynntils/Wynntils/commit/8a295f0e5e67f2b66305fa730d2db8a6b274fde9))
+
 ## [1.15.1-beta.2](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.1...v1.15.1-beta.2) (2023-04-17)
 
 
 ### Bug Fixes
 
 * The mod can now load Artemis (1.19.3) lootruns ([#675](https://github.com/Wynntils/Wynntils/issues/675)) ([cc98eb1](https://github.com/Wynntils/Wynntils/commit/cc98eb12022bf752acdd359883a9254ae35d192c))
+
+
+### Miscellaneous Chores
+
+* **release:** v1.15.1-beta.2 [skip ci] ([28538a3](https://github.com/Wynntils/Wynntils/commit/28538a36d44442a94940193c981a00604b4fa9d0))
 
 ## [1.15.1-beta.1](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.0...v1.15.1-beta.1) (2023-04-01)
 
@@ -35,16 +47,4 @@
 ### Miscellaneous Chores
 
 * **release:** v1.15.0 [skip ci] ([1a93a1e](https://github.com/Wynntils/Wynntils/commit/1a93a1eb9decc0acf497c7f923a3032c00c5e65b))
-
-## [1.14.1-beta.14](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.13...v1.14.1-beta.14) (2023-02-20)
-
-
-### New Features
-
-* Remove support for stable update stream ([#667](https://github.com/Wynntils/Wynntils/issues/667)) ([c5b509d](https://github.com/Wynntils/Wynntils/commit/c5b509dd720560ff268bfb652a49a9fa8f27509e))
-
-
-### Miscellaneous Chores
-
-* **release:** v1.14.1-beta.14 [skip ci] ([24703b1](https://github.com/Wynntils/Wynntils/commit/24703b14edd1cb010578522367cc590bcbf64d2c))
 
