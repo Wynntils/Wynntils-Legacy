@@ -1,9 +1,21 @@
+## [1.15.1-beta.4](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.3...v1.15.1-beta.4) (2023-07-18)
+
+
+### Miscellaneous Chores
+
+* Remove broken quest book ([#679](https://github.com/Wynntils/Wynntils/issues/679)) ([b9d15f5](https://github.com/Wynntils/Wynntils/commit/b9d15f51efbecfead2afaf9cbac4569ecbf651bb))
+
 ## [1.15.1-beta.3](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.2...v1.15.1-beta.3) (2023-05-16)
 
 
 ### New Features
 
 * Add K and M to convertEmeraldPrice ([#661](https://github.com/Wynntils/Wynntils/issues/661)) ([8a295f0](https://github.com/Wynntils/Wynntils/commit/8a295f0e5e67f2b66305fa730d2db8a6b274fde9))
+
+
+### Miscellaneous Chores
+
+* **release:** v1.15.1-beta.3 [skip ci] ([ffab244](https://github.com/Wynntils/Wynntils/commit/ffab244e16a0ab9c3613b11f732ae0e1d2be7719))
 
 ## [1.15.1-beta.2](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.1...v1.15.1-beta.2) (2023-04-17)
 
@@ -40,11 +52,4 @@
 ### Miscellaneous Chores
 
 * **release:** v1.15.1-beta.0 [skip ci] ([d60803c](https://github.com/Wynntils/Wynntils/commit/d60803cf7ac832394fc9c981217b2331ccf51821))
-
-## [1.15.0](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.14...v1.15.0) (2023-02-21)
-
-
-### Miscellaneous Chores
-
-* **release:** v1.15.0 [skip ci] ([1a93a1e](https://github.com/Wynntils/Wynntils/commit/1a93a1eb9decc0acf497c7f923a3032c00c5e65b))
 
