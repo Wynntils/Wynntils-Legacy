@@ -8,10 +8,14 @@ import com.wynntils.McIf;
 import com.wynntils.core.framework.rendering.ScreenRenderer;
 import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
+import com.wynntils.modules.questbook.overlays.ui.DialoguePage;
+import com.wynntils.modules.questbook.overlays.ui.DiscoveriesPage;
+import com.wynntils.modules.questbook.overlays.ui.QuestsPage;
 import net.minecraft.client.gui.ScaledResolution;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -49,49 +53,54 @@ public class QuestBookListPage<T> extends QuestBookPage {
         {
             preEntries(mouseX, mouseY, partialTicks);
 
-            // Page Text
-            render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+            if (this instanceof QuestsPage || this instanceof DiscoveriesPage || this instanceof DialoguePage) {
+                // Page Text
+                render.drawString(currentPage + " / " + pages, x + 80, y + 88, CommonColors.BLACK, SmartFontRenderer.TextAlignment.MIDDLE, SmartFontRenderer.TextShadow.NONE);
+                List<String> textLines = Arrays.asList("The Wynntils quest book is", "no longer available on 1.12.2.", "", "Wynntils 1.12.2 is being", "sunset in favour of newer", "Minecraft versions.", "", "Please download the latest", "version of the mod at", "https://wynntils.com");
+                drawTextLines(textLines, x + 10, y - 40, 1);
 
-            //Forward and backward button
-            drawForwardAndBackButtons(x, y, posX, posY, currentPage, pages);
+            } else {
+                //Forward and backward button
+                drawForwardAndBackButtons(x, y, posX, posY, currentPage, pages);
 
-            // Draw all Search Results
-            if (search.size() > 0) {
-                List<T> page = search.get(currentPage - 1);
+                // Draw all Search Results
+                if (search.size() > 0) {
+                    List<T> page = search.get(currentPage - 1);
 
-                if (page.size() > 0) {
-                    for (int i = 0; i < page.size(); i++) {
-                        T currentItem = page.get(i);
+                    if (page.size() > 0) {
+                        for (int i = 0; i < page.size(); i++) {
+                            T currentItem = page.get(i);
 
-                        if (isHovered(i, posX, posY) && !showAnimation) {
-                            //hovered
-                            drawEntry(currentItem, i, true);
+                            if (isHovered(i, posX, posY) && !showAnimation) {
+                                //hovered
+                                drawEntry(currentItem, i, true);
 
-                            selectedEntry = currentItem;
-                            //selected is set relative to the page
-                            selected = i;
-                            hoveredText = getHoveredText(selectedEntry);
-                        } else {
-                            if (selected == i) {
-                                selectedEntry = null;
+                                selectedEntry = currentItem;
+                                //selected is set relative to the page
+                                selected = i;
+                                hoveredText = getHoveredText(selectedEntry);
+                            } else {
+                                if (selected == i) {
+                                    selectedEntry = null;
+                                }
+
+                                //not hovered
+                                drawEntry(currentItem, i, false);
                             }
-
-                            //not hovered
-                            drawEntry(currentItem, i, false);
                         }
                     }
-                }
-            } else {
-                String textToDisplay = getEmptySearchString();
-                int currentY = 12;
+                } else {
+                    String textToDisplay = getEmptySearchString();
+                    int currentY = 12;
 
-                for (String line : textToDisplay.split("\n")) {
-                    currentY += render.drawSplitString(line, 120, x + 26, y - 95 + currentY, 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE) * 10 + 2;
-                }
+                    for (String line : textToDisplay.split("\n")) {
+                        currentY += render.drawSplitString(line, 120, x + 26, y - 95 + currentY, 10, CommonColors.BLACK, SmartFontRenderer.TextAlignment.LEFT_RIGHT, SmartFontRenderer.TextShadow.NONE) * 10 + 2;
+                    }
 
-                updateSearch();
+                    updateSearch();
+                }
+                postEntries(mouseX, mouseY, partialTicks);
             }
-            postEntries(mouseX, mouseY, partialTicks);
         }
         ScreenRenderer.endGL();
         renderHoveredText(mouseX, mouseY);

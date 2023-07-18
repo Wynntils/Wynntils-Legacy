@@ -146,7 +146,7 @@ public class ClientEvents implements Listener {
 
         QuestBookPages.MAIN.getPage().open(true);
 
-        QuestManager.readQuestBook();
+        //QuestManager.readQuestBook();
     }
 
     private int tickCounter = 0;
