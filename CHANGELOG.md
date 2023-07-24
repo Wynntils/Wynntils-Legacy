@@ -1,8 +1,16 @@
+## [1.15.1-beta.5](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.4...v1.15.1-beta.5) (2023-07-24)
+
+
+### New Features
+
+* Export favorites via command ([#681](https://github.com/Wynntils/Wynntils/issues/681)) ([103a8b8](https://github.com/Wynntils/Wynntils/commit/103a8b8614f27e8381c01599ca9d35ad68451193))
+
 ## [1.15.1-beta.4](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.3...v1.15.1-beta.4) (2023-07-18)
 
 
 ### Miscellaneous Chores
 
+* **release:** v1.15.1-beta.4 [skip ci] ([b0e0d5b](https://github.com/Wynntils/Wynntils/commit/b0e0d5b34ce26d519a26c8cef32b3be8c645bd88))
 * Remove broken quest book ([#679](https://github.com/Wynntils/Wynntils/issues/679)) ([b9d15f5](https://github.com/Wynntils/Wynntils/commit/b9d15f51efbecfead2afaf9cbac4569ecbf651bb))
 
 ## [1.15.1-beta.3](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.2...v1.15.1-beta.3) (2023-05-16)
@@ -40,16 +48,4 @@
 ### Miscellaneous Chores
 
 * **release:** v1.15.1-beta.1 [skip ci] ([bf060a2](https://github.com/Wynntils/Wynntils/commit/bf060a250ebddac1a4139d5ae312a96316bafe0a))
-
-## [1.15.1-beta.0](https://github.com/Wynntils/Wynntils/compare/v1.15.0...v1.15.1-beta.0) (2023-04-01)
-
-
-### Bug Fixes
-
-* Fix party finder crash on housing island ([#669](https://github.com/Wynntils/Wynntils/issues/669)) ([f97f5ad](https://github.com/Wynntils/Wynntils/commit/f97f5ad803fba62e3a38c31b74e027c0214ed41d))
-
-
-### Miscellaneous Chores
-
-* **release:** v1.15.1-beta.0 [skip ci] ([d60803c](https://github.com/Wynntils/Wynntils/commit/d60803cf7ac832394fc9c981217b2331ccf51821))
 
