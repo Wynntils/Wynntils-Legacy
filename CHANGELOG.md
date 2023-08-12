@@ -1,9 +1,21 @@
+## [1.15.1-beta.6](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.5...v1.15.1-beta.6) (2023-08-12)
+
+
+### Bug Fixes
+
+* Fixed TAB_EFFECT_PATTERN regex ([#686](https://github.com/Wynntils/Wynntils/issues/686)) ([46408de](https://github.com/Wynntils/Wynntils/commit/46408de7d589c2dc5ef6dcabe54eb4bfe27d39bf))
+
 ## [1.15.1-beta.5](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.4...v1.15.1-beta.5) (2023-07-24)
 
 
 ### New Features
 
 * Export favorites via command ([#681](https://github.com/Wynntils/Wynntils/issues/681)) ([103a8b8](https://github.com/Wynntils/Wynntils/commit/103a8b8614f27e8381c01599ca9d35ad68451193))
+
+
+### Miscellaneous Chores
+
+* **release:** v1.15.1-beta.5 [skip ci] ([1677480](https://github.com/Wynntils/Wynntils/commit/1677480cf1d047e1e131f11a5b9f56a052a110d9))
 
 ## [1.15.1-beta.4](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.3...v1.15.1-beta.4) (2023-07-18)
 
@@ -36,16 +48,4 @@
 ### Miscellaneous Chores
 
 * **release:** v1.15.1-beta.2 [skip ci] ([28538a3](https://github.com/Wynntils/Wynntils/commit/28538a36d44442a94940193c981a00604b4fa9d0))
-
-## [1.15.1-beta.1](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.0...v1.15.1-beta.1) (2023-04-01)
-
-
-### New Features
-
-* Add Artemis export button for waypoint manager GUI ([#673](https://github.com/Wynntils/Wynntils/issues/673)) ([1ea89ce](https://github.com/Wynntils/Wynntils/commit/1ea89ce88cb334233387bc971c9218cd5c1d5ee1))
-
-
-### Miscellaneous Chores
-
-* **release:** v1.15.1-beta.1 [skip ci] ([bf060a2](https://github.com/Wynntils/Wynntils/commit/bf060a250ebddac1a4139d5ae312a96316bafe0a))
 
