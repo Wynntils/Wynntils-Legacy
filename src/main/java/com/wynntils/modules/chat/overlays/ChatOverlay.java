@@ -483,13 +483,18 @@ public class ChatOverlay extends GuiNewChat {
         });
 
         int[] count = { 0 };
-        currentTab.getCurrentMessages().removeIf(chatline -> {
-            if (chatline.getChatLineID() == id) {
-                ++count[0];
-                return true;
-            }
-            return false;
-        });
+        try {
+            currentTab.getCurrentMessages().removeIf(chatline -> {
+                if (chatline.getChatLineID() == id) {
+                    ++count[0];
+                    return true;
+                }
+                return false;
+            });
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return;
+        }
 
         if (scrollPos > 0 && getChatOpen() && count[0] > 0) {
             isScrolled = true;
