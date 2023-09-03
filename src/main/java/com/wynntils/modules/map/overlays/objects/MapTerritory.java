@@ -163,10 +163,9 @@ public class MapTerritory {
     private CustomColor getTerritoryColor(boolean resourceColor) {
         if (!resourceColor) {
             HashMap<String, GuildColorProfile> guildColorProfileHashMap = WebManager.getGuildColors();
-            if (guildColorProfileHashMap.equals(new HashMap<String, GuildColorProfile>())) {
+            if (guildColorProfileHashMap.isEmpty()) {
                 Random random = new Random();
-                List<CustomColor> customColorList = Arrays.asList(CommonColors.getColors());
-                return new CustomColor(customColorList.get(random.nextInt(customColorList.size())));
+                return new CustomColor((CommonColors.getColors()[random.nextInt(17)]));
             }
             for (GuildColorProfile guildColorProfile : guildColorProfileHashMap.values()) {
                 if (guildColorProfile.getName().equals(territory.getGuild())) {
@@ -174,8 +173,7 @@ public class MapTerritory {
                 }
             }
             Random random = new Random();
-            List<CustomColor> customColorList = Arrays.asList(CommonColors.getColors());
-            return new CustomColor(customColorList.get(random.nextInt(customColorList.size())));
+            return new CustomColor((CommonColors.getColors()[random.nextInt(17)]));
         } else {
             return resources.getColor();
         }
