@@ -61,4 +61,8 @@ public class CommonColors extends CustomColor.SetBase {
 
     public static final ColorSet<CommonColors> set = new ColorSet<>(colors, names, aliases);
 
+    public static CommonColors[] getColors() {
+        return colors;
+    }
+
 }

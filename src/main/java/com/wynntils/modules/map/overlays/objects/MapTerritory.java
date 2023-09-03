@@ -10,7 +10,6 @@ import com.wynntils.core.framework.rendering.SmartFontRenderer;
 import com.wynntils.core.framework.rendering.colors.CommonColors;
 import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.framework.rendering.textures.Textures;
-import com.wynntils.core.utils.StringUtils;
 import com.wynntils.core.utils.objects.Storage;
 import com.wynntils.modules.map.configs.MapConfig;
 import com.wynntils.modules.map.instances.GuildResourceContainer;
@@ -22,9 +21,8 @@ import com.wynntils.webapi.profiles.GuildColorProfile;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+
+import java.util.*;
 
 public class MapTerritory {
 
@@ -165,13 +163,19 @@ public class MapTerritory {
     private CustomColor getTerritoryColor(boolean resourceColor) {
         if (!resourceColor) {
             HashMap<String, GuildColorProfile> guildColorProfileHashMap = WebManager.getGuildColors();
-            if (guildColorProfileHashMap.equals(new HashMap<String, GuildColorProfile>())) return new CustomColor(CommonColors.WHITE);
+            if (guildColorProfileHashMap.equals(new HashMap<String, GuildColorProfile>())) {
+                Random random = new Random();
+                List<CustomColor> customColorList = Arrays.asList(CommonColors.getColors());
+                return new CustomColor(customColorList.get(random.nextInt(customColorList.size())));
+            }
             for (GuildColorProfile guildColorProfile : guildColorProfileHashMap.values()) {
                 if (guildColorProfile.getName().equals(territory.getGuild())) {
                     return guildColorProfile.getGuildColor();
                 }
             }
-            return new CustomColor(CommonColors.WHITE);
+            Random random = new Random();
+            List<CustomColor> customColorList = Arrays.asList(CommonColors.getColors());
+            return new CustomColor(customColorList.get(random.nextInt(customColorList.size())));
         } else {
             return resources.getColor();
         }
