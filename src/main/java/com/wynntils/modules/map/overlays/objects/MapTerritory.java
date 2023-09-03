@@ -17,10 +17,13 @@ import com.wynntils.modules.map.instances.GuildResourceContainer;
 import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.managers.GuildResourceManager;
 import com.wynntils.modules.map.overlays.renderer.MapInfoUI;
+import com.wynntils.webapi.WebManager;
+import com.wynntils.webapi.profiles.GuildColorProfile;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MapTerritory {
@@ -64,7 +67,7 @@ public class MapTerritory {
         description.add(TextFormatting.GRAY + "✦ Treasury: " + resources.getTreasury());
         description.add(TextFormatting.GRAY + "Territory Defences: " + resources.getDefences());
         description.add("");
-        
+
         String treasuryColor = resources.getTreasury().substring(0, 2);
         description.add(TextFormatting.GRAY + "Time held: " + treasuryColor + territory.getReadableRelativeTimeAcquired());
 
@@ -161,8 +164,15 @@ public class MapTerritory {
 
     private CustomColor getTerritoryColor(boolean resourceColor) {
         if (!resourceColor) {
-            return territory.getGuildColor() == null ? StringUtils.colorFromString(territory.getGuild()) :
-                    StringUtils.colorFromHex(territory.getGuildColor());
+            HashMap<String, GuildColorProfile> guildColorProfileHashMap = WebManager.getGuildColors();
+            if (guildColorProfileHashMap.equals(new HashMap<String, GuildColorProfile>())) return new CustomColor(CommonColors.WHITE);
+            for (GuildColorProfile guildColorProfile : guildColorProfileHashMap.values()) {
+                if (guildColorProfile.getName().equals(territory.getGuild())) {
+                    if (guildColorProfile.getGuildColor().length() == 7) return StringUtils.colorFromHex(guildColorProfile.getGuildColor());
+                    else return new CustomColor(CommonColors.WHITE);
+                }
+            }
+            return new CustomColor(CommonColors.WHITE);
         } else {
             return resources.getColor();
         }
