@@ -52,7 +52,7 @@ public class UpdateProfile {
     }
 
     public boolean hasUpdate() {
-        return !updateDownloaded && hasUpdate;
+        return (!updateDownloaded && hasUpdate);
     }
 
     public void updateDownloaded() {
