@@ -168,8 +168,7 @@ public class MapTerritory {
             if (guildColorProfileHashMap.equals(new HashMap<String, GuildColorProfile>())) return new CustomColor(CommonColors.WHITE);
             for (GuildColorProfile guildColorProfile : guildColorProfileHashMap.values()) {
                 if (guildColorProfile.getName().equals(territory.getGuild())) {
-                    if (guildColorProfile.getGuildColor().length() == 7) return StringUtils.colorFromHex(guildColorProfile.getGuildColor());
-                    else return new CustomColor(CommonColors.WHITE);
+                    return guildColorProfile.getGuildColor();
                 }
             }
             return new CustomColor(CommonColors.WHITE);
