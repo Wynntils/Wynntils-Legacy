@@ -356,7 +356,7 @@ public class WebManager {
 
                         guildColors.put( // name, CustomColor
                                 entry.getValue().getAsJsonObject().get("_id").getAsString(),
-                                CustomColor.fromString(colorString, 0f)
+                                CustomColor.fromString(colorString, 1f)
                         );
                     }
                     return true;
