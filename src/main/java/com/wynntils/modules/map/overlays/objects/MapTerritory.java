@@ -20,7 +20,6 @@ import com.wynntils.webapi.WebManager;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
