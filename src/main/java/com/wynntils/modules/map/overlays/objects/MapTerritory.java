@@ -22,11 +22,15 @@ import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
 public class MapTerritory {
 
     private static final CustomColor territoryNameColour = new CustomColor(CommonColors.WHITE);
+    private static HashMap<String, GuildColorProfile> randomGuildColorsHashMap = new HashMap<>();
 
     ScreenRenderer renderer = null;
 
@@ -165,15 +169,24 @@ public class MapTerritory {
             HashMap<String, GuildColorProfile> guildColorProfileHashMap = WebManager.getGuildColors();
             if (guildColorProfileHashMap.isEmpty()) {
                 Random random = new Random();
-                return new CustomColor((CommonColors.getColors()[random.nextInt(17)]));
+                CustomColor randomColor = CommonColors.getColors()[random.nextInt(CommonColors.getColors().length)];
+                randomGuildColorsHashMap.put(String.valueOf(randomGuildColorsHashMap.size()), new GuildColorProfile(territory.getGuild(), territory.getGuildPrefix(), randomColor));
+                return randomColor;
             }
             for (GuildColorProfile guildColorProfile : guildColorProfileHashMap.values()) {
                 if (guildColorProfile.getName().equals(territory.getGuild())) {
                     return guildColorProfile.getGuildColor();
                 }
             }
+            for (GuildColorProfile guildColorProfile : randomGuildColorsHashMap.values()) {
+                if (guildColorProfile.getName().equals(territory.getGuild())) {
+                    return guildColorProfile.getGuildColor();
+                }
+            }
             Random random = new Random();
-            return new CustomColor((CommonColors.getColors()[random.nextInt(17)]));
+            CustomColor randomColor = CommonColors.getColors()[random.nextInt(CommonColors.getColors().length)];
+            randomGuildColorsHashMap.put(String.valueOf(randomGuildColorsHashMap.size()), new GuildColorProfile(territory.getGuild(), territory.getGuildPrefix(), randomColor));
+            return randomColor;
         } else {
             return resources.getColor();
         }
