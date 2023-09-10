@@ -15,6 +15,7 @@ import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynnGuildWarEvent;
 import com.wynntils.core.framework.FrameworkManager;
+import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
@@ -31,14 +32,12 @@ import com.wynntils.webapi.profiles.SeaskipperProfile;
 import com.wynntils.webapi.profiles.ServerProfile;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 import com.wynntils.webapi.profiles.UpdateProfile;
-import com.wynntils.webapi.profiles.GuildColorProfile;
 import com.wynntils.webapi.profiles.guild.GuildProfile;
 import com.wynntils.webapi.profiles.ingredient.IngredientProfile;
 import com.wynntils.webapi.profiles.item.IdentificationOrderer;
 import com.wynntils.webapi.profiles.item.ItemGuessProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 import com.wynntils.webapi.profiles.item.enums.ItemType;
-import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 import com.wynntils.webapi.profiles.item.objects.MajorIdentification;
 import com.wynntils.webapi.profiles.music.MusicLocationsProfile;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
@@ -69,7 +68,7 @@ public class WebManager {
     private static @Nullable WebReader apiUrls;
 
     private static HashMap<String, TerritoryProfile> territories = new HashMap<>();
-    private static HashMap<String, GuildColorProfile> guildColors = new HashMap<>();
+    private static HashMap<String, CustomColor> guildColors = new HashMap<>();
     private static UpdateProfile updateProfile;
     private static boolean ignoringJoinUpdate = false;
 
@@ -210,7 +209,7 @@ public class WebManager {
         return territories;
     }
 
-    public static HashMap<String, GuildColorProfile> getGuildColors() {
+    public static HashMap<String, CustomColor> getGuildColors() {
         return guildColors;
     }
 
@@ -345,15 +344,21 @@ public class WebManager {
                 .cacheTo(new File(API_CACHE_ROOT, "guildColors.json"))
                 .handleJsonObject(json -> {
                     if (!json.has("0")) return false;
+                    // json is {"0": {data}}, {"1": {data}}, etc.
+                    // we need to convert it to {data}, {data}, etc.
+                    guildColors = new HashMap<>();
+                    for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+                        JsonObject data = entry.getValue().getAsJsonObject();
+                        // data is now {"_id":"Kingdom Foxes","prefix":"Fox","color":"#FF8200"}
 
-                    Type type = new TypeToken<HashMap<String, GuildColorProfile>>() {
-                    }.getType();
+                        String colorString = entry.getValue().getAsJsonObject().get("color").getAsString();
+                        if (colorString.length() != 7 && colorString.length() != 4 && colorString.length() != 3) continue;
 
-                    GsonBuilder builder = new GsonBuilder();
-                    builder.registerTypeHierarchyAdapter(GuildColorProfile.class, new GuildColorProfile.GuildColorDeserializer());
-                    Gson gson = builder.create();
-
-                    guildColors = gson.fromJson(json, type);
+                        guildColors.put( // name, CustomColor
+                                entry.getValue().getAsJsonObject().get("_id").getAsString(),
+                                CustomColor.fromString(colorString, 0f)
+                        );
+                    }
                     return true;
                 })
         );

@@ -17,7 +17,6 @@ import com.wynntils.modules.map.instances.MapProfile;
 import com.wynntils.modules.map.managers.GuildResourceManager;
 import com.wynntils.modules.map.overlays.renderer.MapInfoUI;
 import com.wynntils.webapi.WebManager;
-import com.wynntils.webapi.profiles.GuildColorProfile;
 import com.wynntils.webapi.profiles.TerritoryProfile;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.util.text.TextFormatting;
@@ -25,12 +24,13 @@ import net.minecraft.util.text.TextFormatting;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 public class MapTerritory {
 
     private static final CustomColor territoryNameColour = new CustomColor(CommonColors.WHITE);
-    private static HashMap<String, GuildColorProfile> randomGuildColorsHashMap = new HashMap<>();
+    private static final HashMap<String, CustomColor> backupGuildColors = new HashMap<>();
 
     ScreenRenderer renderer = null;
 
@@ -165,31 +165,26 @@ public class MapTerritory {
     }
 
     private CustomColor getTerritoryColor(boolean resourceColor) {
-        if (!resourceColor) {
-            HashMap<String, GuildColorProfile> guildColorProfileHashMap = WebManager.getGuildColors();
-            if (guildColorProfileHashMap.isEmpty()) {
-                Random random = new Random();
-                CustomColor randomColor = CommonColors.getColors()[random.nextInt(CommonColors.getColors().length)];
-                randomGuildColorsHashMap.put(String.valueOf(randomGuildColorsHashMap.size()), new GuildColorProfile(territory.getGuild(), territory.getGuildPrefix(), randomColor));
-                return randomColor;
-            }
-            for (GuildColorProfile guildColorProfile : guildColorProfileHashMap.values()) {
-                if (guildColorProfile.getName().equals(territory.getGuild())) {
-                    return guildColorProfile.getGuildColor();
-                }
-            }
-            for (GuildColorProfile guildColorProfile : randomGuildColorsHashMap.values()) {
-                if (guildColorProfile.getName().equals(territory.getGuild())) {
-                    return guildColorProfile.getGuildColor();
-                }
-            }
-            Random random = new Random();
-            CustomColor randomColor = CommonColors.getColors()[random.nextInt(CommonColors.getColors().length)];
-            randomGuildColorsHashMap.put(String.valueOf(randomGuildColorsHashMap.size()), new GuildColorProfile(territory.getGuild(), territory.getGuildPrefix(), randomColor));
-            return randomColor;
-        } else {
-            return resources.getColor();
+        if (resourceColor) return resources.getColor();
+
+        if (WebManager.getGuildColors().containsKey(territory.getGuild())) {
+            return WebManager.getGuildColors().get(territory.getGuild());
         }
+
+        // Guild not found in the list, check backup list and add a random color if not found
+        if (!backupGuildColors.containsKey(territory.getGuild())) {
+            Random random = new Random();
+            backupGuildColors.put(
+                    territory.getGuild(),
+                    CustomColor.fromHSV(
+                            random.nextFloat(),
+                            random.nextFloat(),
+                            0.5f + random.nextFloat() * 0.5f,
+                            1f
+                    )
+            );
+        }
+        return backupGuildColors.get(territory.getGuild());
     }
 
     public void postDraw(int mouseX, int mouseY, float partialTicks, int width, int height) {
