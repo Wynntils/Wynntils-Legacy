@@ -56,7 +56,7 @@ public class QuestsPage extends QuestBookListPage<QuestInfo> {
     public void open(boolean showAnimation) {
         super.open(showAnimation);
 
-        QuestManager.readQuestBook();
+        //QuestManager.readQuestBook();
     }
 
     @Override

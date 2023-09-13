@@ -15,6 +15,7 @@ import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.events.custom.WynnGuildWarEvent;
 import com.wynntils.core.framework.FrameworkManager;
+import com.wynntils.core.framework.rendering.colors.CustomColor;
 import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.enums.UpdateStream;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
@@ -37,7 +38,6 @@ import com.wynntils.webapi.profiles.item.IdentificationOrderer;
 import com.wynntils.webapi.profiles.item.ItemGuessProfile;
 import com.wynntils.webapi.profiles.item.ItemProfile;
 import com.wynntils.webapi.profiles.item.enums.ItemType;
-import com.wynntils.webapi.profiles.item.objects.IdentificationContainer;
 import com.wynntils.webapi.profiles.item.objects.MajorIdentification;
 import com.wynntils.webapi.profiles.music.MusicLocationsProfile;
 import com.wynntils.webapi.profiles.player.PlayerStatsProfile;
@@ -68,6 +68,7 @@ public class WebManager {
     private static @Nullable WebReader apiUrls;
 
     private static HashMap<String, TerritoryProfile> territories = new HashMap<>();
+    private static HashMap<String, CustomColor> guildColors = new HashMap<>();
     private static UpdateProfile updateProfile;
     private static boolean ignoringJoinUpdate = false;
 
@@ -139,6 +140,7 @@ public class WebManager {
         }
 
         updateTerritories(handler);
+        updateGuildColors(handler);
         updateItemList(handler);
         updateIngredientList(handler);
         updateMapLocations(handler);
@@ -205,6 +207,10 @@ public class WebManager {
 
     public static HashMap<String, TerritoryProfile> getTerritories() {
         return territories;
+    }
+
+    public static HashMap<String, CustomColor> getGuildColors() {
+        return guildColors;
     }
 
     public static HashMap<String, ItemProfile> getItems() {
@@ -326,6 +332,33 @@ public class WebManager {
                     Gson gson = builder.create();
 
                     territories = gson.fromJson(json.get("territories"), type);
+                    return true;
+                })
+        );
+    }
+
+    public static void updateGuildColors(RequestHandler handler) {
+        if (apiUrls == null) return;
+        String url = apiUrls.get("Athena") + "/cache/get/guildListWithColors";
+        handler.addRequest(new Request(url, "guildColors")
+                .cacheTo(new File(API_CACHE_ROOT, "guildColors.json"))
+                .handleJsonObject(json -> {
+                    if (!json.has("0")) return false;
+                    // json is {"0": {data}}, {"1": {data}}, etc.
+                    // we need to convert it to {data}, {data}, etc.
+                    guildColors = new HashMap<>();
+                    for (Map.Entry<String, JsonElement> entry : json.entrySet()) {
+                        JsonObject data = entry.getValue().getAsJsonObject();
+                        // data is now {"_id":"Kingdom Foxes","prefix":"Fox","color":"#FF8200"}
+
+                        String colorString = entry.getValue().getAsJsonObject().get("color").getAsString();
+                        if (colorString.length() != 7 && colorString.length() != 4 && colorString.length() != 3) continue;
+
+                        guildColors.put( // name, CustomColor
+                                entry.getValue().getAsJsonObject().get("_id").getAsString(),
+                                CustomColor.fromString(colorString, 1f)
+                        );
+                    }
                     return true;
                 })
         );

@@ -26,7 +26,7 @@ public class TabListData extends PlayerData {
 
     https://regexr.com/729qc
      */
-    private static final Pattern TAB_EFFECT_PATTERN = Pattern.compile("(.+?§7 ?(?:\\d+(?:\\.\\d+)?%)?) ?([%\\-+\\/\\da-zA-Z\\s]+?) §[84a]\\((.+?)\\).*");
+    private static final Pattern TAB_EFFECT_PATTERN = Pattern.compile("(.+?§7 ?(?:\\d+(?:\\.\\d+)?%)?) ?(['%\\-+\\/\\da-zA-Z\\s]+?) §[84a]\\((.+?)\\).*");
 
     /**
      * Updates the ConsumableTimerOverlay with the effects from the tab list
