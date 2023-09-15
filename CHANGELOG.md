@@ -1,50 +1,51 @@
-## [1.15.1-beta.2](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.1...v1.15.1-beta.2) (2023-04-17)
+## [1.15.1-beta.8](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.7...v1.15.1-beta.8) (2023-09-15)
 
 
 ### Bug Fixes
 
-* The mod can now load Artemis (1.19.3) lootruns ([#675](https://github.com/Wynntils/Wynntils/issues/675)) ([cc98eb1](https://github.com/Wynntils/Wynntils/commit/cc98eb12022bf752acdd359883a9254ae35d192c))
+* Fixed chat crash bug ([#687](https://github.com/Wynntils/Wynntils/issues/687)) ([76ed2da](https://github.com/Wynntils/Wynntils/commit/76ed2dab265bd032a62a3188cac5936832dc1d11))
 
-## [1.15.1-beta.1](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.0...v1.15.1-beta.1) (2023-04-01)
-
-
-### New Features
-
-* Add Artemis export button for waypoint manager GUI ([#673](https://github.com/Wynntils/Wynntils/issues/673)) ([1ea89ce](https://github.com/Wynntils/Wynntils/commit/1ea89ce88cb334233387bc971c9218cd5c1d5ee1))
-
-
-### Miscellaneous Chores
-
-* **release:** v1.15.1-beta.1 [skip ci] ([bf060a2](https://github.com/Wynntils/Wynntils/commit/bf060a250ebddac1a4139d5ae312a96316bafe0a))
-
-## [1.15.1-beta.0](https://github.com/Wynntils/Wynntils/compare/v1.15.0...v1.15.1-beta.0) (2023-04-01)
+## [1.15.1-beta.7](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.6...v1.15.1-beta.7) (2023-09-13)
 
 
 ### Bug Fixes
 
-* Fix party finder crash on housing island ([#669](https://github.com/Wynntils/Wynntils/issues/669)) ([f97f5ad](https://github.com/Wynntils/Wynntils/commit/f97f5ad803fba62e3a38c31b74e027c0214ed41d))
+* Fix Guild Map Crashing ([#689](https://github.com/Wynntils/Wynntils/issues/689)) ([e5cc971](https://github.com/Wynntils/Wynntils/commit/e5cc9718dad93581000783c1a298862e6da91c99))
 
 
 ### Miscellaneous Chores
 
-* **release:** v1.15.1-beta.0 [skip ci] ([d60803c](https://github.com/Wynntils/Wynntils/commit/d60803cf7ac832394fc9c981217b2331ccf51821))
+* **release:** v1.15.1-beta.7 [skip ci] ([f28c584](https://github.com/Wynntils/Wynntils/commit/f28c5843e805b5522fa0e449e4c9eb636cf799ba))
 
-## [1.15.0](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.14...v1.15.0) (2023-02-21)
+## [1.15.1-beta.6](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.5...v1.15.1-beta.6) (2023-08-12)
+
+
+### Bug Fixes
+
+* Fixed TAB_EFFECT_PATTERN regex ([#686](https://github.com/Wynntils/Wynntils/issues/686)) ([46408de](https://github.com/Wynntils/Wynntils/commit/46408de7d589c2dc5ef6dcabe54eb4bfe27d39bf))
 
 
 ### Miscellaneous Chores
 
-* **release:** v1.15.0 [skip ci] ([1a93a1e](https://github.com/Wynntils/Wynntils/commit/1a93a1eb9decc0acf497c7f923a3032c00c5e65b))
+* **release:** v1.15.1-beta.6 [skip ci] ([71bf7fe](https://github.com/Wynntils/Wynntils/commit/71bf7fee9698345af1b61eb7f3b39c57b51fb497))
 
-## [1.14.1-beta.14](https://github.com/Wynntils/Wynntils/compare/v1.14.1-beta.13...v1.14.1-beta.14) (2023-02-20)
+## [1.15.1-beta.5](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.4...v1.15.1-beta.5) (2023-07-24)
 
 
 ### New Features
 
-* Remove support for stable update stream ([#667](https://github.com/Wynntils/Wynntils/issues/667)) ([c5b509d](https://github.com/Wynntils/Wynntils/commit/c5b509dd720560ff268bfb652a49a9fa8f27509e))
+* Export favorites via command ([#681](https://github.com/Wynntils/Wynntils/issues/681)) ([103a8b8](https://github.com/Wynntils/Wynntils/commit/103a8b8614f27e8381c01599ca9d35ad68451193))
 
 
 ### Miscellaneous Chores
 
-* **release:** v1.14.1-beta.14 [skip ci] ([24703b1](https://github.com/Wynntils/Wynntils/commit/24703b14edd1cb010578522367cc590bcbf64d2c))
+* **release:** v1.15.1-beta.5 [skip ci] ([1677480](https://github.com/Wynntils/Wynntils/commit/1677480cf1d047e1e131f11a5b9f56a052a110d9))
+
+## [1.15.1-beta.4](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.3...v1.15.1-beta.4) (2023-07-18)
+
+
+### Miscellaneous Chores
+
+* **release:** v1.15.1-beta.4 [skip ci] ([b0e0d5b](https://github.com/Wynntils/Wynntils/commit/b0e0d5b34ce26d519a26c8cef32b3be8c645bd88))
+* Remove broken quest book ([#679](https://github.com/Wynntils/Wynntils/issues/679)) ([b9d15f5](https://github.com/Wynntils/Wynntils/commit/b9d15f51efbecfead2afaf9cbac4569ecbf651bb))
 
