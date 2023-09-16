@@ -31,7 +31,7 @@ public class ChatConfig extends SettingsClass {
     @Setting(displayName = "Chat Mentions", description = "Should a sound play when your username is mentioned in a message?", order = 3)
     public boolean allowChatMentions = true;
 
-    @Setting(displayName = "Chat Mentions Nicknames", description = "Besides your username, what other names should trigger Chat Mentions?\n\n§8Multiple nicknames can be added by using commas as separators.", order = 4)
+    @Setting(displayName = "Chat Mentions Nicknames", description = "Besides your username, what other names should trigger Chat Mentions?\n\n§8Multiple nicknames can be added by using commas as separators. This is a wrapped RegEx field.", order = 4)
     public String mentionNames = "";
 
     @Setting(displayName = "Chat Spam Filter", description = "Should repeating messages stack?", order = 7)
