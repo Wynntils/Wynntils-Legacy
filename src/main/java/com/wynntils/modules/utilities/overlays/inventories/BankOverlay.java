@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
 public class BankOverlay implements Listener {
 
     private static final Pattern PAGE_PATTERN = Pattern.compile("\\[Pg\\. ([0-9]*)\\] [a-z_A-Z0-9 ]+'s? (Character|Account) Bank");
-    private static final Pattern PAGE_CUSTOM_NAME_PATTERN = Pattern.compile("\\[Pg\\. ([0-9]*)\\] ([a-z_A-Z0-9 ]+)");
+    private static final Pattern PAGE_CUSTOM_NAME_PATTERN = Pattern.compile("\\[Pg\\. ([0-9]*)\\] ([a-z_A-Z0-9.' ]+)");
 
     private static final ResourceLocation COLUMN_ARROW = new ResourceLocation("minecraft:textures/wynn/gui/column_arrow_right.png");
 
