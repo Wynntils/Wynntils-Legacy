@@ -19,11 +19,15 @@ public class ExportScreen extends GuiScreen {
     private String line1;
     private String line2;
     private String line3;
+    private String line4;
+    private String line5;
 
     public ExportScreen() {
-        line1 = "Wynncraft will be phasing out 1.12 by the end of this year.";
+        line1 = "Wynncraft will be phasing out 1.12 by the end of this year (2023).";
         line2 = "We highly recommend updating to Artemis (1.20.2) as soon as you can.";
         line3 = "Waypoints and favorites can be exported using the buttons below.";
+        line4 = "This will save them to your clipboard, either save them to a text";
+        line5 = "editor to import later or immediately import into Artemis.";
     }
 
     @Override
@@ -49,6 +53,8 @@ public class ExportScreen extends GuiScreen {
             add(line1);
             add(line2);
             add(line3);
+            add(line4);
+            add(line5);
         }};
 
         int spacing = this.fontRenderer.FONT_HEIGHT + 2; // 11

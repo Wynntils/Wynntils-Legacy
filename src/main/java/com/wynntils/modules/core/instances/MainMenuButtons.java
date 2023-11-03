@@ -39,7 +39,7 @@ public class MainMenuButtons {
     private static boolean alreadyLoaded = false;
 
     public static void addButtons(GuiMainMenu to, List<GuiButton> buttonList, boolean resize) {
-        GuiButton exportButton = new GuiButton(EXPORT_BUTTON_ID, to.width / 2 + 104, to.height / 4 + 48 + 48, 20, 20, "!");
+        GuiButton exportButton = new GuiButton(EXPORT_BUTTON_ID, to.width / 2 + 104, to.height / 4 + 48 + 48, 100, 20, "§cExport to Artemis");
         buttonList.add(exportButton);
 
         if (!CoreDBConfig.INSTANCE.addMainMenuButton) return;
