@@ -10,6 +10,7 @@ import com.wynntils.core.framework.rendering.textures.Textures;
 import com.wynntils.core.utils.ServerUtils;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.overlays.UpdateOverlay;
+import com.wynntils.modules.core.overlays.ui.ExportScreen;
 import com.wynntils.modules.core.overlays.ui.UpdateAvailableScreen;
 import com.wynntils.modules.utilities.instances.ServerIcon;
 import com.wynntils.webapi.WebManager;
@@ -31,12 +32,16 @@ public class MainMenuButtons {
 
     private static ServerList serverList = null;
     private static final int WYNNCRAFT_BUTTON_ID = 3790627;
+    private static final int EXPORT_BUTTON_ID = 3790628;
 
     private static WynncraftButton lastButton = null;
 
     private static boolean alreadyLoaded = false;
 
     public static void addButtons(GuiMainMenu to, List<GuiButton> buttonList, boolean resize) {
+        GuiButton exportButton = new GuiButton(EXPORT_BUTTON_ID, to.width / 2 + 104, to.height / 4 + 48 + 48, 20, 20, "!");
+        buttonList.add(exportButton);
+
         if (!CoreDBConfig.INSTANCE.addMainMenuButton) return;
 
         if (lastButton == null || !resize) {
@@ -64,11 +69,17 @@ public class MainMenuButtons {
     public static void actionPerformed(GuiMainMenu on, GuiButton button, List<GuiButton> buttonList) {
         if (button.id == WYNNCRAFT_BUTTON_ID) {
             clickedWynncraftButton(((WynncraftButton) button).serverIcon.getServer(), on);
+        } else if (button.id == EXPORT_BUTTON_ID) {
+            clickedExportButton();
         }
     }
 
     private static void clickedWynncraftButton(ServerData server, GuiScreen backGui) {
         McIf.mc().displayGuiScreen(new UpdateAvailableScreen(server));
+    }
+
+    private static void clickedExportButton() {
+        McIf.mc().displayGuiScreen(new ExportScreen());
     }
 
     private static boolean hasUpdate() {

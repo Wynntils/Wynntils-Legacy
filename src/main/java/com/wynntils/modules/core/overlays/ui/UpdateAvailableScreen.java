@@ -4,19 +4,12 @@
 
 package com.wynntils.modules.core.overlays.ui;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
 import com.wynntils.McIf;
 import com.wynntils.Reference;
 import com.wynntils.core.utils.ServerUtils;
-import com.wynntils.core.utils.Utils;
 import com.wynntils.modules.core.CoreModule;
 import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.enums.UpdateStream;
-import com.wynntils.modules.map.configs.MapConfig;
-import com.wynntils.modules.map.instances.WaypointProfile;
-import com.wynntils.modules.utilities.configs.UtilitiesConfig;
 import com.wynntils.webapi.WebManager;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
@@ -28,17 +21,20 @@ import java.util.List;
 
 public class UpdateAvailableScreen extends GuiScreen {
 
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().create();
     private ServerData server;
     private String line1;
     private String line2;
-    private String line3;
 
     public UpdateAvailableScreen(ServerData server) {
         this.server = server;
-        line1 = "Wynncraft will be phasing out 1.12 by the end of this year.";
-        line2 = "We highly recommend updating to Artemis (1.20.2) as soon as you can.";
-        line3 = "Waypoints and favorites can be exported using the buttons below.";
+        line1 = "A new update is available " + TextFormatting.YELLOW + WebManager.getUpdate().getLatestUpdate();
+        if (WebManager.getUpdate().getDownloadMD5() != null) {
+            line1 += TextFormatting.GRAY + " (md5: " + TextFormatting.YELLOW + WebManager.getUpdate().getDownloadMD5() + TextFormatting.GRAY + ")";
+        }
+        line2 = "You are currently on " + TextFormatting.YELLOW + Reference.VERSION;
+        if (WebManager.getUpdate().getMd5Installed() != null) {
+            line2 += TextFormatting.GRAY + " (md5: " + TextFormatting.YELLOW + WebManager.getUpdate().getMd5Installed() + TextFormatting.GRAY + ")";
+        }
     }
 
     @Override
@@ -46,14 +42,14 @@ public class UpdateAvailableScreen extends GuiScreen {
         int spacing = 24;
         int y = this.height / 4 + 84;
         // row 1
-        this.buttonList.add(new GuiButton(0, this.width / 2 - 100, y, 200, 20, "Get Artemis"));
+        this.buttonList.add(new GuiButton(0, this.width / 2 - 100, y, 200, 20, "View changelog"));
         // row 2
         y += spacing;
-        this.buttonList.add(new GuiButton(1, this.width / 2 - 100, y, 98, 20, "Export Favorites"));
-        this.buttonList.add(new GuiButton(2, this.width / 2 + 2, y, 98, 20, "Export Waypoints"));
+        this.buttonList.add(new GuiButton(1, this.width / 2 - 100, y, 98, 20, "Update now"));
+        this.buttonList.add(new GuiButton(2, this.width / 2 + 2, y, 98, 20, "Update at exit"));
         // row 3
         y += spacing;
-        this.buttonList.add(new GuiButton(3, this.width / 2 - 100, y, 98, 20, "Continue"));
+        this.buttonList.add(new GuiButton(3, this.width / 2 - 100, y, 98, 20, "Ignore update"));
         this.buttonList.add(new GuiButton(4, this.width / 2 + 2, y, 98, 20, "Cancel"));
     }
 
@@ -64,7 +60,7 @@ public class UpdateAvailableScreen extends GuiScreen {
         List<String> lines = new ArrayList<String>() {{
             add(line1);
             add(line2);
-            add(line3);
+            add("Update now or when leaving Minecraft?");
         }};
 
         int spacing = this.fontRenderer.FONT_HEIGHT + 2; // 11
@@ -85,13 +81,13 @@ public class UpdateAvailableScreen extends GuiScreen {
         for (GuiButton button : buttonList) {
             if (button.isMouseOver()) {
                 if (button.id == 0) {
-                    drawHoveringText("Open a link to the Artemis Modrinth page", mouseX, mouseY);
+                    drawHoveringText("View the changelog for this update", mouseX, mouseY);
                 } else if (button.id == 1) {
-                    drawHoveringText("Copy your favorites to your clipboard", mouseX, mouseY);
+                    drawHoveringText("Update now and exit Minecraft", mouseX, mouseY);
                 } else if (button.id == 2) {
-                    drawHoveringText("Copy your waypoints to your clipboard", mouseX, mouseY);
+                    drawHoveringText("Update when you exit Minecraft", mouseX, mouseY);
                 } else if (button.id == 3) {
-                    drawHoveringText("Continue to Wynncraft", mouseX, mouseY);
+                    drawHoveringText("Ignore this update", mouseX, mouseY);
                 } else if (button.id == 4) {
                     drawHoveringText("Cancel", mouseX, mouseY);
                 }
@@ -101,18 +97,12 @@ public class UpdateAvailableScreen extends GuiScreen {
 
     @Override
     public void actionPerformed(GuiButton button) {
-        if (button.id == 1) {
-            List<String> combinedList = new ArrayList<>();
-            combinedList.addAll(UtilitiesConfig.INSTANCE.favoriteItems);
-            combinedList.addAll(UtilitiesConfig.INSTANCE.favoriteIngredients);
-            combinedList.addAll(UtilitiesConfig.INSTANCE.favoritePowders);
-            combinedList.addAll(UtilitiesConfig.INSTANCE.favoriteEmeraldPouches);
-
-            Utils.copyToClipboard("wynntilsFavorites," + String.join(",", combinedList));
-        } else if (button.id == 2) {
-            JsonArray array = new JsonArray();
-            MapConfig.Waypoints.INSTANCE.waypoints.stream().map(WaypointProfile::toArtemisObject).forEach(array::add);
-            Utils.copyToClipboard(GSON.toJson(array));
+        if (button.id == 1 || button.id == 2) {
+            // Update
+            CoreDBConfig.INSTANCE.showChangelogs = true;
+            CoreDBConfig.INSTANCE.lastVersion = Reference.VERSION;
+            CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
+            McIf.mc().displayGuiScreen(new UpdatingScreen(button.id == 1));
         } else if (button.id == 3) {
             // Ignore
             WebManager.skipJoinUpdate();
@@ -121,7 +111,9 @@ public class UpdateAvailableScreen extends GuiScreen {
             // Cancel
             McIf.mc().displayGuiScreen(null);
         } else if (button.id == 0) {
-            Utils.openUrl("https://modrinth.com/mod/wynntils/version/latest");
+            // View changelog
+            boolean major = CoreDBConfig.INSTANCE.updateStream == UpdateStream.STABLE;
+            ChangelogUI.loadChangelogAndShow(this, major);
         }
     }
 
