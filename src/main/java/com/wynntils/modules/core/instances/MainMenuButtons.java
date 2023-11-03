@@ -75,7 +75,12 @@ public class MainMenuButtons {
     }
 
     private static void clickedWynncraftButton(ServerData server, GuiScreen backGui) {
-        McIf.mc().displayGuiScreen(new UpdateAvailableScreen(server));
+        if (hasUpdate()) {
+            McIf.mc().displayGuiScreen(new UpdateAvailableScreen(server));
+        } else {
+            WebManager.skipJoinUpdate();
+            ServerUtils.connect(backGui, server);
+        }
     }
 
     private static void clickedExportButton() {
