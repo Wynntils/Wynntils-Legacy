@@ -24,7 +24,7 @@ public class ExportScreen extends GuiScreen {
 
     public ExportScreen() {
         line1 = "Wynncraft will be phasing out 1.12 by the end of this year (2023).";
-        line2 = "We highly recommend updating to Artemis (1.20.2) as soon as you can.";
+        line2 = "We highly recommend updating to Wynntils Artemis as soon as you can.";
         line3 = "Waypoints and favorites can be exported using the buttons below.";
         line4 = "This will save them to your clipboard, either save them to a text";
         line5 = "editor to import later or immediately import into Artemis.";
@@ -72,7 +72,7 @@ public class ExportScreen extends GuiScreen {
         for (GuiButton button : buttonList) {
             if (button.isMouseOver()) {
                 if (button.id == 0) {
-                    drawHoveringText("Open a link to the Artemis Modrinth page", mouseX, mouseY);
+                    drawHoveringText("Open a link to the Wynntils Artemis Modrinth page", mouseX, mouseY);
                 } else if (button.id == 1) {
                     drawHoveringText("Copy your favorites to your clipboard", mouseX, mouseY);
                 } else if (button.id == 2) {
@@ -102,7 +102,7 @@ public class ExportScreen extends GuiScreen {
             // Cancel
             McIf.mc().displayGuiScreen(null);
         } else if (button.id == 0) {
-            Utils.openUrl("https://modrinth.com/mod/wynntils/version/latest");
+            Utils.openUrl("https://modrinth.com/mod/wynntils/");
         }
     }
 }
