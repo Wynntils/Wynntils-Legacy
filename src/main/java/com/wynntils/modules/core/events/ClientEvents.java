@@ -21,6 +21,8 @@ import com.wynntils.core.utils.Utils;
 import com.wynntils.core.utils.objects.Location;
 import com.wynntils.core.utils.objects.TimedSet;
 import com.wynntils.core.utils.reflections.ReflectionFields;
+import com.wynntils.modules.core.CoreModule;
+import com.wynntils.modules.core.config.CoreDBConfig;
 import com.wynntils.modules.core.instances.GatheringBake;
 import com.wynntils.modules.core.instances.MainMenuButtons;
 import com.wynntils.modules.core.instances.TotemTracker;
@@ -30,6 +32,8 @@ import com.wynntils.modules.core.overlays.inventories.ChestReplacer;
 import com.wynntils.modules.core.overlays.inventories.HorseReplacer;
 import com.wynntils.modules.core.overlays.inventories.IngameMenuReplacer;
 import com.wynntils.modules.core.overlays.inventories.InventoryReplacer;
+import com.wynntils.modules.core.overlays.ui.ExportScreen;
+import com.wynntils.modules.core.overlays.ui.UpdateAvailableScreen;
 import com.wynntils.modules.utilities.UtilitiesModule;
 import com.wynntils.modules.utilities.configs.OverlayConfig;
 import com.wynntils.modules.utilities.instances.ShamanMaskType;
@@ -456,7 +460,14 @@ public class ClientEvents implements Listener {
 
         if (gui instanceof GuiMainMenu) {
             boolean resize = lastScreen != null && lastScreen instanceof GuiMainMenu;
-            MainMenuButtons.addButtons((GuiMainMenu) gui, e.getButtonList(), resize);
+
+            if (!CoreDBConfig.INSTANCE.shownExportScreen) {
+                McIf.mc().displayGuiScreen(new ExportScreen());
+                CoreDBConfig.INSTANCE.shownExportScreen = true;
+                CoreDBConfig.INSTANCE.saveSettings(CoreModule.getModule());
+            } else {
+                MainMenuButtons.addButtons((GuiMainMenu) gui, e.getButtonList(), resize);
+            }
         }
 
         lastScreen = gui;
