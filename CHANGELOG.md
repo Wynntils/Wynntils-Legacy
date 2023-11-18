@@ -1,9 +1,21 @@
+## [1.15.1-beta.10](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.9...v1.15.1-beta.10) (2023-11-18)
+
+
+### New Features
+
+* Export favorites and waypoints from main menu ([#696](https://github.com/Wynntils/Wynntils/issues/696)) ([94ce153](https://github.com/Wynntils/Wynntils/commit/94ce1537e27ab67a8534ee9fdf9f3040d51e2ac4))
+
 ## [1.15.1-beta.9](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.8...v1.15.1-beta.9) (2023-09-16)
 
 
 ### Bug Fixes
 
 * do not crash with broken chat mention regex ([#677](https://github.com/Wynntils/Wynntils/issues/677)) ([590726f](https://github.com/Wynntils/Wynntils/commit/590726fde1758345a73e20c1126e52c24f4eade1))
+
+
+### Miscellaneous Chores
+
+* **release:** v1.15.1-beta.9 [skip ci] ([5da7e73](https://github.com/Wynntils/Wynntils/commit/5da7e730b272c0e8e9b8f8d1575153dc89acee68))
 
 ## [1.15.1-beta.8](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.7...v1.15.1-beta.8) (2023-09-15)
 
@@ -40,16 +52,4 @@
 ### Miscellaneous Chores
 
 * **release:** v1.15.1-beta.6 [skip ci] ([71bf7fe](https://github.com/Wynntils/Wynntils/commit/71bf7fee9698345af1b61eb7f3b39c57b51fb497))
-
-## [1.15.1-beta.5](https://github.com/Wynntils/Wynntils/compare/v1.15.1-beta.4...v1.15.1-beta.5) (2023-07-24)
-
-
-### New Features
-
-* Export favorites via command ([#681](https://github.com/Wynntils/Wynntils/issues/681)) ([103a8b8](https://github.com/Wynntils/Wynntils/commit/103a8b8614f27e8381c01599ca9d35ad68451193))
-
-
-### Miscellaneous Chores
-
-* **release:** v1.15.1-beta.5 [skip ci] ([1677480](https://github.com/Wynntils/Wynntils/commit/1677480cf1d047e1e131f11a5b9f56a052a110d9))
 
