@@ -8,13 +8,16 @@ import com.google.gson.*;
 import com.wynntils.core.utils.helpers.SimpleRelativeDateFormatter;
 
 import java.lang.reflect.Type;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 
 public class TerritoryProfile {
 
-    public static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static DateTimeFormatter dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd[ ]['T']HH:mm:ss[.SSSSSS]");
 
     String name;
     String friendlyName;
@@ -158,8 +161,9 @@ public class TerritoryProfile {
 
             Date acquired = null;
             try {
-                acquired = dateFormat.parse(territory.get("acquired").getAsString());
-            } catch (ParseException e) {
+                // parse using local time because surrounding code expects this
+                acquired = Date.from(LocalDateTime.parse(territory.get("acquired").getAsString(), dateFormat).atZone(ZoneId.systemDefault()).toInstant());
+            } catch (DateTimeParseException e) {
                 e.printStackTrace();
             }
             String attacker = null;
