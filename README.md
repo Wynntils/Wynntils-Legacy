@@ -1,3 +1,7 @@
+# ⚠️ Deprecation Notice ⚠️
+We officially bid farewell to 1.12.2 as an allowed game version for Wynncraft. To continue using Wynntils, upgrade to [Wynntils Artemis](https://github.com/Wynntils/Artemis).
+<hr>
+
 <p align="center">
 <img src="http://cdn.wynntils.com/wynntils%20logo%20-%20w%20paintstroke.png" width=30%>
 <br>
