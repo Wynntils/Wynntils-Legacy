@@ -83,13 +83,16 @@ public class ConsumableTimerOverlay extends Overlay {
      */
     public static void addStaticTimer(String prefix, String name, String displayedTime, boolean persistent) {
         // If a DynamicTimerContainer or StaticTimerContainer already exists, get rid of it
-        activeTimers.remove(findTimerContainer(name));
+        removeTimer(name);
 
         activeTimers.add(new StaticTimerContainer(prefix, name, displayedTime, persistent));
     }
 
     public static void removeTimer(String name) {
-        activeTimers.remove(findTimerContainer(name));
+        TimerContainer timerContainer = findTimerContainer(name);
+        if (timerContainer != null) {
+            activeTimers.remove(timerContainer);
+        }
     }
 
     @Override
